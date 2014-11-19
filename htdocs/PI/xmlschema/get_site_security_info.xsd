@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="CSIRT_EMAIL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="CSIRT_TEL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="PRIMARY_KEY">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="SITE" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SHORT_NAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SITE">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="PRIMARY_KEY" />
+        <xs:element ref="SHORT_NAME" />
+        <xs:element ref="CSIRT_EMAIL" />
+        <xs:element ref="CSIRT_TEL" />
+      </xs:sequence>
+      <xs:attribute name="ID" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="PRIMARY_KEY" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="NAME" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

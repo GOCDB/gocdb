@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<menus>
+  <main_menu>
+    <spacer>
+      <show_on_instance>all</show_on_instance>
+      <spacer>Browse</spacer>
+    </spacer>
+    
+    <MySites>
+        <show_on_instance>all</show_on_instance>
+        <name>My Sites</name>
+        <link>index.php?Page_Type=My_Sites</link>
+    </MySites>
+    
+    <Projects>
+      <show_on_instance>all</show_on_instance>
+      <name>Projects</name>
+      <link>index.php?Page_Type=Projects</link>
+    </Projects>
+
+    <roc>
+      <show_on_instance>all</show_on_instance>
+      <name>NGIs</name>
+      <link>index.php?Page_Type=NGIs</link>
+    </roc>
+    
+    <Sites>
+      <show_on_instance>all</show_on_instance>
+      <name>Sites</name>
+      <link>index.php?Page_Type=Sites</link>
+    </Sites>
+  
+    <ServiceGroups>
+      <show_on_instance>all</show_on_instance>
+      <name>Service Groups</name>
+      <link>index.php?Page_Type=Service_Groups</link>
+    </ServiceGroups>
+    
+    <Services>
+      <show_on_instance>all</show_on_instance>
+      <name>Services</name>
+      <link>index.php?Page_Type=Services</link>
+    </Services>
+
+    <spacer>
+      <spacer>Add</spacer>
+	  <show_on_instance>write_enabled</show_on_instance>
+    </spacer>
+    
+    <Add_site>
+      <show_on_instance>write_enabled</show_on_instance>
+      <name>Add Site</name>
+      <link>index.php?Page_Type=Add_Site</link>
+    </Add_site>
+    
+    <Add_Service_Group>
+      <show_on_instance>write_enabled</show_on_instance>
+      <name>Add Service Group</name>
+      <link>index.php?Page_Type=Add_Service_Group</link>
+    </Add_Service_Group>
+	    
+     <Add_service>
+      <show_on_instance>write_enabled</show_on_instance>
+      <name>Add Service</name>
+      <link>index.php?Page_Type=Add_Service</link>
+    </Add_service>
+    
+    <Add_downtime>
+      <show_on_instance>write_enabled</show_on_instance>
+      <name>Add Downtime</name>
+      <link>index.php?Page_Type=Add_Downtime</link>
+    </Add_downtime>
+    
+    <spacer>
+      <spacer>Downtimes</spacer>
+      <show_on_instance>all</show_on_instance>
+    </spacer>
+	
+
+    <!--<current_downtimes>
+	  <show_on_instance>all</show_on_instance>
+      <name>Recent &amp; Planned</name>
+      <link>http://operations-portal.in2p3.fr/index.php/dashboard/do</link>
+	</current_downtimes>-->
+
+	<current_downtimes>
+	  <show_on_instance>all</show_on_instance>
+      <name>Active &amp; Imminent</name>
+	  <link>index.php?Page_Type=Downtimes_Overview</link>
+	</current_downtimes>
+	
+   <spacer>
+      <spacer>About GOCDB5</spacer>
+      <show_on_instance>all</show_on_instance>
+    </spacer>
+	
+    <Help_And_Contact>
+	  <show_on_instance>all</show_on_instance>
+      <name>Doc, Help &amp; Support</name>
+      <link>index.php?Page_Type=Static_HTML&amp;Page=Help_And_Contact</link>
+    </Help_And_Contact>
+
+   <spacer>
+      <spacer>GOCDB Admin</spacer>
+      <show_on_instance>admin</show_on_instance>
+    </spacer>
+
+  <add_ngi>
+	  <show_on_instance>admin</show_on_instance>
+      <name>Add NGI</name>
+      <link>index.php?Page_Type=Admin_Add_NGI</link>
+   </add_ngi>
+   
+   <add_project>
+	  <show_on_instance>admin</show_on_instance>
+      <name>Add Project</name>
+      <link>index.php?Page_Type=Admin_Add_Project</link>
+   </add_project>
+        	
+   <move_service_end_point>
+	  <show_on_instance>admin</show_on_instance>
+      <name>Move Service</name>
+      <link>index.php?Page_Type=Admin_Move_SEP</link>
+    </move_service_end_point>
+
+    <move_site>
+	  <show_on_instance>admin</show_on_instance>
+      <name>Move Site</name>
+      <link>index.php?Page_Type=Admin_Move_Site</link>
+    </move_site>
+    
+    <scopes>
+	  <show_on_instance>admin</show_on_instance>
+      <name>Scopes</name>
+      <link>index.php?Page_Type=Admin_Scopes</link>
+    </scopes>
+    
+    <service_types>
+	  <show_on_instance>admin</show_on_instance>
+      <name>Service Types</name>
+      <link>index.php?Page_Type=Admin_Service_Types</link>
+    </service_types>
+    
+    <users>
+	  <show_on_instance>admin</show_on_instance>
+      <name>Users</name>
+      <link>index.php?Page_Type=Admin_Users</link>        
+    </users>
+
+  </main_menu>
+</menus>

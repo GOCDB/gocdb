@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="BETA" type="xs:string" />
+
+  <xs:element name="CORE" type="xs:string" />
+
+  <xs:element name="COUNTRY_CODE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="COUNTRY_NAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+  
+  <xs:element name="GOCDB_PORTAL_URL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+  
+  <xs:element name="HOST_ARCH" type="xs:string" />
+
+  <xs:element name="HOST_OS" type="xs:string" />
+  
+  <xs:element name="HOSTDN">
+	<xs:complexType mixed="true"/>
+  </xs:element>
+  
+  <xs:element name="HOSTNAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="IN_PRODUCTION">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="IP">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="NODE_MONITORED">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="EMAIL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+  
+  <xs:element name="PRIMARY_KEY">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="SERVICE_ENDPOINT" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ROC_NAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SERVICE_ENDPOINT">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="PRIMARY_KEY" />
+        <xs:element ref="HOSTNAME" />
+		<xs:element ref="GOCDB_PORTAL_URL"/>
+        <xs:element ref="HOSTDN" />
+		<xs:element ref="HOST_OS" />
+        <xs:element ref="HOST_ARCH" />
+        <xs:element ref="BETA" />
+        <xs:element ref="SERVICE_TYPE" />
+        <xs:element ref="IP" />
+        <xs:element ref="CORE" />
+        <xs:element ref="IN_PRODUCTION" />
+        <xs:element ref="NODE_MONITORED" />
+        <xs:element ref="SITENAME" />
+        <xs:element ref="COUNTRY_NAME" />
+        <xs:element ref="COUNTRY_CODE" />
+        <xs:element ref="ROC_NAME" />
+      </xs:sequence>
+      <xs:attribute name="PRIMARY_KEY" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SERVICE_TYPE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SITENAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+</xs:schema>

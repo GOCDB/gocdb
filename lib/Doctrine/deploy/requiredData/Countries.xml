@@ -1,0 +1,1648 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+  <group grid_id="0">
+    <name key="primary">BA</name>
+    <description>Bosnia and Herzegovina</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NZ</name>
+    <description>New Zealand</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ID</name>
+    <description>Indonesia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MD</name>
+    <description>Moldova</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AM</name>
+    <description>Armenia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AL</name>
+    <description>Albania</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GE</name>
+    <description>Georgia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ME</name>
+    <description>Montenegro</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">IR</name>
+    <description>Iran</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">UA</name>
+    <description>Ukraine</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MY</name>
+    <description>Malaysia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SN</name>
+    <description>Senegal</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ZA</name>
+    <description>South Africa</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BY</name>
+    <description>Belarus</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AZ</name>
+    <description>Azerbaijan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AT</name>
+    <description>Austria</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">HU</name>
+    <description>Hungary</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">IE</name>
+    <description>Ireland</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">IL</name>
+    <description>Israel</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">IT</name>
+    <description>Italy</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">JP</name>
+    <description>Japan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NL</name>
+    <description>Netherlands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PK</name>
+    <description>Pakistan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PL</name>
+    <description>Poland</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PT</name>
+    <description>Portugal</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PR</name>
+    <description>Puerto Rico</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BG</name>
+    <description>Bulgaria</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">RO</name>
+    <description>Romania</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">RU</name>
+    <description>Russia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SK</name>
+    <description>Slovakia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ES</name>
+    <description>Spain</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SE</name>
+    <description>Sweden</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CH</name>
+    <description>Switzerland</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TW</name>
+    <description>Taiwan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GB</name>
+    <description>United Kingdom</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">FR</name>
+    <description>France</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GR</name>
+    <description>Greece</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">DE</name>
+    <description>Germany</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CZ</name>
+    <description>Czech Republic</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">US</name>
+    <description>United States of America</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">IN</name>
+    <description>India</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CA</name>
+    <description>Canada</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BR</name>
+    <description>Brazil</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SG</name>
+    <description>Singapore</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KR</name>
+    <description>South Korea</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BE</name>
+    <description>Belgium</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SI</name>
+    <description>Slovenia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">RS</name>
+    <description>Serbia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">HR</name>
+    <description>Croatia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TR</name>
+    <description>Turkey</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NO</name>
+    <description>Norway</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CN</name>
+    <description>China</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">EE</name>
+    <description>Estonia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LV</name>
+    <description>Latvia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LT</name>
+    <description>Lithuania</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AU</name>
+    <description>Australia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">DK</name>
+    <description>Denmark</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">FI</name>
+    <description>Finland</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CY</name>
+    <description>Cyprus</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MK</name>
+    <description>Republic of Macedonia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CO</name>
+    <description>Colombia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">VN</name>
+    <description>Vietnam</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PH</name>
+    <description>Philippines</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MA</name>
+    <description>Morocco</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MX</name>
+    <description>Mexico</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AR</name>
+    <description>Argentina</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BZ</name>
+    <description>Belize</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BO</name>
+    <description>Bolivia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CL</name>
+    <description>Chile</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CR</name>
+    <description>Costa Rica</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CU</name>
+    <description>Cuba</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">DO</name>
+    <description>Dominican Republic</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">EC</name>
+    <description>Ecuador</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SV</name>
+    <description>El Salvador</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GT</name>
+    <description>Guatemala</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">HT</name>
+    <description>Haiti</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">HN</name>
+    <description>Honduras</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NI</name>
+    <description>Nicaragua</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PA</name>
+    <description>Panama</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PY</name>
+    <description>Paraguay</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PE</name>
+    <description>Peru</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">UY</name>
+    <description>Uruguay</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">VE</name>
+    <description>Venezuela</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TH</name>
+    <description>Thailand</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+    <group grid_id="0">
+    <name key="primary">AF</name>
+    <description>Afghanistan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">DZ</name>
+    <description>Algeria</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AS</name>
+    <description>American Samoa</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AD</name>
+    <description>Andorra</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AO</name>
+    <description>Angola</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AI</name>
+    <description>Anguilla</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AQ</name>
+    <description>Antarctica</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AG</name>
+    <description>Antigua and Barbuda</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AW</name>
+    <description>Aruba</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BS</name>
+    <description>Bahamas</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BH</name>
+    <description>Bahrain</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BD</name>
+    <description>Bangladesh</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BB</name>
+    <description>Barbados</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BJ</name>
+    <description>Benin</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BM</name>
+    <description>Bermuda</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BT</name>
+    <description>Bhutan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BW</name>
+    <description>Botswana</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">IO</name>
+    <description>British Indian Ocean Territory</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">VG</name>
+    <description>British Virgin Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BN</name>
+    <description>Brunei</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BF</name>
+    <description>Burkina Faso</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MM</name>
+    <description>Burma (Myanmar)</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BI</name>
+    <description>Burundi</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KH</name>
+    <description>Cambodia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CM</name>
+    <description>Cameroon</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CV</name>
+    <description>Cape Verde</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KY</name>
+    <description>Cayman Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CF</name>
+    <description>Central African Republic</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TD</name>
+    <description>Chad</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CX</name>
+    <description>Christmas Island</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CC</name>
+    <description>Cocos (Keeling) Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KM</name>
+    <description>Comoros</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CK</name>
+    <description>Cook Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CD</name>
+    <description>Democratic Republic of the Congo</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">DJ</name>
+    <description>Djibouti</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">DM</name>
+    <description>Dominica</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">EG</name>
+    <description>Egypt</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GQ</name>
+    <description>Equatorial Guinea</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ER</name>
+    <description>Eritrea</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ET</name>
+    <description>Ethiopia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">FK</name>
+    <description>Falkland Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">FO</name>
+    <description>Faroe Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">FJ</name>
+    <description>Fiji</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PF</name>
+    <description>French Polynesia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GA</name>
+    <description>Gabon</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GM</name>
+    <description>Gambia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ip</name>
+    <description>Gaza St</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GH</name>
+    <description>Ghana</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GI</name>
+    <description>Gibraltar</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GL</name>
+    <description>Greenland</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GD</name>
+    <description>Grenada</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GU</name>
+    <description>Guam</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GN</name>
+    <description>Guinea</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GW</name>
+    <description>Guinea-Bissau</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">GY</name>
+    <description>Guyana</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">VA</name>
+    <description>Holy See (Vatican City)</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">HK</name>
+    <description>Hong Kong</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">IS</name>
+    <description>Iceland</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">IQ</name>
+    <description>Iraq</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">IM</name>
+    <description>Isle of Man</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CI</name>
+    <description>Ivory Coast</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">JM</name>
+    <description>Jamaica</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">JE</name>
+    <description>Jersey</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">JO</name>
+    <description>Jordan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KZ</name>
+    <description>Kazakhstan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KE</name>
+    <description>Kenya</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KI</name>
+    <description>Kiribati</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">vo</name>
+    <description>Kos</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KW</name>
+    <description>Kuwait</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KG</name>
+    <description>Kyrgyzstan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LA</name>
+    <description>Laos</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LB</name>
+    <description>Lebanon</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LS</name>
+    <description>Lesotho</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LR</name>
+    <description>Liberia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LY</name>
+    <description>Libya</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LI</name>
+    <description>Liechtenstein</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LU</name>
+    <description>Luxembourg</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MO</name>
+    <description>Macau</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MG</name>
+    <description>Madagascar</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MW</name>
+    <description>Malawi</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MV</name>
+    <description>Maldives</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ML</name>
+    <description>Mali</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MT</name>
+    <description>Malta</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MH</name>
+    <description>Marshall Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MR</name>
+    <description>Mauritania</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MU</name>
+    <description>Mauritius</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">YT</name>
+    <description>Mayotte</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">FM</name>
+    <description>Micronesia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MC</name>
+    <description>Monaco</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MN</name>
+    <description>Mongolia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MS</name>
+    <description>Montserrat</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MZ</name>
+    <description>Mozambique</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NA</name>
+    <description>Namibia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NR</name>
+    <description>Nauru</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NP</name>
+    <description>Nepal</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AN</name>
+    <description>Netherlands Antilles</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NC</name>
+    <description>New Caledonia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NE</name>
+    <description>Niger</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NG</name>
+    <description>Nigeria</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">NU</name>
+    <description>Niue</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KP</name>
+    <description>North Korea</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MP</name>
+    <description>Northern Mariana Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">OM</name>
+    <description>Oman</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PW</name>
+    <description>Palau</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PG</name>
+    <description>Papua New Guinea</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PN</name>
+    <description>Pitcairn Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">QA</name>
+    <description>Qatar</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">CG</name>
+    <description>Republic of the Congo</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">RW</name>
+    <description>Rwanda</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">BL</name>
+    <description>Saint Barthelemy</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SH</name>
+    <description>Saint Helena</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">KN</name>
+    <description>Saint Kitts and Nevis</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LC</name>
+    <description>Saint Lucia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">MF</name>
+    <description>Saint Martin</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">PM</name>
+    <description>Saint Pierre and Miquelon</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">VC</name>
+    <description>Saint Vincent and the Grenadines</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">WS</name>
+    <description>Samoa</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SM</name>
+    <description>San Marino</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ST</name>
+    <description>Sao Tome and Principe</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SA</name>
+    <description>Saudi Arabia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SC</name>
+    <description>Seychelles</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SL</name>
+    <description>Sierra Leone</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SB</name>
+    <description>Solomon Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SO</name>
+    <description>Somalia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">LK</name>
+    <description>Sri Lanka</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SD</name>
+    <description>Sudan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SR</name>
+    <description>Suriname</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SJ</name>
+    <description>Svalbard</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SZ</name>
+    <description>Swaziland</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">SY</name>
+    <description>Syria</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TJ</name>
+    <description>Tajikistan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TZ</name>
+    <description>Tanzania</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TL</name>
+    <description>Timor-Leste</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TG</name>
+    <description>Togo</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TK</name>
+    <description>Tokelau</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TO</name>
+    <description>Tonga</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TT</name>
+    <description>Trinidad and Tobago</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TN</name>
+    <description>Tunisia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TM</name>
+    <description>Turkmenistan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TC</name>
+    <description>Turks and Caicos Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">TV</name>
+    <description>Tuvalu</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">UG</name>
+    <description>Uganda</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">AE</name>
+    <description>United Arab Emirates</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">VI</name>
+    <description>US Virgin Islands</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">UZ</name>
+    <description>Uzbekistan</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">VU</name>
+    <description>Vanuatu</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">WF</name>
+    <description>Wallis and Futuna</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">EH</name>
+    <description>Western Sahara</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">YE</name>
+    <description>Yemen</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ZM</name>
+    <description>Zambia</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+  <group grid_id="0">
+    <name key="primary">ZW</name>
+    <description>Zimbabwe</description>
+    <group_type grid_id="0">
+      <Name key="primary">Country</Name>
+    </group_type>
+  </group>
+</results>

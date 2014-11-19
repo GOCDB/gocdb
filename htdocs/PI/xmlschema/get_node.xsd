@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="AFFILIATION">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="HOST_SITE" />
+        <xs:element ref="SITE_CERTIFICATION_STATUS" />
+        <xs:element ref="SITE_PRODUCTION_INFRASTRUCTURE" />
+        <xs:element ref="COUNTRY" />
+        <xs:element ref="ROC" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="COUNTRY">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="HOST_SITE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="HOSTDN">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="HOSTNAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="IN_PRODUCTION">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="IP">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="IS_MONITORED">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="NODE">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="HOSTNAME" />
+        <xs:element ref="NODE_DESCRIPTION" />
+        <xs:element ref="IP" />
+        <xs:element ref="HOSTDN" />
+        <xs:element ref="IN_PRODUCTION" />
+        <xs:element ref="IS_MONITORED" />
+        <xs:element ref="AFFILIATION" />
+      </xs:sequence>
+      <xs:attribute name="HOSTNAME" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="NODE_DESCRIPTION" type="xs:string" />
+
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="NODE" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ROC">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SITE_CERTIFICATION_STATUS">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SITE_PRODUCTION_INFRASTRUCTURE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+</xs:schema>

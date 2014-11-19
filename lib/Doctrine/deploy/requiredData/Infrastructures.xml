@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+    <group grid_id="0">
+        <name key="primary">Production</name>
+        <group_type grid_id="0">
+            <Name key="primary">PRODUCTION_STATUS</Name>
+        </group_type>
+    </group>
+    <group grid_id="0">
+        <name key="primary">Test</name>
+        <group_type grid_id="0">
+            <Name key="primary">PRODUCTION_STATUS</Name>
+        </group_type>
+    </group>
+	<group grid_id="0">
+        <name key="primary">SC</name>
+        <group_type grid_id="0">
+            <Name key="primary">PRODUCTION_STATUS</Name>
+        </group_type>
+    </group>
+	<group grid_id="0">
+        <name key="primary">PPS</name>
+        <group_type grid_id="0">
+            <Name key="primary">PRODUCTION_STATUS</Name>
+        </group_type>
+    </group>
+</results>
+

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ROOT">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="SERVICE_TYPE" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SERVICE_TYPE">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="SERVICE_TYPE_NAME" />
+        <xs:element ref="SERVICE_TYPE_DESC" />
+      </xs:sequence>
+      <xs:attribute name="TYPE_ID" type="xs:NMTOKEN" use="optional" />
+	  <xs:attribute name="PRIMARY_KEY" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SERVICE_TYPE_DESC">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SERVICE_TYPE_NAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+</xs:schema>

@@ -1,0 +1,2918 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+    <site>
+        <name>NGI_DE_SERVICES</name>
+        <cert_status>Candidate</cert_status>
+        <cert_date>29-JAN-13 05.13.08 PM</cert_date>
+    </site>
+    <site>
+        <name>LUH</name>
+        <cert_status>Candidate</cert_status>
+        <cert_date>15-MAY-13 02.37.40 PM</cert_date>
+    </site>
+    <site>
+        <name>BY-BSU</name>
+        <cert_status>Candidate</cert_status>
+        <cert_date>12-OCT-11 12.41.25 PM</cert_date>
+    </site>
+    <site>
+        <name>NGI_BY_SERVICES</name>
+        <cert_status>Candidate</cert_status>
+        <cert_date>21-JAN-13 09.55.44 PM</cert_date>
+    </site>
+    <site>
+        <name>GRID-UNISON</name>
+        <cert_status>Candidate</cert_status>
+        <cert_date>05-JUN-12 06.42.11 PM</cert_date>
+    </site>
+    <site>
+        <name>CICESE</name>
+        <cert_status>Candidate</cert_status>
+        <cert_date>09-MAY-12 04.39.33 PM</cert_date>
+    </site>
+    <site>
+        <name>IN-DAE-VECC-EUINDIAGRID</name>
+        <cert_status>Candidate</cert_status>
+        <cert_date>21-JUL-11 03.11.27 AM</cert_date>
+    </site>
+    <site>
+        <name>MY-NM-NEUTRON</name>
+        <cert_status>Candidate</cert_status>
+        <cert_date>06-MAY-13 07.34.37 AM</cert_date>
+    </site>
+    <site>
+        <name>ReCaS-Bari</name>
+        <cert_status>Candidate</cert_status>
+        <cert_date>29-AUG-13 09.04.43 AM</cert_date>
+    </site>
+    <site>
+        <name>AL-01-FIT</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>IL-TAU-CS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-MAY-11 11.37.06 AM</cert_date>
+    </site>
+    <site>
+        <name>IL-BGU</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-MAY-11 11.35.12 AM</cert_date>
+    </site>
+    <site>
+        <name>IL-IUCC</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-MAY-11 11.36.18 AM</cert_date>
+    </site>
+    <site>
+        <name>TAU-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.39.58 PM</cert_date>
+    </site>
+    <site>
+        <name>LCG-IL-OU</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-MAY-11 11.37.35 AM</cert_date>
+    </site>
+    <site>
+        <name>TECHNION-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.24 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-12-ICI</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>BG07-EDU</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-DEC-12 07.33.29 AM</cert_date>
+    </site>
+    <site>
+        <name>BG04-ACAD</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>04-SEP-12 12.51.04 PM</cert_date>
+    </site>
+    <site>
+        <name>MD-01-TUM</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>UNI-KARLSRUHE</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>29-NOV-12 10.02.44 AM</cert_date>
+    </site>
+    <site>
+        <name>TR-09-ITU</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>15-FEB-11 02.43.21 PM</cert_date>
+    </site>
+    <site>
+        <name>TR-04-ERCIYES</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>03-APR-13 09.52.23 AM</cert_date>
+    </site>
+    <site>
+        <name>TR-05-BOUN</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>16-OCT-12 08.07.03 AM</cert_date>
+    </site>
+    <site>
+        <name>TR-08-CUKUROVA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.05 PM</cert_date>
+    </site>
+    <site>
+        <name>TR-02-ATATURK</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>03-APR-13 09.52.47 AM</cert_date>
+    </site>
+    <site>
+        <name>IISAS-GILDA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>03-DEC-10 12.48.38 PM</cert_date>
+    </site>
+    <site>
+        <name>AGH-ICSR</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>23-MAY-11 06.19.38 AM</cert_date>
+    </site>
+    <site>
+        <name>WCSS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.39.57 PM</cert_date>
+    </site>
+    <site>
+        <name>CYFRONET-IA64</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.12 PM</cert_date>
+    </site>
+    <site>
+        <name>PSK_KIELCE</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>07-JUN-11 06.18.55 AM</cert_date>
+    </site>
+    <site>
+        <name>PSNC-GILDA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>31-MAY-11 12.01.55 PM</cert_date>
+    </site>
+    <site>
+        <name>WARSAW-EGEE</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JUN-12 09.00.47 AM</cert_date>
+    </site>
+    <site>
+        <name>PEARL-AMU</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>15-DEC-11 08.45.52 AM</cert_date>
+    </site>
+    <site>
+        <name>ru-Chernogolovka-IPCP-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>ru-Moscow-MEPHI-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>RU-ISA-CGTDC</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>20-MAR-13 07.38.53 AM</cert_date>
+    </site>
+    <site>
+        <name>HPBR-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.39.53 PM</cert_date>
+    </site>
+    <site>
+        <name>USCMS-FNAL-WC1</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.06 PM</cert_date>
+    </site>
+    <site>
+        <name>BNL-ATLAS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.07 PM</cert_date>
+    </site>
+    <site>
+        <name>YerPhI</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.15 PM</cert_date>
+    </site>
+    <site>
+        <name>BEIJING-CNIC-LCG2-IA64</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.22 PM</cert_date>
+    </site>
+    <site>
+        <name>CARLETONU-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.25 PM</cert_date>
+    </site>
+    <site>
+        <name>CERN-CIC</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.39.53 PM</cert_date>
+    </site>
+    <site>
+        <name>HPTC-LCG2ia64</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.39.59 PM</cert_date>
+    </site>
+    <site>
+        <name>TIFR-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.00 PM</cert_date>
+    </site>
+    <site>
+        <name>HPTC-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.10 PM</cert_date>
+    </site>
+    <site>
+        <name>TIFR-CMS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.10 PM</cert_date>
+    </site>
+    <site>
+        <name>UIOWA-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.32 PM</cert_date>
+    </site>
+    <site>
+        <name>UFL-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.32 PM</cert_date>
+    </site>
+    <site>
+        <name>KTU-BG-GLITE</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>29-NOV-11 10.48.31 AM</cert_date>
+    </site>
+    <site>
+        <name>PDC</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>17-MAY-11 10.15.29 AM</cert_date>
+    </site>
+    <site>
+        <name>KTU-ELEN-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>20-MAY-11 10.38.33 AM</cert_date>
+    </site>
+    <site>
+        <name>UiB</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-MAY-11 12.59.11 PM</cert_date>
+    </site>
+    <site>
+        <name>Turing</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-MAY-11 01.45.21 PM</cert_date>
+    </site>
+    <site>
+        <name>LEI-GLITE</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>UT_CS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-MAY-11 01.48.30 PM</cert_date>
+    </site>
+    <site>
+        <name>HPC2N</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>03-JAN-11 10.29.53 AM</cert_date>
+    </site>
+    <site>
+        <name>IMCSUL-INF</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>08-APR-11 09.41.22 AM</cert_date>
+    </site>
+    <site>
+        <name>VGTU-TEST-gLite</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>20-MAY-11 09.45.46 AM</cert_date>
+    </site>
+    <site>
+        <name>AEGIS10-VINCA-CMS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>20-MAY-11 11.11.51 AM</cert_date>
+    </site>
+    <site>
+        <name>AEGIS07-IPB-ATLAS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>21-JAN-13 02.41.53 PM</cert_date>
+    </site>
+    <site>
+        <name>CGG-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>10-DEC-10 06.18.37 PM</cert_date>
+    </site>
+    <site>
+        <name>IPSL-IPGP-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-OCT-11 01.36.53 PM</cert_date>
+    </site>
+    <site>
+        <name>ESRF</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>15-NOV-10 05.57.23 PM</cert_date>
+    </site>
+    <site>
+        <name>IBCP-GBIO</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>24-JUN-13 12.43.08 PM</cert_date>
+    </site>
+    <site>
+        <name>UFRJ-IF</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>28-MAR-13 02.26.42 PM</cert_date>
+    </site>
+    <site>
+        <name>LNCC-COMCIDIS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>NACAD_UFRJ</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>VN-IOIT-HN</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>TW-NCHU-AAC-01</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>VN-IOIT-KEYLAB</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>TW-NIU-EECS-01</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>18-JUL-11 09.39.01 AM</cert_date>
+    </site>
+    <site>
+        <name>TW-NTCU-HPC-01</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>18-JUL-11 09.42.20 AM</cert_date>
+    </site>
+    <site>
+        <name>VN-IOIT-DCNET</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>MY-UPM-UGRID-01</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>MY-UPM-FSKTM-01</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>VN-IOIT-DFCK</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>PAKGRID3-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>PH-ATENEO</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>PAKGRID-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>VN-IFI-PPS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>VN-HPCC-HUT-HN</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>TH-SUT-NPP</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>CN-BEIJING-PKU</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>LSG-UU</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>14-MAR-12 02.30.27 PM</cert_date>
+    </site>
+    <site>
+        <name>HTC-BIGGRID</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>23-OCT-12 05.12.33 PM</cert_date>
+    </site>
+    <site>
+        <name>HR-01-RBI (closed)</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.13 PM</cert_date>
+    </site>
+    <site>
+        <name>ClusterUL</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>28-SEP-10 05.54.09 PM</cert_date>
+    </site>
+    <site>
+        <name>CIN2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>RedIRIS_GILDA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>20-MAY-10 10.30.10 AM</cert_date>
+    </site>
+    <site>
+        <name>UMinho-CP</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>11-MAR-13 03.22.53 PM</cert_date>
+    </site>
+    <site>
+        <name>UNICAN-IMATH</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.36 PM</cert_date>
+    </site>
+    <site>
+        <name>DI-UMinho</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>30-SEP-10 04.14.32 PM</cert_date>
+    </site>
+    <site>
+        <name>e-ca-iaa</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>18-AUG-10 08.30.07 AM</cert_date>
+    </site>
+    <site>
+        <name>CNB-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>07-DEC-11 04.06.51 PM</cert_date>
+    </site>
+    <site>
+        <name>RC-GISELA-CETA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>18-JUN-12 11.04.50 AM</cert_date>
+    </site>
+    <site>
+        <name>ARAGRID-HUESCA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-DEC-11 03.19.14 PM</cert_date>
+    </site>
+    <site>
+        <name>ARAGRID-TERUEL</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-DEC-11 03.19.42 PM</cert_date>
+    </site>
+    <site>
+        <name>ngi-ceta-ciemat</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>18-JUN-12 11.04.41 AM</cert_date>
+    </site>
+    <site>
+        <name>BIFI-IBERGRID</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>10-JAN-13 11.12.53 AM</cert_date>
+    </site>
+    <site>
+        <name>SGAI-CSIC</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>27-MAY-13 11.49.50 AM</cert_date>
+    </site>
+    <site>
+        <name>CSIC-BELLATERRA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>SLING-Test</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>prague_cesnet_lcg2_cert</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.39.57 PM</cert_date>
+    </site>
+    <site>
+        <name>prague_cesnet_pt</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.21 PM</cert_date>
+    </site>
+    <site>
+        <name>SDU-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>Umontreal-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>02-FEB-11 12.36.38 AM</cert_date>
+    </site>
+    <site>
+        <name>TORONTO-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>29-JUN-11 11.34.45 PM</cert_date>
+    </site>
+    <site>
+        <name>ALBERTA-LCG2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-JUL-11 12.19.22 AM</cert_date>
+    </site>
+    <site>
+        <name>PPS-TRIUMF</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>01-MAR-12 11.15.22 AM</cert_date>
+    </site>
+    <site>
+        <name>GR-02-UoM</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.28 PM</cert_date>
+    </site>
+    <site>
+        <name>GR-03-HEPNTUA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>31-MAY-11 01.25.01 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-LNS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>27-JUN-12 07.37.06 AM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-ENEA-GRID</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>23-DEC-11 11.36.07 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-MILANO</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>16-JUL-10 12.00.00 AM</cert_date>
+    </site>
+    <site>
+        <name>ITB-BARI</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>30-JUN-10 11.40.16 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-FIRENZE</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>30-JUN-10 11.40.14 AM</cert_date>
+    </site>
+    <site>
+        <name>SPACI-LECCE-IA64</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>30-JUN-10 12.10.08 PM</cert_date>
+    </site>
+    <site>
+        <name>SPACI-NAPOLI-IA64</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>10-MAY-11 10.51.11 AM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-COMETA-ING-MESSINA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>03-JUN-13 09.13.19 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-NAPOLI</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>14-OCT-11 01.34.13 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-ROMA1-TEO</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>27-SEP-11 08.51.47 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-BOLOGNA-CMS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>09-MAY-11 04.02.42 PM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-COMETA-UNICT-DIIT</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>18-JAN-13 08.32.19 AM</cert_date>
+    </site>
+    <site>
+        <name>CESIC-UNICAL</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>18-FEB-13 09.32.23 AM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-CYBERSAR-CAGLIARI</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>13-JUL-12 09.02.25 AM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-COMETA-UNIPA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>18-JAN-13 08.31.12 AM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-COMETA-UNICT-DMI</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>03-JUN-13 01.05.06 PM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-SPACI-LECCE</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>23-DEC-11 11.36.30 AM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-CYBERSAR-PORTOCONTE</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>11-APR-12 12.13.29 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-PADOVA-CMS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>09-MAY-11 03.55.40 PM</cert_date>
+    </site>
+    <site>
+        <name>GILDA-VEGA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>10-MAY-11 10.56.09 AM</cert_date>
+    </site>
+    <site>
+        <name>INAF-TRIESTE</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>02-JUL-10 07.30.07 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-CASCINA</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>10-MAY-11 10.53.52 AM</cert_date>
+    </site>
+    <site>
+        <name>SISSA-Trieste</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>29-OCT-12 11.22.25 AM</cert_date>
+    </site>
+    <site>
+        <name>ESA-ESRIN</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>10-JUN-11 09.32.17 AM</cert_date>
+    </site>
+    <site>
+        <name>oxford-ngs2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>28-AUG-13 11.58.27 AM</cert_date>
+    </site>
+    <site>
+        <name>NGS-GLASGOW</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>09-AUG-13 02.11.07 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-WTSI</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-JAN-12 05.51.29 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-BRISTOL</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>27-JUL-11 02.02.03 PM</cert_date>
+    </site>
+    <site>
+        <name>KEELE-NGS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>09-AUG-13 11.44.42 AM</cert_date>
+    </site>
+    <site>
+        <name>GILDA-NeSC</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>29-NOV-11 10.51.40 AM</cert_date>
+    </site>
+    <site>
+        <name>NGS-SOUTHAMPTON</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-JAN-12 05.49.34 PM</cert_date>
+    </site>
+    <site>
+        <name>hp-bristol</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.17 PM</cert_date>
+    </site>
+    <site>
+        <name>scotgrid-gla</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.19 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-LANCASTER</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>27-JUL-11 02.31.48 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-EDINBURGH</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>09-AUG-13 02.11.13 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-SHEFFIELD</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>28-AUG-13 02.45.09 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-CARDIFF</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>09-AUG-13 11.48.57 AM</cert_date>
+    </site>
+    <site>
+        <name>NGS-READING</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>09-AUG-13 11.47.06 AM</cert_date>
+    </site>
+    <site>
+        <name>NGS-LEEDS</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>09-AUG-13 11.47.17 AM</cert_date>
+    </site>
+    <site>
+        <name>manchester-ngs2</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>28-AUG-13 03.08.39 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-HPCX</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>27-JUL-11 02.00.09 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-IMPERIAL</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>21-NOV-11 11.36.07 AM</cert_date>
+    </site>
+    <site>
+        <name>NGS-BELFAST</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>19-JAN-12 05.44.36 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-DURHAM</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>09-AUG-13 11.48.55 AM</cert_date>
+    </site>
+    <site>
+        <name>UCL-CCC</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.34 PM</cert_date>
+    </site>
+    <site>
+        <name>ScotGRID-Edinburgh</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.35 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-LT2-IC-LeSC</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>12-JAN-10 01.40.18 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-LT2-UCL-CENTRAL</name>
+        <cert_status>Closed</cert_status>
+        <cert_date>29-JUL-10 03.40.09 PM</cert_date>
+    </site>
+    <site>
+        <name>ZA-UJ</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-JUL-13 08.24.28 PM</cert_date>
+    </site>
+    <site>
+        <name>ZA-WITS-CORE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>28-AUG-13 12.16.13 PM</cert_date>
+    </site>
+    <site>
+        <name>ZA-UFS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>02-SEP-13 04.16.57 PM</cert_date>
+    </site>
+    <site>
+        <name>ZA-UCT-ICTS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>02-SEP-13 12.04.16 PM</cert_date>
+    </site>
+    <site>
+        <name>ZA-CHPC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>02-SEP-13 04.17.40 PM</cert_date>
+    </site>
+    <site>
+        <name>ZA-MERAKA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-JUL-13 08.37.32 AM</cert_date>
+    </site>
+    <site>
+        <name>GE-01-GRENA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>19-APR-10 12.30.08 PM</cert_date>
+    </site>
+    <site>
+        <name>MREN-01-CIS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>08-JUN-10 03.10.13 PM</cert_date>
+    </site>
+    <site>
+        <name>TECHNION-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.35 PM</cert_date>
+    </site>
+    <site>
+        <name>IL-TAU-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.35 PM</cert_date>
+    </site>
+    <site>
+        <name>WEIZMANN-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.37 PM</cert_date>
+    </site>
+    <site>
+        <name>NGI_IL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>15-NOV-12 06.44.23 AM</cert_date>
+    </site>
+    <site>
+        <name>NGI_IL_MED1</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>29-FEB-12 12.52.17 PM</cert_date>
+    </site>
+    <site>
+        <name>IL_IUCC_IG</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>29-FEB-12 12.04.25 PM</cert_date>
+    </site>
+    <site>
+        <name>IL_COMP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>25-FEB-13 08.27.57 AM</cert_date>
+    </site>
+    <site>
+        <name>HRL_KZ</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>02-MAY-13 10.35.21 AM</cert_date>
+    </site>
+    <site>
+        <name>CY-01-KIMON</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.38 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-09-UTCN</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.11 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-15-NIPNE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>15-APR-10 10.30.06 AM</cert_date>
+    </site>
+    <site>
+        <name>RO-01-ICI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.56 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-11-NIPNE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.08 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-07-NIPNE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.09 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-16-UAIC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.13 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-14-ITIM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.37 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-02-NIPNE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>07-APR-11 04.28.49 PM</cert_date>
+    </site>
+    <site>
+        <name>NIHAM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>13-AUG-10 04.50.10 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-13-ISS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.33 PM</cert_date>
+    </site>
+    <site>
+        <name>UNIGE-DPNC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.16 PM</cert_date>
+    </site>
+    <site>
+        <name>UNIBE-LHEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>23-MAR-11 07.52.05 AM</cert_date>
+    </site>
+    <site>
+        <name>UNIBE-ID</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>30-OCT-12 04.05.05 PM</cert_date>
+    </site>
+    <site>
+        <name>CSCS-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.53 PM</cert_date>
+    </site>
+    <site>
+        <name>T3_CH_PSI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.51 PM</cert_date>
+    </site>
+    <site>
+        <name>AM-04-YERPHI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>27-AUG-13 10.54.26 AM</cert_date>
+    </site>
+    <site>
+        <name>AM-02-SEUA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>27-AUG-13 10.55.12 AM</cert_date>
+    </site>
+    <site>
+        <name>BG03-NGCC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.00 PM</cert_date>
+    </site>
+    <site>
+        <name>BG05-SUGrid</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.31 PM</cert_date>
+    </site>
+    <site>
+        <name>BG01-IPP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.18 PM</cert_date>
+    </site>
+    <site>
+        <name>MD-04-RENAM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>10-MAY-13 04.09.16 PM</cert_date>
+    </site>
+    <site>
+        <name>MD-02-IMI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>23-MAR-12 04.53.37 PM</cert_date>
+    </site>
+    <site>
+        <name>NGI-MD-SERVICES</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>07-MAR-13 09.56.17 AM</cert_date>
+    </site>
+    <site>
+        <name>BA-01-ETFBL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>16-JUN-10 01.20.15 PM</cert_date>
+    </site>
+    <site>
+        <name>MK-01-UKIM_II</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.33 PM</cert_date>
+    </site>
+    <site>
+        <name>MK-02-ETF</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-APR-10 02.20.07 PM</cert_date>
+    </site>
+    <site>
+        <name>MK-03-FINKI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>14-MAR-12 09.33.21 AM</cert_date>
+    </site>
+    <site>
+        <name>UNI-FREIBURG</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.27 PM</cert_date>
+    </site>
+    <site>
+        <name>FZK-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.29 PM</cert_date>
+    </site>
+    <site>
+        <name>DESY-HH</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.02 PM</cert_date>
+    </site>
+    <site>
+        <name>MPPMU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.03 PM</cert_date>
+    </site>
+    <site>
+        <name>ITWM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.18 PM</cert_date>
+    </site>
+    <site>
+        <name>UNI-DORTMUND</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.20 PM</cert_date>
+    </site>
+    <site>
+        <name>RWTH-Aachen</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.21 PM</cert_date>
+    </site>
+    <site>
+        <name>SCAI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.22 PM</cert_date>
+    </site>
+    <site>
+        <name>UNI-BONN</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-SEP-12 10.33.30 AM</cert_date>
+    </site>
+    <site>
+        <name>DESY-ZN</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.46 PM</cert_date>
+    </site>
+    <site>
+        <name>LRZ-LMU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.22 PM</cert_date>
+    </site>
+    <site>
+        <name>wuppertalprod</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.23 PM</cert_date>
+    </site>
+    <site>
+        <name>GoeGrid</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.31 PM</cert_date>
+    </site>
+    <site>
+        <name>BMRZ-FRANKFURT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.12 PM</cert_date>
+    </site>
+    <site>
+        <name>TUDresden-ZIH</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.49 PM</cert_date>
+    </site>
+    <site>
+        <name>MaiGRID</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>17-JAN-11 02.33.56 PM</cert_date>
+    </site>
+    <site>
+        <name>FZJ</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>08-NOV-10 02.11.59 PM</cert_date>
+    </site>
+    <site>
+        <name>UNI-SIEGEN-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>14-JUN-11 09.14.36 AM</cert_date>
+    </site>
+    <site>
+        <name>LRZ</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>02-SEP-13 09.08.30 AM</cert_date>
+    </site>
+    <site>
+        <name>TR-01-ULAKBIM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.56 PM</cert_date>
+    </site>
+    <site>
+        <name>TR-10-ULAKBIM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.57 PM</cert_date>
+    </site>
+    <site>
+        <name>TR-03-METU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.39 PM</cert_date>
+    </site>
+    <site>
+        <name>SZTAKI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-FEB-10 01.51.23 PM</cert_date>
+    </site>
+    <site>
+        <name>BUDAPEST</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.00 PM</cert_date>
+    </site>
+    <site>
+        <name>BMEGrid</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.25 PM</cert_date>
+    </site>
+    <site>
+        <name>IEPSAS-Kosice</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.08 PM</cert_date>
+    </site>
+    <site>
+        <name>IISAS-Bratislava</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.26 PM</cert_date>
+    </site>
+    <site>
+        <name>TU-Kosice</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.52 PM</cert_date>
+    </site>
+    <site>
+        <name>FMPhI-UNIBA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.26 PM</cert_date>
+    </site>
+    <site>
+        <name>TASK</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.17 PM</cert_date>
+    </site>
+    <site>
+        <name>CAMK</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.09 PM</cert_date>
+    </site>
+    <site>
+        <name>PSNC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.36 PM</cert_date>
+    </site>
+    <site>
+        <name>WCSS-PPS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.34 PM</cert_date>
+    </site>
+    <site>
+        <name>ICM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>29-MAR-12 06.20.41 AM</cert_date>
+    </site>
+    <site>
+        <name>IFJ-PAN-BG</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.59 PM</cert_date>
+    </site>
+    <site>
+        <name>WUT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-OCT-11 08.51.27 AM</cert_date>
+    </site>
+    <site>
+        <name>CYFRONET-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.31 PM</cert_date>
+    </site>
+    <site>
+        <name>WCSS64</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.34 PM</cert_date>
+    </site>
+    <site>
+        <name>NGI_PL_SERVICES</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>04-JAN-12 08.55.14 AM</cert_date>
+    </site>
+    <site>
+        <name>ITEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.23 PM</cert_date>
+    </site>
+    <site>
+        <name>Ru-Troitsk-INR-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.09 PM</cert_date>
+    </site>
+    <site>
+        <name>ru-PNPI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.12 PM</cert_date>
+    </site>
+    <site>
+        <name>RU-SPbSU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.47 PM</cert_date>
+    </site>
+    <site>
+        <name>ru-Moscow-FIAN-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.48 PM</cert_date>
+    </site>
+    <site>
+        <name>RU-Protvino-IHEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.49 PM</cert_date>
+    </site>
+    <site>
+        <name>ru-Moscow-SINP-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.49 PM</cert_date>
+    </site>
+    <site>
+        <name>RRC-KI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.18 PM</cert_date>
+    </site>
+    <site>
+        <name>JINR-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.18 PM</cert_date>
+    </site>
+    <site>
+        <name>RRC-KI-T1</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>15-FEB-13 02.44.11 PM</cert_date>
+    </site>
+    <site>
+        <name>JINR-T1</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>06-MAR-13 08.47.37 PM</cert_date>
+    </site>
+    <site>
+        <name>CERN-PROD</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.16 PM</cert_date>
+    </site>
+    <site>
+        <name>IMCSUL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.20 PM</cert_date>
+    </site>
+    <site>
+        <name>FI_HIP_T2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.54 PM</cert_date>
+    </site>
+    <site>
+        <name>NO-NORGRID-T2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.30 PM</cert_date>
+    </site>
+    <site>
+        <name>T2_Estonia</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.42 PM</cert_date>
+    </site>
+    <site>
+        <name>VU-MIF-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.43 PM</cert_date>
+    </site>
+    <site>
+        <name>RTUETF</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.44 PM</cert_date>
+    </site>
+    <site>
+        <name>EENet</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.06 PM</cert_date>
+    </site>
+    <site>
+        <name>ITPA-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>14-APR-11 10.17.40 AM</cert_date>
+    </site>
+    <site>
+        <name>NDGF-T1</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.17 PM</cert_date>
+    </site>
+    <site>
+        <name>UNICPH-NBI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>24-AUG-10 09.50.08 AM</cert_date>
+    </site>
+    <site>
+        <name>SE-SNIC-T2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.38 PM</cert_date>
+    </site>
+    <site>
+        <name>AEGIS11-MISANU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>23-APR-10 04.00.07 PM</cert_date>
+    </site>
+    <site>
+        <name>AEGIS04-KG</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>23-APR-10 04.00.06 PM</cert_date>
+    </site>
+    <site>
+        <name>AEGIS03-ELEF-LEDA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-APR-10 03.40.09 PM</cert_date>
+    </site>
+    <site>
+        <name>AEGIS02-RCUB</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>02-SEP-10 01.50.10 PM</cert_date>
+    </site>
+    <site>
+        <name>AEGIS09-FTN-KM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>01-APR-13 11.02.10 AM</cert_date>
+    </site>
+    <site>
+        <name>AEGIS01-IPB-SCL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.40 PM</cert_date>
+    </site>
+    <site>
+        <name>IN2P3-LPC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.26 PM</cert_date>
+    </site>
+    <site>
+        <name>IN2P3-CC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.26 PM</cert_date>
+    </site>
+    <site>
+        <name>IN2P3-LPSC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.15 PM</cert_date>
+    </site>
+    <site>
+        <name>IN2P3-CC-T2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.16 PM</cert_date>
+    </site>
+    <site>
+        <name>MSFG-OPEN</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-APR-10 10.00.06 AM</cert_date>
+    </site>
+    <site>
+        <name>OBSPM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>16-JUN-10 01.50.06 PM</cert_date>
+    </site>
+    <site>
+        <name>GRIF</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.42 PM</cert_date>
+    </site>
+    <site>
+        <name>AUVERGRID</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.52 PM</cert_date>
+    </site>
+    <site>
+        <name>IN2P3-SUBATECH</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.49 PM</cert_date>
+    </site>
+    <site>
+        <name>IN2P3-IRES</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.50 PM</cert_date>
+    </site>
+    <site>
+        <name>IN2P3-IPNL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.51 PM</cert_date>
+    </site>
+    <site>
+        <name>IN2P3-LAPP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.51 PM</cert_date>
+    </site>
+    <site>
+        <name>IN2P3-CPPM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.52 PM</cert_date>
+    </site>
+    <site>
+        <name>M3PEC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.15 PM</cert_date>
+    </site>
+    <site>
+        <name>BRGM-ORLEANS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>24-MAR-11 09.01.36 AM</cert_date>
+    </site>
+    <site>
+        <name>UNIV-LILLE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>07-FEB-11 01.55.28 PM</cert_date>
+    </site>
+    <site>
+        <name>INSU01-PARIS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>24-JUN-13 10.31.05 AM</cert_date>
+    </site>
+    <site>
+        <name>CREATIS-INSA-LYON</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>18-MAR-13 10.09.21 AM</cert_date>
+    </site>
+    <site>
+        <name>BY-NCPHEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.59 PM</cert_date>
+    </site>
+    <site>
+        <name>CBPF</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.54 PM</cert_date>
+    </site>
+    <site>
+        <name>SAMPA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.12 PM</cert_date>
+    </site>
+    <site>
+        <name>EELA-UTFSM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.41 PM</cert_date>
+    </site>
+    <site>
+        <name>ICN-UNAM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.41 PM</cert_date>
+    </site>
+    <site>
+        <name>EELA-UNLP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>18-JUL-13 11.31.53 AM</cert_date>
+    </site>
+    <site>
+        <name>JP-HIROSHIMA-WLCG</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.10 PM</cert_date>
+    </site>
+    <site>
+        <name>TH-NECTEC-LSR</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.14 PM</cert_date>
+    </site>
+    <site>
+        <name>TW-FTT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.23 PM</cert_date>
+    </site>
+    <site>
+        <name>Taiwan-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.24 PM</cert_date>
+    </site>
+    <site>
+        <name>KR-KISTI-GCRT-01</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>28-NOV-12 03.45.20 AM</cert_date>
+    </site>
+    <site>
+        <name>TW-EMI-PPS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-NOV-12 02.44.11 AM</cert_date>
+    </site>
+    <site>
+        <name>MY-UTM-GRID</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>22-NOV-10 10.14.13 AM</cert_date>
+    </site>
+    <site>
+        <name>HK-HKU-CC-01</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.55 PM</cert_date>
+    </site>
+    <site>
+        <name>Australia-ATLAS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.56 PM</cert_date>
+    </site>
+    <site>
+        <name>LCG_KNU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.56 PM</cert_date>
+    </site>
+    <site>
+        <name>INDIACMS-TIFR</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>10-SEP-12 03.44.24 PM</cert_date>
+    </site>
+    <site>
+        <name>NCP-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>24-AUG-13 05.47.49 PM</cert_date>
+    </site>
+    <site>
+        <name>TH-HAII</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>28-DEC-11 06.34.37 AM</cert_date>
+    </site>
+    <site>
+        <name>TOKYO-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.19 PM</cert_date>
+    </site>
+    <site>
+        <name>JP-KEK-CRC-02</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.19 PM</cert_date>
+    </site>
+    <site>
+        <name>TW-NCUHEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-MAR-13 01.10.22 AM</cert_date>
+    </site>
+    <site>
+        <name>IN-DAE-VECC-02</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>03-APR-12 02.56.07 AM</cert_date>
+    </site>
+    <site>
+        <name>MY-UM-CRYSTAL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>27-MAR-12 10.54.40 AM</cert_date>
+    </site>
+    <site>
+        <name>MY-UPM-BIRUNI-01</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.50 PM</cert_date>
+    </site>
+    <site>
+        <name>KR-UOS-SSCC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-SEP-11 10.32.44 AM</cert_date>
+    </site>
+    <site>
+        <name>TW-NTU-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>04-OCT-10 03.32.20 PM</cert_date>
+    </site>
+    <site>
+        <name>KR-KISTI-GSDC-01</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>13-APR-11 10.18.24 AM</cert_date>
+    </site>
+    <site>
+        <name>TW-eScience</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>29-AUG-11 03.33.11 AM</cert_date>
+    </site>
+    <site>
+        <name>IR-IPM-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>13-AUG-12 02.25.00 AM</cert_date>
+    </site>
+    <site>
+        <name>PK-CIIT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>27-MAR-13 03.40.06 AM</cert_date>
+    </site>
+    <site>
+        <name>KR-KNU-T3</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>08-MAR-12 08.36.31 AM</cert_date>
+    </site>
+    <site>
+        <name>T2-TH-CUNSTDA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>22-MAY-12 10.43.38 AM</cert_date>
+    </site>
+    <site>
+        <name>VN-IFI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-FEB-13 02.32.27 AM</cert_date>
+    </site>
+    <site>
+        <name>LSG-LUMC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.12 PM</cert_date>
+    </site>
+    <site>
+        <name>BEgrid-ULB-VUB</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.08 PM</cert_date>
+    </site>
+    <site>
+        <name>BCBR</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>25-AUG-11 10.08.24 AM</cert_date>
+    </site>
+    <site>
+        <name>LSG-NKI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.35 PM</cert_date>
+    </site>
+    <site>
+        <name>RUG-CIT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.40 PM</cert_date>
+    </site>
+    <site>
+        <name>BelGrid-UCL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.41 PM</cert_date>
+    </site>
+    <site>
+        <name>NIKHEF-ELPROD</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.44 PM</cert_date>
+    </site>
+    <site>
+        <name>LSG-WUR</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.07 PM</cert_date>
+    </site>
+    <site>
+        <name>LSG-KUN</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.44 PM</cert_date>
+    </site>
+    <site>
+        <name>LSG-AMC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.45 PM</cert_date>
+    </site>
+    <site>
+        <name>SARA-MATRIX</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.45 PM</cert_date>
+    </site>
+    <site>
+        <name>LSG-EMC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.12 PM</cert_date>
+    </site>
+    <site>
+        <name>LSG-TUD</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-FEB-10 01.51.23 PM</cert_date>
+    </site>
+    <site>
+        <name>LSG-RUG</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>08-APR-10 10.20.06 AM</cert_date>
+    </site>
+    <site>
+        <name>LSG-KG</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>16-JUN-10 10.40.34 AM</cert_date>
+    </site>
+    <site>
+        <name>BEgrid-BELNET</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>07-OCT-10 09.10.10 AM</cert_date>
+    </site>
+    <site>
+        <name>LSG-VU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>08-MAY-12 04.12.35 PM</cert_date>
+    </site>
+    <site>
+        <name>LSG-HUB</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>14-JUN-12 01.00.21 PM</cert_date>
+    </site>
+    <site>
+        <name>egee.fesb.hr</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.26 PM</cert_date>
+    </site>
+    <site>
+        <name>egee.srce.hr</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.27 PM</cert_date>
+    </site>
+    <site>
+        <name>egee.irb.hr</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.58 PM</cert_date>
+    </site>
+    <site>
+        <name>BIFI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.09 PM</cert_date>
+    </site>
+    <site>
+        <name>UPorto</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.09 PM</cert_date>
+    </site>
+    <site>
+        <name>ifae</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.13 PM</cert_date>
+    </site>
+    <site>
+        <name>ESA-ESAC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-AUG-10 10.00.08 AM</cert_date>
+    </site>
+    <site>
+        <name>CFP-IST</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.34 PM</cert_date>
+    </site>
+    <site>
+        <name>CESGA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.06 PM</cert_date>
+    </site>
+    <site>
+        <name>IFIC-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.01 PM</cert_date>
+    </site>
+    <site>
+        <name>CIEMAT-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.11 PM</cert_date>
+    </site>
+    <site>
+        <name>pic</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.40 PM</cert_date>
+    </site>
+    <site>
+        <name>UB-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.28 PM</cert_date>
+    </site>
+    <site>
+        <name>USC-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.53 PM</cert_date>
+    </site>
+    <site>
+        <name>IEETA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>11-JUN-13 01.11.28 PM</cert_date>
+    </site>
+    <site>
+        <name>UAM-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.28 PM</cert_date>
+    </site>
+    <site>
+        <name>LIP-Lisbon</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.29 PM</cert_date>
+    </site>
+    <site>
+        <name>UPV-GRyCAP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.39 PM</cert_date>
+    </site>
+    <site>
+        <name>IFCA-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.00 PM</cert_date>
+    </site>
+    <site>
+        <name>NCG-INGRID-PT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.13 PM</cert_date>
+    </site>
+    <site>
+        <name>RedIRIS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.50 PM</cert_date>
+    </site>
+    <site>
+        <name>ARAGRID-CIENCIAS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-SEP-11 08.34.45 AM</cert_date>
+    </site>
+    <site>
+        <name>IFISC-GRID</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>08-JUL-10 05.10.06 PM</cert_date>
+    </site>
+    <site>
+        <name>CIEMAT-TIC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>04-JUN-10 09.00.07 AM</cert_date>
+    </site>
+    <site>
+        <name>CAFPE-GRANADA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-JUN-11 08.57.48 AM</cert_date>
+    </site>
+    <site>
+        <name>LIP-Coimbra</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.36 PM</cert_date>
+    </site>
+    <site>
+        <name>UNICAN</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-AUG-10 09.20.07 AM</cert_date>
+    </site>
+    <site>
+        <name>CETA-GRID</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-FEB-12 10.05.09 AM</cert_date>
+    </site>
+    <site>
+        <name>ARNES</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>22-OCT-10 02.50.51 PM</cert_date>
+    </site>
+    <site>
+        <name>SiGNET</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.31 PM</cert_date>
+    </site>
+    <site>
+        <name>prague_cesnet_lcg2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.01 PM</cert_date>
+    </site>
+    <site>
+        <name>praguelcg2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.34 PM</cert_date>
+    </site>
+    <site>
+        <name>TRIUMF-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.53 PM</cert_date>
+    </site>
+    <site>
+        <name>CA-SCINET-T2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.42 PM</cert_date>
+    </site>
+    <site>
+        <name>CA-ALBERTA-WESTGRID-T2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.07 PM</cert_date>
+    </site>
+    <site>
+        <name>BEIJING-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.39 PM</cert_date>
+    </site>
+    <site>
+        <name>SFU-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.47 PM</cert_date>
+    </site>
+    <site>
+        <name>CA-MCGILL-CLUMEQ-T2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>19-SEP-11 07.56.01 AM</cert_date>
+    </site>
+    <site>
+        <name>CA-VICTORIA-WESTGRID-T2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>07-JUN-10 11.30.12 PM</cert_date>
+    </site>
+    <site>
+        <name>ROC_Canada_SERVICES</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-JAN-13 09.16.41 PM</cert_date>
+    </site>
+    <site>
+        <name>CA-TRIUMF-T2K</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>15-NOV-12 10.04.03 PM</cert_date>
+    </site>
+    <site>
+        <name>HG-02-IASA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.12 PM</cert_date>
+    </site>
+    <site>
+        <name>HG-04-CTI-CEID</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.04 PM</cert_date>
+    </site>
+    <site>
+        <name>GR-10-UOI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.09 PM</cert_date>
+    </site>
+    <site>
+        <name>GR-01-AUTH</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.07 PM</cert_date>
+    </site>
+    <site>
+        <name>GR-09-UoA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.10 PM</cert_date>
+    </site>
+    <site>
+        <name>HG-06-EKT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.33 PM</cert_date>
+    </site>
+    <site>
+        <name>HG-03-AUTH</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.34 PM</cert_date>
+    </site>
+    <site>
+        <name>GR-07-UOI-HEPLAB</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.36 PM</cert_date>
+    </site>
+    <site>
+        <name>GR-04-FORTH-ICS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.47 PM</cert_date>
+    </site>
+    <site>
+        <name>HG-01-GRNET</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.41 PM</cert_date>
+    </site>
+    <site>
+        <name>GR-06-IASA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.47 PM</cert_date>
+    </site>
+    <site>
+        <name>GR-11-UPATRAS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>02-SEP-11 02.29.28 PM</cert_date>
+    </site>
+    <site>
+        <name>HG-08-Okeanos</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-NOV-12 01.58.16 PM</cert_date>
+    </site>
+    <site>
+        <name>HG-05-FORTH</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.41 PM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-GOCDB</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>09-MAR-12 09.59.01 AM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-SAM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.32 PM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-APEL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.42 PM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-GRIDVIEW</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>15-AUG-11 03.19.40 PM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-ACCPORTAL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-NOV-11 08.21.47 AM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-METRICSPORTAL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-NOV-11 08.22.38 AM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-MSG</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-NOV-11 08.24.05 AM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-GSTAT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-NOV-11 08.22.49 AM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-OPSPORTAL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>18-AUG-11 11.10.07 AM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-GGUS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.37 PM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-CRM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-SEP-12 10.29.27 AM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-APPDB</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-SEP-12 10.31.26 AM</cert_date>
+    </site>
+    <site>
+        <name>GRIDOPS-TMP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-SEP-12 10.34.54 AM</cert_date>
+    </site>
+    <site>
+        <name>CSC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>24-MAY-11 01.38.23 PM</cert_date>
+    </site>
+    <site>
+        <name>FI_AA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>16-MAY-12 03.42.14 PM</cert_date>
+    </site>
+    <site>
+        <name>FI_Aalto</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>02-MAY-12 10.27.15 AM</cert_date>
+    </site>
+    <site>
+        <name>FI_Oulu</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>03-MAY-12 01.04.12 PM</cert_date>
+    </site>
+    <site>
+        <name>FI_UEF</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>14-JUN-12 12.28.11 PM</cert_date>
+    </site>
+    <site>
+        <name>FI_JYU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>14-MAY-12 06.08.16 AM</cert_date>
+    </site>
+    <site>
+        <name>FI_LUT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>08-MAY-12 06.30.31 AM</cert_date>
+    </site>
+    <site>
+        <name>FI_TUT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>14-MAY-12 06.11.56 AM</cert_date>
+    </site>
+    <site>
+        <name>FI_UTU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>24-MAY-12 09.31.19 PM</cert_date>
+    </site>
+    <site>
+        <name>FI_Helsinki</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>18-MAY-12 10.34.05 AM</cert_date>
+    </site>
+    <site>
+        <name>Kharkov-KIPT-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.22 PM</cert_date>
+    </site>
+    <site>
+        <name>UA-KNU</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>14-FEB-11 08.09.52 AM</cert_date>
+    </site>
+    <site>
+        <name>UA-BITP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>24-MAY-10 03.00.25 PM</cert_date>
+    </site>
+    <site>
+        <name>NGI_UA_SERVICES</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>14-MAR-12 02.04.29 PM</cert_date>
+    </site>
+    <site>
+        <name>UA-ISMA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>07-MAY-12 12.19.55 PM</cert_date>
+    </site>
+    <site>
+        <name>UA_ICYB_ARC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>31-OCT-12 08.55.18 AM</cert_date>
+    </site>
+    <site>
+        <name>UA_ILTPE_ARC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>04-SEP-12 12.28.46 PM</cert_date>
+    </site>
+    <site>
+        <name>UA-IMBG</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>09-OCT-12 05.41.05 PM</cert_date>
+    </site>
+    <site>
+        <name>UA-MHI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-FEB-13 05.21.39 PM</cert_date>
+    </site>
+    <site>
+        <name>UA-NSCMBR</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>19-DEC-12 11.33.02 AM</cert_date>
+    </site>
+    <site>
+        <name>UA-PIMEE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>19-DEC-12 11.32.47 AM</cert_date>
+    </site>
+    <site>
+        <name>UA_BITP_ARC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>07-MAY-12 12.21.27 PM</cert_date>
+    </site>
+    <site>
+        <name>HEPHY-UIBK</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.08 PM</cert_date>
+    </site>
+    <site>
+        <name>CIRMMP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.16 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-CAGLIARI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.30 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-TRIESTE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.31 PM</cert_date>
+    </site>
+    <site>
+        <name>UNI-PERUGIA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.32 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-PERUGIA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.05 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-ROMA1-CMS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.06 PM</cert_date>
+    </site>
+    <site>
+        <name>GILDA-INFN-CATANIA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.41 PM</cert_date>
+    </site>
+    <site>
+        <name>TRIGRID-INFN-CATANIA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>16-JUN-10 10.40.34 AM</cert_date>
+    </site>
+    <site>
+        <name>GARR-01-DIR</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>13-FEB-12 08.20.01 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-ROMA1-VIRGO</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>06-MAY-13 11.31.52 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-NAPOLI-CMS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-JAN-13 11.00.00 AM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-SPACI-NAPOLI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.25 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-LNL-2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.58 PM</cert_date>
+    </site>
+    <site>
+        <name>CNR-PROD-PISA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.59 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-ROMA2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-JAN-10 02.40.11 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-LECCE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>07-JUN-10 01.50.10 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-COSENZA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>27-SEP-11 08.46.53 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-BOLOGNA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.47 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-ROMA1</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.48 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-ROMA3</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.49 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-PADOVA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.50 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-PARMA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.50 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-TORINO</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.24 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-NAPOLI-PAMELA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>21-FEB-13 09.22.09 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-PAVIA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>06-SEP-10 08.00.18 AM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-UNINA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.39 PM</cert_date>
+    </site>
+    <site>
+        <name>IGI-BOLOGNA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.51 PM</cert_date>
+    </site>
+    <site>
+        <name>ICEAGE-CATANIA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.01 PM</cert_date>
+    </site>
+    <site>
+        <name>GILDA-PADOVA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.03 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-CNAF-LHCB</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.29 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-MILANO-ATLASC</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.40 PM</cert_date>
+    </site>
+    <site>
+        <name>GILDA-SIRIUS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.43 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-T1</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.56 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-CATANIA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.57 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-FERRARA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.57 PM</cert_date>
+    </site>
+    <site>
+        <name>UNINA-EGEE</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.11 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-BARI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.54 PM</cert_date>
+    </site>
+    <site>
+        <name>SNS-PISA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>04-JUN-13 10.53.55 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-GENOVA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.55 PM</cert_date>
+    </site>
+    <site>
+        <name>Hephy-Vienna</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.57 PM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-COMETA-INAF-CT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.52 PM</cert_date>
+    </site>
+    <site>
+        <name>NGI_IT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>16-AUG-11 01.12.46 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-BOLOGNA-T3</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>11-APR-11 01.28.48 PM</cert_date>
+    </site>
+    <site>
+        <name>AREA-BO</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>31-MAY-13 11.01.21 AM</cert_date>
+    </site>
+    <site>
+        <name>INFN-MIB</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>05-MAY-11 08.23.39 AM</cert_date>
+    </site>
+    <site>
+        <name>ISMB</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>10-JAN-12 02.14.14 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-PISA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.26 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-NAPOLI-ATLAS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.27 PM</cert_date>
+    </site>
+    <site>
+        <name>CNR-ILC-PISA</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.27 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-FRASCATI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.29 PM</cert_date>
+    </site>
+    <site>
+        <name>CRS4</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-APR-12 10.02.15 AM</cert_date>
+    </site>
+    <site>
+        <name>FBF-Brescia-IT</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>20-MAR-13 07.59.18 AM</cert_date>
+    </site>
+    <site>
+        <name>INAF-TS</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>16-OCT-12 01.32.51 PM</cert_date>
+    </site>
+    <site>
+        <name>RECAS-NAPOLI</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>10-DEC-12 10.43.09 AM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SOUTHGRID-BHAM-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.27 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-LT2-IC-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.00 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SCOTGRID-DURHAM</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.44.02 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SOUTHGRID-BRIS-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.17 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-NORTHGRID-SHEF-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.18 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SCOTGRID-ECDF</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.02 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SOUTHGRID-RALPP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.43 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SCOTGRID-GLASGOW</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.40.45 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-LT2-RHUL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>04-MAY-10 02.50.06 PM</cert_date>
+    </site>
+    <site>
+        <name>RAL-LCG2</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.21 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SOUTHGRID-OX-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.50 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SOUTHGRID-CAM-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.51 PM</cert_date>
+    </site>
+    <site>
+        <name>EFDA-JET</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.42.51 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-NORTHGRID-LANCS-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.53 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-LT2-UCL-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.54 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-LT2-Brunel</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.41.54 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-NORTHGRID-LIV-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.22 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-NORTHGRID-MAN-HEP</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.23 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SOUTHGRID-SUSX</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>09-AUG-12 10.59.15 AM</cert_date>
+    </site>
+    <site>
+        <name>UKI-LT2-QMUL</name>
+        <cert_status>Certified</cert_status>
+        <cert_date>12-JAN-10 01.43.23 PM</cert_date>
+    </site>
+    <site>
+        <name>AM-05-YSU</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>26-JUL-13 02.45.20 PM</cert_date>
+    </site>
+    <site>
+        <name>AM-03-YSU</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>26-JUL-13 02.44.55 PM</cert_date>
+    </site>
+    <site>
+        <name>BG02-IM</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>05-SEP-12 08.41.50 AM</cert_date>
+    </site>
+    <site>
+        <name>BG08-MADARA</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>22-OCT-12 03.28.22 PM</cert_date>
+    </site>
+    <site>
+        <name>BG-INRNE</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>21-DEC-12 07.20.37 AM</cert_date>
+    </site>
+    <site>
+        <name>BY-BNTU</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>28-SEP-12 10.05.03 AM</cert_date>
+    </site>
+    <site>
+        <name>BY-UIIP</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>30-JAN-13 09.13.41 PM</cert_date>
+    </site>
+    <site>
+        <name>BY-JIPNR-SOSNY</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>12-FEB-13 09.57.20 AM</cert_date>
+    </site>
+    <site>
+        <name>UNIANDES</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>15-JAN-13 02.51.03 PM</cert_date>
+    </site>
+    <site>
+        <name>ULA-MERIDA</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>15-JAN-13 02.34.38 PM</cert_date>
+    </site>
+    <site>
+        <name>SUPERCOMPUTO-UNAM</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>12-SEP-12 01.40.43 PM</cert_date>
+    </site>
+    <site>
+        <name>PH-ASTI-LIKNAYAN</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>29-MAY-13 04.28.06 AM</cert_date>
+    </site>
+    <site>
+        <name>ID-ITB</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>11-MAY-12 11.07.47 AM</cert_date>
+    </site>
+    <site>
+        <name>MY-MIMOS-GC-01</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>22-AUG-13 02.23.24 PM</cert_date>
+    </site>
+    <site>
+        <name>NZ-UOA</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>30-APR-13 10.51.02 AM</cert_date>
+    </site>
+    <site>
+        <name>MY-USM-GCL</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>02-APR-13 10.26.12 AM</cert_date>
+    </site>
+    <site>
+        <name>MY-UUM-SINTOK</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>16-JUL-12 05.20.27 AM</cert_date>
+    </site>
+    <site>
+        <name>BEgrid-KULeuven</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>12-JUL-11 10.50.12 AM</cert_date>
+    </site>
+    <site>
+        <name>LSG-HTC</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>01-AUG-13 12.41.15 PM</cert_date>
+    </site>
+    <site>
+        <name>UOGRID</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>12-JUL-11 12.32.42 PM</cert_date>
+    </site>
+    <site>
+        <name>IAA-CSIC</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>30-APR-13 04.05.36 PM</cert_date>
+    </site>
+    <site>
+        <name>VICTORIA-LCG2</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>28-APR-13 05.12.47 AM</cert_date>
+    </site>
+    <site>
+        <name>LCG-USTC</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>15-MAR-13 04.27.56 PM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-COMETA-INFN-LNS</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>20-MAY-13 01.47.22 PM</cert_date>
+    </site>
+    <site>
+        <name>INFN-NAPOLI-ARGO</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>22-JUL-13 09.35.07 AM</cert_date>
+    </site>
+    <site>
+        <name>GRISU-COMETA-INFN-CT</name>
+        <cert_status>Suspended</cert_status>
+        <cert_date>22-JUL-13 09.44.13 AM</cert_date>
+    </site>
+    <site>
+        <name>RO-03-UPB</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>21-DEC-12 01.46.04 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-08-UVT</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>21-DEC-12 01.47.43 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-17-INCDMTM</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>21-DEC-12 01.49.03 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-18-INCDTP</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>21-DEC-12 01.56.03 PM</cert_date>
+    </site>
+    <site>
+        <name>RO-19-UCV</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>21-DEC-12 01.56.34 PM</cert_date>
+    </site>
+    <site>
+        <name>BG06-GPHI</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>26-JUL-13 01.06.51 PM</cert_date>
+    </site>
+    <site>
+        <name>MD-03-USMF</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>27-FEB-12 01.37.51 PM</cert_date>
+    </site>
+    <site>
+        <name>GSI-LCG2</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>18-MAY-10 09.50.08 AM</cert_date>
+    </site>
+    <site>
+        <name>ZIB</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>28-OCT-10 04.00.55 PM</cert_date>
+    </site>
+    <site>
+        <name>mainzgrid</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>02-JUL-13 12.51.58 PM</cert_date>
+    </site>
+    <site>
+        <name>AZ-01-IPANAS</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>21-MAY-12 09.40.26 AM</cert_date>
+    </site>
+    <site>
+        <name>T3_HU_Debrecen</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>11-OCT-12 04.15.46 PM</cert_date>
+    </site>
+    <site>
+        <name>CYF-CERTIF-TB</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.44.53 PM</cert_date>
+    </site>
+    <site>
+        <name>FI-LCG2</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.44.52 PM</cert_date>
+    </site>
+    <site>
+        <name>KMU-PRI-LCG2</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.44.47 PM</cert_date>
+    </site>
+    <site>
+        <name>KTH-CLOUD</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>15-MAY-13 09.29.46 AM</cert_date>
+    </site>
+    <site>
+        <name>AEGIS05-ETFBG</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>02-NOV-11 11.15.02 AM</cert_date>
+    </site>
+    <site>
+        <name>SN-UCAD</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.45.02 PM</cert_date>
+    </site>
+    <site>
+        <name>StratusLab</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>16-JUN-11 01.55.29 PM</cert_date>
+    </site>
+    <site>
+        <name>SOLEIL</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.44.56 PM</cert_date>
+    </site>
+    <site>
+        <name>MSFG-MULTI</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.44.58 PM</cert_date>
+    </site>
+    <site>
+        <name>ATLAND</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>20-AUG-13 06.26.12 PM</cert_date>
+    </site>
+    <site>
+        <name>GRID-UNAM</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>18-AUG-11 11.12.51 AM</cert_date>
+    </site>
+    <site>
+        <name>FENIX</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>21-AUG-13 03.40.51 PM</cert_date>
+    </site>
+    <site>
+        <name>Taiwan-IPAS-LCG2</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>16-JUL-10 12.00.00 AM</cert_date>
+    </site>
+    <site>
+        <name>KR-KISTI-HEP</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>16-JUL-10 12.00.00 AM</cert_date>
+    </site>
+    <site>
+        <name>Taiwan-NCUCC-LCG2</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>16-JUL-10 12.00.00 AM</cert_date>
+    </site>
+    <site>
+        <name>PH-ASTI-BUHAWI</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>16-JUN-10 10.40.31 AM</cert_date>
+    </site>
+    <site>
+        <name>TW-THU-HPC</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.44.47 PM</cert_date>
+    </site>
+    <site>
+        <name>PH-ASTI-DALUBHASAAN</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.45.08 PM</cert_date>
+    </site>
+    <site>
+        <name>VN-IOIT-HCM</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.44.54 PM</cert_date>
+    </site>
+    <site>
+        <name>MY-UM-PANG5</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>03-MAR-11 02.46.35 AM</cert_date>
+    </site>
+    <site>
+        <name>JP-KEK-CRC-01</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>22-JUN-11 04.51.53 AM</cert_date>
+    </site>
+    <site>
+        <name>AU-PPS</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>16-AUG-11 09.33.19 AM</cert_date>
+    </site>
+    <site>
+        <name>TW-NYMU-GRID</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>25-AUG-11 03.10.42 AM</cert_date>
+    </site>
+    <site>
+        <name>BEgrid-UGent</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>17-MAY-11 03.56.35 PM</cert_date>
+    </site>
+    <site>
+        <name>NL-T1</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>17-MAY-11 03.55.31 PM</cert_date>
+    </site>
+    <site>
+        <name>BEgrid-UniversiteitAntwerpen</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.44.59 PM</cert_date>
+    </site>
+    <site>
+        <name>LSG-AMS</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>01-MAR-13 03.37.59 PM</cert_date>
+    </site>
+    <site>
+        <name>GR-05-DEMOKRITOS</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.45.15 PM</cert_date>
+    </site>
+    <site>
+        <name>BIOCOMP</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>03-JUN-13 08.09.55 AM</cert_date>
+    </site>
+    <site>
+        <name>ral-ngs2</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>12-JAN-10 01.45.04 PM</cert_date>
+    </site>
+    <site>
+        <name>ral-scarf</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>19-JAN-12 05.52.23 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-WESTMINSTER</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>19-JAN-12 05.51.01 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-HECTOR</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>19-JAN-12 05.47.26 PM</cert_date>
+    </site>
+    <site>
+        <name>UKI-SOUTHGRID-RDG</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>19-JAN-12 05.52.59 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-YORK</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>19-JAN-12 05.51.56 PM</cert_date>
+    </site>
+    <site>
+        <name>NGS-HUDDERSFIELD</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>19-JAN-12 05.48.05 PM</cert_date>
+    </site>
+    <site>
+        <name>100IT</name>
+        <cert_status>Uncertified</cert_status>
+        <cert_date>03-SEP-13 10.00.12 AM</cert_date>
+    </site>
+</results>

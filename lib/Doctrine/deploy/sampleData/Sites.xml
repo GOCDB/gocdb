@@ -1,0 +1,195 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+  <SITE ID="605003" PRIMARY_KEY="251G0" NAME="SWITCH" COBJECTID="251">
+    <PRIMARY_KEY>251G0</PRIMARY_KEY>
+    <SHORT_NAME>SWITCH</SHORT_NAME>
+    <OFFICIAL_NAME>SWITCH</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Switch, the Swiss foundation which provides IT services to the members of the higher education sector in Switzerland</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=251&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.switch.ch/</HOME_URL>
+    <CONTACT_EMAIL>sample@switch.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 44 0000 05</CONTACT_TEL>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>47</LATITUDE>
+    <LONGITUDE>8</LONGITUDE>
+    <CSIRT_EMAIL>sample@switch.ch</CSIRT_EMAIL>
+    <IP_RANGE>130.59.000.31/130.59.000.38</IP_RANGE>
+    <CSIRTTEL>+41 44 000 15 40</CSIRTTEL>
+    <EMERGENCYTEL>+41 44 000 15 05</EMERGENCYTEL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>switch.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="3605006" PRIMARY_KEY="476G0" NAME="UNIBE-LHEP" COBJECTID="476">
+    <PRIMARY_KEY>476G0</PRIMARY_KEY>
+    <SHORT_NAME>UNIBE-LHEP</SHORT_NAME>
+    <OFFICIAL_NAME>Grid computing cluster of the LHEP department at the University of Bern</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>ATLAS Tier-2 at the University of Bern</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=476&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.lhep.unibe.ch</HOME_URL>
+    <CONTACT_EMAIL>sample@lhep.unibe.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 31 000 4069</CONTACT_TEL>
+    <GIIS_URL>ldap://bdii.lhep.unibe.ch:0000/mds-vo-name=UNIBE-LHEP,o=grid</GIIS_URL>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>46.57</LATITUDE>
+    <LONGITUDE>7.28</LONGITUDE>
+    <CSIRT_EMAIL>sample@lhep.unibe.ch</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.000.255.255</IP_RANGE>
+    <LOCATION>Bern, Switzerland</LOCATION>
+    <CSIRTTEL>+41 31 000 4069</CSIRTTEL>
+    <HELPDESKEMAIL>sample@lhep.unibe.ch</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>unibe.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="3055006" PRIMARY_KEY="312G0" NAME="T3_CH_PSI" COBJECTID="312">
+    <PRIMARY_KEY>312G0</PRIMARY_KEY>
+    <SHORT_NAME>T3_CH_PSI</SHORT_NAME>
+    <OFFICIAL_NAME>AIT Group, Paul Scherrer Institut, CH-5232 Villigen PSI, CH</OFFICIAL_NAME>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=312&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <CONTACT_EMAIL>sample@lists.psi.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 56 000 47 33</CONTACT_TEL>
+    <GIIS_URL>ldap://t3bdii.psi.ch:0000/mds-vo-name=T3_CH_PSI,o=grid</GIIS_URL>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>0</LATITUDE>
+    <LONGITUDE>0</LONGITUDE>
+    <CSIRT_EMAIL>sample@lists.psi.ch</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <CSIRTTEL>+41 56 000 84 00</CSIRTTEL>
+    <EMERGENCYTEL>+41 56 000 84 00</EMERGENCYTEL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>psi.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="12" PRIMARY_KEY="237G0" NAME="CSCS-LCG2" COBJECTID="237">
+    <PRIMARY_KEY>237G0</PRIMARY_KEY>
+    <SHORT_NAME>CSCS-LCG2</SHORT_NAME>
+    <OFFICIAL_NAME>CSCS, Swiss National Supercomputing Centre</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Tier2 within WLCG, serving the swiss HEP community (CHIPP)</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=237&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <CONTACT_EMAIL>sample@cscs.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 91 610 8238</CONTACT_TEL>
+    <GIIS_URL>ldap://bdii.lcg.cscs.ch:0000/mds-vo-name=CSCS-LCG2,o=grid</GIIS_URL>
+    <TIER>2</TIER>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>46.02</LATITUDE>
+    <LONGITUDE>8.92</LONGITUDE>
+    <CSIRT_EMAIL>sample@cscs.ch</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>Lugano, Switzerland</LOCATION>
+    <CSIRTTEL>+41 91 000 8238</CSIRTTEL>
+    <EMERGENCYTEL>+41 91 000 8222</EMERGENCYTEL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>cscs.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+    <SITE ID="3555007" PRIMARY_KEY="354G0" NAME="UNIGE-DPNC" COBJECTID="354">
+    <PRIMARY_KEY>354G0</PRIMARY_KEY>
+    <SHORT_NAME>UNIGE-DPNC</SHORT_NAME>
+    <OFFICIAL_NAME>Grid computing cluster of the DPNC department at the University of Geneva</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>ATLAS Tier-3 at the University of Geneva</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=354&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://atlasgrid.unige.ch/</HOME_URL>
+    <CONTACT_EMAIL>dpnc-grid@unige.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>0041 22 000 7935</CONTACT_TEL>
+    <GIIS_URL>ldap://gridvm2.unige.ch:0000/mds-vo-name=UNIGE-DPNC,o=grid</GIIS_URL>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>46.2</LATITUDE>
+    <LONGITUDE>6.14</LONGITUDE>
+    <CSIRT_EMAIL>sample@unige.ch</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>University of Geneva, Switzerland</LOCATION>
+    <CSIRTTEL>0041 76 000 1146</CSIRTTEL>
+    <EMERGENCYTEL>0041 76 000 1146</EMERGENCYTEL>
+    <HELPDESKEMAIL>sample@unige.ch</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>unige.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+    <SITE ID="7255007" PRIMARY_KEY="34933G0" NAME="UZH" COBJECTID="21715">
+    <PRIMARY_KEY>34933G0</PRIMARY_KEY>
+    <SHORT_NAME>UZH</SHORT_NAME>
+    <OFFICIAL_NAME>University of Zurich</OFFICIAL_NAME>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=21715&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.gc3.uzh.ch/index.html</HOME_URL>
+    <CONTACT_EMAIL>sergio.maffioletti@gc3.uzh.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>0041-044 000 4222</CONTACT_TEL>
+    <ALARM_EMAIL>sample@gc3.uzh.ch</ALARM_EMAIL>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>0</LATITUDE>
+    <LONGITUDE>0</LONGITUDE>
+    <CSIRT_EMAIL>sample@gc3.uzh.ch</CSIRT_EMAIL>
+    <CSIRTTEL>0041-044 000 4222</CSIRTTEL>
+    <EMERGENCYTEL>0041-000 000 4222</EMERGENCYTEL>
+    <EMERGENCYEMAIL>sample@gc3.uzh.ch</EMERGENCYEMAIL>
+    <HELPDESKEMAIL>sample@gc3.uzh.ch</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>uzh.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="3605007" PRIMARY_KEY="489G0" NAME="UNIBE-ID" COBJECTID="489">
+    <PRIMARY_KEY>489G0</PRIMARY_KEY>
+    <SHORT_NAME>UNIBE-ID</SHORT_NAME>
+    <OFFICIAL_NAME>Grid computing cluster of the Computer Service Department at the University of Bern</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>General university cluster also providing ATLAS Tier-3 resources at the University of Bern</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=489&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.id.unibe.ch</HOME_URL>
+    <CONTACT_EMAIL>grid-admin@id.unibe.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 31 000 8797</CONTACT_TEL>
+    <GIIS_URL>ldap://nordugrid.unibe.ch:0000/ds-vo-name=UNIBE-ID,o=grid</GIIS_URL>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>46.57</LATITUDE>
+    <LONGITUDE>7.28</LONGITUDE>
+    <CSIRT_EMAIL>sample@id.unibe.ch</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>Bern, Switzerland</LOCATION>
+    <CSIRTTEL>+41 31 000 8797</CSIRTTEL>
+    <HELPDESKEMAIL>sample@id.unibe.ch</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>unibe.ch</DOMAIN_NAME>
+    </DOMAIN> 
+	</SITE>
+	
+  </results>

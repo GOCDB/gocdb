@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="CERTDN">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="CONTACT">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="FORENAME" />
+        <xs:element ref="SURNAME" />
+        <xs:element ref="TITLE" />
+        <xs:element ref="DESCRIPTION" />
+        <xs:element ref="EMAIL" />
+        <xs:element ref="TEL" />
+        <xs:element ref="WORKING_HOURS_START" />
+        <xs:element ref="WORKING_HOURS_END" />
+        <xs:element ref="CERTDN" />
+        <xs:element ref="ROLE_NAME" />
+      </xs:sequence>
+      <xs:attribute name="USER_ID" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="PRIMARY_KEY" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="DESCRIPTION" type="xs:string" />
+
+  <xs:element name="EMAIL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="FORENAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="MAIL_CONTACT">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ROC" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ROC">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="ROCNAME" />
+        <xs:element ref="MAIL_CONTACT" />
+        <xs:element ref="CONTACT" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="ROC_NAME" type="xs:ID" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ROCNAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="ROLE_NAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SURNAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="TEL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="TITLE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="WORKING_HOURS_END" type="xs:string" />
+
+  <xs:element name="WORKING_HOURS_START" type="xs:string" />
+
+</xs:schema>

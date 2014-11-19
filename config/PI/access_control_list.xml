@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<authorised_users>
+ 
+	<!--  Updated from zwaan to raaf at John Green's request 06.03.13 -->
+<!--    <user>
+        <dn>/DC=org/DC=terena/DC=tcs/C=NL/O=Stichting FOM/OU=Nikhef/CN=raaf.nikhef.nl</dn>
+        <access_level>3</access_level>     
+    </user>-->
+
+    <!-- C=NL, O=Stichting FOM, OU=Nikhef, CN=raaf.nikhef.nl -->
+    
+        <user>
+              <dn>/DC=org/DC=terena/DC=tcs/OU=Domain Control Validated/CN=raaf.nikhef.nl</dn>
+              <access_level>3</access_level>
+       </user>
+
+    <user>
+        <dn>/C=NL/O=Stichting FOM/OU=Nikhef/CN=raaf.nikhef.nl</dn>
+        <access_level>3</access_level>     
+    </user>
+
+	<user>
+		<dn>/O=GRID-FR/C=FR/O=CNRS/OU=LPC/CN=Dorine Fouossong</dn>
+		<access_level>3</access_level>
+	</user>
+
+	<user>
+		<dn>/C=IT/O=INFN/OU=Personal Certificate/L=CNAF/CN=giuseppe misurelli</dn>
+		<access_level>3</access_level>
+	</user>
+
+	<user>
+		<dn>/C=GR/O=HellasGrid/OU=auth.gr/CN=Christos Triantafyllidis</dn>
+		<access_level>3</access_level>
+	</user>
+
+	<user>
+		<dn>/DC=cz/DC=cesnet-ca/O=CESNET/CN=mailman.egi.eu</dn>
+		<access_level>3</access_level>
+	</user>
+	
+	<!-- Central EGI security-monitoring-nagios -->
+	<user>
+		<dn>/C=GR/O=HellasGrid/OU=afroditi.hellasgrid.gr/CN=srv-102.afroditi.hellasgrid.gr</dn>
+		<access_level>3</access_level>
+	</user>
+	
+	<user>
+		<dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=gilles mathieu</dn>
+		<access_level>4</access_level>
+	</user>
+	
+	<user>
+		<dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=john casson</dn>
+		<access_level>4</access_level>
+	</user>
+
+        
+	<!-- Requested Nov 2010 -->
+	<user>
+			<dn>/O=Grid/O=NorduGrid/OU=nsc.liu.se/CN=Leif Nixon</dn>
+			<access_level>3</access_level>
+	</user>
+
+	<user>
+			<dn>/DC=cz/DC=cesnet-ca/O=CESNET/CN=pakiti.egi.eu</dn>
+			<access_level>3</access_level>
+	</user>
+
+	<user>
+		   <dn>/C=UK/O=eScience/OU=CLRC/L=DL/CN=david meredith</dn>
+		   <access_level>4</access_level>
+	</user>
+
+	 <!-- Requested Nov 2011 -->
+	<user>
+			<dn>/C=IT/O=INFN/OU=Personal Certificate/L=CNAF/CN=Tiziana Ferrari</dn>
+			<access_level>3</access_level>
+	</user>
+	
+	<!-- Requested April 2012 by Carlos Fuentes Bermejo [carlos.fuentes@REDIRIS.ES] -->
+	<user>
+		<dn>/DC=es/DC=irisgrid/O=rediris/CN=rt.rediris.es</dn>
+		<access_level>3</access_level>
+	</user>
+	
+	<user>
+		<dn>/DC=es/DC=irisgrid/O=rediris/CN=rt-ngi.rediris.es</dn>
+		<access_level>3</access_level>
+	</user>
+	
+	<!-- Requested Nov 2013 -->
+	<user>
+		   <dn>/C=UK/O=eScience/OU=CLRC/L=RAL/CN=james mccarthy</dn>
+		   <access_level>4</access_level>
+	</user>
+	
+</authorised_users>
+

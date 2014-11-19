@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="BROADCASTING_START_DOWNTIME" type="xs:string" />
+
+  <xs:element name="DESCRIPTION">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="DOWNTIME">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="PRIMARY_KEY" />
+        <xs:element ref="SITENAME" />
+        <xs:element ref="HOSTNAME" />
+		<xs:element ref="SERVICE_TYPE" />		
+        <xs:element ref="HOSTED_BY" />
+		<xs:element ref="GOCDB_PORTAL_URL"/>
+        <xs:element ref="SEVERITY" />
+        <xs:element ref="DESCRIPTION" />
+        <xs:element ref="INSERT_DATE" />
+        <xs:element ref="START_DATE" />
+        <xs:element ref="END_DATE" />
+        <xs:element ref="REMINDER_START_DOWNTIME" />
+        <xs:element ref="BROADCASTING_START_DOWNTIME" />
+      </xs:sequence>
+      <xs:attribute name="ID" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="PRIMARY_KEY" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="CLASSIFICATION" use="required">
+        <xs:simpleType>
+          <xs:restriction base="xs:NMTOKEN">
+            <xs:enumeration value="SCHEDULED" />
+            <xs:enumeration value="UNSCHEDULED" />
+          </xs:restriction>
+        </xs:simpleType>
+      </xs:attribute>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="END_DATE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+  
+  <xs:element name="GOCDB_PORTAL_URL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+  
+  <xs:element name="HOSTED_BY">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="HOSTNAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="INSERT_DATE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="PRIMARY_KEY">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="REMINDER_START_DOWNTIME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="DOWNTIME" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+  
+  <xs:element name="SERVICE_TYPE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+  
+  <xs:element name="SEVERITY">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SITENAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="START_DATE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+</xs:schema>

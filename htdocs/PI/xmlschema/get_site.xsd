@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ALARM_EMAIL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="CERTIFICATION_STATUS">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="CONTACT_EMAIL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="CONTACT_TEL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="COUNTRY">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="COUNTRY_CODE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="DOMAIN">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="DOMAIN_NAME" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="DOMAIN_NAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="GIIS_URL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="GOCDB_PORTAL_URL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="HOME_URL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="LATITUDE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="LONGITUDE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="OFFICIAL_NAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="PRIMARY_KEY">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="PRODUCTION_INFRASTRUCTURE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="SITE" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="ROC">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SHORT_NAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SITE">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="PRIMARY_KEY" />
+        <xs:element ref="SHORT_NAME" />
+        <xs:element ref="OFFICIAL_NAME" />
+        <xs:element ref="SITE_DESCRIPTION" />
+        <xs:element ref="GOCDB_PORTAL_URL" />
+        <xs:element ref="HOME_URL" />
+        <xs:element ref="CONTACT_EMAIL" />
+        <xs:element ref="CONTACT_TEL" />
+        <xs:element ref="ALARM_EMAIL" />
+        <xs:element ref="GIIS_URL" />
+        <xs:element ref="TIER" />
+        <xs:element ref="COUNTRY_CODE" />
+        <xs:element ref="COUNTRY" />
+        <xs:element ref="ROC" />
+        <xs:element ref="SUBGRID" />
+        <xs:element ref="PRODUCTION_INFRASTRUCTURE" />
+        <xs:element ref="CERTIFICATION_STATUS" />
+        <xs:element ref="TIMEZONE" />
+        <xs:element ref="LATITUDE" />
+        <xs:element ref="LONGITUDE" />
+        <xs:element ref="DOMAIN" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="ID" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="PRIMARY_KEY" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="NAME" type="xs:string" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SITE_DESCRIPTION">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="SUBGRID">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="TIER">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="TIMEZONE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+</xs:schema>

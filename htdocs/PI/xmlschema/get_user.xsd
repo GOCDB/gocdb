@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <xs:element name="ACTIVE" type="xs:string" />
+
+  <xs:element name="APPROVED" type="xs:string" />
+
+  <xs:element name="CERTDN">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="DESCRIPTION" type="xs:string" />
+
+  <xs:element name="EGEE_USER">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="FORENAME" />
+        <xs:element ref="SURNAME" />
+        <xs:element ref="TITLE" />
+        <xs:element ref="DESCRIPTION" />
+		<xs:element ref="GOCDB_PORTAL_URL"/>
+        <xs:element ref="EMAIL" />
+        <xs:element ref="TEL" />
+        <xs:element ref="WORKING_HOURS_START" />
+        <xs:element ref="WORKING_HOURS_END" />
+        <xs:element ref="CERTDN" />
+        <xs:element ref="APPROVED" />
+        <xs:element ref="ACTIVE" />
+        <xs:element ref="HOMESITE" />
+        <xs:element ref="USER_ROLE" maxOccurs="unbounded" />
+      </xs:sequence>
+      <xs:attribute name="USER_ID" type="xs:NMTOKEN" use="required" />
+      <xs:attribute name="PRIMARY_KEY" type="xs:NMTOKEN" use="required" />
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="EMAIL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="ENTITY_TYPE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="FORENAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="GOCDB_PORTAL_URL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+  
+  <xs:element name="HOMESITE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="ON_ENTITY">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="results">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element ref="EGEE_USER" maxOccurs="unbounded" />
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="SURNAME">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="TEL">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="TITLE">
+    <xs:complexType mixed="true" />
+  </xs:element>
+
+  <xs:element name="USER_ROLE">
+    <xs:complexType mixed="true">
+      <xs:choice>
+        <xs:element ref="ENTITY_TYPE" />
+        <xs:element ref="ON_ENTITY" />
+        <xs:element ref="USER_ROLE" />
+      </xs:choice>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:element name="WORKING_HOURS_END" type="xs:string" />
+
+  <xs:element name="WORKING_HOURS_START" type="xs:string" />
+
+</xs:schema>

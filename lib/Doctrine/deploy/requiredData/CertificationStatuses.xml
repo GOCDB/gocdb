@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+  <certification_status grid_id="0">
+    <name key="primary">Candidate</name>
+  </certification_status>
+  <certification_status grid_id="0">
+    <name key="primary">Certified</name>
+  </certification_status>
+  <certification_status grid_id="0">
+    <name key="primary">Closed</name>
+  </certification_status>
+  <certification_status grid_id="0">
+    <name key="primary">Suspended</name>
+  </certification_status>
+  <certification_status grid_id="0">
+    <name key="primary">Uncertified</name>
+  </certification_status>
+</results>

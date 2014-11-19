@@ -1,0 +1,122 @@
+GOCDB-5.3 Release (TBC) 
+  - Add Multiple Endpoints per Service: https://wiki.egi.eu/wiki/GOCDB/Release4/Development/MultipleEndpointsPerService 
+
+GOCDB-5.2 Release (13 Feb 2014) 
+ - Extensibility mechanism (allows custom key=value pairs to be defined on sites and services with PI query support using the 'extensions' PI parameter).
+ - Notification Service to email relevant users on role requests, approvals and denials. (RT6223)
+ - IPv6 addresses added to sites and services.https://wiki.egi.eu/wiki/GOCDB/Release4/Development/ipv6support  
+ - Extended unit tests for new format PI methods.
+ - Multiple updates to user documentation.
+ - Continued prototyping of multiple endpoints per service.
+ - EUDAT Migrated from GOCDB4 to GOCDB5.2. 
+
+GOCDB-5.1 Release (26 Nov 2013)
+- New get_downtime_nested_services method. RT1017
+- Get_roc_contacts now includes a link field for GOCDB_PORTAL_URL  RT1423
+- New service endpoint filters in web portal services view. Can now filter by 
+  NGI, CertificationStatus and show closed sites. RT4465
+- Security fix applied to get_site_contacts, get_roc_contacts BUGFIX
+- Get_egee_contacts modified to return results as previously did nothing. 
+  Does support the ability for the user to supply a parameter called project. 
+  At the moment this is hardcoded to EGI. But deleting that line will allow this 
+  method to work for Prace,EUDAT etc. BUGFIX
+- New active & imminent downtime view in portal. Users can see currently 
+  active downtimes and planned downtimes for the next 1,2,3 or 4 weeks. RT1092
+
+GOCDB-5 Release (02-10-2013)
+- Support for multiple RDBMSs using Doctrine ORM
+- Extensive refactoring at all layers to use Doctrine entities.
+- By design: the 'external' interfaces (PI and portal GUI) have few outwardly visible 
+  changes to be backward compatible. 
+- Simpler backend Role model impl (role classifications dropped) so that 
+  a role over an OwnedEntity has a single role type name and a single status (PENDING or GRANTED) 
+- New Authentication abstraction layer to abstract x509 details from the underlying
+  code and facilitate new authentication mechanisms such as un/pw via well defined 
+  IAuthProvider and IAuthMananger interfaces. 
+- Support for multiple Projects, e.g. EGI, EUDAT, PRACE in a single GOCDB instance. 
+- Scoping extensions to allow resources to be tagged with multiple scope-tags 
+  with PI support provided using the &scope and &scope_match parameters. 
+- New GOCDB admin interface to simplify daily operational tasks such as deleting 
+  sites and moving sites to different NGIs.  
+
+GOCDB-4.4 Release (10-09-2012)
+This release addresses a number of smaller RT feature requests, UI harmonisation and a great deal of refactoring.
+ - UI refresh: UI consistent throughout with modern style 
+ - New view + filter: All Service Endpoints
+ - New view: Show all NGIs
+ - Updated pages to show single: Users, Roles, NGIs
+ - New links to add a downtime from the Site page and Service Endpoint page.
+ - Clear and consistent downtime viewing
+ - "End Downtime Now" button added
+ - Ongoing downtimes can't be deleted
+ - Removed Regional / Central Portal differentiation
+ - Deleted objects no longer visible
+ - Search Improvements: search returns results for NGIs, users by forename + surname.
+ - Roles can't be requested twice
+ - Role requests can be cancelled
+ - Support for Siteless Endpoints as requested by EUDAT.
+ 	- Siteless endpoints don't have a hosting site, only a hosting Service Group.
+ 	- Siteless endpoints can be put under downtime
+ - Majority of code paths consistently use MVC and services layer
+ 	- Code complexity reduced, easier to understand and modify.
+ - Cleaned code: removed many unused files + methods that have been replaced by MVC + Services 
+ - Fixed RT tickets: 1099, 1097, 1210, 1016, 1095, 4270, 1096, 3249, 3635, 3521.
+ 
+GOCDB-4.3 Release (10-04-2012)
+This release includes further refactoring work, support for service groups (previously known as Virtual Sites) and a new authorization model supporting more finely grained roles.
+- New roles and role handling mechanisms as per https://wiki.egi.eu/wiki/GOCDB/Release4/Development/NewRoles
+- Added support for service groups (previously known as Virtual Sites) as per https://wiki.egi.eu/wiki/GOCDB/Release4/Development/VSites
+- Further updates to the database abstraction layer e.g. DBConnection, PromAPIFactory
+- Introduction of domain objects and a stateless and transactional service facade layer
+- New page to view all sites, allows filtering by parameters
+- New page to view downtimes
+- Added rules to certification status changes (e.g. a site can't go from Closed->Certified)
+
+GOCDB-4.2 Release (25-11-2011) 
+This release includes scoping of sites and service endpoints. 
+A GOCDB instance (whether central or regional) needs to differentiate between EGI and non-EGI data. To do this, new tagging logic had been added so that new data sc
+oping rules can be applied to GOCDB entities, allowing Sites, Services and other data to be identified as either ‘EGI,’ ‘Local’ or ‘some other’ scoped data. This is
+ a regionalisation prerequisite. By default, sites and services are defined in the 'EGI' scope. 
+- Scoping of sites and service endpoints - Nov 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=2789
+
+GOCDB-4.1 Release (01-11-2011)
+This release sees some changes to the to the PROM database APIs and to the MVC view logic. 
+Importantly, the PLSQL package name has been updated from 'pgridcore' to 'pgridcore2' to reflect these changes. 
+New functionality has also been added. Details below. 
+
+- Refactored PROM db API. The underlying database code has been refactored for greater flexibility and stability:
+  All changes to the database are now atomic, allowing transactions to be explicitly demarcated within business routines. 
+  Database interactions are now performed through a formalised PROM interface API that is agnostic of the database implementation, currently only implemented for Or
+acle.
+  (Before v4.1, the GOCDB PROM API did not allow transaction demarcation in high level business operations, such as
+  inserting a site and adding new SE because explicit commits and rollbacks were declared in low-level PLSQL functions 
+  including fnNewLink(), fnUpdateObject(), fnDeleteObject(), fnDeleteLink(). Consequently, any business operation that 
+  invoked these functions multiple times in a single processing unit was not atomic, and gocdb 4.0 could leave the db 
+  in an inconsistent state if an error occurred since full rollback was not possible (e.g. on site creation Savannah 74860). 
+  This almost certainly accounted for a number of previously reported data inconsistencies. Refactoring the database logic 
+  was therefore high priority and is a regionalisation pre-requisite; either all or none of the data should be committed 
+  to the central gocdb when publishing from regional to central). 
+- Refactored much of the code base initially to support scoping but also to provide more flexibility long term, especially the MVC view layer. 
+  This will make future change requests easier to fulfill and gives us more flexibility to make user interface improvements.
+  (Before v4.1, GOCDB used a generic module for drawing all forms and GUI components such as tables. This module defined a single 
+  code path which was too rigid, making it difficult to deal with form/table requirements on a per-page basis). 
+- New View Site page (to support scoping and to address user issues with the current View Site page) 
+- New View Service Endpoint page
+- Added current UTC time to new Downtime page
+- Refactored database code to be atomic (required to implement scoping) - Oct 2011 (release into production end Oct/start-Nov) https://rt.egi.eu/rt/Ticket/Display.h
+tml?id=943 (details below)
+- New Downtime interface much improved, moved to single page + can now select all endpoints under one site - September 2011
+- Moved Site, User and Endpoint manipulation to new MVC architecture ready to support scoping - July 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=943
+- Fixed a few long term bugs with adding and editing sites and users - July 2011
+- Increased front end responsiveness - July 2011
+- Cleaned old roles - June 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=931
+- Added a URL field to service endpoint objects to support UNICORE services - May 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=975 (note, even though a single U
+RL field is displayed per Endpoint, a new Gocdb_Endpoint_Location entity was created in order to link multiple service endpoint locations per SE if this becomes a f
+uture requirement - see Media:GocdbGlue2UnicoreV2.pdf).
+- Add a "my site" link in the main menu - May 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=1091 (note, this uses the new controller-per page with templates desi
+gn as summarized below).
+- Record Certification Status History - May 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=939
+    Allow authorised operators to suspend sites at central level - March 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=1094
+    Show when a site entered the current production status - March 2011 https://wiki.egi.eu/wiki/GOCDB/PI/get_cert_status_date
+    Consolidated Wiki and all documentation. 
+

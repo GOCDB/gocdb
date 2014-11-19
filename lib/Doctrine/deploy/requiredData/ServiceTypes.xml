@@ -1,0 +1,387 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+    <SERVICE_TYPE TYPE_ID="2" PRIMARY_KEY="4597G0">
+        <SERVICE_TYPE_NAME>CE</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] The LCG Compute Element. Currently the standard CE within the gLite middleware stack. Soon to be replaced by the CREAM CE. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="4" PRIMARY_KEY="4796G0">
+        <SERVICE_TYPE_NAME>UI</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[User service] The User Interface. Can be installed by users but more commonly installed by a site. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="55001" PRIMARY_KEY="5547G0">
+        <SERVICE_TYPE_NAME>APEL</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] This is a "dummy" Service Type to enable the monitoring tests for APEL accounting. All EGEE sites must have one instance of this Service Type, associated with a CE. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="11" PRIMARY_KEY="5057G0">
+        <SERVICE_TYPE_NAME>RB</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[OBSOLETE Central service] The LCG Resource Broker is now obsolete and is not supported. Please avoid using this middleware service. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="12" PRIMARY_KEY="5205G0">
+        <SERVICE_TYPE_NAME>WMS</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service] gLite Workload Management Service. Acts as the broker for matching user jobs to available computing resources. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="17" PRIMARY_KEY="5277G0">
+        <SERVICE_TYPE_NAME>gLite-CE</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[OBSOLETE Site service] The gLite Compute Element is now obsolete and is not supported. Please avoid using this middleware service. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="43" PRIMARY_KEY="5529G0">
+        <SERVICE_TYPE_NAME>Local-LFC</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] An instance of the gLite file catalogue which holds entries for files owned by a particular VO, at your site. NOTE: An LFC can be both Central and Local. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="45" PRIMARY_KEY="4966G0">
+        <SERVICE_TYPE_NAME>Top-BDII</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service] This is the "top-level BDII". These collect data from site-BDIIs and publish the data. Only a few instances per region are required. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="24" PRIMARY_KEY="5387G0">
+        <SERVICE_TYPE_NAME>VOMS</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service]  VO Management System. Part of the authentication and authorization system. This service only needs to be installed on the request of a VO. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="25" PRIMARY_KEY="5411G0">
+        <SERVICE_TYPE_NAME>VO-box</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] The gLite VO box allows a VO to run their own services at a site. This service only needs to be installed on the request of a VO. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="41" PRIMARY_KEY="5521G0">
+        <SERVICE_TYPE_NAME>Central-LFC</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service] An instance of the gLite file catalogue which holds entries for all files owned by a particular VO. NOTE: An LFC can be both Central and Local. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="6" PRIMARY_KEY="4076G0">
+        <SERVICE_TYPE_NAME>Classic-SE</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[OBSOLETE Site service] The Classic Storage Element is now obsolete and is not supported. Please avoid using this middleware service. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="9" PRIMARY_KEY="4450G0">
+        <SERVICE_TYPE_NAME>MON</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] The gLite MonBox hosts the site R-GMA services. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="3" PRIMARY_KEY="4862G0">
+        <SERVICE_TYPE_NAME>Site-BDII</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] This service collects and publishes site's data for the Information System. All sites MUST install one Site-BDII. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="44" PRIMARY_KEY="5183G0">
+        <SERVICE_TYPE_NAME>MyProxy</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service] The My Proxy service is part of the authentication and authorization system. Often installed by sites installing the WMS service. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="26" PRIMARY_KEY="5396G0">
+        <SERVICE_TYPE_NAME>FTS</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service] The gLite File Transfer Service manages the transfer of files between sites. This service only needs to be installed on the request of a VO. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="10" PRIMARY_KEY="5659G0">
+        <SERVICE_TYPE_NAME>RGMA-IC</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service] This is the Registry for an R-GMA service. There will only ever be a few of these per grid. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="105001" PRIMARY_KEY="5661G0">
+        <SERVICE_TYPE_NAME>CREAM-CE</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] The CREAM Compute Element is the new CE within the gLite middleware stack. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="34" PRIMARY_KEY="5682G0">
+        <SERVICE_TYPE_NAME>ARC-CE</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] The Compute Element within the ARC middleware stack. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="35" PRIMARY_KEY="5687G0">
+        <SERVICE_TYPE_NAME>FTM</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] gLite File Transfer Monitor. Monitors the FTS service at a site. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="49" PRIMARY_KEY="5690G0">
+        <SERVICE_TYPE_NAME>AMGA</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service] gLite metadata catalogue. This service only needs to be installed on the request of a VO. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="33" PRIMARY_KEY="5358G0">
+        <SERVICE_TYPE_NAME>LB</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service]  gLite Logging and Bookkeeping. Usually installed by sites running a WMS. One LB service can support several WMS instances. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="32" PRIMARY_KEY="5430G0">
+        <SERVICE_TYPE_NAME>SRM</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] Storage Resource Manager. Mandatory for all sites running an SRM enabled storage element. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="155003" PRIMARY_KEY="22395G0">
+        <SERVICE_TYPE_NAME>ngi.SAM</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Regional Service] NGI-level SAM monitoring box</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="35398G0">
+        <SERVICE_TYPE_NAME>OpsTool</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service] generic service representing an operation tool (topology repository, dashboard, helpdesk system...)</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="5000" PRIMARY_KEY="26665G0">
+        <SERVICE_TYPE_NAME>gLite-APEL</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] The gLite-APEL hosts the site Accounting client (3.2 replacement of the MonBox)</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID="205008" PRIMARY_KEY="35107G0">
+        <SERVICE_TYPE_NAME>globus-GRIDFTP</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] storage endpoint and data transfer service for the Globus middleware stack</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="33566G0">
+        <SERVICE_TYPE_NAME>GRAM5</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] job submission service for Globus version 5.x (GRAM5)</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="33568G0">
+        <SERVICE_TYPE_NAME>globus-GSISSHD</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] certificate based interactive login service for the Globus middleware stack</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="33570G0">
+        <SERVICE_TYPE_NAME>unicore6.Registry</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central service] All UNICORE services register here; clients ask the registry for available services in the Grid. Normally one Registry per Grid infrastructure which collects URLs of services.</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="33611G0">
+        <SERVICE_TYPE_NAME>unicore6.Gateway</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site service] Sits in front of one or more UNICORE services as a gateway to the internet. Normally one Gateway per site.</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="43764G0">
+        <SERVICE_TYPE_NAME>gLExec</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>gLExec is a lightweight gatekeeper that takes local policy into account for authentication and authorization. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48749G0">
+        <SERVICE_TYPE_NAME>egi.APELRepository</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central APEL Repository</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48754G0">
+        <SERVICE_TYPE_NAME>egi.MetricsPortal</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central metrics portal</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48756G0">
+        <SERVICE_TYPE_NAME>egi.OpsPortal</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central operations portal</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48757G0">
+        <SERVICE_TYPE_NAME>egi.SAM</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central SAM monitoring</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48837G0">
+        <SERVICE_TYPE_NAME>emi.ARGUS</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Site Service] The Argus Authorization Service renders XACML authorization decisions for distributed services, based on policies</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="46605G0">
+        <SERVICE_TYPE_NAME>SGAS</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>SGAS accounting service</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48755G0">
+        <SERVICE_TYPE_NAME>egi.NetworkPortal</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central network portal</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="47522G0">
+        <SERVICE_TYPE_NAME>unicore6.StorageManagement</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Provides an abstract filesystem-like view on a storage resource. A Storage Management Service (SMS) can be created by a Storage Factory or can be configured statically way by a config file.</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="47523G0">
+        <SERVICE_TYPE_NAME>unicore6.ServiceOrchestrator</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Handles dispatching of a workflow's atomic jobs, and brokering. Normally there is one per grid infrastructure.</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48750G0">
+        <SERVICE_TYPE_NAME>egi.AccountingPortal</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central Accounting Portal</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48751G0">
+        <SERVICE_TYPE_NAME>egi.GGUS</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central GGUS</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48752G0">
+        <SERVICE_TYPE_NAME>egi.GOCDB</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central GOCDB</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48753G0">
+        <SERVICE_TYPE_NAME>egi.MSGBroker</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central message broker</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48758G0">
+        <SERVICE_TYPE_NAME>egi.GRIDVIEW</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central Gridview</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48759G0">
+        <SERVICE_TYPE_NAME>egi.GSTAT</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[Central Service] The central GStat</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="48760G0">
+        <SERVICE_TYPE_NAME>ngi.OpsPortal</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[NGI Service] A regional operations portal</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="47520G0">
+        <SERVICE_TYPE_NAME>unicore6.TargetSystemFactory</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Used as an entry-point for submitting single jobs. It can create Target System Services (TSSs) and submit jobs to those TSSs</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="47521G0">
+        <SERVICE_TYPE_NAME>unicore6.StorageFactory</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Creates StorageManagement instances. A user can create dynamic storage management services for own purposes with it. Often used to provide filespace during workflow execution. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="47524G0">
+        <SERVICE_TYPE_NAME>unicore6.WorkflowFactory</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Used as an entrypoint for submitting workflow jobs. The Workflow factory is creating workflow instances and can submit workflows to them. It is the workflow submission equivalent to the Target System Factory used for single job submission. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="47525G0">
+        <SERVICE_TYPE_NAME>unicore6.UVOSAssertionQueryService</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Provides data and user information via the SAML standard as needed for authorization and environment customization.</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="51428G0">
+        <SERVICE_TYPE_NAME>globus-RLS</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>The globus Replica Location Service</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="49953G0">
+        <SERVICE_TYPE_NAME>site.SAM</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>A SAM instance for a site</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="50438G0">
+        <SERVICE_TYPE_NAME>QCG.Computing</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>QosCosGrid (QCG) Basic Execution Service (BES) with advanced reservation support</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="50439G0">
+        <SERVICE_TYPE_NAME>QCG.Notification</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>QosCosGrid (QCG) notification middleware component using a brokered version of the OASIS WS-Notification standard</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="50440G0">
+        <SERVICE_TYPE_NAME>QCG.Broker</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>QosCosGrid (QCG) resource management and brokering service</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="50441G0">
+        <SERVICE_TYPE_NAME>CUSTOM_SERVICE</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>A proprietary service type</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="51933G0">
+        <SERVICE_TYPE_NAME>dg.CREAM-CE</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>CREAM gateway to Desktop Grid</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="51934G0">
+        <SERVICE_TYPE_NAME>dg.ARC-CE</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>ARC gateway to Desktop Grid</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="51935G0">
+        <SERVICE_TYPE_NAME>dg.TargetSystemFactory</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>UNICORE gateway to Desktop Grid</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="49952G0">
+        <SERVICE_TYPE_NAME>vo.SAM</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>A SAM instance for a Virtual Organization</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="56676G0">
+        <SERVICE_TYPE_NAME>CUSTOM.ch.cern.frontier.FroNTier</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>FroNTier N-Tier data distribution system. http://frontier.cern.ch/</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="55729G0">
+        <SERVICE_TYPE_NAME>org.irods.irods3</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>iRODS is a distributed file storage system</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="56653G0">
+        <SERVICE_TYPE_NAME>org.squid-cache.Squid</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Squid proxy server / web cache. www.squid-cache.org</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="67596G0">
+        <SERVICE_TYPE_NAME>egi.AppDB</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>EGI Applications Database</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="67597G0">
+        <SERVICE_TYPE_NAME>egi.TMP</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>EGI Training Marketplace</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="67598G0">
+        <SERVICE_TYPE_NAME>egi.CRM</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>EGI Customer Relation Manager</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="67599G0">
+        <SERVICE_TYPE_NAME>egi.VODashboard</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>EGI VO Dashboard</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="67603G0">
+        <SERVICE_TYPE_NAME>org.ogf.bes.BESFactory</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>[site] BES job submission entry point.</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="71936G0">
+        <SERVICE_TYPE_NAME>net.perfSONAR.Bandwidth</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>perfSONAR (Bandwidth Test)</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="71937G0">
+        <SERVICE_TYPE_NAME>net.perfSONAR.Latency</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>perfSONAR (Latency Test)</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65745G0">
+        <SERVICE_TYPE_NAME>CUSTOM.UserPortal</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Generic user portal </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65746G0">
+        <SERVICE_TYPE_NAME>CUSTOM.RequestTracker</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Generic request tracker</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65747G0">
+        <SERVICE_TYPE_NAME>CUSTOM.pl.plgrid.Bazaar</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>SLA negotiation system between users and resource providers from NGI_PL grid </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65748G0">
+        <SERVICE_TYPE_NAME>CUSTOM.pl.plgrid.BazaarSAT</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Bazaar Site Admin Toolkit from NGI_PL grid</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65749G0">
+        <SERVICE_TYPE_NAME>CUSTOM.pl.plgrid.BAT.agent</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Service for collecting accounting data from NGI_PL grid </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65750G0">
+        <SERVICE_TYPE_NAME>CUSTOM.pl.plgrid.QStorMan.UserInterface</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>A service to provide a user of the grid system with a certain level of quality from NGI_PL grid </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65751G0">
+        <SERVICE_TYPE_NAME>CUSTOM.pl.plgrid.KeyFS</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC> Key File System (KeyFS) service, installed on UI (User Interface) machines can provide a user with the grid credentials, from NGI_PL grid</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65752G0">
+        <SERVICE_TYPE_NAME>pl.cyfronet.gridspace2</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Virtual laboratory framework enabling researchers to conduct virtual experiments on Grid-based resources. </SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65753G0">
+        <SERVICE_TYPE_NAME>pl.psnc.MigratingDesktop</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Client framework for accessing the Grid resources</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65754G0">
+        <SERVICE_TYPE_NAME>pl.cyfronet.InSilicoLab</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>InSilicoLab portal instance</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65755G0">
+        <SERVICE_TYPE_NAME>com.adaptivecomputing.TorqueClient</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>TORQUE (Tera-scale Open-source Resource and QUEue manager) is a resource manager providing control over batch jobs and distributed compute nodes. Torque is based on OpenPBS.</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="65756G0">
+        <SERVICE_TYPE_NAME>org.vinetoolkit.VinePortal</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Vine toolkit portal instance</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="72819G0">
+        <SERVICE_TYPE_NAME>eu.egi.cloud.vm-management.occi</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>EGI cloud service type</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="72820G0">
+        <SERVICE_TYPE_NAME>eu.egi.cloud.storage-management.cdmi</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>EGI cloud service type</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="72821G0">
+        <SERVICE_TYPE_NAME>eu.egi.cloud.vm-metadata.marketplace</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>EGI cloud service type</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="75506G0">
+        <SERVICE_TYPE_NAME>XRootD</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>XRootD storage implementation which supports xroot protocol</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="75507G0">
+        <SERVICE_TYPE_NAME>XRootD.Redirector</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Data access redirection service using XRoot protocol</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="75508G0">
+        <SERVICE_TYPE_NAME>ch.cern.cvmfs.stratum.0</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Service component (stratum.0) of CernVM file system</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="75509G0">
+        <SERVICE_TYPE_NAME>ch.cern.cvmfs.stratum.1</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Service component (stratum.1) of CernVM file system</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="74211G0">
+        <SERVICE_TYPE_NAME>eu.egi.cloud.accounting</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Service has required cloud accounting services</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="76260G0">
+        <SERVICE_TYPE_NAME>eu.egi.MPI</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>Defines an MPI test probe independent of a grid information system. This service will allow testing of sites which are offering MPI functionality but are not broadcasting it, or sites which are broadcasting the MPI/Parallel support in an incorrect way</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="75220G0">
+        <SERVICE_TYPE_NAME>eu.egi.cloud.information.bdii</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>FedCloud specific LDAP server which speaks GLUE2</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="80088G0">
+        <SERVICE_TYPE_NAME>uk.ac.gridpp.vac</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>A virtual machine factory system for operating clusters at grid sites</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+    <SERVICE_TYPE TYPE_ID=" " PRIMARY_KEY="82439G0">
+        <SERVICE_TYPE_NAME>org.nordugrid.arex</SERVICE_TYPE_NAME>
+        <SERVICE_TYPE_DESC>ARC version 3</SERVICE_TYPE_DESC>
+    </SERVICE_TYPE>
+</results>

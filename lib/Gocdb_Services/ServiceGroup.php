@@ -1,0 +1,633 @@
+<?php
+namespace org\gocdb\services;
+/* Copyright © 2011 STFC
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+require_once __DIR__ . '/AbstractEntityService.php';
+require_once __DIR__ . '/Role.php';
+require_once __DIR__ . '/RoleConstants.php';
+
+/**
+ * GOCDB Stateless service facade (business routnes) for Service Group objects.
+ * The public API methods are transactional.
+ *
+ * @author John Casson
+ * @author David Meredith
+ * @author George Ryall
+ */
+class ServiceGroup extends AbstractEntityService{
+    
+    /*
+     * All the public service methods in a service facade are typically atomic -
+     * they demarcate the tx boundary at the start and end of the method
+     * (getConnection/commit/rollback). A service facade should not be too 'chatty,'
+     * ie where the client is required to make multiple calls to the service in
+     * order to fetch/update/delete data. Inevitably, this usually means having
+     * to refactor the service facade as the business requirements evolve.
+     *
+     * If the tx needs to be propagated across different service methods,
+     * consider refactoring those calls into a new transactional service method.
+     * Note, we can always call out to private helper methods to build up a
+     * 'composite' service method. In doing so, we must access the same DB
+     * connection (thus maintaining the atomicity of the service method).
+     */
+
+    /**
+     * Finds a single service group by ID and returns its entity
+     * @param int $id the service group ID
+     * @return ServiceGroup a service group object
+     */
+    public function getServiceGroup($id) {
+    	$dql = "SELECT s FROM ServiceGroup s
+				WHERE s.id = :sGroupId";
+
+    	$serviceGroup = $this->em
+        	->createQuery($dql)
+        	->setParameter('sGroupId', $id)
+        	->getSingleResult();
+
+    	return $serviceGroup;
+    }
+
+    /**
+     * Returns an array of all Service Group entities and joined scopes. 
+     * in the DB.
+     * @return array An array of ServiceGroup objects
+     */
+	public function getServiceGroups($scope=NULL, $keyname=NULL, $keyvalue=NULL) {
+        $qb = $this->em->createQueryBuilder();
+		$qb->select('s', 'sc')->from('ServiceGroup', 's')
+           ->leftJoin('s.scopes', 'sc'); 
+           
+        if($scope != null && $scope != '%%'){
+			    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
+                   ->setParameter(':scope', $scope);            
+        }
+        
+        if($keyname != null && $keyname != '%%'){
+            if($keyvalue == null || $keyvalue == ''){
+                $keyvalue='%%';
+            }
+        
+            $sQ = $this->em->createQueryBuilder();
+            $sQ ->select('s1'.'.id')
+                ->from('ServiceGroup', 's1')
+                ->join('s1.serviceGroupProperties', 'sp')
+                ->andWhere($sQ->expr()->andX(
+                        $sQ->expr()->eq('sp.keyName', ':keyname'),
+                        $sQ->expr()->like('sp.keyValue', ':keyvalue')));
+        
+            $qb ->andWhere($qb->expr()->in('s', $sQ->getDQL()));
+            $qb ->setParameter(':keyname', $keyname)
+                ->setParameter(':keyvalue', $keyvalue);
+        
+        }
+
+        $query = $qb->getQuery();
+        $serviceGroups = $query->execute();
+        return $serviceGroups;
+	}
+
+	/**
+	 * Returns the downtimes linked to a service group.
+	 * @param integer $id Service Group ID
+	 * @param integer $dayLimit Limit to downtimes that are only $dayLimit old (can be null) */
+	public function getDowntimes($id, $dayLimit) {
+		if($dayLimit != null) {
+			$di = \DateInterval::createFromDateString($dayLimit . 'days');
+			$dayLimit = new \DateTime();
+			$dayLimit->sub($di);
+		}
+
+		/*$dql = "SELECT d FROM Downtime d
+				WHERE d.id IN (
+					SELECT d2.id FROM ServiceGroup s
+					JOIN s.services ses
+					JOIN ses.downtimes d2
+					WHERE s.id = :sGroupId
+				)
+				AND (
+					:dayLimit IS NULL
+					OR d.startDate > :dayLimit
+				)";*/
+        $dql = "SELECT d FROM Downtime d
+				WHERE d.id IN (
+					SELECT d2.id FROM ServiceGroup s
+					JOIN s.services ses
+                    JOIN ses.endpointLocations els
+					JOIN els.downtimes d2
+					WHERE s.id = :sGroupId
+				)
+				AND (
+					:dayLimit IS NULL
+					OR d.startDate > :dayLimit
+				)";
+
+		$downtimes = $this->em
+			->createQuery($dql)
+			->setParameter('sGroupId', $id)
+			->setParameter('dayLimit', $dayLimit)
+			->getResult();
+
+		return $downtimes;
+	}
+
+	/**
+	 *
+	 * @return array of all properties for a service group
+	 */
+	public function getProperties($id) {
+	    $dql = "SELECT p FROM ServiceGroupProperty p WHERE p.parentServiceGroup_id = :ID";
+	    $properties = $this->em->createQuery ( $dql )->setParameter ( 'ID', $id )->getOneOrNullResult ();
+	    return $properties;
+	}
+	
+	/**
+	 *
+	 * @return a single service group property
+	 */
+	public function getProperty($id) {
+	    $dql = "SELECT p FROM ServiceGroupProperty p WHERE p.id = :ID";
+	    $property = $this->em->createQuery ( $dql )->setParameter ( 'ID', $id )->getOneOrNullResult ();
+
+	    return $property;
+	}
+	
+	/**
+	 * Edits a service group
+	 * Returns the updated service group
+	 *
+	 * Accepts an array $newValues as a parameter. $newVales' format is as follows:
+	 * <pre>
+	 *  Array
+	 *  (
+	 *      [MONITORED] => Y
+	 *      [NAME] => NGI_AEGIS_SERVICES
+	 *      [DESCRIPTION] => NGI_AEGIS Core Services
+	 *      [EMAIL] => grid-admin@ipb.ac.rs
+	 *
+     *  )
+	 * </pre>
+	 * @param ServiceGroup The service group to update
+	 * @param array $newValues Array of updated data, specified above.
+	 * @param User The current user
+	 * return ServiceGroup The updated service group
+	 */
+	public function editServiceGroup(\ServiceGroup $sg, $newValues, \User $user = null) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
+           throw new \Exception("You don't have permission over $sg");  
+        }
+		$this->validate($newValues['SERVICEGROUP']);
+        
+        //check there are the required number of scopes specified
+        $this->checkNumberOfScopes($newValues['Scope_ids']);
+        
+		//Explicity demarcate our tx boundary
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			if($newValues['MONITORED'] == "Y") {
+				$monitored = true;
+			} else {
+				$monitored = false;
+			}
+			$sg->setMonitored($monitored);
+
+			$sg->setName($newValues['SERVICEGROUP']['NAME']);
+			$sg->setDescription($newValues['SERVICEGROUP']['DESCRIPTION']);
+			$sg->setEmail($newValues['SERVICEGROUP']['EMAIL']);
+
+			// Update the service group's scope
+            // firstly remove all existing scope links
+            $scopes = $sg->getScopes();
+            foreach($scopes as $s) {
+                $sg->removeScope($s);
+            }
+          
+            //find then link each scope specified to the site
+            foreach($newValues['Scope_ids'] as $scopeId){
+                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
+                $scope = $this->em->createQuery($dql)
+                             ->setParameter(1, $scopeId)
+                             ->getSingleResult();
+                $sg->addScope($scope);
+            }
+
+			$this->em->merge($sg);
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $ex) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $ex;
+		}
+		return $sg;
+	}
+
+
+    /**
+     * Get an array of Role names granted to the user that permit the requested 
+     * action on the given ServiceGroup. If the user has no roles that 
+     * permit the requested action, then return an empty array. 
+     * <p>
+     * Suppored actions: EDIT_OBJECT 
+     * GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE  
+     * 
+     * @param string $action @see \Action 
+     * @param \ServiceGroup $sg
+     * @param \User $user
+     * @return array of RoleName string values that grant the requested action  
+     * @throws \LogicException if action is not supported or is unknown 
+     */
+    public function authorizeAction($action, \ServiceGroup $sg, \User $user = null){
+        if(!in_array($action, \Action::getAsArray())){
+            throw new \LogicException('Coding Error - Invalid action not known'); 
+        } 
+        if(is_null($user)){
+            return array(); 
+        }
+        if(is_null($user->getId())){
+            return array(); 
+        }
+        $roleService = new \org\gocdb\services\Role(); // to inject
+        $roleService->setEntityManager($this->em);
+        
+        if ($action == \Action::EDIT_OBJECT) {
+            $requiredRoles = array(\RoleTypeName::SERVICEGROUP_ADMIN);
+            $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($sg, $user);
+            $enablingRoles = array_intersect($requiredRoles, array_unique($usersActualRoleNames));
+            
+        } else if ($action == \Action::GRANT_ROLE ||
+                $action == \Action::REJECT_ROLE || $action == \Action::REVOKE_ROLE) {
+            $requiredRoles = array(\RoleTypeName::SERVICEGROUP_ADMIN);
+            $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($sg, $user);
+            $enablingRoles = array_intersect($requiredRoles, array_unique($usersActualRoleNames));
+            
+        } else {
+            throw new \LogicException('Unsupported Action');
+        }
+        if ($user->isAdmin()) {
+            $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;
+        }
+        return array_unique($enablingRoles);
+    }
+    
+
+	/**
+	 * Validates the user inputted service group data against the
+	 * checks in the gocdb_schema.xml.
+	 * @param array $sgData containing all the fields for a GOCDB_USER
+	 *                       object
+	 * @throws \Exception If the site data can't be
+	 *                    validated. The \Exception message will contain a human
+	 *                    readable description of which field failed validation.
+	 * @return null */
+	private function validate($sgData, $type=NULL) {
+	    if($type==NULL){
+	        $type='service_group';
+	    }
+		require_once __DIR__.'/Validate.php';
+		$serv = new \org\gocdb\services\Validate();
+		foreach($sgData as $field => $value) {
+			$valid = $serv->validate($type, $field, $value);
+			if(!$valid) {
+				$error = "$field contains an invalid value: $value";
+				throw new \Exception($error);
+			}
+		}
+	}
+
+	/**
+	 * Attaches services to a service group
+	 * @param ServiceGroup $sg The service group
+	 * @param array $ses An array of Service s
+	 * @param User $user The user making the request
+	 */
+	public function addServices(\ServiceGroup $sg, $ses, \User $user = null) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
+           throw new \Exception("You don't have permission over $sg");  
+        }
+		$this->em->getConnection()->beginTransaction();
+		try {
+			foreach($ses as $se) {
+				$sg->addService($se);
+			}
+			$this->em->merge($sg);
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $ex) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $ex;
+		}
+	}
+
+	/**
+	 * Removes a service from a service group
+	 * @param \ServiceGroup $sg The service group
+	 * @param \Service $se The service 
+	 */
+	public function removeService(\ServiceGroup $sg, \Service $se, \User $user = null) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        
+		//$this->editAuthorization($sg, $user);
+        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
+           throw new \Exception("You don't have permission over $sg");  
+        }
+		$this->em->getConnection()->beginTransaction();
+		try {
+			$sg->removeService($se);
+			$this->em->merge($sg);
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $ex) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $ex;
+		}
+	}
+
+	/**
+	 * Array
+	 * (
+	 *     [Scope] => 2
+	 *     [SERVICEGROUP] => Array
+	 *     (
+	 *         [MONITORED] => Y
+	 *         [NAME] => TEST
+	 *         [DESCRIPTION] => This is a test
+	 *         [EMAIL] => JCasson@hithere.com
+	 *     )
+	 * )
+	 * @param array $values Service group values, defined above
+	 * @param \User $user User making the request
+	 */
+	public function addServiceGroup($values, \User $user = null) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+                
+        // Any registered user can create a service group. 
+        if(is_null($user)) {
+	        throw new \Exception("Unregistered users can't create service groups.");
+	    }
+        if(is_null($user->getId())) {
+	        throw new \Exception("Unregistered users can't create service groups.");
+	    }
+        
+	    $this->em->getConnection()->beginTransaction();
+	    $this->validate($values['SERVICEGROUP']);
+        $this->uniqueCheck($values['SERVICEGROUP']['NAME']);
+        
+        //check there are the required number of scopes specified
+        $this->checkNumberOfScopes($values['Scope_ids']);
+        
+        try {
+            $sg = new \ServiceGroup();
+            $sg->setName($values['SERVICEGROUP']['NAME']);
+            $sg->setDescription($values['SERVICEGROUP']['DESCRIPTION']);
+            $sg->setEmail($values['SERVICEGROUP']['EMAIL']);
+
+            // Set monitored
+            if ($values['MONITORED'] == "Y") {
+                $sg->setMonitored(true);
+            } else {
+                $sg->setMonitored(false);
+            }
+            
+            // Set the scopes
+            foreach($values['Scope_ids'] as $scopeId){
+                $dql = "SELECT s FROM Scope s WHERE s.id = :id";
+                $scope = $this->em->createQuery($dql)
+                    ->setParameter('id', $scopeId)
+                    ->getSingleResult();
+                $sg->addScope($scope);
+            }
+
+            $this->em->persist($sg);
+            
+            $sgAdminroleType = $this->em->createQuery("SELECT rt FROM RoleType rt WHERE rt.name = ?1")
+                ->setParameter(1, \RoleTypeName::SERVICEGROUP_ADMIN)
+                ->getSingleResult();
+            $newRole = new \Role($sgAdminroleType, $user, $sg, \RoleStatus::GRANTED);
+            $this->em->persist($newRole);
+                
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+
+        return $sg;
+	}
+
+	/**
+	 * Is the passed service group name unique?
+	 * @param unknown_type $name
+	 */
+	public function uniqueCheck($name) {
+	    $dql = "SELECT sg FROM ServiceGroup sg
+	            WHERE sg.name = :name";
+	    $sgs = $this->em->createQuery($dql)
+	       ->setParameter('name', $name)
+	       ->getResult();
+
+	    if(count($sgs) > 0) {
+	        throw new \Exception("A service group named $name already exists");
+	    }
+	}
+
+	/**
+	 * Deletes a service group
+	 * @param \ServiceGroup $sg
+	 * @param \User $user
+	 * @param $isTest when unit testing this allows for true to be supplied and this method
+     * will not attempt to archive the sg which can easily cause errors for sg objects without
+     * a full set of information  
+	 */
+	public function deleteServiceGroup(\ServiceGroup $sg, \User $user = null, $isTest=false) {
+        require_once __DIR__ . '/../DAOs/ServiceGroupDAO.php';
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        
+        //$this->editAuthorization($sg, $user);
+        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
+           throw new \Exception("You don't have permission over $sg");  
+        }
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $sgDAO = new \ServiceGroupDAO;
+            $sgDAO->setEntityManager($this->em);
+            // TODO If this SG contains siteless services, delete them
+            
+            //Archive site - if this is a test then don't archive            
+            if($isTest==false){
+                //Create entry in Audit table
+                $sgDAO->addServiceGroupToArchive($sg, $user);
+            }
+            //remove service group
+            $sgDAO->removeServiceGroup($sg);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+	}
+    
+    private function checkNumberOfScopes($scopeIds){
+        require_once __DIR__ . '/Config.php';
+        $configService = new \org\gocdb\services\Config();
+        $minumNumberOfScopes = $configService->getMinimumScopesRequired('service_group');
+        
+        if(sizeof($scopeIds)<$minumNumberOfScopes){
+            $s = "s";
+            if($minumNumberOfScopes==1){
+                $s="";
+            }
+            throw new \Exception("A service group must have at least " . $minumNumberOfScopes . " scope".$s." assigned to it.");
+        }
+    }
+    
+    /**
+     * This method will check that a user has edit permissions over a service group before allowing a user to add, edit or delete
+     * a site property.
+     *
+     * @param \User $user
+     * @param \ServiceGroup $serviceGroup
+     * @throws \Exception
+     */
+    public function validatePropertyActions(\User $user, \ServiceGroup $serviceGroup){
+        // Check to see whether the user has a role that covers this site
+        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $serviceGroup, $user))==0){
+            throw new \Exception("You don't have permission over ". $serviceGroup->getName());
+        }
+    }
+    
+    /** TODO
+     * Before adding or editing a key pair check that the keyname is not a reserved keyname
+     *
+     * @param String $keyname
+     */
+    private function checkNotReserved(\User $user, \ServiceGroup $serviceGroup, $keyname){
+        //TODO Function: This function is called but not yet filled out with an action
+    }
+    
+    /**
+     * Adds a key value pair to a service group
+     * @param $values
+     * @param \User $user
+     * @throws Exception
+     * @return \ServiceGroupProperty
+     */
+    public function addProperty($values,\User $user = null) {
+        // Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+        $this->validate($values['SERVICEGROUPPROPERTIES'], 'servicegroupproperty');
+        
+        $keyname = $values ['SERVICEGROUPPROPERTIES'] ['NAME'];
+        $keyvalue = $values ['SERVICEGROUPPROPERTIES'] ['VALUE'];
+        $serviceGroupID = $values ['SERVICEGROUPPROPERTIES'] ['SERVICEGROUP'];
+        $serviceGroup = $this->getServiceGroup($serviceGroupID);
+        $this->checkNotReserved($user, $serviceGroup, $keyname);
+        
+        $this->em->getConnection ()->beginTransaction ();    
+        try {
+            $serviceGroupProperty = new \ServiceGroupProperty ();
+            $serviceGroupProperty->setKeyName ( $keyname );
+            $serviceGroupProperty->setKeyValue ( $keyvalue );
+            $serviceGroup = $this->em->find ( "ServiceGroup", $serviceGroupID );
+            $serviceGroup->addServiceGroupPropertyDoJoin ( $serviceGroupProperty );
+            $this->em->persist ( $serviceGroupProperty );
+    
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $e ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $e;
+        }
+        return $serviceGroupProperty;
+    }
+    
+    /**
+     * Deletes a service group property
+     *
+     * @param \ServiceGroup $serviceGroup
+     * @param \User $user
+     * @param \SiteProperty $prop
+     */
+    public function deleteServiceGroupProperty(\ServiceGroup $serviceGroup,\User $user = null,\ServiceGroupProperty $prop) {
+        // Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+    
+        $this->em->getConnection ()->beginTransaction ();
+        try {
+            // Site is the owning side so remove elements from site.
+            $serviceGroup->getServiceGroupProperties ()->removeElement ( $prop );
+            $this->em->remove ( $prop );
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $e ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $e;
+        }
+    }
+    
+    /**
+     * Edits a service group property
+     *
+     * @param \ServiceGroup $serviceGroup
+     * @param \User $user
+     * @param \ServiceGroupProperty $prop
+     * @param $newValues
+     *        	
+     */
+    public function editServiceGroupProperty(\ServiceGroup $serviceGroup,\User $user = null,\ServiceGroupProperty $prop, $newValues) {
+        // Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+    
+        $this->validate($newValues['SERVICEGROUPPROPERTIES'], 'servicegroupproperty');
+        
+        $keyname = $newValues ['SERVICEGROUPPROPERTIES'] ['NAME'];
+        $keyvalue = $newValues ['SERVICEGROUPPROPERTIES'] ['VALUE'];
+        
+        $this->checkNotReserved($user, $serviceGroup, $keyname);        
+         
+        $this->em->getConnection ()->beginTransaction ();
+    
+        try {    
+            // Set the site propertys new member variables
+            $prop->setKeyName ($keyname);
+            $prop->setKeyValue ($keyvalue);
+    
+            $this->em->merge ( $prop );
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $ex ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $ex;
+        }
+    }
+
+}

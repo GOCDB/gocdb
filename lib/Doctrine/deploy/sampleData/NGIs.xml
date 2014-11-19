@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+  <NGI PRIMARY_KEY="33001G0" NAME="NGI_CH">
+    <PRIMARY_KEY>33001G0</PRIMARY_KEY>
+    <NAME>NGI_CH</NAME>
+    <OBJECT_ID>20724</OBJECT_ID>
+    <DESCRIPTION/>
+    <EMAIL>ngi-contact@swing-grid.ch</EMAIL>
+    <GGUS_SU/>
+    <ROD_EMAIL/>
+    <HELPDESK_EMAIL/>
+    <SECURITY_EMAIL>cert@switch.ch</SECURITY_EMAIL>
+    <SITE_COUNT>7</SITE_COUNT>
+  </NGI>
+</results>

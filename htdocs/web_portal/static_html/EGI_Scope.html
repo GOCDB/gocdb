@@ -1,0 +1,99 @@
+<div class="rightPageContainer">
+    <h1>Data Scoping</h1>
+    <br />
+    <div class="Help_And_Documentation">
+        <h2>What does being visible to EGI mean?</h2>
+        <p>
+            If a site or service endpoint is marked as being visible to EGI 
+            then they will be exposed to the central operational tools for 
+            monitoring and will appear in the operations portal. 
+        </p>
+        <p>
+            Un-ticking the 'EGI' scope makes the selected object invisible to EGI 
+            and the central operation tools (it will not show in the 
+            central dashboard and it will not be monitored centrally). This can be 
+            useful if you wish to hide certain parts of your infrastructure from 
+            EGI but still have the information stored and accessed from the same 
+            GOCDB instance. 
+        </p>
+        <p>
+            For more information on data visibility and for <b>Regional</b> monitoring 
+            of your non-EGI sites and services, please see 
+            <a href="https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Data_Visibility">
+                Data Visibility 
+            </a> on the GOCDB wiki. 
+        </p>    
+        <p>
+            Note that exposing a site / service endpoint as EGI does not 
+            override the production status or certification status fields.
+
+            For example if a site isn't marked as production it won't be monitored
+            centrally even if it's marked as visible to EGI.
+        </p> 
+
+        <br/>
+        <br/>
+        <h2>More Information on Scope Tags</h2>
+        
+        <ul>
+            <li>
+                <p>    
+                    Scope tags are used to selectively tag data objects. In doing this, 
+                    PI queries can return only those objects (Sites, Services, Endpoints) 
+                    that define a particular tag or set of tags (example PI queries): 
+                </p>
+                <ol>
+                    <li>
+                        <pre>?method=get_site&scope=EGI</pre>
+                        (Fetch all sites tagged as 'EGI') 
+                    </li>   
+                    <li>
+                        <pre>?method=get_site&scope=EGI,ProjX&scope_match=all</pre>
+                        (Fetch all sites tagged with <b>both</b> 'EGI' and ProjX) 
+                    </li> 
+                    <li>
+                        <pre>?method=get_site&scope=EGI,ProjX&scope_match=any</pre>
+                        (Fetch all sites tagged with <b>either</b> 'EGI' or ProjX) 
+                    </li> 
+                     <li>
+                        <pre>?method=get_site&scope=</pre>
+                        (Fetch <b>all sites</b> regardless of scope tags) 
+                    </li> 
+                </ol>
+            </li>
+            <li>
+                <p>
+                    Scope tags are non-exclusive, allowing a single object to be tagged zero 
+                    or many times. Scope tags are added and removed by the GOCDB admins 
+                    while normal users can only select scope tags from the available list. 
+                    New scope tags can be requested/configured. 
+                </p>
+            </li>
+            <li>
+                <p>
+                    No special semantics are placed on scope tags within GOCDB itself - they 
+                    are simply tags. Rather, it is up to dependent systems to interpret the 
+                    implications of tagging an object with scopeX and/or scopeY. 
+                </p>
+            </li>
+            <li>
+                <p>
+                    In EGI, scope tags are used to name different Grids/Projects. For example, 
+                    a Site could be tagged with both the 'EGI' and 'ProjX' tags. Dependent 
+                    systems should interpret this to mean that the site delivers resources 
+                    to both projects. Conversely, a single 'Local' tag can be used to 
+                    declare that this site does not provide any resources to either EGI or Projx.  
+                </p>
+            </li>
+            <li>
+                <p>
+                    Unlike scope tags, Projects are used as a means to cascade Project level 
+                    roles/permissions over child NGIs grouped under the Project. A single 
+                    NGI can be grouped by different Projects. In doing this, Project level 
+                    roles are cascaded from all parent Projects to that NGI.
+                </p>
+            </li>
+        </ul> 
+
+    </div>
+</div>

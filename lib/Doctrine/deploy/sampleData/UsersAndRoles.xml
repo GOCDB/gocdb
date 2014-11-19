@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+
+
+    <EGEE_USER USER_ID="911" PRIMARY_KEY="6672G0">
+        <FORENAME>Griffin</FORENAME>
+        <SURNAME>Peterson</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION>
+        </DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6653&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>sample@sample.com</EMAIL>
+        <TEL>+49 7247 82 0000</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Griffin Peterson</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>SWITCH</HOMESITE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+
+    <EGEE_USER USER_ID="5605035" PRIMARY_KEY="6345G0">
+        <FORENAME>Amy</FORENAME>
+        <SURNAME>Wong</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>sample@sample.com</EMAIL>
+        <TEL>+49 040 0000 1763</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Amy Wong</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>T3_CH_PSI</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>CIC Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="154512" PRIMARY_KEY="784G0">
+        <FORENAME>Neville</FORENAME>
+        <SURNAME>Longbottom</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>sample@sample.com</EMAIL>
+        <TEL>+49 040 0000 1763</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Neville Longbottom</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>UZH</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>CIC Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+
+    <EGEE_USER USER_ID="154512" PRIMARY_KEY="784G0">
+        <FORENAME>Donna</FORENAME>
+        <SURNAME>Moss</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>sample@sample.com</EMAIL>
+        <TEL>+49 040 0000 1763</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Donna Moss</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>UNIBE-LHEP</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="154512" PRIMARY_KEY="7544G0">
+        <FORENAME>Richard</FORENAME>
+        <SURNAME>Winters</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>sample@sample.com</EMAIL>
+        <TEL>+49 040 0000 1763</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Richard Winters</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>UNIGE-DPNC</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+</results>

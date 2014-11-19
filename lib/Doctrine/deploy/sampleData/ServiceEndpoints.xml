@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+    <SERVICE_ENDPOINT PRIMARY_KEY="44657G0">
+        <PRIMARY_KEY>44657G0</PRIMARY_KEY>
+        <HOSTNAME>lodur.switch.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=26149&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=switch/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=SWITCH/CN=lodur.switch.ch</HOSTDN>
+        <HOST_OS>SL5</HOST_OS>
+        <DESCRIPTION>LFC</DESCRIPTION>
+        <HOST_ARCH>64 bit</HOST_ARCH>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>Local-LFC</SERVICE_TYPE>
+        <HOST_IP>130.59.111.49</HOST_IP>
+        <SCOPE>Local</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>N</IN_PRODUCTION>
+        <NODE_MONITORED>N</NODE_MONITORED>
+        <SITENAME>SWITCH</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="2109G0">
+        <PRIMARY_KEY>2109G0</PRIMARY_KEY>
+        <HOSTNAME>feronia.switch.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=2109&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=switch/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=SWITCH/CN=feronia.switch.ch</HOSTDN>
+        <DESCRIPTION>DPM on SL 5.5</DESCRIPTION>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>SRM</SERVICE_TYPE>
+        <HOST_IP>130.59.111.43</HOST_IP>
+        <SCOPE>Local</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>N</IN_PRODUCTION>
+        <NODE_MONITORED>N</NODE_MONITORED>
+        <SITENAME>SWITCH</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="75083G0">
+        <PRIMARY_KEY>75083G0</PRIMARY_KEY>
+        <HOSTNAME>sgas.smscg.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=119910&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=switch/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=SWITCH/CN=sgas.smscg.ch</HOSTDN>
+        <HOST_OS>Debian 6.0.6</HOST_OS>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>SGAS</SERVICE_TYPE>
+        <HOST_IP>130.59.10.134</HOST_IP>
+        <SCOPE>Local</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>N</IN_PRODUCTION>
+        <NODE_MONITORED>N</NODE_MONITORED>
+        <SITENAME>SWITCH</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="43873G0">
+        <PRIMARY_KEY>43873G0</PRIMARY_KEY>
+        <HOSTNAME>bdii.lhep.unibe.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=25494&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
+        <HOST_IP>130.92.139.210</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>UNIBE-LHEP</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="34729G0">
+        <PRIMARY_KEY>34729G0</PRIMARY_KEY>
+        <HOSTNAME>ce.lhep.unibe.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=21615&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>ARC-CE</SERVICE_TYPE>
+        <HOST_IP>130.92.139.200</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>N</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>UNIBE-LHEP</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="78880G0">
+        <PRIMARY_KEY>78880G0</PRIMARY_KEY>
+        <HOSTNAME>ce01.lhep.unibe.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=122757&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>ARC-CE</SERVICE_TYPE>
+        <HOST_IP>130.92.140.201</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>N</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>UNIBE-LHEP</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="43872G0">
+        <PRIMARY_KEY>43872G0</PRIMARY_KEY>
+        <HOSTNAME>dpm.lhep.unibe.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=25493&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>SRM</SERVICE_TYPE>
+        <HOST_IP>130.92.139.210</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>UNIBE-LHEP</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="67379G0">
+        <PRIMARY_KEY>67379G0</PRIMARY_KEY>
+        <HOSTNAME>nordugrid.unibe.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=115564&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
+        <HOST_IP>130.92.9.145</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>UNIBE-ID</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL>ldap://nordugrid.unibe.ch:2135/mds-vo-name=UNIBE-ID,o=grid</URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="3065G0">
+        <PRIMARY_KEY>3065G0</PRIMARY_KEY>
+        <HOSTNAME>gridvm2.unige.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=3065&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <DESCRIPTION>DPM SE head node and site BDII</DESCRIPTION>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
+        <HOST_IP>192.33.218.112</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>UNIGE-DPNC</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="2003G0">
+        <PRIMARY_KEY>2003G0</PRIMARY_KEY>
+        <HOSTNAME>bdii.lcg.cscs.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=2003&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <HOSTDN>lcg.cscs.ch</HOSTDN>
+        <DESCRIPTION>site BDII</DESCRIPTION>
+        <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
+        <HOST_IP>148.187.67.3</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>CSCS-LCG2</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="43681G0">
+        <PRIMARY_KEY>43681G0</PRIMARY_KEY>
+        <HOSTNAME>cream01.lcg.cscs.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=25355&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=switch/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=ETH Zuerich/CN=cream01.lcg.cscs.ch</HOSTDN>
+        <DESCRIPTION>gLite CREAM-CE</DESCRIPTION>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>CREAM-CE</SERVICE_TYPE>
+        <HOST_IP>148.187.66.43</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>CSCS-LCG2</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="29212G0">
+        <PRIMARY_KEY>29212G0</PRIMARY_KEY>
+        <HOSTNAME>cream02.lcg.cscs.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=18924&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=switch/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=ETH Zuerich/CN=cream02.lcg.cscs.ch</HOSTDN>
+        <DESCRIPTION>gLite CREAM-CE</DESCRIPTION>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>CREAM-CE</SERVICE_TYPE>
+        <HOST_IP>148.187.66.44</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>CSCS-LCG2</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="83671G0">
+        <PRIMARY_KEY>83671G0</PRIMARY_KEY>
+        <HOSTNAME>cream04.lcg.cscs.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=124819&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=switch/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=ETH Zuerich/CN=cream04.lcg.cscs.ch</HOSTDN>
+        <HOST_OS>Scientific Linux 6.4</HOST_OS>
+        <HOST_ARCH>x86_64</HOST_ARCH>
+        <BETA>Y</BETA>
+        <SERVICE_TYPE>CREAM-CE</SERVICE_TYPE>
+        <HOST_IP>148.187.66.46</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>N</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>CSCS-LCG2</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="66553G0">
+        <PRIMARY_KEY>66553G0</PRIMARY_KEY>
+        <HOSTNAME>cream03.lcg.cscs.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=115094&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=switch/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=ETH Zuerich/CN=cream03.lcg.cscs.ch</HOSTDN>
+        <DESCRIPTION>gLite CREAM-CE</DESCRIPTION>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>CREAM-CE</SERVICE_TYPE>
+        <HOST_IP>148.187.66.45</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>CSCS-LCG2</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="1992G0">
+        <PRIMARY_KEY>1992G0</PRIMARY_KEY>
+        <HOSTNAME>t3bdii.psi.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=1992&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <DESCRIPTION>site BDII</DESCRIPTION>
+        <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
+        <HOST_IP>192.33.123.26</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>T3_CH_PSI</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="1991G0">
+        <PRIMARY_KEY>1991G0</PRIMARY_KEY>
+        <HOSTNAME>t3se01.psi.ch</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=1991&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <DESCRIPTION>dCache SE</DESCRIPTION>
+        <SERVICE_TYPE>SRM</SERVICE_TYPE>
+        <HOST_IP>192.33.123.24</HOST_IP>
+        <SCOPE>EGI</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>T3_CH_PSI</SITENAME>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+
+</results>
