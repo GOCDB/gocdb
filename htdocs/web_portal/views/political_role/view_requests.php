@@ -153,7 +153,7 @@
                          $entityId = $request->getOwnedEntity()->getId();
                          $entityName = $request->getOwnedEntity()->getName();  
                          if($request->getOwnedEntity() instanceof \ServiceGroup){
-                             $entityClassName = 'ServiceGroup';
+                             $entityClassName = 'Service_Group';
                          } elseif($request->getOwnedEntity() instanceof \Site){
                              $entityClassName = 'Site'; 
                          } elseif($request->getOwnedEntity() instanceof \NGI){
