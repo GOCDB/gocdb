@@ -37,6 +37,7 @@ local.properties
 
 # Netbeans: https://github.com/github/gitignore/blob/master/Global/NetBeans.gitignore 
 # =====================
+nbproject/
 nbproject/private/
 build/
 nbbuild/
