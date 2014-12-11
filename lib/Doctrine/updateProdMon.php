@@ -1,6 +1,7 @@
 <?php
 
 /**
+ * Patch to db to update Mon=T for all Prod=T services
  */
 use Doctrine\ORM\EntityManager; 
 
@@ -27,16 +28,16 @@ require dirname(__FILE__).'/bootstrap_doctrine.php';
         if($service->getProduction() && ($service->getMonitored()==FALSE)){
             // exclude closed sites 
             if($service->getParentSite()->getCertificationStatus()->getName() != 'Closed'){
-                echo 'Updating service: '.$service->getId().' '.$service->getHostName()."\n"; 
-                        //" Prod: [".$service->getProduction()."] Mon: [".$service->getMonitored()."] \n"; 
-                //$service->setMonitored(TRUE); 
-                //$em->persist($service);	
-                ++$s_count; 
+                if ($service->getServiceType()->getName() != 'VOMS' && $service->getServiceType()->getName() != 'emi.ARGUS') {
+                    echo 'Service: '.$service->getId().' '.$service->getHostName()."\n"; 
+                    $service->setMonitored(TRUE); 
+                    $em->persist($service);	
+                    ++$s_count; 
+                }
             }
         } 
 	}
 	//Write changes to db
-	//$em->flush();
-    die('Forced die, would have updated ['.$s_count."] services \n"); 
+	$em->flush();
+    die('Done. Updated ['.$s_count."] services \n"); 
 	
-?>
