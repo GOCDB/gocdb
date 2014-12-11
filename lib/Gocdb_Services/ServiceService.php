@@ -328,10 +328,12 @@ class ServiceService extends AbstractEntityService{
         $this->checkNumberOfScopes($newValues['Scope_ids']);
 
         // validate production/monitored combination 
-        if ($newValues['PRODUCTION_LEVEL'] == "Y" && $newValues['IS_MONITORED'] != "Y") {
-            throw new \Exception("If Production flat is set to True, Monitored flag must also be True"); 
-        }
-         
+        if ($st != 'VOMS' && $st != 'emi.ARGUS') {
+                if ($newValues['PRODUCTION_LEVEL'] == "Y" && $newValues['IS_MONITORED'] != "Y") {
+                    throw new \Exception("If Production flat is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)"); 
+                }
+        } 
+
     	try {
     		// Set the service's member variables
             $se->setHostName($newValues['SE']['HOSTNAME']);
@@ -563,8 +565,10 @@ class ServiceService extends AbstractEntityService{
         $this->checkNumberOfScopes($values['Scope_ids']);
 
         // validate production/monitored combination 
-        if ($values['PRODUCTION_LEVEL'] == "Y" && $values['IS_MONITORED'] != "Y") {
-            throw new \Exception("If Production flat is set to True, Monitored flag must also be True"); 
+        if ($st != 'VOMS' && $st != 'emi.ARGUS') { 
+                if ($values['PRODUCTION_LEVEL'] == "Y" && $values['IS_MONITORED'] != "Y") {
+                    throw new \Exception("If Production flat is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)"); 
+                }
         }
         
         $se = new \Service();
