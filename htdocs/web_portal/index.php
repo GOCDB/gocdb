@@ -24,6 +24,7 @@
 //die(); 
 require_once __DIR__ . "/../../lib/Doctrine/bootstrap.php";
 require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
+//require_once __DIR__.'/GocContextPath.php';
 
 // Set the timezone
 date_default_timezone_set("UTC");
@@ -453,7 +454,7 @@ function Get_Static_Page_Name() {
  * if the page name isn't specified then return a blank string */
 function Get_Static_Page_Contents($Page_Name) {
     require_once __DIR__.'/components/Draw_Components/draw_page_components.php';
-    $htmlDir = "static_html";
+    $htmlDir = __DIR__."/static_html";
     $Available_Static_Pages = Get_Directory_Contents($htmlDir);
     if(!isset($Available_Static_Pages[$Page_Name])) {
         return "";

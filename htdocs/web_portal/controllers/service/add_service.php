@@ -21,7 +21,7 @@
  * limitations under the License.
  /*======================================================*/
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
-require_once '../web_portal/components/Get_User_Principle.php';
+require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 require_once __DIR__.'/../utils.php';
 
 /**
