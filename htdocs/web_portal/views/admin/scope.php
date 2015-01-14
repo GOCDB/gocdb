@@ -41,17 +41,17 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Admin_Edit_Scope&id=<?php echo $id ?>">
-                    <img src="img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
                     <span>Edit</span>
                 </a>
             </div>
             <div style="float: right;">
-                <script type="text/javascript" src="javascript/confirm.js"></script>
+                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                    href="index.php?Page_Type=Admin_Remove_Scope&id=<?php echo $id?>">
-                    <img src="img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -67,7 +67,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             There <?php if($ngiCount==1){echo "is";}else{echo "are";}?> <?php if ($ngiCount == 0){echo "no";} else{echo $ngiCount;} ?> NGI<?php if($ngiCount != 1) echo "s"?> with this scope
         </span>
 <!--        
-        <img src="img/NGI.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/NGI.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         -->
         
         <?php if ($ngiCount != 0): ?>
@@ -88,7 +88,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
-                                    <img class="flag" style="vertical-align: middle" src="img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
+                                    <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
                                     <span>&nbsp;&nbsp;</span><?php echo $ngi->getName(); ?>
                                 </a>
                             </span>
@@ -110,7 +110,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <span class="header listHeader">
             There <?php if($siteCount==1){echo "is";}else{echo "are";}?> <?php if ($siteCount == 0){echo "no";} else{echo $siteCount;} ?> site<?php if($siteCount != 1) echo "s"?> with this scope
         </span>
-        <img src="img/site.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="decoration" />
         <?php if($siteCount > 0): ?>
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
@@ -152,7 +152,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <span class="header listHeader">
             There <?php if($serviceGroupsCount==1){echo "is";}else{echo "are";}?> <?php if ($serviceGroupsCount == 0){echo "no";} else{echo $serviceGroupsCount;} ?> service group<?php if($serviceGroupsCount != 1) echo "s"?> with this scope
         </span>
-        <img src="img/virtualSite.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="decoration" />
         <?php if($serviceGroupsCount>0): ?>
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
@@ -193,7 +193,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <span class="header listHeader">
             There <?php if($serviceCount==1){echo "is";}else{echo "are";}?> <?php if ($serviceCount == 0){echo "no";} else{echo $serviceCount;} ?> service<?php if($serviceCount != 1) echo "s"?> with this scope
         </span>
-        <img src="img/service.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration" />
         <?php if($serviceCount>0): ?>
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">

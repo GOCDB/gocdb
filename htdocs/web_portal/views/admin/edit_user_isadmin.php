@@ -8,7 +8,7 @@
     a GOCDB administrator.
     <br />
     <br />
-    <script type="text/javascript" src="javascript/confirm.js"></script>
+    <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
     
     <?php if($params['IsAdmin']): ?>
         <form class="inputForm" method="post" action="index.php?Page_Type=Admin_Change_User_Admin_Status" name="editisAdmin">

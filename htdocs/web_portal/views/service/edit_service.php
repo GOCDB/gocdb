@@ -127,7 +127,7 @@ $siteName = $service->getParentSite()->getName();
         <span class="input_name">Scope(s)
             <span class="input_syntax">(Select at least <?php echo $params['numberOfScopesRequired']?>)</span>
         </span>
-        <script type="text/javascript" src="javascript/confirmScope.js"></script>
+        <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirmScope.js"></script>
         <div style="margin-left: 2em">    
         <?php foreach ($params['scopes'] as $scopeArray){ ?>
             <?php

@@ -2,12 +2,12 @@
 $sg = $params['sg']; 
 ?>
 <div class="rightPageContainer">
-    <script language="JavaScript" src="javascript/service_group/remove_se_from_vsite.js"></script>
-    <script language="JavaScript" src="javascript/ajax.js"></script>
-    <script language="JavaScript" src="javascript/jquery-1.7.1.min.js"></script>
+    <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/service_group/remove_se_from_vsite.js"></script>
+    <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/ajax.js"></script>
+    <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/jquery-1.7.1.min.js"></script>
     <div class="rightPageHolder">
         <div class="leftFloat">
-            <img src="img/cross.png" class="pageLogo" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" class="pageLogo" />
         </div>
         <div class="leftFloat" style="width: 50em;">
             <h1 class="vSite">
@@ -31,7 +31,7 @@ $sg = $params['sg'];
             <span class="header listHeader">
                 Services 
             </span>
-            <img src="img/grid.png" class="decoration" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <th class="site_table">Remove</th>
@@ -54,13 +54,13 @@ $sg = $params['sg'];
                 <tr class="site_table_row_<?php echo $num ?>"<?php echo $style; ?> id="<?php echo $se->getId(); ?>Row">
                     <td>
                         <a href="#" onclick="removeSe(<?php echo $se->getId() ?>, <?php echo $sg->getId() ?>, <?php if(is_null($se->getParentSite())) { echo "true"; } else { echo "false"; }?>)">
-                            <img src="img/cross.png" class="centered" />
+                           Remove 
                         </a>
                     </td>
                         
                     <td class="site_table">
                         <div style="background-color: inherit;">
-                            <img src="img/server.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
+                            <img src="<?php echo \GocContextPath::getPath()?>img/server.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
                                     <?php

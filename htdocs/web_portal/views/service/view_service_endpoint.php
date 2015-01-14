@@ -8,7 +8,7 @@ $seId = $se->getId();
 
 <div class="rightPageContainer rounded">
     <div style="float: left; text-align: center;">
-        <img src="img/serviceEndpoint.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/serviceEndpoint.png" class="pageLogo" />
     </div>
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;"><?php echo 'Service Endpoint: '.$endpoint->getName() ?> </h1>
@@ -24,17 +24,17 @@ $seId = $se->getId();
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>">
-                    <img src="img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
                     <span>Edit</span>
                 </a>
             </div>
             <div style="float: right;">
-                <script type="text/javascript" src="javascript/confirm.js"></script>
+                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                     <a onclick="return confirmSubmit()" 
                        href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>">
-                    <img src="img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -48,7 +48,7 @@ $seId = $se->getId();
         <!--  System -->
         <div class="tableContainer rounded" style="width: 100%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Parent Service</span>
-            <img src="img/service.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Name</td><td class="site_table">
@@ -67,7 +67,7 @@ $seId = $se->getId();
         <!--  System -->
         <div class="tableContainer rounded" style="width: 100%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Endpoint</span>
-            <img src="img/serviceEndpoint.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/serviceEndpoint.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Name</td><td class="site_table"><?php echo $endpoint->getName() ?></td>
@@ -94,7 +94,7 @@ $seId = $se->getId();
     <!-- Extension Properties -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Endpoint Extension Properties</span>        
-        <img src="img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -113,10 +113,10 @@ $seId = $se->getId();
 	                <td style="width: 35%;"class="site_table"><?php echo $prop->getKeyName(); ?></td>
 	                <td style="width: 35%;"class="site_table"><?php echo $prop->getKeyValue(); ?></td>
 	                <?php if(!$params['portalIsReadOnly']): ?>	                
-	               	<!--<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId();?>&endpointid=<?php echo $epId;?>"><img height="25px" src="img/pencil.png"/></a></td>-->
-	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId();?>"><img height="25px" src="img/pencil.png"/></a></td>
-	                <!--<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Endpoint_Property&propertyid=<?php echo $prop->getId();?>&endpointid=<?php echo $epId;?>"><img height="25px" src="img/cross.png"/></a></td>-->
-	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Endpoint_Property&propertyid=<?php echo $prop->getId();?>"><img height="25px" src="img/cross.png"/></a></td>
+	               	<!--<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId();?>&endpointid=<?php echo $epId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>-->
+	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+	                <!--<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Endpoint_Property&propertyid=<?php echo $prop->getId();?>&endpointid=<?php echo $epId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>-->
+	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Endpoint_Property&propertyid=<?php echo $prop->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
 	                <?php endif; ?>
 	            </tr>
 	            <?php
@@ -128,7 +128,7 @@ $seId = $se->getId();
 		<?php if(!$params['portalIsReadOnly']): ?>
             <!-- Add new Service Property -->
             <a href="index.php?Page_Type=Add_Endpoint_Property&endpointid=<?php echo $endpoint->getId();?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Property
                 </span>

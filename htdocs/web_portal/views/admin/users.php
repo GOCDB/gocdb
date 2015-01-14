@@ -3,7 +3,7 @@
 
 <div class="rightPageContainer">
     <div style="float: left; text-align: center;">
-        <img src="img/user.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="pageLogo" />
     </div>
     <h1>
         Users
@@ -51,7 +51,7 @@
  
             
             <div class="topMargin leftFloat siteFilter">
-                <input class="middle" type="image" src="img/enter.png" name="image" width="20" height="20">
+                <input class="middle" type="image" src="<?php echo \GocContextPath::getPath()?>img/enter.png" name="image" width="20" height="20">
             </div>
 
         </form>
@@ -64,7 +64,7 @@
                   elseif ($numUsers ==1){echo "1 User";}
                   else                  {echo $numUsers . "Users";} ?>
         </span>
-        <img src="img/user.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
         <?php if ($numUsers!=0): ?>
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
@@ -105,12 +105,12 @@
                                 switch($user->isAdmin()) {
                                     case true:
                                         ?>
-                                        <img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+                                        <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
                                         <?php
                                         break;
                                     case false:
                                         ?>
-                                        <img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+                                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
                                         <?php
                                         break;
                                 }

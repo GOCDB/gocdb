@@ -1,8 +1,8 @@
-<script type="text/javascript" src="javascript/confirm.js"></script>
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
 <!-- onclick="return confirmSubmit()" -->
 <div class="rightPageContainer">
     <div style="float: left; text-align: center;">
-        <img src="img/user.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em; padding-bottom: 0.3em;">
@@ -18,17 +18,17 @@
     <div style="float: right;">
         <div style="float: right; margin-left: 2em;">
             <a href="index.php?Page_Type=Edit_User&id=<?php echo $params['user']->getId()?>">
-                <img src="img/pencil.png" height="25px" style="float: right;" />
+                <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                 <br />
                 <br />
                 <span>Edit</span>
             </a>
         </div>
         <div style="float: right;">
-            <script type="text/javascript" src="javascript/confirm.js"></script>
+            <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
             <a onclick="return confirmSubmit()"
                 href="index.php?Page_Type=Delete_User&id=<?php echo $params['user']->getId() ?>">
-                <img src="img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
                 <br />
                 <br />
                 <span>Delete</span>
@@ -44,7 +44,7 @@
         <!--  User -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">User Details</span>
-            <img src="img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
@@ -84,7 +84,7 @@
     <!-- Roles -->
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Roles</span>
-        <img src="img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Role Type <!--[roleId] --></th>
@@ -100,7 +100,7 @@
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table" style="width: 40%">
                     <div style="background-color: inherit;">
-                        <img src="img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
                         	<?php echo $role->getRoleType()->getName()/*.' ['.$role->getId().']'*/ ?>
                     </div>
                 </td>

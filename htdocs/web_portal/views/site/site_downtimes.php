@@ -19,7 +19,7 @@ $downtimes = $params['downtimes'];
         <!--  Downtimes -->
         <div class="listContainer" style="width: 99.5%; float: left; margin-top: 1em; margin-right: 10px;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">All Downtimes</span>
-            <img src="img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                 	<th class="site_table">Description</th>

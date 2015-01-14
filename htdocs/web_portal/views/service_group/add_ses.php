@@ -1,9 +1,9 @@
 <div class="rightPageContainer">
-    <script language="JavaScript" src="javascript/service_group/add_ses_to_vsite.js"></script>
-    <script language="JavaScript" src="javascript/ajax.js"></script>
+    <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/service_group/add_ses_to_vsite.js"></script>
+    <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/ajax.js"></script>
     <div class="rightPageHolder">
         <div class="leftFloat">
-            <img src="img/add.png" class="pageLogo" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/add.png" class="pageLogo" />
         </div>
         <div class="leftFloat">
             <h1 class="vSite">
@@ -26,7 +26,7 @@
         <?php if($params['siteLessServices']) { ?>
         <div class="leftFloat topMargin2 leftMargin">
             <a href="index.php?Page_Type=Add_New_SE_To_Service_Group&id=<?php echo $params['sg']->getId() ?>">
-                <img class="middleAlign" src="img/add.png" height="25px" width="25px" style="padding-right: 0.5em;" />
+                <img class="middleAlign" src="<?php echo \GocContextPath::getPath()?>img/add.png" height="25px" width="25px" style="padding-right: 0.5em;" />
                 <span class="middleAlign">
                     Add a new service to this service group
                 </span>

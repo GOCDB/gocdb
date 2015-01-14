@@ -7,7 +7,7 @@ $siteProperties = $site->getSiteProperties();
 ?>
 <div class="rightPageContainer">
     <div style="float: left; text-align: center;">
-        <img src="img/site.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="pageLogo" />
     </div>
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;">Site: <?php echo $site->getShortName() ?></h1>
@@ -20,10 +20,10 @@ $siteProperties = $site->getSiteProperties();
     <div style="float: right;">
         <?php if($params['UserIsAdmin']):?>
             <div style="float: right; margin-left: 2em; text-align:center;">
-                <script type="text/javascript" src="javascript/confirm.js"></script>
+                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                     href="index.php?Page_Type=Delete_Site&id=<?php echo $site->getId();?>">
-                    <img src="img/cross.png" height="25px"/>
+                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px"/>
                     <br/>
                     <span>Admin<br>Delete</span>
                 </a>
@@ -31,7 +31,7 @@ $siteProperties = $site->getSiteProperties();
         <?php endif; ?>
         <div style="float: right; margin-left: 2em;">
             <a href="index.php?Page_Type=Edit_Site&id=<?php echo $site->getId() ?>">
-                <img src="img/pencil.png" height="25px" style="float: right;" />
+                <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                 <br />
                 <br />
                 <span>Edit</span>
@@ -46,7 +46,7 @@ $siteProperties = $site->getSiteProperties();
         <!--  Contacts -->
         <div class="tableContainer" style="width: 55%; float: left;" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Contact</span>
-            <img src="img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
@@ -94,7 +94,7 @@ $siteProperties = $site->getSiteProperties();
         <!--  Project Data -->
         <div class="tableContainer" style="width: 42%; float: right;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Project Data</span>
-            <img src="img/project.png" height="25px" style="float: right; padding-right: 0.5em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/project.png" height="25px" style="float: right; padding-right: 0.5em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">NGI/ROC</td><td class="site_table">
@@ -149,7 +149,7 @@ $siteProperties = $site->getSiteProperties();
         <!--  Networking -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Networking</span>
-            <img src="img/network.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/network.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Home URL</td>
@@ -177,7 +177,7 @@ $siteProperties = $site->getSiteProperties();
         <!-- Location Data -->
         <div class="tableContainer" style="width: 42%; float: right;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Location</span>
-            <img src="img/pin.png" height="25px" style="float: right; padding-right: 0.5em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/pin.png" height="25px" style="float: right; padding-right: 0.5em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Country</td><td class="site_table"><?php echo $site->getCountry()->getName() ?></td>
@@ -201,7 +201,7 @@ $siteProperties = $site->getSiteProperties();
     <!--  Site Properties -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Site Extension Properties</span>        
-        <img src="img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -220,8 +220,8 @@ $siteProperties = $site->getSiteProperties();
 	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyName(); ?></td>
 	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyValue(); ?></td>
 	                <?php if(!$portalIsReadOnly): ?>	                
-	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Site_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $site->getId();?>"><img height="25px" src="img/pencil.png"/></a></td>
-	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Site_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $site->getId();?>"><img height="25px" src="img/cross.png"/></a></td>
+	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Site_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $site->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Site_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $site->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
 	                <?php endif; ?>
 	            </tr>
 	            <?php
@@ -233,7 +233,7 @@ $siteProperties = $site->getSiteProperties();
 		<?php if(!$portalIsReadOnly): ?>
             <!-- Add new data Link -->
             <a href="index.php?Page_Type=Add_Site_Property&site=<?php echo $site->getId();?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Properties
                 </span>
@@ -244,7 +244,7 @@ $siteProperties = $site->getSiteProperties();
     <!--  Services -->
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Services</span>
-        <img src="img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Hostname (service type)</th>
@@ -279,12 +279,12 @@ $siteProperties = $site->getSiteProperties();
 				switch($se->getProduction()) {
 					case true:
 						?>
-						<img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+						<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
 						<?php
 						break;
 					case false:
 						?>
-						<img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+						<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
 						<?php
 						break;
 				}
@@ -296,12 +296,12 @@ $siteProperties = $site->getSiteProperties();
 				switch($se->getMonitored()) {
 					case true:
 						?>
-						<img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+						<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
 						<?php
 						break;
 					case false:
 						?>
-						<img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+						<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
 						<?php
 						break;
 				}
@@ -335,7 +335,7 @@ $siteProperties = $site->getSiteProperties();
 		<?php if(!$portalIsReadOnly) :?>
             <!-- Add new Service Link -->
             <a href="index.php?Page_Type=Add_Service&siteId=<?php echo $site->getId();?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Service 
                 </span>
@@ -347,7 +347,7 @@ $siteProperties = $site->getSiteProperties();
     <!--  Users -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users</span>
-        <img src="img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -381,7 +381,7 @@ $siteProperties = $site->getSiteProperties();
         <?php if(!$portalIsReadOnly): ?>
             <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
                 <a href="index.php?Page_Type=Request_Role&id=<?php echo $site->getId();?>">
-                    <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                    <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Request Role
                     </span>
@@ -394,7 +394,7 @@ $siteProperties = $site->getSiteProperties();
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes Affecting <?php echo $site->getShortName()?>'s SEs </span>
         <a href="index.php?Page_Type=Site_Downtimes&id=<?php echo $site->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
-        <img src="img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Description</th>
@@ -424,7 +424,7 @@ $siteProperties = $site->getSiteProperties();
 		<?php if(!$portalIsReadOnly): ?>
             <!-- Add new Downtime Link -->
             <a href="index.php?Page_Type=Add_Downtime&site=<?php echo $site->getId();?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Downtime
                 </span>

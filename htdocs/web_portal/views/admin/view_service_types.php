@@ -14,7 +14,7 @@
         <div style="float: right;">
             <center>
                 <a href="index.php?Page_Type=Admin_Add_Service_Type">
-                <img src="img/add.png" height="25px" />
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="25px" />
                 <br />
                 <span>Add Service <br> Type </span>
                 </a>

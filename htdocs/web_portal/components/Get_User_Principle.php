@@ -24,7 +24,7 @@
 
 /**
  * Get the user's principle ID string.  
- * If using x509 to authenticate uses, this is the DN string of the client certificate.  
+ * If using x509 to authenticate users, this is the DN string of the client certificate.  
  * This method serves as the global integration point for all authentication requests. 
  * If you intend to support a different authentication mechanism, you will need 
  * to modify this method to support your chosen authentication scheme. 
@@ -33,10 +33,28 @@
  */
 function Get_User_Principle()
 {
-    //     return '';
+    // Return hard wired user's principle string (DN) e.g. for testing     
+    // =======================================================
     //return '/C=UK/O=eScience/OU=CLRC/L=DL/CN=david meredith';
+  
+
+    // Check if an authentication token has been set in the SecurityContext class  
+    // by higher level code, eg Symfony Security which provides a Firewall component
+    // may have been used to intercept the HTTP request and authenticate the 
+    // user (using whatever auth scheme was configured in the Firewall). A 
+    // Symfony controller can then subsequently set the token in the SecurityContext
+    // before invoking the GOCDB code. 
+    // =======================================================
+    require_once __DIR__.'/../../../lib/Gocdb_Services/SecurityContextSource.php';
+    if(\SecurityContextSource::getContext() != null){
+       $token = \SecurityContextSource::getContext()->getToken(); 
+       return str_replace("emailAddress=", "Email=", $token->getUser()->getUserName()); 
+    }     
     
-    // ================Use Custom x509 Authentication=======================
+    
+    // If no authentication token was set in the SecurityContext class, fall
+    // back to extract a certificate directly from the browser. 
+    // =======================================================
     if(!isset($_SERVER['SSL_CLIENT_CERT']))
     	return "";
     $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
@@ -44,8 +62,7 @@ function Get_User_Principle()
     $User_DN = $Plain_Client_Cerfificate['name'];
     // harmonise display of the "email" field that can be different depending on
     // used version of SSL
-    $User_DN = str_replace("emailAddress=", "Email=", $User_DN);
-    return $User_DN;
+    return  str_replace("emailAddress=", "Email=", $User_DN);
     // ================Use Custom x509 Authentication=======================
     
 

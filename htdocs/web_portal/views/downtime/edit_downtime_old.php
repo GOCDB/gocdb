@@ -74,7 +74,7 @@ $format = $params['format'];
         </span>
 
         <input class="input_input_date" type="text" name="START_TIMESTAMP" value="<?php echo $dt->getStartDate()->format($format);?>"/>
-        <script language="JavaScript" src="javascript/tigra_calendar/calendar_db.js">
+        <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/tigra_calendar/calendar_db.js">
         </script>
         <script language="JavaScript">
             new tcal ({

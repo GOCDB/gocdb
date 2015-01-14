@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <div style="float: left; text-align: center;">
-        <img src="img/user.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em; padding-bottom: 0.3em;">

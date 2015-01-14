@@ -1,8 +1,8 @@
-<script type="text/javascript" src="javascript/confirm.js"></script>
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
 <!-- onclick="return confirmSubmit()" -->
 <div class="rightPageContainer">
     <div style="float: left; text-align: center;">
-        <img src="img/user.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em; padding-bottom: 0.3em;">
@@ -50,7 +50,7 @@
             <span class="header listHeader">
                 Your Pending Requests
             </span>
-            <img src="img/user.png" class="decoration" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <th class="site_table">Role Request</th>
@@ -116,7 +116,7 @@
             <span class="header listHeader">
                 Requests To Approve
             </span>
-            <img src="img/user.png" class="decoration" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <th class="site_table">Requestor</th>

@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <div style="float: left;">
-        <img src="img/virtualSite.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
@@ -51,7 +51,7 @@
              <div class="topMargin leftFloat siteFilter">
                 <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
                 <input class="middle" style="width: 5.5em;" type="text" name="selectedSGKeyValue" <?php if(isset($params['selectedSGKeyValue'])) echo "value=\"{$params['selectedSGKeyValue']}\"";?>/>
-                <input class="middle" type="image" src="img/enter.png" name="image" width="20" height="20">        
+                <input class="middle" type="image" src="<?php echo \GocContextPath::getPath()?>img/enter.png" name="image" width="20" height="20">        
             </div>        	
             <?php }?>  
         </form>
@@ -62,7 +62,7 @@
         <span class="header listHeader">
             <?php echo sizeof($params['sGroups']) ?> Service Group<?php if(sizeof($params['sGroups']) != 1) echo "s"?>
         </span>
-        <img src="img/grid.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>

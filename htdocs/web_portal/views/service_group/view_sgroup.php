@@ -2,10 +2,10 @@
 $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
 ?>
 
-<script type="text/javascript" src="javascript/confirm.js"></script>
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
 <div class="rightPageContainer">
     <div style="float: left;">
-        <img src="img/virtualSite.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
@@ -20,17 +20,17 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Edit_Service_Group&id=<?php echo $params['sGroup']->getId()?>">
-                    <img src="img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
                     <span>Edit</span>
                 </a>
             </div>
             <div style="float: right;">
-                <script type="text/javascript" src="javascript/confirm.js"></script>
+                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                     href="index.php?Page_Type=Delete_Service_Group&id=<?php echo $params['sGroup']->getId()?>">
-                    <img src="img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -44,7 +44,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
         <!--  Data -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Properties</span>
-            <img src="img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Monitored</td><td class="site_table">
@@ -52,12 +52,12 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
                         switch($params['sGroup']->getMonitored()) {
                             case true:
                                 ?>
-                                <img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                             case false:
                                 ?>
-                                <img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                         }
@@ -91,7 +91,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
     <!--  Services -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Services</span>
-        <img src="img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Hostname (service type)</th>
@@ -131,12 +131,12 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
 				switch($se->getProduction()) {
 					case true:
 						?>
-						<img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+						<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
 						<?php
 						break;
 					case false:
 						?>
-						<img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+						<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
 						<?php
 						break;
 				}
@@ -155,14 +155,14 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
         <?php if(!$params['portalIsReadOnly']): ?>
             <!-- Add new Service Link -->
             <a href="index.php?Page_Type=Add_Service_Group_SEs&id=<?php echo $params['sGroup']->getId();?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Services
                 </span>
             </a>
             <!-- Remove Service Link -->
             <a href="index.php?Page_Type=Remove_Service_Group_SEs&id=<?php echo $params['sGroup']->getId();?>">
-                <img src="img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Remove Services
                 </span>
@@ -173,7 +173,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
     <!-- Roles -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Roles</span>
-        <img src="img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -189,7 +189,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table">
                     <div style="background-color: inherit;">
-                        <img src="img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
                         <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
                             <?php echo $role->getUser()->getFullName()/*.' ['.$role->getUser()->getId().']' */?>
                         </a>
@@ -211,7 +211,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
         <?php if(!$params['portalIsReadOnly']): ?>
             <!-- Request role Link -->
             <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['sGroup']->getId();?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Request Role
                 </span>
@@ -222,7 +222,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
     <!--  Service Group Properties -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Service Group Extension Properties</span>        
-        <img src="img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -241,8 +241,8 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
 	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyName(); ?></td>
 	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyValue(); ?></td>
 	                <?php if(!$params['portalIsReadOnly']): ?>	                
-	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="img/pencil.png"/></a></td>
-	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="img/cross.png"/></a></td>
+	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
 	                <?php endif; ?>
 	            </tr>
 	            <?php
@@ -254,7 +254,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
         <?php if(!$params['portalIsReadOnly']): ?>
             <!-- Add new data Link -->
             <a href="index.php?Page_Type=Add_Service_Group_Property&serviceGroup=<?php echo $params['sGroup']->getId()?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Properties
                 </span>
@@ -266,7 +266,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
         <a href="index.php?Page_Type=SGroup_Downtimes&id=<?php echo $params['sGroup']->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
-        <img src="img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Description</th>

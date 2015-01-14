@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <div style="float: left;">
-        <img src="img/search.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/search.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
@@ -15,7 +15,7 @@
     <?php if(sizeof($params['ngiResults']) > 0) { ?>
         <div class="listContainer" style="width: 97%;">
             <div style="padding: 0.5em;">
-                <img style="vertical-align: middle; clear: both; height: 35px; width: 35px;" src="img/ngi.png" />
+                <img style="vertical-align: middle; clear: both; height: 35px; width: 35px;" src="<?php echo \GocContextPath::getPath()?>img/ngi.png" />
                 <h3 style="vertical-align: middle; clear: both; display: inline; margin-left: 0.3em; font-size: 1.3em; padding-bottom: 0em;">
                     NGIs
                 </h3>
@@ -34,7 +34,7 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId()?>">
-                                    <img class="flag" src="img/ngi/<?php echo $ngi->getName() ?>.jpg" style="vertical-align: middle">
+                                    <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg" style="vertical-align: middle">
                                     <span> </span><?php echo $ngi->getName(); ?>
                                 </a>
                             </span>
@@ -57,7 +57,7 @@
     <?php if(sizeof($params['siteResults']) > 0) { ?>
         <div class="listContainer" style="width: 97%;">
             <div style="padding: 0.5em;">
-                <img style="vertical-align: middle; clear: both; height: 35px; width: 35px;" src="img/site.png" />
+                <img style="vertical-align: middle; clear: both; height: 35px; width: 35px;" src="<?php echo \GocContextPath::getPath()?>img/site.png" />
                 <h3 style="vertical-align: middle; clear: both; display: inline; margin-left: 0.3em; font-size: 1.3em; padding-bottom: 0em;">
                     Sites
                 </h3>
@@ -100,7 +100,7 @@
     <?php if(sizeof($params['serviceResults']) > 0) { ?>
         <div class="listContainer" style="width: 97%;">
             <div style="padding: 0.5em;">
-                <img style="vertical-align: middle; clear: both; height: 35px; width: 35px;" src="img/service.png" />
+                <img style="vertical-align: middle; clear: both; height: 35px; width: 35px;" src="<?php echo \GocContextPath::getPath()?>img/service.png" />
                 <h3 style="vertical-align: middle; clear: both; display: inline; margin-left: 0.3em; font-size: 1.3em; padding-bottom: 0em;">
                     Services
                 </h3>
@@ -146,7 +146,7 @@
     <?php if(sizeof($params['userResults']) > 0) { ?>
         <div class="listContainer" style="width: 97%;">
             <div style="padding: 0.5em;">
-                <img style="vertical-align: middle; clear: both; height: 35px; width: 35px;" src="img/user.png" />
+                <img style="vertical-align: middle; clear: both; height: 35px; width: 35px;" src="<?php echo \GocContextPath::getPath()?>img/user.png" />
                 <h3 style="vertical-align: middle; clear: both; display: inline; margin-left: 0.3em; font-size: 1.3em; padding-bottom: 0em;">
                     Users
                 </h3>

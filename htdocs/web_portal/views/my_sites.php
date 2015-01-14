@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <div style="float: left;">
-        <img src="img/home.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/home.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
@@ -16,7 +16,7 @@
         <!--  Sites -->
         <div class="tableContainer" style="float: left; width: 55%;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Sites From Your Roles</span>
-            <img src="img/site.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['sites_from_roles'])) {
                         $num = 1; 
@@ -35,7 +35,7 @@
         <!--  NGIs -->
         <div class="tableContainer" style="width: 42%; float: right;" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">NGIs From Your Roles</span>
-            <img src="img/ngi.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['ngis_from_roles'])) {
                         $num = 1; 
@@ -57,7 +57,7 @@
         <!--  Service Groups -->
         <div class="tableContainer" style="width: 55%; float: left;" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Service Groups From Your Roles</span>
-            <img src="img/virtualSite.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['sgroups_from_roles'])) {
                         $num = 1; 
@@ -76,7 +76,7 @@
         <!--  Projects -->
         <div class="tableContainer" style="width: 42%; float: right;" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Projects From Your Roles</span>
-            <img src="img/project.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['projects_from_roles'])) {
                         $num = 1; 

@@ -67,7 +67,7 @@
             <span class="header listHeader">
                 The following scopes are available in GOCDB:
             </span>
-            <img src="img/grid.png" class="decoration" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <th class="site_table">Name</th>

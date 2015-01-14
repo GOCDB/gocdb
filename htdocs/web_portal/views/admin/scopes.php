@@ -13,7 +13,7 @@
         <div style="float: right;">
             <center>
                 <a href="index.php?Page_Type=Admin_Add_Scope">
-                <img src="img/add.png" height="25px" />
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="25px" />
                 <br />
                 <span>Add Scope</span>
                 </a>
@@ -50,9 +50,9 @@
                     </td>
                     <?php if(!$params['portalIsReadOnly']):?>
                         <td class="site_table">
-                             <script type="text/javascript" src="javascript/confirm.js"></script>
+                             <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                              <a onclick="return confirmSubmit()" href="index.php?Page_Type=Admin_Remove_Scope&id=<?php echo $scope->getId() ?>">
-                                <img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
                             </a>
                         </td> 
                     <?php endif ?>

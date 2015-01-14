@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <div style="float: left;">
-        <img src="img/ngi.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
@@ -40,7 +40,7 @@
         <span class="header listHeader">
             <?php echo sizeof($params['ngis']) ?> NGI<?php if(sizeof($params['ngis']) != 1) echo "s"?>
         </span>
-        <img src="img/grid.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -57,7 +57,7 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
-                                    <img class="flag" style="vertical-align: middle" src="img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
+                                    <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
                                     <span>&nbsp;&nbsp;</span><?php echo $ngi->getName(); ?>
                                 </a>
                             </span>

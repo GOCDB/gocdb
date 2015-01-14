@@ -32,7 +32,7 @@
 		$HTML .= "<div class=\"page_container\">";
 
 		// menu bar
-		$HTML .= "<div class=\"left_box_menu\" style=\"background-image: url('img/menuBackground2.png'); background-size: cover\">";
+		$HTML .= "<div class=\"left_box_menu\"\">";
     	$HTML .= Get_File_Contents(__DIR__."/../../static_html/goc5_logo.html");
 		//Insert a portal is in read only warning message, if it is
         if(\Factory::getConfigService()->IsPortalReadOnly()){
@@ -112,10 +112,10 @@
 	{
 		$HTML = "";
 		$HTML .= '<div class="Left_Logo_Box left_box_menu">';
-		$HTML .= '<div align="center"><a href="http://www.stfc.ac.uk" target="_blank"><img src="img/STFC.jpg" height="25"/></a>&nbsp;&nbsp;';
-		$HTML .= '<a href="http://europa.eu" target="_blank"><img src="img/eu.jpg" height="25"/></a>&nbsp;&nbsp;';
+		$HTML .= '<div align="center"><a href="http://www.stfc.ac.uk" target="_blank"><img src="'.\GocContextPath::getPath().'img/STFC.jpg" height="25"/></a>&nbsp;&nbsp;';
+		$HTML .= '<a href="http://europa.eu" target="_blank"><img src="'.\GocContextPath::getPath().'img/eu.jpg" height="25"/></a>&nbsp;&nbsp;';
 		//$HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="img/egi.gif" height="25"/></a></div>';
-		$HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="img/egi_logo.jpg" height="25"/></a></div>';
+		$HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="'.\GocContextPath::getPath().'img/egi_logo.jpg" height="25"/></a></div>';
 		$HTML .= '</div>';
 
 		return $HTML;

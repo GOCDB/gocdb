@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <div style="float: left;">
-        <img src="img/service.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
@@ -47,7 +47,7 @@
             <div class="topMargin leftFloat siteFilter">
                 <span class="middle" style="margin-right: 0.4em">Search: </span>
                 <input class="middle" style="width: 5.5em;" type="text" name="searchTerm" <?php if(isset($params['searchTerm'])) echo "value=\"{$params['searchTerm']}\"";?>/>
-                <input class="middle" type="image" src="img/enter.png" name="image" width="20" height="20">        
+                <input class="middle" type="image" src="<?php echo \GocContextPath::getPath()?>img/enter.png" name="image" width="20" height="20">        
             </div>
             
             <div class="topMargin leftFloat clearLeft">
@@ -110,7 +110,7 @@
              <div class="topMargin leftFloat siteFilter">
                 <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
                 <input class="middle" style="width: 5.5em;" type="text" name="selectedServKeyValue" <?php if(isset($params['selectedServKeyValue'])) echo "value=\"{$params['selectedServKeyValue']}\"";?>/>
-                <input class="middle" type="image" src="img/enter.png" name="image" width="20" height="20">        
+                <input class="middle" type="image" src="<?php echo \GocContextPath::getPath()?>img/enter.png" name="image" width="20" height="20">        
             </div>
         	
             <?php }?>               	
@@ -125,7 +125,7 @@
         <span class="listHeader">
             (Showing <?php echo $params['startRecord'] ?> - <?php echo $params['endRecord'] ?>)
         </span>
-        <img src="img/grid.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Hostname</th>
@@ -165,17 +165,17 @@
                 
                 <td class="site_table">
                     <?php if($se->getProduction() == true) { ?>
-                    	<img src="img/tick.png" height=22px />
+                    	<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height=22px />
                    	<?php } else { ?>
-                   		<img src="img/cross.png" height=22px />
+                   		<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height=22px />
                    	<?php } ?>
                 </td>
                 
                 <td class="site_table">
                     <?php if($se->getMonitored() == true) { ?>
-                    	<img src="img/tick.png" height=22px />
+                    	<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height=22px />
                    	<?php } else { ?>
-                   		<img src="img/cross.png" height=22px />
+                   		<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height=22px />
                    	<?php } ?>
                 </td>
                 
@@ -198,16 +198,16 @@
         <!--  Navigation -->
         <div style="text-align: center">
             <a href="<?php echo $params['firstLink'] ?>">
-                <img class="nav" src="img/first.png" />
+                <img class="nav" src="<?php echo \GocContextPath::getPath()?>img/first.png" />
             </a>
             <a href="<?php echo $params['previousLink'] ?>">
-                <img class="nav" src="img/previous.png" />
+                <img class="nav" src="<?php echo \GocContextPath::getPath()?>img/previous.png" />
             </a>
             <a href="<?php echo $params['nextLink'] ?>">
-                <img class="nav" src="img/next.png" />
+                <img class="nav" src="<?php echo \GocContextPath::getPath()?>img/next.png" />
             </a>
             <a href="<?php echo $params['lastLink'] ?>">
-                <img class="nav" src="img/last.png" />
+                <img class="nav" src="<?php echo \GocContextPath::getPath()?>img/last.png" />
             </a>  
         </div>    
         

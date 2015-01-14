@@ -24,7 +24,8 @@
 //die(); 
 require_once __DIR__ . "/../../lib/Doctrine/bootstrap.php";
 require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
-//require_once __DIR__.'/GocContextPath.php';
+// Require GocContextPath which is used in most of the views scripts 
+require_once __DIR__.'/GocContextPath.php';
 
 // Set the timezone
 date_default_timezone_set("UTC");

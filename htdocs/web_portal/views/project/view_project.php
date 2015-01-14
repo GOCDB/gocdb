@@ -1,9 +1,9 @@
 <?php $ngiCount = sizeof($params['NGIs']) ?>
-<script type="text/javascript" src="javascript/confirm.js"></script>
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
 <!-- onclick="return confirmSubmit()" -->
 <div class="rightPageContainer">
 <!--    <div style="float: left;">
-        <img src="img/project.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="pageLogo" />
     </div>-->
     
     <div style="float: left;">
@@ -19,7 +19,7 @@
             <div style="float: right; margin-left: 2em;">
                 <?php if($params['ShowEdit']){?>
                 <a href="index.php?Page_Type=Edit_Project&id=<?php echo $params['ID']?>">
-                    <img src="img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
                     <span>Edit</span>
@@ -27,11 +27,11 @@
                 <?php } ?>
             </div>
             <div style="float: right;">
-                <script type="text/javascript" src="javascript/confirm.js"></script>
+                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <?php if($params['ShowEdit']){?>
                 <a onclick="return confirmSubmit()"
                     href="index.php?Page_Type=Delete_Project&id=<?php echo $params['ID']?>">
-                    <img src="img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -46,7 +46,7 @@
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
             This project <?php if ($ngiCount == 0){echo "has no";} else{echo "consists of " . $ngiCount;} ?> NGI<?php if($ngiCount != 1) echo "s"?>
         </span>   
-        <img src="img/ngi.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         
         <?php if ($ngiCount != 0): ?>
             <table style="clear: both; width: 100%;">
@@ -66,7 +66,7 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
-                                    <img class="flag" style="vertical-align: middle" src="img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
+                                    <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
                                     <span>&nbsp;&nbsp;</span><?php echo $ngi->getName(); ?>
                                 </a>
                             </span>
@@ -86,7 +86,7 @@
             <!-- Add NGI link -->
             <?php if($params['ShowEdit']){?>
             <a href="index.php?Page_Type=Add_Project_NGIs&id=<?php echo $params['ID'];?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add NGIs
                 </span>
@@ -97,7 +97,7 @@
                 <!-- Remove NGI Link -->
                 <?php if($params['ShowEdit']){?>
                 <a href="index.php?Page_Type=Remove_Project_NGIs&id=<?php echo $params['ID'];?>">
-                    <img src="img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                             Remove NGIs
                     </span>
@@ -111,7 +111,7 @@
     <!-- Roles -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users with Project Level Roles</span>
-        <img src="img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <?php if (sizeof($params['Roles'])>0): ?>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
@@ -129,7 +129,7 @@
                 <tr class="site_table_row_<?php echo $num ?>">
                     <td class="site_table">
                         <div style="background-color: inherit;">
-                            <img src="img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+                            <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
                             <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
                                 <?php echo $role->getUser()->getFullName()/*.' ['.$role->getUser()->getId().']' */?>
                             </a>
@@ -152,7 +152,7 @@
         <!-- don't allow role requests in read only mode -->
         <?php if(!$params['portalIsReadOnly']):?>
             <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['ID'];?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Request Role
                 </span>
@@ -166,7 +166,7 @@
         <span class="header listHeader">
             <?php echo sizeof($params['Sites']) ?> Site<?php if(sizeof($params['Sites']) != 1) echo "s"?>
         </span>
-        <img src="img/site.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="decoration" />
         <?php if(sizeof($params['Sites']) > 0): ?>
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">

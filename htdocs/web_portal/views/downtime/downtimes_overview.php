@@ -15,12 +15,12 @@ from the main downtimes table. This table is shown and hidden by creating dynami
 javascript to show and hide these tables. 
 --->
 <div class="rightPageContainer">
-    <script type="text/javascript" src="javascript/confirm.js"></script>
-    <script type="text/javascript" src="javascript/showHide.js"></script>
+    <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
+    <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/showHide.js"></script>
         
     <div style="overflow: hidden;">
         <div style="float: left;">
-            <img src="img/down_arrow.png" class="pageLogo" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" class="pageLogo" />
         </div>
         <div style="float: left; width: 45em;">
             <h1 style="float: left; margin-left: 0em; padding-bottom: 0.0em;">
@@ -34,7 +34,7 @@ javascript to show and hide these tables.
         <!--  Active Downtimes -->
         <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Currently Active Downtimes</span>
-            <img src="img/service.png" class="decoration"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration"/>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <th class="site_table">Downtime Id</th>
@@ -99,7 +99,7 @@ javascript to show and hide these tables.
         <!--  Imminent Downtimes -->
         <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Downtimes Schedules for the next week(s)</span>
-            <img src="img/service.png" class="decoration"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration"/>
            
            <div class="topMargin rightFloat clearRight">            
            <form action="index.php?Page_Type=Downtimes_Overview" method="GET" class="inline">

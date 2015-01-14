@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <div style="float: left;">
-        <img src="img/ngi/fullSize/<?php echo $params['ngi']->getName() ?>.jpg" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/ngi/fullSize/<?php echo $params['ngi']->getName() ?>.jpg" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
@@ -19,10 +19,10 @@
         <div style="float: right;">
             <?php if($params['UserIsAdmin']):?>
                 <div style="float: right; margin-left: 2em; text-align:center;">
-                    <script type="text/javascript" src="javascript/confirm.js"></script>
+                    <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                     <a onclick="return confirmSubmit()" 
                        href="index.php?Page_Type=Admin_Delete_NGI&id=<?php echo $params['ngi']->getId() ?>">
-                        <img src="img/cross.png" height="25px" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" />
                         <br />
                         <span>Admin<br>Delete</span>
                     </a>
@@ -30,7 +30,7 @@
             <?php endif; ?>
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Edit_NGI&id=<?php echo $params['ngi']->getId() ?>">
-                    <img src="img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
                     <span>Edit</span>
@@ -44,7 +44,7 @@
         <!--  Contacts (left) -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Contacts</span>
-            <img src="img/contact_card.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
@@ -85,7 +85,7 @@
         <!-- Project memberships (Top right) -->
         <div class="tableContainer" style="width: 42%; float: right;" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Project memberships</span>
-            <img src="img/project.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['Projects'])) {
                         $num = 1; 
@@ -104,7 +104,6 @@
         <!-- Scopes (bottom right) -->
         <div class="tableContainer" style="width: 42%; float: right; margin-top: 1.6em" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em; word-wrap: normal">Scope(s)</span>
-<!--            <img src="img/egi_logo_large.jpg" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />--><br /><br /> <!--remove line breaks to left of this comment when image is added-->
             <table style="clear: both; width: 100%; table-layout: fixed;">
 
                         <tr class="site_table_row_1">
@@ -129,7 +128,7 @@
         <span class="header listHeader">
             <?php echo sizeof($params['ngi']->getSites()) ?> Site<?php if(sizeof($params['ngi']->getSites()) != 1) echo "s"?>
         </span>
-        <img src="img/site.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="decoration" />
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -194,7 +193,7 @@
         <span class="header listHeader">
             <?php echo sizeof($params['roles']) ?> User<?php if(sizeof($params['roles']) != 1) echo "s"?>
         </span>
-        <img src="img/user.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -234,7 +233,7 @@
         <?php if(!$params['portalIsReadOnly']):?>
             <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
                 <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['ngi']->getId();?>">
-                    <img src="img/add.png" height="20px" style="float: left; vertical-align: middle; padding-right: 1em;">
+                    <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="20px" style="float: left; vertical-align: middle; padding-right: 1em;">
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 0.2em;">
                             Request Role
                     </span>

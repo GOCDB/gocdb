@@ -5,7 +5,7 @@
         <span class="header listHeader">
             Search for Existing Services
         </span>
-        <img src="img/grid.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <form action="javascript:void(0);">
             <input  class="input_input_text vSiteSearch" type="text" 
                     name="Search" value="Search" onclick="clearText()" 
@@ -36,7 +36,7 @@
         <span class="header listHeader">
             Services to Add
         </span>
-        <img src="img/grid.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Remove</th>

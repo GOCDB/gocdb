@@ -22,17 +22,17 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Admin_Edit_Service_Type&id=<?php echo $id ?>">
-                    <img src="img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
                     <span>Edit</span>
                 </a>
             </div>
             <div style="float: right;">
-                <script type="text/javascript" src="javascript/confirm.js"></script>
+                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                    href="index.php?Page_Type=Admin_Delete_Service_Type<?php if($SEsCount!=0) {echo'_Denied';} ?>&id=<?php echo $id?>">
-                    <img src="img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -50,7 +50,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                         else {echo 'are ' . $SEsCount . ' services';}?>
             with <?php echo $name ?> service type<?php if ($SEsCount == 0) {echo '.';} else {echo ':';}?>
         </span>
-        <img src="img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <?php if ($SEsCount != 0): ?>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
@@ -70,7 +70,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                     <tr class="site_table_row_<?php echo $num ?>">
                         <td class="site_table">
                             <div style="background-color: inherit;">
-                                <img src="img/server.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/server.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                                 <span style="vertical-align: middle;">
                                     <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
                                         <?php echo $se->getHostname();?> (<?php echo $se->getServiceType()->getName();?>)
@@ -85,12 +85,12 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                         switch($se->getProduction()) {
                             case true:
                                 ?>
-                                <img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                             case false:
                                 ?>
-                                <img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                         }
@@ -102,12 +102,12 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                         switch($se->getMonitored()) {
                             case true:
                                 ?>
-                                <img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                             case false:
                                 ?>
-                                <img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                         }

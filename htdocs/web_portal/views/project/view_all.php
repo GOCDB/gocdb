@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
    <div style="float: left;">
-        <img src="img/project.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="pageLogo" />
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
@@ -22,7 +22,7 @@
         <span class="header listHeader">
             <?php echo sizeof($params['Projects']) ?> Project<?php if(sizeof($params['Projects']) != 1) echo "s"?>
         </span>
-        <img src="img/grid.png" class="decoration" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>

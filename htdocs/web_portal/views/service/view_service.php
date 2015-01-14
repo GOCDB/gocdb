@@ -7,7 +7,7 @@ $configService = \Factory::getConfigService();
 ?>
 <div class="rightPageContainer rounded">
     <div style="float: left; text-align: center;">
-        <img src="img/service.png" class="pageLogo" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="pageLogo" />
     </div>
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;"><?php echo 'Service: '.$se->getHostname() ?> - <?php echo $se->getServiceType()-> getName() ?></h1>
@@ -20,17 +20,17 @@ $configService = \Factory::getConfigService();
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Edit_Service&id=<?php echo $se->getId() ?>">
-                    <img src="img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
                     <span>Edit</span>
                 </a>
             </div>
             <div style="float: right;">
-                <script type="text/javascript" src="javascript/confirm.js"></script>
+                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                     href="index.php?Page_Type=Delete_Service&id=<?php echo $se->getId() ?>">
-                    <img src="img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -44,7 +44,7 @@ $configService = \Factory::getConfigService();
         <!--  System -->
         <div class="tableContainer rounded" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">System</span>
-            <img src="img/server.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/server.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Host name</td><td class="site_table"><?php echo $se->getHostName() ?></td>
@@ -70,7 +70,7 @@ $configService = \Factory::getConfigService();
         <!--  Grid Information -->
         <div class="tableContainer rounded" style="width: 42%; float: right;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Grid Information</span>
-            <img src="img/grid.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="titleIcon"/>
             <table style="width: 100%; word-wrap:break-word;
               table-layout: fixed;">
                 <tr class="site_table_row_1">
@@ -123,7 +123,7 @@ $configService = \Factory::getConfigService();
         <!--  Project Data -->
         <div class="tableContainer rounded" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Project Data</span>
-            <img src="img/project.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Production Level</td>
@@ -132,12 +132,12 @@ $configService = \Factory::getConfigService();
 					switch($se->getProduction() ) {
 							case true:
 								?>
-								<img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+								<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
 								<?php
 								break;
 							case false:
 								?>
-								<img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+								<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
 								<?php
 								break;
 						}
@@ -150,17 +150,17 @@ $configService = \Factory::getConfigService();
 					switch($se->getBeta()) {
 							case true:
 								?>
-								<img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+								<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
 								<?php
 								break;
 							case false:
 								?>
-								<img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+								<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
 								<?php
 								break;
 							default:
 								?>
-								<img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+								<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
 								<?php
 								break;
 						}
@@ -173,12 +173,12 @@ $configService = \Factory::getConfigService();
 					switch($se->getMonitored()) {
 							case true:
 								?>
-								<img src="img/tick.png" height="22px" style="vertical-align: middle;" />
+								<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
 								<?php
 								break;
 							case false:
 								?>
-								<img src="img/cross.png" height="22px" style="vertical-align: middle;" />
+								<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
 								<?php
 								break;
 						}
@@ -191,7 +191,7 @@ $configService = \Factory::getConfigService();
         <!-- Service Groups -->
         <div class="tableContainer rounded" style="width: 42%; float: right;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Service Groups this Service Belongs To</span>
-            <img src="img/virtualSite.png" class="titleIcon"/>
+            <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <?php
                     $num = 1;
@@ -221,7 +221,7 @@ $configService = \Factory::getConfigService();
                 model network locations for different service-functionalities 
                 that can't be described by the main ServiceType and URL alone.">(endpoints?)</a>
         </span>        
-        <img src="img/serviceEndpoint.png" class="titleIcon"/>
+        <img src="<?php echo \GocContextPath::getPath()?>img/serviceEndpoint.png" class="titleIcon"/>
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -246,8 +246,8 @@ $configService = \Factory::getConfigService();
 	                <td style="width: 30%;"class="site_table"><?php echo $endpoint->getUrl(); ?></td>
 	                <td style="width: 30%;"class="site_table"><?php echo $endpoint->getInterfaceName(); ?></td>
 	                <?php if(!$params['portalIsReadOnly']): ?>	                
-	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="img/pencil.png"/></a></td>
-	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="img/cross.png"/></a></td>
+	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
 	                <?php endif; ?>
 	            </tr>
 	            <?php
@@ -259,7 +259,7 @@ $configService = \Factory::getConfigService();
 		<?php if(!$params['portalIsReadOnly']): ?>
             <!-- Add new Service Endpoint -->
             <a href="index.php?Page_Type=Add_Service_Endpoint&se=<?php echo $se->getId();?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Endpoint
                 </span>
@@ -279,7 +279,7 @@ $configService = \Factory::getConfigService();
                 (extensions?)
             </a>
         </span>        
-        <img src="img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -298,8 +298,8 @@ $configService = \Factory::getConfigService();
 	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyName(); ?></td>
 	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyValue(); ?></td>
 	                <?php if(!$params['portalIsReadOnly']): ?>	                
-	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="img/pencil.png"/></a></td>
-	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="img/cross.png"/></a></td>
+	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
 	                <?php endif; ?>
 	            </tr>
 	            <?php
@@ -311,7 +311,7 @@ $configService = \Factory::getConfigService();
 		<?php if(!$params['portalIsReadOnly']): ?>
             <!-- Add new Service Property -->
             <a href="index.php?Page_Type=Add_Service_Property&se=<?php echo $se->getId();?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Property
                 </span>
@@ -323,7 +323,7 @@ $configService = \Factory::getConfigService();
     <div class="listContainer rounded" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
         <a href="index.php?Page_Type=SE_Downtimes&id=<?php echo $se->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
-        <img src="img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Description</th>
@@ -354,7 +354,7 @@ $configService = \Factory::getConfigService();
 		<?php if(!$params['portalIsReadOnly']): ?>
             <!-- Add new Downtime Link -->
             <a href="index.php?Page_Type=Add_Downtime&se=<?php echo $se->getId();?>">
-                <img src="img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Downtime
                 </span>

@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
-    <script language="JavaScript" src="javascript/vsites/add_ses_to_vsite.js"></script>
-    <script language="JavaScript" src="javascript/ajax.js"></script>
+    <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/vsites/add_ses_to_vsite.js"></script>
+    <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/ajax.js"></script>
     <form name="New_Site" action="index.php?Page_Type=Add_Service_Group" method="post" class="inputForm">
     	<h1>New Service Group</h1>
     	<br />
