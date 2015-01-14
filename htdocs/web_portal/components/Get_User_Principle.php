@@ -52,20 +52,60 @@ function Get_User_Principle()
     }     
     
     
-    // If no authentication token was set in the SecurityContext class, fall
-    // back to extract a certificate directly from the browser. 
+    // If no authentication token was set in the SecurityContext class, fall 
+    // back and try to extract a certificate directly from the browser. 
     // =======================================================
-    if(!isset($_SERVER['SSL_CLIENT_CERT']))
-    	return "";
+    /*if(!isset($_SERVER['SSL_CLIENT_CERT'])) return "";
     $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
     $Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
     $User_DN = $Plain_Client_Cerfificate['name'];
-    // harmonise display of the "email" field that can be different depending on
-    // used version of SSL
-    return  str_replace("emailAddress=", "Email=", $User_DN);
-    // ================Use Custom x509 Authentication=======================
+    return  str_replace("emailAddress=", "Email=", $User_DN);*/
+    if (isset($_SERVER['SSL_CLIENT_CERT'])) {
+        $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
+        if (isset($Raw_Client_Certificate)) {
+            $Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
+            $User_DN = $Plain_Client_Cerfificate['name'];
+            if (isset($User_DN)) {
+                // harmonise "email" field that can be different depending on version of SSL
+                $dn = str_replace("emailAddress=", "Email=", $User_DN);
+                if ($dn != null && $dn != '') {
+                    return $dn;
+                }
+            }
+        }
+    }
+
+    // Fall back to try saml authentication (simplesaml)
+    // =======================================================
+    if(false){ // disable for now, not ready for use. 
+        require_once('/var/simplesamlphp/lib/_autoload.php');
+        $as = new SimpleSAML_Auth_Simple('default-sp');
+        $as->requireAuth();
+        $GOCLOGOUTURL = $as->getLogoutURL('https://gocdb-test.esc.rl.ac.uk');
+        define('GOCLOGOUTURL', $GOCLOGOUTURL);
+        $attributes = $as->getAttributes();
+        if(!empty($attributes)){
+            //return $attributes['eduPersonPrincipalName'][0];
+            $dnAttribute = $attributes['urn:oid:1.3.6.1.4.1.11433.2.2.1.9'][0];
+            if(!empty($dnAttribute)){
+                return str_replace("emailAddress=", "Email=", $dnAttribute); 
+            } else {
+                die('Did not retrieve a valid certificate DN from identify provider - your SSO '
+                        . 'account needs to be associated with a certificate to login via this route'); 
+            }
+        }
+    }
+
+    
+    // Couldn't authetnicate the user, so finally return null 
+    return null; 
     
 
+
+
+
+
+    
     // To try the Auth Module with x509 (configured as default), comment out 
     // above block '===Use Custom x509 Auth===' and uncomment block below  
      
@@ -105,3 +145,4 @@ function Get_User_Principle()
 
 
 ?>
+

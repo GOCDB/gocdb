@@ -44,6 +44,10 @@ function retrieve() {
  */
 function draw() {
 	$dn = Get_User_Principle();
+    if(empty($dn)){
+        show_view('error.php', "Could not authenticate user - null user principle");
+	    die(); 
+    }
 	$user = \Factory::getUserService()->getUserByPrinciple($dn);
 
 	if(!is_null($user)) {
@@ -60,6 +64,10 @@ function submit() {
     $oldDn = $_REQUEST['OLDDN'];
     $givenEmail =$_REQUEST['EMAIL'];
     $currentDn = Get_User_Principle();
+    if(empty($currentDn)){
+        show_view('error.php', "Could not authenticate user - null user principle");
+	    die(); 
+    }
     
     try {
         $changeReq = \Factory::getRetrieveAccountService()->newRetrieveAccountRequest($currentDn, $givenEmail, $oldDn);

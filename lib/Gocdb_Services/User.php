@@ -54,6 +54,9 @@ class User extends AbstractEntityService{
      * @return User object or null if no user can be found with the specified principle
      */
     public function getUserByPrinciple($userPrinciple){
+       if(empty($userPrinciple)){
+           return null; 
+       } 
        $dql = "SELECT u from User u WHERE u.certificateDn = :certDn";
        $user = $this->em->createQuery($dql)
     			  ->setParameter(":certDn", $userPrinciple)

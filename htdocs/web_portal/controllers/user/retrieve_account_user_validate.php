@@ -39,6 +39,10 @@ function validate_dn_change() {
     $confirmationCode = $_REQUEST['c'];
 
     $currentDn = Get_User_Principle();
+    if(empty($currentDn)){
+        show_view('error.php', "Could not authenticate user - null user principle");
+	    die(); 
+    }
 
     try {
         Factory::getRetrieveAccountService()->confirmAccountRetrieval($confirmationCode, $currentDn);

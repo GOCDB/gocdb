@@ -45,6 +45,10 @@ function register() {
 function draw() {
 	$serv = \Factory::getUserService();
 	$dn = Get_User_Principle();
+    if(empty($dn)){
+        show_view('error.php', "Could not authenticate user - null user principle");
+	    die(); 
+    }
 	$user = $serv->getUserByPrinciple($dn);
 
 	if(!is_null($user)) {
@@ -60,6 +64,10 @@ function submit() {
     $values = getUserDataFromWeb();
 
     $dn = Get_User_Principle();
+    if(empty($dn)){
+        show_view('error.php', "Could not authenticate user - null user principle");
+	    die(); 
+    }
     $values['CERTIFICATE_DN'] = $dn;
 
     $serv = \Factory::getUserService();
