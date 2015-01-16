@@ -24,7 +24,7 @@
 
 /**
  * Get the user's principle ID string.  
- * If using x509 to authenticate users, this is the DN string of the client certificate.  
+ * If using x509 to authenticate uses, this is the DN string of the client certificate.  
  * This method serves as the global integration point for all authentication requests. 
  * If you intend to support a different authentication mechanism, you will need 
  * to modify this method to support your chosen authentication scheme. 
@@ -36,7 +36,6 @@ function Get_User_Principle()
     // Return hard wired user's principle string (DN) e.g. for testing     
     // =======================================================
     //return '/C=UK/O=eScience/OU=CLRC/L=DL/CN=david meredith';
-  
 
     // Check if an authentication token has been set in the SecurityContext class  
     // by higher level code, eg Symfony Security which provides a Firewall component
@@ -49,17 +48,18 @@ function Get_User_Principle()
     if(\SecurityContextSource::getContext() != null){
        $token = \SecurityContextSource::getContext()->getToken(); 
        return str_replace("emailAddress=", "Email=", $token->getUser()->getUserName()); 
-    }     
+    }
     
-    
-    // If no authentication token was set in the SecurityContext class, fall 
-    // back and try to extract a certificate directly from the browser. 
-    // =======================================================
-    /*if(!isset($_SERVER['SSL_CLIENT_CERT'])) return "";
+    // ================Use Custom x509 Authentication=======================
+    /*if(!isset($_SERVER['SSL_CLIENT_CERT']))
+    	return "";
     $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
     $Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
     $User_DN = $Plain_Client_Cerfificate['name'];
-    return  str_replace("emailAddress=", "Email=", $User_DN);*/
+    // harmonise display of the "email" field that can be different depending on
+    // used version of SSL
+    $User_DN = str_replace("emailAddress=", "Email=", $User_DN);
+    return $User_DN;*/
     if (isset($_SERVER['SSL_CLIENT_CERT'])) {
         $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
         if (isset($Raw_Client_Certificate)) {
@@ -75,14 +75,14 @@ function Get_User_Principle()
         }
     }
 
+
     // Fall back to try saml authentication (simplesaml)
     // =======================================================
-    if(false){ // disable for now, not ready for use. 
+    if(false){ // disable by default - to use saml requires install of simplesamlphp and config below 
         require_once('/var/simplesamlphp/lib/_autoload.php');
         $as = new SimpleSAML_Auth_Simple('default-sp');
         $as->requireAuth();
-        $GOCLOGOUTURL = $as->getLogoutURL('https://gocdb-test.esc.rl.ac.uk');
-        define('GOCLOGOUTURL', $GOCLOGOUTURL);
+        \Factory::$properties['LOGOUTURL'] = $as->getLogoutURL('https://gocdb-test.esc.rl.ac.uk');
         $attributes = $as->getAttributes();
         if(!empty($attributes)){
             //return $attributes['eduPersonPrincipalName'][0];
@@ -96,16 +96,13 @@ function Get_User_Principle()
         }
     }
 
-    
     // Couldn't authetnicate the user, so finally return null 
     return null; 
     
-
-
-
-
-
     
+    // ================Use Custom x509 Authentication=======================
+    
+
     // To try the Auth Module with x509 (configured as default), comment out 
     // above block '===Use Custom x509 Auth===' and uncomment block below  
      
@@ -145,4 +142,3 @@ function Get_User_Principle()
 
 
 ?>
-

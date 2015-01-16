@@ -1,4 +1,11 @@
-GOCDB-5.3 Release (TBC) 
+GOCDB-5.3.1 Release (TBC) 
+  - Addition of GocContextPath to allow deployment of GOCDB in other environments 
+    such as a Symfony component. 
+  - Support for SAML2.0 SSO logins using SimpleSamlPhp (disabled by default).  
+  - Update of getUser() PI method to include new elements: SSOUSERNAME and PRIMARY_KEY of 
+    the target role entity.  
+
+GOCDB-5.3 Release (5 Nov 2014) 
   - Add Multiple Endpoints per Service: https://wiki.egi.eu/wiki/GOCDB/Release4/Development/MultipleEndpointsPerService 
 
 GOCDB-5.2 Release (13 Feb 2014) 

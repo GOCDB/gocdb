@@ -49,6 +49,15 @@
 
 		// right side of the page
 		$HTML .= "<div class=\"right_box\">";
+        
+        // logout button (if set - does not always need to be rendered)  
+        if(!empty(\Factory::$properties['LOGOUTURL'])){
+            $HTML .= "<div style='text-align: right;'>"; 
+            $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'">Logout</a>';
+            $HTML .= "</div>"; 
+        }
+       
+
 		return $HTML;
 	}
 

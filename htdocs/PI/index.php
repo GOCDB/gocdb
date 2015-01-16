@@ -45,7 +45,6 @@ class PIRequest {
     private $output = null;
     private $params = array();
     private $dn = null;
-    public $test;
 
     function process(){
         header('Content-Type: application/xml');
@@ -57,7 +56,7 @@ class PIRequest {
         //$portal_url = "https://URL/";
         $xml = str_replace("#GOCDB_BASE_PORTAL_URL#", $portal_url, $xml);
         echo($xml);       
-
+        //echo('<test>val</test>');
     }
 
     /* Copy the values from the URL into local variables */

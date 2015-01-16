@@ -5,7 +5,6 @@
  * authenticate users. This object is queried from within the 
  * 'htdocs/web_portal/components/Get_User_Principle.php' to see 
  * if a security context has been set for the current request.    
- * <p>
  * The context would need to be set before the Gocdb front 
  * controller is invoked. 
  *
@@ -21,3 +20,4 @@ class SecurityContextSource {
         return self::$context; 
     }
 }
+

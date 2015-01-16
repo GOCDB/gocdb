@@ -43,11 +43,30 @@ class Factory {
     private static $exService = null;
     private static $notificationService = null;
 
+    public static $properties = array(); 
+    //private static $properties = null; 
+
     /**
      * Force non-instantiablity with private constructor
      */
     private function __construct() {
     }
+
+    /**
+     * Get a reference to the static/shared properties. 
+     * Note, if you want to update these properties, you will need to assign a 
+     * variable to that reference using 'assign by reference' e.g. in callling code: 
+     * @return array 
+     */
+//    public static function &getPropertes(){
+//        if(self::$properties == null){
+//            self::$properties = array(); 
+//            // configure with default properties first 
+//            self::$properties['PORTALURL'] = self::getConfigService()->GetPortalURL(); 
+//            self::$properties['LOGOUTURL'] = self::getConfigService()->GetPortalURL(); 
+//        }
+//        return self::$properties; 
+//    }
 
     /**
      * Get a new EntityManager instance.

@@ -1,12 +1,21 @@
-gocdb
+Gocdb
 =====
 David Meredith, John Casson, George Ryall, James McCarthy
 
-Grid Operations Configuration Management Database. A Repository, Portal and REST style API for managing Grid and Cloud topology objects including; projects, administrative domains, sites, services, service-endpoints, service-groups, downtimes, users, roles and business rules.
+Grid Operations Configuration Management Database. A Repository, Portal and 
+REST style API for managing Grid and Cloud topology objects including; projects, 
+administrative domains, sites, services, service-endpoints, service-groups, 
+downtimes, users, roles and business rules.
+
+TODO Disclaimer
+---------------
+The View and Controller layers (the 'VC' in 'MVC') are **inherited legacy** from
+v4 and are high-priority to re-implement using a modern MVC framework. 
+
 
 Documentation 
 =============
-Links to docs below, doc will be added to GitHub soon. 
+Links to docs below, more doc will be added to GitHub soon. 
 
 EGI GOCDB wiki landing page: 
 https://wiki.egi.eu/wiki/GOCDB 
