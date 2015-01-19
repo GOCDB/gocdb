@@ -141,7 +141,7 @@ if("query" == $v){
                     CURLOPT_SSLCERTPASSWD => 'somepassword', 
                     CURLOPT_SSLCERTTYPE => 'PEM',
                     CURLOPT_FILE => $fp,
-                    CURLOPT_SSLVERSION => 3, 
+                    //CURLOPT_SSLVERSION => 3, 
                     CURLOPT_PROXY => null  // set to null if querying PI on localhost 
                 ));
                 //curl_setopt($ch, CURLOPT_SSLVERSION,3); 

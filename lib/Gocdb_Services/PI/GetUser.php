@@ -2,7 +2,14 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * Copyright © 2011 STFC Licensed under the Apache License, 
+ * Version 2.0 (the "License"); you may not use this file except in compliance 
+ * with the License. You may obtain a copy of the License at 
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable 
+ * law or agreed to in writing, software distributed under the License is 
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
+ * either express or implied. See the License for the specific language 
+ * governing permissions and limitations under the License.
 */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
 require_once __DIR__ . '/QueryBuilders/ExtensionsParser.php';
@@ -145,13 +152,8 @@ class GetUser implements IPIQuery{
 	 * @return String
 	 */
 	public function getXML(){
-		$helpers = $this->helpers;
-	
 		$users = $this->users;
-		$ownedEntityService = new OwnedEntity ();
-		
 		$xml = new \SimpleXMLElement ( "<results />" );
-
 		foreach ( $users as $user ) {
 			$xmlUser = $xml->addChild ( 'EGEE_USER' );
 			$xmlUser->addAttribute ( "ID", $user->getId () . "G0" );
@@ -160,7 +162,8 @@ class GetUser implements IPIQuery{
 			$xmlUser->addChild ( 'SURNAME', $user->getSurname () );
 			$xmlUser->addChild ( 'TITLE', $user->getTitle () );
 			/*
-			 * Description is always blank in the PROM get_user output so we'll keep it blank in the Doctrine output for compatibility
+			 * Description is always blank in the PROM get_user output so 
+             * we'll keep it blank in the Doctrine output for compatibility
 			 */
 			$xmlUser->addChild ( 'DESCRIPTION', "" );
 			$portalUrl = '#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=User&id=' . $user->getId ();
@@ -171,10 +174,35 @@ class GetUser implements IPIQuery{
 			$xmlUser->addChild ( 'WORKING_HOURS_START', $user->getWorkingHoursStart () );
 			$xmlUser->addChild ( 'WORKING_HOURS_END', $user->getWorkingHoursEnd () );
 			$xmlUser->addChild ( 'CERTDN', $user->getCertificateDn () );
-
-				
+          
+            /*
+            // Wrap curl code within if statement, set from config
+            // probably need a new param to request rendering ssousername (and paging?)
+            $url = "https://www.egi.eu/sso/api/user?dn=".$this->cleanDN($user->getCertificateDn()); 
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+            curl_setopt($ch, CURLOPT_URL, $url);
+            curl_setopt($ch, CURLOPT_PROXY, 'http://wwwcache.dl.ac.uk'); 
+            curl_setopt($ch, CURLOPT_PROXYPORT, 8080); 
+            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
+            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); //return result instead of outputting it
+            curl_setopt($ch, CURLOPT_TIMEOUT, 3); //3secs 
+            $ssousername = curl_exec($ch);
+            //if(curl_errno($ch)){ // error occured. //}
+            //$info = curl_getinfo($ch);
+            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+            curl_close($ch);
+            // username only returned on 200 OK response, e.g. user not found gives 404
+            //if($info['http_code'] != '200'){
+            if($httpcode != 200){
+               $ssousername = ''; 
+            } 
+            $xmlUser->addChild ( 'SSOUSERNAME', trim($ssousername)); 
+            */
+            
 			/*
-			 * APPROVED and ACTIVE are always blank in the GOCDBv4 get_user output so we'll keep it blank in the GOCDBv5 output for compatibility
+			 * APPROVED and ACTIVE are always blank in the GOCDBv4 get_user 
+             * output so we'll keep it blank in the GOCDBv5 output for compatibility
 			 */
 			$xmlUser->addChild ( 'APPROVED', null );
 			$xmlUser->addChild ( 'ACTIVE', null );
@@ -191,41 +219,50 @@ class GetUser implements IPIQuery{
     				$xmlRole = $xmlUser->addChild ( 'USER_ROLE' );
     				$xmlRole->addChild ( 'USER_ROLE', $role->getRoleType ()->getName () );
     				
-    				/*
-    				 * Find out what the owned entity is to get its name and type
-    				 */
-    				$ownedEntity = $role->getOwnedEntity ();
-    				// We should use the below method from the ownedEntityService
-    				// to get the type value, but we may need to display 'group' to be
-    				// backward compatible as below. Also added servicegroup to below else if.
-    				// $type = $ownedEntityService->getOwnedEntityDerivedClassName($ownedEntity);
-    				$name = $ownedEntity->getName ();
-    				$type = '';
-    				if ($ownedEntity instanceof \Site) {
-    					$type = "site";
-    				} else if ($ownedEntity instanceof \NGI) {
-    					$type = "group";
-    				} else if ($ownedEntity instanceof \Project) {
-    					$type = "group";
-    				} else if ($ownedEntity instanceof \ServiceGroup) {
-    					$type = 'servicegroup';
-    				} // note, no subgrids but we are removing subgrids.
-    				
-    				$xmlRole->addChild ( 'ON_ENTITY', $name );
-    				$xmlRole->addChild ( 'ENTITY_TYPE', $type );
+                    /*
+                     * Find out what the owned entity is to get its name and type
+                     */
+                    $ownedEntity = $role->getOwnedEntity ();
+                    // We should use the below method from the ownedEntityService
+                    // to get the type value, but we may need to display 'group' to be
+                    // backward compatible as below. Also added servicegroup to below else if.
+                    // $type = $ownedEntityService->getOwnedEntityDerivedClassName($ownedEntity);
+                    $name = $ownedEntity->getName ();
+                    $type = '';
+                    $entityPk = '';
+                    if ($ownedEntity instanceof \Site) {
+                            $type = "site";
+                            $entityPk = $ownedEntity->getPrimaryKey();
+                    } else if ($ownedEntity instanceof \NGI) {
+                            $type = "ngi"; // this should be ngi not group
+                            $entityPk = $ownedEntity->getId();
+                    } else if ($ownedEntity instanceof \Project) {
+                            $type = "project"; // this should be project not group
+                            $entityPk = $ownedEntity->getId();
+                    } else if ($ownedEntity instanceof \ServiceGroup) {
+                            $type = 'servicegroup';
+                            $entityPk = $ownedEntity->getId().'G0';
+                    } // note, no subgrids but we are removing subgrids.
+
+                    $xmlRole->addChild ( 'ON_ENTITY', $name );
+                    $xmlRole->addChild ( 'ENTITY_TYPE', $type );
+                    //$xmlRole->addChild ( 'ID', $ownedEntity->getId() );
+                    if($entityPk != ''){ 
+                        $xmlRole->addChild ( 'PRIMARY_KEY', $entityPk );
+                    }
 			    }
 			}
 		}
 		
-		$dom_sxe = dom_import_simplexml ( $xml );
+		/*$dom_sxe = dom_import_simplexml ( $xml );
 		$dom = new \DOMDocument ( '1.0' );
 		$dom->encoding = 'UTF-8';
 		$dom_sxe = $dom->importNode ( $dom_sxe, true );
 		$dom_sxe = $dom->appendChild ( $dom_sxe );
 		$dom->formatOutput = true;
 		$xmlString = $dom->saveXML ();
-		
-		return $xmlString;
+		return $xmlString;*/
+        return $xml->asXML(); 
 	}
 	
 	/** Returns the user data in Glue2 XML string.
@@ -243,4 +280,8 @@ class GetUser implements IPIQuery{
 	public function getJSON(){		
 		throw new LogicException("Not implemented yet");
 	}
+
+    private function cleanDN($dn) {
+        return trim( str_replace(' ', '%20', $dn) );
+    }
 }
