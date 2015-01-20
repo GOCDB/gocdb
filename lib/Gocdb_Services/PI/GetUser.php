@@ -199,6 +199,13 @@ class GetUser implements IPIQuery{
             } 
             $xmlUser->addChild ( 'SSOUSERNAME', trim($ssousername)); 
             */
+
+            $ssousername = $user->getUsername1(); 
+            if($ssousername != null){
+               $xmlUser->addChild ( 'SSOUSERNAME', $ssousername); 
+            } else {
+                $xmlUser->addChild ( 'SSOUSERNAME');  
+            }
             
 			/*
 			 * APPROVED and ACTIVE are always blank in the GOCDBv4 get_user 

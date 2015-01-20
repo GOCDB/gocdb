@@ -13,3 +13,6 @@ $
 $doctrine orm:schema-tool:update --force
 Updating database schema...
 Database schema updated successfully! "1" queries were executed
+
+
+doctrine orm:generate-proxies compiledEntities/

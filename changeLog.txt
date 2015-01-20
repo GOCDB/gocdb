@@ -1,9 +1,18 @@
 GOCDB-5.3.1 Release (TBC) 
-  - Addition of GocContextPath to allow deployment of GOCDB in other environments 
-    such as a Symfony component. 
+  - Addition of static GocContextPath.php to allow deployment of GOCDB in other 
+    environments such as a Symfony component (allows web assets to be located 
+    in a different directory as required by environment).
+  - Addition of static SecurityContextSource.php as a storage object for external 
+    security context objects that may be set to authenticate users in other 
+    environments such as a a Symfony component. 
   - Support for SAML2.0 SSO logins using SimpleSamlPhp (disabled by default).  
-  - Update of getUser() PI method to include new elements: SSOUSERNAME and PRIMARY_KEY of 
-    the target role entity.  
+  - Update DB entity model to add new value (User->$username1) and new script 
+    (QueryPopulateSSO_UsernameRunner.php) to query the EGI Idp to populdate this value. 
+  - Update of get_user PI method (GetUser.php): 
+    - ENTITY_TYPE element values updated ('group' becomes 'ngi' and 'group' 
+      becomes 'project').  
+    - New elements: SSOUSERNAME and PRIMARY_KEY (PK of the target role entity). 
+  
 
 GOCDB-5.3 Release (5 Nov 2014) 
   - Add Multiple Endpoints per Service: https://wiki.egi.eu/wiki/GOCDB/Release4/Development/MultipleEndpointsPerService 

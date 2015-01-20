@@ -53,7 +53,7 @@
         // logout button (if set - does not always need to be rendered)  
         if(!empty(\Factory::$properties['LOGOUTURL'])){
             $HTML .= "<div style='text-align: right;'>"; 
-            $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'">Logout</a>';
+            $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
             $HTML .= "</div>"; 
         }
        

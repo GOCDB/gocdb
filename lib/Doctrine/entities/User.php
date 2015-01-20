@@ -22,6 +22,8 @@ class User {
 	protected $workingHoursEnd = null;
     /** @Column(type="string", unique=true) **/
 	protected $certificateDn = null;
+    /** @Column(type="string", nullable=true) **/
+    protected $username1 = null; 
 	/** @Column(type="boolean") */
 	protected $isAdmin;
 	/** @OneToMany(targetEntity="Role", mappedBy="user") **/
@@ -83,6 +85,10 @@ class User {
 		return $this->certificateDn;
 	}
 
+    public function getUsername1(){
+        return $this->username1; 
+    }
+
     public function getHomeSite() {
         return $this->homeSite;
     }
@@ -125,6 +131,10 @@ class User {
 
     public function setCertificateDn($certificateDn) {
         $this->certificateDn = $certificateDn;
+    }
+
+    public function setUsername1($username1){
+        $this->username1 = $username1; 
     }
 
     public function setHomeSiteDoJoin(Site $homeSite) {

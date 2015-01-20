@@ -67,6 +67,20 @@
                         </div>
                     </td>
                 </tr>
+                <tr class="site_table_row_2">
+                    <td class="site_table">EGI SSO Username</td>
+                    <td class="site_table">
+                    	<div style="word-wrap: break-word;">
+                        	<?php 
+                            if($params['user']->getusername1() != null){
+                                echo  $params['user']->getusername1(); 
+                            } else {
+                                echo 'Not known'; 
+                            }
+                            ?>
+                        </div>
+                    </td>
+                </tr>
                 <?php if(sizeof($params['user']->getHomeSite()) != 0) { ?>
                     <tr class="site_table_row_2">
                         <td class="site_table">Home Site</td>
