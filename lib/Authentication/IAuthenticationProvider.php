@@ -20,14 +20,14 @@ interface IAuthenticationProvider {
      * the next AuthenticationProvider that supports the presented IAuthentication implementation will be tried. 
      * 
      * @param IAuthentication $auth Token
-     * @return IAuthentication Fully authenticated object including credentials. 
+     * @return IAuthentication Fully authenticated object including credentials or null if provider can't support given token. 
      * @throws AuthenticationException if authentication fails. 
      */
     public function authenticate(IAuthentication $auth) ; 
    
 
-    /*
-     * Returns true if this AuthenticationProvider supports the indicated Authentication object.
+    /** 
+     * Returns true if this AuthenticationProvider supports the given Authentication object.
      * Returning true does not guarantee an AuthenticationProvider will be able to 
      * authenticate the presented IAuthentication instance. It simply 
      * indicates it can support closer evaluation of it. An AuthenticationProvider 

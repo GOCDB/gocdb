@@ -25,8 +25,11 @@ class GOCDBUserDetailsService implements IUserDetailsService {
      * @throws UsernameNotFoundException if the user could not be found or the user has no GrantedAuthority
      */
     public function loadUserByUsername($username) {
+        throw \LogicException('not implemted yet'); 
+        
         if ($username == null) {
-            throw new \RuntimeException('null username');
+            throw new UsernameNotFoundException(null, 'null username');
+            //throw new \RuntimeException('null username');
         }
 
         $roles = array();
@@ -41,15 +44,15 @@ class GOCDBUserDetailsService implements IUserDetailsService {
         // Add extra logic to lookup user and assign roles accordingly
         //$Results = get_xml('Get_User_By_DN', array($username));
         $user = \Factory::getUserService()->getUserByPrinciple($username);
-
         if ($user != null) {
             $roles[] = 'ROLE_REGISTERED_USER';
-            if($user->getRoles()){
-                $roles[] = 'ROLE_GOCDB_ADMIN';
-            }
+            //foreach($user->getRoles() as $role){
+            //   if($role->getRoleType()->getName() == 'GocdbAdmin'){
+            //        $roles[] = 'ROLE_GOCDB_ADMIN';
+            //   }
+            //}
             // we can add extra roles here....
         }
-
         // If the user is not found or has no granted authorities then
         // we need to honour the contract of the public API and throw ex.
         if(count($roles)==0){
@@ -58,6 +61,8 @@ class GOCDBUserDetailsService implements IUserDetailsService {
         // return our custom IUserDetails implementation
         $userDetails = new GOCDBUserDetails($username, true, $roles, $user, '');
         return $userDetails;
+        //$userDetails = new GOCDBUserDetails($username, true, $roles, null, '');
+        //return $userDetails; 
     }
 }
 

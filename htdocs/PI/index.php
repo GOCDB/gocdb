@@ -72,7 +72,7 @@ class PIRequest {
             unset($_GET['output']);
         }
         
-        $testDN = Get_User_Principle();
+        $testDN = Get_User_Principle_PI();
         if(empty($testDN) == FALSE){
             $this->dn = $testDN; 
         }

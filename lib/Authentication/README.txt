@@ -1,184 +1,155 @@
 
 Authentication Abstraction Package
 ===================================
-This Authentication package provides the necessary abstractions to support 
-different authentication mechanisms such as x509 and un/pw authentication. 
-Without modification, it is configured for x509. This module can only support
-a *single* configured auth mechanism (see TODO/Future Work below regarding a 
-fallback strategy to support multiple auth mechanisms, e.g. 1st try x509cert, 
-if no cert then fall back to try un/pw). 
+David Meredith
+This Authentication package provides abstractions to support different authentication 
+mechanisms such as x509, SAML and un/pw authentication. 
+Without modification, it is configured for x509. 
 
-********************************************************************************
-*****Note, this version of GOCDB does not use this 'Authentication' module.*****
-********************************************************************************
-The EGI implementation uses x509 certificates and so we do not use the 
-authentication abstractions in the EGI GOCDB5 instance to bypass the use 
-of cookies and avoid EU cookie law regulations. 
-
-This module is intended to be extended and modified as required to suit the 
+It will no doubt need to be extended and modified to suit the 
 requirements of the particular deployment. The auth abstractions can't be used 
-'out of the box' without some development work to integrate with your 
-particular local credential store, whatever that may be (e.g. DB containing 
-salted hash of un/pw). 
-If required by EGI, we may further develop this module to support 'out of the box' 
-deployment for different auth mechanisms.   
-
-
-
-
-In Brief:
-==========
-The code is largely based on core interfaces and classes copied 
-from Spring Security 3 framework. http://static.springsource.org/spring-security
+'out of the box' without some integration/dev work to cater for your 
+particular local credential store and required auth-mechanism.  
+  
+Inspired  by Spring Security 3 framework http://static.springsource.org/spring-security
 WARNING: This package is NO WAY a complete re-implementation for php, rather it is 
-a rather naive micro-simplification! 
-
-- The ISecurityContextService is used to store the users IAuthToken in HTTP session 
-so that re-authentications are not necessary across different page requests 
-(this requires cookies are enabled in the browser). 
-- The IAuthenticationProvider interface authenticates the user if their IAuthToken is null. 
-- The IUserDetailsService abstracts the local credential store (e.g. a local database that stores
-user accounts identified by certificate DN or username). 
+a rather naive micro-uber-simplification! 
+There is plenty of scope to further develop this module to support 'out of the box' 
+deployment for different auth mechanisms. 
 
 
-Core components (interfaces and services) 
-==========================================
+Core interfaces and (implementations) 
+=====================================
  
-- IAuthentication.php and X509AuthenticationToken.php, UsernamePasswordAuthenticationToken.php 
-Core interface and implementations for defining authentication tokens for  
-different authentication mechanisms (x509 and username/password). 
+IAuthentication.php 
+-------------------
+Defines authentication tokens for different authentication mechanisms. 
+A token is created to authenticate the current user/request.  
+(X509AuthenticationToken.php, UsernamePasswordAuthenticationToken.php, SimpleSamlPhpAuthToken.php) 
  
-- IAuthenticationManager.php and AuthenticationManagerService.php
-Core service providing an authentication entry point.  
-The interface, provides a single 'authenticate($anIAuthToken)'  method that 
-authenticates the given IAuthentication token if it can. 
+SecurityContextService.php
+--------------------------
+Entry point service to request an authentication token for the current request. 
+Depending on the configuration, the token may be retrieved/stored in HTTP session 
+which is necessary to prevent re-authentication across multiple page requests
+(e.g. to prevent re-entering a un/pw for each page).
+  
+Calling 'SecurityContextService::getAuthentication()' invokes the automatic 'Token Resolution Process' :
+  1. Attempt to fetch a previously created token from session and return the token if available. 
+     A token may not exist for the current request because: a) this is the 
+     initial request, b) the configuration prevents session-creation and/or 
+     c) the token is 'stateless' which prevents it from being stored in session.  
+  2. If a token is not available, then the configured 'pre-authenticating' 
+     tokens are iterated in order in an attempt to automatically create a token.  
+     The first successfully created and authenticated pre-auth token is returned. 
+  3. If a pre-auth token could not be be created, null is returned.     
+  4. If null is returned, client code can choose to manually create an auth token 
+     for subsequent authentication using the AuthenticationManagerService. For 
+     example, creating a un/pw auth token which requires credentials are input 
+     from the user (un/pw is not a pre-authenticating token - it can't be 
+     automatically created/resolved).  
 
-- IAuthenticationProvider.php and GOCDBAuthProvider.php, SampleAuthProvider.php  
-Core interface and implementations providing authentication logic for  
-different IAuthentication tokens.
+IAuthenticationManager.php 
+--------------------------
+Entry point service providing a single 'authenticate($anIAuthToken)' method.   
+Used for manually authenticating a given token. The manager will iterate all the 
+configured IAuthenticationProviderS in an attempt to authenticate the given 
+IAuthentication token. A token is returned on the first successful authentication. 
+(AuthenticationManagerService.php)
+
+IAuthenticationProvider.php 
+---------------------------
+Used to authenticate IAuthentication tokens. A single provider can authenticate
+different types of token as indicated by its 'supports($token)' method. 
 SampleAuthProvider.php is a demo sample and should NOT be used in production. 
+(GOCDBAuthProvider.php, SampleAuthProvider.php)  
 
-- SecurityContextService.php
-Core service to (securely) store and fetch the user's IAuthentication token in HTTP session. 
-This is necessary to prevent re-authentication across multiple page requests 
-(otherwise the user would have to re-enter their un/pw for each page request).  
-
-- IUserDetails.php and GOCDBUserDetails.php 
-Interface and implementation for storing user information which is later 
-encapsulated into an IAuthentication object. 
-This allows non-security related user information (such as email addresses, 
-telephone numbers etc) to be stored in a convenient location. This object 
+IUserDetails.php 
+----------------
+Stores user information about a user and is a member var of an IAuthentication object. 
+This allows non-security related user information (such as eaddresses, 
+telephone numbers etc) to be stored in a convenient location inside the token. This object 
 also encapsulates the user's granted authorities (i.e. roles). 
+(GOCDBUserDetails.php) 
 
-- IUserDetailsService.php and GOCDBUserDetailsService.php
-Core interface and implementation that loads user-specific data from the local credential repository/db.  
-Interface defines a single public method 'loadUserByUsername($aUsernameString)' 
+IUserDetailsService.php 
+-----------------------
+Abstracts the local credential store (typically a DB) for loading user-specific data.  
+The interface defines a single public method 'loadUserByUsername($aUsernameString)' 
 which simplifies support for new data-access strategies.
+(GOCDBUserDetailsService.php)
 
-- ApplicationSecurityConfigService.php
-Core service that defines different factory methods for returning different 
-implementations of the core interfaces. This service defines the 'isPreAuthenticated()' 
-method to indicate if the authentication mechanism in use relies on the 
-server/hosting environment to pre-authenticate the user such as x509 
-(unlike username/password authentication which relies solely on the web-application). 
+ApplicationSecurityConfigService.php
+------------------------------------
+Configuration service - defines different factory methods for returning different 
+configurations/implementations of the core interfaces. 
 
-Typical Usage (see 'htdocs/web_portal/components/Get_User_Principle.php' file) 
-==============================================================================
 
-    require_once __DIR__ . '<path_to>/lib/Gocdb_Services/Factory.php';
-    $auth = \Factory::getAuthContextService()->getAuthentication();
-    if($auth == null) {
-        // Here you could re-direct the user to some form of auth/login page in order  
-        // to construct an Auth token from the user, then call: 
-        //AuthenticationManagerService::authenticate($anIAuthenticationObj);
-    } else {
-        $auth = SecurityContextService::getAuthentication();
-        $auth->getDetails(); // to get an application specific user details object. 
-        $auth->getAuthorities(); // to list granted roles 
-        return $auth->getPrinciple(); // to get the authenticated principle object 
+Typical Usage 
+=============
+See 'htdocs/web_portal/components/Get_User_Principle.php' for example: 
+ 
+<code>
+    function Get_User_Principle(){
+        // Automatically resolve a token: Gets the token stored in session (if available) 
+        // or automatically creates a configured 'pre-authenticating' token.
+        require_once 'path to Auth lib'.'/Authentication/SecurityContextService.php'; 
+        require_once 'path to Auth lib'.'/lib/Authentication/AuthenticationManagerService.php'; 
+        $auth = org\gocdb\security\authentication\SecurityContextService::getAuthentication();
+
+        // A token could not be automatically resolved (no token exists in 
+        // session and/or pre-authenticating token could not be automatically created).   
+        // Optional: Manually create token and re-attempt authentication:
+        if ($auth == null) {
+            try{ 
+               // Here get username and password from user...then create and authenticate token
+               $unPwToken = new org\gocdb\security\authentication\UsernamePasswordAuthenticationToken("test", "test");
+               $auth = org\gocdb\security\authentication\AuthenticationManagerService::authenticate($unPwToken);
+            } catch(org\gocdb\security\authentication\AuthenticationException $ex){
+                // log failed authentication 
+            }
+        } 
+        return $auth->getPrinciple();
     }
-
+</code>
  
-An explicit authentication can be achieved using the following code: 
- SecurityContextService::setAuthentication($anIAuthenticationObj);
- 
-An explicit logout (removal of the security context) can be achieved using the 
-following code (e.g. used on logout page): 
- SecurityContextService::setAuthentication(null);
+An explicit authentication and logout (removal of the security context) 
+can be achieved using the following: 
+<code>
+   SecurityContextService::setAuthentication($anIAuthenticationObj); // to authenticate
+   SecurityContextService::setAuthentication(null);                  // to logout 
+</code>
 
 
 How do I support a new authentication mechanism?
-===================================================
-x) Provide a new 'IAuthentication.php' implementation for your chosen auth-mechanism 
+================================================
+x. Provide a new 'IAuthentication.php' implementation for your chosen auth-mechanism 
    - This object MUST implement IAuthentication.
    - Implementations go in the 'AuthTokens' dir.  
 
-x) Provide a new 'IAuthenticationProvider.php' implementation to authenticate your 
+x. Provide a new 'IAuthenticationProvider.php' implementation to authenticate your 
    IAuthentication object.   
    - Usually auth is done by comparing the IUserDetails object that is returned 
      from your IUserDetailsService.  
    - Implementations go in the 'AuthProviders' dir. 
 
-x) Provide a new 'IUserDetailsService.php' implementation to load user-specific data
+x. Optional: Provide a new 'IUserDetailsService.php' implementation to load user-specific data
    from your local credential repository and return your IUserDetails object. 
    - Implementations should go in 'UserDetailsServices' dir. 
 
-x) Provide a new 'IUserDetails.php' implementation to store your user-specific data. 
+x. Optional: Provide a new 'IUserDetails.php' implementation to store your user-specific data. 
    - Implementations go in 'UserDetails' dir. 
+    Note: Take care to correctly fulfil the contract of the public API, in particular, 
+    you must ensure the non-null contracts as detailed for each method are correctly enforced! 
 
-Note: Take care to correctly fulfill the contract of the public API, in particular, 
-you must ensure the non-null contracts as detailed for each method are correctly enforced! 
-
-x) Modify ApplicationSecurityConfigService.php to return your chosen auth impl 
+x. Modify ApplicationSecurityConfigService.php to return your chosen auth impl 
   (see below for example)  
 
-x) Integrate the sample code shown in the 'Typical Usage' section in the 
-   'htdocs/web_portal/components/Get_User_Principle.php' file. This file serves 
-   as the global integration point for all authentication requests. 
+x. Use the sample code shown in the 'Typical Usage' section to create and authenticate a token.  
 
-
-
-
-
-
-Configuring the SampleAuthProvider
-===================================
-The SampleAuthProvider.php is a IAuthenticationProvider.php implementation that 
-is for demonstration purposes only - DO NOT use this in production. 
-This auth provider will authenticate any user whose username and password are the same.
-To use this provider, do the following: 
-
-x) Modify ApplicationSecurityConfigService as follows: 
-   - Update 'ApplicationSecurityConfigService::getAuthProvider()' to return a new SampleAuthProvider.php instance
-   - Update 'ApplicationSecurityConfigService::isPreAuthenticated()' to return false
-
-x) Use the following logic to perform a manual authentication (e.g. see index.php) 
-   (note the username must be the same as the password).
- 
-        require_once dirname(__FILE__).'/../../lib/Authentication/AuthenticationManagerService.php'; 
-        require_once dirname(__FILE__).'/../../lib/Authentication/AuthTokens/UsernamePasswordAuthenticationToken.php';
-        require_once dirname(__FILE__).'/../../lib/Authentication/Exceptions/AuthenticationException.php';
-        try { 
-            $authToken = new UsernamePasswordAuthenticationToken('sampleUser', 'sampleUser');         
-            $authToken = AuthenticationManagerService::authenticate($authToken); 
-            echo 'Newly authenticated ['.$authToken->getPrinciple().']'; 
-        } catch(AuthenticationException $ex){
-            echo 'Failed Authentication';
-        }
 
 
 TODO
-=======
- 
-If required by EGI, we may further develop this module to support 'out of the box' 
-deployment for different auth mechanisms.
- 
-Spring allows multiple AuthProviders to be configured in conjunction with a 
-strategy for iterating through the available providers to support more than 
-one auth-mechanism, e.g. try x509 first, if fail fallback to un/pw, if fail then
-throw AuthException. This may be useful as currently we can only configure a single 
-auth-mechanism. In particular, the ApplicationSecurityConfigService.isPreAuthenticated()  
-would need to cycle through the configured Auth tokens and return true if any are pre-auth. 
-Also, the ApplicationSecurityConfigService.getPreAuth_AuthToken() would need to return
-an ordered list of pre-auth tokens to attempt authentication with. Would need 
-some work but is doable. 
+=====
+Plenty - to update  
+

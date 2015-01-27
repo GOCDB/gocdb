@@ -32,10 +32,13 @@ date_default_timezone_set("UTC");
 
 $Page_Type = Get_Page_Type();
 
-// uncomment next 3 lines to show the debug statements: 
-//require_once __DIR__ . '/components/Get_User_Principle.php';
-//Get_User_Principle(); 
-//die('forced die'); 
+// Prevent user from going any further if they can't be authenticated
+require_once __DIR__ . '/components/Get_User_Principle.php';
+if(Get_User_Principle() == null){
+    // prob better to do a re-direct here to error page. 
+    die('Failed user authentication - A valid user certificate was not found or your EGI SSO '
+            . 'user account is not associated with a valid certificate.'); 
+} 
 
 try {
     Draw_Page($Page_Type);

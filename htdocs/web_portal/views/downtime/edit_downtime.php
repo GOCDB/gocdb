@@ -22,7 +22,10 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 <div class="rightPageContainer">
 
 	<h1>Edit Downtime</h1>
-	<div>Please enter all times in UTC. The current UTC time is <?php echo date("H:i", $params['nowUtc']);?>.</div>
+    <ul>
+        <li>Please enter all times in <b>UTC</b>. The current UTC time is <?php echo date("H:i", $params['nowUtc']);?>.</li>
+        <li>Downtimes can only be <b>shortened</b>, add a new downtime to extend.
+    </ul>
 	<br>
 
 

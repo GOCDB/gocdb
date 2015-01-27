@@ -16,7 +16,9 @@ interface IAuthenticationManager {
      * Attempts to authenticate the given <code>IAuthentication<code> object, returning the same 
      * fully populated/updated <code>IAuthentication</code> object (including granted authorities) 
      * if successful. The returned token is usually updated with a IUserDetails 
-     * object returned from UserDetailsService.
+     * object returned from UserDetailsService. The manager will iterate all the 
+     * configured IAuthenticationProviderS in an attempt to authenticate the given 
+     * IAuthentication token.
      * <p> 
      * If the user can't be authenticated, an AuthenticationException is thrown.   
      * A BadCredentialsException (which extends AuthenticationException) must be 

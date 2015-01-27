@@ -20,7 +20,13 @@ class UsernamePasswordAuthenticationToken implements IAuthentication {
         $this->password = $password; 
     }
     
-    
+    public static function isStateless() {
+        return false;
+    } 
+
+    public static function isPreAuthenticating() {
+        return false;   
+    }
     
     public function getCredentials() {
       return $this->password;     

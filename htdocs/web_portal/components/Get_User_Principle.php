@@ -21,17 +21,54 @@
  *
  /*====================================================== */
 
+/**
+ * Get the DN from an x509 cert or null if a user certificate can't be loaded. 
+ * <p>
+ * Called from the PI to authenticate requests using certificates only. 
+ * 
+ * @return string or null if can't authenticate request 
+ */
+function Get_User_Principle_PI()
+{
+   require_once __DIR__ . '/../../../lib/Authentication/AuthenticationManagerService.php';  
+   require_once __DIR__ . '/../../../lib/Authentication/AuthTokens/X509AuthenticationToken.php';  
+   try { 
+       $x509Token = new org\gocdb\security\authentication\X509AuthenticationToken(); 
+       $auth = org\gocdb\security\authentication\AuthenticationManagerService::authenticate($x509Token); 
+       return $auth->getPrinciple(); 
+   } catch(org\gocdb\security\authentication\AuthenticationException $ex){
+       // failed auth, so return null and let calling page decide to allow 
+       // access or not (some PI methods don't need to be authenticated with a cert) 
+   }
+   return null; 
+}
 
 /**
- * Get the user's principle ID string.  
- * If using x509 to authenticate uses, this is the DN string of the client certificate.  
+ * Get the x509 DN from certificate or from SAML attribute. 
+ * <p>
+ * Called fromt the portal to allow authentication via x509 or SSO/SAML.  
  * This method serves as the global integration point for all authentication requests. 
  * If you intend to support a different authentication mechanism, you will need 
  * to modify this method to support your chosen authentication scheme. 
  * 
- * @return string That authenticates the user, or null if user is not authenticated. 
+ * @return string or null if can't authenticate request 
  */
 function Get_User_Principle()
+{
+    require_once __DIR__ . '/../../../lib/Authentication/SecurityContextService.php'; 
+    $auth = org\gocdb\security\authentication\SecurityContextService::getAuthentication();
+    if ($auth == null) {
+        //require_once __DIR__ . '/../../../lib/Authentication/AuthenticationManagerService.php'; 
+        //$unPwToken = new org\gocdb\security\authentication\UsernamePasswordAuthenticationToken("test", "test");
+        //$auth = org\gocdb\security\authentication\AuthenticationManagerService::authenticate($unPwToken);
+        return null; 
+    } 
+    return $auth->getPrinciple();
+}
+
+
+
+/*function Get_User_Principle_back()
 {
     // Return hard wired user's principle string (DN) e.g. for testing     
     // =======================================================
@@ -50,16 +87,16 @@ function Get_User_Principle()
        return str_replace("emailAddress=", "Email=", $token->getUser()->getUserName()); 
     }
     
-    // ================Use Custom x509 Authentication=======================
-    /*if(!isset($_SERVER['SSL_CLIENT_CERT']))
-    	return "";
-    $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
-    $Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
-    $User_DN = $Plain_Client_Cerfificate['name'];
+    // ================Use x509 Authentication=======================
+    //if(!isset($_SERVER['SSL_CLIENT_CERT']))
+    //	return "";
+    //$Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
+    //$Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
+    //$User_DN = $Plain_Client_Cerfificate['name'];
     // harmonise display of the "email" field that can be different depending on
     // used version of SSL
-    $User_DN = str_replace("emailAddress=", "Email=", $User_DN);
-    return $User_DN;*/
+    //$User_DN = str_replace("emailAddress=", "Email=", $User_DN);
+    //return $User_DN;
     if (isset($_SERVER['SSL_CLIENT_CERT'])) {
         $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
         if (isset($Raw_Client_Certificate)) {
@@ -98,16 +135,19 @@ function Get_User_Principle()
 
     // Couldn't authetnicate the user, so finally return null 
     return null; 
-    
-    
-    // ================Use Custom x509 Authentication=======================
-    
+}*/
+
+
+
+
+/*function Get_User_Principle__()
+{
 
     // To try the Auth Module with x509 (configured as default), comment out 
     // above block '===Use Custom x509 Auth===' and uncomment block below  
      
     // ================Use x509 Authentication Module=======================
-    /*require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
+    require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
     $auth = \Factory::getAuthContextService()->getAuthentication();
     if($auth == null) {
         die('Certificate not found - please restart your browser or clear your browser SSL cache');
@@ -134,11 +174,11 @@ function Get_User_Principle()
             throw new RuntimeException('Expected a Doctrine User entity');
         }
         return $auth->getPrinciple();
-    }*/
+    }
     // ================Use x509 Authentication Module=======================
     
     
-}
+}*/
 
 
 ?>

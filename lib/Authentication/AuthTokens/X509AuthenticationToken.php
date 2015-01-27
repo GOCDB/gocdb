@@ -19,9 +19,16 @@ class X509AuthenticationToken implements IAuthentication {
     public function __construct() {
         $this->initialDN = $this->getDN();
         //$this->principle = $this-initialDN; 
+        
     }
 
-    
+    public static function isStateless() {
+        return true;
+    } 
+
+    public static function isPreAuthenticating() {
+        return true;   
+    }
 
     /**
      * @return string An empty string as passwords are not used in X509. 
@@ -63,15 +70,20 @@ class X509AuthenticationToken implements IAuthentication {
     }
 
     private function getDN() {
-        if (!isset($_SERVER['SSL_CLIENT_CERT'])) {
-            throw new \RuntimeException('Invalid state');
+        if (isset($_SERVER['SSL_CLIENT_CERT'])) {
+            $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
+            if (isset($Raw_Client_Certificate)) {
+                $Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
+                $User_DN = $Plain_Client_Cerfificate['name'];
+                if (isset($User_DN)) {
+                    // harmonise "email" field that can be different depending on version of SSL
+                    $dn = str_replace("emailAddress=", "Email=", $User_DN);
+                    if ($dn != null && $dn != '') {
+                        return $dn;
+                    }
+                }
+            }
         }
-        $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
-        $Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
-        $User_DN = $Plain_Client_Cerfificate['name'];
-        // harmonise "email" field that can be different depending on SSL version
-        $User_DN = str_replace("emailAddress=", "Email=", $User_DN);
-        return $User_DN;
     }
 
     /**
@@ -99,6 +111,8 @@ class X509AuthenticationToken implements IAuthentication {
     public function setAuthorities($authorities) {
         $this->authorities = $authorities;
     }
+
+
 
 }
 

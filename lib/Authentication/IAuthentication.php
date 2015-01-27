@@ -2,24 +2,50 @@
 namespace org\gocdb\security\authentication;
 
 /**
- * Represents the token for an authentication request or for an authenticated 
- * principal once the request has been processed by the 
- * <code>AuthenticationManager.authenticate(Authentication)</code> method. 
+ * A token for a) authenticating the initial request or b) to represent an 
+ * authenticated principal after the request has been processed by 
+ * <code>AuthenticationManager.authenticate(Authentication)</code>. 
  * <p>
- * Once the request has been authenticated, the IAuthentication will be 
- * stored in the SecurityContext. An explicit authentication can be achieved
- * using the following code: 
- * <code>
- * SecurityContextService.setAuthentication(anIAuthentication);
- * </code>
- * Largely based on Spring Security. 
+ * An explicit authentication request can be executed using the following: 
+ * <code>SecurityContextService.setAuthentication(anIAuthentication);</code>. 
+ * Once the request has been authenticated, the token may be optionally
+ * stored in the http session's SecurityContext.
+ * 
+ * Inspired by Spring Security. 
  * @link http://static.springsource.org/spring-security Spring Security 
  * 
  * @author David Meredith 
  */
 interface IAuthentication {
-    
    
+    /**
+     * Determins if this token can be stored in the http session. 
+     * If true, the token can be stored in http session and re-used across page 
+     * requests. If false, then the token will not be stored in session.  
+     * @return boolean True or False 
+     */
+     public static function isStateless(); 
+
+    /**
+     * Does this token support a 'pre-authentication' scenario. 
+     * Pre-auth is when the user can be authenticated by some external system 
+     * allowing the tokens to be automatically created during the token 
+     * resolution process for automatic submission to 
+     * <code>AuthenticationManager.authenticate(Authentication)</code>.  
+     * <p>
+     * X509 is an example of a pre-authentication token - the server establishes
+     * that the user has provided a valid and trustworthy certificate before 
+     * reaching the underlying app (which means the token can be automatically 
+     * created during token resolution and authenticated). 
+     * <p>
+     * An exmple of a non pre-auth token is un/pw - the token will not be automatically 
+     * created during the token resolution process and must be created in client 
+     * code and and submitted to <code>AuthenticationManager.authenticate(IAuthentication)</code>. 
+     * 
+     * @return boolean True or False
+     */ 
+     public static function isPreAuthenticating(); 
+    
     /**
      * The identity of the principal being authenticated. 
      * Note, this will vary according to differet authentication mechansisms. 
@@ -81,14 +107,16 @@ interface IAuthentication {
     public function setAuthorities($authorities); 
 
    /**
-    * Validates the current state of the IAuth instance and is called internally by the framework. 
+    * Validates the current state of the IAuth instance and is called internally 
+    * by the framework when returning credentials that have been cached in the 
+    * security context's http session. 
     * Implementations MUST throw an AuthenticationException if the token's internal state becomes 
     * invalid due to whatever change (required since instances are mutable). 
     * <p>
-    * For example, in the case of x509 the client may freely change 
+    * For example, in the case of a cached x509 token, the client may freely change 
     * their certificate in their browser by clearing the browser ssl 
     * cache and refreshing the page. In this case, the DN may change from the  
-    * initial DN used when constructing the object. 
+    * initial DN used when constructing the token. 
     * 
     * @throws AuthenticationException if authenitcation fails 
     */

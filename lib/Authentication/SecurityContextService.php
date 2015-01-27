@@ -7,9 +7,10 @@ require_once __DIR__ . '/ApplicationSecurityConfigService.php';
 
 
 /**
- * Service to store/fetch the current user's Authentication/security context. 
- * The IAuthentication will be stored and managed in the HTTP session. 
- * This means that re-authentications are not necessary between page requests.
+ * Service to fetch the current user's IAuthentication token. 
+ * The token MAY be stored and managed in the HTTP session (provided 
+ * it is not stateless and the configuration allows session-creation). 
+ * Cached tokens prevent the need to re-authenticate across page requests.
  * You should never need to interact with the HTTP session directly. 
  * <p>
  * This service updates the session id if the session is older than 30 secs to 
@@ -19,19 +20,24 @@ require_once __DIR__ . '/ApplicationSecurityConfigService.php';
  * variable. 
  * <p>
  * Typical usage is:
- * <pre> 
+ * <code> 
  * $auth = SecurityContextService::getAuthentication();
  * if($auth == null) {
  *    // Here you could re-direct the user to some form of auth/login page in order  
- *    // to fetch an Auth token from the user, then call: 
- *    AuthenticationManagerService::authenticate($anIAuthenticationObj); 
+ *    // to create an Auth token from the user's input:  
+ *    $token = new org\gocdb\security\authentication\UsernamePasswordAuthenticationToken("test", "test");
+ *    // then call: 
+ *    AuthenticationManagerService::authenticate($token); 
  * }
- * // An explicit authentication can be achieved using the following code: 
- * SecurityContextService::setAuthentication($anIAuthenticationObj);
- * //An explicit logout (removal of the security context) can be achieved using the following code: 
- * SecurityContextService::setAuthentication(null);
- * </pre>
- * Largely based on Spring Security. 
+ * </code>
+ * 
+ * An explicit authentication (or logout) can be achieved using the following: 
+ * <code>
+ * SecurityContextService::setAuthentication($anIAuthenticationObj); //authenticate
+ * SecurityContextService::setAuthentication(null); // logout
+ * </code>
+ * 
+ * Inspired by Spring Security. 
  * @link http://static.springsource.org/spring-security Spring Security 
  * 
  * @see AuthenticationManagerService
@@ -44,125 +50,94 @@ class SecurityContextService {
     public static $authSessionKey = 'gocdb_IAuthentication_Impl';
     private static $salt = 'secretSaltValue';
     private static $delim = '[splitonthisdelimitervalueplease]';
-    private static $debug = false;
+    //public static $debug = false;
 
     
 
     /**
-     * Obtains the currently authenticated principal or null if no authentication 
-     * information is available (e.g. if user cannot be authenticated). 
+     * Invoke the token resolution process to obtain the auth token for the 
+     * current user/request, or null if an authentication token can't be resolved. 
+     * <p>
+     * The token resolution process is as follows: 
+     * <ol>
+     *    <li>Return the token previously stored in http session if available 
+     *    (the security configuration must allow session-creation).</li>
+     *    <li>If no token can be returned from session, iterate the configured 
+     *    pre-authenticating tokens in order, and return the first token that 
+     *    successfully authenticates the user. </li>
+     *    <li>If no token can be automatically created and successfully authenticated, 
+     *    return null</li>
+     * </ol>
      * 
      * @return IAuthentication or null if not authenticated
      */
     public static function getAuthentication() {
-        $auth = self::getAuthenticationImpl();
-        try {
-            // Always validate the auth token before returning
-            if($auth != null) {
-                $auth->validate();
-                return $auth;
-            }
-        } catch (AuthenticationException $ex) {
-            // Can be thrown by $auth->validate() if the auth token is no longer 
-            // valid. This can occur for example when using pre-auth token and 
-            // the client's state changes, e.g. if the browser is closed and 
-            // then reopened using a different certificate, the auth token stored 
-            // in php _SESSION will no longer be valid (e.g. different cert DN).  
-            if (SecurityContextService::$debug) {
-                print_r('First validation failure'); 
-            }
-            // Token is invalid so clear the security context.  
-            self::setAuthentication(null); 
-            // Try once more to authenticate as the client may be using a different
-            // (but valid) pre-auth token.  
-            $auth = self::getAuthenticationImpl();
-            try {
-                // Always validate the auth token before returning
-                if($auth != null) {
-                    $auth->validate();
-                    return $auth;
-                }
-            } catch(AuthenticationException $e){
-                if (SecurityContextService::$debug) {
-                    print_r('Second validation failure'.$ex); 
-                }    
+        // 1) If this configuration allows session creation, try to extract token 
+        // from session first 
+        if( ApplicationSecurityConfigService::getCreateSession() ) {  
+            $authToken = SecurityContextService::getHttpSessionAuth();
+            if ($authToken != null) {
+                // if $scheme param is requested, first check that auth supports 
+                // requested scheme. If not, continue on with below
+                // if($authToken->supports('scheme'){
+                    // since we are returning a cached credential, we must 
+                    // call validate first
+                    $authToken->validate();
+                    return $authToken;
+                //}
             }
         }
-        return null;
-    }
-    
-    private static function getAuthenticationImpl() {
-        if (!ApplicationSecurityConfigService::isPreAuthenticated()) {
-            // e.g. Un/Pw.... 
-            if (SecurityContextService::$debug){
-                echo('debug_0');
-            }
-            // If this Auth scheme does not support pre-authentication, 
-            // attempt to return the Auth token stored in session. If user has
-            // not authenticated return null (the webapp will then need to 
-            // present a form login page in order to get un/pw and call:
-            // AuthenticationManagerService::authenticate($newUnPwAuthToken);
-            return SecurityContextService::getHttpSessionAuth();
-            
-        } else {
-            // e.g. X509....
-            if (SecurityContextService::$debug){
-                echo('debug_1');
-            }
-            $sessionAuth = SecurityContextService::getHttpSessionAuth();
-            if ($sessionAuth == null) {
-                if (SecurityContextService::$debug) {
-                    echo('debug_2');
-                }
-                // If session Auth is null, then attempt to automatically authenticate 
-                // the user (since we have a pre-auth token, e.g. a cert, we do 
-                // not need to present login details as we do if the auth scheme
-                // does not support pre-authentication).
+        
+        // 2) Try to authenticate with available pre-Auth tokens (if any are configured) 
+        // Iterate configured PRE_AUTH tokens in order (skip those that are not preAuthenticating)  
+        // If specific scheme is requested, skip those that don't support scheme 
+        // Attempt to create new pre-Auth token and authenitcate  
+        $authTokenClassList = ApplicationSecurityConfigService::getAuthTokenClassList();
+        foreach ($authTokenClassList as $tokenClass){
+            // preAuthenitcated token only 
+            if(call_user_func($tokenClass.'::isPreAuthenticating')){
+                // call_user_func($tokenClass.'::supports')
+                $authImpl = new $tokenClass; 
+                //echo 'created auth token [' . get_class($authImpl).']'; 
                 try {
-                    // TODO - if we configure multiple pre-auth tokens, cycle 
-                    // through the tokens in order and authenticate (either first or all 
-                    // depending on strategy used).   
-                    // ApplicationSecurityConfigService::getPreAuth_AuthTokens(); 
-                    $authImpl = ApplicationSecurityConfigService::getPreAuth_AuthToken(); 
-                    if($authImpl == null){
-                        throw new \RuntimeException('null returned from ApplicationSecurityConfigService::getPreAuth_AuthToken()');
+                    // Iterate all configured AuthProviders  
+                    // and attempts to authenticate the token and if authenticated ok, calls 
+                    // SecurityContextService::setAuthentication($auth)
+                    $returnToken = AuthenticationManagerService::authenticate($authImpl); 
+                    if($returnToken != null){
+                        return $returnToken; 
                     }
-                    // Authenticate and return 
-                    return AuthenticationManagerService::authenticate($authImpl);
-                    
-                } catch (AuthenticationException $ex) {
+                }catch (AuthenticationException $ex){
                     // We don't want AuthenticationException being part of this 
-                    // methods public API. To be consistent when isPreAuth() == false, 
-                    // we log and return null instead.
-                    if (SecurityContextService::$debug) {
-                        print_r($ex);
-                    }
+                    // methods public API, but continue to next token for auth attempt.  
+                    // TODO - log failed token auth attempt 
                 }
-                return null;
-            } else {
-                // $sessionAuth was fetched from session and is not null 
-                if (SecurityContextService::$debug) {
-                    echo('debug_3');
-                }
-                return $sessionAuth;
             }
         }
-        return null;
+        
+        return null;  
     }
 
     /**
-     * Changes the currently authenticated principal, or removes the authentication information. 
+     * Changes the currently authenticated principal, or removes the authentication 
+     * information from session if null is given. 
+     * 
      * @param IAuthentication $auth The new Authentication token, 
-     *   or null if no authentication information should be stored. 
+     *   or null if http sessino token should be cleared.  
      */
     public static function setAuthentication($auth = null) {
-        if (session_id() == '') {
-            session_start();
+        // If can't create session, return - don't touch/create the session !  
+        if( ApplicationSecurityConfigService::getCreateSession() === FALSE ) { 
+            return; 
         }
+         
+        // Only set the auth token in session if the token is not stateless ! 
+        if ($auth != null && !$auth->isStateless()) {
             
-        if ($auth != null) {
             if (!($auth instanceof IAuthentication)) {
-                throw new \RuntimeException('Argument 1 passed to SecurityContextService::setAuthentication() must implement interface IAuthentication');
+                throw new \RuntimeException('Argument 1 passed to '
+                        . 'SecurityContextService::setAuthentication() must '
+                        . 'implement interface IAuthentication');
             }
             // Always unset the password as this auth object may be stored in 
             // e.g. HTTP session and the password MUST be opaque. 
@@ -183,14 +158,26 @@ class SecurityContextService {
             // save a salted md5 hash of the auth so that we can ensure that the 
             // session has not been tampered with when later callling getAuthentication()
             $serializedAuth = serialize($auth);
+            
+            if(!self::is_session_started()){
+                // You must call session_start() before you'll have access to any variables in $_SESSION.
+                session_start();
+            }
             $_SESSION[SecurityContextService::$authSessionKey] =
                     $serializedAuth .
                     SecurityContextService::$delim .
                     md5($serializedAuth . SecurityContextService::$salt);
-        } else {
+        }
+        
+        if($auth == null){
+            if (!self::is_session_started()){
+                session_start(); 
+            }
             // Clear the session variable. We can't just call session_destroy, 
             // we need to explicitly clear the session variable. 
-            unset($_SESSION[SecurityContextService::$authSessionKey]);
+            if(isset($_SESSION[SecurityContextService::$authSessionKey])){
+                unset($_SESSION[SecurityContextService::$authSessionKey]);
+            }
             // Lets not kill the session completely - it may be used for other 
             // session related stuff and we are only interested in the session 
             // 'SecurityContextService::$authSessionKey' var (i.e. our custom security context).  
@@ -204,14 +191,29 @@ class SecurityContextService {
      * @return IAuthentication or null 
      */
     private static function getHttpSessionAuth() {
-        // Start or resume the session.  
-        // Returns the session id for the current session or an empty string ("") 
-        // if there is no current session (no current session id exists)
-        if (session_id() == '') {
-            // Create a session or resume the current one 
-            // (based on a session identifier passed via a GET or POST request, or passed via a cookie).
-            session_start();
+        // If can't create session, return null - don't touch/create a session !  
+        if( ApplicationSecurityConfigService::getCreateSession() === FALSE ) { 
+            return null; 
         }
+       
+        // I want to check for a php session without starting one - but it seems 
+        // i can only resume a session or start a new one (either way, a session is started!) 
+        //http://stackoverflow.com/questions/13114185/how-can-you-check-if-a-php-session-exists
+        //http://stackoverflow.com/questions/1780736/checking-for-php-session-without-starting-one?rq=1
+        if (!self::is_session_started()) {
+        //if(!isset($_SESSION)){
+        //if(!isset($_COOKIE)){
+        //if(!isset($_REQUEST['PHPSESSID'] )){
+        //if(!isset($_COOKIE[session_name()])){
+            // You must call session_start() before you'll have access to variables in $_SESSION.
+            // This always results in a session being started (or existing 
+            // session is resumed). This is not ideal - i want to check for a 
+            // php session without starting one - but this don't seem possible. 
+            session_start();
+            //echo 'here, why? - I know session cookie exists! but apparently session has not been started?'; 
+            //return null; 
+        }
+
         // Deal with Session Fixation attacks: 
         // Maintain a value that will track the last time the session ID was 
         // updated. Here we ensure a new session ID is is generated frequently 
@@ -225,9 +227,9 @@ class SecurityContextService {
         
         // Get our session variable that serializes the AuthToken
         if (isset($_SESSION[SecurityContextService::$authSessionKey])) {
-            if (SecurityContextService::$debug){
-                echo('debug_5');
-            }
+            //if (SecurityContextService::$debug){
+            //    echo('debug_5');
+            //}
 
             // Get the session value and split into strings based on our delimiter
             list($serializedAuth, $serializedAuthHash) = explode(
@@ -245,6 +247,22 @@ class SecurityContextService {
             }
         }
         return null;
+    }
+
+
+
+    /**
+     * @return bool
+     */
+    private static function is_session_started() {
+        if (php_sapi_name() !== 'cli') {
+            if (version_compare(phpversion(), '5.4.0', '>=')) {
+                return session_status() === PHP_SESSION_ACTIVE ? TRUE : FALSE;
+            } else {
+                return session_id() === '' ? FALSE : TRUE;
+            }
+        }
+        return FALSE;
     }
 
 }

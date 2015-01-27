@@ -4,84 +4,74 @@ namespace org\gocdb\security\authentication;
 require_once __DIR__.'/AuthProviders/GOCDBAuthProvider.php';
 require_once __DIR__.'/UserDetailsServices/GOCDBUserDetailsService.php';
 require_once __DIR__.'/AuthTokens/X509AuthenticationToken.php';
+require_once __DIR__.'/AuthTokens/SimpleSamlPhpAuthToken.php';
 require_once __DIR__.'/AuthProviders/SampleAuthProvider.php';
 
 /**
  * Service class to return the different implementations of the core abstractions. 
  * If you require different auth mechanisms, then you will need to update the 
  * class factory methods to return the correct implementations.  
- * <p>
- * You should not need to modify the core Service classes in the above package 
- * or the core inteface abstractions. 
  *
  * @author David Meredith
  */
 class ApplicationSecurityConfigService {
 
     /**
-     * Get an instance of the supported <code>IAuthenticationProvider</code> implementation. 
-     * @return IAuthenticationProvider implementation object 
+     * Return a list of <code>IAuthenticationProvider</code> implementations. 
+     * @return array 
      */
-    public static function getAuthProvider(){
-        return new GOCDBAuthProvider();  
-
-        // To use the SampleAuthProvider, comment out above and use below. 
-        // Also set isPreAuthenticated() to return false.   
-        //return new SampleAuthProvider(); 
+    public static function getAuthProviders(){
+        $providerList = array(); 
+        $providerList[] = new GOCDBAuthProvider(); 
+        //$providerList[] = new SampleAuthProvider(); 
+        return $providerList; 
     }
 
 
     /**
-     * Get an instance of the supported <code>IUserDetailsService</code> implementation.  
-     * @return IUserDetailsService implementation object 
+     * Return the <code>IUserDetailsService</code> implementation.  
+     * @return IUserDetailsService implementation 
      */
     public static function getUserDetailsService(){
         return new GOCDBUserDetailsService();  
     }
  
     /**
-     * Specify whether pre-authentication is is supported by the configured IAuth token (or not). 
+     * Return an array of supported <code>IAuthentication</code> fully qualified token class names.
      * <p>
-     * X509 is an example of a pre-authentication token - the server must establish
-     * that the user has provided a valid and trustworthy certificate before reaching the app.
-     * (Note, client is authenticated but NOT authorized - this requires subseqent 
-     * authZ to determine if that certificate DN is known or not). 
-     * <p>
-     * An exmple of isPreAuthenticated() == false is un/pw form based login as 
-     * the server performs no pre-auth and the app is solely responsible for authentication. 
-     * <p>
-     * Important: NO subsequent authorization descision should be implemented here, 
-     * that should be left to the <code>AuthenticationManager.authenticate(anIAuthentication)</code>
-     * method and subsequent authZ code. 
+     * The class names are used to dynamically build preAuth class instances during 
+     * the token resolution process. Only preAuthenticating tokens are automatically 
+     * created during token resolution. Ordering is significant - tokens are 
+     * created in the order they appear in the array. 
      * 
-     * @return boolean True or False
+     * @return array of class name strings. 
      */ 
-    public static function isPreAuthenticated(){
-        // TODO - here we should cycle through our configured auth tokens and return true 
-        // if any is a pre-auth token. Should then be renamed to isPreAuthTokenAvailable();  
-        return true; 
-        //return false; 
+    public static function getAuthTokenClassList(){
+        $tokenClassList = array(); 
+        $tokenClassList[] = 'org\gocdb\security\authentication\X509AuthenticationToken'; 
+        $tokenClassList[] = 'org\gocdb\security\authentication\SimpleSamlPhpAuthToken'; 
+        //$tokenClassList[] = 'org\gocdb\security\authentication\UsernamePasswordAuthenticationToken'; 
+        return $tokenClassList; 
     }
 
     /**
-     * If we are supporing pre-auth as defined by <code>isPreAuthenticated()</code>, 
-     * create and return a new instance of the <code>IAuthentication</code> implementation. 
-     * <b>Impotant:</b> this simply returns a new/empty instance - the object has 
-     * not been passed to authenticate and no authentication has occurred yet. 
-     *    
-     * @return IAuthentication implementation object 
+     * Allow HTTP session creation for the security context. 
+     * <p>
+     * If true, <code>IAuthentication</code> tokens may be stored
+     * in the session (provided the token declares that it can be 
+     * persisted with <code>$token.isStateless() == false)</code>. 
+     * <p>
+     * If true, stateful tokens can be stored in HTTP session for 
+     * subsequent retrieval across page requests (e.g. a username/pw token). 
+     * <p>
+     * Typically, REST style applications are stateless using only stateless auth tokens, 
+     * while portals are normally stateful requiring session tracking. 
+     * 
+     * @return boolean
      */
-    public static function getPreAuth_AuthToken() {
-        if(!self::isPreAuthenticated()){
-            throw new \RuntimeException('Invalid state - preAuthenticated is false. 
-                This function should only be called when preAuthenticated is true.'); 
-        }
-        // TODO - here we should cycle through our configured auth tokens and 
-        // return the all configured pre-auth tokens in order. This method should 
-        // then be called getPreAuth_AuthTokens(). 
-        return new X509AuthenticationToken();
+    public static function getCreateSession(){
+        return false; 
     }
-
    
 }
 
