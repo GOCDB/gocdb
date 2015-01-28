@@ -1,11 +1,12 @@
 <?php
 namespace org\gocdb\security\authentication;
-require_once __DIR__.'/SecurityContextService.php'; 
-require_once __DIR__.'/Exceptions/AuthenticationException.php'; 
-require_once __DIR__.'/Exceptions/BadCredentialsException.php'; 
-require_once __DIR__.'/IAuthentication.php'; 
-require_once __DIR__.'/IAuthenticationManager.php';
-require_once __DIR__.'/ApplicationSecurityConfigService.php'; 
+include_once __DIR__.'/_autoload.php';
+//require_once __DIR__.'/SecurityContextService.php'; 
+//require_once __DIR__.'/Exceptions/AuthenticationException.php'; 
+//require_once __DIR__.'/Exceptions/BadCredentialsException.php'; 
+//require_once __DIR__.'/IAuthentication.php'; 
+//require_once __DIR__.'/IAuthenticationManager.php';
+//require_once __DIR__.'/ApplicationSecurityConfigService.php'; 
 
                                  
 /**

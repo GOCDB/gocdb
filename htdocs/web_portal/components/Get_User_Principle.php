@@ -21,6 +21,8 @@
  *
  /*====================================================== */
 
+require_once __DIR__ . '/../../../lib/Authentication/_autoload.php';  
+
 /**
  * Get the DN from an x509 cert or null if a user certificate can't be loaded. 
  * <p>
@@ -30,8 +32,6 @@
  */
 function Get_User_Principle_PI()
 {
-   require_once __DIR__ . '/../../../lib/Authentication/AuthenticationManagerService.php';  
-   require_once __DIR__ . '/../../../lib/Authentication/AuthTokens/X509AuthenticationToken.php';  
    try { 
        $x509Token = new org\gocdb\security\authentication\X509AuthenticationToken(); 
        $auth = org\gocdb\security\authentication\AuthenticationManagerService::authenticate($x509Token); 
@@ -55,10 +55,8 @@ function Get_User_Principle_PI()
  */
 function Get_User_Principle()
 {
-    require_once __DIR__ . '/../../../lib/Authentication/SecurityContextService.php'; 
     $auth = org\gocdb\security\authentication\SecurityContextService::getAuthentication();
     if ($auth == null) {
-        //require_once __DIR__ . '/../../../lib/Authentication/AuthenticationManagerService.php'; 
         //$unPwToken = new org\gocdb\security\authentication\UsernamePasswordAuthenticationToken("test", "test");
         //$auth = org\gocdb\security\authentication\AuthenticationManagerService::authenticate($unPwToken);
         return null; 

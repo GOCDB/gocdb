@@ -1,11 +1,12 @@
 <?php
 namespace org\gocdb\security\authentication;
 
-require_once __DIR__.'/AuthProviders/GOCDBAuthProvider.php';
-require_once __DIR__.'/UserDetailsServices/GOCDBUserDetailsService.php';
-require_once __DIR__.'/AuthTokens/X509AuthenticationToken.php';
-require_once __DIR__.'/AuthTokens/SimpleSamlPhpAuthToken.php';
-require_once __DIR__.'/AuthProviders/SampleAuthProvider.php';
+include_once __DIR__.'/_autoload.php';
+//require_once __DIR__.'/AuthProviders/GOCDBAuthProvider.php';
+//require_once __DIR__.'/UserDetailsServices/GOCDBUserDetailsService.php';
+//require_once __DIR__.'/AuthTokens/X509AuthenticationToken.php';
+//require_once __DIR__.'/AuthTokens/SimpleSamlPhpAuthToken.php';
+//require_once __DIR__.'/AuthProviders/SampleAuthProvider.php';
 
 /**
  * Service class to return the different implementations of the core abstractions. 

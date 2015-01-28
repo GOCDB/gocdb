@@ -1,11 +1,10 @@
 <?php
 namespace org\gocdb\security\authentication;
-require_once __DIR__ . '/../../Gocdb_Services/Factory.php';
-require_once __DIR__ . '/../Exceptions/UsernameNotFoundException.php';
-require_once __DIR__ . '/../IUserDetailsService.php';
-
-require_once __DIR__ . '/../UserDetails/GOCDBUserDetails.php';
 require_once __DIR__ . '/../../Doctrine/entities/User.php';
+require_once __DIR__ . '/../../Gocdb_Services/Factory.php';
+//require_once __DIR__ . '/../Exceptions/UsernameNotFoundException.php';
+//require_once __DIR__ . '/../IUserDetailsService.php';
+//require_once __DIR__ . '/../UserDetails/GOCDBUserDetails.php';
 
 /**
  * A IUserDetailService implemenation for GOCDB for querying the Doctrine database for

@@ -90,11 +90,12 @@ Typical Usage
 See 'htdocs/web_portal/components/Get_User_Principle.php' for example: 
  
 <code>
+    // autoload the security component 
+    require_once 'path to Authentication lib'.'/Authentication/_autoload.php'; 
+
     function Get_User_Principle(){
         // Automatically resolve a token: Gets the token stored in session (if available) 
         // or automatically creates a configured 'pre-authenticating' token.
-        require_once 'path to Auth lib'.'/Authentication/SecurityContextService.php'; 
-        require_once 'path to Auth lib'.'/lib/Authentication/AuthenticationManagerService.php'; 
         $auth = org\gocdb\security\authentication\SecurityContextService::getAuthentication();
 
         // A token could not be automatically resolved (no token exists in 
@@ -116,6 +117,7 @@ See 'htdocs/web_portal/components/Get_User_Principle.php' for example:
 An explicit authentication and logout (removal of the security context) 
 can be achieved using the following: 
 <code>
+   require_once 'path to Authentication lib'.'/Authentication/_autoload.php';
    SecurityContextService::setAuthentication($anIAuthenticationObj); // to authenticate
    SecurityContextService::setAuthentication(null);                  // to logout 
 </code>
@@ -151,5 +153,17 @@ x. Use the sample code shown in the 'Typical Usage' section to create and authen
 
 TODO
 =====
-Plenty - to update  
+Plenty. 
+Replace static classes with non-statics to allow multiple security 
+configurations/setups, e.g. one 'stateless' configuration for protecting REST endpoints
+and one 'stateful' configuration for use in web portal UI. 
+TODO: Create top-level 'FirewallComponent' class and inject non-static dependencies 
+including SecurityConfig.php, AuthenticationManager.php, SecurityContext.php.    
 
+A single static 'FirewallManager' can create and store these different FwComponents in an 
+array for accessing by client code with: 
+
+// get required fwComp, e.g. for portalUI page
+$fwComp = FireWallManager::getFirewallComponent('portalPageFwCompKey'); 
+$auth = $fwComp->getAuthentication();  // proxy to $securityContext->getAuthentication(); 
+$auth = $fwComp->authenticate($authToken);  // proxy to $authManager->authenticate($authToken);  
