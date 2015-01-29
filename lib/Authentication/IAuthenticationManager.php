@@ -24,14 +24,15 @@ interface IAuthenticationManager {
      * A BadCredentialsException (which extends AuthenticationException) must be 
      * thrown if incorrect credentials are presented as an AuthenticationManager must always test credentials.
      * <p>
-     * On successful authentication <code>SecurityContextService::setAuthentication($auth);</code> 
+     * On successful authentication <code>ISecurityContext.setAuthentication($auth);</code> 
      * is called to (re)persist the auth token in the SecurityContext. 
      * 
      * @param IAuthentication $auth Token
      * @return IAuthentication Fully populated Auth token on successful authentication. 
      * @throws AuthenticationException if authentication fails. 
+     * @throws BadCredentialsException if incorrect credentails passed.
      */
-    public static function authenticate(IAuthentication $auth) ; 
+    public function authenticate(IAuthentication $auth) ; 
    
 
 }

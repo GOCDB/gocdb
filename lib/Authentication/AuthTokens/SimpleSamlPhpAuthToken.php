@@ -16,17 +16,63 @@ require_once __DIR__.'/../IAuthentication.php';
  */
 
 /**
- * Requires install of SimpleSamlPhp lib before use. 
- * You will probably need to modify this class for the SAML attribute 
- * that is used as the principle string. 
- * 
+ * Requires installation of SimpleSamlPhp lib before use. 
+ * You will almost certainly need to modify this class to request the necessary 
+ * SAML attribute that is used as the principle string. 
+ *
+ * @see IAuthentication 
  * @author David Meredith 
  */
 class SimpleSamlPhpAuthToken implements IAuthentication {
  
     private $userDetails = null;
     private $authorities;
-   
+  
+    /*
+     * Implementation note:  
+     * There is a bug with SimpleSamlPhp in that it throws an exception if 
+     * an IdP does not return a NameID in the Subject (of a response). 
+     * "Missing saml:NameID or saml:EncryptedID in saml:Subject".
+     * 
+     * IdpS only have to set a NameID in the Subject if it supports the Browser Single Logout 
+     * Profile, otherwise its optional (although recommended). I have therefore reported this to 
+     * the SSPhp project and have used the following hack to get around this issue:  
+     * https://github.com/simplesamlphp/simplesamlphp/issues/143
+     */
+/*    
+// '/var/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/Assertion.php'   
+// DMHack: orignal:
+//        if (empty($nameId)) {
+//            throw new Exception('Missing <saml:NameID> or <saml:EncryptedID> in <saml:Subject>.');
+//
+//        } elseif (count($nameId) > 1) {
+//            throw new Exception('More than one <saml:NameID> or <saml:EncryptedD> in <saml:Subject>.');
+//        }
+//        $nameId = $nameId[0];
+//        if ($nameId->localName === 'EncryptedData') {
+//            // The NameID element is encrypted.
+//            $this->encryptedNameId = $nameId;
+//        } else {
+//            $this->nameId = SAML2_Utils::parseNameId($nameId);
+//        }
+//        // end original, start hack:
+        if (!empty($nameId)){
+                if (count($nameId) > 1) {
+                    throw new Exception('More than one <saml:NameID> or <saml:EncryptedD> in <saml:Subject>.');
+                }
+                $nameId = $nameId[0];
+                if ($nameId->localName === 'EncryptedData') {
+                    // The NameID element is encrypted.
+                    $this->encryptedNameId = $nameId;
+                } else {
+                    $this->nameId = SAML2_Utils::parseNameId($nameId);
+                }
+        } else {
+                $this->nameId = array();
+                //$this->nameId = array('Value' => trim('davidm'));
+        }
+        // end DMHack
+ */
 
     public function __construct() {
           
@@ -45,7 +91,7 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
      * @return string An empty string as passwords are not used in this token. 
      */
     public function getCredentials() {
-        return "";
+        return ""; // none used in this token, handled by SSO/SAML 
     }
 
     /**

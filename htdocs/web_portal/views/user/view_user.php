@@ -73,7 +73,7 @@
                     	<div style="word-wrap: break-word;">
                         	<?php 
                             if($params['user']->getusername1() != null){
-                                echo  $params['user']->getusername1(); 
+                                echo  'Should this be shown? - TBC'; //$params['user']->getusername1(); 
                             } else {
                                 echo 'Not known'; 
                             }

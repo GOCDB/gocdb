@@ -1,82 +1,53 @@
 <?php
-namespace org\gocdb\security\authentication;
-include_once __DIR__.'/_autoload.php';
-//require_once __DIR__ . '/AuthenticationManagerService.php';
-//require_once __DIR__ . '/IUserDetails.php';
-//require_once __DIR__ . '/Exceptions/AuthenticationException.php';
-//require_once __DIR__ . '/ApplicationSecurityConfigService.php'; 
 
+/*
+ * Copyright (C) 2012 STFC
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+namespace org\gocdb\security\authentication;
 
 /**
- * Service to fetch the current user's IAuthentication token. 
- * The token MAY be stored and managed in the HTTP session (provided 
- * it is not stateless and the configuration allows session-creation). 
- * Cached tokens prevent the need to re-authenticate across page requests.
- * You should never need to interact with the HTTP session directly. 
- * <p>
- * This service updates the session id if the session is older than 30 secs to 
- * guard against session fixation attacks. The service never destroys 
- * the session as the it may be in use in other code paths. Rather, this service 
- * creates/destroys the <code>$_SESSION[SecurityContextService::authSessionKey]</code> 
- * variable. 
- * <p>
- * Typical usage is:
- * <code> 
- * $auth = SecurityContextService::getAuthentication();
- * if($auth == null) {
- *    // Here you could re-direct the user to some form of auth/login page in order  
- *    // to create an Auth token from the user's input:  
- *    $token = new org\gocdb\security\authentication\UsernamePasswordAuthenticationToken("test", "test");
- *    // then call: 
- *    AuthenticationManagerService::authenticate($token); 
- * }
- * </code>
+ * Get/set an IAuthentication token for current thread of execution. 
+ * The token MAY be stored and managed in the HTTP session (provided
+ * it is not stateless and the IConfigFirewallComponent allows session-creation).
  * 
- * An explicit authentication (or logout) can be achieved using the following: 
- * <code>
- * SecurityContextService::setAuthentication($anIAuthenticationObj); //authenticate
- * SecurityContextService::setAuthentication(null); // logout
- * </code>
- * 
- * Inspired by Spring Security. 
- * @link http://static.springsource.org/spring-security Spring Security 
- * 
- * @see AuthenticationManagerService
- * @version 0.1 
- * @author David Meredith
+ * @see ISecurityContext
+ * @author David Meredith 
  */
-class SecurityContextService {
-
-    //private static $authType = 'X509'; //UsernamePassword
+class MySecurityContext implements ISecurityContext {
+    //put your code here
     public static $authSessionKey = 'gocdb_IAuthentication_Impl';
     private static $salt = 'secretSaltValue';
     private static $delim = '[splitonthisdelimitervalueplease]';
-    //public static $debug = false;
-
+   
+    private $configFwComp; 
+    private $authManFwComp; 
     
 
+    public function setConfigFirewallComponent(IConfigFirewallComponent $configFwComp){
+       $this->configFwComp = $configFwComp;  
+    }
+
+    public function setAuthManager(IAuthenticationManager $authManFwComp){
+        $this->authManFwComp = $authManFwComp; 
+    }
+   
     /**
-     * Invoke the token resolution process to obtain the auth token for the 
-     * current user/request, or null if an authentication token can't be resolved. 
-     * <p>
-     * The token resolution process is as follows: 
-     * <ol>
-     *    <li>Return the token previously stored in http session if available 
-     *    (the security configuration must allow session-creation).</li>
-     *    <li>If no token can be returned from session, iterate the configured 
-     *    pre-authenticating tokens in order, and return the first token that 
-     *    successfully authenticates the user. </li>
-     *    <li>If no token can be automatically created and successfully authenticated, 
-     *    return null</li>
-     * </ol>
-     * 
-     * @return IAuthentication or null if not authenticated
+     * @see ISecurityContext::getAuthentication()
      */
-    public static function getAuthentication() {
+    public function getAuthentication() {
         // 1) If this configuration allows session creation, try to extract token 
         // from session first 
-        if( ApplicationSecurityConfigService::getCreateSession() ) {  
-            $authToken = SecurityContextService::getHttpSessionAuth();
+        if( $this->configFwComp->getCreateSession() ) {  
+            $authToken = $this->getHttpSessionAuth();
             if ($authToken != null) {
                 // if $scheme param is requested, first check that auth supports 
                 // requested scheme. If not, continue on with below
@@ -88,12 +59,12 @@ class SecurityContextService {
                 //}
             }
         }
-        
+
         // 2) Try to authenticate with available pre-Auth tokens (if any are configured) 
         // Iterate configured PRE_AUTH tokens in order (skip those that are not preAuthenticating)  
         // If specific scheme is requested, skip those that don't support scheme 
         // Attempt to create new pre-Auth token and authenitcate  
-        $authTokenClassList = ApplicationSecurityConfigService::getAuthTokenClassList();
+        $authTokenClassList = $this->configFwComp->getAuthTokenClassList();
         foreach ($authTokenClassList as $tokenClass){
             // preAuthenitcated token only 
             if(call_user_func($tokenClass.'::isPreAuthenticating')){
@@ -104,7 +75,7 @@ class SecurityContextService {
                     // Iterate all configured AuthProviders  
                     // and attempts to authenticate the token and if authenticated ok, calls 
                     // SecurityContextService::setAuthentication($auth)
-                    $returnToken = AuthenticationManagerService::authenticate($authImpl); 
+                    $returnToken = $this->authManFwComp->authenticate($authImpl); 
                     if($returnToken != null){
                         return $returnToken; 
                     }
@@ -119,19 +90,16 @@ class SecurityContextService {
         return null;  
     }
 
+
     /**
-     * Changes the currently authenticated principal, or removes the authentication 
-     * information from session if null is given. 
-     * 
-     * @param IAuthentication $auth The new Authentication token, 
-     *   or null if http sessino token should be cleared.  
+     * @see ISecurityContext::setAuthentication()
      */
-    public static function setAuthentication($auth = null) {
+    public function setAuthentication($auth = null) {
         // If can't create session, return - don't touch/create the session !  
-        if( ApplicationSecurityConfigService::getCreateSession() === FALSE ) { 
+        if( $this->configFwComp->getCreateSession() === FALSE ) { 
             return; 
         }
-         
+
         // Only set the auth token in session if the token is not stateless ! 
         if ($auth != null && !$auth->isStateless()) {
             
@@ -164,10 +132,10 @@ class SecurityContextService {
                 // You must call session_start() before you'll have access to any variables in $_SESSION.
                 session_start();
             }
-            $_SESSION[SecurityContextService::$authSessionKey] =
+            $_SESSION[self::$authSessionKey] =
                     $serializedAuth .
-                    SecurityContextService::$delim .
-                    md5($serializedAuth . SecurityContextService::$salt);
+                    self::$delim .
+                    md5($serializedAuth . self::$salt);
         }
         
         if($auth == null){
@@ -176,8 +144,8 @@ class SecurityContextService {
             }
             // Clear the session variable. We can't just call session_destroy, 
             // we need to explicitly clear the session variable. 
-            if(isset($_SESSION[SecurityContextService::$authSessionKey])){
-                unset($_SESSION[SecurityContextService::$authSessionKey]);
+            if(isset($_SESSION[self::$authSessionKey])){
+                unset($_SESSION[self::$authSessionKey]);
             }
             // Lets not kill the session completely - it may be used for other 
             // session related stuff and we are only interested in the session 
@@ -185,18 +153,24 @@ class SecurityContextService {
             //session_destroy();
         }
     }
+    
 
     /**
      * Fetch IAuthentication impl from HTTP session or null if not present. 
-     * 
+     * This implementation updates the session id if the session is older than 30 secs to
+     * guard against session fixation attacks. The service never destroys
+     * the session as the it may be in use in other code paths. Rather, this service
+     * creates/destroys the <code>$_SESSION[SecurityContextService::authSessionKey]</code>
+     * variable.
+     *
      * @return IAuthentication or null 
      */
-    private static function getHttpSessionAuth() {
+    private function getHttpSessionAuth() {
         // If can't create session, return null - don't touch/create a session !  
-        if( ApplicationSecurityConfigService::getCreateSession() === FALSE ) { 
+        if( $this->configFwComp->getCreateSession() === FALSE ) { 
             return null; 
         }
-       
+
         // I want to check for a php session without starting one - but it seems 
         // i can only resume a session or start a new one (either way, a session is started!) 
         //http://stackoverflow.com/questions/13114185/how-can-you-check-if-a-php-session-exists
@@ -225,19 +199,19 @@ class SecurityContextService {
             session_regenerate_id();
             $_SESSION['generated'] = time();
         }
-        
+
         // Get our session variable that serializes the AuthToken
-        if (isset($_SESSION[SecurityContextService::$authSessionKey])) {
+        if (isset($_SESSION[self::$authSessionKey])) {
             //if (SecurityContextService::$debug){
             //    echo('debug_5');
             //}
 
             // Get the session value and split into strings based on our delimiter
             list($serializedAuth, $serializedAuthHash) = explode(
-                    SecurityContextService::$delim, $_SESSION[SecurityContextService::$authSessionKey]);
+                    self::$delim, $_SESSION[self::$authSessionKey]);
 
             // Reproduce the salted md5 hash of the Auth token and compare
-            if (md5($serializedAuth . SecurityContextService::$salt) == $serializedAuthHash) {
+            if (md5($serializedAuth . self::$salt) == $serializedAuthHash) {
                 return unserialize($serializedAuth);
             } else {
                 // Lets not kill the session completely - it may be used for other 
@@ -248,6 +222,7 @@ class SecurityContextService {
             }
         }
         return null;
+
     }
 
 
@@ -265,7 +240,4 @@ class SecurityContextService {
         }
         return FALSE;
     }
-
 }
-
-?>

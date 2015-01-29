@@ -2,14 +2,16 @@
 Authentication Abstraction Package
 ===================================
 David Meredith
-This Authentication package provides abstractions to support different authentication 
-mechanisms such as x509, SAML and un/pw authentication. 
-Without modification, it is configured for x509. 
+This Authentication package provides generic abstractions and some selected 
+implementations to support different authentication mechanisms such as x509, 
+SAML and un/pw authentication. Without modification, it is configured for x509. 
+It is reusable in other php projects, all objects are defined within a namespace 
+to prevent collision with other components. 
 
-It will no doubt need to be extended and modified to suit the 
+However, it will no doubt need to be extended and modified to suit the 
 requirements of the particular deployment. The auth abstractions can't be used 
 'out of the box' without some integration/dev work to cater for your 
-particular local credential store and required auth-mechanism.  
+particular local credential store and required auth-mechanisms.  
   
 Inspired  by Spring Security 3 framework http://static.springsource.org/spring-security
 WARNING: This package is NO WAY a complete re-implementation for php, rather it is 
@@ -23,18 +25,35 @@ Core interfaces and (implementations)
  
 IAuthentication.php 
 -------------------
-Defines authentication tokens for different authentication mechanisms. 
-A token is created to authenticate the current user/request.  
 (X509AuthenticationToken.php, UsernamePasswordAuthenticationToken.php, SimpleSamlPhpAuthToken.php) 
- 
-SecurityContextService.php
+Defines authentication tokens for different authentication mechanisms. 
+A token authenticates the current user/request.  
+
+
+IFirewallComponent.php  
+----------------------
+(FirewallComponent.php) 
+Client code object - Defines a top-level class intended for use by client code to authenticate 
+HTTP requests by invoking the 'Token Resolution Process' or to authenticate/change 
+the currently authenticated principal. Instances can be fetched using the 
+FirewallComponentManager.php singleton class. 
+
+
+IConfigFirewallComponent.php
+------------------------------------
+(MyConfig1.php)
+Framework object- Class used to configure an individual IFirewallComponent. 
+
+
+ISecurityContext.php
 --------------------------
-Entry point service to request an authentication token for the current request. 
+(MySecurityContext.php)
+Framework object - Get or set an IAuthentication token for current thread of execution. 
 Depending on the configuration, the token may be retrieved/stored in HTTP session 
 which is necessary to prevent re-authentication across multiple page requests
 (e.g. to prevent re-entering a un/pw for each page).
   
-Calling 'SecurityContextService::getAuthentication()' invokes the automatic 'Token Resolution Process' :
+Calling 'SecurityContext::getAuthentication()' invokes the automatic 'Token Resolution Process' :
   1. Attempt to fetch a previously created token from session and return the token if available. 
      A token may not exist for the current request because: a) this is the 
      initial request, b) the configuration prevents session-creation and/or 
@@ -49,40 +68,39 @@ Calling 'SecurityContextService::getAuthentication()' invokes the automatic 'Tok
      from the user (un/pw is not a pre-authenticating token - it can't be 
      automatically created/resolved).  
 
+
 IAuthenticationManager.php 
 --------------------------
-Entry point service providing a single 'authenticate($anIAuthToken)' method.   
-Used for manually authenticating a given token. The manager will iterate all the 
-configured IAuthenticationProviderS in an attempt to authenticate the given 
-IAuthentication token. A token is returned on the first successful authentication. 
-(AuthenticationManagerService.php)
+(MyAuthenticationManager.php)
+Framework object - Provides a single 'authenticate($anIAuthToken)' method for authenticating a 
+given token. The manager will iterate all the configured IAuthenticationProviderS 
+in an attempt to authenticate the given token. A token is returned on the first successful authentication. 
+
 
 IAuthenticationProvider.php 
 ---------------------------
-Used to authenticate IAuthentication tokens. A single provider can authenticate
+(GOCDBAuthProvider.php, SampleAuthProvider.php)  
+Framework object - Used to authenticate IAuthentication tokens. A single provider can authenticate
 different types of token as indicated by its 'supports($token)' method. 
 SampleAuthProvider.php is a demo sample and should NOT be used in production. 
-(GOCDBAuthProvider.php, SampleAuthProvider.php)  
+
 
 IUserDetails.php 
 ----------------
-Stores user information about a user and is a member var of an IAuthentication object. 
+(GOCDBUserDetails.php) 
+Framework object - Stores user information about a user and is a member var of an IAuthentication object. 
 This allows non-security related user information (such as eaddresses, 
 telephone numbers etc) to be stored in a convenient location inside the token. This object 
 also encapsulates the user's granted authorities (i.e. roles). 
-(GOCDBUserDetails.php) 
+
 
 IUserDetailsService.php 
 -----------------------
-Abstracts the local credential store (typically a DB) for loading user-specific data.  
+(GOCDBUserDetailsService.php)
+Framework object - Abstracts the local credential store (typically a DB) for loading user-specific data.  
 The interface defines a single public method 'loadUserByUsername($aUsernameString)' 
 which simplifies support for new data-access strategies.
-(GOCDBUserDetailsService.php)
 
-ApplicationSecurityConfigService.php
-------------------------------------
-Configuration service - defines different factory methods for returning different 
-configurations/implementations of the core interfaces. 
 
 
 Typical Usage 
@@ -94,32 +112,35 @@ See 'htdocs/web_portal/components/Get_User_Principle.php' for example:
     require_once 'path to Authentication lib'.'/Authentication/_autoload.php'; 
 
     function Get_User_Principle(){
-        // Automatically resolve a token: Gets the token stored in session (if available) 
-        // or automatically creates a configured 'pre-authenticating' token.
-        $auth = org\gocdb\security\authentication\SecurityContextService::getAuthentication();
-
-        // A token could not be automatically resolved (no token exists in 
-        // session and/or pre-authenticating token could not be automatically created).   
-        // Optional: Manually create token and re-attempt authentication:
+        // get the FWCManager instance (singleton) 
+        $fwMan = \org\gocdb\security\authentication\FirewallComponentManager::getInstance(); 
+        // get an array of configured IFirewallComponent objects (one or more depending on config) 
+        $firewallArray = $fwMan->getFirewallArray(); 
+        $firewall = $firewallArray['fwC1']; // select which IFirewallComponent you need by array key 
+        $auth = $firewall->getAuthentication();  // invoke 'automatic' token resolution process 
         if ($auth == null) {
-            try{ 
-               // Here get username and password from user...then create and authenticate token
-               $unPwToken = new org\gocdb\security\authentication\UsernamePasswordAuthenticationToken("test", "test");
-               $auth = org\gocdb\security\authentication\AuthenticationManagerService::authenticate($unPwToken);
-            } catch(org\gocdb\security\authentication\AuthenticationException $ex){
-                // log failed authentication 
-            }
+            // A token could not be automatically resolved for the current request, 
+            // you could therefore manually create a token e.g. get a un/pw  
+            // from the user and attempt authentication using a different token: 
+            // try {
+            //    $unPwToken = new org\gocdb\security\authentication\UsernamePasswordAuthenticationToken("test", "test");
+            //    $auth = $fwComponents['fwC1']->authenticate($unPwToken);
+            //    return $auth->getPrinciple()
+            // } catch(org\gocdb\security\authentication\AuthenticationException $ex){ }
+            
+            return null; 
         } 
-        return $auth->getPrinciple();
+        return $auth->getPrinciple(); 
     }
 </code>
  
-An explicit authentication and logout (removal of the security context) 
+An explicit authentication and logout (i.e. removal of the security context) 
 can be achieved using the following: 
 <code>
-   require_once 'path to Authentication lib'.'/Authentication/_autoload.php';
-   SecurityContextService::setAuthentication($anIAuthenticationObj); // to authenticate
-   SecurityContextService::setAuthentication(null);                  // to logout 
+    // get required IFirewallComponent instance as shown above 
+    $firewall->authenticate($authToken);   // to authenticate 
+       // or 
+    $firewall->authenticate(null);   // to logout/remove token  
 </code>
 
 
@@ -144,26 +165,17 @@ x. Optional: Provide a new 'IUserDetails.php' implementation to store your user-
     Note: Take care to correctly fulfil the contract of the public API, in particular, 
     you must ensure the non-null contracts as detailed for each method are correctly enforced! 
 
-x. Modify ApplicationSecurityConfigService.php to return your chosen auth impl 
-  (see below for example)  
+x. Define your own IConfigFirewallComponent.php to configure your setup 
 
-x. Use the sample code shown in the 'Typical Usage' section to create and authenticate a token.  
+x. Modify FirewallComponentManager.php to build/return the required IFirewallComponent 
+  instances to client code. 
+
+x. Use the sample code shown in the 'Typical Usage' section to resolve/create/authenticate a token.  
 
 
 
 TODO
 =====
 Plenty. 
-Replace static classes with non-statics to allow multiple security 
-configurations/setups, e.g. one 'stateless' configuration for protecting REST endpoints
-and one 'stateful' configuration for use in web portal UI. 
-TODO: Create top-level 'FirewallComponent' class and inject non-static dependencies 
-including SecurityConfig.php, AuthenticationManager.php, SecurityContext.php.    
-
-A single static 'FirewallManager' can create and store these different FwComponents in an 
-array for accessing by client code with: 
-
-// get required fwComp, e.g. for portalUI page
-$fwComp = FireWallManager::getFirewallComponent('portalPageFwCompKey'); 
-$auth = $fwComp->getAuthentication();  // proxy to $securityContext->getAuthentication(); 
-$auth = $fwComp->authenticate($authToken);  // proxy to $authManager->authenticate($authToken);  
+Could be further extended to use config files rather than defining your own 
+IConfigFirewallComponent.php to configure your setup (same goes for FirewallComponentManager.php).   
