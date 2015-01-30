@@ -114,9 +114,9 @@ Typical Usage
 =============
 See 'htdocs/web_portal/components/Get_User_Principle.php' for example: 
  
-`
+<pre>
     // autoload the security component 
-    require_once 'path to Authentication lib'.'/Authentication/_autoload.php'; 
+    require_once "path to Authentication lib/_autoload.php"; 
 
     function Get_User_Principle(){
         // get the FWCManager instance (singleton) 
@@ -139,17 +139,17 @@ See 'htdocs/web_portal/components/Get_User_Principle.php' for example:
         } 
         return $auth->getPrinciple(); 
     }
-`
+</pre>
  
 An explicit authentication and logout (i.e. removal of the security context) 
 can be achieved using the following: 
 
-`
+<pre>
     // get required IFirewallComponent instance as shown above 
     $firewall->authenticate($authToken);   // to authenticate 
        // or 
     $firewall->authenticate(null);   // to logout/remove token  
-`
+</pre>
 
 
 How do I support a new authentication mechanism?
