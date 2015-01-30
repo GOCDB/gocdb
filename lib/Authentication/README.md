@@ -121,10 +121,16 @@ See 'htdocs/web_portal/components/Get_User_Principle.php' for example:
     function Get_User_Principle(){
         // get the FWCManager instance (singleton) 
         $fwMan = \org\gocdb\security\authentication\FirewallComponentManager::getInstance(); 
-        // get an array of configured IFirewallComponent objects (one or more depending on config) 
+
+        // get the array of configured IFirewallComponent objects  
         $firewallArray = $fwMan->getFirewallArray(); 
-        $firewall = $firewallArray['fwC1']; // select which IFirewallComponent you need by array key 
-        $auth = $firewall->getAuthentication();  // invoke 'automatic' token resolution process 
+
+        // select which IFirewallComponent you need by array key
+        $firewall = $firewallArray['fwC1'];  
+
+        // invoke 'automatic' token resolution process
+        $auth = $firewall->getAuthentication();   
+
         if ($auth == null) {
             // A token could not be automatically resolved for the current request, 
             // you could therefore manually create a token e.g. get a un/pw  
