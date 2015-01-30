@@ -26,23 +26,30 @@ Core interfaces and (implementations)
 IAuthentication.php 
 -------------------
 (X509AuthenticationToken.php, UsernamePasswordAuthenticationToken.php, SimpleSamlPhpAuthToken.php) 
-Defines authentication tokens for different authentication mechanisms. 
-A token authenticates the current user/request.  
+Used by client code (and by the framework - Defines authentication tokens for 
+different authentication mechanisms. A token authenticates the current user/request. 
+A token can be automatically created and returned by an IFirewallComponent, 
+or manually created and authenticated by an IFirewallComponent.   
+
+
+FirewallComponentManager.php
+----------------------------
+Used by client code - Singleton class to get the list of configured 
+IFirewallComponent instances for use within client code.  
 
 
 IFirewallComponent.php  
 ----------------------
 (FirewallComponent.php) 
-Client code object - Defines a top-level class intended for use by client code to authenticate 
+Used by client code - Defines a top-level class intended for use by client code to authenticate 
 HTTP requests by invoking the 'Token Resolution Process' or to authenticate/change 
-the currently authenticated principal. Instances can be fetched using the 
-FirewallComponentManager.php singleton class. 
+the currently authenticated principal. Instances can be fetched using the FirewallComponentManager. 
 
 
 IConfigFirewallComponent.php
 ------------------------------------
 (MyConfig1.php)
-Framework object- Class used to configure an individual IFirewallComponent. 
+Framework object - Class used to configure an individual IFirewallComponent. 
 
 
 ISecurityContext.php
@@ -176,6 +183,9 @@ x. Use the sample code shown in the 'Typical Usage' section to resolve/create/au
 
 TODO
 =====
-Plenty. 
-Could be further extended to use config files rather than defining your own 
-IConfigFirewallComponent.php to configure your setup (same goes for FirewallComponentManager.php).   
+Use XML/YAML files to configure IConfigFirewallComponent and FirewallComponentManager
+rather than manually creating these instances for your configuration.   
+
+Create a top-level 'IFirewall.php' class that would use 'intercept-URL' pattern matching 
+to return the correct IFirewallComponent (as an alternative to 'manually' 
+requesting the required IFirewallComponent via the FirewallComponentManager).  

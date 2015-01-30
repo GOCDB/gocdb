@@ -22,6 +22,22 @@ namespace org\gocdb\security\authentication;
  * @author David Meredith
  */
 class MyConfig1 implements IConfigFirewallComponent {
+    private $providerList; 
+    private $gocdbUserDetailsService; 
+    private $tokenClassList; 
+    
+    function __construct() {
+       $this->providerList = array(); 
+       $this->providerList[] = new GOCDBAuthProvider();  
+       //$this->providerList[] = new SampleAuthProvider(); 
+    
+       $this->gocdbUserDetailsService = new GOCDBUserDetailsService(); 
+
+       $this->tokenClassList = array(); 
+       $this->tokenClassList[] = 'org\gocdb\security\authentication\X509AuthenticationToken'; 
+       $this->tokenClassList[] = 'org\gocdb\security\authentication\SimpleSamlPhpAuthToken'; 
+       //$this->tokenClassList[] = 'org\gocdb\security\authentication\UsernamePasswordAuthenticationToken'; 
+    }
 
     /**
      * Get an array containing <codeGOCDBAuthProvider</code> as the first element.
@@ -29,10 +45,7 @@ class MyConfig1 implements IConfigFirewallComponent {
      * @return 
      */
     public function getAuthProviders(){
-        $providerList = array(); 
-        $providerList[] = new GOCDBAuthProvider(); 
-        //$providerList[] = new SampleAuthProvider(); 
-        return $providerList; 
+        return $this->providerList; 
     }
 
     /**
@@ -40,7 +53,7 @@ class MyConfig1 implements IConfigFirewallComponent {
      * @return \org\gocdb\security\authentication\GOCDBUserDetailsService
      */
     public function getUserDetailsService(){
-        return new GOCDBUserDetailsService();  
+        return $this->gocdbUserDetailsService;  
     }
 
     /**
@@ -53,11 +66,7 @@ class MyConfig1 implements IConfigFirewallComponent {
      * @return array
      */
     public function getAuthTokenClassList(){
-        $tokenClassList = array(); 
-        $tokenClassList[] = 'org\gocdb\security\authentication\X509AuthenticationToken'; 
-        $tokenClassList[] = 'org\gocdb\security\authentication\SimpleSamlPhpAuthToken'; 
-        //$tokenClassList[] = 'org\gocdb\security\authentication\UsernamePasswordAuthenticationToken'; 
-        return $tokenClassList; 
+        return $this->tokenClassList; 
     }
    
     /**
