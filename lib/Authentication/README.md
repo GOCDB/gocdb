@@ -114,7 +114,7 @@ Typical Usage
 =============
 See 'htdocs/web_portal/components/Get_User_Principle.php' for example: 
  
-<code>
+`
     // autoload the security component 
     require_once 'path to Authentication lib'.'/Authentication/_autoload.php'; 
 
@@ -139,16 +139,17 @@ See 'htdocs/web_portal/components/Get_User_Principle.php' for example:
         } 
         return $auth->getPrinciple(); 
     }
-</code>
+`
  
 An explicit authentication and logout (i.e. removal of the security context) 
 can be achieved using the following: 
-<code>
+
+`
     // get required IFirewallComponent instance as shown above 
     $firewall->authenticate($authToken);   // to authenticate 
        // or 
     $firewall->authenticate(null);   // to logout/remove token  
-</code>
+`
 
 
 How do I support a new authentication mechanism?
