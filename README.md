@@ -15,16 +15,14 @@ v4 and are high-priority to re-implement using a modern MVC framework.
 
 Documentation 
 =============
-Links to docs below, more doc will be added to GitHub soon. 
+GOCDB Executive Summary:
+https://wiki.egi.eu/w/images/d/d3/GOCDB5_Grid_Topology_Information_System.pdf
 
 EGI GOCDB wiki landing page: 
 https://wiki.egi.eu/wiki/GOCDB 
 
 GOCDB Documentation index: 
 https://wiki.egi.eu/wiki/GOCDB_Documentation_Index
-
-GOCDBv5 Info page, architecture and features: 
-https://wiki.egi.eu/wiki/GOCDB/v5 
 
 Deploy/Install/Test:
 https://wiki.egi.eu/wiki/GOCDB/Regional_Module_Technical_Documentation 
