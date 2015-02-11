@@ -421,7 +421,7 @@
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
             <!--<regex>/^[^`'\"=()]+$/</regex>-->
             <!-- positive regex - more strict -->
-            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
+            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>
 		</field>
 		<field>
 			<fname>PROP</fname>
@@ -448,7 +448,7 @@
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
             <!--<regex>/^[^`'\"=()]+$/</regex>-->
             <!-- positive regex - more strict -->
-            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
+            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>
 		</field>
 		<field>
 			<fname>PROP</fname>
@@ -475,7 +475,7 @@
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
             <!--<regex>/^[^`'\"=()]+$/</regex>-->
             <!-- positive regex - more strict -->
-            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
+            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>
 		</field>
         <field>
 			<fname>PROP</fname>

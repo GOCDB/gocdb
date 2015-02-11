@@ -114,21 +114,25 @@ Typical Usage
 =============
 See 'htdocs/web_portal/components/Get_User_Principle.php' for example: 
  
-<pre>
+```php
+<?php
     // autoload the security component 
     require_once "path to Authentication lib/_autoload.php"; 
 
+    /**
+     * @return user principle string if request is authenticated or null of not 
+     */
     function Get_User_Principle(){
-        // get the FWCManager instance (singleton) 
+        // get the FirewallComponentManager instance (singleton) 
         $fwMan = \org\gocdb\security\authentication\FirewallComponentManager::getInstance(); 
 
-        // get the array of configured IFirewallComponent objects  
+        // get the array of available/configured IFirewallComponent objects  
         $firewallArray = $fwMan->getFirewallArray(); 
 
-        // select which IFirewallComponent you need by array key
+        // select which IFirewallComponent you need (by array key)
         $firewall = $firewallArray['fwC1'];  
 
-        // invoke 'automatic' token resolution process
+        // invoke 'automatic' token resolution process to authenticate user 
         $auth = $firewall->getAuthentication();   
 
         if ($auth == null) {
@@ -143,19 +147,21 @@ See 'htdocs/web_portal/components/Get_User_Principle.php' for example:
             
             return null; 
         } 
-        return $auth->getPrinciple(); 
+        // $auth->$auth->getAuthorities();  // roles 
+        // $auth->getDetails();             // custom details object for holding useful info after authentication  
+        return $auth->getPrinciple();       // principle string that uniquely identifies user 
     }
-</pre>
+```
  
 An explicit authentication and logout (i.e. removal of the security context) 
 can be achieved using the following: 
 
-<pre>
+```php
     // get required IFirewallComponent instance as shown above 
     $firewall->authenticate($authToken);   // to authenticate 
        // or 
     $firewall->authenticate(null);   // to logout/remove token  
-</pre>
+```
 
 
 How do I support a new authentication mechanism?
