@@ -7,8 +7,8 @@ $service = $params['service'];
 	<h1 class="Success">Delete Service Property</h1><br/>
     <p>
 	Are you sure you want to delete:<br/><br/>
-	Property name: <b><?php echo $property->getKeyName();?><br/></b>
-	Property value: <b><?php echo $property->getKeyValue();?><br/></b>
+	Property name: <b><?php xecho($property->getKeyName());?><br/></b>
+	Property value: <b><?php xecho($property->getKeyValue());?><br/></b>
     </p>
     <p>
         Are you sure you wish to continue?

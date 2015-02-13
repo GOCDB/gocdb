@@ -51,6 +51,9 @@ function draw(\User $user = null) {
     if(is_null($user)) {
         throw new Exception("Unregistered users can't edit an endpoint property.");
     }
+    if (!isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid']) ){
+        throw new Exception("An id must be specified");
+    }
     $serv = \Factory::getServiceService(); 
     //$service = $serv->getService($_REQUEST['serviceid']);
     $property = $serv->getEndpointProperty($_REQUEST['propertyid']);

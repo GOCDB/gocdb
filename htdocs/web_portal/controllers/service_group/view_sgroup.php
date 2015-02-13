@@ -2,7 +2,9 @@
 function showServiceGroup() {
     require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
     require_once __DIR__ . '/../utils.php';
-    
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    } 
     $sGroupId = $_REQUEST['id'];
 
     $sGroup = \Factory::getServiceGroupService()

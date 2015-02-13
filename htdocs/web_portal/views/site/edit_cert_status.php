@@ -6,7 +6,7 @@ $allStatuses = $params['statuses'];
 <div class="rightPageContainer">
     <div class=Form_Holder>
         <div class=Form_Holder_2>
-            <h1><?php echo $site ?></h1>
+            <h1><?php xecho($site) ?></h1>
             <br />
             <form action="index.php?Page_Type=Edit_Certification_Status" method="post" class="inputForm">
             <span class="input_name">Certification Status</span>

@@ -145,7 +145,7 @@ class GetNGI implements IPIQuery{
 			$xmlNgi->addChild ( "PRIMARY_KEY", $ngi->getId () );
 			$xmlNgi->addChild ( "NAME", $ngi->getName () );
 			$xmlNgi->addChild ( "OBJECT_ID", $ngi->getId () );
-			$xmlNgi->addChild ( "DESCRIPTION", $ngi->getDescription () );
+			$xmlNgi->addChild ( "DESCRIPTION", xssafe($ngi->getDescription()) );
 			$xmlNgi->addChild ( "EMAIL", $ngi->getEmail () );
 			$xmlNgi->addChild ( "GGUS_SU", $ngi->getGgus_Su() );
 			$xmlNgi->addChild ( "ROD_EMAIL", $ngi->getRodEmail () );

@@ -7,7 +7,7 @@
         </div>
         <div class="leftFloat">
             <h1 class="vSite">
-                Add Services to Service Group [<?php echo $params['sg']->getName() ?>]
+                Add Services to Service Group [<?php xecho($params['sg']->getName()) ?>]
             </h1>
             <br />
             <span class="vSiteDescription">

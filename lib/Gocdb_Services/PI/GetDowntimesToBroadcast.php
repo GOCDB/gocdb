@@ -113,6 +113,11 @@ class GetDowntimeToBroadcast implements IPIQuery{
 		
 		//Bind interval days
 		$binds[] = array($bc,  $nowMinusIntervalDays);
+
+        if(isset($parameters['id'])){
+           $qb->andWhere($qb->expr()->eq('d.id', '?'.++$bc)); 
+           $binds[] = array($bc, $parameters['id']);
+        }
 			    
 		/*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
 		* based on set parameters.
@@ -137,10 +142,7 @@ class GetDowntimeToBroadcast implements IPIQuery{
 				'se'				
 		);
 
-        if(isset($parameters['id'])){
-           $qb->andWhere($qb->expr()->eq('d.id', '?'.++$bc)); 
-           $binds[] = array($bc, $parameters['id']);
-        }
+
 				
 		//Get the result of the scope builder
 		$qb = $scopeQueryBuilder->getQB();
@@ -215,7 +217,7 @@ class GetDowntimeToBroadcast implements IPIQuery{
                     }
                 }
                 $xmlDowntime->addChild('SEVERITY', $downtime->getSeverity());
-                $xmlDowntime->addChild('DESCRIPTION', htmlspecialchars($downtime->getDescription()));
+                $xmlDowntime->addChild('DESCRIPTION', xssafe($downtime->getDescription()));
                 $xmlDowntime->addChild('INSERT_DATE', $downtime->getInsertDate()->getTimestamp());
                 $xmlDowntime->addChild('START_DATE', $downtime->getStartDate()->getTimestamp());
                 $xmlDowntime->addChild('END_DATE', $downtime->getEndDate()->getTimestamp());

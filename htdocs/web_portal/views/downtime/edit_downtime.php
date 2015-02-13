@@ -47,7 +47,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 		<div class="form-group" id="descriptionGroup">
 			<label class="control-label" for="description">Description:</label>
 			<div class="controls">
-				<input type="text" class="form-control" name="DESCRIPTION" id="description" onkeyup="validate()" value="<?php echo $downtime->getDescription();?>">
+				<input type="text" class="form-control" name="DESCRIPTION" id="description" onkeyup="validate()" value="<?php xecho($downtime->getDescription());?>">
 			</div>
 			<span id="descriptionError" class="label label-danger hidden"></span> 
 		</div>
@@ -128,7 +128,8 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 
                 <?php
                 foreach($sites as $site){
-                    echo "<option value=\"{$site->getId()}\" SELECTED>$site</option>";
+                    $sName = xssafe($site); 
+                    echo "<option value=\"{$site->getId()}\" SELECTED>$sName</option>";
                 }
                 ?>
             </select> <br /> <br />

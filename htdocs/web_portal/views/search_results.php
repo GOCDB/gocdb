@@ -4,7 +4,7 @@
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
-            Results for &#8220;<?php echo $params['searchTerm']?>&#8221;
+            Results for &#8220;<?php xecho( $params['searchTerm'])?>&#8221;
         </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
             Searching sites, services and users
@@ -34,15 +34,15 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId()?>">
-                                    <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg" style="vertical-align: middle">
-                                    <span> </span><?php echo $ngi->getName(); ?>
+                                    <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg" style="vertical-align: middle">
+                                    <span> </span><?php xecho($ngi->getName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
                         
                     <td class="site_table">
-                        <?php echo $ngi->getDescription(); ?>
+                        <?php xecho($ngi->getDescription()); ?>
                     </td>
                 </tr>
                 <?php  
@@ -77,14 +77,14 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-                                    <span>&raquo; </span><?php echo $site->getShortName(); ?>
+                                    <span>&raquo; </span><?php xecho($site->getShortName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
                         
                     <td class="site_table">
-                        <?php echo $site->getOfficialName(); ?>
+                        <?php xecho($site->getOfficialName()); ?>
                     </td>
                 </tr>
                 <?php  
@@ -120,18 +120,18 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Service&id=<?php echo $ser->getId() ?>">
-                                    <span>&raquo; </span><?php echo $ser->getHostName(); ?>
+                                    <span>&raquo; </span><?php xecho($ser->getHostName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
                         
                     <td class="site_table">
-                        <?php echo $ser->getServiceType()->getName(); ?>
+                        <?php xecho($ser->getServiceType()->getName()); ?>
                     </td>
                     
                     <td class="site_table">
-                        <?php echo $ser->getDescription(); ?>
+                        <?php xecho($ser->getDescription()); ?>
                     </td>
                 </tr>
                 <?php  
@@ -165,14 +165,14 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
-                                    <span>&raquo; </span><?php echo $user->getFullName(); ?>
+                                    <span>&raquo; </span><?php xecho($user->getFullName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
                         
                     <td class="site_table">
-                        <?php echo $user->getEmail(); ?>
+                        <?php xecho($user->getEmail()); ?>
                     </td>
                 </tr>
                 <?php  

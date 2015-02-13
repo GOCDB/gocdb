@@ -48,6 +48,9 @@ function edit_site() {
  * @return null
  */
 function draw(\User $user = null) {
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     $serv = \Factory::getSiteService(); 
     $site = $serv->getSite($_REQUEST['id']);
 

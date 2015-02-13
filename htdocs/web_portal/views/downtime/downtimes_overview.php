@@ -56,9 +56,9 @@ javascript to show and hide these tables.
 					$parentSite = $affectedServices->first()->getParentSite();
 					$siteTotalEPs = count($parentSite->getServices());
 					echo $td1 . '<a href="index.php?Page_Type=Downtime&id='.$dt->getId().'"/>'.$dt->getId().'</a>'.$td2;
-					echo $td1 . $dt->getDescription() .  $td2;
-					echo $td1 . $dt->getSeverity() .  $td2;
-					echo $td1 . $dt->getClassification() .  $td2;
+					echo $td1 . xssafe($dt->getDescription()) .  $td2;
+					echo $td1 . xssafe($dt->getSeverity()) .  $td2;
+					echo $td1 . xssafe($dt->getClassification()) .  $td2;
 					echo $td1 . $affectedEPs . ' of ' . $siteTotalEPs .  $td2;
 					echo $td1 . $dt->getStartDate()->format(DATE_FORMAT) .  $td2;
 					echo $td1 . $dt->getEndDate()->format(DATE_FORMAT) .  $td2;                             
@@ -76,10 +76,9 @@ javascript to show and hide these tables.
             		
             		foreach($dt->getServices() as $se){
 						echo '<tr class="site_table_row_2">';            			
-            			$sName = $se->getParentSite()->getName();
             			$sID = $se->getParentSite()->getId();
-            			echo $td1 . '<a href="index.php?Page_Type=Site&id='.$sID.'"/>'.$sName.'</a>'.$td2;
-            			echo $td1 . '<a href="index.php?Page_Type=Service&id='.$se->getId().'"/>'.$se->getHostName().'</a>'.$td2;
+            			echo $td1 . '<a href="index.php?Page_Type=Site&id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
+            			echo $td1 . '<a href="index.php?Page_Type=Service&id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2;
             			echo $td1 . (($se->getProduction()) ? 'Yes' : 'No') . $td2;
             			echo $td1 . (($se->getMonitored()) ? 'Yes' : 'No') . $td2;            			
             			echo '</tr>';            			
@@ -134,9 +133,9 @@ javascript to show and hide these tables.
 					$parentSite = $affectedServices->first()->getParentSite();
 					$siteTotalEPs = count($parentSite->getServices());
 					echo $td1 . '<a href="index.php?Page_Type=Downtime&id='.$dt->getId().'"/>'.$dt->getId().'</a>'.$td2;
-					echo $td1 . $dt->getDescription() .  $td2;
-					echo $td1 . $dt->getSeverity() .  $td2;
-					echo $td1 . $dt->getClassification() .  $td2;
+					echo $td1 . xssafe($dt->getDescription()) .  $td2;
+					echo $td1 . xssafe($dt->getSeverity()) .  $td2;
+					echo $td1 . xssafe($dt->getClassification()) .  $td2;
 					echo $td1 . $affectedEPs . ' of ' . $siteTotalEPs .  $td2;
 					echo $td1 . $dt->getStartDate()->format(DATE_FORMAT) .  $td2;
 					echo $td1 . $dt->getEndDate()->format(DATE_FORMAT) .  $td2;                             
@@ -154,10 +153,9 @@ javascript to show and hide these tables.
             		
             		foreach($dt->getServices() as $se){
 						echo '<tr class="site_table_row_2">';            			
-            			$sName = $se->getParentSite()->getName();
             			$sID = $se->getParentSite()->getId();
-            			echo $td1 . '<a href="index.php?Page_Type=Site&id='.$sID.'"/>'.$sName.'</a>'.$td2;
-            			echo $td1 . '<a href="index.php?Page_Type=Service&id='.$se->getId().'"/>'.$se->getHostName().'</a>'.$td2; 
+            			echo $td1 . '<a href="index.php?Page_Type=Site&id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
+            			echo $td1 . '<a href="index.php?Page_Type=Service&id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2; 
             			echo $td1 . (($se->getProduction()) ? 'Yes' : 'No') . $td2;
             			echo $td1 . (($se->getMonitored()) ? 'Yes' : 'No') . $td2;            			
             			echo '</tr>';            			

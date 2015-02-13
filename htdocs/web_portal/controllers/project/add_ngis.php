@@ -52,6 +52,9 @@ function add_ngis_to_project() {
  * @return null
  */
 function draw() {
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     //Get project details
     $serv = \Factory::getProjectService();
     $project = $serv->getProject($_REQUEST['id']);

@@ -6,11 +6,11 @@ $sg = $params['serviceGroup'];
     <br />
     <form class="inputForm" method="post" action="index.php?Page_Type=Edit_Service_Group" name="editSGroup">
         <span class="input_name">Name</span>
-        <input type="text" value="<?php echo $sg->getName() ?>" name="name" class="input_input_text">
+        <input type="text" value="<?php xecho($sg->getName()) ?>" name="name" class="input_input_text">
         <span class="input_name">Description</span>
-        <input type="text" value="<?php echo $sg->getDescription() ?>" name="description" class="input_input_text">
+        <input type="text" value="<?php xecho($sg->getDescription()) ?>" name="description" class="input_input_text">
         <span class="input_name">Contact E-Mail *<span class="input_syntax" >(valid email format)</span></span>
-        <input type="text" value="<?php echo $sg->getEmail() ?>" name="email" class="input_input_text">
+        <input type="text" value="<?php xecho($sg->getEmail()) ?>" name="email" class="input_input_text">
         <span class="input_name">Should this service group be Monitored?</span>
         <input class="add_edit_form" style="width: auto; display: inline;" type="checkbox" name="monitored" value="" <?php if($sg->getMonitored() == true) echo " checked=\"checked\""; ?> />
         

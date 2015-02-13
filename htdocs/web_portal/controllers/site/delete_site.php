@@ -23,17 +23,16 @@ require_once __DIR__ . '/../utils.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 
 function delete() {
-    $dn = Get_User_Principle();
-    $user = \Factory::getUserService()->getUserByPrinciple($dn);
-         
-    //get the site
-    if (isset($_REQUEST['id'])){
-    $site = \Factory::getSiteService()->getSite($_REQUEST['id']);
-    }
-    else {
-        throw new \Exception("A site must be specified");
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
     }
 
+    $dn = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($dn);
+
+    //get the site
+    $site = \Factory::getSiteService()->getSite($_REQUEST['id']);
+    
     if($_POST or (sizeof($site->getServices()) == 0)) {
         submit($site, $user);
     }

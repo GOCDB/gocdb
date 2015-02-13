@@ -49,6 +49,10 @@ function draw(\User $user = null) {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../../../htdocs/web_portal/components/Get_User_Principle.php';
 
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
+    
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $site = \Factory::getSiteService()->getSite($_REQUEST['id']);

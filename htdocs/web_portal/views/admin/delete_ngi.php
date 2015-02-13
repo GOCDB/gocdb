@@ -7,21 +7,21 @@ $sites = $params['Sites'];
 ?>
 
 <div class="rightPageContainer">
-	<h1 class="Success">Delete <?php echo $ngiName; ?>?</h1><br />
+	<h1 class="Success">Delete <?php xecho( $ngiName); ?>?</h1><br />
     <p>
         Are you sure you want to delete the NGI '
         <a href="index.php?Page_Type=NGI&id=<?php echo $ngiId;?>">
-            <?php echo $ngiName;?>
+            <?php xecho($ngiName);?>
         </a>'? Deleting NGIs is a functionality reserved for GOCDB administrators 
         and should. be undertaken with caution.
     </p>
     <p>
-        If you delete <?php echo $ngiName; ?>, the following sites will be deleted as well:
+        If you delete <?php xecho($ngiName); ?>, the following sites will be deleted as well:
         <?php 
             foreach($sites as $site){
                 echo "<br />"
                     . "<a href=\"index.php?Page_Type=Site&id=" . $site->getId() ."\">"
-                    .  $site->getName()
+                    .  xssafe($site->getName())
                     . "</a> ";
             }	
         ?>
@@ -32,7 +32,7 @@ $sites = $params['Sites'];
             foreach($services as $service){
                 echo "<br />"
                     . "<a href=\"index.php?Page_Type=Service&id=" . $service->getId() ."\">"
-                    .  $service->getHostName() . " (" . $service->getServiceType()->getName() . ")"
+                    .  xssafe($service->getHostName()) . " (" . xssafe($service->getServiceType()->getName()) . ")"
                     . "</a> ";
             }	
         ?>

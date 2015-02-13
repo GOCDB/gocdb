@@ -27,13 +27,11 @@ function remove_scope(){
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
     
     //Check user has permission
-     checkUserIsAdmin();
+    checkUserIsAdmin();
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     
-     //Check an ID has been specified
-     if(empty($_REQUEST['id'])){
-         throw new Exception("A scope to be deleted must be specified");
-     }
-     
     //Get the scope from the id
     $serv= \Factory::getScopeService();
     $scope =$serv ->getScope($_REQUEST['id']);

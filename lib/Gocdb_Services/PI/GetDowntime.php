@@ -381,8 +381,7 @@ class GetDowntime implements IPIQuery{
             $xmlDowntime->addAttribute ( "CLASSIFICATION", $downtime->getClassification () );
             
             $helpers->addIfNotEmpty ( $xmlDowntime, 'SEVERITY', $downtime->getSeverity () );
-            $description = htmlspecialchars ( $downtime->getDescription () );
-            $helpers->addIfNotEmpty ( $xmlDowntime, 'DESCRIPTION', $description );
+            $helpers->addIfNotEmpty ( $xmlDowntime, 'DESCRIPTION', xssafe($downtime->getDescription ()) );
             $helpers->addIfNotEmpty ( $xmlDowntime, 'INSERT_DATE', $downtime->getInsertDate ()->getTimestamp () );
             $helpers->addIfNotEmpty ( $xmlDowntime, 'START_DATE', $downtime->getStartDate ()->getTimestamp () );
             $helpers->addIfNotEmpty ( $xmlDowntime, 'END_DATE', $downtime->getEndDate ()->getTimestamp () );
@@ -461,8 +460,7 @@ class GetDowntime implements IPIQuery{
                     }
                 }
                 $helpers->addIfNotEmpty ( $xmlDowntime, 'SEVERITY', $downtime->getSeverity () );
-                $description = htmlspecialchars ( $downtime->getDescription () );
-                $helpers->addIfNotEmpty ( $xmlDowntime, 'DESCRIPTION', $description );
+                $helpers->addIfNotEmpty ( $xmlDowntime, 'DESCRIPTION', xssafe($downtime->getDescription()) );
                 $helpers->addIfNotEmpty ( $xmlDowntime, 'INSERT_DATE', $downtime->getInsertDate ()->getTimestamp () );
                 $helpers->addIfNotEmpty ( $xmlDowntime, 'START_DATE', $downtime->getStartDate ()->getTimestamp () );
                 $helpers->addIfNotEmpty ( $xmlDowntime, 'END_DATE', $downtime->getEndDate ()->getTimestamp () );
@@ -497,7 +495,7 @@ class GetDowntime implements IPIQuery{
             // <DOWNTIME> element and attributes end
             
             $helpers->addIfNotEmpty ( $xmlDowntime, 'SEVERITY', $downtimeArray ['severity'] );
-            $helpers->addIfNotEmpty ( $xmlDowntime, 'DESCRIPTION', htmlspecialchars ( $downtimeArray ['description'] ) );
+            $helpers->addIfNotEmpty ( $xmlDowntime, 'DESCRIPTION', xssafe(( $downtimeArray ['description'] )) );
             $helpers->addIfNotEmpty ( $xmlDowntime, 'INSERT_DATE', strtotime ( $downtimeArray ['insertDate']->format ( 'Y-m-d H:i:s' ) ) );
             $helpers->addIfNotEmpty ( $xmlDowntime, 'START_DATE', strtotime ( $downtimeArray ['startDate']->format ( 'Y-m-d H:i:s' ) ) );
             $helpers->addIfNotEmpty ( $xmlDowntime, 'END_DATE', strtotime ( $downtimeArray ['endDate']->format ( 'Y-m-d H:i:s' ) ) );
@@ -609,7 +607,7 @@ class GetDowntime implements IPIQuery{
                     }
                 }
                 $helpers->addIfNotEmpty ( $xmlDowntime, 'SEVERITY', $downtimeArray ['severity'] );
-                $helpers->addIfNotEmpty ( $xmlDowntime, 'DESCRIPTION', htmlspecialchars ( $downtimeArray ['description'] ) );                
+                $helpers->addIfNotEmpty ( $xmlDowntime, 'DESCRIPTION', xssafe( $downtimeArray ['description'] ) );                
                 $helpers->addIfNotEmpty ( $xmlDowntime, 'INSERT_DATE', strtotime ( $downtimeArray ['insertDate']->format ( 'Y-m-d H:i:s' ) ) );
                 $helpers->addIfNotEmpty ( $xmlDowntime, 'START_DATE', strtotime ( $downtimeArray ['startDate']->format ( 'Y-m-d H:i:s' ) ) );
                 $helpers->addIfNotEmpty ( $xmlDowntime, 'END_DATE', strtotime ( $downtimeArray ['endDate']->format ( 'Y-m-d H:i:s' ) ) );

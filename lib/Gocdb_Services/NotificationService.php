@@ -11,7 +11,6 @@ require_once __DIR__ . '/Factory.php';
  * A service layer to aid the sending of notification emails
  *
  * @author James McCarthy
- * @author David Meredith
  */
 class NotificationService extends AbstractEntityService {
     
@@ -45,7 +44,7 @@ class NotificationService extends AbstractEntityService {
                 $enablingRoles = \Factory::getSiteService ()->authorizeAction ( \Action::GRANT_ROLE, $entity, $role->getUser () );
                 
                 // If the site has no site adminstrators to approve the role request then send an email to the parent NGI users to approve the request
-                if ($roles = null) {
+                if ($roles == null) {
                     $this->roleRequest ( $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
                 }
             } else if ($entity instanceof \ServiceGroup) {
@@ -57,7 +56,7 @@ class NotificationService extends AbstractEntityService {
                 $projects = $entity->getProjects (); // set project with the NGI's parent project and later recurse with this
                                                     
                 // Only send emails to Project users if there are no users with grant_roles over the NGI
-                if ($roles = null) {
+                if ($roles == null) {
                     // Get the ID's of each project so we can remove duplicates
                     foreach ( $projects as $project ) {
                         $projectIds [] = $project->getId ();
@@ -113,14 +112,18 @@ class NotificationService extends AbstractEntityService {
             $body = "Dear GOCDB User,\n\n" . "A user has requested a role that requires attention.\n\n" . 
                     "You can approve or deny this request here:\n\n" . $webPortalURL . "/index.php?Page_Type=Role_Requests\n\n" . 
                     "Note: This role may already have been approved or denied by another GocDB User";
-            
+        
+            $sendMail = TRUE; 
             // Send email to all users who can approve this role request
             if ($emails != null) {
                 foreach ( $emails as $email ) {
-                    // mail($email, $subject, $body, $headers);
-                    echo "Email: " . $email . "<br>";
-                    echo "Subject: " . $subject . "<br>";
-                    echo "Body: " . $body . "<br>";
+                    if($sendMail){ 
+                       mail($email, $subject, $body, $headers);
+                    } else {
+                       echo "Email: " . $email . "<br>";
+                       echo "Subject: " . $subject . "<br>";
+                       echo "Body: " . $body . "<br>";
+                    }
                 }
             }
         }
@@ -133,8 +136,11 @@ class NotificationService extends AbstractEntityService {
         if ($projectIds != null) {
             foreach ( $projectIds as $pid ) {
                 $project = \Factory::getOwnedEntityService ()->getOwnedEntityById ( $pid );
-                echo $project->getName () . "<br>";
-                $this->roleRequest ( $project );
+                if(sendMail){ 
+                    $this->roleRequest ( $project );
+                } else {
+                    echo $project->getName () . "<br>";
+                }
             }
         }
     }

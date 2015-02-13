@@ -11,7 +11,7 @@ $downtimes = $params['downtimes'];
                 Downtimes Affecting
                 <a  style="font-family: inherit; font-size: inherit; font-weight: inherit; padding-bottom: inherit; "
                     href="index.php?Page_Type=Site&id=<?php echo $site->getId(); ?>">
-                    <?php echo $site?></a>'s
+                    <?php xecho($site)?></a>'s
                 SEs
             </h1>
         </div>
@@ -34,7 +34,7 @@ $downtimes = $params['downtimes'];
                 <tr class="site_table_row_<?php echo $num ?>">
                     <td class="site_table">
                     	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $dt->getId() ?>">
-							<?php echo $dt->getDescription() ?>
+							<?php xecho($dt->getDescription()) ?>
 						</a>
 					</td>
                     <td class="site_table"><?php echo $dt->getStartDate()->format($dt::DATE_FORMAT) ?></td>

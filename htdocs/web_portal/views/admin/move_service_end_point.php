@@ -7,18 +7,18 @@
     	<select class="add_edit_form" name="NewSite">
     		<?php
     		foreach($params['Sites'] as $Site) {
-                echo "<option value=\"". $Site->getId() . "\">" . $Site->getShortName(). "</option>";
+                echo "<option value=\"". $Site->getId() . "\">" . xssafe($Site->getShortName()). "</option>";
     		}	
     		?>
     	</select>
     	
     	<span class="input_name">Please select the service(s) to be moved from 
-    	    <?php echo $params['OldSite']?></span>
+    	    <?php xecho($params['OldSite'])?></span>
 		<select class="Downtime_Select" name="Services[]" size="20" 
     	 multiple id="Sites" style="margin-left: 0em; width: 38em;">
             <?php
                 foreach($params['Services'] as $sep) {
-                echo "<option value=\"". $sep->getId() . "\">" . $sep->getHostName(). "</option>";
+                echo "<option value=\"". $sep->getId() . "\">" . xssafe($sep->getHostName()). "</option>";
     		}	
             ?>
         </select>

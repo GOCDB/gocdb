@@ -223,8 +223,8 @@ class GetSite implements IPIQuery{
 				if($siteProp != ""){
 				    $xmlSiteProperty = $xmlExtensions->addChild ( 'EXTENSION' );				    
 				    $xmlSiteProperty->addChild ( 'LOCAL_ID', $siteProp->getId () );				    
-					$xmlSiteProperty->addChild ( 'KEY', $siteProp->getKeyName () );
-					$xmlSiteProperty->addChild ( 'VALUE', $siteProp->getKeyValue () );
+					$xmlSiteProperty->addChild ( 'KEY', xssafe($siteProp->getKeyName ()) );
+					$xmlSiteProperty->addChild ( 'VALUE', xssafe($siteProp->getKeyValue ()) );
 				}
 			}
 		    

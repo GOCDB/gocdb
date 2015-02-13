@@ -23,7 +23,7 @@
                 <select name="serviceType" onchange="form.submit()">
                 	<option value="">(all)</option>
                     <?php foreach($params['serviceTypes'] as $serviceType) { ?>
-                      	<option value="<?php echo $serviceType->getName(); ?>"<?php if($params['selectedServiceType'] == $serviceType->getName()) echo " selected"?>><?php echo $serviceType->getName(); ?></option> 
+                      	<option value="<?php xecho($serviceType->getName()); ?>"<?php if($params['selectedServiceType'] == $serviceType->getName()) echo " selected"?>><?php xecho($serviceType->getName()); ?></option> 
                     <?php  } ?>   
                 </select>
             </div>
@@ -33,7 +33,7 @@
                 <select name="ngi" onchange="form.submit()">                                        
                     <option value="">(all)</option>
                     <?php foreach ($params['ngis'] as $ngi){ ?>
-                    	<option value="<?php echo $ngi->getName()?>"<?php if($params['selectedNgi'] == $ngi->getName()){echo " selected";} ?>><?php echo $ngi->getName()?></option>
+                    	<option value="<?php xecho($ngi->getName())?>"<?php if($params['selectedNgi'] == $ngi->getName()){echo " selected";} ?>><?php xecho($ngi->getName())?></option>
                     <?php }?>
                     
                 </select>
@@ -73,7 +73,7 @@
                 <select name="scope" onchange="form.submit()">
                     <option value="">(all)</option>
                     <?php foreach ($params['scopes'] as $scope){ ?>
-                        <option value="<?php echo $scope->getName()?>"<?php if($params['selectedScope'] == $scope->getName()){echo " selected";} ?>><?php echo $scope->getName()?></option>
+                        <option value="<?php xecho($scope->getName())?>"<?php if($params['selectedScope'] == $scope->getName()){echo " selected";} ?>><?php xecho($scope->getName())?></option>
                     <?php }?>
                 </select>
         	</div>
@@ -84,7 +84,7 @@
                 <select name="certificationStatus" onchange="form.submit()">
 					<option value="">(all)</option>
                     <?php foreach($params['certStatuses'] as $certStatus) { ?>
-                        <option value="<?php echo $certStatus->getName(); ?>"<?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>><?php echo $certStatus->getName(); ?></option> 
+                        <option value="<?php xecho($certStatus->getName()); ?>"<?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>><?php xecho($certStatus->getName()); ?></option> 
                     <?php  } ?>                  
                 </select>
         	</div>
@@ -100,7 +100,7 @@
                 <select name="servKeyNames" onchange="form.submit()">
 					<option value="">(none)</option>
                     <?php foreach($params['servKeyNames'] as $servExtensions) { ?>
-                        <option value="<?php echo $servExtensions; ?>"<?php if($params['selectedServKeyNames'] == $servExtensions) echo " selected"?>><?php echo $servExtensions; ?></option> 
+                        <option value="<?php xecho($servExtensions); ?>"<?php if($params['selectedServKeyNames'] == $servExtensions) echo " selected"?>><?php xecho($servExtensions); ?></option> 
                     <?php  } ?>                  
                 </select>
         	</div> 
@@ -153,14 +153,14 @@
                     <div style="background-color: inherit;">
                         <span style="vertical-align: middle;">
                             <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
-                                <span>&raquo; </span><?php echo $se->getHostName(); ?>
+                                <span>&raquo; </span><?php xecho($se->getHostName()); ?>
                             </a>
                         </span>
                     </div>
                 </td>
                     
                 <td class="site_table">
-                    <?php echo $se->getServiceType()->getName(); ?>
+                    <?php xecho($se->getServiceType()->getName()); ?>
                 </td>
                 
                 <td class="site_table">
@@ -180,12 +180,12 @@
                 </td>
                 
                 <td class="site_table">
-                    <?php echo $se->getScopeNamesAsString() ?>
+                    <?php xecho($se->getScopeNamesAsString()) ?>
                 </td>
                 
                 <td class="site_table">
                     <a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId(); ?>">
-                        <?php echo $se->getParentSite()->getShortName(); ?>
+                        <?php xecho($se->getParentSite()->getShortName()); ?>
                     </a>
                 </td>
             </tr>

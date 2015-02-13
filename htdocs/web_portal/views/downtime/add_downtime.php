@@ -101,7 +101,8 @@
 
                 <?php
                 foreach($sites as $site){
-                    echo "<option value=\"{$site->getId()}\">$site</option>";
+                    $siteName = xssafe($site); 
+                    echo "<option value=\"{$site->getId()}\">$siteName</option>";
                 }
                 ?>
             </select> <br /> <br />

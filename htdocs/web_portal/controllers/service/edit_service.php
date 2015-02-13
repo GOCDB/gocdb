@@ -60,6 +60,9 @@ function submit(\User $user = null) {
  * @throws \Exception
  */
 function draw(\User $user = null) {
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
 	$id = $_REQUEST['id'];
 	$serv = \Factory::getServiceService();
 	$se = $serv->getService($id);

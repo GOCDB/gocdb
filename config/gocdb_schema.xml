@@ -206,6 +206,7 @@
 		<field>
 			<fname>TITLE</fname>
 			<length>255</length>
+            <regex>/^[a-zA-Z\s\-']+$/</regex>
 		</field>
 		<field>
 			<fname>CERTIFICATE_DN</fname>
@@ -419,9 +420,9 @@
 			<fname>VALUE</fname>
             <length>255</length>
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-            <!--<regex>/^[^`'\"=()]+$/</regex>-->
+            <regex>/^[^`'\"=()]+$/</regex>
             <!-- positive regex - more strict -->
-            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 		</field>
 		<field>
 			<fname>PROP</fname>
@@ -446,9 +447,9 @@
 			<fname>VALUE</fname>
             <length>255</length>
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-            <!--<regex>/^[^`'\"=()]+$/</regex>-->
+            <regex>/^[^`'\"=()]+$/</regex>
             <!-- positive regex - more strict -->
-            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 		</field>
 		<field>
 			<fname>PROP</fname>
@@ -473,9 +474,9 @@
 			<fname>VALUE</fname>
             <length>255</length>
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-            <!--<regex>/^[^`'\"=()]+$/</regex>-->
+            <regex>/^[^`'\"=()]+$/</regex>
             <!-- positive regex - more strict -->
-            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 		</field>
         <field>
 			<fname>PROP</fname>
@@ -500,9 +501,9 @@
 			<fname>VALUE</fname>
             <length>255</length>
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-            <!--<regex>/^[^`'\"=()]+$/</regex>-->
+            <regex>/^[^`'\"=()]+$/</regex>
             <!-- positive regex - more strict -->
-            <regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
+            <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 		</field>
 		<field>
 			<fname>PROP</fname>
@@ -516,7 +517,8 @@
 		<field>
 			<fname>REASON</fname>
 			<length>300</length>
-            <regex>/^[a-zA-Z0-9è\-\._\(\)\[\],;:\/'"\s]*$/</regex>
+            <!--<regex>/^[a-zA-Z0-9è\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";]+$/</regex>
 		</field>
 	</entity>
 </schema>

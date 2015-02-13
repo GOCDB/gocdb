@@ -34,6 +34,9 @@ function delete_ngi() {
 }
 
 function draw() {
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
      if(isset($_REQUEST['id'])){
         $ngi = \Factory::getNgiService()->getNgi($_REQUEST['id']);
      }
@@ -58,8 +61,10 @@ function draw() {
 
 function submit() {
     //Only administrators can delete sites, double check user is an administrator
-     checkUserIsAdmin();
-     
+    checkUserIsAdmin();
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     if(isset($_REQUEST['id'])){
         $ngi = \Factory::getNgiService()->getNgi($_REQUEST['id']);
      }

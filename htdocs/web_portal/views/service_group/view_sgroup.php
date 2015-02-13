@@ -9,9 +9,9 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
-                Service Group: <?php echo $params['sGroup']->getName()?>
+                Service Group: <?php xecho($params['sGroup']->getName())?>
         </h1>
-        <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php echo $params['sGroup']->getDescription()?></span>
+        <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php xecho($params['sGroup']->getDescription())?></span>
     </div>
 
     <!--  Edit Virtual Site link -->
@@ -73,14 +73,14 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
                         <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal">Scope(s)</a>
                     </td>
                     <td class="site_table">
-                        <?php echo $params['sGroup']->getScopeNamesAsString()?>
+                        <?php xecho($params['sGroup']->getScopeNamesAsString())?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Contact E-Mail</td>
                     <td class="site_table">
-                        <a href="mailto:<?php echo $params['sGroup']->getEmail(); ?>">
-                            <?php echo $params['sGroup']->getEmail(); ?>
+                        <a href="mailto:<?php xecho($params['sGroup']->getEmail()); ?>">
+                            <?php xecho($params['sGroup']->getEmail()); ?>
                         </a>
                     </td>
                 </tr>
@@ -119,13 +119,13 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
                        <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
-                                    <?php echo $se->getHostname() . " (" . $se->getServiceType()->getName() . ")";?>
+                                    <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")");?>
                                 </a>
                             </span>
                         </div>
                     </div>
                 </td>
-                <td class="site_table"><?php echo $se->getDescription() ?></td>
+                <td class="site_table"><?php xecho($se->getDescription()) ?></td>
                 <td class="site_table">
 				<?php
 				switch($se->getProduction()) {
@@ -143,7 +143,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
 				?>
 				</td>
                 <td class="site_table">
-				<?php echo $se->getScopeNamesAsString() ?>
+				<?php xecho($se->getScopeNamesAsString()) ?>
                 </td>
             </tr>
             <?php
@@ -191,12 +191,12 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
                     <div style="background-color: inherit;">
                         <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
                         <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
-                            <?php echo $role->getUser()->getFullName()/*.' ['.$role->getUser()->getId().']' */?>
+                            <?php xecho($role->getUser()->getFullName())/*.' ['.$role->getUser()->getId().']' */?>
                         </a>
                     </div>
                 </td>
                 <td class="site_table">
-                	<?php echo $role->getRoleType()->getName() ?>
+                	<?php xecho($role->getRoleType()->getName()) ?>
                 </td>
                 <?php if(!$params['portalIsReadOnly']): ?>
                     <td class="site_table"><a href="index.php?Page_Type=Revoke_Role&id=<?php echo $role->getId()?>" onclick="return confirmSubmit()">Revoke</a></td>
@@ -238,8 +238,8 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
 	            ?>
 
 	            <tr class="site_table_row_<?php echo $num ?>">
-	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyName(); ?></td>
-	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyValue(); ?></td>
+	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyName()); ?></td>
+	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyValue()); ?></td>
 	                <?php if(!$params['portalIsReadOnly']): ?>	                
 	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
 	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
@@ -281,7 +281,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table">
                 	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
-                		<?php echo $d->getDescription() ?>
+                		<?php xecho($d->getDescription()) ?>
                 	</a>
                	</td>
                 <td class="site_table"><?php echo $d->getStartDate()->format($d::DATE_FORMAT) ?></td>

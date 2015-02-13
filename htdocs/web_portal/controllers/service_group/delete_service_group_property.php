@@ -27,9 +27,9 @@ function delete() {
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
          
     //get the site
-    if (isset($_REQUEST['propertyid'])){
-    $property = \Factory::getServiceGroupService()->getProperty($_REQUEST['propertyid']);
-    $serviceGroup = \Factory::getServiceGroupService()->getServiceGroup($_REQUEST['id']);
+    if (isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid'])){
+        $property = \Factory::getServiceGroupService()->getProperty($_REQUEST['propertyid']);
+        $serviceGroup = \Factory::getServiceGroupService()->getServiceGroup($_REQUEST['id']);
     }
     else {
         throw new \Exception("A service group must be specified");

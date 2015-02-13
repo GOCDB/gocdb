@@ -5,7 +5,7 @@
                 Downtimes for 
                 <a  style="font-family: inherit; font-size: inherit; font-weight: inherit; text-decoration: underline; padding-bottom: inherit; " 
                     href="index.php?Page_Type=Service_Group&id=<?php echo $params['sGroup']->getId(); ?>">
-                    <?php echo $params['sGroup']->getName()?>
+                    <?php xecho($params['sGroup']->getName())?>
                 </a>
             </h1>
         </div>
@@ -28,7 +28,7 @@
                 <tr class="site_table_row_<?php echo $num ?>">
                     <td class="site_table">
                     	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
-                    		<?php echo $d->getDescription() ?>
+                    		<?php xecho($d->getDescription()) ?>
                     	</a>
                     </td>
                     <td class="site_table"><?php echo $d->getStartDate()->format($d::DATE_FORMAT); ?></td>

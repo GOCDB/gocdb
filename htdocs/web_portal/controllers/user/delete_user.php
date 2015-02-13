@@ -30,7 +30,9 @@ function delete() {
     
     //Check the portal is not in read only mode, returns exception if it is
     checkPortalIsNotReadOnly();
-    
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     $serv = \Factory::getUserService();
     $user = $serv->getUser($_REQUEST['id']);
 

@@ -51,6 +51,12 @@ function draw(\User $user = null) {
     if(is_null($user)) {
         throw new Exception("Unregistered users can't edit a service property.");
     }
+    if (!isset($_REQUEST['serviceid']) || !is_numeric($_REQUEST['serviceid']) ){
+        throw new Exception("A serviceid must be specified");
+    }
+    if (!isset($_REQUEST['endpointid']) || !is_numeric($_REQUEST['endpointid']) ){
+        throw new Exception("An endpointid must be specified");
+    }
     $serv = \Factory::getServiceService(); 
     $service = $serv->getService($_REQUEST['serviceid']);
     $endpoint = $serv->getEndpoint($_REQUEST['endpointid']);    

@@ -52,6 +52,9 @@ function add_endpoint_property() {
 function submit(\User $user = null) {
     $newValues = getEndpointPropDataFromWeb();
     $endpointID = $newValues['ENDPOINTPROPERTIES'] ['ENDPOINTID'];  
+    if (!isset($endpointID) || !is_numeric($endpointID) ){
+        throw new Exception("An id must be specified");
+    }
     if($newValues['ENDPOINTPROPERTIES']['NAME'] == null || $newValues['ENDPOINTPROPERTIES']['VALUE'] == null){
         show_view('error.php', "A property name and value must be provided.");
         die();
@@ -71,6 +74,9 @@ function draw(\User $user = null) {
 
 	if(is_null($user)) {
         throw new Exception("Unregistered users can't add an endpoint property.");
+    }
+    if (!isset($_REQUEST['endpointid']) || !is_numeric($_REQUEST['endpointid']) ){
+        throw new Exception("An id must be specified");
     }
     
     $serv = \Factory::getServiceService();

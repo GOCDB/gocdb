@@ -7,8 +7,8 @@ function view_site() {
     $serv = \Factory::getSiteService();
     $servServ  = \Factory::getServiceService();
     
-    if (!isset($_REQUEST['id'])){
-        throw new Exception("A site id must be specified");
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
     }
     
     $site = $serv->getSite($_REQUEST['id']);

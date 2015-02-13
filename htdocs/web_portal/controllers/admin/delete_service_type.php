@@ -24,7 +24,10 @@ function delete_service_type(){
     
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+   
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     //Get the service type from the id
     $serv= \Factory::getServiceTypeService();
     $serviceType =$serv ->getServiceType($_REQUEST['id']);

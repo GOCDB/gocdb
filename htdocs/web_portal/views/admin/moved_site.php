@@ -3,13 +3,13 @@
 	<?php $NGI = $params['NewNGI'];?>
 	The following sites have been moved to 
 	<a href="index.php?Page_Type=NGI&id=<?php echo $NGI->getId();?>">
-    <?php echo $NGI->getName();?>
+    <?php xecho($NGI->getName());?>
     </a>:
 	<?php 
         foreach($params['sites'] as $site){
             echo "<br />"
             	. "<a href=\"index.php?Page_Type=Site&id=" . $site->getId() ."\">"
-            	.  $site->getShortName()
+            	.  xssafe($site->getShortName())
             	. "</a> ";
         }	
 	?>

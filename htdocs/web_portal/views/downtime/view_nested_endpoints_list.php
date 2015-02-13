@@ -10,12 +10,12 @@ $default_endpoint_name= $configService->GetDefaultEndpointName();
 <?php 
     foreach($services as $service){
         $count=0;
-        echo "<option value=\"s" . $service->getId() . "\" id=\"" . $service->getId() . "\" SELECTED>" . '('.$service->getServiceType()->getName().') '.$service->getHostName() . "</option>";
+        echo "<option value=\"s" . $service->getId() . "\" id=\"" . $service->getId() . "\" SELECTED>" . '('.xssafe($service->getServiceType()->getName()).') '.xssafe($service->getHostName()) . "</option>";
         foreach($service->getEndpointLocations() as $endpoint){
             if($endpoint->getName() == ''){
-                $name = $default_endpoint_name;
+                $name = xssafe($default_endpoint_name);
             }else{
-                $name = $endpoint->getName();
+                $name = xssafe($endpoint->getName());
             }
             //Option styling doesn't work well cross browser so just use 4 spaces to indent the branch            
             echo "<option id=\"".$service->getId()."\" value=\"e" . $endpoint->getId() . "\" SELECTED>&nbsp&nbsp&nbsp&nbsp-" . $name . "</option>";

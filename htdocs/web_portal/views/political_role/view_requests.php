@@ -27,9 +27,11 @@
                     <option>-- Please Select --</option>
                     <?php foreach($params['entities'] as $entity) {  
                         if(!empty($entity['Object_ID'])) {
-                            echo "<option value=\"{$entity['Object_ID']}\">{$entity['Name']}</option>";
+                            $entName = xssafe($entity['Name']); 
+                            echo "<option value=\"{$entity['Object_ID']}\">{$entName}</option>";
                         } else {
-                            echo "<option class=\"sectionTitle\">{$entity['Name']}</option>";
+                            $entName = xssafe($entity['Name']); 
+                            echo "<option class=\"sectionTitle\">{$entName}</option>";
                         }
                     }?>
                 </select>
@@ -67,12 +69,12 @@
                 ?> 
                 <tr class="site_table_row_<?php echo $num ?>">
                     <td class="site_table" style="width: 50%">
-                       <?php echo $request->getRoleType()->getName()/*.' ['.$request->getId().']'*/?> 
+                       <?php xecho($request->getRoleType()->getName())/*.' ['.$request->getId().']'*/?> 
                     </td> 
                     <td class="site_table">
                        <?php 
                          $entityId = $request->getOwnedEntity()->getId();
-                         $entityName = $request->getOwnedEntity()->getName();  
+                         $entityName = xssafe($request->getOwnedEntity()->getName());  
                          if($request->getOwnedEntity() instanceof \ServiceGroup){
                              $entityViewLinkName = 'Service_Group';
                          } elseif($request->getOwnedEntity() instanceof \Site){
@@ -137,21 +139,21 @@
                        <?php 
                          $requestingUser = $request->getUser();  
                          $requestingUserId = $requestingUser->getId(); 
-                         $surname = $requestingUser->getSurname(); 
-                         $forename = $requestingUser->getForename(); 
+                         $surname = xssafe($requestingUser->getSurname()); 
+                         $forename = xssafe($requestingUser->getForename()); 
                          echo "<a href='index.php?Page_Type=User&id=$requestingUserId'>$forename $surname</a>";
                         ?> 
                        
                     </td> 
                     <td class="site_table" style="width: 40%">
                         <?php 
-                         echo $request->getRoleType()->getName()/*.' ['.$request->getId().']'*/; 
+                         xecho($request->getRoleType()->getName())/*.' ['.$request->getId().']'*/; 
                         ?>
                     </td>
                     <td class="site_table" >
                         <?php 
                          $entityId = $request->getOwnedEntity()->getId();
-                         $entityName = $request->getOwnedEntity()->getName();  
+                         $entityName = xssafe($request->getOwnedEntity()->getName());  
                          if($request->getOwnedEntity() instanceof \ServiceGroup){
                              $entityClassName = 'Service_Group';
                          } elseif($request->getOwnedEntity() instanceof \Site){

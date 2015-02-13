@@ -6,7 +6,7 @@
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em; padding-bottom: 0.3em;">
-            <?php echo $params['user']->getFullName() ?>
+            <?php xecho($params['user']->getFullName()) ?>
         </h1>
     </div>
 
@@ -48,45 +48,46 @@
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
-						<a href="mailto:<?php echo $params['user']->getEmail();?>">
-							<?php echo $params['user']->getEmail() ?>
+						<a href="mailto:<?php xecho($params['user']->getEmail());?>">
+							<?php xecho($params['user']->getEmail()) ?>
 						</a>
 					</td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Telephone</td>
                     <td class="site_table">
-                        <?php echo $params['user']->getTelephone() ?>
+                        <?php xecho($params['user']->getTelephone()) ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Certificate DN</td>
                     <td class="site_table">
                     	<div style="word-wrap: break-word;">
-                        	<?php echo $params['user']->getCertificateDn() ?>
+                        	<?php xecho($params['user']->getCertificateDn()) ?>
                         </div>
                     </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <!-- Comment out for now -->
+                <!--<tr class="site_table_row_2">
                     <td class="site_table">EGI SSO Username</td>
                     <td class="site_table">
                     	<div style="word-wrap: break-word;">
                         	<?php 
-                            if($params['user']->getusername1() != null){
-                                echo  'Should this be shown? - TBC'; //$params['user']->getusername1(); 
-                            } else {
-                                echo 'Not known'; 
-                            }
+                            //if($params['user']->getusername1() != null){
+                            //    echo  'Should this be shown? - TBC'; //$params['user']->getusername1(); 
+                            //} else {
+                            //    echo 'Not known'; 
+                            //}
                             ?>
                         </div>
                     </td>
-                </tr>
+                </tr>-->
                 <?php if(sizeof($params['user']->getHomeSite()) != 0) { ?>
                     <tr class="site_table_row_2">
                         <td class="site_table">Home Site</td>
                         <td class="site_table">
                             <a href="index.php?Page_Type=Site&id=<?php echo $params['user']->getHomeSite()->getId()?>">
-                                <?php echo $params['user']->getHomeSite()->getShortName() ?>
+                                <?php xecho($params['user']->getHomeSite()->getShortName()) ?>
                             </a>
                         </td>
                     </tr>
@@ -115,35 +116,35 @@
                 <td class="site_table" style="width: 40%">
                     <div style="background-color: inherit;">
                         <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
-                        	<?php echo $role->getRoleType()->getName()/*.' ['.$role->getId().']'*/ ?>
+                        	<?php xecho($role->getRoleType()->getName())/*.' ['.$role->getId().']'*/ ?>
                     </div>
                 </td>
                 <td class="site_table">
                     <?php
                     if($role->getOwnedEntity() instanceof \Site) {?>
                         <a style="vertical-align: middle;" href="index.php?Page_Type=Site&id=<?php echo $role->getOwnedEntity()->getId()?>">
-                        <?php echo $role->getOwnedEntity()->getShortName().' [Site]'?>
+                        <?php xecho($role->getOwnedEntity()->getShortName().' [Site]')?>
                     </a>
                     <?php } ?>
 
                     <?php
                     if($role->getOwnedEntity() instanceof \NGI) {?>
                         <a style="vertical-align: middle;" href="index.php?Page_Type=NGI&id=<?php echo $role->getOwnedEntity()->getId()?>">
-                            <?php echo $role->getOwnedEntity()->getName().' [NGI]'?>
+                            <?php xecho($role->getOwnedEntity()->getName().' [NGI]')?>
                         </a>
                     <?php } ?>
 
                     <?php
                     if($role->getOwnedEntity() instanceof \ServiceGroup) {?>
                         <a style="vertical-align: middle;" href="index.php?Page_Type=Service_Group&id=<?php echo $role->getOwnedEntity()->getId()?>">
-                            <?php echo $role->getOwnedEntity()->getName().' [ServiceGroup]'?>
+                            <?php xecho($role->getOwnedEntity()->getName().' [ServiceGroup]')?>
                         </a>
                     <?php } ?>
 
                     <?php
                     if($role->getOwnedEntity() instanceof \Project) {?>
                        <a style="vertical-align: middle;" href="index.php?Page_Type=Project&id=<?php echo $role->getOwnedEntity()->getId()?>">
-                           <?php echo $role->getOwnedEntity()->getName().' [Project]';?>
+                           <?php xecho($role->getOwnedEntity()->getName().' [Project]');?>
                        </a>
                     <?php } ?>
                 </td>

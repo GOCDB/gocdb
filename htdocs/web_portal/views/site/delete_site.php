@@ -6,11 +6,11 @@ $services = $params['Services']
 ?>
 
 <div class="rightPageContainer">
-	<h1 class="Success">Delete <?php echo $siteName; ?>?</h1><br />
+	<h1 class="Success">Delete <?php xecho($siteName); ?>?</h1><br />
     <p>
         Are you sure you want to delete the site '
         <a href="index.php?Page_Type=Site&id=<?php echo $siteId;?>">
-            <?php echo $siteName;?>
+            <?php xecho($siteName);?>
         </a>'? Deleting sites is a functionality reserved for GOCDB administrators.
     </p>
     <p>

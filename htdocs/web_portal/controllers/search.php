@@ -27,7 +27,8 @@ function search() {
     $searchTerm = $_REQUEST['SearchString'];
     
     //strip leading and trailing whitespace off search term
-    $searchTerm = trim($searchTerm) ;
+    $searchTerm = strip_tags(trim($searchTerm));
+    if(1 === preg_match("/[';\"]/", $searchTerm)){ throw new Exception("Invalid char in search term"); } 
     
     /* Check to see if search string already has either a leading or trailing % 
      * supplied by the user, if not then add them. This is to aid searching*/

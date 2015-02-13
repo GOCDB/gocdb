@@ -175,37 +175,13 @@ class GetUser implements IPIQuery{
 			$xmlUser->addChild ( 'WORKING_HOURS_END', $user->getWorkingHoursEnd () );
 			$xmlUser->addChild ( 'CERTDN', $user->getCertificateDn () );
           
-            /*
-            // Wrap curl code within if statement, set from config
-            // probably need a new param to request rendering ssousername (and paging?)
-            $url = "https://www.egi.eu/sso/api/user?dn=".$this->cleanDN($user->getCertificateDn()); 
-            $ch = curl_init();
-            curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-            curl_setopt($ch, CURLOPT_URL, $url);
-            curl_setopt($ch, CURLOPT_PROXY, 'http://wwwcache.dl.ac.uk'); 
-            curl_setopt($ch, CURLOPT_PROXYPORT, 8080); 
-            curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2); 
-            curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); //return result instead of outputting it
-            curl_setopt($ch, CURLOPT_TIMEOUT, 3); //3secs 
-            $ssousername = curl_exec($ch);
-            //if(curl_errno($ch)){ // error occured. //}
-            //$info = curl_getinfo($ch);
-            $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            curl_close($ch);
-            // username only returned on 200 OK response, e.g. user not found gives 404
-            //if($info['http_code'] != '200'){
-            if($httpcode != 200){
-               $ssousername = ''; 
-            } 
-            $xmlUser->addChild ( 'SSOUSERNAME', trim($ssousername)); 
-            */
-
+            /*  Comment out temporarily until ready to release
             $ssousername = $user->getUsername1(); 
             if($ssousername != null){
                $xmlUser->addChild ( 'SSOUSERNAME', $ssousername); 
             } else {
                 $xmlUser->addChild ( 'SSOUSERNAME');  
-            }
+            }*/
             
 			/*
 			 * APPROVED and ACTIVE are always blank in the GOCDBv4 get_user 
@@ -241,10 +217,10 @@ class GetUser implements IPIQuery{
                             $type = "site";
                             $entityPk = $ownedEntity->getPrimaryKey();
                     } else if ($ownedEntity instanceof \NGI) {
-                            $type = "ngi"; // this should be ngi not group
+                            $type = "group"; //"ngi"; // this should be ngi not group
                             $entityPk = $ownedEntity->getId();
                     } else if ($ownedEntity instanceof \Project) {
-                            $type = "project"; // this should be project not group
+                            $type = "group"; //"project"; // this should be project not group
                             $entityPk = $ownedEntity->getId();
                     } else if ($ownedEntity instanceof \ServiceGroup) {
                             $type = 'servicegroup';

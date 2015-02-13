@@ -203,8 +203,8 @@ class GetServiceGroup implements IPIQuery{
                         foreach($endpoint->getEndpointProperties() as $prop){
                             $xmlProperty = $xmlEndpointExtensions->addChild ( 'EXTENSION' );
                             $xmlProperty->addChild ( 'LOCAL_ID', $prop->getId () );
-                            $xmlProperty->addChild ( 'KEY', $prop->getKeyName () );
-                            $xmlProperty->addChild ( 'VALUE', $prop->getKeyValue () );
+                            $xmlProperty->addChild ( 'KEY', xssafe($prop->getKeyName()) );
+                            $xmlProperty->addChild ( 'VALUE', xssafe($prop->getKeyValue()) );
                         }
                         $xmlEndpoint->addChild ( 'URL', htmlspecialchars($endpoint->getUrl()));
                         $xmlEndpoint->addChild ( 'INTERFACENAME', $endpoint->getInterfaceName());
@@ -215,8 +215,8 @@ class GetServiceGroup implements IPIQuery{
                 foreach($service->getServiceProperties() as $prop){
                     $xmlProperty = $xmlServiceExtensions->addChild ( 'EXTENSION' );
                     $xmlProperty->addChild ( 'LOCAL_ID', $prop->getId () );
-                    $xmlProperty->addChild ( 'KEY', $prop->getKeyName () );
-                    $xmlProperty->addChild ( 'VALUE', $prop->getKeyValue () ); 
+                    $xmlProperty->addChild ( 'KEY', xssafe($prop->getKeyName()) );
+                    $xmlProperty->addChild ( 'VALUE', xssafe($prop->getKeyValue()) ); 
                 }
             }
            
@@ -225,8 +225,8 @@ class GetServiceGroup implements IPIQuery{
             foreach($sg->getServiceGroupProperties() as $sgProp){
                 $xmlSgProperty = $xmlSGExtensions->addChild('EXTENSION');
                 $xmlSgProperty->addChild('LOCAL_ID', $sgProp->getId());
-                $xmlSgProperty->addChild('KEY', $sgProp->getKeyName());
-                $xmlSgProperty->addChild('VALUE', $sgProp->getKeyValue());
+                $xmlSgProperty->addChild('KEY', xssafe($sgProp->getKeyName()));
+                $xmlSgProperty->addChild('VALUE', xssafe($sgProp->getKeyValue()));
             }
         }
 

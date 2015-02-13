@@ -8,9 +8,9 @@
     
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
-                Project: <?php echo $params['Name']?>
+                Project: <?php xecho($params['Name'])?>
         </h1>
-        <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php echo $params['Description']?></span>
+        <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php xecho($params['Description'])?></span>
     </div>
 
     <!-- Only show edit/delete in read/write mode -->
@@ -66,13 +66,13 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
-                                    <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
-                                    <span>&nbsp;&nbsp;</span><?php echo $ngi->getName(); ?>
+                                    <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg">                            
+                                    <span>&nbsp;&nbsp;</span><?php xecho($ngi->getName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
-                    <td class="site_table"><?php echo $ngi->getDescription() ?></td>
+                    <td class="site_table"><?php xecho($ngi->getDescription()) ?></td>
 
                 </tr>
                 <?php
@@ -136,7 +136,7 @@
                         </div>
                     </td>
                     <td class="site_table">
-                        <?php echo $role->getRoleType()->getName() ?>
+                        <?php xecho($role->getRoleType()->getName()) ?>
                     </td>
                     <!-- don't show revoke in read only mode -->
                     <?php if(!$params['portalIsReadOnly']):?>    
@@ -184,18 +184,18 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-                                    <span>&nbsp;&nbsp;</span><?php echo $site->getShortName(); ?>
+                                    <span>&nbsp;&nbsp;</span><?php xecho($site->getShortName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
 
                     <td class="site_table">
-                        <?php echo $site->getCertificationStatus()->getName() ?>
+                        <?php xecho($site->getCertificationStatus()->getName()) ?>
                     </td>
 
                     <td class="site_table">
-                        <?php echo $site->getInfrastructure()->getName() ?>
+                        <?php xecho($site->getInfrastructure()->getName()) ?>
                     </td>
                 </tr>
                 <?php if($num == 1) { $num = 2; } else { $num = 1; }}?>

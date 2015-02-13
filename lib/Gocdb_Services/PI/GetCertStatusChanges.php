@@ -156,7 +156,7 @@ class GetCertStatusChanges implements IPIQuery{
 			$xmlLog->addChild ( 'OLD_STATUS', $log->getOldStatus () );
 			$xmlLog->addChild ( 'NEW_STATUS', $log->getNewStatus () );
 			$xmlLog->addChild ( 'CHANGED_BY', $log->getAddedBy () );
-			$xmlLog->addChild ( 'COMMENT', $log->getReason ());
+			$xmlLog->addChild ( 'COMMENT', xssafe($log->getReason()));
 		}
 		
 		$dom_sxe = dom_import_simplexml ( $xml );

@@ -27,7 +27,9 @@ function getSitesServices() {
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
     
-     
+    if (!isset($_REQUEST['site_id']) || !is_numeric($_REQUEST['site_id']) ){
+        throw new Exception("A site_id must be specified");
+    }
     $site = \Factory::getSiteService()->getSite($_REQUEST['site_id']);
     $services = $site->getServices();
     $params['services'] = $services;

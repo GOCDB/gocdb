@@ -81,13 +81,13 @@
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                               <?php echo $scope->getName(); ?>
+                               <?php xecho($scope->getName()); ?>
                             </span>
                         </div>
                     </td>
 
                     <td class="site_table">
-                        <?php echo $scope->getDescription(); ?>
+                        <?php xecho($scope->getDescription()); ?>
                     </td>
 
                 </tr>

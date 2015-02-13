@@ -11,11 +11,11 @@ $prop = $params['prop'];
         <span class="input_name">
             Property Name            
         </span>
-        <input class="input_input_text" type="text" name="KEYPAIRNAME" value="<?php echo $prop->getKeyName();?>" />
+        <input class="input_input_text" type="text" name="KEYPAIRNAME" value="<?php xecho($prop->getKeyName());?>" />
         <span class="input_name">
             Property Value            
         </span>
-        <input class="input_input_text" type="text" name="KEYPAIRVALUE" value="<?php echo $prop->getKeyValue();?>"/>
+        <input class="input_input_text" type="text" name="KEYPAIRVALUE" value="<?php xecho($prop->getKeyValue());?>"/>
         <input class="input_input_text" type="hidden" name ="SERVICE" value="<?php echo $service->getId();?>" />
         <input class="input_input_text" type="hidden" name ="PROP" value="<?php echo $prop->getId();?>" />
 

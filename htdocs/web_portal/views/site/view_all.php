@@ -23,7 +23,7 @@
                 <select name="NGI" onchange="form.submit()">
                     <option value="">(all)</option>
                     <?php foreach($params['NGIs'] as $ngi) { ?>
-                        <option value="<?php echo $ngi->getName(); ?>"<?php if($params['selectedNgi'] == $ngi->getName()) echo " selected"?>><?php echo $ngi->getName(); ?></option> 
+                        <option value="<?php xecho($ngi->getName()); ?>"<?php if($params['selectedNgi'] == $ngi->getName()) echo " selected"?>><?php xecho($ngi->getName()); ?></option> 
                     <?php  } ?>
                 </select>
         </div>
@@ -33,7 +33,7 @@
                 <select name="certStatus" onchange="form.submit()">
                     <option value="">(all)</option>
                     <?php foreach($params['certStatuses'] as $certStatus) { ?>
-                        <option value="<?php echo $certStatus->getName(); ?>"<?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>><?php echo $certStatus->getName(); ?></option> 
+                        <option value="<?php xecho($certStatus->getName()); ?>"<?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>><?php xecho($certStatus->getName()); ?></option> 
                     <?php  } ?>   
                 </select>
         </div>
@@ -43,7 +43,7 @@
                 <select name="prodStatus" onchange="form.submit()">
                     <option value="">(all)</option>
                     <?php foreach($params['prodStatuses'] as $prodStatus) { ?>
-                        <option value="<?php echo $prodStatus->getName(); ?>"<?php if($params['selectedProdStatus'] == $prodStatus->getName()) echo " selected"?>><?php echo $prodStatus->getName(); ?></option> 
+                        <option value="<?php xecho($prodStatus->getName()); ?>"<?php if($params['selectedProdStatus'] == $prodStatus->getName()) echo " selected"?>><?php xecho($prodStatus->getName()); ?></option> 
                     <?php  } ?>   
                 </select>
         </div>
@@ -53,7 +53,7 @@
                 <select name="scope" onchange="form.submit()">
                     <option value="">(all)</option>
                     <?php foreach ($params['scopes'] as $scope){ ?>
-                        <option value="<?php echo $scope->getName(); ?>"<?php if($params['selectedScope'] ==  $scope->getName()) echo " selected" ?>><?php echo $scope->getName(); ?></option>
+                        <option value="<?php xecho($scope->getName()); ?>"<?php if($params['selectedScope'] ==  $scope->getName()) echo " selected" ?>><?php xecho($scope->getName()); ?></option>
                     <?php } ?>    
                         
                         
@@ -126,20 +126,20 @@
                 </td>
                     
                 <td class="site_table">
-                    <?php echo $site->getNGI()->getName(); ?>
+                    <?php xecho($site->getNGI()->getName()); ?>
                 </td>
                 
                 <td class="site_table">
-                    <?php echo $site->getInfrastructure()->getName(); ?>
+                    <?php xecho($site->getInfrastructure()->getName()); ?>
                 </td>
                 
                 <td class="site_table">
-                    <?php echo $site->getCertificationStatus()->getName(); ?>
+                    <?php xecho($site->getCertificationStatus()->getName()); ?>
                 </td>
                 
                 
                 <td class="site_table">
-                    <?php echo $site->getScopeNamesAsString() ?>
+                    <?php xecho($site->getScopeNamesAsString()) ?>
                     </td>
                 
             </tr>

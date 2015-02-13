@@ -2,11 +2,12 @@
     <div style="overflow: hidden">
         <div style="float: left;">
             <h1 style="float: left; margin-left: 0em; padding-bottom: 0.3em;">
-                Downtimes for 
+                Downtimes for Service:
+                <br/>
                 <a  style="font-family: inherit; font-size: inherit; font-weight: inherit; text-decoration: underline; padding-bottom: inherit; " 
                     href="index.php?Page_Type=Service&id=<?php echo $params['se']->getId()?>">
-    				<?php echo $params['se']->getServiceType()->getName() ?> - 
-                    <?php echo $params['se']->getHostName()?>
+    				<?php xecho($params['se']->getServiceType()->getName()) ?> - 
+                    <?php xecho($params['se']->getHostName())?>
                 </a>
             </h1>
         </div>

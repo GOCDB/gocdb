@@ -30,6 +30,27 @@ require_once __DIR__.'/GocContextPath.php';
 // Set the timezone
 date_default_timezone_set("UTC");
 
+/**
+ * Safely escape and return the data string (xss mitigation function). 
+ * The string is esacped using htmlspecialchars.  
+ * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet  
+ * @param string $data to encode
+ * @param string $encoding
+ * @return string
+ */
+function xssafe($data,$encoding='UTF-8') {
+   //return htmlspecialchars($data,ENT_QUOTES | ENT_HTML401,$encoding);
+    return htmlspecialchars($data); 
+}
+/**
+ * Safely escape then echo the given string (xss mitigation function).  
+ * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet  
+ * @param string $data to encode
+ */
+function xecho($data) {
+   echo xssafe($data);
+}
+
 $Page_Type = Get_Page_Type();
 
 // Prevent user from going any further if they can't be authenticated

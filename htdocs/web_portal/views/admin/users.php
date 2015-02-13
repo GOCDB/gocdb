@@ -26,13 +26,20 @@
             
             <div class="topMargin leftFloat siteFilter">
                 <span class="middle" style="margin-right: 0.4em">Forename: </span>
-                <input class="middle" style="width: 5.5em;" type="text" name="Forename" <?php if(isset($params['Forename'])) echo "value=\"{$params['Forename']}\"";?>/>
-
+                <input class="middle" style="width: 5.5em;" type="text" name="Forename" 
+                    <?php if(isset($params['Forename'])) 
+                        xecho("value=".$params['Forename']);
+                    ?>
+                />
             </div>
 
             <div class="topMargin leftFloat siteFilter">
                 <span class="middle" style="margin-right: 0.4em">Surname: </span>
-                <input class="middle" style="width: 5.5em;" type="text" name="Surname" <?php if(isset($params['Surname'])) echo "value=\"{$params['Surname']}\"";?>/>
+                <input class="middle" style="width: 5.5em;" type="text" name="Surname" 
+                    <?php if(isset($params['Surname'])) 
+                       xecho("value=".$params['Surname']);
+                    ?>
+                />
             </div>
 
             <div class="topMargin leftFloat siteFilter">
@@ -46,7 +53,11 @@
             
             <div class="topMargin leftFloat siteFilter">
                 <span class="middle" style="margin-right: 0.4em">Certificate DN: </span>
-                <input class="middle" style="width: 11em;" type="text" name="DN" <?php if(isset($params['DN'])) echo "value=\"{$params['DN']}\"";?>/>
+                <input class="middle" style="width: 11em;" type="text" name="DN" 
+                    <?php if(isset($params['DN'])) 
+                        xecho("value=".$params['DN']);
+                    ?>
+                />
             </div>
  
             
@@ -83,7 +94,7 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
-                                    <?php echo $user->getSurname().", ".$user->getForename(); ?>
+                                    <?php echo xssafe($user->getSurname()).", ".xssafe($user->getForename()); ?>
                                 </a>
                             </span>
                         </div>
@@ -93,7 +104,7 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Admin_Edit_User_DN&id=<?php echo $user->getId() ?>">
-                                    <?php echo $user->getCertificateDn(); ?>
+                                    <?php xecho($user->getCertificateDn()); ?>
                                 </a>
                             </span>
                         </div>

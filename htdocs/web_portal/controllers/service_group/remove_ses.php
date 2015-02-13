@@ -50,6 +50,9 @@ function remove_ses() {
 function draw(\User $user = null) {
 	$serv = \Factory::getServiceGroupService();
 
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
 	// The service group to remove SEs from
 	$sg =  $serv->getServiceGroup($_REQUEST['id']);
 
@@ -75,6 +78,13 @@ function draw(\User $user = null) {
 function submit(\User $user = null) {
     $serv = \Factory::getServiceGroupService();
 
+    if (!isset($_REQUEST['sgId']) || !is_numeric($_REQUEST['sgId']) ){
+        throw new Exception("An id must be specified");
+    }
+    if (!isset($_REQUEST['seId']) || !is_numeric($_REQUEST['seId']) ){
+        throw new Exception("An id must be specified");
+    }
+    
     // The service group to remove SEs from
     $sg =  $serv->getServiceGroup($_REQUEST['sgId']);
 

@@ -37,14 +37,14 @@
                     <div style="background-color: inherit;">
                         <span style="vertical-align: middle;">
                             <a href="index.php?Page_Type=Project&id=<?php echo $project->getId()?>">
-                                <span>&raquo; </span><?php echo $project->getName(); ?>
+                                <span>&raquo; </span><?php xecho($project->getName()); ?>
                             </a>
                         </span>
                     </div>
                 </td>
                     
                 <td class="site_table">
-                    <?php echo $project->getDescription(); ?>
+                    <?php xecho($project->getDescription()); ?>
                 </td>
                 
             </tr>

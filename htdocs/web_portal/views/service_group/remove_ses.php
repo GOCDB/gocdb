@@ -11,7 +11,7 @@ $sg = $params['sg'];
         </div>
         <div class="leftFloat" style="width: 50em;">
             <h1 class="vSite">
-                Remove Services from <?php echo $sg->getName() ?>
+                Remove Services from <?php xecho($sg->getName()) ?>
             </h1>
             <span class="vSiteDescription">
                 Remove the services from this service group by clicking the remove button.
@@ -64,20 +64,20 @@ $sg = $params['sg'];
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
                                     <?php
-                                        echo $se->getServiceType()->getName();
+                                        xecho($se->getServiceType()->getName());
                                         echo " - "; 
-                                        echo $se->getHostName();
+                                        xecho($se->getHostName());
                                     ?>
                                 </a>
                             </span>
                         </div>
                     </td>
                     <td class="site_table">
-                        <?php echo $se->getDescription(); ?>
+                        <?php xecho($se->getDescription()); ?>
                     </td>
                     <td class="site_table">
                         <a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId() ?>">
-                            <?php echo $se->getParentSite()->getShortName() ?>
+                            <?php xecho($se->getParentSite()->getShortName()) ?>
                         </a>
                     </td>
                 </tr>
@@ -90,7 +90,7 @@ $sg = $params['sg'];
         <span class="leftFloat topMargin">
             Return to 
             <a href="index.php?Page_Type=Service_Group&id=<?php echo $sg->getId() ?>">
-                 <?php echo $sg->getName() ?>
+                 <?php xecho($sg->getName()) ?>
             </a>
         </span>
     </div>

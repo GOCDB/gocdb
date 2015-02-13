@@ -72,7 +72,9 @@ function draw(\User $user = null) {
     if(is_null($user)) {
         throw new Exception("Unregistered users can't add a service group property.");
     }
-
+    if (!isset($_REQUEST['serviceGroup']) || !is_numeric($_REQUEST['serviceGroup']) ){
+        throw new Exception("An id must be specified");
+    }
     $serv = \Factory::getServiceGroupService();
     $serviceGroup = $serv->getServiceGroup($_REQUEST['serviceGroup']);
     

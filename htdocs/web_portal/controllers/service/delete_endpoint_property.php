@@ -25,6 +25,9 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 function delete() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
+    if (!isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid']) ){
+        throw new Exception("An id must be specified");
+    }
          
     //get the service and property
     if (isset($_REQUEST['propertyid'])){

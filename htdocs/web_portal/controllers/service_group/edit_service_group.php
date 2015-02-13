@@ -21,9 +21,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  /*======================================================*/
-    require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
-    require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
-    require_once __DIR__ . '/../utils.php';
+require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
+require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
+require_once __DIR__ . '/../utils.php';
     
 /**
  * Controller for an edit service group request
@@ -72,7 +72,9 @@ function submit(\User $user = null) {
  */
 function draw(\User $user = null) {
     $serv = \Factory::getServiceGroupService();
-
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     // Get the service group
     $sg = $serv->getServiceGroup($_REQUEST['id']);
     //try { $serv->editAuthorization($sg, $user); } catch(Exception $e) {

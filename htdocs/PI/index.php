@@ -36,6 +36,26 @@ require_once __DIR__.'/../web_portal/components/Get_User_Principle.php';
 // get_downtime and should not be used in the GUI/portal scripts. 
 //set_time_limit(500); 
 
+/**
+ * Safely escape and return the data string (xss mitigation function). 
+ * The string is esacped using htmlspecialchars.  
+ * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet  
+ * @param string $data to encode
+ * @param string $encoding
+ * @return string
+ */
+function xssafe($data,$encoding='UTF-8') {
+   //return htmlspecialchars($data,ENT_QUOTES | ENT_HTML401,$encoding);
+    return htmlspecialchars($data); 
+}
+/**
+ * Safely escape then echo the given string (xss mitigation function).  
+ * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet  
+ * @param string $data to encode
+ */
+function xecho($data) {
+   echo xssafe($data);
+}
 
 $piReq = new PIRequest();
 $piReq->process();

@@ -2,7 +2,7 @@
 /*______________________________________________________
  *======================================================
  * File: Get_User_Principle.php
- * Author: John Casson, David Meredith
+ * Author: David Meredith
  * Description: Returns the user's principle ID string for the user that's currently
  *				connected (for x509 this is a DN).
  *
@@ -22,6 +22,38 @@
  /*====================================================== */
 
 require_once __DIR__ . '/../../../lib/Authentication/_autoload.php';  
+/**
+ * Holds the principle string of the authenticated user.  
+ * <p>
+ * Saving the principle string in a singleton after authentication 
+ * allows fast lookups during current request processing. Calling code such as 
+ * {@link Get_User_Principle()} can callout for the stored value rather than 
+ * running through the authentication process again for each invocation  
+ * (for the current request only).       
+ */
+class myStaticPrincipleHolder {
+    private static $_instance;
+    private $principleString = null; 
+    private function __construct() {
+    }
+    private function __clone() {
+       // defining an empty clone closes small loophole in PHP that could make 
+       // a copy of the object and defeat singletone responsibility 
+    }
+    public static function getInstance() {
+        if (!(self::$_instance instanceof self)) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
+    public function getPrincipleString(){
+        return $this->principleString;  
+    }
+    public function setPrincipleString($principleString){
+        $this->principleString = $principleString;  
+    }
+
+}
 
 /**
  * Get the x509 DN from certificate or from SAML attribute. 
@@ -34,14 +66,26 @@ require_once __DIR__ . '/../../../lib/Authentication/_autoload.php';
  * @return string or null if can't authenticate request 
  */
 function Get_User_Principle(){
+    // The principle may have already been set in the static holder, 
+    // if true/not-null, then return rather than going through slower auth process again
+    if(myStaticPrincipleHolder::getInstance()->getPrincipleString() != null){
+        return myStaticPrincipleHolder::getInstance()->getPrincipleString(); 
+    }
+    
+    // Principle has not yet been stored for the current request, 
+    // therefore we need to authenticate. 
     $fwMan = \org\gocdb\security\authentication\FirewallComponentManager::getInstance(); 
     $firewallArray = $fwMan->getFirewallArray(); 
     $firewall = $firewallArray['fwC1']; // select which firewall component you need  
     $auth = $firewall->getAuthentication();  // invoke token resolution process 
-    if ($auth == null) {
-        return null; 
+    if ($auth != null) {
+        $principleString = $auth->getPrinciple();  
+        // update the static holder so we can quickly return the principle 
+        // for the current request on repeat callouts to Get_User_Principle (is quicker than authenticating again). 
+        myStaticPrincipleHolder::getInstance()->setPrincipleString($principleString); 
+        return $principleString;
     } 
-    return $auth->getPrinciple();
+    return null; 
 }
 
 /**
@@ -63,32 +107,6 @@ function Get_User_Principle_PI() {
     return null; 
 }
 
-
-
-/*function Get_User_Principle_PI_static()
-{
-   try { 
-       $x509Token = new org\gocdb\security\authentication\X509AuthenticationToken(); 
-       $auth = org\gocdb\security\authentication\AuthenticationManagerService::authenticate($x509Token); 
-       return $auth->getPrinciple(); 
-   } catch(org\gocdb\security\authentication\AuthenticationException $ex){
-       // failed auth, so return null and let calling page decide to allow 
-       // access or not (some PI methods don't need to be authenticated with a cert) 
-   }
-   return null; 
-}*/
-
-
-/*function Get_User_Principle_Static()
-{
-    $auth = org\gocdb\security\authentication\SecurityContextService::getAuthentication();
-    if ($auth == null) {
-        //$unPwToken = new org\gocdb\security\authentication\UsernamePasswordAuthenticationToken("test", "test");
-        //$auth = org\gocdb\security\authentication\AuthenticationManagerService::authenticate($unPwToken);
-        return null; 
-    } 
-    return $auth->getPrinciple();
-}*/
 
 
 
@@ -161,48 +179,6 @@ function Get_User_Principle_PI() {
     return null; 
 }*/
 
-
-
-
-/*function Get_User_Principle__()
-{
-
-    // To try the Auth Module with x509 (configured as default), comment out 
-    // above block '===Use Custom x509 Auth===' and uncomment block below  
-     
-    // ================Use x509 Authentication Module=======================
-    require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
-    $auth = \Factory::getAuthContextService()->getAuthentication();
-    if($auth == null) {
-        die('Certificate not found - please restart your browser or clear your browser SSL cache');
-        // If auth == null AND IF you are NOT using x509 but instead using a 
-        // non-pre auth token such as un/pw (where isPreAuthenticated == false), 
-        // normally here you would do a manual authentication, i.e. 
-        // re-direct the user to a form/login page in order to input un/pw and 
-        // to construct an Auth token, then call: 
-        //AuthenticationManagerService::authenticate($anIAuthenticationObj);
-    } else {
-        if(!in_array('ROLE_REGISTERED_USER', $auth->getAuthorities())) {
-            echo('<b><font color="red">Please register</font></b><br/>');
-        }
-        //echo('Your DN: ['.$auth->getPrinciple().']<br/>');
-        //echo('Granted Roles: ');
-        // foreach($auth->getAuthorities() as $role){
-        //      echo('['.$role.'] ');
-        //}
-        if ($auth->getDetails() != null && !($auth->getDetails() instanceof User)) {
-            // MUST do an instanceof check to determine if we support the
-            // Details object for this GOCDB instance ! (they can be custom
-            // according to the GOCDB instance type, Doctrine version uses a
-            // Doctrine User object)
-            throw new RuntimeException('Expected a Doctrine User entity');
-        }
-        return $auth->getPrinciple();
-    }
-    // ================Use x509 Authentication Module=======================
-    
-    
-}*/
 
 
 ?>

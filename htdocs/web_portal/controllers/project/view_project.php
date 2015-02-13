@@ -25,6 +25,9 @@ function show_project() {
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
     
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     $serv=\Factory::getProjectService();
     $project = $serv->getProject($_REQUEST['id']);
     $allRoles = $project->getRoles(); 

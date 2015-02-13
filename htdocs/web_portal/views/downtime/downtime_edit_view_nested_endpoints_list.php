@@ -36,7 +36,11 @@ foreach($dt->getEndpointLocations() as $affectedEndpoints){
 		}else{
 			$selected = '';
 		}
-        echo "<option value=\"s" . $service->getId() . "\" id=\"" . $service->getId() . "\" ".$selected.">" . '('.$service->getServiceType()->getName().') '.$service->getHostName() . "</option>";
+        echo "<option value=\"s" . $service->getId() . "\" id=\"" . $service->getId() . "\" ".$selected.">"; 
+                xecho('('.$service->getServiceType()->getName().') '); 
+                xecho($service->getHostName());  
+                echo("</option>");
+        
         foreach($service->getEndpointLocations() as $endpoint){
 					if(in_array($endpoint->getId(), $affectedEndpointIds)){
 						$selected = 'SELECTED';
@@ -44,9 +48,9 @@ foreach($dt->getEndpointLocations() as $affectedEndpoints){
 						$selected = '';
 					}
             if($endpoint->getName() == ''){
-                $name = $default_endpoint_name;
+                $name = xssafe($default_endpoint_name);
             }else{
-                $name = $endpoint->getName();
+                $name = xssafe($endpoint->getName());
             }
             //Option styling doesn't work well cross browser so just use 4 spaces to indent the branch            
             echo "<option id=\"".$service->getId()."\" value=\"e" . $endpoint->getId() . "\" ".$selected.">&nbsp&nbsp&nbsp&nbsp-" . $name . "</option>";

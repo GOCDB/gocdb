@@ -1,6 +1,6 @@
 <?php
-$name = $params['Name'];
-$description = $params['Description'];
+$name = xssafe($params['Name']);
+$description = xssafe($params['Description']);
 $id = $params['ID'];
 $services = $params['Services'];
 $SEsCount= sizeof($services);
@@ -55,7 +55,6 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <th class="site_table">Hostname</th>
-                    <th class="site_table">URL</th>
                     <th class="site_table">Production</th>
                     <th class="site_table">Monitored</th>
                     <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
@@ -73,12 +72,11 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                                 <img src="<?php echo \GocContextPath::getPath()?>img/server.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                                 <span style="vertical-align: middle;">
                                     <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
-                                        <?php echo $se->getHostname();?> (<?php echo $se->getServiceType()->getName();?>)
+                                        <?php xecho($se->getHostname());?> (<?php xecho($se->getServiceType()->getName());?>)
                                     </a>
                                 </span>
                             </div>
                         </td>
-                        <td class="site_table"><?php echo (string) $se->getEndpointLocations()->first()->getUrl() ?></td>
 
                         <td class="site_table">
                         <?php
@@ -115,7 +113,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                         </td>
 
                         <td class="site_table">
-                        <?php echo $se->getScopeNamesAsString(); ?>
+                        <?php xecho($se->getScopeNamesAsString()); ?>
                         </td>
                     </tr>
                 <?php

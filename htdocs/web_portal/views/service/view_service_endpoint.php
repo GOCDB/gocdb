@@ -11,9 +11,9 @@ $seId = $se->getId();
         <img src="<?php echo \GocContextPath::getPath()?>img/serviceEndpoint.png" class="pageLogo" />
     </div>
     <div style="float: left; width: 50em;">
-        <h1 style="float: left; margin-left: 0em;"><?php echo 'Service Endpoint: '.$endpoint->getName() ?> </h1>
+        <h1 style="float: left; margin-left: 0em;"><?php xecho( 'Service Endpoint: '.$endpoint->getName()) ?> </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-          Description: <?php echo $endpoint->getDescription() ?> 
+          Description: <?php xecho($endpoint->getDescription()) ?> 
         </span>
     </div>
 
@@ -53,7 +53,7 @@ $seId = $se->getId();
                 <tr class="site_table_row_1">
                     <td class="site_table">Name</td><td class="site_table">
                            <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
-                                <?php echo $se->getHostname() . " (" . $se->getServiceType()->getName() . ")";?>
+                                <?php xecho( $se->getHostname() . " (" . $se->getServiceType()->getName() . ")");?>
                             </a>
                     </td>
                 </tr>
@@ -70,13 +70,13 @@ $seId = $se->getId();
             <img src="<?php echo \GocContextPath::getPath()?>img/serviceEndpoint.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
-                    <td class="site_table">Name</td><td class="site_table"><?php echo $endpoint->getName() ?></td>
+                    <td class="site_table">Name</td><td class="site_table"><?php xecho($endpoint->getName()) ?></td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">Url</td><td class="site_table"><?php echo $endpoint->getUrl() ?></td>
+                    <td class="site_table">Url</td><td class="site_table"><?php xecho($endpoint->getUrl()) ?></td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">Interface Name</td><td class="site_table"><?php echo $endpoint->getInterfaceName() ?></td>
+                    <td class="site_table">Interface Name</td><td class="site_table"><?php xecho($endpoint->getInterfaceName()) ?></td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Id</td><td class="site_table"><?php echo $endpoint->getId() ?></td>
@@ -110,8 +110,8 @@ $seId = $se->getId();
 	            ?>
 
 	            <tr class="site_table_row_<?php echo $num ?>">
-	                <td style="width: 35%;"class="site_table"><?php echo $prop->getKeyName(); ?></td>
-	                <td style="width: 35%;"class="site_table"><?php echo $prop->getKeyValue(); ?></td>
+	                <td style="width: 35%;"class="site_table"><?php xecho($prop->getKeyName()); ?></td>
+	                <td style="width: 35%;"class="site_table"><?php xecho($prop->getKeyValue()); ?></td>
 	                <?php if(!$params['portalIsReadOnly']): ?>	                
 	               	<!--<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId();?>&endpointid=<?php echo $epId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>-->
 	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>

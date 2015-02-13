@@ -8,7 +8,7 @@
 	<h1 class="Success">Scope In Use</h1><br />
 	The scope ' 
 	<a href="index.php?Page_Type=Admin_Scope&id=<?php echo $scopeId;?>">
-        <?php echo $params['Name'];?>
+        <?php xecho($params['Name']);?>
     </a>' 
     is currently in use. If you are absolutely sure you still want to delete it, 
     a deletion button can be found at the bottom of the page.
@@ -19,7 +19,7 @@
         foreach($ngis as $ngi){
             echo "<br />"
             	. "<a href=\"index.php?Page_Type=NGI&id=" . $ngi->getId() ."\">"
-            	.  $ngi->getName()
+            	.  xssafe($ngi->getName())
             	. "</a> ";
         }	
 	?>
@@ -30,7 +30,7 @@
         foreach($sites as $site){
             echo "<br />"
             	. "<a href=\"index.php?Page_Type=Site&id=" . $site->getId() ."\">"
-            	.  $site->getShortName()
+            	.  xssafe($site->getShortName())
             	. "</a> ";
         }	
 	?>
@@ -41,7 +41,7 @@
         foreach($sGroups as $sGroup){
             echo "<br />"
             	. "<a href=\"index.php?Page_Type=Service_Group&id=" . $sGroup->getId() ."\">"
-            	.  $sGroup->getName()
+            	.  xssafe($sGroup->getName())
             	. "</a> ";
         }	
 	?>
@@ -52,7 +52,7 @@
         foreach($sEndpoints as $sEndpoint){
             echo "<br />"
             	. "<a href=\"index.php?Page_Type=Service&id=" . $sEndpoint->getId() ."\">"
-            	.  $sEndpoint->getHostName()
+            	.  xssafe($sEndpoint->getHostName())
             	. "</a> ";
         }	
 	?>

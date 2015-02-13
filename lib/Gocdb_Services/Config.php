@@ -175,6 +175,20 @@ class Config {
             return false;
         }
     }
+
+    public function getSendEmails(){
+        $sendEmailString = $this->GetLocalInfoXML()->local_info->send_email;  
+         if(empty($sendEmailString)){
+            $sendEmail = false;
+        }
+        elseif(strtolower($sendEmailString) == 'true'){
+            $sendEmail = true;
+        }
+        else{
+            $sendEmail = false;
+        }
+        return $sendEmail;
+    }
     
 }
 

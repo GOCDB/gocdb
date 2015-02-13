@@ -1,7 +1,9 @@
 <?php
 function view_sgroup_downtimes() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
-
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     $id = $_REQUEST['id'];
 
     if(!is_numeric($id)) {

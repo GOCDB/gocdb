@@ -40,13 +40,13 @@
         <input class="input_input_text" type="text" name="GGUS_SU" value="">
         
         <span class="input_name">Scope(s)
-            <span class="input_syntax">(Select at least <?php echo $params['NumberOfScopesRequired']?>)</span>
+            <span class="input_syntax">(Select at least <?php xecho($params['NumberOfScopesRequired'])?>)</span>
         </span>
         <div style="margin-left: 2em">    
         <?php foreach ($params['Scopes'] as $scopeArray){ ?>
             <br />
             <input type="checkbox" name="SCOPE_IDS[]" value="<?php echo $scopeArray['scope']->getId();?>"<?php if($scopeArray['applied']){echo ' checked="checked"';}?>>
-            <?php echo $scopeArray['scope']->getName();?>
+            <?php xecho($scopeArray['scope']->getName());?>
 
         <?php } ?>
         </div>

@@ -71,7 +71,9 @@ function draw(\User $user = null) {
 	if(is_null($user)) {
         throw new Exception("Unregistered users can't add a service property.");
     }
-    
+    if (!isset($_REQUEST['se']) || !is_numeric($_REQUEST['se']) ){
+        throw new Exception("An id must be specified");
+    }
     $serv = \Factory::getServiceService();
     $service = $serv->getService($_REQUEST['se']); //get service by id
     //Check user has permissions to add service property

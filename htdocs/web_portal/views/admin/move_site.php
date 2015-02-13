@@ -7,18 +7,18 @@
     	<select class="add_edit_form" name="NewNGI">
     		<?php
     		foreach($params['Ngis'] as $NGI) {
-                echo "<option value=\"". $NGI->getId() . "\">" . $NGI->getName(). "</option>";
+                echo "<option value=\"". $NGI->getId() . "\">" . xssafe($NGI->getName()). "</option>";
     		}	
     		?>
     	</select>
     	
     	<span class="input_name">Please select the site(s) to be moved from 
-    	    <?php echo $params['OldNgi']?></span>
+    	    <?php xecho($params['OldNgi'])?></span>
 		<select class="Downtime_Select" name="Sites[]" size="20" 
     	 multiple id="Sites" style="margin-left: 0em; width: 38em;">
             <?php
                 foreach($params['sites'] as $site) {
-                echo "<option value=\"". $site->getId() . "\">" . $site->getShortName(). "</option>";
+                echo "<option value=\"". $site->getId() . "\">" . xssafe($site->getShortName()). "</option>";
     		}	
             ?>
         </select>

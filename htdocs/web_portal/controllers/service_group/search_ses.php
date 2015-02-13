@@ -27,8 +27,9 @@ function search_ses() {
     if(!isset($_REQUEST['term'])) {
         return "";
     }else{
-        $searchTerm = $_REQUEST['term'];
+        $searchTerm = strip_tags(trim($_REQUEST['term']));
     }
+    if(1 === preg_match("/[';\"]/", $searchTerm)){ throw new Exception("Invalid char in search term"); }
     
     if(substr($searchTerm, 0,1) != '%'){
         $searchTerm ='%'.$searchTerm;

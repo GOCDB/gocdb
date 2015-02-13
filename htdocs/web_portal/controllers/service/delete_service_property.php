@@ -25,14 +25,15 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 function delete() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-         
-    //get the service and property
-    if (isset($_REQUEST['propertyid'])){
-    	$property = \Factory::getServiceService()->getProperty($_REQUEST['propertyid']);
-    	$service = \Factory::getServiceService()->getService($_REQUEST['serviceid']);
-    }else {
-        throw new \Exception("A service must be specified");
+    if (!isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid']) ){
+        throw new Exception("A propertyid must be specified");
+    }   
+    if (!isset($_REQUEST['serviceid']) || !is_numeric($_REQUEST['serviceid']) ){
+        throw new Exception("A service id must be specified");
     }
+    //get the service and property
+    $property = \Factory::getServiceService()->getProperty($_REQUEST['propertyid']);
+    $service = \Factory::getServiceService()->getService($_REQUEST['serviceid']);
 
     if($_POST) {
         submit($property, $service, $user);

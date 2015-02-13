@@ -50,6 +50,9 @@ function add_ses() {
 function draw(\User $user = null) {
     $serv = \Factory::getServiceGroupService();
 
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     // The service group to add SEs to
     $sg =  $serv->getServiceGroup($_REQUEST['id']);
 
@@ -82,6 +85,9 @@ function draw(\User $user = null) {
  * @return null
  */
 function submit(\User $user = null) {
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     $sg = \Factory::getServiceGroupService()
     	->getServiceGroup($_REQUEST['id']);
 

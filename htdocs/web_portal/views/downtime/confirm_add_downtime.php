@@ -21,14 +21,14 @@ if(isset($params['isEdit'])){
      Downtime</h1><br />
     Please review your downtime before submitting.<br />
     <ul>
-    <li><b>Severity: </b><?php echo $params['DOWNTIME']['SEVERITY']?></li>
-    <li><b>Description: </b><?php echo $params['DOWNTIME']['DESCRIPTION']?></li>
+    <li><b>Severity: </b><?php xecho($params['DOWNTIME']['SEVERITY'])?></li>
+    <li><b>Description: </b><?php xecho($params['DOWNTIME']['DESCRIPTION'])?></li>
     <li><b>Starting: </b>
     <?php 
         //$startStamp = $params['DOWNTIME']['START_TIMESTAMP'];
 	    //$timestamp = new DateTime("@$startStamp"); //Little PHP magic to create date object directly from timestamp
 	    //echo date_format($timestamp, 'l jS \of F Y \a\t\: h:i A');
-        echo($params['DOWNTIME']['START_TIMESTAMP']);
+        xecho($params['DOWNTIME']['START_TIMESTAMP']);
     ?>
     </li>
     <li><b>Ending: </b>    
@@ -36,7 +36,7 @@ if(isset($params['isEdit'])){
         //$endStamp = $params['DOWNTIME']['END_TIMESTAMP'];
 	    //$timestamp = new DateTime("@$endStamp"); //Little PHP magic to create date object directly from timestamp
 	    //echo date_format($timestamp, 'l jS \of F Y \a\t\: h:i A'); 	    
-    echo($params['DOWNTIME']['END_TIMESTAMP']);
+        xecho($params['DOWNTIME']['END_TIMESTAMP']);
     ?></li>    
     <?php 
     if(count($services > 1)){
@@ -49,7 +49,8 @@ if(isset($params['isEdit'])){
     	<?php 
     	foreach($services as $id){
 			$service = \Factory::getServiceService()->getService($id);
-    		echo "<li>" . $service->getHostname() . "</li>";
+            $safeHostName = xssafe($service->getHostname());  
+    		echo "<li>" . $safeHostName . "</li>";
     		}
 		?>
     	</ul>
@@ -66,9 +67,9 @@ if(isset($params['isEdit'])){
     	foreach($endpoints as $id){
 			$endpoint = \Factory::getServiceService()->getEndpoint($id);
 			if($endpoint->getName() != ''){
-                $name = $endpoint->getName();
+                $name = xssafe($endpoint->getName());
             }else{
-                $name = $default_endpoint_name;
+                $name = xssafe($default_endpoint_name);
             }
     		echo "<li>" . $name . "</li>";
     		}

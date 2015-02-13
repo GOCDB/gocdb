@@ -49,6 +49,9 @@ function edit_project() {
  * @return null
  */
 function draw() {              
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     // Get the project
     $project = \Factory::getProjectService()->getProject($_REQUEST['id']);
 

@@ -7,9 +7,9 @@ $service = $params['service'];
 	<h1 class="Success">Delete Endpoint</h1><br/>
     <p>
 	Are you sure you want to delete:<br/><br/>
-    Endponit Name: <b><?php echo $endpoint->getName();?><br/></b> 
-	Endpoint URL: <b><?php echo $endpoint->getUrl();?><br/></b>
-	Interface Name: <b><?php echo $endpoint->getInterfaceName();?><br/></b>
+    Endponit Name: <b><?php xecho($endpoint->getName());?><br/></b> 
+	Endpoint URL: <b><?php xecho($endpoint->getUrl());?><br/></b>
+	Interface Name: <b><?php xecho($endpoint->getInterfaceName());?><br/></b>
     </p>
     <p>
         Are you sure you wish to continue?

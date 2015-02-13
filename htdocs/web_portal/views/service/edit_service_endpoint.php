@@ -33,7 +33,7 @@ $serviceTypes = $params['serviceTypes'];
             <br/>
             <input class="form-control" style="width: 50%; display: inline;" type="text" 
                    name="ENDPOINTNAME" id="ENDPOINTNAME" 
-                   value="<?php echo $endpoint->getName() ?>" />
+                   value="<?php xecho($endpoint->getName()) ?>" />
         </div>
 
         <div class="form-group">
@@ -41,7 +41,7 @@ $serviceTypes = $params['serviceTypes'];
             <br/>
             <input class="form-control"  style="width: 50%; display: inline;" type="text" 
                    name="DESCRIPTION" id="DESCRIPTION" 
-                   value="<?php echo $endpoint->getDescription(); ?>"/>
+                   value="<?php xecho($endpoint->getDescription()); ?>"/>
         </div> 
 
         <div class="form-group">
@@ -49,27 +49,27 @@ $serviceTypes = $params['serviceTypes'];
             <br/>
             <input class="form-control" style="width: 50%; display: inline;" type="text" 
                    name="ENDPOINTURL" id="ENDPOINTURL" 
-                   value="<?php echo $endpoint->getUrl() ?>" />
+                   value="<?php xecho($endpoint->getUrl()) ?>" />
         </div>
 
         <div class="form-group">
             <label class="control-label">
                 *Endpoint Interface Name
                 <span class="text-muted">
-                    (Often same value as parent service type as pre-selected in the pull-down)
+                    (Often same value as *Parent Service Type* as pre-selected in the pull-down)
                 </span>
             </label> 
             <br/>
             <input class="form-control" style="width: 40%; float: left;" type="text" 
                    id="ENDPOINTINTERFACENAME" name="ENDPOINTINTERFACENAME" 
-                   value="<?php echo $endpoint->getInterfaceName(); ?>" />
+                   value="<?php echo( $endpoint->getInterfaceName()); ?>" />
             <select  name="serviceType" id="selectInterfaceName" class="form-control"
                      style="width: 40%; float: left; " 
                      onchange="updateServiceTypeFromSelection();" >
                      <?php foreach($serviceTypes as $type) { ?>
-                        <option value="<?php echo $type->getName() ?>"
+                        <option value="<?php echo($type->getName()) ?>"
                             <?php if($service->getServiceType() == $type){echo " selected=\"selected\"";}?>>
-                                <?php echo $type->getName() ?>
+                                <?php echo($type->getName()) ?>
                         </option>
                     <?php } ?> 
             </select>

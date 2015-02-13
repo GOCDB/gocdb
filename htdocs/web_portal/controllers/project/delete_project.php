@@ -22,6 +22,12 @@ require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 require_once __DIR__ . '/../utils.php';
 
 function delete_project(){
+    if(true){
+        throw new Exception("Project deletion is disabled - see controller"); 
+    }
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 

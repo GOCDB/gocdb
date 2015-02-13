@@ -43,7 +43,7 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Admin_Scope&id=<?php echo $scope->getId() ?>">                            
-                                    <?php echo $scope->getName(); ?>
+                                    <?php xecho($scope->getName()); ?>
                                 </a>
                             </span>
                         </div>

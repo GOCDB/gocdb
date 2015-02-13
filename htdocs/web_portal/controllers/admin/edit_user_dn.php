@@ -45,7 +45,9 @@ function draw() {
     //Check the user has permission to see the page, will throw exception 
     //if correct permissions are lacking
     checkUserIsAdmin();
-    
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     //Get user details
     $serv = \Factory::getUserService();
     $user = $serv->getUser($_REQUEST['id']);

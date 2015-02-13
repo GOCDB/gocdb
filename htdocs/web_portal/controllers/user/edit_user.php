@@ -43,6 +43,9 @@ function edit_user() {
  * @return null
  */
 function draw() {
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
 	$serv = \Factory::getUserService();
 	$dn = Get_User_Principle();
 	// Current User

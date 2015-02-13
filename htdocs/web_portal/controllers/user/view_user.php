@@ -22,7 +22,10 @@
 function view_user() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../components/Get_User_Principle.php';
-
+    
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     $user = \Factory::getUserService()->getUser($_REQUEST['id']);
     $params['user'] = $user;
 

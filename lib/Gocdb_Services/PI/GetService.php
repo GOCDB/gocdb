@@ -224,14 +224,14 @@ class GetService implements IPIQuery{
 			$helpers->addIfNotEmpty ( $xmlSe, "COUNTRY_NAME", $site->getCountry ()->getName () );
 			$helpers->addIfNotEmpty ( $xmlSe, "COUNTRY_CODE", $site->getCountry ()->getCode () );
 			$helpers->addIfNotEmpty ( $xmlSe, "ROC_NAME", $site->getNGI ()->getName () );
-			$xmlSe->addChild ( "URL", htmlspecialchars ( $se->getUrl () ) );
+			$xmlSe->addChild ( "URL", xssafe( $se->getUrl()) );
 
             if($this->renderMultipleEndpoints){
                 $xmlEndpoints = $xmlSe->addChild ( 'ENDPOINTS' );
                 foreach($se->getEndpointLocations() as $endpoint){
                     $xmlEndpoint = $xmlEndpoints->addChild ( 'ENDPOINT' );
                     $xmlEndpoint->addChild ( 'ID', $endpoint->getId());  
-                    $xmlEndpoint->addChild ( 'NAME', htmlspecialchars($endpoint->getName()));
+                    $xmlEndpoint->addChild ( 'NAME', xssafe($endpoint->getName()));
                     // Endpoint Extensions 
                     $xmlExtensions = $xmlEndpoint->addChild('EXTENSIONS'); 
                     foreach($endpoint->getEndpointProperties() as $prop){
@@ -240,7 +240,7 @@ class GetService implements IPIQuery{
                         $xmlProperty->addChild ( 'KEY', $prop->getKeyName () );
                         $xmlProperty->addChild ( 'VALUE', $prop->getKeyValue () );
                     } 
-                    $xmlEndpoint->addChild ( 'URL', htmlspecialchars($endpoint->getUrl()));
+                    $xmlEndpoint->addChild ( 'URL', xssafe($endpoint->getUrl()));
                     $xmlEndpoint->addChild ( 'INTERFACENAME', $endpoint->getInterfaceName());
                 }
             }
@@ -250,8 +250,8 @@ class GetService implements IPIQuery{
 			foreach ( $se->getServiceProperties () as $prop ) {
 			    $xmlProperty = $xmlExtensions->addChild ( 'EXTENSION' );
 			    $xmlProperty->addChild ( 'LOCAL_ID', $prop->getId () );
-			    $xmlProperty->addChild ( 'KEY', $prop->getKeyName () );
-			    $xmlProperty->addChild ( 'VALUE', $prop->getKeyValue () );
+			    $xmlProperty->addChild ( 'KEY', xssafe($prop->getKeyName ()) );
+			    $xmlProperty->addChild ( 'VALUE', xssafe($prop->getKeyValue ()) );
 			}		
 		}
 	

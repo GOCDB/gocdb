@@ -81,19 +81,19 @@
                     <div style="background-color: inherit;">
                         <span style="vertical-align: middle;">
                             <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
-                                <span>&raquo; </span><?php echo $sGroup->getName(); ?>
+                                <span>&raquo; </span><?php xecho($sGroup->getName()); ?>
                             </a>
                         </span>
                     </div>
                 </td>
                     
                 <td class="site_table">
-                    <?php echo $sGroup->getDescription(); ?>
+                    <?php xecho($sGroup->getDescription()); ?>
                 </td>
                 
                 
                 <td class="site_table">
-                    <?php echo $sGroup->getScopeNamesAsString(); ?>
+                    <?php xecho($sGroup->getScopeNamesAsString()); ?>
                 </td>
             </tr>
             <?php  

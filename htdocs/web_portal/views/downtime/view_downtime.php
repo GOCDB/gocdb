@@ -12,7 +12,7 @@ $dt = $params['downtime'];
                    Downtime <?php echo $dt->getId() ?>
             </h1>
             <span style="float: left; clear: both;">
-            	<?php echo $dt->getDescription() ?><br />
+            	<?php xecho( $dt->getDescription()) ?><br />
              </span>
         </div>
 
@@ -80,12 +80,12 @@ $dt = $params['downtime'];
                 <table style="clear: both; width: 100%;">
                     <tr class="site_table_row_2">
                         <td class="site_table">Severity</td><td class="site_table">
-                        <?php echo $dt->getSeverity() ?></td>
+                        <?php xecho($dt->getSeverity()) ?></td>
                     </tr>
 
                     <tr class="site_table_row_1">
                         <td class="site_table">Classification</td><td class="site_table">
-                            <?php echo $dt->getClassification() ?>
+                            <?php xecho($dt->getClassification()) ?>
                         </td>
                     </tr>
                 </table>
@@ -157,12 +157,12 @@ $dt = $params['downtime'];
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                             <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
-                                <?php echo $se->getHostname() . " (" . $se->getServiceType()->getName() . ")";?>
+                                <?php echo xssafe($se->getHostname()) . " (" . xssafe($se->getServiceType()->getName()) . ")";?>
                             </a>
                             </span>
                         </div>
                     </td>
-                    <td class="site_table"><?php echo $se->getDescription() ?></td>
+                    <td class="site_table"><?php xecho($se->getDescription()) ?></td>
                     <td class="site_table">
     				<?php
     				switch($se->getProduction()) {
@@ -180,7 +180,7 @@ $dt = $params['downtime'];
     				?>
     				</td>
                     <td class="site_table">
-    				<?php echo $se->getScopeNamesAsString(); ?>
+    				<?php xecho($se->getScopeNamesAsString()); ?>
                     </td>
                 </tr>
                 <!--&rdsh; --> 
@@ -196,13 +196,13 @@ $dt = $params['downtime'];
                             foreach($se->getEndpointLocations() as $el){
                                 echo '<tr>'; 
                                 if(in_array($el, $dt->getEndpointLocations()->toArray())){
-                                    echo '<td>&check; <a href="index.php?Page_Type=View_Service_Endpoint&id=' . $el->getId() . '">'.$el->getName().'</a></td>'; 
-                                    echo '<td>'.$el->getUrl().'</td>'; 
-                                    echo '<td>'.$el->getInterfaceName().'</td>'; 
+                                    echo '<td>&check; <a href="index.php?Page_Type=View_Service_Endpoint&id=' . $el->getId() . '">'.xssafe($el->getName()).'</a></td>'; 
+                                    echo '<td>'.xssafe($el->getUrl()).'</td>'; 
+                                    echo '<td>'.xssafe($el->getInterfaceName()).'</td>'; 
                                 } else {
-                                    echo '<td><span style=\'color: grey\'>&cross; <a href="index.php?Page_Type=View_Service_Endpoint&id='.$el->getId().'">'.$el->getName().'</span></td>'; 
-                                    echo "<td><span style='color: grey'>".$el->getUrl().'</span></td>'; 
-                                    echo "<td><span style='color: grey'>".$el->getInterfaceName().'</span></td>'; 
+                                    echo '<td><span style=\'color: grey\'>&cross; <a href="index.php?Page_Type=View_Service_Endpoint&id='.$el->getId().'">'.xssafe($el->getName()).'</span></td>'; 
+                                    echo "<td><span style='color: grey'>".xssafe($el->getUrl()).'</span></td>'; 
+                                    echo "<td><span style='color: grey'>".xssafe($el->getInterfaceName()).'</span></td>'; 
                                 }
                                 echo '</tr>'; 
                             }

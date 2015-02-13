@@ -23,7 +23,7 @@ $siteName = $service->getParentSite()->getName();
                 (RFC 3986 chars)
             </span>
         </span>
-        <input class="input_input_text" type="text" name="endpointUrl" value="<?php echo $service->getUrl(); ?>" />
+        <input class="input_input_text" type="text" name="endpointUrl" value="<?php xecho($service->getUrl()); ?>" />
 
         <!--  Host Name -->
         <span class="input_name">Host name *
@@ -31,7 +31,7 @@ $siteName = $service->getParentSite()->getName();
                 (valid FQDN format)
             </span>
         </span>
-        <input class="input_input_text" type="text" name="HOSTNAME" value="<?php echo $service->getHostName() ?>" />
+        <input class="input_input_text" type="text" name="HOSTNAME" value="<?php xecho($service->getHostName()) ?>" />
 
         <!-- Contact E-Mail -->
         <span class="input_name">
@@ -40,7 +40,7 @@ $siteName = $service->getParentSite()->getName();
                 (Valid email format)
             </span>
         </span>
-        <input class="input_input_text" type="text" name="EMAIL" value="<?php echo $service->getEmail() ?>" />
+        <input class="input_input_text" type="text" name="EMAIL" value="<?php xecho($service->getEmail()) ?>" />
 
         <!-- Host IP -->
         <span class="input_name">
@@ -49,7 +49,7 @@ $siteName = $service->getParentSite()->getName();
                 a.b.c.d 
             </span>
         </span>
-        <input class="input_input_text" type="text" name="HOST_IP" value="<?php echo $service->getIpAddress() ?>" />
+        <input class="input_input_text" type="text" name="HOST_IP" value="<?php xecho($service->getIpAddress()) ?>" />
         
         <span class="input_name">
             Host IPv6
@@ -57,7 +57,7 @@ $siteName = $service->getParentSite()->getName();
                 (0000:0000:0000:0000:0000:0000:0000:0000[/int]) (optional [/int] range)
             </span>
         </span>
-        <input class="input_input_text" type="text" name="HOST_IP_V6" value="<?php echo $service->getIpV6Address() ?>" />
+        <input class="input_input_text" type="text" name="HOST_IP_V6" value="<?php xecho($service->getIpV6Address()) ?>" />
         
 		
         <!-- Host DN -->
@@ -67,7 +67,7 @@ $siteName = $service->getParentSite()->getName();
                 (/C=.../OU=.../...)
             </span>
         </span>
-        <input class="input_input_text" type="text" name="HOST_DN" value="<?php echo $service->getDn() ?>" />
+        <input class="input_input_text" type="text" name="HOST_DN" value="<?php xecho($service->getDn()) ?>" />
 
         <!-- Description  -->
         <span class="input_name">
@@ -76,7 +76,7 @@ $siteName = $service->getParentSite()->getName();
                 (Alphanumeric and basic punctuation)
             </span>
         </span>
-        <input class="input_input_text" type="text" name="DESCRIPTION" value="<?php echo $service->getDescription() ?>" />
+        <input class="input_input_text" type="text" name="DESCRIPTION" value="<?php xecho($service->getDescription()) ?>" />
 
         <!-- Host Operating System -->
         <span class="input_name">
@@ -85,7 +85,7 @@ $siteName = $service->getParentSite()->getName();
                 (Alphanumeric and basic punctuation)
             </span>
         </span>
-        <input class="input_input_text" type="text" name="HOST_OS" value="<?php echo $service->getOperatingSystem() ?>" />
+        <input class="input_input_text" type="text" name="HOST_OS" value="<?php xecho($service->getOperatingSystem()) ?>" />
 
         <!-- Host Architecture  -->
         <span class="input_name">
@@ -94,7 +94,7 @@ $siteName = $service->getParentSite()->getName();
                 (Alphanumeric and basic punctuation)
             </span>
         </span>
-        <input class="input_input_text" type="text" name="HOST_ARCH" value="<?php echo $service->getArchitecture() ?>" />
+        <input class="input_input_text" type="text" name="HOST_ARCH" value="<?php xecho($service->getArchitecture()) ?>" />
 
         <!-- Beta -->
         <span class="input_name">

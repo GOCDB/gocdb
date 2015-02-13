@@ -66,7 +66,7 @@ class NGI extends AbstractEntityService{
      public function getNGIs($scope=NULL) {
         $qb = $this->em->createQueryBuilder();
 		$qb->select('n', 'sc')->from('NGI', 'n') 
-        ->leftjoin('n.scopes', 'sc');  
+        ->leftjoin('n.scopes', 'sc')->orderBy('n.name', 'ASC');  
            
         if($scope != null && $scope != '%%'){
 			    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))

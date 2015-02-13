@@ -37,6 +37,9 @@ function delete() {
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
     
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+        throw new Exception("An id must be specified");
+    }
     $serv = \Factory::getDowntimeService();
     if(isset($_REQUEST['id'])){
       $dt = $serv->getDowntime($_REQUEST['id']);

@@ -89,12 +89,12 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
                                     <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
-                                    <span>&nbsp;&nbsp;</span><?php echo $ngi->getName(); ?>
+                                    <span>&nbsp;&nbsp;</span><?php xecho($ngi->getName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
-                    <td class="site_table"><?php echo $ngi->getDescription() ?></td>
+                    <td class="site_table"><?php xecho($ngi->getDescription()) ?></td>
 
                 </tr>
                 <?php
@@ -128,18 +128,18 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-                                    <span>&nbsp;&nbsp;</span><?php echo $site->getShortName(); ?>
+                                    <span>&nbsp;&nbsp;</span><?php xecho($site->getShortName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
 
                     <td class="site_table">
-                        <?php echo $site->getCertificationStatus()->getName() ?>
+                        <?php xecho($site->getCertificationStatus()->getName()) ?>
                     </td>
 
                     <td class="site_table">
-                        <?php echo $site->getInfrastructure()->getName() ?>
+                        <?php xecho($site->getInfrastructure()->getName()) ?>
                     </td>
                 </tr>
                 <?php if($num == 1) { $num = 2; } else { $num = 1; }}?>
@@ -169,14 +169,14 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
-                                   <?php echo $sGroup->getName(); ?>
+                                   <?php xecho($sGroup->getName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
 
                     <td class="site_table">
-                        <?php echo $sGroup->getDescription(); ?>
+                        <?php xecho($sGroup->getDescription()); ?>
                     </td>
 
                 </tr>
@@ -198,7 +198,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Services&scope=<?php echo $name?>">
+                        <a href="index.php?Page_Type=Services&scope=<?php xecho($name)?>">
                             View Services
                         </a>
                     </td>

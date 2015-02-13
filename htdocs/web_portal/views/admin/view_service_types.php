@@ -42,14 +42,14 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Admin_Service_Type&id=<?php echo $serviceType->getId() ?>">                            
-                                    <?php echo $serviceType->getName(); ?>
+                                    <?php xecho($serviceType->getName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
                     
                     <td class="site_table">
-                        <?php echo $serviceType->getDescription(); ?>
+                        <?php xecho($serviceType->getDescription()); ?>
                     </td> 
                 </tr>
                 <?php  

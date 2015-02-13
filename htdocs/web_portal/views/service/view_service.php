@@ -10,8 +10,8 @@ $configService = \Factory::getConfigService();
         <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="pageLogo" />
     </div>
     <div style="float: left; width: 50em;">
-        <h1 style="float: left; margin-left: 0em;"><?php echo 'Service: '.$se->getHostname() ?> - <?php echo $se->getServiceType()-> getName() ?></h1>
-        <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php echo $se->getDescription() ?></span>
+        <h1 style="float: left; margin-left: 0em;"><?php xecho('Service: '.$se->getHostname()) ?> - <?php xecho($se->getServiceType()-> getName()) ?></h1>
+        <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php xecho($se->getDescription()) ?></span>
     </div>
 
     <!--  Edit link -->
@@ -47,22 +47,22 @@ $configService = \Factory::getConfigService();
             <img src="<?php echo \GocContextPath::getPath()?>img/server.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
-                    <td class="site_table">Host name</td><td class="site_table"><?php echo $se->getHostName() ?></td>
+                    <td class="site_table">Host name</td><td class="site_table"><?php xecho($se->getHostName()) ?></td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">IP Address</td><td class="site_table"><?php echo $se->getIpAddress() ?></td>
+                    <td class="site_table">IP Address</td><td class="site_table"><?php xecho($se->getIpAddress()) ?></td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">IP v6 Address</td><td class="site_table"><?php echo $se->getIpV6Address() ?></td>
+                    <td class="site_table">IP v6 Address</td><td class="site_table"><?php xecho($se->getIpV6Address()) ?></td>
                 </tr>	
                 <tr class="site_table_row_2">
-                    <td class="site_table">Operating System</td><td class="site_table"><?php echo $se->getOperatingSystem() ?></td>
+                    <td class="site_table">Operating System</td><td class="site_table"><?php xecho($se->getOperatingSystem()) ?></td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">Architecture</td><td class="site_table"><?php echo $se->getArchitecture()?></td>
+                    <td class="site_table">Architecture</td><td class="site_table"><?php xecho($se->getArchitecture())?></td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">Contact E-Mail</td><td class="site_table"><?php echo $se->getEmail() ?></td>
+                    <td class="site_table">Contact E-Mail</td><td class="site_table"><?php xecho($se->getEmail()) ?></td>
                 </tr>
             </table>
         </div>
@@ -76,18 +76,18 @@ $configService = \Factory::getConfigService();
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 5em;">Host DN</td><td class="site_table">
                     	<div style="word-wrap: break-word;">
-                    			<?php echo $se->getDn() ?>
+                    			<?php xecho($se->getDn()) ?>
                     	</div>
                    	</td>
                 </tr>
                 <tr class="site_table_row_2">
-					<td class="site_table">URL</td><td class="site_table"><?php echo $se->getUrl() ?></td>
+					<td class="site_table">URL</td><td class="site_table"><?php xecho($se->getUrl()) ?></td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Parent Site</td>
 					<td class="site_table">
 						<a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId() ?>">
-							<?php echo $se->getParentSite()->getShortName(); ?>
+							<?php xecho($se->getParentSite()->getShortName()); ?>
 						</a>
 					</td>
                 </tr>
@@ -200,7 +200,7 @@ $configService = \Factory::getConfigService();
                 <tr class="site_table_row_<?php echo $num; ?>">
                     <td class="site_table">
                         <a href="index.php?Page_Type=Service_Group&id=<?php echo $sg->getId()?>">
-                            <?php echo $sg->getName() ?>
+                            <?php xecho($sg->getName()) ?>
                         </a>
                     </td>
                 </tr>
@@ -240,11 +240,11 @@ $configService = \Factory::getConfigService();
 	            <tr class="site_table_row_<?php echo $num ?>">
 	                <td style="width: 30%;"class="site_table">
                         <a href="index.php?Page_Type=View_Service_Endpoint&id=<?php echo $endpoint->getId() ?>">
-                            <?php echo $endpoint->getName() ?>
+                            <?php xecho($endpoint->getName()) ?>
                         </a> 
                     </td>
-	                <td style="width: 30%;"class="site_table"><?php echo $endpoint->getUrl(); ?></td>
-	                <td style="width: 30%;"class="site_table"><?php echo $endpoint->getInterfaceName(); ?></td>
+	                <td style="width: 30%;"class="site_table"><?php echo($endpoint->getUrl()); ?></td>
+	                <td style="width: 30%;"class="site_table"><?php xecho($endpoint->getInterfaceName()); ?></td>
 	                <?php if(!$params['portalIsReadOnly']): ?>	                
 	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
 	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
@@ -295,8 +295,8 @@ $configService = \Factory::getConfigService();
 	            ?>
 
 	            <tr class="site_table_row_<?php echo $num ?>">
-	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyName(); ?></td>
-	                <td style="width: 35%;"class="site_table"><?php echo $sp->getKeyValue(); ?></td>
+	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyName()); ?></td>
+	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyValue()); ?></td>
 	                <?php if(!$params['portalIsReadOnly']): ?>	                
 	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
 	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
@@ -339,7 +339,7 @@ $configService = \Factory::getConfigService();
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table">
                 	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
-                		<?php echo $d->getDescription() ?>
+                		<?php xecho($d->getDescription()) ?>
                 	</a>
                 </td>
                 <td class="site_table"><?php echo $d->getStartDate()->format($d::DATE_FORMAT) ?></td>

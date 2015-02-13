@@ -38,6 +38,9 @@ function drawSEs(){
     if(!empty($_REQUEST['searchTerm'])) {
        $searchTerm = $_REQUEST['searchTerm'];
     }
+    //strip leading and trailing whitespace off search term
+    $searchTerm = strip_tags(trim($searchTerm));
+    if(1 === preg_match("/[';\"]/", $searchTerm)){ throw new Exception("Invalid char in search term"); }
 
     $serviceType = "";
     if(isset($_REQUEST['serviceType'])) {
