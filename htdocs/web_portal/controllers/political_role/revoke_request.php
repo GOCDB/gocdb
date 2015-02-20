@@ -27,52 +27,28 @@ function view_revoke_request(){
     
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    if($user == null) throw new Exception("Unregistered users can't revoke roles"); 
-
+    if($user == null){
+        throw new Exception("Unregistered users can't revoke roles"); 
+    }
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
     
-    if(!isset($_REQUEST['id']) || empty($_REQUEST['id'])) {
+    $requestId = $_POST['id']; 
+    
+    if(!isset($requestId) || !is_numeric($requestId)) {
         throw new LogicException("Invalid role id");
     }
 
     // Either a self revocation or revoke is requested by 2nd party 
     // check to see that user has permission to revoke role 
-    $role = \Factory::getRoleService()->getRoleById($_REQUEST['id']); 
-    $entity = $role->getOwnedEntity(); 
-    if($entity == null){
-       throw new LogicException('Error - target entity of role is null');    
-    }
-    //echo ''.$entity->getName(); 
+    $role = \Factory::getRoleService()->getRoleById($requestId); 
     
-    // test for self revocation - current user is same as role's linked user. 
+    \Factory::getRoleService()->revokeRole($role, $user); 
     if($role->getUser() != $user){
-        // Revocation by 2nd party 
-
-        // We could delegate all calls to the relevant service authorizeAction from within 
-        // a single RoleService (i.e. RoleService would delegate to the appropriate 
-        // servcie authAction according to the specified target object type). 
-        //$grantingRoles = \Factory::getRoleService()->authorizeAction(\Action::REVOKE_ROLE, $entity, $user); 
-        if($entity instanceof \NGI){
-            $grantingRoles = \Factory::getNgiService()->authorizeAction(\Action::REVOKE_ROLE, $entity, $user); 
-        } else if($entity instanceof \Site){
-            $grantingRoles = \Factory::getSiteService()->authorizeAction(\Action::REVOKE_ROLE, $entity, $user); 
-        } else if($entity instanceof \Project){
-            $grantingRoles = \Factory::getProjectService()->authorizeAction(\Action::REVOKE_ROLE, $entity, $user); 
-        } else if($entity instanceof \ServiceGroup){
-            $grantingRoles = \Factory::getServiceGroupService()->authorizeAction(\Action::REVOKE_ROLE, $entity, $user); 
-        } else {
-            throw new LogicException('Unsuppored OwnedEntity type'); 
-        }
-        if(count($grantingRoles) == 0){
-            throw new Exception('You do not have permission to revoke this role'); 
-        }
-        // simply delete the role (rather than setting its status to Revoked)
-        \Factory::getRoleService()->deleteRole($role, $user); 
+        // revoke by 2nd party 
         show_view('political_role/role_revoked.php');
     } else {
         // Self revocation 
-        \Factory::getRoleService()->deleteRole($role, $user); 
         show_view('political_role/role_self_revoked.php');
     }
     

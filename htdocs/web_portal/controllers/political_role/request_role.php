@@ -85,7 +85,7 @@ function submitRoleRequest($roleName, $entityId, \User $user =null) {
    
    // Create a new Role linking user, entity and roletype. The addRole 
    // perfoms role validation and throws exceptios accordingly. 
-   $newRole = \Factory::getRoleService()->addRole($roleName, $user, $entity, \RoleStatus::PENDING);
+   $newRole = \Factory::getRoleService()->addRole($roleName, $user, $entity);
   
    if(\Factory::getConfigService()->getSendEmails()){
        \Factory::getNotificationService()->roleRequest($entity);

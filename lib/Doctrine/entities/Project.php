@@ -86,6 +86,14 @@ class Project extends OwnedEntity {
         $this->ngis[]= $ngi;
         $ngi->addProject($this);
     }
-    
 
+    /**
+     * Returns value of {@link \OwnedEntity::TYPE_PROJECT}
+     * @see \OwnedEntity::getType()
+     * @return string 
+     */
+    public function getType() {
+        return parent::TYPE_PROJECT; 
+    }
+    
 }

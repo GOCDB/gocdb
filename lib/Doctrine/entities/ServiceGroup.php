@@ -185,4 +185,13 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
     public function __toString() {
         return $this->getName();
     }
+
+    /**
+     * Returns value of {@link \OwnedEntity::TYPE_SERVICEGROUP}
+     * @see \OwnedEntity::getType()
+     * @return string 
+     */
+    public function getType() {
+        return parent::TYPE_SERVICEGROUP; 
+    }
 }

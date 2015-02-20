@@ -40,11 +40,20 @@ class Role {
      */
     protected $ownedEntity = null;
 
-    /** @Column(type="string", nullable=false) */
+    /** 
+     * Current status of this role, e.g. STATUS_GRANTED, STATUS_PENDING
+     * @Column(type="string", nullable=false) 
+     */
     protected $status;
 
-    /** @Column(type="string", nullable=false) */
+    ///** @Column(type="string", nullable=false) */
     //protected $name;
+
+    ///** @Column(type="integer") **/
+	//protected $lastUpdatedByUserId;
+
+
+    protected $decoratorObject; 
     
     /**
      * Create a new role which establishes that the specified User has the
@@ -121,5 +130,26 @@ class Role {
         }
         $this->name = $name;
     }*/
+
+    /**
+     * Set a transient extension object used to decorate this instance with extra information. 
+     * Note, this object is <b>NOT</b> persisted to the DB. It is intended for transient
+     * operations such as holding extra view parameters for transer/rendering in the view layer.  
+     *   
+     * @param mixed $decoratorObject
+     */
+    public function setDecoratorObject($decoratorObject){
+      $this->decoratorObject = $decoratorObject;     
+    }
+
+    /**
+     * Get the transient extension object used to decorate this instance with extra information. 
+     * Note, this object is <b>NOT</b> persisted to the DB. It is intended for transient
+     * operations such as holding extra view parameters for transer/rendering in the view layer.   
+     * @return mixed or null  
+     */
+    public function getDecoratorObject(){
+       return $this->decoratorObject;  
+    } 
 
 }

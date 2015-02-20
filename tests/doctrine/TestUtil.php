@@ -10,6 +10,18 @@ require_once dirname(__FILE__). '/../../lib/Gocdb_Services/Role.php';
  * @author James McCarthy
  */
 class TestUtil {
+
+    public static function createRoleActionRecord(){
+         /*$rar = new RoleActionRecord($updatedByUserId, $updatedByUserPrinciple, 
+                $roleId, $rolePreStatus, $roleNewStatus, $roleTypeId, 
+                $roleTypeName, $roleTargetOwnedEntityId, $roleTargetOwnedEntityType, 
+                $roleUserId, $roleUserPrinciple); */
+        $rar = new RoleActionRecord(1, '/some/DN/updatedBy', 
+        2, 'STATUS_PENDING', 'STATUS_GRANTED', 3, 
+        'Site Administrator', 4, 'Site', 
+        5, '/some/DN/roleOwner'); 
+        return $rar; 
+    }
     
     public static function createSampleDowntime($severity = 'OUTAGE', $classification = 'SCHEDULED'){
         $downtime = new Downtime(); 

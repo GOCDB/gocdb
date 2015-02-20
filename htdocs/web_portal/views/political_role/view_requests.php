@@ -91,10 +91,11 @@
                     <!-- Do not show delte request when portal is read only -->
                     <?php if(!$params['portalIsReadOnly']):?>
                         <td class="site_table">
-                            <a href="index.php?Page_Type=Revoke_Role&id=<?php echo $request->getId()?>" 
-                               onclick="return confirmSubmit()">
-                                Delete
-                            </a> 
+                            <form action="index.php?Page_Type=Revoke_Role" method="post"> 
+                                <!--<a href="index.php?Page_Type=Revoke_Role&id=<?php echo $request->getId()?>" onclick="return confirmSubmit()"> Delete </a>--> 
+                                <input type="hidden" name="id" value="<?php echo $request->getId()?>" /> 
+                                <input type="submit" value="Delete" class="btn btn-sm btn-danger" onclick="return confirmSubmit()">
+                            </form>    
                         </td>
                     <?php endif; ?>
                 </tr> 
@@ -167,22 +168,19 @@
                         ?>
                     </td> 
                     <td class="site_table">
-                       <!-- Do not show approvals when portal is read only -->
-                        <?php if(!$params['portalIsReadOnly']):?>
-                            <span class="action">
-                                <a href="index.php?Page_Type=Accept_Role_Request&amp;Request_ID=<?php echo $request->getId() ?>" 
-                                   onclick="return confirmSubmit()">
-                                   Accept
-                                </a>
-                            </span>
-                            <span class="site_table">
-                                <a href="index.php?Page_Type=Deny_Role_Request&amp;Request_ID=<?php echo $request->getId() ?>" 
-                                   onclick="return confirmSubmit()">
-                                   Deny
-                                </a>
-                            </span>
-                       <?php endif; ?>
-                   </td>
+                        <!-- Do not show forms when portal is read only -->
+                        <?php if (!$params['portalIsReadOnly']): ?>
+                            <form action="index.php?Page_Type=Accept_Role_Request" method="post" class="form-inline"  style="float:left;">
+                                <input type="hidden" name="id" value="<?php echo $request->getId() ?>"/>
+                                <input type="submit" value="Accept" onclick="return confirmSubmit()" class="btn btn-sm btn-danger"/>
+                                &nbsp;&nbsp;&nbsp;
+                            </form>
+                            <form action="index.php?Page_Type=Deny_Role_Request" method="post" class="form-inline"  style="float:left;" >
+                                <input type="hidden" name="id" value="<?php echo $request->getId() ?>"/>
+                                <input type="submit" value="Deny" onclick="return confirmSubmit()" class="btn btn-sm btn-danger"/>
+                            </form>
+                        <?php endif; ?>
+                    </td>
                     
                 </tr>
                 <?php  

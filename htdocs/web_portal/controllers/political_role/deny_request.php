@@ -26,45 +26,22 @@ function view_deny_request() {
       
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    if($user == null) throw new Exception("Unregistered users can't view/deny role requests"); 
+    if($user == null) {
+        throw new Exception("Unregistered users can't view/deny role requests"); 
+    }
+    $requestId = $_POST['id'];
     
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
     
-    if(!isset($_REQUEST['Request_ID']) || empty($_REQUEST['Request_ID'])) {
+    if(!isset($requestId) || !is_numeric($requestId)) {
         throw new LogicException("Invalid role request id");
     }
 
-    $requestId = $_REQUEST['Request_ID'];
     // Lookup role request with id  
     $roleRequest = \Factory::getRoleService()->getRoleById($requestId); 
-    // Santity check that it has pending status 
-    if($roleRequest->getStatus() != \RoleStatus::PENDING){
-        throw new LogicException("Invalid role request [$requestId] - does not have status of PENDING");
-    }
     
-    // Check the current user has permission to DENY role request over target entity 
-    $entity = $roleRequest->getOwnedEntity(); 
-    if($entity == null){
-       throw new LogicException('Error - target entity of role is null');    
-    }
-    //echo ''.$entity->getName(); 
-    if($entity instanceof \NGI){
-        $grantingRoles = \Factory::getNgiService()->authorizeAction(\Action::REJECT_ROLE, $entity, $user); 
-    } else if($entity instanceof \Site){
-        $grantingRoles = \Factory::getSiteService()->authorizeAction(\Action::REJECT_ROLE, $entity, $user); 
-    } else if($entity instanceof \Project){
-        $grantingRoles = \Factory::getProjectService()->authorizeAction(\Action::REJECT_ROLE, $entity, $user); 
-    } else if($entity instanceof \ServiceGroup){
-        $grantingRoles = \Factory::getServiceGroupService()->authorizeAction(\Action::REJECT_ROLE, $entity, $user); 
-    } else {
-        throw new LogicException('Unsuppored OwnedEntity type'); 
-    }
-    if(count($grantingRoles) == 0){
-        throw new Exception('You do not have permission to reject this role request'); 
-    }
-    
-    \Factory::getRoleService()->deleteRole($roleRequest, $user); 
+    \Factory::getRoleService()->rejectRoleRequest($roleRequest, $user); 
    
     show_view('political_role/request_denied.php');
     die(); 

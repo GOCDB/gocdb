@@ -22,18 +22,34 @@
 function view_user() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../components/Get_User_Principle.php';
+    $userId =  $_GET['id']; 
     
-    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+    if (!isset($userId) || !is_numeric($userId) ){
         throw new Exception("An id must be specified");
     }
-    $user = \Factory::getUserService()->getUser($_REQUEST['id']);
+    $user = \Factory::getUserService()->getUser($userId);
     $params['user'] = $user;
 
     $roles = \Factory::getRoleService()->getUserRoles($user, \RoleStatus::GRANTED); //$user->getRoles();
-    $params['roles'] = $roles;
 
     $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();
 
+    $callingUser = \Factory::getUserService()->getUserByPrinciple(Get_User_Principle());
+   
+    // can the calling user revoke each role?  
+    foreach ($roles as $r) {
+        $authorisingRoleNames = \Factory::getRoleService()->authorizeAction(\Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser); 
+        if(count($authorisingRoleNames)>=1){
+            $allAuthorisingRoleNames = ''; 
+            foreach($authorisingRoleNames as $arName){
+                $allAuthorisingRoleNames .= $arName.', '; 
+            }
+            $allAuthorisingRoleNames = substr($allAuthorisingRoleNames, 0, strlen($allAuthorisingRoleNames)-2);  
+            $r->setDecoratorObject('['.$allAuthorisingRoleNames.'] ');
+        } 
+    }
+
+    $params['roles'] = $roles;
     $title = $user->getFullName();
     show_view("user/view_user.php", $params, $title);
 }

@@ -4,10 +4,10 @@
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
-                NGI: <?php echo $params['ngi']->getName() ?>
+                NGI: <?php xecho($params['ngi']->getName()) ?>
         </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-            <?php echo $params['ngi']->getDescription() ?>
+            <?php xecho($params['ngi']->getDescription()) ?>
             <br /><br />
             <a style="padding-top: 0.2em;" href="http://www.egi.eu/about/glossary/glossary_N.html">What is an NGI?</a>
         </span>
@@ -28,14 +28,16 @@
                     </a>
                 </div>
             <?php endif; ?>
-            <div style="float: right; margin-left: 2em;">
-                <a href="index.php?Page_Type=Edit_NGI&id=<?php echo $params['ngi']->getId() ?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
-                    <br />
-                    <br />
-                    <span>Edit</span>
-                </a>
-            </div>
+            <?php if($params['ShowEdit']):?>
+                <div style="float: right; margin-left: 2em;">
+                    <a href="index.php?Page_Type=Edit_NGI&id=<?php echo $params['ngi']->getId() ?>">
+                        <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                        <br />
+                        <br />
+                        <span>Edit</span>
+                    </a>
+                </div>
+            <?php endif; ?>
         </div>
     <?php endif; ?>
 
@@ -48,35 +50,35 @@
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
-                        <a href="mailto:<?php echo $params['ngi']->getEmail() ?>">
-                            <?php echo $params['ngi']->getEmail() ?>
+                        <a href="mailto:<?php xecho($params['ngi']->getEmail()) ?>">
+                            <?php xecho($params['ngi']->getEmail()) ?>
                         </a>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table" style="width: 30%">ROD E-Mail</td><td class="site_table">
-                        <a href="mailto:<?php echo $params['ngi']->getRodEmail() ?>">
-                            <?php echo $params['ngi']->getRodEmail() ?>
+                        <a href="mailto:<?php xecho($params['ngi']->getRodEmail()) ?>">
+                            <?php xecho($params['ngi']->getRodEmail()) ?>
                         </a>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 30%">Helpdesk E-Mail</td><td class="site_table">
-                        <a href="mailto:<?php echo $params['ngi']->getHelpdeskEmail() ;?>">
-                            <?php echo $params['ngi']->getHelpdeskEmail() ?>
+                        <a href="mailto:<?php xecho($params['ngi']->getHelpdeskEmail()) ;?>">
+                            <?php xecho($params['ngi']->getHelpdeskEmail()) ?>
                         </a>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table" style="width: 30%">Security E-Mail</td><td class="site_table">
                         <a href="mailto:<?php echo $params['ngi']->getSecurityEmail() ?>">
-                            <?php echo $params['ngi']->getSecurityEmail() ?>
+                            <?php xecho($params['ngi']->getSecurityEmail()) ?>
                         </a>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 30%">GGUS Support Unit</td><td class="site_table">
-                        <?php echo $params['ngi']->getGgus_Su() ?>
+                        <?php xecho($params['ngi']->getGgus_Su()) ?>
                     </td>
                 </tr>
             </table>
@@ -92,7 +94,7 @@
                         foreach($params['Projects'] as $project) { ?>
                         <tr class="site_table_row_<?php echo $num ?>">
                             <td class="site_table">
-                                <a href="index.php?Page_Type=Project&id=<?php echo $project->getId()?>"><?php echo $project->getName()?></a>
+                                <a href="index.php?Page_Type=Project&id=<?php echo $project->getId()?>"><?php xecho($project->getName())?></a>
                             </td>
                         </tr>
                         <?php if($num == 1) { $num = 2; } else { $num = 1; } } ?>
@@ -148,18 +150,18 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-                                    <span>&nbsp;&nbsp;</span><?php echo $site->getShortName(); ?>
+                                    <span>&nbsp;&nbsp;</span><?php xecho($site->getShortName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
 
                     <td class="site_table">
-                        <?php echo $site->getCertificationStatus()->getName() ?>
+                        <?php xecho($site->getCertificationStatus()->getName()) ?>
                     </td>
 
                     <td class="site_table">
-                        <?php echo $site->getInfrastructure()->getName() ?>
+                        <?php xecho($site->getInfrastructure()->getName()) ?>
                     </td>
                     <td class="site_table">
                         <?php $count = 0;
@@ -209,7 +211,7 @@
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId() ?>">
-                                    <span>&nbsp;&nbsp;</span><?php echo $role->getUser()->getFullName()/*.' ['.$role->getUser()->getId().']' */?>
+                                    <span>&nbsp;&nbsp;</span><?php xecho($role->getUser()->getFullName())/*.' ['.$role->getUser()->getId().']' */?>
                                 </a>
                             </span>
                         </div>
@@ -218,7 +220,7 @@
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <span>&nbsp;&nbsp;</span><?php echo $role->getRoleType()->getName()?>
+                                <span>&nbsp;&nbsp;</span><?php xecho($role->getRoleType()->getName())?>
                             </span>
                         </div>
                     </td>
@@ -241,4 +243,61 @@
             </div>
         <?php endif; ?>
     </div>
+
+    <!-- Show RoleActionRecords if user has permissions over this NGI -->
+    <?php if ($params['ShowEdit']): ?>
+        <div class="listContainer">
+            <span class="header listHeader">
+                Role Request Log (Only shown if you have the necessary permissions)
+            </span> 
+            <table class="vSiteResults" id="roleActionTable">
+            <tr class="site_table_row_1">
+                <th class="site_table">Requested</th>
+                <th class="site_table">By</th>
+                <th class="site_table">Occurred On</th>
+                <th class="site_table">OldStatus</th>
+                <th class="site_table">NewStatus</th>
+                <th class="site_table">Updated By</th>
+            </tr>
+                <?php
+                $num = 2;
+                if (sizeof($params['RoleActionRecords']) > 0) {
+                    foreach ($params['RoleActionRecords'] as $ra) {
+                        ?>
+                        <tr class="site_table_row_<?php echo $num ?>">
+                            <td class="site_table">
+                               <?php xecho($ra->getRoleTypeName()); ?>
+                            </td>
+                            <td class="site_table">
+                                <a href="index.php?Page_Type=User&id=<?php echo $ra->getRoleUserId();?>">
+                                 <?php xecho($ra->getRoleUserPrinciple()); ?>
+                                </a>    
+                            </td>
+                            <td>
+                                <?php echo($ra->getActionDate()->format('Y-m-d H:i:s')); ?> 
+                            </td>
+                            <td class="site_table">
+                               <?php xecho($ra->getRolePreStatus()); ?>
+                            </td>
+                            <td class="site_table">
+                               <?php xecho($ra->getRoleNewStatus()); ?>
+                            </td>
+                            <td>
+                                <a href="index.php?Page_Type=User&id=<?php echo $ra->getUpdatedByUserId();?>">
+                                  <?php xecho($ra->getUpdatedByUserPrinciple()); ?>
+                                </a>     
+                            </td>
+                        </tr>     
+                        <?php
+                        if ($num == 1) {
+                            $num = 2;
+                        } else {
+                            $num = 1;
+                        }
+                    } // End of the foreach loop iterating over RoleActions 
+                }
+                ?>
+            
+        </div>
+    <?php endif; ?>
 </div>

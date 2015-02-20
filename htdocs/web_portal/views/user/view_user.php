@@ -148,11 +148,16 @@
                        </a>
                     <?php } ?>
                 </td>
-                <?php if(!$params['portalIsReadOnly']):?>
-                    <td class="site_table">
-                        <a href="index.php?Page_Type=Revoke_Role&id=<?php echo $role->getId()?>" onclick="return confirmSubmit()">Revoke</a> 
-                    </td>
-                <?php endif;?>
+                <td class="site_table">
+                    <?php if(!$params['portalIsReadOnly'] && $role->getDecoratorObject() != null):?>
+                        <form action="index.php?Page_Type=Revoke_Role" method="post"> 
+                            <input type="hidden" name="id" value="<?php echo $role->getId()?>" /> 
+                            <input id="revokeButton" type="submit" value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()" 
+                                   title="Roles allowing revoke: <?php xecho($role->getDecoratorObject()); ?>" >
+                        </form> 
+                    <?php endif;?>
+                </td>
+                    
             </tr>
             <?php
             if($num == 1) { $num = 2; } else { $num = 1; }
@@ -162,3 +167,9 @@
     </div>
 
 </div>
+
+ <script type="text/javascript">
+    //$(document).ready(function() {
+    //    $('#revokeButton').tooltip(); 
+    //}); 
+</script>

@@ -330,6 +330,10 @@ class Role extends AbstractEntityService{
     }
 
 
+    /**
+     * @param int $id Id of Role
+     * @return \Role
+     */
     public function getRoleById($id){
         // will only load a lazy loading proxy until method on the proxy is called 
         //$entity = $this->em->find('Role', (int)$id);
@@ -353,15 +357,15 @@ class Role extends AbstractEntityService{
      * @param string $roleTypeName @see \RoleTypeName
      * @param \User $user
      * @param \OwnedEntity $entity
-     * @param string $roleStatus @see \RoleStatus
      * @return \Role managed instance  
      * @throws \Exception if the user already has the requested role over the entity (role status GRANTED or PENDING) 
      * @throws \LogicException
      */
-    public function addRole($roleTypeName, \User $user, \OwnedEntity $entity, $roleStatus){
+    public function addRole($roleTypeName, \User $user, \OwnedEntity $entity){
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-
+        $roleStatus = \RoleStatus::PENDING; 
+        
         // Check the given roleName is a valid role
         if (!$this->isValidRoleStatus($roleStatus)) {
             throw new \LogicException('Coding error - invalid roleStatus');
@@ -375,7 +379,7 @@ class Role extends AbstractEntityService{
             throw new \Exception("You already have the role [$roleTypeName] over " . $entity->getName());
         }
         // Check to see if user already has the same type of role PENDING over entity
-        if (in_array($roleTypeName, \Factory::getRoleService()->getUserRoleNamesOverEntity($entity, $user, \RoleStatus::PENDING))) {
+        if (in_array($roleTypeName, $this->getUserRoleNamesOverEntity($entity, $user, \RoleStatus::PENDING))) {
             throw new \Exception("You already have a [$roleTypeName] role request pending over " . $entity->getName());
         }
          
@@ -384,6 +388,11 @@ class Role extends AbstractEntityService{
            $roleType = $this->getRoleTypeByName($roleTypeName); 
            $r = new \Role($roleType, $user, $entity, $roleStatus);  
            $this->em->persist($r); 
+
+           // create a RoleActionRecord after role has been persisted (to get id) 
+           $rar = \RoleActionRecord::construct($user, $r, \RoleStatus::PENDING); 
+           $this->em->persist($rar); 
+           
            $this->em->flush();
            $this->em->getConnection()->commit();
          } catch (\Exception $e) {
@@ -395,19 +404,237 @@ class Role extends AbstractEntityService{
     }
 
 
-    public function deleteRole(\Role $role, \User $user){
+    /**
+     * Calling user attempts to grant the given Role request.  
+     * <p>
+     * The callingUser's permissions are checked before the Role is granted. 
+     * Exception is thrown if callingUser does not have permission to grant.
+     *   
+     * @param \Role $role Role must be {@link \RoleStatus::PENDING}
+     * @param \User $callingUser
+     * @throws \LogicException
+     * @throws \Exception 
+     */
+    public function grantRole(\Role $role, \User $callingUser) {
+        if ($callingUser == null) {
+            throw new \Exception("Unregistered users can't grant roles");
+        }
         //Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($callingUser);
+        // Santity check that it has pending status 
+        if ($role->getStatus() != \RoleStatus::PENDING) {
+            throw new \LogicException("Invalid role request - does not have status of PENDING");
+        }
+        $entity = $role->getOwnedEntity(); 
+        if($entity == null){
+           throw new \LogicException('Error - target entity of role is null');    
+        }
+        // check calling user has permission to grant this role  
+        $grantingRoles = $this->authorizeAction(\Action::GRANT_ROLE, $entity, $callingUser); 
+        if (count($grantingRoles) == 0) {
+            throw new \Exception('You do not have permission to grant this role');
+        }
 
         $this->em->getConnection()->beginTransaction();
-         try { 
-             $this->em->remove($role);
-             $this->em->flush();
-             $this->em->getConnection()->commit(); 
-         } catch (\Exception $e) {
+        try {
+            // Create roleActionRecord before its status is updated (to get its existing status) 
+            $rar = \RoleActionRecord::construct($callingUser, $role, \RoleStatus::GRANTED); 
+            $this->em->persist($rar); 
+
+            // Update the role status 
+            $role->setStatus(\RoleStatus::GRANTED); 
+            //$roleRequest->setLastUpdatedByUserId($user->getId()); 
+            
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             $this->em->close();
             throw $e;
-         }
+        }
     }
+
+    /**
+     * Calling user attempts to revoke the given Role. 
+     * Role rejection is slightly different revoking a role: a rejected role is 
+     * not previously granted while a revoked role may have been.  
+     * <p>
+     * If the callingUser owns the given Role, then the role can be revoked otherwise
+     * the callingUser's permissions are checked before the Role is revoked. 
+     * Successful revocation deletes the Role from the DB. 
+     * Exception is thrown if callingUser does not have permission to revoke.
+     * 
+     * @param \Role $role
+     * @param \User $callingUser
+     * @throws \Exception If the callingUser does not have permission to revoke 
+     * @throws \LogicException If the Role's OwnedEntity is null 
+     */
+    public function revokeRole(\Role $role, \User $callingUser){
+        if ($callingUser == null) {
+            throw new \Exception("Unregistered users can't revoke roles");
+        }
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($callingUser);
+
+        $entity = $role->getOwnedEntity();
+        if ($entity == null) {
+            throw new \LogicException('Error - target entity of role is null');
+        }
+
+        // if calling user is not the same person, need to check permissions 
+        if($role->getUser() != $callingUser){
+            // Revocation by 2nd party 
+            $grantingRoles = $this->authorizeAction(\Action::REVOKE_ROLE, $entity, $callingUser); 
+            if (count($grantingRoles) == 0) {
+                throw new \Exception('You do not have permission to revoke this role');
+            }
+        } else {
+            // self revoke - user is allowed to revoke their own roles
+        }  
+
+        if($role->getStatus() == \RoleStatus::PENDING){
+            // if this role has not yet been granted, then new status is REJECTION
+            $newStatus = \RoleStatus::REJECTED;  
+        } else {
+            $newStatus = \RoleStatus::REVOKED;  
+        }
+        
+        // ok, lets delete the role
+        //$this->deleteRole($role);  
+        $this->em->getConnection()->beginTransaction();
+        try {
+            // Create a RoleActionRecord before we delete the role  
+            $rar = \RoleActionRecord::construct($callingUser, $role, $newStatus); 
+            $this->em->persist($rar); 
+            
+            $this->em->remove($role);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+        
+    }
+
+    /**
+     * Calling user attempts to reject the given Role request.
+     * Role rejection is slightly different revoking a role: a rejected is not 
+     * previously granted while a revoked role may have already been granted.    
+     * <p>
+     * The callingUser's permissions are checked before the Role is rejected. 
+     * Successful rejection deletes the Role from the DB. 
+     * Exception is thrown if callingUser does not have permission to reject. 
+     * 
+     * @param \Role $role Role must be {@link \RoleStatus::PENDING}
+     * @param \User $callingUser
+     * @throws Exception If the callingUser does not have permission to revoke 
+     * @throws LogicException If Role does not have a status of RoleStatus::PENDING
+     */
+    public function rejectRoleRequest(\Role $role, \User $callingUser) {
+        if ($callingUser == null) {
+            throw new \Exception("Unregistered users can't reject roles");
+        }
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($callingUser);
+
+        if ($role->getStatus() != \RoleStatus::PENDING) {
+            throw new \LogicException("Invalid role request - does not have status of PENDING");
+        }
+        $entity = $role->getOwnedEntity();
+        if ($entity == null) {
+            throw new \LogicException('Error - target entity of role is null');
+        }
+        $grantingRoles = $this->authorizeAction(\Action::REJECT_ROLE, $entity, $callingUser);
+        if (count($grantingRoles) == 0) {
+            throw new \Exception('You do not have permission to reject this role');
+        }
+        // ok, lets delete the role
+        //$this->deleteRole($role);
+        $this->em->getConnection()->beginTransaction();
+        try {
+            // Create a RoleActionRecord before we remove the role  
+            $rar = \RoleActionRecord::construct($callingUser, $role, \RoleStatus::REJECTED); 
+            $this->em->persist($rar);  
+            
+            $this->em->remove($role);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+
+    public function getRoleActionRecordsById_Type($id, $ownedEntityType){
+        
+        $dql = "SELECT ra FROM RoleActionRecord ra
+        		WHERE ra.roleTargetOwnedEntityId = :id
+        		AND ra.roleTargetOwnedEntityType = :type
+                ORDER BY ra.id DESC";
+         $roleActionRecords = $this->em->createQuery($dql)
+            ->setParameter("id", $id)
+            ->setParameter("type", $ownedEntityType)
+            ->getResult();
+        return $roleActionRecords;  
+    }
+
+    /**
+     * Delete the given role in a TX. Rollback on error. 
+     * @param \Role $role
+     * @throws \Exception
+     */
+    /*public function deleteRole(\Role $role) {
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->em->remove($role);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }*/
+
+    /**
+     * Get an array of Role names granted to the user that permit the requested 
+     * action on the given OwnedEntity. If the user has no roles that 
+     * permit the requested action, then return an empty array. 
+     * <p>
+     * Supported actions: EDIT_OBJECT, NGI_ADD_SITE, GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE 
+     * 
+     * @param string $action
+     * @param \OwnedEntity $entity
+     * @param \User $callingUser
+     * @return array of RoleName values 
+     * @throws LogicException If unsupported enitity type or action is passed
+     */
+    public function authorizeAction($action, \OwnedEntity $entity, \User $callingUser) {
+        $siteService = new \org\gocdb\services\Site();
+        $siteService->setEntityManager($this->em);
+        $ngiService = new \org\gocdb\services\NGI();
+        $ngiService->setEntityManager($this->em);
+        $sgService = new \org\gocdb\services\ServiceGroup();
+        $sgService->setEntityManager($this->em);
+        $projectService = new \org\gocdb\services\Project();
+        $projectService->setEntityManager($this->em);
+
+        if ($entity instanceof \NGI) {
+            $grantingRoles = $ngiService->authorizeAction($action, $entity, $callingUser);
+        } else if ($entity instanceof \Site) {
+            $grantingRoles = $siteService->authorizeAction($action, $entity, $callingUser);
+        } else if ($entity instanceof \Project) {
+            $grantingRoles = $projectService->authorizeAction($action, $entity, $callingUser);
+        } else if ($entity instanceof \ServiceGroup) {
+            $grantingRoles = $sgService->authorizeAction($action, $entity, $callingUser);
+        } else {
+            throw new \LogicException('Unsuppored OwnedEntity type');
+        }
+        return $grantingRoles;
+    }
+
 }

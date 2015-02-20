@@ -25,12 +25,10 @@ function view_ngi() {
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
     
-    $ngiServ = \Factory::getNgiService();
-    $siteServ = \Factory::getSiteService();
-    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+    $ngiId = $_GET['id'];
+    if (!isset($ngiId) || !is_numeric($ngiId) ){
         throw new Exception("An id must be specified");
     }
-    $ngiId= $_REQUEST['id'];
 
     //get user for case that portal is read only and user is admin, so they can still see edit links
     $dn = Get_User_Principle();
@@ -43,8 +41,20 @@ function view_ngi() {
         $params['UserIsAdmin']=$user->isAdmin();
     }
     
-    
+    $ngiServ = \Factory::getNgiService();
+    $siteServ = \Factory::getSiteService();
     $ngi = $ngiServ->getNgi($ngiId);
+
+    // Does current viewer have edit permissions over NGI ?
+    $params['ShowEdit'] = false;  
+    if(count($ngiServ->authorizeAction(\Action::EDIT_OBJECT, $ngi, $user))>=1){
+       $params['ShowEdit'] = true;  
+    } 
+
+    // Add ngi to params 
+	$params['ngi'] = $ngi;
+
+    // Add all roles over ngi to params 
     $allRoles = $ngi->getRoles();
     $roles = array(); 
     foreach ($allRoles as $role){
@@ -52,19 +62,21 @@ function view_ngi() {
             $roles[] = $role; 
         }
     }
-    $projects = $ngi->getProjects();
+    $params['roles'] = $roles;
 
+    // Add ngi's project to params 
+    $projects = $ngi->getProjects();
+    $params['Projects']= $projects;
+
+    // Add sites and scopes to params 
     $params['SitesAndScopes']=array();
     foreach($ngi->getSites() as $site){
-        $params['SitesAndScopes'][]=array('Site'=>$site,
-                                             'Scopes'=>$siteServ->getScopesWithParentScopeInfo($site));
+        $params['SitesAndScopes'][]=array('Site'=>$site, 'Scopes'=>$siteServ->getScopesWithParentScopeInfo($site));
     }
+   
+    // Add RoleActionRecords to params 
+    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($ngi->getId(), 'ngi'); 
     
-    
-    $params['Projects']= $projects;
-    
-	$params['ngi'] = $ngi;
-    $params['roles'] = $roles;
     show_view('ngi/view_ngi.php', $params, $ngi->getName());
     die();
 }

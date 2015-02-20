@@ -223,4 +223,13 @@ class NGI extends OwnedEntity implements IScopedEntity {
         $this->scopes->removeElement($removeScope);
     }
 
+    /**
+     * Returns value of {@link \OwnedEntity::TYPE_NGI}
+     * @see \OwnedEntity::getType()
+     * @return string 
+     */
+    public function getType() {
+        return parent::TYPE_NGI; 
+    }
+
 }

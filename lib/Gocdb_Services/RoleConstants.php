@@ -11,6 +11,8 @@ class RoleStatus {
 
     const GRANTED = 'STATUS_GRANTED';
     const PENDING = 'STATUS_PENDING';
+    const REVOKED = 'STATUS_REVOKED';
+    const REJECTED = 'STATUS_REJECTED';
 
     /**
      * private constructor to limit instantiation

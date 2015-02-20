@@ -36,6 +36,7 @@ require_once $entitiesPath."/ArchivedService.php";
 require_once $entitiesPath."/ArchivedServiceGroup.php";
 require_once $entitiesPath."/ArchivedSite.php";
 require_once $entitiesPath."/EndpointProperty.php"; 
+require_once $entitiesPath."/RoleActionRecord.php"; 
 
 if (!class_exists("Doctrine\Common\Version", false)) {
     require_once __DIR__."/bootstrap_doctrine.php";

@@ -528,4 +528,13 @@ class Site extends OwnedEntity implements IScopedEntity{
     	return $this->getShortName();
     }
 
+    /**
+     * Returns value of {@link \OwnedEntity::TYPE_SITE}
+     * @see \OwnedEntity::getType()
+     * @return string 
+     */
+    public function getType() {
+        return 'site'; 
+    }
+
 }
