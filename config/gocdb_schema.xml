@@ -70,7 +70,8 @@
 		<field>
 			<fname>DESCRIPTION</fname>
 			<length>2000</length>
-            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";]+$/</regex> 
 		</field>
 		<field>
 			<fname>CREATION_DATE</fname>
@@ -149,7 +150,8 @@
 		<field>
 			<fname>DESCRIPTION</fname>
 			<length>255</length>
-            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";]+$/</regex> 
 		</field>        
         <field>
 			<fname>EMAIL</fname>
@@ -172,7 +174,8 @@
 		<field>
 			<fname>DESCRIPTION</fname>
 			<length>4000</length>
-            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'\s]+$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'\s]+$/</regex>-->
+            <regex>/^[^`'\";]+$/</regex> 
 		</field>
 		<field>
 			<fname>DECLARATION_TIMESTAMP</fname>
@@ -242,7 +245,8 @@
         <field>
             <fname>DESCRIPTION</fname>
             <length>255</length>
-            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";]+$/</regex> 
         </field>
         <field>
             <fname>EMAIL</fname>
@@ -323,7 +327,8 @@
         <field>
             <fname>DESCRIPTION</fname>
             <length>2000</length>
-            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";]+$/</regex> 
         </field>
 		<field>
 			<fname>URL</fname>
@@ -354,6 +359,7 @@
         <field>
             <fname>DESCRIPTION</fname>
             <length>255</length>
+            <regex>/^[^`'\";]+$/</regex> 
         </field>
         <field>
             <fname>EMAIL</fname>
@@ -372,7 +378,8 @@
         <field>
             <fname>DESCRIPTION</fname>
             <length>2000</length>
-            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";]+$/</regex> 
         </field>
     </entity>
     <!-- ==========================================================  -->
@@ -386,7 +393,8 @@
         <field>
             <fname>DESCRIPTION</fname>
             <length>255</length>
-            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";]+$/</regex> 
         </field>
     </entity>
         <!-- ==========================================================  -->
@@ -400,7 +408,8 @@
         <field>
             <fname>DESCRIPTION</fname>
             <length>255</length>
-            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";]+$/</regex> 
         </field>
     </entity>
 	    <!-- ==========================================================  -->
@@ -518,7 +527,7 @@
 			<fname>REASON</fname>
 			<length>300</length>
             <!--<regex>/^[a-zA-Z0-9è\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex>
+            <regex>/^[^`'\";]+$/</regex> 
 		</field>
 	</entity>
 </schema>
