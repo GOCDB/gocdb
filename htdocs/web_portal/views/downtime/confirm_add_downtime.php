@@ -89,7 +89,10 @@ if(isset($params['isEdit'])){
     <?php endif;?>
     	<?php $confirmed = true;?> 	
         <input class="input_input_text" type="hidden" name="CONFIRMED" value="<?php echo $confirmed;?>" />        
-        <input class="input_input_text" type="hidden" name="newValues" value="<?php echo htmlentities(serialize($params));?>" />
+        <!-- serialize does not cater for UTF-8 chars -->
+        <!--<input class="input_input_text" type="hidden" name="newValues" value="<?php echo htmlentities(serialize($params));?>" />-->
+        <!-- json_encode caters for UTF-8 chars -->
+        <input class="input_input_text" type="hidden" name="newValues" value="<?php xecho(json_encode($params));?>" />
         
      	<?php if(!$edit):?>
         <input id="confirmSubmitBtn" type="submit" value="Add downtime to GocDB" class="input_button"  >

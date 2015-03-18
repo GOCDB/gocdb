@@ -152,7 +152,8 @@
     	}
 	    
 	    //----------Validate the Description-------------//
-	    var regEx = /^[A-Za-z0-9\s._(),:;/'\\]{0,4000}$/;    //This line may not appear valid in IDEs but it is
+	    //var regEx = /^[A-Za-z0-9\s._(),:;/'\\]{0,4000}$/;    //This line may not appear valid in IDEs but it is
+	    var regEx = /^[^`'\";<>]{0,4000}$/;    //This line may not appear valid in IDEs but it is
 	    var description = $('#description').val();
 
     	if(description != '' && regEx.test(description) != false){
