@@ -71,7 +71,7 @@
 			<fname>DESCRIPTION</fname>
 			<length>2000</length>
             <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
 		</field>
 		<field>
 			<fname>CREATION_DATE</fname>
@@ -151,7 +151,7 @@
 			<fname>DESCRIPTION</fname>
 			<length>255</length>
             <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
 		</field>        
         <field>
 			<fname>EMAIL</fname>
@@ -175,7 +175,7 @@
 			<fname>DESCRIPTION</fname>
 			<length>4000</length>
             <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'\s]+$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
 		</field>
 		<field>
 			<fname>DECLARATION_TIMESTAMP</fname>
@@ -200,11 +200,13 @@
 			<fname>FORENAME</fname>
 			<length>255</length>
             <regex>/^[a-zA-Z\s\-']+$/</regex>
+            <!--<regex>/^[^`'\";&lt;&gt;]+$/</regex> -->
 		</field>
 		<field>
 			<fname>SURNAME</fname>
 			<length>255</length>
             <regex>/^[a-zA-Z\s\-']+$/</regex>
+            <!--<regex>/^[^`'\";&lt;&gt;]+$/</regex> -->
 		</field>
 		<field>
 			<fname>TITLE</fname>
@@ -246,7 +248,7 @@
             <fname>DESCRIPTION</fname>
             <length>255</length>
             <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
         </field>
         <field>
             <fname>EMAIL</fname>
@@ -328,7 +330,7 @@
             <fname>DESCRIPTION</fname>
             <length>2000</length>
             <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
         </field>
 		<field>
 			<fname>URL</fname>
@@ -359,7 +361,7 @@
         <field>
             <fname>DESCRIPTION</fname>
             <length>255</length>
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
         </field>
         <field>
             <fname>EMAIL</fname>
@@ -379,7 +381,7 @@
             <fname>DESCRIPTION</fname>
             <length>2000</length>
             <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
         </field>
     </entity>
     <!-- ==========================================================  -->
@@ -394,7 +396,7 @@
             <fname>DESCRIPTION</fname>
             <length>255</length>
             <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
         </field>
     </entity>
         <!-- ==========================================================  -->
@@ -409,7 +411,7 @@
             <fname>DESCRIPTION</fname>
             <length>255</length>
             <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt]+$/</regex> 
         </field>
     </entity>
 	    <!-- ==========================================================  -->
@@ -429,7 +431,7 @@
 			<fname>VALUE</fname>
             <length>255</length>
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-            <regex>/^[^`'\"=()]+$/</regex>
+            <regex>/^[^`'\"=()&lt;&gt;]+$/</regex>
             <!-- positive regex - more strict -->
             <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 		</field>
@@ -456,7 +458,7 @@
 			<fname>VALUE</fname>
             <length>255</length>
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-            <regex>/^[^`'\"=()]+$/</regex>
+            <regex>/^[^`'\"=()&lt;&gt;]+$/</regex>
             <!-- positive regex - more strict -->
             <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 		</field>
@@ -483,7 +485,7 @@
 			<fname>VALUE</fname>
             <length>255</length>
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-            <regex>/^[^`'\"=()]+$/</regex>
+            <regex>/^[^`'\"=()&lt;&gt;]+$/</regex>
             <!-- positive regex - more strict -->
             <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 		</field>
@@ -510,7 +512,7 @@
 			<fname>VALUE</fname>
             <length>255</length>
             <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-            <regex>/^[^`'\"=()]+$/</regex>
+            <regex>/^[^`'\"=()&lt;&gt;]+$/</regex>
             <!-- positive regex - more strict -->
             <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 		</field>
@@ -527,7 +529,7 @@
 			<fname>REASON</fname>
 			<length>300</length>
             <!--<regex>/^[a-zA-Z0-9è\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
 		</field>
 	</entity>
 </schema>
