@@ -95,8 +95,10 @@ class Factory {
      */
     public static function getEntityManager(){
         if(self::$em == null){
-            //require_once __DIR__ . "/../Doctrine/bootstrap_doctrine.php";
-            require __DIR__ . "/../Doctrine/bootstrap_doctrine.php";
+            // we should only require the one file; bootstrap.php (note, the  
+            // gap file below introduced intentionally to eliminate from grep/search) 
+            //require __DIR__ . "/../Doctrine/bootstrap    _doctrine.php";
+            require __DIR__ . "/../Doctrine/bootstrap.php";
             self::$em = $entityManager;
         }
         return self::$em;

@@ -19,7 +19,6 @@
  * limitations under the License.
  *
  /*====================================================== */
-// include Doctrine bootstrap
 //phpinfo(); 
 //die(); 
 require_once __DIR__ . "/../../lib/Doctrine/bootstrap.php";
@@ -53,13 +52,28 @@ function xecho($data) {
 
 $Page_Type = Get_Page_Type();
 
-// Prevent user from going any further if they can't be authenticated
+// Used to get the current user principle (if authenticated)
 require_once __DIR__ . '/components/Get_User_Principle.php';
-if(Get_User_Principle() == null){
-    // prob better to do a re-direct here to error page. 
-    die('Failed user authentication - A valid user certificate was not found or your EGI SSO '
-            . 'user account is not associated with a valid certificate.'); 
-} 
+
+/**
+ * Dies if the request can't be authenticated. 
+ * @param string $message If not specified, a default message is used. 
+ */
+function rejectIfNotAuthenticated($message = null){
+    $authPrincipleStr = Get_User_Principle(); 
+    if(empty($authPrincipleStr)){
+        // prob better to do a re-direct here to error page. 
+        if($message == null){
+            die('Access Denined, authentication failed - A valid user certificate was not found'); 
+            //or your EGI SSO user account is not associated with a valid certificate.'); 
+        } else {
+            die($message); 
+        }
+    }  
+}
+// Uncomment to invoke for any page (can instead do this selectively 
+// on per-page basis as below) 
+//rejectIfNotAuthenticated(); 
 
 try {
     Draw_Page($Page_Type);
@@ -73,386 +87,496 @@ try {
  * return an empty string.
  */
 function Get_Page_Type() {
-    if(!isset($_REQUEST['Page_Type']))
-    	return "";
-    else
+    if(!isset($_REQUEST['Page_Type'])){
+    	return "default";
+    } else {
     	return $_REQUEST['Page_Type'];
+    }
 }
 
 /* Decides which type of page to draw based on the passed $Page_Type */
 function Draw_Page($Page_Type) {
+    
+    // Read only pages - these pages don't strictly require user authentication. 
+    // Therefore, to enable permit-all page viewing, comment out the call 
+    // to rejectIfNotAuthenticated() in the relevant case block. Note, some of 
+    // these pages will replace sensitive info such as telephone/email with 
+    // the string 'PROTECTED'   
+    // ************************************************************************
     switch($Page_Type) {
-        case "Error_Redirect":
-            show_view('error.php', $_REQUEST['error']);
-            break;
-        case "Static_HTML":
-            Draw_Static_HTML();
-            break;
-        case "Revoke_Role":
-            require_once __DIR__.'/controllers/political_role/revoke_request.php';
-            view_revoke_request();
-            break;
-        case "Accept_Role_Request":
-            require_once __DIR__.'/controllers/political_role/accept_request.php';
-            view_accept_request();
-            break;
-        case "Deny_Role_Request":
-            require_once __DIR__.'/controllers/political_role/deny_request.php';
-            view_deny_request();
-            break;
-        case "Role_Requests":
-            require_once __DIR__.'/controllers/political_role/view_requests.php';
-            view_requests();
-            break;
-        case "Request_Role":
-            require_once __DIR__.'/controllers/political_role/request_role.php';
-            request_role();
+        case "default" :
+            //rejectIfNotAuthenticated();
+            require_once __DIR__.'/controllers/start_page.php';
+            startPage();
+            break; 
+        case "View_Service_Endpoint" :
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service/view_service_endpoint.php';
+            view_endpoint();
             break;
         case "Service_Groups":
+            //rejectIfNotAuthenticated();
         	require_once __DIR__.'/controllers/service_group/view_all.php';
         	showAllServiceGroups();
         	break;
         case "Service_Group":
+            //rejectIfNotAuthenticated();
         	require_once __DIR__.'/controllers/service_group/view_sgroup.php';
         	showServiceGroup();
         	break;
 		case "Site":
+            //rejectIfNotAuthenticated();
 			require_once __DIR__.'/controllers/site/view_site.php';
 			view_site();
 			break;
 		case "NGI":
+            //rejectIfNotAuthenticated();
 			require_once __DIR__.'/controllers/ngi/view_ngi.php';
 			view_ngi();
 			break;
-        case "Edit_Site":
-			require_once __DIR__.'/controllers/site/edit_site.php';
-			edit_site();
-			break;
         case "Service":
+            //rejectIfNotAuthenticated();
 			require_once __DIR__.'/controllers/service/view_service.php';
 			view_se();
 			break;
-		case "Edit_Service":
-			require_once __DIR__.'/controllers/service/edit_service.php';
-			edit_service();
-			break;
-        case "SE_Downtimes":
-			require_once __DIR__.'/controllers/service/se_downtimes.php';
-            se_downtimes();
-			break;
         case "Services":
+            //rejectIfNotAuthenticated();
 			require_once __DIR__.'/controllers/service/view_all.php';
 			drawSEs();
-			break;
-        case "Add_Service":
-        	require_once __DIR__.'/controllers/service/add_service.php';
-        	add_service();
-        	break;
-    	case "Add_Service_Endpoint":
-    	    require_once __DIR__.'/controllers/service/add_service_endpoint.php';
-    	    add_service_endpoint();
-    	    break;        	
-        case "Delete_Service":
-            require_once __DIR__.'/controllers/service/delete_service.php';
-            delete();
-            break;
-		case "Edit_User":
-			require_once __DIR__.'/controllers/user/edit_user.php';
-			edit_user();
-			break;
-        case "User":
-			require_once __DIR__.'/controllers/user/view_user.php';
-			view_user();
-			break;
-        case "Search":
-            require_once __DIR__.'/controllers/search.php';
-            search();
-            break;
-        case "Downtime":
-			require_once __DIR__.'/controllers/downtime/view_downtime.php';
-			view();
-			break;
-		case "My_Sites":
-			require_once __DIR__.'/controllers/my_sites.php';
-			my_sites();
-			break;
-		case "NGIs":
+			break; 
+        case "NGIs":
+            //rejectIfNotAuthenticated();
 			require_once __DIR__.'/controllers/ngi/view_ngis.php';
 			view_ngis();
 			break;
-		case "Edit_NGI":
-			require_once __DIR__.'/controllers/ngi/edit_ngi.php';
-			edit_ngi();
-			break;
-		case "Edit_Service_Group":
-			require_once __DIR__.'/controllers/service_group/edit_service_group.php';
-			edit_service_group();
-			break;
-		case "Add_Service_Group_SEs":
-			require_once __DIR__.'/controllers/service_group/add_ses.php';
+        case "Sites":
+            //rejectIfNotAuthenticated();
+        	require_once __DIR__.'/controllers/site/view_all.php';
+        	showAllSites();
+        	break;
+        case "Projects":
+            //rejectIfNotAuthenticated();
+        	require_once __DIR__.'/controllers/project/view_all.php';
+        	show_all_projects();
+        	break;
+        case "Project":
+            //rejectIfNotAuthenticated();
+        	require_once __DIR__.'/controllers/project/view_project.php';
+        	show_project();
+        	break;
+        case "Scope_Help":
+            //rejectIfNotAuthenticated();
+        	require_once __DIR__.'/controllers/scope_help.php';
+        	show_help();
+        	break;
+        case "Site_Geo_xml" :
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/sitesForGoogleMapXML.php';
+            show_xml ();
+            break;
+        case "Error_Redirect":
+            //rejectIfNotAuthenticated();
+            show_view('error.php', $_REQUEST['error']);
+            break;
+        case "Static_HTML":
+            //rejectIfNotAuthenticated();
+            Draw_Static_HTML();
+            break;
+        case "Search":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__.'/controllers/search.php';
+            search();
+            break;
+
+        // CrUD Pages - These pages MUST have authentication enabled so  
+        // the calls to rejectIfNotAuthenticated() must be used. 
+        // *********************************************************************
+        case "Revoke_Role":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/political_role/revoke_request.php';
+            view_revoke_request();
+            break;
+        case "Accept_Role_Request":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/political_role/accept_request.php';
+            view_accept_request();
+            break;
+        case "Deny_Role_Request":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/political_role/deny_request.php';
+            view_deny_request();
+            break;
+        case "Role_Requests":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/political_role/view_requests.php';
+            view_requests();
+            break;
+        case "Request_Role":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/political_role/request_role.php';
+            request_role();
+            break;
+        case "Edit_Site":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/site/edit_site.php';
+            edit_site();
+            break;
+        case "Edit_Service":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service/edit_service.php';
+            edit_service();
+            break;
+        case "SE_Downtimes":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service/se_downtimes.php';
+            se_downtimes();
+            break;
+        case "Add_Service":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service/add_service.php';
+            add_service();
+            break;
+        case "Add_Service_Endpoint":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service/add_service_endpoint.php';
+            add_service_endpoint();
+            break;        	
+        case "Delete_Service":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service/delete_service.php';
+            delete();
+            break;
+        case "Edit_User":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/user/edit_user.php';
+            edit_user();
+            break;
+        case "User":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/user/view_user.php';
+            view_user();
+            break;
+        case "Downtime":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/downtime/view_downtime.php';
+            view();
+            break;
+        case "My_Sites":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/my_sites.php';
+            my_sites();
+            break;
+        case "Edit_NGI":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/ngi/edit_ngi.php';
+            edit_ngi();
+            break;
+        case "Edit_Service_Group":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service_group/edit_service_group.php';
+            edit_service_group();
+            break;
+        case "Add_Service_Group_SEs":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service_group/add_ses.php';
             add_ses();
             break;
         case "Search_SEs":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/service_group/search_ses.php';
             search_ses();
             break;
         case "Remove_Service_Group_SEs":
-          	require_once __DIR__.'/controllers/service_group/remove_ses.php';
-           	remove_ses();
-           	break;
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service_group/remove_ses.php';
+            remove_ses();
+            break;
         case "Add_Site":
-        	require_once __DIR__.'/controllers/site/add_site.php';
-        	add_site();
-        	break;
-        case "Sites":
-        	require_once __DIR__.'/controllers/site/view_all.php';
-        	showAllSites();
-        	break;
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/site/add_site.php';
+            add_site();
+            break;
         case "SGroup_Downtimes":
-        	require_once __DIR__.'/controllers/service_group/view_sgroup_downtimes.php';
-        	view_sgroup_downtimes();
-        	break;
-    	case "Add_Service_Group":
-    	    require_once __DIR__.'/controllers/service_group/add_service_group.php';
-    	    add_service_group();
-    	    break;
-    	case "Site_Downtimes":
-    	    require_once __DIR__.'/controllers/site/site_downtimes.php';
-    	    site_downtimes();
-    	    break;
-	    case "Register":
-	        require_once __DIR__.'/controllers/user/register.php';
-	        register();
-	        break;
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service_group/view_sgroup_downtimes.php';
+            view_sgroup_downtimes();
+            break;
+        case "Add_Service_Group":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/service_group/add_service_group.php';
+            add_service_group();
+            break;
+        case "Site_Downtimes":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/site/site_downtimes.php';
+            site_downtimes();
+            break;
+        case "Register":
+            rejectIfNotAuthenticated('Access denied - '
+                    . 'you need to be pre-authenticated before you can register a new account'); 
+            require_once __DIR__.'/controllers/user/register.php';
+            register();
+            break;
         case "Add_Downtime":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/downtime/add_downtime.php';
             //require_once __DIR__.'/controllers/downtime/add_downtime_old.php';
             add();
             break;
         case "Edit_Downtime":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/downtime/edit_downtime.php';
             //require_once __DIR__.'/controllers/downtime/edit_downtime_old.php';
             edit();
             break;
         case "End_Downtime":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/downtime/end_downtime.php';
             endDt();
             break;
         case "Downtime_view_endpoint_tree":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/downtime/view_endpoint_tree.php';
             getServiceandEndpointList();
             break;
         case "Edit_Downtime_view_endpoint_tree":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/downtime/view_endpoint_tree.php';
             editDowntimePopulateEndpointTree();
             break;
         case "Downtime_View_Services":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/downtime/view_services.php';
             getSitesServices();
             break; 
         case "Delete_Site":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/site/delete_site.php';
             delete();
             break;
         case "Delete_Downtime":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/downtime/delete_downtime.php';
             delete();
             break;
         case "Downtimes_Overview":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/downtime/downtimes_overview.php';
             view();
             break;            
         case "Delete_Service_Group":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/service_group/delete_service_group.php';
             delete();
             break;
         case "Delete_User":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/user/delete_user.php';
             delete();
             break;
         case "Edit_Certification_Status":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/site/edit_cert_status.php';
             edit();
             break;
         case "Retrieve_Account":
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/user/retrieve_account.php';
             retrieve();
             break;
-        case "Projects":
-        	require_once __DIR__.'/controllers/project/view_all.php';
-        	show_all_projects();
-        	break;
-        case "Project":
-        	require_once __DIR__.'/controllers/project/view_project.php';
-        	show_project();
-        	break;
         case "Remove_Project_NGIs":
-        	require_once __DIR__.'/controllers/project/remove_ngis.php';
-        	remove_ngis_project();
-        	break;
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/project/remove_ngis.php';
+            remove_ngis_project();
+            break;
         case "Add_Project_NGIs":
-        	require_once __DIR__.'/controllers/project/add_ngis.php';
-        	add_ngis_to_project();
-        	break;
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/project/add_ngis.php';
+            add_ngis_to_project();
+            break;
         case "Edit_Project":
-        	require_once __DIR__.'/controllers/project/edit_project.php';
-        	edit_project();
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/project/edit_project.php';
+            edit_project();
             break;
         case "Delete_Project":
-        	require_once __DIR__.'/controllers/project/delete_project.php';
-        	delete_project();
-        	break;
-        case "Scope_Help":
-        	require_once __DIR__.'/controllers/scope_help.php';
-        	show_help();
-        	break;
-        case "Admin_Move_Site":
-        	require_once __DIR__.'/controllers/admin/move_site.php';
-        	move_site();
-        	break;
-        case "Admin_Move_SEP":
-        	require_once __DIR__.'/controllers/admin/move_service_end_point.php';
-        	move_service_end_point();
-        	break;
-        case "Admin_Service_Types":
-        	require_once __DIR__.'/controllers/admin/view_service_types.php';
-        	show_all();
-        	break;
-        case "Admin_Service_Type":
-        	require_once __DIR__.'/controllers/admin/view_service_type.php';
-        	view_service_type();
-        	break;
-        case "Admin_Edit_Service_Type":
-        	require_once __DIR__.'/controllers/admin/edit_service_type.php';
-        	edit_type();
-        	break;
-        case "Admin_Add_Service_Type":
-        	require_once __DIR__.'/controllers/admin/add_service_type.php';
-        	add_type();
-        	break;
-        case "Admin_Delete_Service_Type":
-        	require_once __DIR__.'/controllers/admin/delete_service_type.php';
-        	delete_service_type();
-        	break;
-        case "Admin_Delete_Service_Type_Denied":
-        	require_once __DIR__.'/controllers/admin/delete_service_type_denied.php';
-        	deny_delete_type();
-        	break;
-        case "Admin_Add_NGI":
-        	require_once __DIR__.'/controllers/admin/add_ngi.php';
-        	add_ngi();
-        	break;
-        case "Admin_Users":
-        	require_once __DIR__.'/controllers/admin/users.php';
-        	show_users();
-        	break;
-        case "Admin_Edit_User_DN":
-        	require_once __DIR__.'/controllers/admin/edit_user_dn.php';
-        	edit_dn();
-        	break;
-        case "Admin_Change_User_Admin_Status":
-        	require_once __DIR__.'/controllers/admin/edit_user_isadmin.php';
-        	make_admin();
-        	break;
-        case "Admin_Add_Project":
-        	require_once __DIR__.'/controllers/admin/add_project.php';
-        	add_project();
-        	break;
-        case "Admin_Scopes":
-        	require_once __DIR__.'/controllers/admin/scopes.php';
-        	show_scopes();
-        	break;
-        case "Admin_Remove_Scope":
-        	require_once __DIR__.'/controllers/admin/delete_scope.php';
-        	remove_scope();
-        	break;
-        case "Admin_Add_Scope":
-        	require_once __DIR__.'/controllers/admin/add_scope.php';
-        	add_scope();
-        	break;
-        case "Admin_Scope":
-        	require_once __DIR__.'/controllers/admin/scope.php';
-        	view_scope();
-        	break;
-        case "Admin_Edit_Scope":
-        	require_once __DIR__.'/controllers/admin/edit_scope.php';
-        	edit_scope();
-        	break;
-        case "Admin_Delete_NGI":
-        	require_once __DIR__.'/controllers/admin/delete_ngi.php';
-        	delete_ngi();
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/project/delete_project.php';
+            delete_project();
             break;
-        case "Site_Geo_xml" :
-            require_once __DIR__ . '/controllers/sitesForGoogleMapXML.php';
-            show_xml ();
+        case "Admin_Move_Site":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/move_site.php';
+            move_site();
+            break;
+        case "Admin_Move_SEP":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/move_service_end_point.php';
+            move_service_end_point();
+            break;
+        case "Admin_Service_Types":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/view_service_types.php';
+            show_all();
+            break;
+        case "Admin_Service_Type":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/view_service_type.php';
+            view_service_type();
+            break;
+        case "Admin_Edit_Service_Type":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/edit_service_type.php';
+            edit_type();
+            break;
+        case "Admin_Add_Service_Type":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/add_service_type.php';
+            add_type();
+            break;
+        case "Admin_Delete_Service_Type":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/delete_service_type.php';
+            delete_service_type();
+            break;
+        case "Admin_Delete_Service_Type_Denied":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/delete_service_type_denied.php';
+            deny_delete_type();
+            break;
+        case "Admin_Add_NGI":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/add_ngi.php';
+            add_ngi();
+            break;
+        case "Admin_Users":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/users.php';
+            show_users();
+            break;
+        case "Admin_Edit_User_DN":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/edit_user_dn.php';
+            edit_dn();
+            break;
+        case "Admin_Change_User_Admin_Status":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/edit_user_isadmin.php';
+            make_admin();
+            break;
+        case "Admin_Add_Project":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/add_project.php';
+            add_project();
+            break;
+        case "Admin_Scopes":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/scopes.php';
+            show_scopes();
+            break;
+        case "Admin_Remove_Scope":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/delete_scope.php';
+            remove_scope();
+            break;
+        case "Admin_Add_Scope":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/add_scope.php';
+            add_scope();
+            break;
+        case "Admin_Scope":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/scope.php';
+            view_scope();
+            break;
+        case "Admin_Edit_Scope":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/edit_scope.php';
+            edit_scope();
+            break;
+        case "Admin_Delete_NGI":
+            rejectIfNotAuthenticated(); 
+            require_once __DIR__.'/controllers/admin/delete_ngi.php';
+            delete_ngi();
             break;
         case "User_Validate_DN_Change" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/user/retrieve_account_user_validate.php';
             validate_dn_change ();
             break;
         case "Add_Site_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/site/add_site_property.php';
             add_site_property ();
             break;
         case "Add_Service_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/add_service_property.php';
             add_service_property ();
             break;
         case "Add_Endpoint_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/add_endpoint_property.php';
             add_endpoint_property ();
             break;
         case "Delete_Site_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/site/delete_site_property.php';
             delete ();
             break;
         case "Delete_Service_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/delete_service_property.php';
             delete ();
             break;
         case "Delete_Endpoint_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/delete_endpoint_property.php';
             delete ();
             break;
         case "Edit_Site_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/site/edit_site_property.php';
             edit_property ();
             break;
         case "Edit_Service_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/edit_service_property.php';
             edit_property ();
             break;        	
         case "Edit_Endpoint_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/edit_endpoint_property.php';
             edit_property ();
             break;      
         case "Add_Service_Group_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service_group/add_service_group_property.php';
             add_service_group_property ();
             break;
         case "Edit_Service_Group_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service_group/edit_service_group_property.php';
             edit_property ();
             break;
         case "Delete_Service_Group_Property" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service_group/delete_service_group_property.php';
             delete ();
             break;   
-        case "View_Service_Endpoint" :
-            require_once __DIR__ . '/controllers/service/view_service_endpoint.php';
-            view_endpoint();
-            break;
         case "Delete_Service_Endpoint" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/delete_service_endpoint.php';
             delete_endpoint();
             break;
         case "Edit_Service_Endpoint" :
+            rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/edit_service_endpoint.php';
             edit_endpoint();
             break;                     
         default:
-        	require_once __DIR__.'/controllers/start_page.php';
-			startPage();
+            require_once __DIR__.'/controllers/start_page.php';
+            startPage();
             break;
     }
 }

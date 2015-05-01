@@ -216,7 +216,7 @@
 		<field>
 			<fname>CERTIFICATE_DN</fname>
 			<length>255</length>
-            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/\)\(]+)+$/</regex>
+            <!--<regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/\)\(]+)+$/</regex>-->
 		</field>
 		<field>
 			<fname>WORKINGHOURS_START</fname>
@@ -411,7 +411,7 @@
             <fname>DESCRIPTION</fname>
             <length>255</length>
             <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";&lt;&gt]+$/</regex> 
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
         </field>
     </entity>
 	    <!-- ==========================================================  -->

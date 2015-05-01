@@ -23,46 +23,57 @@ function showAllSites(){
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     
     $exServ = \Factory::getExtensionsService();    
+   
+    // Do we really need to validate the URL parameter values, as the query 
+    // to the DB always uses bind variables to protect against injection? 
+    require_once __DIR__.'/../../../../lib/Gocdb_Services/Validate.php';
+    $validatorService = new \org\gocdb\services\Validate();  
+    
     
     $ngi = '%%';
-    if(!empty($_REQUEST['NGI'])) { 
-       $ngi = $_REQUEST['NGI'];
+    if(!empty($_GET['NGI'])) { 
+       $ngi = $_GET['NGI'];
+       if(!$validatorService->validate('ngi', 'NAME', $ngi)){
+          throw new Exception("Invalid NGI parameter value");  
+       }
     }
         
     $prodStatus = '%%';
-    if(!empty($_REQUEST['prodStatus'])) { 
-       $prodStatus = $_REQUEST['prodStatus'];
+    if(!empty($_GET['prodStatus'])) { 
+       $prodStatus = $_GET['prodStatus'];
     }
     
     //must be done before the if certstatus in the block that sets $certStatus
     $showClosed = false;
-    if(isset($_REQUEST['showClosed'])) {
+    if(isset($_GET['showClosed'])) {
         $showClosed = true;
     }
     
     $certStatus = '%%';
-    if(!empty($_REQUEST['certStatus'])) { 
-       $certStatus = $_REQUEST['certStatus']; 
+    if(!empty($_GET['certStatus'])) { 
+       $certStatus = $_GET['certStatus']; 
        //set show closed as true if production status selected is 'closed' - otherwise
        // there will be no results
        if($certStatus == 'Closed'){
            $showClosed = true;
        }
     }
-    
+   
+    // Site extension property key name
     $siteKeyNames = "";
-    if(isset($_REQUEST['siteKeyNames'])) {
-        $siteKeyNames = $_REQUEST['siteKeyNames'];
+    if(isset($_GET['siteKeyNames'])) {
+        $siteKeyNames = $_GET['siteKeyNames'];
     }
-    
+   
+    // Site extension property key value
     $siteKeyValues ="";
-    if(isset($_REQUEST['selectedSiteKeyValue'])) {
-        $siteKeyValues = $_REQUEST['selectedSiteKeyValue'];
+    if(isset($_GET['selectedSiteKeyValue'])) {
+        $siteKeyValues = $_GET['selectedSiteKeyValue'];
     }
-    
+   
     $scope = '%%';
-    if(!empty($_REQUEST['scope'])) { 
-       $scope = $_REQUEST['scope'];
+    if(!empty($_GET['scope'])) { 
+       $scope = $_GET['scope'];
     }
 	
     $serv = \Factory::getSiteService();

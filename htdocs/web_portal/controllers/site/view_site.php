@@ -6,12 +6,13 @@ function view_site() {
     
     $serv = \Factory::getSiteService();
     $servServ  = \Factory::getServiceService();
-    
-    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+
+    $siteId = $_GET['id']; 
+    if (!isset($siteId) || !is_numeric($siteId) ){
         throw new Exception("An id must be specified");
     }
     
-    $site = $serv->getSite($_REQUEST['id']);
+    $site = $serv->getSite($siteId);
     $allRoles = $site->getRoles();
     $roles = array(); 
     foreach ($allRoles as $role){
@@ -27,6 +28,18 @@ function view_site() {
     if(!is_null($user)) {
         $params['UserIsAdmin']=$user->isAdmin();
     }
+
+    $params['authenticated'] = false; 
+    if($user != null){
+        $params['authenticated'] = true; 
+    }
+
+    // Does current viewer have edit permissions over Site ?
+    $params['ShowEdit'] = false;  
+    if(count($serv->authorizeAction(\Action::EDIT_OBJECT, $site, $user))>=1){
+       $params['ShowEdit'] = true;  
+    } 
+    
     $params['Scopes']= $serv->getScopesWithParentScopeInfo($site);
     $params['ServicesAndScopes']=array();
     foreach($site->getServices() as $service){
@@ -39,5 +52,9 @@ function view_site() {
 	$title = $site->getShortName();
 	$params['site'] = $site;
 	$params['roles'] = $roles;
+
+    // Add RoleActionRecords to params 
+    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($site->getId(), 'site'); 
+    
     show_view("site/view_site.php", $params, $title);
 }

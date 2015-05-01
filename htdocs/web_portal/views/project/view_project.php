@@ -110,7 +110,9 @@
     
     <!-- Roles -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users with Project Level Roles</span>
+        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+            Users (Click on name to manage roles)
+        </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <?php if (sizeof($params['Roles'])>0): ?>
             <table style="clear: both; width: 100%;">
@@ -118,9 +120,10 @@
                     <th class="site_table">Name</th>
                     <th class="site_table">Role</th>
                     <!-- don't show revoke in read only mode -->
-                    <?php if(!$params['portalIsReadOnly']):?>
+                    <!-- Note, COMMENTED OUT below -->
+                    <!--<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']):?>
                         <th class="site_table">Revoke</th>
-                    <?php endif; ?>
+                    <?php endif; ?>-->
                 </tr>
                 <?php
                     $num = 2;
@@ -139,9 +142,10 @@
                         <?php xecho($role->getRoleType()->getName()) ?>
                     </td>
                     <!-- don't show revoke in read only mode -->
-                    <?php if(!$params['portalIsReadOnly']):?>    
+                    <!-- Note, COMMENTED OUT below -->
+                    <!--<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']):?>    
                         <td class="site_table"><a href="index.php?Page_Type=Revoke_Role&id=<?php echo $role->getId()?>" onclick="return confirmSubmit()">Revoke</a></td>
-                    <?php endif; ?>
+                    <?php endif; ?>-->
                 </tr>
                 <?php
                     if($num == 1) { $num = 2; } else { $num = 1; }
@@ -150,7 +154,7 @@
             </table>
         <?php else: echo "<br><br>&nbsp &nbsp There are currently no users with roles over this project<br>"; endif; ?>
         <!-- don't allow role requests in read only mode -->
-        <?php if(!$params['portalIsReadOnly']):?>
+        <?php if(!$params['portalIsReadOnly'] && $params['authenticated']):?>
             <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['ID'];?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
@@ -171,6 +175,7 @@
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <th class="site_table">Name</th>
+                    <th class="site_table">NGI</th>
                     <th class="site_table">Certification Status</th>
                     <th class="site_table">Production Status</th>
                 </tr>
@@ -193,6 +198,12 @@
                     <td class="site_table">
                         <?php xecho($site->getCertificationStatus()->getName()) ?>
                     </td>
+                    
+                    <td class="site_table">
+                        <a href="index.php?Page_Type=NGI&id=<?php echo $site->getNGI()->getId() ?>">
+                            <?php xecho($site->getNGI()->getName()) ?>
+                        </a>
+                    </td>
 
                     <td class="site_table">
                         <?php xecho($site->getInfrastructure()->getName()) ?>
@@ -201,4 +212,10 @@
                 <?php if($num == 1) { $num = 2; } else { $num = 1; }}?>
             </table>
         <?php endif; // End of the foreach loop iterating over sites?>
+
+    <!-- Show RoleActionRecords if user has permissions over this object -->
+    <?php if ($params['ShowEdit']){
+        require_once __DIR__ . '/../fragments/viewRoleActionsTable.php'; 
+    } ?>
+            
     </div>

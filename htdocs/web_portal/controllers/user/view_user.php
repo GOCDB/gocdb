@@ -28,6 +28,9 @@ function view_user() {
         throw new Exception("An id must be specified");
     }
     $user = \Factory::getUserService()->getUser($userId);
+    if($user === null){
+       throw new Exception("No user with that ID"); 
+    }
     $params['user'] = $user;
 
     $roles = \Factory::getRoleService()->getUserRoles($user, \RoleStatus::GRANTED); //$user->getRoles();

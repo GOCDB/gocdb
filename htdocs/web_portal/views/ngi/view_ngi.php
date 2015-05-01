@@ -47,41 +47,51 @@
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Contacts</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="titleIcon"/>
-            <table style="clear: both; width: 100%; table-layout: fixed;">
-                <tr class="site_table_row_1">
-                    <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
-                        <a href="mailto:<?php xecho($params['ngi']->getEmail()) ?>">
-                            <?php xecho($params['ngi']->getEmail()) ?>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="site_table_row_2">
-                    <td class="site_table" style="width: 30%">ROD E-Mail</td><td class="site_table">
-                        <a href="mailto:<?php xecho($params['ngi']->getRodEmail()) ?>">
+                <table style="clear: both; width: 100%; table-layout: fixed;">
+                    <tr class="site_table_row_1">
+                        <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
+                            <?php if($params['authenticated']) { ?>
+                            <a href="mailto:<?php xecho($params['ngi']->getEmail()) ?>">
+                                <?php xecho($params['ngi']->getEmail()) ?>
+                            </a>
+                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                        </td>
+                    </tr>
+                    <tr class="site_table_row_2">
+                        <td class="site_table" style="width: 30%">ROD E-Mail</td><td class="site_table">
+                            <?php if($params['authenticated']) { ?>
+                            <a href="mailto:<?php xecho($params['ngi']->getRodEmail()) ?>">
                             <?php xecho($params['ngi']->getRodEmail()) ?>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="site_table_row_1">
-                    <td class="site_table" style="width: 30%">Helpdesk E-Mail</td><td class="site_table">
-                        <a href="mailto:<?php xecho($params['ngi']->getHelpdeskEmail()) ;?>">
+                            </a>
+                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                        </td>
+                    </tr>
+                    <tr class="site_table_row_1">
+                        <td class="site_table" style="width: 30%">Helpdesk E-Mail</td><td class="site_table">
+                            <?php if($params['authenticated']) { ?>
+                            <a href="mailto:<?php xecho($params['ngi']->getHelpdeskEmail()) ;?>">
                             <?php xecho($params['ngi']->getHelpdeskEmail()) ?>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="site_table_row_2">
-                    <td class="site_table" style="width: 30%">Security E-Mail</td><td class="site_table">
-                        <a href="mailto:<?php echo $params['ngi']->getSecurityEmail() ?>">
+                            </a>
+                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                        </td>
+                    </tr>
+                    <tr class="site_table_row_2">
+                        <td class="site_table" style="width: 30%">Security E-Mail</td><td class="site_table">
+                            <?php if($params['authenticated']) { ?>
+                            <a href="mailto:<?php echo $params['ngi']->getSecurityEmail() ?>">
                             <?php xecho($params['ngi']->getSecurityEmail()) ?>
-                        </a>
-                    </td>
-                </tr>
-                <tr class="site_table_row_1">
-                    <td class="site_table" style="width: 30%">GGUS Support Unit</td><td class="site_table">
-                        <?php xecho($params['ngi']->getGgus_Su()) ?>
-                    </td>
-                </tr>
-            </table>
+                            </a>
+                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                        </td>
+                    </tr>
+                    <tr class="site_table_row_1">
+                        <td class="site_table" style="width: 30%">GGUS Support Unit</td><td class="site_table">
+                            <?php if($params['authenticated']) { ?>
+                            <?php xecho($params['ngi']->getGgus_Su()) ?>
+                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                        </td>
+                    </tr>
+                </table>
         </div>
         
         <!-- Project memberships (Top right) -->
@@ -193,7 +203,7 @@
     <!--  Users and Roles -->
     <div class="listContainer">
         <span class="header listHeader">
-            <?php echo sizeof($params['roles']) ?> User<?php if(sizeof($params['roles']) != 1) echo "s"?>
+           Users (Click on name to manage roles) 
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
         <table class="vSiteResults" id="selectedSETable">
@@ -232,7 +242,7 @@
             ?>
         </table>
         <!-- Don't show role request in read only mode -->
-        <?php if(!$params['portalIsReadOnly']):?>
+        <?php if(!$params['portalIsReadOnly'] && $params['authenticated']):?>
             <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
                 <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['ngi']->getId();?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="20px" style="float: left; vertical-align: middle; padding-right: 1em;">
@@ -245,59 +255,9 @@
     </div>
 
     <!-- Show RoleActionRecords if user has permissions over this NGI -->
-    <?php if ($params['ShowEdit']): ?>
-        <div class="listContainer">
-            <span class="header listHeader">
-                Role Request Log (Only shown if you have the necessary permissions)
-            </span> 
-            <table class="vSiteResults" id="roleActionTable">
-            <tr class="site_table_row_1">
-                <th class="site_table">Requested</th>
-                <th class="site_table">By</th>
-                <th class="site_table">Occurred On</th>
-                <th class="site_table">OldStatus</th>
-                <th class="site_table">NewStatus</th>
-                <th class="site_table">Updated By</th>
-            </tr>
-                <?php
-                $num = 2;
-                if (sizeof($params['RoleActionRecords']) > 0) {
-                    foreach ($params['RoleActionRecords'] as $ra) {
-                        ?>
-                        <tr class="site_table_row_<?php echo $num ?>">
-                            <td class="site_table">
-                               <?php xecho($ra->getRoleTypeName()); ?>
-                            </td>
-                            <td class="site_table">
-                                <a href="index.php?Page_Type=User&id=<?php echo $ra->getRoleUserId();?>">
-                                 <?php xecho($ra->getRoleUserPrinciple()); ?>
-                                </a>    
-                            </td>
-                            <td>
-                                <?php echo($ra->getActionDate()->format('Y-m-d H:i:s')); ?> 
-                            </td>
-                            <td class="site_table">
-                               <?php xecho($ra->getRolePreStatus()); ?>
-                            </td>
-                            <td class="site_table">
-                               <?php xecho($ra->getRoleNewStatus()); ?>
-                            </td>
-                            <td>
-                                <a href="index.php?Page_Type=User&id=<?php echo $ra->getUpdatedByUserId();?>">
-                                  <?php xecho($ra->getUpdatedByUserPrinciple()); ?>
-                                </a>     
-                            </td>
-                        </tr>     
-                        <?php
-                        if ($num == 1) {
-                            $num = 2;
-                        } else {
-                            $num = 1;
-                        }
-                    } // End of the foreach loop iterating over RoleActions 
-                }
-                ?>
-            
-        </div>
-    <?php endif; ?>
+    <?php if ($params['ShowEdit']){
+        require_once __DIR__ . '/../fragments/viewRoleActionsTable.php'; 
+    } ?>
+    
+
 </div>

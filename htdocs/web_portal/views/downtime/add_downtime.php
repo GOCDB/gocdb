@@ -27,7 +27,7 @@
         
         
 		<label for="startDate">Starts on (UTC):</label>
-		<div class="smallLabelText">Can't start before 48hrs from current time (DD/MM/YYYY) (HH:MM) <!--(Enter time after: <?php echo $params['twoDaysAgoUtc'];?>)--></div>
+		<div class="smallLabelText">To be SCHEDULED, DT must start 48hrs after current time (DD/MM/YYYY) (HH:MM) <!--(Enter time after: <?php echo $params['twoDaysAgoUtc'];?>)--></div>
 		<div class="form-group" id="startDateGroup">
 			<!-- Date Picker -->
 

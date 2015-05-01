@@ -31,14 +31,16 @@ $siteProperties = $site->getSiteProperties();
                 </a>
             </div>
         <?php endif; ?>
-        <div style="float: right; margin-left: 2em;">
-            <a href="index.php?Page_Type=Edit_Site&id=<?php echo($site->getId()) ?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
-                <br />
-                <br />
-                <span>Edit</span>
-            </a>
-        </div>
+        <?php if($params['ShowEdit']):?>
+            <div style="float: right; margin-left: 2em;">
+                <a href="index.php?Page_Type=Edit_Site&id=<?php echo($site->getId()) ?>">
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                    <br />
+                    <br />
+                    <span>Edit</span>
+                </a>
+            </div>
+        <?php endif; ?>
   
     </div>
     <?php endif; ?>
@@ -47,50 +49,58 @@ $siteProperties = $site->getSiteProperties();
     <div style="float: left; width: 100%; margin-top: 2em;">
         <!--  Contacts -->
         <div class="tableContainer" style="width: 55%; float: left;" >
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Contact</span>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Contact Info</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-            <table style="clear: both; width: 100%; table-layout: fixed;">
-                <tr class="site_table_row_1">
-                    <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
-						<a href="mailto:<?php xecho($site->getEmail()) ?>">
-							<?php xecho($site->getEmail()) ?>
-						</a>
-					</td>
-                </tr>
-                <tr class="site_table_row_2">
-                    <td class="site_table">Telephone</td><td class="site_table"><?php xecho($site->getTelephone()) ?></td>
-                </tr>
-                <tr class="site_table_row_1">
-                    <td class="site_table">Emergency Telephone</td><td class="site_table"><?php xecho($site->getEmergencyTel()) ?></td>
-                </tr>
-                <tr class="site_table_row_2">
-                    <td class="site_table">CSIRT Telephone</td><td class="site_table"><?php xecho($site->getCsirtTel()) ?></td>
-                </tr>
-                <tr class="site_table_row_1">
-                    <td class="site_table">CSIRT E-Mail</td>
-					<td class="site_table">
-						<a href="mailto:<?php xecho($site->getCsirtEmail())?>">
-							<?php xecho($site->getCsirtEmail()) ?>
-						</a>
-					</td>
-                </tr>
-                <tr class="site_table_row_2">
-                    <td class="site_table">Emergency E-Mail</td>
-					<td class="site_table">
-						<a href="mailto:<?php xecho($site->getEmergencyEmail()) ?>">
-							<?php xecho($site->getEmergencyEmail()) ?>
-						</a>
-					</td>
-                </tr>
-                <tr class="site_table_row_1">
-                    <td class="site_table">Helpdesk E-Mail</td>
-					<td class="site_table">
-						<a href="mailto:<?php xecho($site->getHelpdeskEmail()) ;?>">
-							<?php xecho($site->getHelpdeskEmail()) ?>
-						</a>
-					</td>
-                </tr>
-            </table>
+                <table style="clear: both; width: 100%; table-layout: fixed;">
+                    <tr class="site_table_row_1">
+                        <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
+                            <?php if($params['authenticated']) { ?>
+                            <a href="mailto:<?php xecho($site->getEmail()) ?>">
+                                <?php xecho($site->getEmail()) ?>
+                            </a> 
+                            <?php } else echo('PROTECTED - Auth Required'); ?>
+                        </td>
+                    </tr>
+                    <tr class="site_table_row_2">
+                        <td class="site_table">Telephone</td><td class="site_table"><?php if($params['authenticated']){xecho($site->getTelephone());} else echo('PROTECTED - Auth Required'); ?></td>
+                    </tr>
+                    <tr class="site_table_row_1">
+                        <td class="site_table">Emergency Tel</td><td class="site_table"><?php if($params['authenticated']){xecho($site->getEmergencyTel());} else echo('PROTECTED - Auth Required'); ?></td>
+                    </tr>
+                    <tr class="site_table_row_2">
+                        <td class="site_table">CSIRT Tel</td><td class="site_table"><?php if($params['authenticated']){xecho($site->getCsirtTel());} else echo('PROTECTED - Auth Required') ?></td>
+                    </tr>
+                    <tr class="site_table_row_1">
+                        <td class="site_table">CSIRT E-Mail</td>
+                        <td class="site_table">
+                            <?php if($params['authenticated']) { ?>
+                            <a href="mailto:<?php xecho($site->getCsirtEmail())?>">
+                                <?php xecho($site->getCsirtEmail()) ?>
+                            </a>
+                            <?php } else echo('PROTECTED - Auth Required'); ?>
+                        </td>
+                    </tr>
+                    <tr class="site_table_row_2">
+                        <td class="site_table">Emergency E-Mail</td>
+                        <td class="site_table">
+                            <?php if($params['authenticated']) { ?>
+                            <a href="mailto:<?php xecho($site->getEmergencyEmail()) ?>">
+                                <?php xecho($site->getEmergencyEmail()) ?>
+                            </a>
+                            <?php } else echo('PROTECTED - Auth Required'); ?>
+                        </td>
+                    </tr>
+                    <tr class="site_table_row_1">
+                        <td class="site_table">Helpdesk E-Mail</td>
+                        <td class="site_table">
+                            <?php if($params['authenticated']) { ?>
+                            <a href="mailto:<?php xecho($site->getHelpdeskEmail()) ;?>">
+                                <?php xecho($site->getHelpdeskEmail()) ?>
+                            </a>
+                            <?php } else echo('PROTECTED - Auth Required'); ?>
+                        </td>
+                    </tr>
+                </table>
         </div>
 
         <!--  Project Data -->
@@ -208,9 +218,9 @@ $siteProperties = $site->getSiteProperties();
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
                 <th class="site_table" >Value</th>  
-                <?php if(!$portalIsReadOnly): ?>
-                <th class="site_table" >Edit</th>  
-                <th class="site_table" >Remove</th>  
+                <?php if(!$portalIsReadOnly && $params['ShowEdit']): ?>
+                    <th class="site_table" >Edit</th>  
+                    <th class="site_table" >Remove</th>  
                 <?php endif; ?>              
             </tr>
             <?php
@@ -221,9 +231,9 @@ $siteProperties = $site->getSiteProperties();
 	            <tr class="site_table_row_<?php echo $num ?>">
 	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyName()); ?></td>
 	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyValue()); ?></td>
-	                <?php if(!$portalIsReadOnly): ?>	                
-	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Site_Property&propertyid=<?php echo($sp->getId());?>&id=<?php echo($site->getId());?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Site_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $site->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
+	                <?php if(!$portalIsReadOnly && $params['ShowEdit']): ?>	                
+                        <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Site_Property&propertyid=<?php echo($sp->getId());?>&id=<?php echo($site->getId());?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+                        <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Site_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $site->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
 	                <?php endif; ?>
 	            </tr>
 	            <?php
@@ -232,7 +242,7 @@ $siteProperties = $site->getSiteProperties();
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-		<?php if(!$portalIsReadOnly): ?>
+		<?php if(!$portalIsReadOnly && $params['ShowEdit']): ?>
             <!-- Add new data Link -->
             <a href="index.php?Page_Type=Add_Site_Property&site=<?php echo($site->getId());?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -334,7 +344,7 @@ $siteProperties = $site->getSiteProperties();
             ?>
         </table>
 		<!--  only show this link if we're in read / write mode -->
-		<?php if(!$portalIsReadOnly) :?>
+		<?php if(!$portalIsReadOnly && $params['ShowEdit']) :?>
             <!-- Add new Service Link -->
             <a href="index.php?Page_Type=Add_Service&siteId=<?php echo($site->getId());?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -348,7 +358,7 @@ $siteProperties = $site->getSiteProperties();
 
     <!--  Users -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users</span>
+        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
         <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
@@ -380,7 +390,7 @@ $siteProperties = $site->getSiteProperties();
 
 		<!-- Request Role Link -->
 		<!--  only show this link if we're in read / write mode -->
-        <?php if(!$portalIsReadOnly): ?>
+        <?php if(!$portalIsReadOnly && $params['authenticated']): ?>
             <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
                 <a href="index.php?Page_Type=Request_Role&id=<?php echo($site->getId());?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -423,7 +433,7 @@ $siteProperties = $site->getSiteProperties();
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-		<?php if(!$portalIsReadOnly): ?>
+		<?php if(!$portalIsReadOnly && $params['ShowEdit']): ?>
             <!-- Add new Downtime Link -->
             <a href="index.php?Page_Type=Add_Downtime&site=<?php echo($site->getId());?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -433,4 +443,10 @@ $siteProperties = $site->getSiteProperties();
             </a>
 		<?php endif; ?>
     </div>
+
+    <!-- Show RoleActionRecords if user has permissions over this object -->
+    <?php if ($params['ShowEdit']){
+        require_once __DIR__ . '/../fragments/viewRoleActionsTable.php'; 
+    } ?>
+
 </div>

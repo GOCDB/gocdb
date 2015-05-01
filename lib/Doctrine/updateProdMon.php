@@ -6,7 +6,6 @@
 use Doctrine\ORM\EntityManager; 
 
 require_once dirname(__FILE__) . "/bootstrap.php";
-require dirname(__FILE__).'/bootstrap_doctrine.php';
   
     if(!isset($argv[1]) || strcmp($argv[1],  '--force') ){ //strcmp returns 0 (i.e. false) if strings are equal
         die("Error. Usage:  php ".basename(__FILE__)." --force \n"); 

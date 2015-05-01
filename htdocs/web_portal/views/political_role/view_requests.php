@@ -45,12 +45,12 @@
     <!-- Roles you've requested awaiting approval-->
     <div style="float: left; width: 100%; margin-top: 2em;">
         <h3>
-              Your requests awaiting approval 
+              My role requests awaiting approval 
         </h3>
 
         <div class="listContainer" style="margin-top: 0em">
             <span class="header listHeader">
-                Your Pending Requests
+                My Pending Requests
             </span>
             <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
             <table class="vSiteResults" id="selectedSETable">
@@ -88,7 +88,7 @@
                   
                        ?> 
                     </td>
-                    <!-- Do not show delte request when portal is read only -->
+                    <!-- Do not show delete request when portal is read only -->
                     <?php if(!$params['portalIsReadOnly']):?>
                         <td class="site_table">
                             <form action="index.php?Page_Type=Revoke_Role" method="post"> 
@@ -111,7 +111,7 @@
     <!-- Roles you can approve -->
     <div style="float: left; width: 100%; margin-top: 2em;">
         <h3>
-              Roles requests that you can approve 
+              Other role requests that you can approve 
         </h3>
         
         <!--  Sites -->
@@ -172,12 +172,14 @@
                         <?php if (!$params['portalIsReadOnly']): ?>
                             <form action="index.php?Page_Type=Accept_Role_Request" method="post" class="form-inline"  style="float:left;">
                                 <input type="hidden" name="id" value="<?php echo $request->getId() ?>"/>
-                                <input type="submit" value="Accept" onclick="return confirmSubmit()" class="btn btn-sm btn-danger"/>
+                                <input type="submit" value="Accept" onclick="return confirmSubmit()" class="btn btn-sm btn-danger"
+                                        title="Roles allowing Accept: <?php $acceptRoles = $request->getDecoratorObject(); xecho($acceptRoles['grant']); ?>"/>
                                 &nbsp;&nbsp;&nbsp;
                             </form>
                             <form action="index.php?Page_Type=Deny_Role_Request" method="post" class="form-inline"  style="float:left;" >
                                 <input type="hidden" name="id" value="<?php echo $request->getId() ?>"/>
-                                <input type="submit" value="Deny" onclick="return confirmSubmit()" class="btn btn-sm btn-danger"/>
+                                <input type="submit" value="Deny" onclick="return confirmSubmit()" class="btn btn-sm btn-danger" 
+                                       title="Roles allowing Deny: <?php $denyRoles = $request->getDecoratorObject(); xecho($denyRoles['deny']); ?>"/>
                             </form>
                         <?php endif; ?>
                     </td>

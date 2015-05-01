@@ -172,7 +172,7 @@
                     </td>
                         
                     <td class="site_table">
-                        <?php xecho($user->getEmail()); ?>
+                        <?php if($params['authenticated']){ xecho($user->getEmail()); } else {echo 'PROTECTED - Authentication required'; } ?>
                     </td>
                 </tr>
                 <?php  

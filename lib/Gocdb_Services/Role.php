@@ -31,9 +31,6 @@ class Role extends AbstractEntityService{
     private $downtimeService; 
 
     
-    public function __construct() {
-    }   
-
     /**
      * Set the Downtime service
      * @param \org\gocdb\services\Downtime $downtimeService
@@ -289,11 +286,15 @@ class Role extends AbstractEntityService{
         if(!$this->isValidRoleStatus($roleStatus)){
             throw new \LogicException('Coding error - Invalid roleStatus');
         }
-        if($user->getId() == null) return array(); // return empty array
+        if($user->getId() == null){
+            return array(); // return empty array
+        }
         $dql = "SELECT r FROM Role r
         		JOIN r.user u
         		WHERE u.id = :id
-        		AND r.status = :status";
+        		AND r.status = :status 
+                ORDER BY r.id
+                ";
          $roles = $this->em->createQuery($dql)
             ->setParameter("id", $user->getId())
             ->setParameter("status", $roleStatus)
@@ -311,7 +312,7 @@ class Role extends AbstractEntityService{
         if(!$this->isValidRoleStatus($roleStatus)){
             throw new \LogicException('Coding error - Invalid roleStatus');
         } 
-         $dql = "SELECT r FROM Role r WHERE r.status = :status";
+         $dql = "SELECT r FROM Role r WHERE r.status = :status ORDER BY r.id";
          $roles = $this->em->createQuery($dql)
             ->setParameter("status", $roleStatus)
             ->getResult();
@@ -568,7 +569,13 @@ class Role extends AbstractEntityService{
         }
     }
 
-
+    /**
+     * Get an array of {@link \RoleActionRecord}s for the {@link \OwnedEntity} 
+     * that has the given id and type.  
+     * @param integer $id
+     * @param string $ownedEntityType One of ngi, site, service, project, servicegroup
+     * @return array of {@link \RoleActionRecord}s 
+     */
     public function getRoleActionRecordsById_Type($id, $ownedEntityType){
         
         $dql = "SELECT ra FROM RoleActionRecord ra
@@ -580,6 +587,21 @@ class Role extends AbstractEntityService{
             ->setParameter("type", $ownedEntityType)
             ->getResult();
         return $roleActionRecords;  
+    }
+    
+
+    /**
+     * Get the RoleActionRecords (if any exist) that have the specified roleId. 
+     * Note, it is possible that some Role instances may NOT have an associated 
+     * RoleActionRecord returning an empty array. 
+     * @param integer $roleId
+     * @return array of {@link \RoleActionRecord}s or empty array 
+     */
+    public function getRoleActionRecordByRoleId($roleId){
+       $dql = "SELECT ra FROM RoleActionRecord ra 
+               WHERE ra.roleId = :roleId";  
+       $rar = $this->em->createQuery($dql)->setParameter(":roleId", $roleId)->getResult(); 
+       return $rar; 
     }
 
     /**

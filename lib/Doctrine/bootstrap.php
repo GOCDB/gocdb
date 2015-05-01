@@ -1,9 +1,10 @@
 <?php
-ini_set('memory_limit', '-1');
+// bootstrap.php
+ 
+//ini_set('memory_limit', '-1');
 //set_time_limit(300);
 // Above line may be needed but only when Seeding DB with script files. Othewise
 // definately DO NOT set the memory limit to unlimited. 
-// bootstrap.php
 $entitiesPath = dirname(__FILE__)."/entities";
 
 require_once $entitiesPath."/OwnedEntity.php";
@@ -38,6 +39,7 @@ require_once $entitiesPath."/ArchivedSite.php";
 require_once $entitiesPath."/EndpointProperty.php"; 
 require_once $entitiesPath."/RoleActionRecord.php"; 
 
-if (!class_exists("Doctrine\Common\Version", false)) {
-    require_once __DIR__."/bootstrap_doctrine.php";
-}
+//if (!class_exists("Doctrine\Common\Version", false)) {
+//    require_once __DIR__."/bootstrap_doctrine.php";
+//}
+require __DIR__."/bootstrap_doctrine.php";

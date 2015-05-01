@@ -51,7 +51,10 @@ class RoleActionRecord {
      */
     protected $updatedByUserId; 
     /**
-     * The principle string (e.g. DN) of the {@link \User} who created the record. 
+     * A human readable string to help identify the {@link \User} who last 
+     * updated this record, e.g. a principle such as a DN, or the concat of 
+     * 'Firstname, Lastname'. Note, this value should not be used as a natural 
+     * foreign key and is for display purposes only.  
      * @Column(type="string", nullable=false)
      * @var string 
      */
@@ -121,7 +124,10 @@ class RoleActionRecord {
      */
     protected $roleUserId; 
     /**
-     * The principle string (e.g. DN) of the {@link \User}. 
+     * A human readable string to help identify the {@link \User} who created 
+     * this record, e.g. a principle such as a DN, or the concat of 
+     * 'Firstname, Lastname'. Note, this value should not be used as a natural 
+     * foreign key and is for display purposes only.  
      * @Column(type="string", nullable=false)
      * @var string 
      */
@@ -133,7 +139,10 @@ class RoleActionRecord {
      * instead to construct an instance. 
      *  
      * @param int    $updatedByUserId Id of {@link \User} who creates/updates the record. 
-     * @param string $updatedByUserPrinciple Principle string of {@link \User} who creates/udpates record. 
+     * @param string $updatedByUserPrinciple Human readable string of {@link \User} 
+     *               who updates the record (e.g. concat of 'firstName secondName' or principle string). 
+     *               Note, this value should not be used as a natural foreign 
+     *               key and is for display purposes only.
      * @param int    $roleId The target {@link \Role} 
      * @param string $rolePreStatus The Role status before update (e.g. STATUS_PENDING)
      * @param string $roleNewStatus The Role status after update (e.g. STATUS_GRANTED)
@@ -142,7 +151,10 @@ class RoleActionRecord {
      * @param int    $roleTargetOwnedEntityId The {@link \OwnedEntity} id that the Role is over  
      * @param string $roleTargetOwnedEntityType The type of {@link \OwnedEntity} e.g. Site, Service, NGI, ServiceGroup 
      * @param int    $roleUserId The Id of the {@link \User} who owns the Role.  
-     * @param string $roleUserPrinciple The principle string of the {@link \User} who owns the Role.  
+     * @param string $roleUserPrinciple Human readable string of {@link \User} 
+     *               who owns the Role (e.g. concat of 'firstName secondName' or principle string).  
+     *               Note, this value should not be used as a natural foreign 
+     *               key and is for display purposes only.
      */ 
     function __construct($updatedByUserId, $updatedByUserPrinciple, 
             $roleId, $rolePreStatus, $roleNewStatus, $roleTypeId, $roleTypeName, 
@@ -174,11 +186,11 @@ class RoleActionRecord {
      */
     public static function construct(\User $callingUser, \Role $role, $newStatus) {
         $rar = new self(
-                $callingUser->getId(), $callingUser->getCertificateDn(), 
+                $callingUser->getId(), /*$callingUser->getCertificateDn(),*/ $callingUser->getFullName(), 
                 $role->getId(), $role->getStatus(), $newStatus, 
                 $role->getRoleType()->getId(), $role->getRoleType()->getName(), 
                 $role->getOwnedEntity()->getId(), $role->getOwnedEntity()->getType(), 
-                $role->getUser()->getId(), $role->getUser()->getCertificateDn());
+                $role->getUser()->getId(), $role->getUser()->getFullName());
         return $rar;
     }
 

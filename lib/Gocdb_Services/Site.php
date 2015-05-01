@@ -192,7 +192,7 @@ class Site extends AbstractEntityService{
      * GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE
      * 
      * @param string $action @see \Action 
-     * @param \Site $se
+     * @param \Site $site
      * @param \User $user
      * @return array of RoleName strings that grant the requested action  
      * @throws \LogicException if action is not supported or is unknown 
@@ -347,16 +347,20 @@ class Site extends AbstractEntityService{
      * $ngiName = '%_ngi' to select all Sites whose parent NGI's name ends in '_ngi'.   
      * All parametes are nullable. Null params are not used for filtering results.   
      * 
-     * @param string $ngiName 
-     * @param string $prodStatus
-     * @param string $certStatus
-     * @param string $scopeName
-     * @param boolean $showClosed
-     * @param string $siteId
+     * @param string $ngiName NGI name   
+     * @param string $prodStatus Production status/target infrastructure, usually Test or Production
+     * @param string $certStatus Certification status value (Certified, Uncertified, Candidate, Suspended, Closed)
+     * @param string $scopeName Name of a scope value
+     * @param boolean $showClosed true or false
+     * @param integer $siteId Site id or null
+     * @param string $siteExtPropKeyName Site extension property name
+     * @param string $siteExtPropKeyValue Site extension property value
      * @return array An array of site objects with joined entities. 
      */
-    public function getSitesBy($ngiName=NULL, $prodStatus=NULL, $certStatus=NULL
-        , $scopeName=NULL, $showClosed=NULL, $siteId=NULL, $siteKeyName=NULL, $siteKeyValue=NULL) {
+    public function getSitesBy(
+            $ngiName=NULL, $prodStatus=NULL, $certStatus=NULL,
+            $scopeName=NULL, $showClosed=NULL, $siteId=NULL, 
+            $siteExtPropKeyName=NULL, $siteExtPropKeyValue=NULL) {
 
         $qb = $this->em->createQueryBuilder();
         $qb ->select('DISTINCT s', 'sc', 'n', 'i')
@@ -397,9 +401,9 @@ class Site extends AbstractEntityService{
                 ->setParameter(':closed', 'Closed');            
         }
         
-        if($siteKeyName != null && $siteKeyName != '%%'){
-            if($siteKeyValue == null || $siteKeyValue == ''){
-                $siteKeyValue='%%';
+        if($siteExtPropKeyName != null && $siteExtPropKeyName != '%%'){
+            if($siteExtPropKeyValue == null || $siteExtPropKeyValue == ''){
+                $siteExtPropKeyValue='%%';
             }
         
             $sQ = $this->em->createQueryBuilder();
@@ -411,8 +415,8 @@ class Site extends AbstractEntityService{
                     $sQ->expr()->like('sp.keyValue', ':keyvalue')));
         
             $qb ->andWhere($qb->expr()->in('s', $sQ->getDQL()));
-            $qb ->setParameter(':keyname', $siteKeyName)
-            ->setParameter(':keyvalue', $siteKeyValue);
+            $qb ->setParameter(':keyname', $siteExtPropKeyName)
+            ->setParameter(':keyvalue', $siteExtPropKeyValue);
         
         }
         
