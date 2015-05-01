@@ -53,7 +53,6 @@
 use Doctrine\ORM\EntityManager; 
 
 require_once dirname(__FILE__) . "/bootstrap.php";
-require dirname(__FILE__).'/bootstrap_doctrine.php';
   
     if(!isset($argv[1]) || strcmp($argv[1],  '--force') ){ //strcmp returns 0 (i.e. false) if strings are equal
         die("Error. Usage:  php ".basename(__FILE__)." --force \n"); 
@@ -91,6 +90,7 @@ require dirname(__FILE__).'/bootstrap_doctrine.php';
     
 	/*For each downtime make a new link to the affected service and remove the join
 	* between the downtime and the endpoint*/
+    echo "\n"; 
     echo "Linking [Service-to-Downtime] and deleting the current (single) [Downtime-to-EndpointLocation] association \n"; 
 	foreach($downtimes as $downtime){
 		$endpoints = $downtime->getEndpointLocations();
@@ -112,6 +112,7 @@ require dirname(__FILE__).'/bootstrap_doctrine.php';
 	$services = $entityManager->createQuery($dql)->getResult();
 	
 	//For each service remove the endpoint
+    echo "\n"; 
     echo "Delete Service's single [EndpointLocation] entity \n"; 
 	foreach($services as $service){
 		$endpoints = $service->getEndpointLocations();
@@ -129,5 +130,5 @@ require dirname(__FILE__).'/bootstrap_doctrine.php';
 	
 	//Write changes to db
 	$em->flush();
-	
+    echo "\n Done\n"; 	
 ?>

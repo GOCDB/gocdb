@@ -59,7 +59,9 @@ class ServiceGroup extends AbstractEntityService{
 
     /**
      * Returns an array of all Service Group entities and joined scopes. 
-     * in the DB.
+     * @param string $scope Scope name
+     * @param string $keyname ServiceGroup extension property key name
+     * @param string $keyvalue ServiceGroup extension property key value 
      * @return array An array of ServiceGroup objects
      */
 	public function getServiceGroups($scope=NULL, $keyname=NULL, $keyvalue=NULL) {

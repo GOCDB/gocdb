@@ -41,6 +41,11 @@ function view_ngi() {
         $params['UserIsAdmin']=$user->isAdmin();
     }
     
+    $params['authenticated'] = false; 
+    if($user != null){
+        $params['authenticated'] = true; 
+    }
+    
     $ngiServ = \Factory::getNgiService();
     $siteServ = \Factory::getSiteService();
     $ngi = $ngiServ->getNgi($ngiId);

@@ -292,7 +292,7 @@ class PIRequest {
             }
         } catch (\Exception $e) {
             print_r($e->getMessage());
-            die("An error has occured, please contact the GOCDB administrators at gocdb-admins@mailtalk.ac.uk");
+            die("An error has occured, please contact the GOCDB administrators at gocdb-admins@egi.eu");
         }
         return $xml;
 

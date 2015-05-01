@@ -20,7 +20,7 @@ $seId = $se->getId();
                     
     <!--  Edit link -->
     <!--  only show this link if we're in read / write mode -->
-    <?php if(!$params['portalIsReadOnly']): ?>
+    <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>">
@@ -125,7 +125,7 @@ $seId = $se->getId();
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-		<?php if(!$params['portalIsReadOnly']): ?>
+		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Property -->
             <a href="index.php?Page_Type=Add_Endpoint_Property&endpointid=<?php echo $endpoint->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>

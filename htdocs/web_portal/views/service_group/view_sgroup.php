@@ -17,26 +17,28 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
     <!--  Edit Virtual Site link -->
     <!--  only show this link if we're in read / write mode -->
     <?php if(!$params['portalIsReadOnly']): ?>
-        <div style="float: right;">
-            <div style="float: right; margin-left: 2em;">
-                <a href="index.php?Page_Type=Edit_Service_Group&id=<?php echo $params['sGroup']->getId()?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
-                    <br />
-                    <br />
-                    <span>Edit</span>
-                </a>
-            </div>
+        <?php if($params['ShowEdit']):?>
             <div style="float: right;">
-                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
-                <a onclick="return confirmSubmit()"
-                    href="index.php?Page_Type=Delete_Service_Group&id=<?php echo $params['sGroup']->getId()?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
-                    <br />
-                    <br />
-                    <span>Delete</span>
-                </a>
+                <div style="float: right; margin-left: 2em;">
+                    <a href="index.php?Page_Type=Edit_Service_Group&id=<?php echo $params['sGroup']->getId()?>">
+                        <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                        <br />
+                        <br />
+                        <span>Edit</span>
+                    </a>
+                </div>
+                <div style="float: right;">
+                    <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
+                    <a onclick="return confirmSubmit()"
+                        href="index.php?Page_Type=Delete_Service_Group&id=<?php echo $params['sGroup']->getId()?>">
+                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                        <br />
+                        <br />
+                        <span>Delete</span>
+                    </a>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
     <?php endif; ?>
 
     <!-- Virtual Site Properties container div -->
@@ -79,9 +81,11 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Contact E-Mail</td>
                     <td class="site_table">
+                        <?php if($params['authenticated']) { ?>
                         <a href="mailto:<?php xecho($params['sGroup']->getEmail()); ?>">
                             <?php xecho($params['sGroup']->getEmail()); ?>
                         </a>
+                        <?php } else {echo('PROTECTED - Auth Required');} ?>
                     </td>
                 </tr>
             </table>
@@ -152,7 +156,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-        <?php if(!$params['portalIsReadOnly']): ?>
+        <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Link -->
             <a href="index.php?Page_Type=Add_Service_Group_SEs&id=<?php echo $params['sGroup']->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -172,15 +176,12 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
 
     <!-- Roles -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Roles</span>
+        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
         <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
                 <th class="site_table">Role</th>
-                <?php if(!$params['portalIsReadOnly']): ?>
-                    <th class="site_table">Revoke</th>
-                <?php endif; ?>
             </tr>
             <?php
                 $num = 2;
@@ -198,9 +199,6 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
                 <td class="site_table">
                 	<?php xecho($role->getRoleType()->getName()) ?>
                 </td>
-                <?php if(!$params['portalIsReadOnly']): ?>
-                    <td class="site_table"><a href="index.php?Page_Type=Revoke_Role&id=<?php echo $role->getId()?>" onclick="return confirmSubmit()">Revoke</a></td>
-                <?php endif; ?>
             </tr>
             <?php
                 if($num == 1) { $num = 2; } else { $num = 1; }
@@ -208,7 +206,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-        <?php if(!$params['portalIsReadOnly']): ?>
+        <?php if(!$params['portalIsReadOnly'] && $params['authenticated']): ?>
             <!-- Request role Link -->
             <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['sGroup']->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -251,7 +249,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-        <?php if(!$params['portalIsReadOnly']): ?>
+        <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new data Link -->
             <a href="index.php?Page_Type=Add_Service_Group_Property&serviceGroup=<?php echo $params['sGroup']->getId()?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -293,4 +291,10 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
             ?>
         </table>
     </div>
+
+    <!-- Show RoleActionRecords if user has permissions over this object -->
+    <?php if ($params['ShowEdit']){
+        require_once __DIR__ . '/../fragments/viewRoleActionsTable.php'; 
+    } ?>
+        
 </div>

@@ -16,7 +16,7 @@ $configService = \Factory::getConfigService();
 
     <!--  Edit link -->
     <!--  only show this link if we're in read / write mode -->
-    <?php if(!$params['portalIsReadOnly']): ?>
+    <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Edit_Service&id=<?php echo $se->getId() ?>">
@@ -62,7 +62,14 @@ $configService = \Factory::getConfigService();
                     <td class="site_table">Architecture</td><td class="site_table"><?php xecho($se->getArchitecture())?></td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">Contact E-Mail</td><td class="site_table"><?php xecho($se->getEmail()) ?></td>
+                    <td class="site_table">Contact E-Mail</td><td class="site_table">
+                    <?php if (!$params['authenticated']) : ?> 
+                            PROTECTED - Authentication required 
+                    <?php endif; ?>
+                    <?php if ($params['authenticated']) : ?> 
+                            <?php xecho($se->getEmail()) ?>
+                    <?php endif; ?>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -227,9 +234,9 @@ $configService = \Factory::getConfigService();
                 <th class="site_table">Name</th>
                 <th class="site_table">URL</th>
                 <th class="site_table">Interface Name</th>
-                <?php if(!$params['portalIsReadOnly']): ?>
-                <th class="site_table" >Edit</th>  
-                <th class="site_table" >Remove</th>  
+                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
+                    <th class="site_table" >Edit</th>  
+                    <th class="site_table" >Remove</th>  
                 <?php endif; ?>              
             </tr>
             <?php
@@ -245,10 +252,19 @@ $configService = \Factory::getConfigService();
                     </td>
 	                <td style="width: 30%;"class="site_table"><?php echo($endpoint->getUrl()); ?></td>
 	                <td style="width: 30%;"class="site_table"><?php xecho($endpoint->getInterfaceName()); ?></td>
-	                <?php if(!$params['portalIsReadOnly']): ?>	                
-	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
-	                <?php endif; ?>
+	                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>	                
+                        <td style="width: 10%;"align = "center"class="site_table">
+                                <a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>">
+                                    <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
+                                </a>
+                        </td>
+                        <td style="width: 10%;"align = "center"class="site_table">
+                            <a href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>">
+                                <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/>
+                            </a>
+                        </td>
+                    <?php endif; ?>
+                        
 	            </tr>
 	            <?php
 	            if($num == 1) { $num = 2; } else { $num = 1; }
@@ -256,7 +272,7 @@ $configService = \Factory::getConfigService();
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-		<?php if(!$params['portalIsReadOnly']): ?>
+		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Endpoint -->
             <a href="index.php?Page_Type=Add_Service_Endpoint&se=<?php echo $se->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -284,9 +300,9 @@ $configService = \Factory::getConfigService();
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
                 <th class="site_table" >Value</th>  
-                <?php if(!$params['portalIsReadOnly']): ?>
-                <th class="site_table" >Edit</th>  
-                <th class="site_table" >Remove</th>  
+                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
+                    <th class="site_table" >Edit</th>  
+                    <th class="site_table" >Remove</th>  
                 <?php endif; ?>              
             </tr>
             <?php
@@ -297,9 +313,9 @@ $configService = \Factory::getConfigService();
 	            <tr class="site_table_row_<?php echo $num ?>">
 	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyName()); ?></td>
 	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyValue()); ?></td>
-	                <?php if(!$params['portalIsReadOnly']): ?>	                
-	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
+	                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>	                
+                        <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+                        <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
 	                <?php endif; ?>
 	            </tr>
 	            <?php
@@ -308,7 +324,7 @@ $configService = \Factory::getConfigService();
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-		<?php if(!$params['portalIsReadOnly']): ?>
+		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Property -->
             <a href="index.php?Page_Type=Add_Service_Property&se=<?php echo $se->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -351,7 +367,7 @@ $configService = \Factory::getConfigService();
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-		<?php if(!$params['portalIsReadOnly']): ?>
+		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Downtime Link -->
             <a href="index.php?Page_Type=Add_Downtime&se=<?php echo $se->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>

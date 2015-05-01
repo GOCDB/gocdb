@@ -23,20 +23,20 @@ function showAllServiceGroups(){
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 	
     $scope = '%%';
-    if(!empty($_REQUEST['scope'])) { 
-       $scope = $_REQUEST['scope'];
+    if(!empty($_GET['scope'])) { 
+       $scope = $_GET['scope'];
     }
     
     $scopes = \Factory::getScopeService()->getScopes();
     
     $sgKeyNames = "";
-    if(isset($_REQUEST['sgKeyNames'])) {
-        $sgKeyNames = $_REQUEST['sgKeyNames'];
+    if(isset($_GET['sgKeyNames'])) {
+        $sgKeyNames = $_GET['sgKeyNames'];
     }
     
     $sgKeyValues ="";
-    if(isset($_REQUEST['selectedSGKeyValue'])) {
-        $sgKeyValues = $_REQUEST['selectedSGKeyValue'];
+    if(isset($_GET['selectedSGKeyValue'])) {
+        $sgKeyValues = $_GET['selectedSGKeyValue'];
     }
     
     $sGroups = \Factory::getServiceGroupService()->getServiceGroups($scope, $sgKeyNames, $sgKeyValues);

@@ -52,7 +52,11 @@ class Role {
     ///** @Column(type="integer") **/
 	//protected $lastUpdatedByUserId;
 
-
+    /*
+     * A transient extension object used to decorate this instance with extra information. 
+     * Note, this object is <b>NOT</b> persisted to the DB. It is intended for transient
+     * operations such as holding extra view parameters for transer/rendering in the view layer.  
+     */
     protected $decoratorObject; 
     
     /**

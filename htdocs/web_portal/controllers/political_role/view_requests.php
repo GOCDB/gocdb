@@ -26,7 +26,9 @@ function view_requests() {
     
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    if($user == null) throw new Exception("Unregistered users can't view/request roles"); 
+    if($user == null) {
+        throw new Exception("Unregistered users can't view/request roles"); 
+    }
     
     
     // Entites is a two-dimensional array that lists both the id and name of 
@@ -59,13 +61,53 @@ function view_requests() {
        $entities[] = array('Object_ID' => $sg->getId(), 'Name' => $sg->getName()); 
     }
    
+    // Current user's own pending roles 
     $myPendingRoleRequests = \Factory::getRoleService()->getUserRoles($user, \RoleStatus::PENDING); 
-    $rolesUserCanApprove = \Factory::getRoleService()->getPendingRolesUserCanApprove($user); 
+    // foreach role, lookup corresponding RoleActionRecord (if any) and populate 
+    // the role.decoratorObject with the roleActionRecord for subsequent display 
+//    foreach($myPendingRoleRequests as $role){
+//       $rar = \Factory::getRoleService()->getRoleActionRecordByRoleId($role->getId());  
+//       $role->setDecoratorObject($rar); 
+//    }
+    
+    // Other roles current user can approve 
+    $otherRolesUserCanApprove = \Factory::getRoleService()->getPendingRolesUserCanApprove($user); 
+    
+     // can the calling user grant or reject each role?  
+    foreach ($otherRolesUserCanApprove as $r) {
+        $grantRejectRoleNamesArray = array(); 
+        $grantRejectRoleNamesArray['grant'] = ''; 
+        $grantRejectRoleNamesArray['deny'] = ''; 
+        
+        // get list of roles that allows user to to grant the role request
+        $grantRoleAuthorisingRoleNames = \Factory::getRoleService()->authorizeAction(\Action::GRANT_ROLE, $r->getOwnedEntity(), $user); 
+        if(count($grantRoleAuthorisingRoleNames)>=1){
+            $allAuthorisingRoleNames = ''; 
+            foreach($grantRoleAuthorisingRoleNames as $arName){
+                $allAuthorisingRoleNames .= $arName.', '; 
+            }
+            $allAuthorisingRoleNames = substr($allAuthorisingRoleNames, 0, strlen($allAuthorisingRoleNames)-2);  
+            $grantRejectRoleNamesArray['grant'] = '['.$allAuthorisingRoleNames.']'; 
+        } 
+        
+        // get list of roles that allows user to reject the role request
+        $denyRoleAuthorisingRoleNames = \Factory::getRoleService()->authorizeAction(\Action::REJECT_ROLE, $r->getOwnedEntity(), $user); 
+        if(count($denyRoleAuthorisingRoleNames)>=1){
+           $allAuthorisingRoleNames = ''; 
+            foreach($denyRoleAuthorisingRoleNames as $arName){
+                $allAuthorisingRoleNames .= $arName.', '; 
+            }
+            $allAuthorisingRoleNames = substr($allAuthorisingRoleNames, 0, strlen($allAuthorisingRoleNames)-2);  
+            $grantRejectRoleNamesArray['deny'] = '['.$allAuthorisingRoleNames.']'; 
+        }
+        // store array of role names in decorator object 
+        $r->setDecoratorObject($grantRejectRoleNamesArray); 
+    }
     
     $params = array();
 	$params['entities'] = $entities;
 	$params['myRequests'] = $myPendingRoleRequests;
-	$params['allRequests'] = $rolesUserCanApprove;
+	$params['allRequests'] = $otherRolesUserCanApprove;
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
     show_view("political_role/view_requests.php", $params, "Role Requests");
     die(); 

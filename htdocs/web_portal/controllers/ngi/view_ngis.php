@@ -24,8 +24,8 @@ function view_ngis() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     
     $scope = '%%';
-    if(!empty($_REQUEST['scope'])) { 
-       $scope = $_REQUEST['scope'];
+    if(!empty($_GET['scope'])) { 
+       $scope = $_GET['scope'];
     }
     
     $scopes = \Factory::getScopeService()->getScopes();

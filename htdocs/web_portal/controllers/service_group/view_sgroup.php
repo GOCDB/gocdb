@@ -2,20 +2,18 @@
 function showServiceGroup() {
     require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
     require_once __DIR__ . '/../utils.php';
-    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+
+    $sGroupId = $_GET['id'];
+    if (!isset($sGroupId) || !is_numeric($sGroupId['id']) ){
         throw new Exception("An id must be specified");
     } 
-    $sGroupId = $_REQUEST['id'];
 
-    $sGroup = \Factory::getServiceGroupService()
-    	->getServiceGroup($sGroupId);
+    $sGroup = \Factory::getServiceGroupService()->getServiceGroup($sGroupId);
     $params['sGroup'] = $sGroup;
 
     // get downtimes that affect services under this service group
     // 31 = the number of days worth of historical downtimes to show
-    $downtimes = \Factory::getServiceGroupService()
-    	->getDowntimes($sGroupId, 31);
-
+    $downtimes = \Factory::getServiceGroupService()->getDowntimes($sGroupId, 31);
     $params['downtimes'] = $downtimes;
     
     //get user for case that portal is read only and user is admin, so they can still see edit links
@@ -23,6 +21,11 @@ function showServiceGroup() {
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
+
+    $params['authenticated'] = false; 
+    if($user != null){
+        $params['authenticated'] = true; 
+    }
 
     $allRoles = $sGroup->getRoles(); 
     $roles = array(); 
@@ -32,6 +35,15 @@ function showServiceGroup() {
         }
     }
     $params['Roles'] = $roles; 
+
+    // Does current viewer have edit permissions over object ?
+    $params['ShowEdit'] = false;  
+    if(count( \Factory::getServiceGroupService()->authorizeAction(\Action::EDIT_OBJECT, $sGroup, $user))>=1){
+       $params['ShowEdit'] = true;  
+    } 
+
+    // Add RoleActionRecords to params 
+    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($sGroup->getId(), 'servicegroup'); 
 
     $title = $sGroup->getName();
 

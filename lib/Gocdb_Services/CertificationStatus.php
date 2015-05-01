@@ -45,8 +45,9 @@ class CertificationStatus extends AbstractEntityService{
     }
 
     /**
+     * User attempts to update the given site's certification status. 
      * @param \Site $site
-     * @param \CertificationStatus $certStatus
+     * @param \CertificationStatus $newCertStatus
      * @param \User $user
      * @param string $reason The reason for this change, max 300 char. 
      * @throws \Exception If access is denied or the change is invalid
@@ -61,10 +62,10 @@ class CertificationStatus extends AbstractEntityService{
         }
         // TODO use validate service 
         if(empty($reason) ){
-           throw new LogicException('A reason is required');     
+           throw new \LogicException('A reason is required');     
         }
         if(strlen($reason) > 300){
-            throw new LogicException('Invalid reason - 300 char max'); 
+            throw new \LogicException('Invalid reason - 300 char max'); 
         } 
         // Admins can do any cert status change, e.g. to undo mistakes.
         if(!$user->isAdmin()){

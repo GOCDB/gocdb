@@ -24,12 +24,13 @@ function show_project() {
     require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
-    
-    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+   
+    $projId = $_GET['id']; 
+    if (!isset($projId) || !is_numeric($projId) ){
         throw new Exception("An id must be specified");
     }
     $serv=\Factory::getProjectService();
-    $project = $serv->getProject($_REQUEST['id']);
+    $project = $serv->getProject($projId);
     $allRoles = $project->getRoles(); 
     $roles = array(); 
     foreach ($allRoles as $role){
@@ -45,7 +46,15 @@ function show_project() {
     $params['ShowEdit'] = false;  
     if(count($serv->authorizeAction(\Action::EDIT_OBJECT, $project, $user))>=1){
        $params['ShowEdit'] = true;  
-    } 
+    }
+    
+    $params['authenticated'] = false; 
+    if($user != null){
+        $params['authenticated'] = true; 
+    }
+
+    // Add RoleActionRecords to params 
+    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($project->getId(), 'project'); 
     
     $params['Name'] = $project->getName();
     $params['Description'] = $project->getDescription();

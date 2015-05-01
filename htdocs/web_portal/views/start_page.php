@@ -37,8 +37,8 @@
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&key=<?php echo $params['googleAPIKey'];?>">
         </script>
         <!--This script provides the marker clustering functionality comment out the cluster line in googleSiteMap.js and this script to disable it-->
-        <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/googleMapClusterer.js">
-        </script>
+        <!--<script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/googleMapClusterer.js">
+        </script>-->
         <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/googleSiteMap.js">
         </script> 
         <div style="display:inline-block;  ">

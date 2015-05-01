@@ -23,8 +23,16 @@
 function search() {
     require_once __DIR__.'/../../../lib/Gocdb_Services/Factory.php';
     
+   
+    $dn = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($dn);
+
+    $params['authenticated'] = false; 
+    if($user != null){
+        $params['authenticated'] = true; 
+    }
     
-    $searchTerm = $_REQUEST['SearchString'];
+    $searchTerm = $_POST['SearchString'];
     
     //strip leading and trailing whitespace off search term
     $searchTerm = strip_tags(trim($searchTerm));
