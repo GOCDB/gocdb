@@ -1,7 +1,6 @@
 #!/bin/bash
- 
-read -p "Recreate Test DB? - Drop all data and recreate tables? (Y/N): " -n 1 -r; 
-if [[ $REPLY =~ ^[Yy]$ ]]
+read -p "Recreate Test DB? - Drop all data and recreate tables? (Y/N): " -n 1 -r ; 
+if [[ $REPLY =~ ^[Yy]$ ]] ; 
 then
     # These command lines require that the following files exist: 
     # bootstrap.php  

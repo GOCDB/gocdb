@@ -1,8 +1,8 @@
 <?php
-use org\gocdb\services\NGI;
-use org\gocdb\services\Site;
-require_once 'PHPUnit/Extensions/Database/TestCase.php';
-require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
+//use org\gocdb\services\NGI;
+//use org\gocdb\services\Site;
+//require_once 'PHPUnit/Extensions/Database/TestCase.php';
+//require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
 require_once dirname(__FILE__) . '/TestUtil.php'; 
 
 use Doctrine\ORM\EntityManager; 

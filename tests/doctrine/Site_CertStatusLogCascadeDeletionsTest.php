@@ -1,7 +1,7 @@
 <?php
 
-require_once 'PHPUnit/Extensions/Database/TestCase.php';
-require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
+//require_once 'PHPUnit/Extensions/Database/TestCase.php';
+//require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
 require_once dirname(__FILE__) . '/TestUtil.php';
 require_once dirname(__FILE__) . '/../../lib/DAOs/ServiceDAO.php';
 require_once dirname(__FILE__) . '/../../lib/DAOs/SiteDAO.php';
