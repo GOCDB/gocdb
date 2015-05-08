@@ -11,6 +11,9 @@ bootstrap_doctrine_mysql.php
 bootstrap_doctrine_oracle.php
 vendor/
 compiledEntities/
+composer.phar
+composer.bat
+composer
 
 # Eclipse: https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
 # =====================

@@ -1,9 +1,5 @@
 <?php
-if(isset($argv[1])) {
-	$GLOBALS['dataDir'] = $argv[1];
-} else {
-	throw new Exception("Please specify your data directory");
-}
+
 
 // Finds one or more services by hostname and service type
 function findSEs($hostName, $serviceType) {

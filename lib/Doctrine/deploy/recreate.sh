@@ -1,8 +1,6 @@
 #!/bin/bash
 cd ..
-
 echo "Deploying a database [forces drop re-create of DB tables]"
-
 read -p "This operation will drop all data in the database, are you sure you want to continue? (Y/N): " -n 1 -r
 if [[ $REPLY =~ ^[Yy]$ ]]
 then
