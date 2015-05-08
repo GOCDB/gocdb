@@ -25,7 +25,7 @@ class Role {
     protected $roleType;
 
     /** 
-     * @ManyToOne(targetEntity="User")
+     * @ManyToOne(targetEntity="User", inversedBy="roles")
      * @JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $user;

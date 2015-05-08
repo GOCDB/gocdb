@@ -55,4 +55,10 @@ abstract class OwnedEntity {
      * @return string The entity type as a string. 
      */
     abstract public function getType();
+
+    /**
+     * Get the entity name. 
+     * @return string The entity name as a string. 
+     */
+    abstract public function getName(); 
 }
