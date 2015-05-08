@@ -1,6 +1,5 @@
 <?php
 $configService = \Factory::getConfigService();
-$default_endpoint_name= $configService->GetDefaultEndpointName();
 
 $services = $params['Impacted_Services'];
 $endpoints = $params['Impacted_Endpoints'];
@@ -69,7 +68,7 @@ if(isset($params['isEdit'])){
 			if($endpoint->getName() != ''){
                 $name = xssafe($endpoint->getName());
             }else{
-                $name = xssafe($default_endpoint_name);
+                $name = xssafe("myEndpoint");
             }
     		echo "<li>" . $name . "</li>";
     		}

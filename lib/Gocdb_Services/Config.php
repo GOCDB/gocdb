@@ -163,19 +163,7 @@ class Config {
         return $this->GetLocalInfoXML()->local_info->extensions->max;        
     }
     
-    public function getDefaultEndpointName(){
-        return $this->GetLocalInfoXML()->local_info->endpoints->default_name;
-    }
         
-    public function getEndpointRenderStatus(){
-        $status = $this->GetLocalInfoXML()->local_info->endpoints->render;
-        if($status == 'true'){
-            return true;
-        }else{
-            return false;
-        }
-    }
-
     public function getSendEmails(){
         $sendEmailString = $this->GetLocalInfoXML()->local_info->send_email;  
          if(empty($sendEmailString)){

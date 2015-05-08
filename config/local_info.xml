@@ -23,7 +23,7 @@
             <!-- If false then a service must belong to a physical 
                  site. If true an option will be available to add a brand new  
                  SE to a service group and the new SE won't belong to a 
-                 physical site (****true is not supported yet****). -->
+                 physical site (****MUST be false, true IS NOT SUPPORTED YET****). -->
             <siteless_services>false</siteless_services>
         </optional_features>
         
@@ -76,12 +76,6 @@
         <send_email>false</send_email>
 
 		
-		<!-- Define the default phrase used as a placeholder when an endpoint has no name value and
-		a boolean value to set the rendering of multiple endpoint data via the PI-->
-		<endpoints>
-			<default_name>Unnamed Endpoint</default_name>
-			<render>true</render>
-		</endpoints>
 	</local_info>
 </schema>
 

@@ -1,7 +1,6 @@
 <?php
 $services = $params['services'];
 $configService = \Factory::getConfigService();
-$default_endpoint_name= $configService->GetDefaultEndpointName();
 
 ?>
 <!-- Dynamically create a select list from a sites services -->
@@ -13,7 +12,7 @@ $default_endpoint_name= $configService->GetDefaultEndpointName();
         echo "<option value=\"s" . $service->getId() . "\" id=\"" . $service->getId() . "\" SELECTED>" . '('.xssafe($service->getServiceType()->getName()).') '.xssafe($service->getHostName()) . "</option>";
         foreach($service->getEndpointLocations() as $endpoint){
             if($endpoint->getName() == ''){
-                $name = xssafe($default_endpoint_name);
+                $name = xssafe('myEndpoint');
             }else{
                 $name = xssafe($endpoint->getName());
             }

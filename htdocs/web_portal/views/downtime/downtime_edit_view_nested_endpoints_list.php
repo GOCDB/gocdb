@@ -2,7 +2,6 @@
 $services = $params['services'];
 $dt = $params['downtime'];
 $configService = \Factory::getConfigService();
-$default_endpoint_name= $configService->GetDefaultEndpointName();
 
 //Get the affected services and store the ids in an array. 
 $affectedServiceIds = array();
@@ -48,7 +47,7 @@ foreach($dt->getEndpointLocations() as $affectedEndpoints){
 						$selected = '';
 					}
             if($endpoint->getName() == ''){
-                $name = xssafe($default_endpoint_name);
+                $name = xssafe('myEndpoint');
             }else{
                 $name = xssafe($endpoint->getName());
             }
