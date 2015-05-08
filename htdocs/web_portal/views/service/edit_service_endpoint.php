@@ -2,7 +2,6 @@
 $service = $params['service'];
 $endpoint = $params['endpoint'];
 $configService = \Factory::getConfigService();
-$default_endpoint_name = $configService->GetDefaultEndpointName();
 $serviceTypes = $params['serviceTypes'];
 ?>
 
