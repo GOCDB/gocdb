@@ -33,26 +33,35 @@ function view_user() {
     }
     $params['user'] = $user;
 
+    // get the targetUser's roles
     $roles = \Factory::getRoleService()->getUserRoles($user, \RoleStatus::GRANTED); //$user->getRoles();
-
-    $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();
 
     $callingUser = \Factory::getUserService()->getUserByPrinciple(Get_User_Principle());
    
-    // can the calling user revoke each role?  
-    foreach ($roles as $r) {
-        $authorisingRoleNames = \Factory::getRoleService()->authorizeAction(\Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser); 
-        if(count($authorisingRoleNames)>=1){
-            $allAuthorisingRoleNames = ''; 
-            foreach($authorisingRoleNames as $arName){
-                $allAuthorisingRoleNames .= $arName.', '; 
-            }
-            $allAuthorisingRoleNames = substr($allAuthorisingRoleNames, 0, strlen($allAuthorisingRoleNames)-2);  
-            $r->setDecoratorObject('['.$allAuthorisingRoleNames.'] ');
-        } 
+    // can the calling user revoke the targetUser's roles?  
+    if($user != $callingUser){
+        foreach ($roles as $r) {
+            //$ownedEntityDetail = $r->getOwnedEntity()->getName(). ' ('. $r->getOwnedEntity()->getType().')'; 
+            $authorisingRoleNames = \Factory::getRoleService()->authorizeAction(
+                    \Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser); 
+            if(count($authorisingRoleNames)>=1){
+                $allAuthorisingRoleNames = ''; 
+                foreach($authorisingRoleNames as $arName){
+                    $allAuthorisingRoleNames .= $arName.', '; 
+                }
+                $allAuthorisingRoleNames = substr($allAuthorisingRoleNames, 0, strlen($allAuthorisingRoleNames)-2);  
+                $r->setDecoratorObject('['.$allAuthorisingRoleNames.'] ');
+            } 
+        }
+    } else {
+        // current user is viewing their own roles, so they can revoke their own roles 
+        foreach ($roles as $r) {
+            $r->setDecoratorObject('[Self revoke own role]'); 
+        }
     }
 
     $params['roles'] = $roles;
+    $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();
     $title = $user->getFullName();
     show_view("user/view_user.php", $params, $title);
 }

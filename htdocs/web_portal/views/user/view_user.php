@@ -153,7 +153,7 @@
                         <form action="index.php?Page_Type=Revoke_Role" method="post"> 
                             <input type="hidden" name="id" value="<?php echo $role->getId()?>" /> 
                             <input id="revokeButton" type="submit" value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()" 
-                                   title="Roles allowing revoke: <?php xecho($role->getDecoratorObject()); ?>" >
+                                   title="Your roles allowing revoke: <?php xecho($role->getDecoratorObject()); ?>" >
                         </form> 
                     <?php endif;?>
                 </td>
