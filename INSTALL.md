@@ -35,12 +35,12 @@ line. A sample configuration is copied below.
 If you are planning to use Oracle, you need the php oci8 extension, which is included 
 since php 5.3+, see: [php oci8](http://php.net/manual/en/book.oci8.php)  
 ```bash
-# php --version
+$ php --version
 PHP 5.3.3 (cli) (built: Oct 23 2014 06:58:46)
 Copyright (c) 1997-2010 The PHP Group
 Zend Engine v2.3.0, Copyright (c) 1998-2010 Zend Technologies
 
-# php --ini
+$ php --ini
 Configuration File (php.ini) Path: /etc
 Loaded Configuration File:         /etc/php.ini
 Scan for additional .ini files in: /etc/php.d
@@ -48,21 +48,21 @@ Additional .ini files parsed:      /etc/php.d/curl.ini,
 /etc/php.d/dom.ini,
 ...
 
-# php -i | grep 'extension_dir' 
+$ php -i | grep 'extension_dir' 
 extension_dir => /usr/lib64/php/modules/ => /usr/lib64/php/modules/
 
-# php -i | grep libxml2
+$ php -i | grep libxml2
 libxml2 Version => 2.7.6
 
-# php -i | grep -i oci8
+$ php -i | grep -i oci8
 oci8
 OCI8 Support => enabled
 
-# php -i | grep DOM
+$ php -i | grep DOM
 DOM/XML => enabled
 DOM/XML API Version => 20031129
 
-# php -i | grep PDO
+$ php -i | grep PDO
 PDO
 PDO support => enabled
 PDO drivers => mysql, oci, sqlite
@@ -84,7 +84,7 @@ line. Note, Doctrine can be installed either globally using PEAR or as a project
 specific dependency using composer. Either way, ensure your `$PATH` environment 
 variable is updated to run the doctrine command line client:    
 ```bash
-# doctrine --version
+$ doctrine --version
 Doctrine Command Line Interface version 2.3.3
 ```
 ####Install Doctrine Via Composer (Recommended)
@@ -93,7 +93,7 @@ Doctrine Command Line Interface version 2.3.3
   * If you are behind a proxy, you may need to set your `http_proxy` and `https_proxy` env vars. 
   * If you are on Win, you can create a `composer.bat` file with the following content: `php "%~dp0composer.phar" %*`
 ```bash
-# composer --version
+$ composer --version
 Composer version 1.0-dev (6d76142907fca2478a1b8867ee6c86b04a3f4ff5) 2015-04-30 10:04:17
 ```
 * The composer.json and lock files are provided for you so you can simply run `composer install` 
@@ -108,12 +108,12 @@ see: [pear installation](http://pear.php.net/manual/en/installation.getting.php)
   * [doctrine config](http://docs.doctrine-project.org/en/latest/reference/configuration.html)
   * [pear project](http://pear.doctrine-project.org/)
 ```
-# pear version
+$ pear version
 PEAR Version: 1.9.4
 PHP Version: 5.3.3
-# pear channel-discover pear.doctrine-project.org
-# pear channel-discover pear.symfony.com
-# pear install --alldeps doctrine/DoctrineORM
+$ pear channel-discover pear.doctrine-project.org
+$ pear channel-discover pear.symfony.com
+$ pear install --alldeps doctrine/DoctrineORM
 ``` 
 
 ---
@@ -186,19 +186,19 @@ specify your chosen DB connection details (see file for more details, including
 how to compile Doctrine proxy objects for better performance for production usage). 
 * Check that doctrine can connect to the DB using: 
 ```
-# doctrine orm:schema-tool:update 
+$ doctrine orm:schema-tool:update 
 ```
 
 ###Deploy Tables/Schema via Doctrine<a id="deploy-schema"></a>
 Use the doctrine command line tool to test doctrine's connection to the DB, then
 drop and create the DB schema using the `doctrine orm:schema-tool`: 
 ```bash
-# cd lib/Doctrine
-# doctrine orm:schema-tool:drop --dump-sql
+$ cd lib/Doctrine
+$ doctrine orm:schema-tool:drop --dump-sql
 ... sql shown here
-# doctrine orm:schema-tool:drop --force
+$ doctrine orm:schema-tool:drop --force
 Database schema dropped successfully!
-# doctrine orm:schema-tool:create
+$ doctrine orm:schema-tool:create
 Creating database schema...
 Database schema created successfully!
 ```
@@ -211,16 +211,16 @@ as a sample instance with a small amount of example data to demonstrate GocDB.
 The required data includes common lookup values such as countries, timezones
 common service types, default role types, default site certification statuses. 
 ```bash
-# cd lib/Doctrine
-# php deploy/DeployRequiredDataRunner.php requiredData
+$ cd lib/Doctrine
+$ php deploy/DeployRequiredDataRunner.php requiredData
 ```
 
 ###Deploy Sample Data<a id="deploy-sample-data"></a>
 Optional - you can deploy some sample data to seed your DB with sample users, 
 sites and services. 
 ```bash
-# cd lib/Doctrine
-# php deploy/DeploySampleDataRunner.php sampleData 
+$ cd lib/Doctrine
+$ php deploy/DeploySampleDataRunner.php sampleData 
 ```
 
 

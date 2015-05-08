@@ -16,7 +16,7 @@ Documentation
 * [GOCDB Executive Summary](https://wiki.egi.eu/w/images/d/d3/GOCDB5_Grid_Topology_Information_System.pdf)
 * [EGI GOCDB wiki landing page](https://wiki.egi.eu/wiki/GOCDB) 
 * [GOCDB Documentation index](https://wiki.egi.eu/wiki/GOCDB_Documentation_Index)
-* [Deploy/Install/Test](https://wiki.egi.eu/wiki/GOCDB/Regional_Module_Technical_Documentation) 
 * [User docs](https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation) 
+* INSTALL.md for installation 
 
 

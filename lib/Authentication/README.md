@@ -7,8 +7,8 @@ SAML and un/pw authentication. It is reusable in other php projects. All objects
 to prevent collision with other components. 
 
 * Without modification, the framework is configured for x509 client certificate authentication. 
-Therefore, you will probably need to configure your Apache instance for SSL with client
-cert authentication.  
+Therefore, with a default installation, you will need to configure your Apache 
+instance for SSL for client cert authentication.  
 
 Please note, it will no doubt need to be extended and modified to suit the 
 requirements of the particular deployment. The authentication abstractions can't be used 
@@ -22,29 +22,32 @@ There is plenty of scope to further develop this module to support 'out of the b
 deployment for different auth mechanisms. 
 
 ###Summary - How does the framework authenticates a user? 
-* Client code gets a FirewallComponentManager instance and select the required 
-IFirewallComponent. 
-* Client code invokes `$myfirewallCompoent->getAuthentication()` to get an IAutenticationToken
+* Client code uses the `FirewallComponentManager.php` instance to select the required 
+`IFirewallComponent.php` instance. 
+* Client code invokes `$myfirewallComponent->getAuthentication();` to get an `IAutenticationToken`
 instance by invoking the automatic **Token Resolution Process** :
 
   1. An attempt is made to fetch a previously created token from HTTP session and return the token if available. 
      A token may not exist for the current request because: 
 
-    * this is the initial request and a token has not be created yet, 
-    * the configuration prevents session-creation and/or, 
-    * the token is `stateless` which prevents it from being stored in session.  
+     * this is the initial request and a token has not been created yet, 
+     * the configuration prevents session-creation and/or, 
+     * the token is `stateless` which prevents it from being stored in session.  
 
   2. If a token is not available, then the configured **pre-authenticating** 
-     tokens are iterated in order in an attempt to automatically create a token.  
+     tokens are iterated in order in an attempt to automatically create a token:  
 
     * The first successfully created and authenticated pre-auth token is returned. 
 
   3. If a pre-authenticating token could not be be created, `null` is returned.     
-  4. If `null` is returned, client code can choose to manually create an auth token 
-     for subsequent authentication using the AuthenticationManagerService. For 
-     example, creating a UsernamePasswordAuthenticationToken which requires credentials are input 
-     from the user (un/pw token is not a pre-authenticating token - it can't be 
-     automatically created/resolved).   
+  4. If `null` is returned, client code can optionally choose to manually create an authentication token. 
+     The token must then be manually authenticated using the  
+     `$myfirewallComponent->authenticate($aToken)` method. 
+     * For example, a `UsernamePasswordAuthenticationToken.php` requires credentials 
+     are manually input from the user, usually via a form POST. In this example, 
+     the un/pw token is not a pre-authenticating token as it can't be 
+     automatically created/resolved (the credentials are not 
+     provided in each/every request unlike client certificates or http basic).   
 
 
 Core Interfaces and (Implementations) 
