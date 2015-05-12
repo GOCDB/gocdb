@@ -1,6 +1,7 @@
-
 Authentication Abstraction Framework
 ===================================
+This file is best viewed using a browser-plugin for markdown `.md` files.
+
 This Authentication package/framework provides generic abstractions and some selected 
 implementations to support different authentication mechanisms such as x509, 
 SAML and un/pw authentication. It is reusable in other php projects. All objects are defined within a namespace 
@@ -22,16 +23,26 @@ There is plenty of scope to further develop this module to support 'out of the b
 deployment for different auth mechanisms. 
 
 ###Summary - How does the framework authenticates a user? 
-* Client code uses the `FirewallComponentManager.php` instance to select the required 
-`IFirewallComponent.php` instance. 
-* Client code invokes `$myfirewallComponent->getAuthentication();` to get an `IAutenticationToken`
-instance by invoking the automatic **Token Resolution Process** :
+* Client code uses the `FirewallComponentManager.php` instance to create/return  
+the required `IFirewallComponent.php` instance. 
+  * Multiple  `IFirewallComponent.php` instances can be configured for different 
+    parts or paths in your Webapp. 
+    For example, a ***stateful*** instance that uses the 
+    HTTP session to store user authentication tokens could be used by pages for 
+    a portal GUI because this would prevent the need to repeatedly re-authenticate the user across 
+    different pages. 
+    Conversely, within the same webapp, a ***stateless*** FW component could be used to protect REST 
+    endpoints where creation of the HTTP session would be unnecessary overhead 
+    because credentials could be provided in every request (e.g. via x509 or BASIC).  
+
+* Client code invokes `$myfirewallComponent->getAuthentication();` on the FW component
+ to get an `IAutenticationToken` instance. This starts the automatic **Token Resolution Process** :
 
   1. An attempt is made to fetch a previously created token from HTTP session and return the token if available. 
      A token may not exist for the current request because: 
 
      * this is the initial request and a token has not been created yet, 
-     * the configuration prevents session-creation and/or, 
+     * the FW component configuration is stateless and prevents session-creation and/or, 
      * the token is `stateless` which prevents it from being stored in session.  
 
   2. If a token is not available, then the configured **pre-authenticating** 
@@ -41,8 +52,7 @@ instance by invoking the automatic **Token Resolution Process** :
 
   3. If a pre-authenticating token could not be be created, `null` is returned.     
   4. If `null` is returned, client code can optionally choose to manually create an authentication token. 
-     The token must then be manually authenticated using the  
-     `$myfirewallComponent->authenticate($aToken)` method. 
+     The token must then be manually authenticated using the `$myfirewallComponent->authenticate($aToken)` method. 
      * For example, a `UsernamePasswordAuthenticationToken.php` requires credentials 
      are manually input from the user, usually via a form POST. In this example, 
      the un/pw token is not a pre-authenticating token as it can't be 

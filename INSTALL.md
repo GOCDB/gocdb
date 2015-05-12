@@ -76,6 +76,9 @@ PDO Driver for SQLite 3.x => enabled
 * A sample Apache config file is provided `config/gocdbssl.conf`. This file 
 defines a sample apache virtual host for serving your GocDB portal, including 
 URL mappings/aliases and SSL settings. 
+For GocDB, three URL alias/directory-mappings are needed, one for the portal GUI 
+page-controller, one for the public REST endpoints and one for the private REST
+endpoints. See the sample config file for details.    
 
 
 ###Doctrine <a id="doctrine"></a>   
@@ -225,8 +228,8 @@ $ php deploy/DeploySampleDataRunner.php sampleData
 
 
 ##First Use Config <a id="firstuse"></a>
-You should now be able to navigate to the GocDB webportal on your host using 
-the URL/alias mappings. 
+You should now be able to navigate to your GocDB webportal on your host using 
+the URL/alias mappings (see [gocdb apache config](#apache)). 
 ```
 https://localhost/portal
 https://localhost/portal/GOCDB_monitor/index.php
@@ -265,7 +268,8 @@ The users table has a field called `isAdmin` which by default is set to 0.
 To change a user to admin set this to 1. Below is a sample of the SQL query:
 
 ```SQL
-UPDATE users SET isadmin=1 WHERE id=X AND forename='John' AND surname='Doe' 
+UPDATE users SET isadmin=1 WHERE id=X AND forename='John' AND surname='Doe'; 
+commit; 
 ```
 
 ###PermitAll vs Protected Pages
@@ -279,6 +283,11 @@ and editing which URL page mappings use the `rejectIfNotAuthenticated()` invocat
 ###Authentication 
 Authentication is handled by the `lib/Authentication` package, and is configured
 for x509 client certificate authentication by default. Different authentication 
-schemes can be configured using the abstractions in this package such as SAML2. 
+schemes can be configured using the abstractions in this package such as SAML2 
+for integration with Federated Identity Management. 
 See `lib/Authentication/README.md` for details. 
- 
+
+###DBUnit Tests
+A comprehensive test suite is provided and can be used to assert that the GocDB 
+runs as expected against your chosen DB. It is therefore recommended you run the DBUnit tests
+before running a production GocDB instance. See `tests/README.md` for details. 

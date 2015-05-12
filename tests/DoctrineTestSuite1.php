@@ -24,9 +24,9 @@ class DoctrineTestSuite1 {
 		echo "\n\n-------------------------------------------------\n";
         echo "Executing Test Suite 1\n";
 		chdir('doctrine');
-		echo "Drop and recreate the test DB tables before executing tests?\n "
-        . "(Required for the first-time execution of tests, but not required for subsequent test runs)...\n";
-		shell_exec('sh recreateTestDB.sh');
+		//echo "Drop and recreate the test DB tables before executing tests?\n "
+        //. "(Required for the first-time execution of tests, but not required for subsequent test runs)...\n";
+		//shell_exec('sh recreateTestDB.sh');
 	
         $suite = new PHPUnit_Framework_TestSuite( 'Doctrine Test Suite 1' );
 	
