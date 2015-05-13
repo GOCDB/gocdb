@@ -61,7 +61,7 @@ function draw(\User $user = null) {
     //} catch (\Exception $e) { show_view('error.php', $e->getMessage()); die(); }
     if(count(\Factory::getSiteService()->authorizeAction(Action::SITE_EDIT_CERT_STATUS, $site, $user))==0 ){
        show_view('error.php', 'You do not have permission to change site certification status.'
-               .' An NGI level role is required on the parent NGI'); 
+               ." Either an NGI level role on the parent NGI, or a Project level role on one of the parent NGIs owning projects is required."); 
        die(); 
     }
 

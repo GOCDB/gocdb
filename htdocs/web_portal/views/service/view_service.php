@@ -47,24 +47,44 @@ $configService = \Factory::getConfigService();
             <img src="<?php echo \GocContextPath::getPath()?>img/server.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
-                    <td class="site_table">Host name</td><td class="site_table"><?php xecho($se->getHostName()) ?></td>
+                    <td class="site_table">Host name</td><td class="site_table">
+                        <?php if ($params['authenticated']) { 
+                            xecho($se->getHostName()); 
+                        } else echo('PROTECTED - Auth required'); ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">IP Address</td><td class="site_table"><?php xecho($se->getIpAddress()) ?></td>
+                    <td class="site_table">IP Address</td><td class="site_table">
+                        <?php if ($params['authenticated']) { 
+                          xecho($se->getIpAddress());  
+                        }else echo('PROTECED - Auth required');  ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">IP v6 Address</td><td class="site_table"><?php xecho($se->getIpV6Address()) ?></td>
+                    <td class="site_table">IP v6 Address</td><td class="site_table">
+                        <?php if ($params['authenticated']) { 
+                            xecho($se->getIpV6Address()); 
+                        } else echo('PROTECED - Auth required'); ?>
+                    </td>
                 </tr>	
                 <tr class="site_table_row_2">
-                    <td class="site_table">Operating System</td><td class="site_table"><?php xecho($se->getOperatingSystem()) ?></td>
+                    <td class="site_table">Operating System</td><td class="site_table">
+                        <?php if ($params['authenticated']) { 
+                            xecho($se->getOperatingSystem()); 
+                        } else echo('PROTECTED - Auth required'); ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">Architecture</td><td class="site_table"><?php xecho($se->getArchitecture())?></td>
+                    <td class="site_table">Architecture</td><td class="site_table">
+                        <?php if ($params['authenticated']) { 
+                            xecho($se->getArchitecture()); 
+                        } else echo('PROTECTED - Auth required'); ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Contact E-Mail</td><td class="site_table">
                     <?php if (!$params['authenticated']) : ?> 
-                            PROTECTED - Authentication required 
+                            PROTECTED - Auth required 
                     <?php endif; ?>
                     <?php if ($params['authenticated']) : ?> 
                             <?php xecho($se->getEmail()) ?>
@@ -83,7 +103,9 @@ $configService = \Factory::getConfigService();
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 5em;">Host DN</td><td class="site_table">
                     	<div style="word-wrap: break-word;">
-                    			<?php xecho($se->getDn()) ?>
+                    			<?php if ($params['authenticated']) { 
+                                    xecho($se->getDn()) ; 
+                                } else echo('PROTECTED - Auth required'); ?>
                     	</div>
                    	</td>
                 </tr>
@@ -100,24 +122,29 @@ $configService = \Factory::getConfigService();
                 </tr>
 				<!-- scope: remove this for a non-scoping version of view_service -->
                 <tr class="site_table_row_2">
-                    <td class="site_table"><a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal">Scope(s)</a></td>
                     <td class="site_table">
-                        <?php $count = 0;
-                              $numScopes = sizeof($params['Scopes']);
-                        foreach ($params['Scopes'] as $scopeName => $sharedWithParent){ ?>
-                            <?php if($sharedWithParent): ?>
-                                <span>
-                                    <?php echo $scopeName; if(++$count!=$numScopes){echo", ";}?>
-                                </span>
-                            <?php else: ?>
-                                <span title="Info - The parent site <?php echo $parentSiteName ?> does not share this scope" style="color:mediumvioletred;">
-                                     <?php echo $scopeName . 
-                                "</span>".//Echoed span required to prevent space before comma
-                                "<span>";
-                                    if(++$count!=$numScopes){echo", ";}?>
-                                </span>
-                            <?php endif; ?>
-                        <?php } ?>
+                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal"
+                            title="Note, Scope(x) indicates the parent Site does not share this scope">
+                            Scope(s)
+                        </a>
+                    </td>
+                    <td class="site_table">
+                        <?php
+                        $count = 0;
+                        $numScopes = sizeof($params['Scopes']);
+                        $scopeString = '';
+                        foreach ($params['Scopes'] as $scopeName => $sharedWithParent) {
+                            if ($sharedWithParent) {
+                                $scopeString .= $scopeName;
+                            } else {
+                                $scopeString .= $scopeName . '(x)';
+                            }
+                            if (++$count != $numScopes) {
+                                $scopeString .= ", ";
+                            }
+                        }
+                        ?>   
+                        <input type="text" value="<?php xecho($scopeString); ?>" readonly>
                     </td>
                 </tr>
 

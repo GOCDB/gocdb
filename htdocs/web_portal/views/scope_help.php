@@ -5,17 +5,14 @@
     <div class="Help_And_Documentation">
         <h2>What are scope tags?</h2>
             <p>
-                Scope tags are used to selectively tag service, service groups, 
-                sites, and NGIs. In doing this, PI queries can return only those
-                sites, services, service groups, or NGIs that define a 
-                particular scope tag or set of scope tags. 
+                Scope tags are used to selectively tag Services, ServiceGroups, 
+                Sites, and NGIs so that API queries can return only those
+                objects that define the required scope tag or set of scope tags. 
             </p>
             <p>
-                Scope tags are non-exclusive, allowing a single object to be 
-                tagged zero or many times. Scope tags are added and removed by 
-                the GOCDB admins while normal users can only select scope tags
-                from the available list. New scope tags can be requested by
-                [TODO]. 
+                Scope tags are added and removed by the GOCDB admins. 
+                Normal users can then select scope tags
+                from the available list. New scope tags can be requested if required.  
             </p>
             <p>No special semantics are placed on scope tags within GOCDB itself
                 - they are simply tags. Rather, it is up to dependent systems to
@@ -23,12 +20,12 @@
                 and/or scopeY. 
             </p>
             <p>
-                In EGI, scope tags are currently used to name different 
+                In EGI, scope tags are used to name different 
                 Grids/Projects. For example, a Site could be tagged with both
                 the 'EGI' and 'ProjX' tags. Dependent systems should interpret
                 this to mean that the site delivers resources to both projects.
                 Conversely, a single 'Local' tag can be used to declare that
-                this site does not provide any resources to either EGI or Projx. 
+                this site does not provide any resources to either EGI or ProjX. 
             </p>
             <p>
                 Scope tags should not be confused with projects. Projects 

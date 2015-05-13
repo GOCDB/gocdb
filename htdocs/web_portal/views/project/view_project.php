@@ -18,24 +18,24 @@
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <?php if($params['ShowEdit']){?>
-                <a href="index.php?Page_Type=Edit_Project&id=<?php echo $params['ID']?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
-                    <br />
-                    <br />
-                    <span>Edit</span>
-                </a>
+                    <a href="index.php?Page_Type=Edit_Project&id=<?php echo $params['ID']?>">
+                        <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                        <br />
+                        <br />
+                        <span>Edit</span>
+                    </a>
                 <?php } ?>
             </div>
             <div style="float: right;">
                 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <?php if($params['ShowEdit']){?>
-                <a onclick="return confirmSubmit()"
-                    href="index.php?Page_Type=Delete_Project&id=<?php echo $params['ID']?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
-                    <br />
-                    <br />
-                    <span>Delete</span>
-                </a>
+                    <a onclick="return confirmSubmit()"
+                        href="index.php?Page_Type=Delete_Project&id=<?php echo $params['ID']?>">
+                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                        <br />
+                        <br />
+                        <span>Delete</span>
+                    </a>
                 <?php } ?>
             </div>
         </div>
@@ -85,23 +85,23 @@
         <?php if(!$params['portalIsReadOnly']):?>
             <!-- Add NGI link -->
             <?php if($params['ShowEdit']){?>
-            <a href="index.php?Page_Type=Add_Project_NGIs&id=<?php echo $params['ID'];?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                        Add NGIs
-                </span>
-            </a>
+                <a href="index.php?Page_Type=Add_Project_NGIs&id=<?php echo $params['ID'];?>">
+                    <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                    <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+                            Add NGIs
+                    </span>
+                </a>
             <?php } ?>
         
             <?php if ($ngiCount > 0): ?> 
                 <!-- Remove NGI Link -->
                 <?php if($params['ShowEdit']){?>
-                <a href="index.php?Page_Type=Remove_Project_NGIs&id=<?php echo $params['ID'];?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                    <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                            Remove NGIs
-                    </span>
-                </a>
+                    <a href="index.php?Page_Type=Remove_Project_NGIs&id=<?php echo $params['ID'];?>">
+                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                        <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+                                Remove NGIs
+                        </span>
+                    </a>
                 <?php } ?>
             <?php endif; ?>
         <?php endif; ?>
@@ -175,8 +175,8 @@
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <th class="site_table">Name</th>
-                    <th class="site_table">NGI</th>
                     <th class="site_table">Certification Status</th>
+                    <th class="site_table">NGI</th>
                     <th class="site_table">Production Status</th>
                 </tr>
                 <?php

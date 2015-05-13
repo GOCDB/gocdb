@@ -121,34 +121,40 @@ $siteProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Certification Status</td>
                     <td class="site_table">
-                        <?php xecho($site->getCertificationStatus()->getName()) ?>
-                        &nbsp;
-                        <!--  only show this link if we're in read / write mode -->
-                        <?php if(!$portalIsReadOnly): ?>
-                            <a href="index.php?Page_Type=Edit_Certification_Status&id=<?php echo($site->getId()) ?>">Change</a>
-                        <?php endif; ?>
-                        </td>
+                        <?php if($params['authenticated']) { ?>
+                            <?php xecho($site->getCertificationStatus()->getName()) ?>
+                            &nbsp;
+                            <!--  only show this link if we're in read / write mode -->
+                            <?php if(!$portalIsReadOnly): ?>
+                                <a href="index.php?Page_Type=Edit_Certification_Status&id=<?php echo($site->getId()) ?>">Change</a>
+                            <?php endif; ?>
+                        <?php } else echo('PROTECTED - Auth Required'); ?>    
+                    </td>
                 </tr>
 
                 <tr class="site_table_row_2">
-                    <td class="site_table"><a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal">Scope(s)</a></td>
                     <td class="site_table">
-                        <?php $count = 0;
-                              $numScopes = sizeof($params['Scopes']);
-                        foreach ($params['Scopes'] as $scopeName => $sharedWithParent){ ?>
-                            <?php if($sharedWithParent): ?>
-                                <span>
-                                    <?php echo($scopeName); if(++$count!=$numScopes){echo", ";}?>
-                                </span>
-                            <?php else: ?>
-                                <span title="Info - The parent NGI <?php xecho($parentNgiName) ?> does not share this scope" style="color:mediumvioletred;">
-                                     <?php echo($scopeName) . 
-                                "</span>".//Echoed span required to prevent space before comma
-                                "<span>";
-                                    if(++$count!=$numScopes){echo", ";}?>
-                                </span>
-                            <?php endif; ?>
-                        <?php } ?>
+                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal" 
+                           title="Note, Scope(x) indicates the parent NGI does not share this scope">
+                            Scope(s)
+                        </a>
+                    </td>
+                    <td class="site_table">
+                            <?php
+                                 $count = 0;
+                                 $numScopes = sizeof($params['Scopes']);
+                                 $scopeString = ''; 
+                                 foreach ($params['Scopes'] as $scopeName => $sharedWithParent) {
+                                     if ($sharedWithParent) {
+                                         $scopeString .= $scopeName;
+                                     } else {
+                                         $scopeString .= $scopeName . '(x)';
+                                     }
+                                     if (++$count != $numScopes) {
+                                         $scopeString .= ", ";
+                                     }
+                                 } ?>   
+                          <input type="text" value="<?php xecho($scopeString); ?>" readonly>
                     </td>
                 </tr>
 
@@ -166,22 +172,44 @@ $siteProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Home URL</td>
 					<td class="site_table">
+                        <?php if($params['authenticated']) { ?>
 						<a href="<?php xecho($site->getHomeUrl()) ?>">
 							<?php xecho($site->getHomeUrl()) ?>
 						</a>
+                        <?php } else echo('PROTECTED - Auth Required'); ?>
 					</td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">GIIS URL</td><td class="site_table"><?php xecho($site->getGiisUrl()) ?></td>
+                    <td class="site_table">GIIS URL</td>
+                    <td class="site_table">
+                        <?php if($params['authenticated']) {
+                         xecho($site->getGiisUrl());  
+                        } else echo('PROTECTED - Auth Required'); ?> 
+                    </td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">IP Range</td><td class="site_table"><?php xecho($site->getIpRange()) ?></td>
+                    <td class="site_table">IP Range</td>
+                    <td class="site_table">
+                        <?php if($params['authenticated']) { 
+                          xecho($site->getIpRange());  
+                         } else echo('PROTECTED - Auth Required'); ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table" style="width:20%">IP v6 Range</td><td class="site_table"><?php xecho($site->getIpV6Range()) ?></td>
+                    <td class="site_table" style="width:20%">IP v6 Range</td>
+                    <td class="site_table">
+                        <?php if($params['authenticated']) { 
+                           xecho($site->getIpV6Range()); 
+                        } else echo('PROTECTED - Auth Required'); ?>
+                    </td>
                 </tr>                 
                 <tr class="site_table_row_1">
-                    <td class="site_table">Domain</td><td class="site_table"><?php xecho($site->getDomain()) ?></td>
+                    <td class="site_table">Domain</td>
+                    <td class="site_table">
+                        <?php if($params['authenticated']) { 
+                           xecho($site->getDomain()); 
+                         } else echo('PROTECTED - Auth Required'); ?>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -263,8 +291,13 @@ $siteProperties = $site->getSiteProperties();
                 <th class="site_table">URL</th>
                 <th class="site_table">Production</th>
                 <th class="site_table">Monitored</th>
-                <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
+                <th class="site_table">
+                    <a href="index.php?Page_Type=Scope_Help">Scope(s)</a>
+                </th>
             </tr>
+            <td  colspan="4"> 
+                  Note, Scope values marked with (x) indicate the parent Site does not share that scope 
+            </td> 
 
             <?php
 	            $num = 2;
@@ -319,24 +352,24 @@ $siteProperties = $site->getSiteProperties();
 				}
 				?>
 				</td>
-                <td class="site_table">
-                    <?php $count = 0;
-                              $numScopes = sizeof($scopes);
-                        foreach ($scopes as $scopeName => $sharedWithParent){ ?>
-                            <?php if($sharedWithParent): ?>
-                                <span>
-                                    <?php xecho($scopeName); if(++$count!=$numScopes){echo", ";}?>
-                                </span>
-                            <?php else: ?>
-                                <span title="The parent site <?php xecho($site->getName()) ?> does not share this scope" style="color:mediumvioletred;">
-                                     <?php xecho($scopeName) . 
-                                "</span>".//Echoed span required to prevent space before comma
-                                "<span>";
-                                    if(++$count!=$numScopes){echo", ";}?>
-                                </span>
-                            <?php endif; ?>
-                        <?php } ?>
-                </td>
+                        <td class="site_table">
+                        <?php
+                        $count = 0;
+                        $numScopes = sizeof($scopes);
+                        $scopeString = '';
+                        foreach ($scopes as $scopeName => $sharedWithParent) {
+                            if ($sharedWithParent) {
+                                $scopeString .= $scopeName;
+                            } else {
+                                $scopeString .= $scopeName . '(x)';
+                            }
+                            if (++$count != $numScopes) {
+                                $scopeString .= ", ";
+                            }
+                        }
+                        ?>   
+                        <input type="text" value="<?php xecho($scopeString); ?>" readonly>
+                    </td>
             </tr>
             <?php
 				if($num == 1) { $num = 2; } else { $num = 1; }

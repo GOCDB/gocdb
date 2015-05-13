@@ -7,10 +7,10 @@ function view_site() {
     $serv = \Factory::getSiteService();
     $servServ  = \Factory::getServiceService();
 
-    $siteId = $_GET['id']; 
-    if (!isset($siteId) || !is_numeric($siteId) ){
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     }
+    $siteId = $_GET['id']; 
     
     $site = $serv->getSite($siteId);
     $allRoles = $site->getRoles();

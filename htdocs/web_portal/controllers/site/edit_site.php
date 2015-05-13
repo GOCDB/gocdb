@@ -48,11 +48,11 @@ function edit_site() {
  * @return null
  */
 function draw(\User $user = null) {
-    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     }
     $serv = \Factory::getSiteService(); 
-    $site = $serv->getSite($_REQUEST['id']);
+    $site = $serv->getSite($_GET['id']);
 
     /*Old way: try { \Factory::getSiteService()->edit Authorization($site, $user);
     } catch(Exception $e) { show_view('error.php', $e->getMessage()); die(); }*/

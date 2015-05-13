@@ -121,7 +121,7 @@
                         <tr class="site_table_row_1">
                             <td class="site_table" >
                                 <span style="float: left;">
-                                    <?php echo $params['ngi']->getScopeNamesAsString() ?>
+                                    <input type="text" value="<?php echo $params['ngi']->getScopeNamesAsString() ?>" readonly>
                                 </span>
                                 <span style="float: right">
                                     <a href="index.php?Page_Type=Scope_Help">?</a>&nbsp
@@ -148,6 +148,11 @@
                 <th class="site_table">Production Status</th>
                 <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
             </tr>
+            <tr>
+              <td  colspan="4"> 
+                  Note, Scope values marked with (x) indicate the parent NGI does not share that scope 
+              </td>
+            </tr>
             <?php
             $num = 2;
             if(sizeof($params['ngi']->getSites()) > 0) {
@@ -173,24 +178,25 @@
                     <td class="site_table">
                         <?php xecho($site->getInfrastructure()->getName()) ?>
                     </td>
-                    <td class="site_table">
-                        <?php $count = 0;
-                              $numScopes = sizeof($scopes);
-                        foreach ($scopes as $scopeName => $sharedWithParent){ ?>
-                            <?php if($sharedWithParent): ?>
-                                <span>
-                                    <?php echo $scopeName; if(++$count!=$numScopes){echo", ";}?>
-                                </span>
-                            <?php else: ?>
-                                <span title="Info - The parent NGI <?php echo $params['ngi']->getName();?> does not share this scope" style="color:mediumvioletred;">
-                                     <?php echo $scopeName . 
-                                "</span>".//Echoed span required to prevent space before comma
-                                "<span>";
-                                    if(++$count!=$numScopes){echo", ";}?>
-                                </span>
-                            <?php endif; ?>
-                        <?php } ?>
+                     <td class="site_table">
+                                 <?php
+                                 $count = 0;
+                                 $numScopes = sizeof($scopes);
+                                 $scopeString = ''; 
+                                 foreach ($scopes as $scopeName => $sharedWithParent) {
+                                     if ($sharedWithParent) {
+                                         $scopeString .= $scopeName;
+                                     } else {
+                                         $scopeString .= $scopeName . '(x)';
+                                     }
+                                     if (++$count != $numScopes) {
+                                         $scopeString .= ", ";
+                                     }
+                                 } ?>   
+                          <input type="text" value="<?php xecho($scopeString); ?>" readonly>
                     </td>
+
+                    
                 </tr>
                 <?php
                     if($num == 1) { $num = 2; } else { $num = 1; }

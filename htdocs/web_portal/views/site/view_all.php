@@ -49,7 +49,7 @@
         </div>
         
         <div class="topMargin leftFloat siteFilter">
-            <span class="">Scope: </span>
+            <span class=""><a href="index.php?Page_Type=Scope_Help">Scope:</a> </span>
                 <select name="scope" onchange="form.submit()">
                     <option value="">(all)</option>
                     <?php foreach ($params['scopes'] as $scope){ ?>
@@ -139,8 +139,8 @@
                 
                 
                 <td class="site_table">
-                    <?php xecho($site->getScopeNamesAsString()) ?>
-                    </td>
+                    <input type="text" value="<?php xecho($site->getScopeNamesAsString()); ?>" readonly>
+                </td>
                 
             </tr>
             <?php  

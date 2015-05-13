@@ -132,8 +132,8 @@
                 <th class="site_table">Service Type</th>
                 <th class="site_table">Production</th>
                 <th class="site_table">Monitored</th>
-                <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
                 <th class="site_table">Host Site</th>
+                <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
             </tr>
             <?php
             $num = 2;
@@ -180,13 +180,13 @@
                 </td>
                 
                 <td class="site_table">
-                    <?php xecho($se->getScopeNamesAsString()) ?>
-                </td>
-                
-                <td class="site_table">
                     <a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId(); ?>">
                         <?php xecho($se->getParentSite()->getShortName()); ?>
                     </a>
+                </td>
+                
+                <td class="site_table">
+                    <input type="text" value="<?php xecho($se->getScopeNamesAsString()); ?>" readonly>
                 </td>
             </tr>
             <?php  

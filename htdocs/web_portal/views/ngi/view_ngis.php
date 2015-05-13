@@ -69,7 +69,7 @@
                     </td> 
                     
                     <td class="site_table">
-                        <?php echo $ngi->getScopeNamesAsString(); ?>
+                        <input type="text" value="<?php xecho($ngi->getScopeNamesAsString()); ?>" readonly>
                     </td>
                 </tr>
                 <?php  

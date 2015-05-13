@@ -16,24 +16,26 @@
     if(!$params['portalIsReadOnly']) {
     ?>
     <div style="float: right;">
-        <div style="float: right; margin-left: 2em;">
-            <a href="index.php?Page_Type=Edit_User&id=<?php echo $params['user']->getId()?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
-                <br />
-                <br />
-                <span>Edit</span>
-            </a>
-        </div>
-        <div style="float: right;">
-            <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
-            <a onclick="return confirmSubmit()"
-                href="index.php?Page_Type=Delete_User&id=<?php echo $params['user']->getId() ?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
-                <br />
-                <br />
-                <span>Delete</span>
-            </a>
-        </div>
+        <?php if($params['ShowEdit']):?>
+            <div style="float: right; margin-left: 2em;">
+                <a href="index.php?Page_Type=Edit_User&id=<?php echo $params['user']->getId()?>">
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                    <br />
+                    <br />
+                    <span>Edit</span>
+                </a>
+            </div>
+            <div style="float: right;">
+                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
+                <a onclick="return confirmSubmit()"
+                    href="index.php?Page_Type=Delete_User&id=<?php echo $params['user']->getId() ?>">
+                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <br />
+                    <br />
+                    <span>Delete</span>
+                </a>
+            </div>
+        <?php endif; ?>
     </div>
     <?php
     }

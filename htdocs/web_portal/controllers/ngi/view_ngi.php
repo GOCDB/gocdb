@@ -25,10 +25,10 @@ function view_ngi() {
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
     
-    $ngiId = $_GET['id'];
-    if (!isset($ngiId) || !is_numeric($ngiId) ){
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     }
+    $ngiId = $_GET['id'];
 
     //get user for case that portal is read only and user is admin, so they can still see edit links
     $dn = Get_User_Principle();

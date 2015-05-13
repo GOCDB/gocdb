@@ -208,9 +208,12 @@ class Project  extends AbstractEntityService{
     }
     
     /**
-     * Deletes a project from GOCDB. Only GOCDB admins are able to do this.
+     * Deletes a project from GOCDB. Only GOCDB admins can do this.
+     * Does not cascade delete the project's NGIs and users' Role objects are 
+     * automatically cascade deleted.
+     *  
      * @param \Project $project Project  to be deleted
-     * @param \User $user User performing the deltion - must be an administrator for it to be successful
+     * @param \User $user User performing the deletion - must be an administrator for it to be successful
      * @throws \Exception
      */
     public function deleteProject(\Project $project, \User $user = null){
@@ -232,7 +235,7 @@ class Project  extends AbstractEntityService{
 				$project->getNgis()->removeElement($ngi);
                 $ngi->getProjects()->removeElement($project);
 			}
-            //remove the project
+            //remove the project - users' Role objects are automatically cascade deleted
 			$this->em->remove($project);
 			$this->em->flush();
 			$this->em->getConnection()->commit();

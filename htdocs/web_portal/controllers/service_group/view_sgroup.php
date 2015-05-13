@@ -3,10 +3,10 @@ function showServiceGroup() {
     require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
     require_once __DIR__ . '/../utils.php';
 
-    $sGroupId = $_GET['id'];
-    if (!isset($sGroupId) || !is_numeric($sGroupId['id']) ){
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     } 
+    $sGroupId = $_GET['id'];
 
     $sGroup = \Factory::getServiceGroupService()->getServiceGroup($sGroupId);
     $params['sGroup'] = $sGroup;

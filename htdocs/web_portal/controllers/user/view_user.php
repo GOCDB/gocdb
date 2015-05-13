@@ -22,11 +22,12 @@
 function view_user() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../components/Get_User_Principle.php';
-    $userId =  $_GET['id']; 
     
-    if (!isset($userId) || !is_numeric($userId) ){
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     }
+    $userId =  $_GET['id']; 
+    
     $user = \Factory::getUserService()->getUser($userId);
     if($user === null){
        throw new Exception("No user with that ID"); 
@@ -60,6 +61,13 @@ function view_user() {
         }
     }
 
+    try {
+    	\Factory::getUserService()->editUserAuthorization($user, $callingUser);
+        $params['ShowEdit'] = true; 
+    } catch (Exception $e) {
+        $params['ShowEdit'] = false; 
+    }
+    
     $params['roles'] = $roles;
     $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();
     $title = $user->getFullName();

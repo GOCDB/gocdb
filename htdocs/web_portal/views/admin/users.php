@@ -111,7 +111,7 @@
                     </td>  
 
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Admin_Change_User_Admin_Status&id=<?php echo $user->getId() ?>">
+                        <!--<a href="index.php?Page_Type=Admin_Change_User_Admin_Status&id=<?php echo $user->getId() ?>">-->
                             <?php
                                 switch($user->isAdmin()) {
                                     case true:
@@ -126,7 +126,7 @@
                                         break;
                                 }
                               ?>
-                        </a>
+                        <!--</a>-->
                     </td>
 
                 </tr>
@@ -140,9 +140,8 @@
             <div style="margin-right: 0.4em">
                 <br>
                 &nbsp Click on a user's name to view more details, or to edit or
-                delete them. Click on their DN to update it. Click on the admin.
-                tick or cross to promote them to or demote them from GOCDB admin
-                status
+                delete them. Click on their DN to update it.
+                <!-- Click on the tick or cross to promote them to or demote them from GOCDB admin status-->
             </div>
                 
         <?php endif; ?>

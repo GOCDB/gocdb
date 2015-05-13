@@ -10,10 +10,10 @@ function view_endpoint() {
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
 
 
-    $id = $_GET['id'];
-    if (!isset($id) || !is_numeric($id) ){
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     }
+    $id = $_GET['id'];
     
     //get user for case that portal is read only and user is admin, so they can still see edit links
     $dn = Get_User_Principle();

@@ -75,7 +75,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
                         <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal">Scope(s)</a>
                     </td>
                     <td class="site_table">
-                        <?php xecho($params['sGroup']->getScopeNamesAsString())?>
+                        <input type="text" value="<?php xecho($params['sGroup']->getScopeNamesAsString())?>" readonly>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
@@ -147,7 +147,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
 				?>
 				</td>
                 <td class="site_table">
-				<?php xecho($se->getScopeNamesAsString()) ?>
+                    <input type="text" value="<?php xecho($se->getScopeNamesAsString()) ?>" readonly>
                 </td>
             </tr>
             <?php

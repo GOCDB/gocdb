@@ -93,7 +93,7 @@
                 
                 
                 <td class="site_table">
-                    <?php xecho($sGroup->getScopeNamesAsString()); ?>
+                   <input type="text" value="<?php xecho($sGroup->getScopeNamesAsString()); ?>" readonly>
                 </td>
             </tr>
             <?php  

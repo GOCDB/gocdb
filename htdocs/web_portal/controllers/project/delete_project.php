@@ -23,7 +23,7 @@ require_once __DIR__ . '/../utils.php';
 
 function delete_project(){
     if(true){
-        throw new Exception("Project deletion is disabled - see controller"); 
+        throw new Exception("Project deletion is disabled - see controller to enable"); 
     }
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
@@ -42,8 +42,10 @@ function delete_project(){
     //keep the name to display later
     $params['Name'] = $project -> getName();
      
-    //Delete the service type. This fuction will check the user is allowed to 
-    //perform this action and throw an error if not.
+    // Delete the project. This fuction will check the user is allowed to 
+    // perform this action and throw an error if not (only gocdb admins allowed).
+    // Project deletion does not delete child NGIs and automatically cascade 
+    // deletes the user Roles over the OwnedEntity. 
     try {
         $serv->deleteProject($project, $user);
     } catch(\Exception $e) {

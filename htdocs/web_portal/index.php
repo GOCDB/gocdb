@@ -459,11 +459,11 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/admin/edit_user_dn.php';
             edit_dn();
             break;
-        case "Admin_Change_User_Admin_Status":
-            rejectIfNotAuthenticated(); 
-            require_once __DIR__.'/controllers/admin/edit_user_isadmin.php';
-            make_admin();
-            break;
+//        case "Admin_Change_User_Admin_Status":
+//            rejectIfNotAuthenticated(); 
+//            require_once __DIR__.'/controllers/admin/edit_user_isadmin.php';
+//            make_admin();
+//            break;
         case "Admin_Add_Project":
             rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/admin/add_project.php';
