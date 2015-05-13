@@ -16,6 +16,8 @@ require_once __DIR__.'/../IAuthentication.php';
  */
 
 /**
+ * AuthToken that supports SAML2. 
+ * <p>
  * Requires installation of SimpleSamlPhp lib before use. 
  * You will almost certainly need to modify this class to request the necessary 
  * SAML attribute that is used as the principle string. 
@@ -78,16 +80,22 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
           
     }
 
-    
+    /**
+     * {@see IAuthentication::eraseCredentials()}
+     */ 
     public function eraseCredentials() {
         
     }
 
+    /**
+     * {@see IAuthentication::getAuthorities()} 
+     */
     public function getAuthorities() {
        return $this->authorities;  
     }
 
     /**
+     * {@see IAuthentication::getCredentials()}
      * @return string An empty string as passwords are not used in this token. 
      */
     public function getCredentials() {
@@ -98,53 +106,82 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
      * A custom object used to store additional user details.  
      * Allows non-security related user information (such as email addresses, 
      * telephone numbers etc) to be stored in a convenient location. 
+     * {@see IAuthentication::getDetails()}
+     * 
      * @return Object or null if not used 
      */
     public function getDetails() {
         return $this->userDetails;
     }
 
+    /**
+     * {@see IAuthentication::getPrinciple()}
+     * @return string unique principle string of user  
+     */
     public function getPrinciple() {
-        if (true) {  
-            require_once('/var/simplesamlphp/lib/_autoload.php');
-            $as = new \SimpleSAML_Auth_Simple('default-sp');
-            $as->requireAuth();
-            \Factory::$properties['LOGOUTURL'] = $as->getLogoutURL('https://'.  gethostname());
-            $attributes = $as->getAttributes();
-            if (!empty($attributes)) {
-                //return $attributes['eduPersonPrincipalName'][0];
-                $dnAttribute = $attributes['urn:oid:1.3.6.1.4.1.11433.2.2.1.9'][0];
-                if (!empty($dnAttribute)) {
-                    return str_replace("emailAddress=", "Email=", $dnAttribute);
-                } else {
-                    //die('Did not retrieve a valid certificate DN from identify provider - your SSO '
-                    //        . 'account needs to be associated with a certificate to login via this route');
-                    return null; 
-                }
+        require_once('/var/simplesamlphp/lib/_autoload.php');
+        $auth = new \SimpleSAML_Auth_Simple('default-sp');
+        $auth->requireAuth();
+        \Factory::$properties['LOGOUTURL'] = $auth->getLogoutURL('https://'.  gethostname());
+        $attributes = $auth->getAttributes();
+        if (!empty($attributes)) {
+            // which idp did the user select?
+            $idp = $auth->getAuthData('saml:sp:IdP');
+            // EGI IdP 
+            if($idp == 'https://www.egi.eu/idp/shibboleth'){
+                    // For EGI federated id:
+                    //return $attributes['eduPersonPrincipalName'][0];
+                    $dnAttribute = $attributes['urn:oid:1.3.6.1.4.1.11433.2.2.1.9'][0];
+                    if (!empty($dnAttribute)) {
+                        return str_replace("emailAddress=", "Email=", $dnAttribute);
+                    }
+            }
+            // EUDAT IdP 
+            else if($idp == 'https://unity.eudat-aai.fz-juelich.de:8443/saml-idp/metadata'){
+                    // For EUDAT federated id:
+                    //$dnAttribute = $attributes['urn:oid:2.5.4.49'][0];
+                    //$dnAttribute = $attributes['unity:identity:persistent'][0];
+                    //print_r($attributes);
+                    $nameID = $auth->getAuthData('saml:sp:NameID');
+                    //die('DEBUG forced die');
+                    return $nameID['Value'];
             }
         }
+        return null;
     }
 
+    /**
+     * {@see IAuthentication::setAuthorities($authorities)} 
+     */
     public function setAuthorities($authorities) {
        $this->authorities = $authorities;  
     }
 
     /**
-     * @see getDetails()
+     * {@see IAuthentication::setDetails($userDetails)}
      * @param Object $userDetails
      */
     public function setDetails($userDetails) {
         $this->userDetails = $userDetails;
     }
-
+ 
+    /**
+     * {@see IAuthentication::validate()}
+     */
     public function validate() {
         
     }
 
+    /**
+     * {@see IAuthentication::isPreAuthenticating()}
+     */
     public static function isPreAuthenticating() {
         return true;         
     }
 
+    /**
+     * {@see IAuthentication::isStateless()} 
+     */
     public static function isStateless() {
         return true;         
     }
