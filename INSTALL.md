@@ -263,13 +263,15 @@ To get started with GocDB you will need an admin user. This is done by first
 registering as a user on GocDB by clicking the 'Register' link on the left menu 
 bar at the bottom. Once you have registered yourself you will then need to set 
 yourself as an admin. To do this you need to change the user record directly in 
-your database (this is by design and is the only way to setup an admin user). 
+your database (for security reasons, is the only way to setup an admin user). 
 The users table has a field called `isAdmin` which by default is set to 0. 
 To change a user to admin set this to 1. Below is a sample of the SQL query:
 
 ```SQL
-UPDATE users SET isadmin=1 WHERE id=X AND forename='John' AND surname='Doe'; 
-commit; 
+SQL> update users set isadmin=1 where forename='John' and surname='Doe';
+1 row updated.
+SQL> commit;
+Commit complete.
 ```
 
 ###PermitAll vs Protected Pages
