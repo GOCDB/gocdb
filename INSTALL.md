@@ -31,9 +31,8 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 ###PHP <a id="php"></a>  
 Php needs to be installed and configured to run under apache and on the command 
-line. A sample configuration is copied below. 
-If you are planning to use Oracle, you need the php oci8 extension, which is included 
-since php 5.3+, see: [php oci8](http://php.net/manual/en/book.oci8.php)  
+line. A sample configuration is copied below: 
+
 ```bash
 $ php --version
 PHP 5.3.3 (cli) (built: Oct 23 2014 06:58:46)
@@ -70,7 +69,24 @@ PDO Driver for MySQL => enabled
 PDO_OCI
 PDO Driver for OCI 8 and later => enabled
 PDO Driver for SQLite 3.x => enabled
+
+$ php -i | grep 'timezone'
+Default timezone => Europe/London
+timezonedb
+
 ```
+Notes: 
+
+* Note, to keep PHP up to date with the IANA Olson timezone database, you will 
+need to periodically install/update `timezonedb.so|dll` as described at: 
+[daylight-saving best practices](http://stackoverflow.com/questions/2532729/daylight-saving-time-and-time-zone-best-practices).
+To do this, download the timezonedb lib to your extensions directory and 
+update your php.ini by adding `extension=[php_]timezonedb.so|dll` (note, Win prefix `php_`). 
+* All dates are stored as UTC in the DB and converted from local timezones. 
+* If you are planning to use Oracle, you need the php oci8 extension, which is included 
+since php 5.3+, see: [php oci8](http://php.net/manual/en/book.oci8.php)  
+* Do not forget to configure your timezone settings correctly. 
+
 
 ###Apache and x509 Host cert <a id="apache"></a> 
 * A sample Apache config file is provided `config/gocdbssl.conf`. This file 
@@ -87,6 +103,7 @@ line. Note, Doctrine can be installed either globally using PEAR or as a project
 specific dependency using composer. Either way, ensure your `$PATH` environment 
 variable is updated to run the doctrine command line client:    
 ```bash
+$ export PATH=$PATH:/home/djm76/programming/php/gocdb5_mep/gocdb/vendor/bin
 $ doctrine --version
 Doctrine Command Line Interface version 2.3.3
 ```
@@ -207,6 +224,21 @@ Database schema created successfully!
 ```
 Your tables and sequences should now have been created. 
 
+####Compiled Doctrine Proxies
+For better performance, Doctrine automatically compiles the objects located
+in `lib/Doctrine/entities` and places these compiled objects into a directory. 
+By default, these are compiled into the system's TMP dir. This is not recommended for production. 
+For production deployments, you can specify where these proxy objects should be stored 
+using `$config->setProxyDir('pathToYourProxyDir');` in your `bootstrap_doctrine.php` file.  
+If you specify the ProxyDir, then you also need to manually compile your proxy objects 
+into the specified ProxyDir using the doctrine command line:  
+
+```bash
+$ cd lib/Doctrine
+$ mkdir compiledEntities
+$ doctrine orm:generate-proxies compiledEntities/   
+```
+
 GocDB can then be deployed as a blank instance with only required lookup data or 
 as a sample instance with a small amount of example data to demonstrate GocDB.
 
@@ -293,3 +325,19 @@ See `lib/Authentication/README.md` for details.
 A comprehensive test suite is provided and can be used to assert that the GocDB 
 runs as expected against your chosen DB. It is therefore recommended you run the DBUnit tests
 before running a production GocDB instance. See `tests/README.md` for details. 
+
+
+##Updating the DB Schema
+If you modify the `lib/Doctrine/entities` objects, to add new values for example, 
+you will need to update your DB schema. This can be done using the doctrine 
+command line tool. For example: 
+
+```bash
+$ cd lib/Doctrine
+$ vim entities/Site.php     # modify the Site entity object, e.g. add a new 'timezoneId' value
+$ doctrine orm:schema-tool:update --dump-sql
+ALTER TABLE SITES ADD (timezoneId VARCHAR2(255) DEFAULT NULL)
+$ doctrine orm:schema-tool:update --force
+Updating database schema...
+Database schema updated successfully! "1" queries were executed
+```
