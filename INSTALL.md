@@ -243,7 +243,7 @@ GocDB can then be deployed as a blank instance with only required lookup data or
 as a sample instance with a small amount of example data to demonstrate GocDB.
 
 ###Deploy Required Data<a id="deploy-required-data"></a>
-The required data includes common lookup values such as countries, timezones
+The required data includes common lookup values such as countries, 
 common service types, default role types, default site certification statuses. 
 ```bash
 $ cd lib/Doctrine
