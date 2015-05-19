@@ -130,21 +130,8 @@ foreach($sites as $xmlSite) {
 	}
 	$doctrineSite->setCountry($country);
 
-	// get the timezone
-	$dql = "SELECT t FROM Timezone t WHERE t.name = ?1";
-	$timezones = $entityManager->createQuery($dql)
-								 ->setParameter(1, (string) $xmlSite->TIMEZONE)
-								 ->getResult();
-	/* Error checking: ensure each timezone refers to exactly
-	 * one TIMEZONE */
-	if(count($timezones) !== 1) {
-		throw new Exception(count($timezones) . " TIMEZONE found with name: " .
-			$xmlSite->SCOPE);
-	}
-	foreach($timezones as $timezone) {
-		$timezone = $timezone;
-	}
-	$doctrineSite->setTimezone($timezone);
+    $doctrineSite->setTimezoneId('UTC');
+
 
     // get the Tier (optional value)
 	$dql = "SELECT t FROM Tier t WHERE t.name = ?1";

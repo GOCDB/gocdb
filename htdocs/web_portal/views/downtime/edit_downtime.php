@@ -11,20 +11,24 @@ foreach($downtime->getServices() as $service){
     $affectedServices[] = $service;
 }
 
+if(count($affectedSites == 1)){
+   $siteTimezoneId = $affectedSites[0]->getTimezoneId();  
+} else {
+   $siteTimezoneId = 'UTC';  
+}
+
 foreach($downtime->getEndpointLocations() as $endpoints){
     $affectedEndpoints[] = $endpoints;
 }
 
-
-
 ?>
 
+<!-- @author James McCarthy -->
 <div class="rightPageContainer">
 
 	<h1>Edit Downtime</h1>
     <ul>
-        <li>Please enter all times in <b>UTC</b>. The current UTC time is <?php echo date("H:i", $params['nowUtc']);?>.</li>
-        <li>Downtimes can only be <b>shortened</b>, add a new downtime to extend.
+        <li>Downtimes can only be <b>shortened &rAarr;&lAarr;</b>, add a new downtime to extend.
     </ul>
 	<br>
 
@@ -51,9 +55,26 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 			</div>
 			<span id="descriptionError" class="label label-danger hidden"></span> 
 		</div>
+
+        <br>
+        <br>
+
+
+        <div class="form-group" id="timezoneSelectGroup">
+            <label class="control-label">Specify Start/End Time In UTC or Site's local Timezone:</label>
+            <br>
+            <ul>
+                <li>If Site timezone is selected, the time will be converted and saved as UTC</li> 
+            </ul>
+            <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" value="utc" checked>
+            UTC (time in UTC since last refresh <?php xecho($params['nowUtc']);?>) &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" value="site">
+            Site's Timezone 
+            <input type="text" id="siteTimezoneText" placeholder="Updated on site selection" readonly>
+        </div>    
+
         
-        
-		<label for="startDate">Starts on (UTC):</label>
+		<label for="startDate">Starts on:</label>
 		<div class="smallLabelText">(DD/MM/YYYY) (HH:MM AM/PM)</div>
 		<div class="form-group" id="startDateGroup">
 			<!-- Date Picker -->
@@ -74,7 +95,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 		</div>
 		<div class="form-group"><span id="startError" class="label label-danger hidden"></span>&nbsp</div> <!-- Single space reserves a line for the label -->
 		
-		<label for="endDate">Ends on (UTC):</label>
+		<label for="endDate">Ends on:</label>
 		<div class="smallLabelText">(DD/MM/YYYY) (HH:MM AM/PM)</div>
 		<div class="form-group" id="endDateGroup">
 			<!-- Date Picker -->
@@ -188,7 +209,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
     		$("#descriptionError").addClass("hidden");    		
     		$('#descriptionGroup').addClass("has-success");
     		
-    	}else if(description != ''){
+    	}else { //if(description != ''){
     		descriptionValid=false;
     		$('#descriptionGroup').removeClass("has-success");
 	    	$('#descriptionGroup').addClass("has-error");  
@@ -196,11 +217,12 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 	    		$("#descriptionError").removeClass("hidden");
 	    		$("#descriptionError").text("You have used an invalid character in this description");			    	
 	    	}	
-    	}else if(description == ''){   //If field is empty then show no errors or colours
-    		$("#descriptionError").addClass("hidden");
-    		$("#descriptionGroup").removeClass("has-success");
-    		$("#descriptionGroup").removeClass("has-error");
     	}
+//        else if(description == ''){   //If field is empty then show no errors or colours
+//    		$("#descriptionError").addClass("hidden");
+//    		$("#descriptionGroup").removeClass("has-success");
+//    		$("#descriptionGroup").removeClass("has-error");
+//    	}
 
     	//----------Validate the Dates-------------//
     	var sDate = $('#startDateContent').val();
@@ -219,10 +241,10 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         	
             //Check end is after start:
             var diff1 = moment.duration(mEnd - mStart);
-            console.log(diff1);
+            //console.log(diff1);
         	var now = moment();    
         	var diff2 = moment.duration(now - mStart);
-            console.log(diff2);
+            //console.log(diff2);
             //Downtime either ends before it begins or its start is over 48 hours ago 
             if(diff1 <= 0 || diff2 > 172800000){
             	$('#startDateGroup').removeClass("has-success");
@@ -306,6 +328,10 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 		   
    }
 
+
+    $(function () {
+        $('#siteTimezoneText').val("<?php echo($siteTimezoneId); ?>");  
+    }); 
     
     $(function () {
         //Setup datetimepicker

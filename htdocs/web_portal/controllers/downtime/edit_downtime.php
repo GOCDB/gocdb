@@ -47,26 +47,35 @@ function edit() {
  * @return null
  */
 function draw(\User $user = null) {
-    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
-        throw new Exception("An id must be specified");
-    }
-    // Make sure all dates are treated as UTC!
-    date_default_timezone_set("UTC");
-    $nowUtc = time();
-    $nowUtcDateTime = new \DateTime();
-    $twoDaysAgoUtcDateTime = $nowUtcDateTime->sub(\DateInterval::createFromDateString('2 days'));
-    $twoDaysAgoUtc = $twoDaysAgoUtcDateTime->format('d/m/Y H:i'); //e.g.  02/10/2013 13:20
-    
     if(is_null($user)) {
         throw new Exception("Unregistered users can't edit a downtime.");
     }
 
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
+        throw new Exception("A downtime id must be specified");
+    }
     $serv = \Factory::getDowntimeService();
-    $dt = $serv->getDowntime($_REQUEST['id']);
+    $dt = $serv->getDowntime($_GET['id']);
+    if($dt == null){
+        throw new Exception("No downtime with that id"); 
+    }
 
+    
+    $nowUtcDateTime = new \DateTime(null, new \DateTimeZone("UTC"));
+    if($dt->getEndDate() < $nowUtcDateTime ){
+      throw new Exception("Can't edit a downtime that has already finished");  
+    } 
+    
     $serv->authorization($dt->getServices(), $user);
     
-    $params = array('dt' => $dt, 'format' => getDateFormat(), 'nowUtc' => $nowUtc, 'twoDaysAgoUtc' => $twoDaysAgoUtc);
+    $twoDaysAgoUtcDateTime = $nowUtcDateTime->sub(\DateInterval::createFromDateString('2 days'));
+    $twoDaysAgoUtc = $twoDaysAgoUtcDateTime->format('d/m/Y H:i'); //e.g.  02/10/2013 13:20
+    
+    $params = array(
+        'dt' => $dt, 
+        'format' => getDateFormat(), 
+        'nowUtc' => $nowUtcDateTime->format('H:i T'), 
+        'twoDaysAgoUtc' => $twoDaysAgoUtc);  
     show_view('downtime/edit_downtime.php', $params);
 }
 
@@ -78,11 +87,11 @@ function draw(\User $user = null) {
 function submit(\User $user = null) {
  
 	//Check if this is a confirmed submit or intial submit
-	$confirmed = $_REQUEST['CONFIRMED'];	
+	$confirmed = $_POST['CONFIRMED'];	
     if($confirmed == true){
     	//Downtime is confirmed, submit it
     	//$downtimeInfo = unserialize($_REQUEST['newValues']); // didn't cater for UTF-8 chars  	
-        $downtimeInfo = json_decode($_REQUEST['newValues'], TRUE); 
+        $downtimeInfo = json_decode($_POST['newValues'], TRUE); 
         //print_r($_REQUEST['newValues']) ; 
         //print_r($downtimeInfo); 
         //die('forced die');

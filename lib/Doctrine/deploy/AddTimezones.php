@@ -1,5 +1,7 @@
 <?php
-
+/**
+ * @deprecated since version v5.4 
+ */
 require_once __DIR__."/../bootstrap.php";
 require_once __DIR__."/AddUtils.php";
 

@@ -39,8 +39,6 @@ class User {
 	protected $creationDate;
     
 	public function __construct() {
-        // Make sure all dates are treated as UTC!
-	    date_default_timezone_set("UTC");
         
         // Set cretion date
         $this->creationDate =  new \DateTime("now");

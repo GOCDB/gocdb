@@ -19,9 +19,13 @@ $siteScopes = $site->getScopes();
         
         <!-- Timezones -->
         <span class="input_name">Timezone</span>
-        <select class="add_edit_form" name="Timezone">
-            <?php foreach($params['timezones'] as $tz) { ?>
-                <option value="<?php xecho($tz->getName()) ?>"<?php if($site->getTimezone() == $tz) echo " selected=\"selected\""; ?>><?php xecho($tz->getName()) ?></option>
+        <select class="add_edit_form" name="TIMEZONE">
+            <?php 
+            foreach($params['timezones']  as $key => $tz) { ?>
+                <?php /*<!--<option value="<?php xecho($tz->getName()) ?>"<?php if($site->getTimezone() == $tz) echo " selected=\"selected\""; ?>><?php xecho($tz->getName()) ?></option>*/?>
+                <option value="<?php xecho($tz) ?>" <?php if($site->getTimezoneId() == $tz){ echo " selected=\"selected\""; } ?>>
+                    <?php xecho($tz); ?>
+                </option>
             <?php } ?>
         </select>
         

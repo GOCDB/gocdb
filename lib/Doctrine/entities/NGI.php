@@ -74,9 +74,6 @@ class NGI extends OwnedEntity implements IScopedEntity {
     public function __construct() {
         parent::__construct();
         
-         // Make sure all dates are treated as UTC!
-	    date_default_timezone_set("UTC");
-        
         // Set cretion date
         $this->creationDate =  new \DateTime("now");
         

@@ -79,8 +79,6 @@ class GetDowntime implements IPIQuery{
 		$bc=-1;
 	   
 		
-		//Ensure all dates are  UTC
-		date_default_timezone_set("UTC");
 		define('DATE_FORMAT', 'Y-m-d H:i');
 		
 		$qb = $this->em->createQueryBuilder();

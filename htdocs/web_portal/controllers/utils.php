@@ -81,7 +81,6 @@ function getSiteDataFromWeb() {
     // Fields that are used to link other objects to the site
     $fields = array (
             'Country',
-            'Timezone',
             'ProductionStatus' 
     );
     
@@ -129,7 +128,8 @@ function getSiteDataFromWeb() {
             'CSIRTTEL',
             'EMERGENCYEMAIL',
             'HELPDESKEMAIL',
-            'DOMAIN' 
+            'DOMAIN', 
+            'TIMEZONE'
     );
     
     foreach($site_object_fields as $field){
@@ -309,6 +309,11 @@ function getDtDataFromWeb() {
     $dt ['DOWNTIME'] ['DESCRIPTION'] = $_REQUEST ['DESCRIPTION'];
     $dt ['DOWNTIME'] ['START_TIMESTAMP'] = $_REQUEST ['START_TIMESTAMP'];
     $dt ['DOWNTIME'] ['END_TIMESTAMP'] = $_REQUEST ['END_TIMESTAMP'];
+    
+    $dt ['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] = 'utc'; //default 
+    if(isset($_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE'])){
+       $dt ['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] = $_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE']; // 'utc' or 'site' 
+    } 
     
     $dt ['IMPACTED_IDS'] = $_REQUEST ['IMPACTED_IDS'];
     if (! isset($_REQUEST ['IMPACTED_IDS'])){

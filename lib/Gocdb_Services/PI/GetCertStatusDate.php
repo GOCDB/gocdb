@@ -128,8 +128,6 @@ class GetCertStatusDate implements IPIQuery{
 		
 		$allSites = $this->allSites;
 		
-		// Ensure all dates are in UTC
-		date_default_timezone_set ( "UTC" );
 		
 		$xml = new \SimpleXMLElement ( "<results />" );
 		foreach ( $allSites as $site ) {

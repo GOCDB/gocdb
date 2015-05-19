@@ -95,7 +95,8 @@ function draw(\User $user = null) {
    
 
     $countries = $siteService->getCountries();
-    $timezones = $siteService->getTimezones();
+    //$timezones = $siteService->getTimezones(); // Deprecated - don't use the lookup values in the GocDB
+    $timezones = DateTimeZone::listIdentifiers(); 
     $prodStatuses = $siteService->getProdStatuses();
     
     //Remove SC and PPS infrastructures from drop down list. TODO: Delete this block once they no longer exist

@@ -47,9 +47,6 @@ class Project extends OwnedEntity {
     public function __construct($name) {
         parent::__construct(); 
         
-        // Make sure all dates are treated as UTC!
-	    date_default_timezone_set("UTC");
-        
         // Set cretion date
         $this->creationDate =  new \DateTime("now");
         

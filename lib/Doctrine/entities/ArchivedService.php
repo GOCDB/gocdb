@@ -77,10 +77,6 @@ class ArchivedService {
     protected $originalCreationDate; 
 
     public function __construct() {
-        // Make sure all dates are treated as UTC!
-        // DM: not sure this should be here !
-	    date_default_timezone_set("UTC");
-        
         $this->deletedDate =  new \DateTime("now");
 	}
     public function getId() {

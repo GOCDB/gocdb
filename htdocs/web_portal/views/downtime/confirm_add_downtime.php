@@ -22,6 +22,7 @@ if(isset($params['isEdit'])){
     <ul>
     <li><b>Severity: </b><?php xecho($params['DOWNTIME']['SEVERITY'])?></li>
     <li><b>Description: </b><?php xecho($params['DOWNTIME']['DESCRIPTION'])?></li>
+    <li><b>Times defined in: </b><?php xecho($params['DOWNTIME']['DEFINE_TZ_BY_UTC_OR_SITE'])?> timezone</li> 
     <li><b>Starting: </b>
     <?php 
         //$startStamp = $params['DOWNTIME']['START_TIMESTAMP'];
@@ -88,9 +89,7 @@ if(isset($params['isEdit'])){
     <?php endif;?>
     	<?php $confirmed = true;?> 	
         <input class="input_input_text" type="hidden" name="CONFIRMED" value="<?php echo $confirmed;?>" />        
-        <!-- serialize does not cater for UTF-8 chars -->
-        <!--<input class="input_input_text" type="hidden" name="newValues" value="<?php echo htmlentities(serialize($params));?>" />-->
-        <!-- json_encode caters for UTF-8 chars -->
+         <!-- json_encode caters for UTF-8 chars -->
         <input class="input_input_text" type="hidden" name="newValues" value="<?php xecho(json_encode($params));?>" />
         
      	<?php if(!$edit):?>

@@ -229,7 +229,7 @@ $siteProperties = $site->getSiteProperties();
                     <td class="site_table">Longitude</td><td class="site_table"><?php xecho($site->getLongitude()) ?></td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">Time Zone</td><td class="site_table"><?php xecho($site->getTimezone()->getName()) ?></td>
+                    <td class="site_table">Time Zone</td><td class="site_table"><?php xecho($site->getTimezoneId()) ?></td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Location</td><td class="site_table"><?php xecho($site->getLocation()) ?></td>

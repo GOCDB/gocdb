@@ -81,8 +81,6 @@ function draw(\User $user = null) {
 
     // TODO: Siteless services 
     
-	// Make sure all dates are treated as UTC!
-	date_default_timezone_set("UTC");
 	$nowUtc = time();
     $nowUtcDateTime = new \DateTime();
     $twoDaysAgoUtcDateTime = $nowUtcDateTime->sub(\DateInterval::createFromDateString('2 days'));

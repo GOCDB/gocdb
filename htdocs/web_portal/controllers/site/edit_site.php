@@ -63,7 +63,8 @@ function draw(\User $user = null) {
 
     
     $countries = $serv->getCountries();
-    $timezones = $serv->getTimezones();
+    //$timezones = $serv->getTimezones(); // Deprecated - don't use the lookup values in the GocDB
+    $timezones =  DateTimeZone::listIdentifiers(); // get the standard values 
     $prodStatuses = $serv->getProdStatuses();
     
     //Remove SC and PPS infrastructures from drop down list (unless site has one of them). TODO: Delete this block once they no longer exist
@@ -104,10 +105,8 @@ function draw(\User $user = null) {
 function submit(\User $user = null) {
     try {
         $newValues = getSiteDataFromWeb();
-        $site = \Factory::getSiteService()->getSite($newValues['ID']);
-
-        $site = \Factory::getSiteService()->editSite($site, $newValues, $user);
-
+        $siteId = \Factory::getSiteService()->getSite($newValues['ID']);
+        $site = \Factory::getSiteService()->editSite($siteId, $newValues, $user);
         $params = array('site' => $site);
         show_view('site/site_updated.php', $params);
     } catch(Exception $e) {

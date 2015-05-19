@@ -86,6 +86,7 @@ class Site extends AbstractEntityService{
      *              [EMERGENCYEMAIL] => JCasson@hi.com
      *              [HELPDESKEMAIL] => JCasson@324.com
      *              [DOMAIN] => test.host.com
+     *              [TIMEZONE] => Europe/London
      *      )
      *
      *      [COBJECTID] => 706
@@ -135,6 +136,7 @@ class Site extends AbstractEntityService{
             $site->setEmergencyEmail($newValues['Site']['EMERGENCYEMAIL']);
             $site->setAlarmEmail($newValues['Site']['EMERGENCYEMAIL']);
             $site->setHelpdeskEmail($newValues['Site']['HELPDESKEMAIL']);
+            $site->setTimezoneId($newValues['Site']['TIMEZONE']); 
 
             // update the target infrastructure
             $dql = "SELECT i FROM Infrastructure i WHERE i.name = :name";
@@ -164,12 +166,12 @@ class Site extends AbstractEntityService{
                              ->getSingleResult();
             $site->setCountry($country);
 
-            // get the timezone
-            $dql = "SELECT t FROM Timezone t WHERE t.name = ?1";
-            $timezone = $this->em->createQuery($dql)
-                            ->setParameter(1, $newValues['Timezone'])
-                            ->getSingleResult();
-            $site->setTimezone($timezone);
+            // deprecated 
+//            $dql = "SELECT t FROM Timezone t WHERE t.name = ?1";
+//            $timezone = $this->em->createQuery($dql)
+//                            ->setParameter(1, $newValues['Timezone'])
+//                            ->getSingleResult();
+//            $site->setTimezone($timezone);
 
             $this->em->merge($site);
             $this->em->flush();
@@ -511,14 +513,14 @@ class Site extends AbstractEntityService{
      *  Return all timezones in the DB
      *  @return Array an array of Timezone objects
      */
-    public function getTimezones() {
-    	$dql = "SELECT t from Timezone t
-    			ORDER BY t.name";
-    	$timezones = $this->em
-    		->createQuery($dql)
-    		->getResult();
-    	return $timezones;
-    }
+//    public function getTimezones() {
+//    	$dql = "SELECT t from Timezone t
+//    			ORDER BY t.name";
+//    	$timezones = $this->em
+//    		->createQuery($dql)
+//    		->getResult();
+//    	return $timezones;
+//    }
 
 
     /**
@@ -652,6 +654,7 @@ class Site extends AbstractEntityService{
 	    	$site->setEmergencyTel($values['Site']['EMERGENCYTEL']);
 	    	$site->setEmergencyEmail($values['Site']['EMERGENCYEMAIL']);
 	    	$site->setHelpdeskEmail($values['Site']['HELPDESKEMAIL']);
+            $site->setTimezoneId($values['Site']['TIMEZONE']);
 	    	
 	    	// get the parent NGI entity
 	    	$dql = "SELECT n FROM NGI n WHERE n.id = :id";
@@ -708,12 +711,12 @@ class Site extends AbstractEntityService{
 	    		->getSingleResult();
 	    	$site->setCountry($country);
 
-	    	// get the timezone
-	    	$dql = "SELECT t FROM Timezone t WHERE t.id = :id";
-	    	$timezone = $this->em->createQuery($dql)
-	    		->setParameter('id', $values['Timezone'])
-	    		->getSingleResult();
-	    	$site->setTimezone($timezone);
+	    	// deprecated - don't use the lookup DB entity  
+//	    	$dql = "SELECT t FROM Timezone t WHERE t.id = :id";
+//	    	$timezone = $this->em->createQuery($dql)
+//	    		->setParameter('id', $values['Timezone'])
+//	    		->getSingleResult();
+//	    	$site->setTimezone($timezone);
 	    	
 	    	$this->em->persist($site);
 	    	$this->em->flush();

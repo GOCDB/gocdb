@@ -363,7 +363,7 @@ class PI extends AbstractEntityService{
             }
             $this->addIfNotEmpty($xmlSite, 'PRODUCTION_INFRASTRUCTURE', $site->getInfrastructure()->getName());
             $this->addIfNotEmpty($xmlSite, 'CERTIFICATION_STATUS', $site->getCertificationStatus()->getName());
-            $this->addIfNotEmpty($xmlSite, 'TIMEZONE', $site->getTimezone()->getName());
+            $this->addIfNotEmpty($xmlSite, 'TIMEZONE', $site->getTimezoneId());
             $this->addIfNotEmpty($xmlSite, 'LATITUDE', $site->getLatitude());
             $this->addIfNotEmpty($xmlSite, 'LONGITUDE', $site->getLongitude());
             $this->addIfNotEmpty($xmlSite, 'CSIRT_EMAIL', $site->getCsirtEmail());

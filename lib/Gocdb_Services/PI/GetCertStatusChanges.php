@@ -140,8 +140,6 @@ class GetCertStatusChanges implements IPIQuery{
 		
 		$allLogs = $this->allLogs;
 		
-		// Ensure all dates are in UTC
-		date_default_timezone_set ( "UTC" );
 		
 		$xml = new \SimpleXMLElement ( "<results />" );
 		foreach ( $allLogs as $log ) {

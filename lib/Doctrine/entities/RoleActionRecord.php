@@ -159,8 +159,6 @@ class RoleActionRecord {
     function __construct($updatedByUserId, $updatedByUserPrinciple, 
             $roleId, $rolePreStatus, $roleNewStatus, $roleTypeId, $roleTypeName, 
             $roleTargetOwnedEntityId, $roleTargetOwnedEntityType, $roleUserId, $roleUserPrinciple) {
-        // DM: not sure this should be here !
-	    //date_default_timezone_set("UTC");
         $this->actionDate =  new \DateTime("now");
         
         $this->updatedByUserId = $updatedByUserId;

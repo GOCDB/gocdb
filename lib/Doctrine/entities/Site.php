@@ -139,8 +139,15 @@ class Site extends OwnedEntity implements IScopedEntity{
     /** @ManyToOne(targetEntity="Country", inversedBy="sites") * */
     protected $country;
 
-    /** @ManyToOne(targetEntity="Timezone", inversedBy="sites") * */
+    /** 
+     * Dont' use the Timezone entity, use the timezoneId variable instead. 
+     * @deprecated since version 5.4
+     * @ManyToOne(targetEntity="Timezone", inversedBy="sites") 
+     */
     protected $timezone;
+
+    /** @Column(type="string", nullable=true) */ 
+    protected $timezoneId; 
 
     /** @ManyToOne(targetEntity="Tier", inversedBy="sites") * */
     protected $tier;
@@ -169,7 +176,6 @@ class Site extends OwnedEntity implements IScopedEntity{
         parent::__construct();
         
         // Make sure all dates are treated as UTC!
-	    date_default_timezone_set("UTC");
         
         // Set cretion date
         $this->creationDate =  new \DateTime("now");        
@@ -305,8 +311,22 @@ class Site extends OwnedEntity implements IScopedEntity{
         return $this->country;
     }
 
+    /**
+     * Don't use, use the getTimezoneId() instead. 
+     * @deprecated since version 5.4 
+     */
     public function getTimezone() {
         return $this->timezone;
+    }
+
+    /**
+     * Get the timezone identifier label. 
+     * Labels should be of the IANA form, e.g.  Europe/London
+     * @link http://www.iana.org/time-zones IANA timezones 
+     * @return String 
+     */
+    public function getTimezoneId() { 
+        return $this->timezoneId; 
     }
 
     public function getTier() {
@@ -512,8 +532,22 @@ class Site extends OwnedEntity implements IScopedEntity{
         $this->country = $country;
     }
 
+    /**
+     * Don't use, use the setTimezoneId() instead. 
+     * @deprecated since version 5.4 
+     */
     public function setTimezone($timezone) {
         $this->timezone = $timezone;
+    }
+
+    /**
+     * Set the timezone identifier label. 
+     * Labels should be of the IANA form, e.g.  Europe/London
+     * @link http://www.iana.org/time-zones IANA timezones 
+     * @return null 
+     */
+    public function setTimezoneId($timezoneId){
+        $this->timezoneId = $timezoneId; 
     }
 
     public function setTier($tier) {

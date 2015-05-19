@@ -111,6 +111,11 @@
 			<length>255</length>
             <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)*$/</regex>
 		</field>
+        <field>
+			<fname>TIMEZONE</fname>
+			<length>255</length>
+            <regex>/^([a-zA-Z_-]+(\/[a-zA-Z_-]+)*)+$/</regex>
+		</field>
 	</entity>
 	
 	<!-- ==========================================================  -->
@@ -190,6 +195,10 @@
 		</field>
 		<field>
 			<fname>ANNOUNCE_TIMESTAMP</fname>
+		</field>
+        <field>
+			<fname>DEFINE_TZ_BY_UTC_OR_SITE</fname>
+            <regex>/^(utc)|(site)$/</regex>
 		</field>
 	</entity>
 

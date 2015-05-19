@@ -1,13 +1,16 @@
-
+<!-- @author James McCarthy -->
 
 <div class="rightPageContainer">
 
 	<h1>Add Downtime</h1>
-	<div>Please enter all times in UTC. Time now in UTC is approx. ~<?php echo date("H:i", $params['nowUtc']);?>.</div>
+    <div>
+    To be SCHEDULED, start must be 24hrs in the future (DD/MM/YYYY) (HH:MM)
+    </div>
 	<br>
 
 
 	<form role="form" name="Add_Downtime" id="addDTForm" action="index.php?Page_Type=Add_Downtime" method="post" onchange="validate()">
+
 		<div class="form-group" id="severityGroup">
 			<label for="severity">Severity:</label> <select class="form-control"
 				name="SEVERITY" id="severity" size="2">
@@ -20,51 +23,70 @@
 		<div class="form-group" id="descriptionGroup">
 			<label class="control-label" for="description">Description:</label>
 			<div class="controls">
-				<input type="text" class="form-control" name="DESCRIPTION" id="description" onkeyup="validate()">
+				<input type="text" class="form-control" name="DESCRIPTION" id="description"> 
 			</div>
 			<span id="descriptionError" class="label label-danger hidden"></span> 
 		</div>
-        
-        
-		<label for="startDate">Starts on (UTC):</label>
-		<div class="smallLabelText">To be SCHEDULED, DT must start 48hrs after current time (DD/MM/YYYY) (HH:MM) <!--(Enter time after: <?php echo $params['twoDaysAgoUtc'];?>)--></div>
-		<div class="form-group" id="startDateGroup">
-			<!-- Date Picker -->
 
+        <br>
+        <br>
+                
+        <div class="form-group" id="timezoneSelectGroup">
+            <label class="control-label">Specify Start/End Time In UTC or Site's local Timezone:</label>
+            <br>
+            <ul>
+                <li>If Site timezone is selected, the time will be converted and saved as UTC</li> 
+            </ul>
+            <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" value="utc" checked>UTC (time in UTC since last refresh <?php xecho($params['nowUtc']);?>) &nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" value="site">Site Timezone 
+            <input type="text" id="siteTimezoneText" placeholder="Updated on site selection" readonly> 
+        </div>    
+
+
+        
+		<label for="startDate">Starts on:</label>
+		<div class="smallLabelText">(DD/MM/YYYY) (HH:MM) To be SCHEDULED, start must be 24hrs in the future 
+        </div>
+        <div class="form-group" id="startDateGroup">
+			<!-- Date Picker -->
 			<div class="input-group date datePicker" id="startDate">
 				<input type='text' name="startDate" class="form-control"
-					data-format="DD/MM/YYYY" id="startDateContent" /> <span
-					class="input-group-addon"><span
-					class="glyphicon glyphicon-calendar"></span> </span>
+					data-format="DD/MM/YYYY" id="startDateContent"/> 
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar" ></span> 
+                </span>
 			</div>
 
 			<!-- Time Picker -->
 			<div class="input-group date timePicker" id="startTime">
 				<input type='text' class="form-control" 
-					id="startTimeContent" /> <span class="input-group-addon"><span
-					class="glyphicon glyphicon-time"></span> </span>
+					id="startTimeContent"/> 
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-time" ></span> 
+                </span>
 			</div>
 		</div>
 		<div class="form-group"><span id="startError" class="label label-danger hidden"></span>&nbsp</div> <!-- Single space reserves a line for the label -->
 		
-		<label for="endDate">Ends on (UTC):</label>
+		<label for="endDate">Ends on:</label>
 		<div class="smallLabelText">(DD/MM/YYYY) (HH:MM)</div>
 		<div class="form-group" id="endDateGroup">
 			<!-- Date Picker -->
-
 			<div class="input-group date datePicker" id="endDate">
 				<input type='text' class="form-control" data-format="DD/MM/YYYY"
-					id="endDateContent" /> <span
-					class="input-group-addon"><span
-					class="glyphicon glyphicon-calendar"></span> </span>
+					id="endDateContent" /> 
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-calendar"></span> 
+                </span>
 			</div>
 
 			<!-- Time Picker -->
 			<div class="input-group date timePicker" id="endTime">
 				<input type='text' class="form-control has-error" 
-					id="endTimeContent" /> <span class="input-group-addon"><span
-					class="glyphicon glyphicon-time"></span> </span>
-					
+					id="endTimeContent" /> 
+                <span class="input-group-addon">
+                    <span class="glyphicon glyphicon-time"></span> 
+                </span>
 			</div>
 		</div>		
 				
@@ -97,7 +119,7 @@
             ?>
             <select style="width: 99%; margin-right: 1%"
 				class="form-control" id="Select_Sites" name="select_sites" size="10"
-				onclick="getSitesServices()">
+				onclick="getSitesServices();getSelectedSiteTimeZone();">
 
                 <?php
                 foreach($sites as $site){
@@ -117,7 +139,7 @@
 		<!--  Create a hidden field to pass the confirmed value which at this point is false-->
         <?php $confirmed = false;?>
         <input class="input_input_text" type="hidden" name="CONFIRMED" value="<?php echo $confirmed;?>" />
-        <input class="input_input_text" type="hidden" id="startTimestamp" name ="START_TIMESTAMP" value="" />  <!-- Hidden fields that will hold the timetamp value of the selected times -->
+        <input class="input_input_text" type="hidden" id="startTimestamp" name ="START_TIMESTAMP" value="" />  <!-- Hidden fields that will hold the timestamp value of the selected times -->
         <input class="input_input_text" type="hidden" id="endTimestamp" name ="END_TIMESTAMP" value="" />
 		<button type="submit" id="submitDowntime_btn" class="btn btn-default" style="width: 100%" disabled>Add Downtime</button>
 	</form>
@@ -128,13 +150,11 @@
 
 
 <script type="text/javascript">
-   
+
    function validate(){
 	    var epValid=false;
 	    var severityValid=false;
 	    var descriptionValid=false;
-	    var startDateValid=false;
-	    var endDateValid=false;
 
 	    //----------Validate the Severity-------------//
     	var severityStatus = $('#severity').val();
@@ -155,24 +175,19 @@
 	    //var regEx = /^[A-Za-z0-9\s._(),:;/'\\]{0,4000}$/;    //This line may not appear valid in IDEs but it is
 	    var regEx = /^[^`'\";<>]{0,4000}$/;    //This line may not appear valid in IDEs but it is
 	    var description = $('#description').val();
-
     	if(description != '' && regEx.test(description) != false){
     		descriptionValid=true;
     		$("#descriptionError").addClass("hidden");    		
     		$('#descriptionGroup').addClass("has-success");
     		
-    	}else if(description != ''){
+    	} else { 
     		descriptionValid=false;
     		$('#descriptionGroup').removeClass("has-success");
 	    	$('#descriptionGroup').addClass("has-error");  
-	    	if(regEx.test(description) == false){
+	    	if(regEx.test(description) === false){
 	    		$("#descriptionError").removeClass("hidden");
 	    		$("#descriptionError").text("You have used an invalid character in this description");			    	
 	    	}	
-    	}else if(description == ''){   //If field is empty then show no errors or colours
-    		$("#descriptionError").addClass("hidden");
-    		$("#descriptionGroup").removeClass("has-success");
-    		$("#descriptionGroup").removeClass("has-error");
     	}
 
     	//----------Validate the Dates-------------//
@@ -192,10 +207,10 @@
         	
             //Check end is after start:
             var diff1 = moment.duration(mEnd - mStart);
-            console.log(diff1);
+            //console.log(diff1);
         	var now = moment();    
         	var diff2 = moment.duration(now - mStart);
-            console.log(diff2);
+            //console.log(diff2);
             //Downtime either ends before it begins or its start is over 48 hours ago 
             if(diff1 <= 0 || diff2 > 172800000){
             	$('#startDateGroup').removeClass("has-success");
@@ -278,8 +293,7 @@
 	    
 		   
    }
-
-    
+ 
     
     $(function () {
         $('#startDate, #endDate').datetimepicker({
@@ -297,9 +311,16 @@
         });
     });
 
+    /**
+     * On page load, update the the site timezone text area.  
+     * @returns {null}
+     */
+    $(function () {
+       updateSiteTimezoneText(getURLParameter('site')); 
+    });
+
     function getSitesServices(){
     	var siteId=$('#Select_Sites').val();
-    	    	
     	if(siteId != null){ //If the user clicks on the box but not a specific row there will be no input, so catch that here
         	$('#chooseEndpoints').empty(); //Remove any previous content from the endpoints select list         	    	
         	$('#chooseServices').load('index.php?Page_Type=Downtime_view_endpoint_tree&site_id='+siteId,function( response, status, xhr ) {
@@ -309,6 +330,39 @@
             });
     	}
     }      
+
+    /**
+     * If a site is selected, get the site's timezone and update the 
+     * siteTimezoneText text input. 
+     * @returns {Null} 
+     */
+    function getSelectedSiteTimeZone(){
+        var siteId=$('#Select_Sites').val();
+        updateSiteTimezoneText(siteId); 
+    }
+
+    function getURLParameter(name) {
+        // see: http://stackoverflow.com/questions/11582512/how-to-get-url-parameters-with-javascript
+        return decodeURIComponent((new RegExp('[?|&]' + name + '=' + '([^&;]+?)(&|#|;|$)').exec(location.search)||[,""])[1].replace(/\+/g, '%20'))||null
+    }
+
+
+
+    /**
+     * Update the site timezone text area 
+     * @param {int} siteId
+     * @returns {null}
+     */
+    function updateSiteTimezoneText(siteId){
+        if(siteId !== null){ //If the user clicks on the box but not a specific row there will be no input, so catch that here
+           // use ajax to get the selected site's timezone label and update display
+           //console.log('fetching selected site timezone label');
+           $.get('index.php', {Page_Type: 'Add_Downtime', siteid_timezone: siteId}, 
+           function(data){
+              $('#siteTimezoneText').val(data);  
+           }); 
+        }
+    }
 
     //This function will select all of a services endpoints when the user clicks just the service option in the list
     function selectServicesEndpoint(){

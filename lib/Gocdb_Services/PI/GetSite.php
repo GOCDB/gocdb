@@ -77,7 +77,7 @@ class GetSite implements IPIQuery{
     
         $qb = $this->em->createQueryBuilder();
         
-        $qb	->select('s', 'sc', 'sp', 'i', 'cs', 'c', 'n', 'sgrid', 'ti', 'tz')
+        $qb	->select('s', 'sc', 'sp', 'i', 'cs', 'c', 'n', 'sgrid', 'ti') //, 'tz')
             ->from('Site', 's')
             ->leftJoin('s.siteProperties', 'sp')
             ->leftJoin('s.scopes', 'sc')
@@ -87,7 +87,7 @@ class GetSite implements IPIQuery{
             ->leftJoin('s.infrastructure', 'i')
             ->leftJoin('s.subGrid', 'sgrid')
             ->leftJoin('s.tier', 'ti')
-            ->leftJoin('s.timezone', 'tz')
+            //->leftJoin('s.timezone', 'tz') // deprecated, dont use the tz entity
             ->orderBy('s.shortName', 'ASC');
     
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
@@ -209,7 +209,7 @@ class GetSite implements IPIQuery{
 			}
 			$helpers->addIfNotEmpty ( $xmlSite, 'PRODUCTION_INFRASTRUCTURE', $site->getInfrastructure ()->getName () );
 			$helpers->addIfNotEmpty ( $xmlSite, 'CERTIFICATION_STATUS', $site->getCertificationStatus ()->getName () );
-			$helpers->addIfNotEmpty ( $xmlSite, 'TIMEZONE', $site->getTimezone ()->getName () );
+			$helpers->addIfNotEmpty ( $xmlSite, 'TIMEZONE', $site->getTimezoneId() );
 			$helpers->addIfNotEmpty ( $xmlSite, 'LATITUDE', $site->getLatitude () );
 			$helpers->addIfNotEmpty ( $xmlSite, 'LONGITUDE', $site->getLongitude () );
 			$helpers->addIfNotEmpty ( $xmlSite, 'CSIRT_EMAIL', $site->getCsirtEmail () );
@@ -307,7 +307,7 @@ class GetSite implements IPIQuery{
 		
 			$helpers->addExtIfNotEmpty($xmlSiteExtParent, 'Production_Infrastructure', $site->getInfrastructure()->getName());
 			$helpers->addExtIfNotEmpty($xmlSiteExtParent, 'Certification_Status', $site->getCertificationStatus()->getName());
-			$helpers->addExtIfNotEmpty($xmlSiteExtParent, 'Timezone', $site->getTimezone()->getName());
+			$helpers->addExtIfNotEmpty($xmlSiteExtParent, 'Timezone', $site->getTimezoneId());
 			$helpers->addExtIfNotEmpty($xmlSiteExtParent, 'Longitude', $site->getLongitude());
 			$helpers->addExtIfNotEmpty($xmlSiteExtParent, 'Latitude', $site->getLatitude());
 			$helpers->addExtIfNotEmpty($xmlSiteExtParent, 'CSIRT_Email', $site->getCsirtEmail());

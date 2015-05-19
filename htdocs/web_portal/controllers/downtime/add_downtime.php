@@ -53,11 +53,11 @@ function submit(\User $user = null) {
     
     
 	//Check if this is a confirmed submit or intial submit
-	$confirmed = $_REQUEST['CONFIRMED'];	
+	$confirmed = $_POST['CONFIRMED'];	
     if($confirmed == true){
     	//Downtime is confirmed, submit it
     	//$downtimeInfo = unserialize($_REQUEST['newValues']);  // didn't cater for UTF-8 chars   	
-        $downtimeInfo = json_decode($_REQUEST['newValues'], TRUE); 
+        $downtimeInfo = json_decode($_POST['newValues'], TRUE); 
     	$serv = \Factory::getDowntimeService();   	
         
     	$params['dt'] = $serv->addDowntime($downtimeInfo, $user);    	
@@ -119,38 +119,45 @@ function draw(\User $user = null) {
         throw new Exception("Unregistered users can't add a downtime.");
     }
 
+    $nowUtcDateTime = new \DateTime(null, new \DateTimeZone("UTC"));
+    //$twoDaysAgoUtcDateTime = $nowUtcDateTime->sub(\DateInterval::createFromDateString('2 days'));
+    //$twoDaysAgoUtc = $twoDaysAgoUtcDateTime->format('d/m/Y H:i'); //e.g.  02/10/2013 13:20 
 
-    // TODO: Siteless services 
     
-	// Make sure all dates are treated as UTC!
-	date_default_timezone_set("UTC");
-	$nowUtc = time();
-    $nowUtcDateTime = new \DateTime();
-    $twoDaysAgoUtcDateTime = $nowUtcDateTime->sub(\DateInterval::createFromDateString('2 days'));
-    $twoDaysAgoUtc = $twoDaysAgoUtcDateTime->format('d/m/Y H:i'); //e.g.  02/10/2013 13:20 
+    // URL mapping
+    // Return the specified site's timezone label - used in ajax requests for display purposes
+    if(isset($_GET['siteid_timezone']) && is_numeric($_GET['siteid_timezone'])){
+        $site = \Factory::getSiteService()->getSite($_GET['siteid_timezone']); 
+        if($site != null){
+            die($site->getTimeZoneId()); 
+        }
+        die(); 
+    }
 
+    // URL Mapping 
 	// If the user wants to add a downtime to a specific site, show only that site's SEs
-	if(isset($_REQUEST['site'])) {
-		$site = \Factory::getSiteService()->getSite($_REQUEST['site']);
+	else if(isset($_GET['site'])) {
+		$site = \Factory::getSiteService()->getSite($_GET['site']);
 	    //old way: \Factory::getSiteService()->edit Authorization($site, $user);
         if(count(\Factory::getSiteService()->authorizeAction(\Action::EDIT_OBJECT, $site, $user))==0){
            throw new \Exception("You don't have permission over $site"); 
         }
 		$ses = $site->getServices();
-		$params = array('ses' => $ses, 'nowUtc' => $nowUtc, 'selectAll' => true, 'twoDaysAgoUtc' => $twoDaysAgoUtc);
+		$params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'), 'selectAll' => true);
 		show_view("downtime/add_downtime.php", $params);
 		die();
 	}
 
+    // URL Mapping 
 	// If the user wants to add a downtime to a specific SE, show only that SE
-	else if(isset($_REQUEST['se'])) {
-	    $se = \Factory::getServiceService()->getService($_REQUEST['se']);
+	else if(isset($_GET['se'])) {
+	    $se = \Factory::getServiceService()->getService($_GET['se']);
         if(count(\Factory::getServiceService()->authorizeAction(\Action::SE_ADD_DOWNTIME, $se, $user))==0){
            throw new \Exception("You do not have permission over $se."); 
         } 
         
 	    $ses = array($se);
-		$params = array('ses' => $ses, 'nowUtc' => $nowUtc, 'selectAll' => true, 'twoDaysAgoUtc' => $twoDaysAgoUtc);
+		$params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'), 'selectAll' => true);
 		show_view("downtime/add_downtime.php", $params);
 		die();
 	}
@@ -168,7 +175,7 @@ function draw(\User $user = null) {
             throw new Exception("You don't hold a role over a NGI " 
                     . "or site with child services.");
         }
-        $params = array('ses' => $ses, 'nowUtc' => $nowUtc, 'twoDaysAgoUtc' => $twoDaysAgoUtc);
+        $params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'));
         show_view("downtime/add_downtime.php", $params);
         die(); 
     }

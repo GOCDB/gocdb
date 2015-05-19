@@ -1,6 +1,10 @@
 <?php
 use Doctrine\Common\Collections\ArrayCollection;
 /**
+ * Do not use, this will eventually be dropped from the schema. 
+ * Entities such as Sites should specify their timezone directly as attributes 
+ * on the owning entity rather than joining to this entity. 
+ * @deprecated since version 5.4
  * @Entity @Table(name="Timezones")
  */
 class Timezone {

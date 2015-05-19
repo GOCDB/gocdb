@@ -35,8 +35,6 @@ $duplicateSes = array ("se.reef.man.poznan.pl",  "lcg05.sinp.msu.ru",
 // XML format is the output from get_service_endpoints PI query.
 // 
 
-// Set the timezone
-date_default_timezone_set("UTC");
 
 $allDowntimes = array();
 $downtimeFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/Downtimes.xml";

@@ -23,11 +23,14 @@
     	</select>
     	
     	<span class="input_name">Timezone</span>
-        <select class="add_edit_form"name="Timezone">
+        <select class="add_edit_form"name="TIMEZONE">
             <?php
-    		foreach($params['timezones'] as $timezone) {
-    			echo "<option value=\"" . $timezone->getId() . "\">" . $timezone->getName() . "</option>";
-    		}
+    		//foreach($params['timezones'] as $timezone) {
+    			//echo "<option value=\"" . $timezone->getId() . "\">" . $timezone->getName() . "</option>";
+    		//}
+            foreach($params['timezones'] as $key => $tz){
+    			echo "<option value=\"" . $tz. "\">" . $tz . "</option>";
+            }
     		?>
         </select>
         
