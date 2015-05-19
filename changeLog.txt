@@ -1,3 +1,22 @@
+GOCDB-5.4 Release (TBC) 
+  - Addition of RoleActionRecord entity for recording all role request actions (deny, approve, revoke). 
+  - Improved Role approve/deny page rendering and logic.
+  - Improved deployment scripts and install docs. 
+  - Updated OwnedEntity.php to add abstract getName() method for runtime polymorphism. 
+  - Addition of transient decoratorObject on Role entity for decorating Role instance with
+    extra non-persistent info (for enhanced view rendering).    
+  - Updated SimpleSamlPhpAuthToken.php to show how to support multiple IdPs.  
+  - Updated front controller (index.php) to allow permitAll pages and authentication 
+    on a per-page basis. 
+  - Improved content rendering to hide Edit/Delete links according to permissions. 
+  - Update to php timezonedb rather than by static seed values insert into DB, inc:  
+    Deprecation of the lib/Doctrine/entities/Timezone.php entity. 
+  - Specify downtime dates in site's local timezone with conversion to utc 
+    Removal of extraneous date_default_timezone_set("UTC") calls (legacy artefact) 
+  - BugFix - get_service method was ignoring the `monitored` url parameter. 
+    
+    
+
 GOCDB-5.3.1 Release (16/02/2015) 
   - Addition of static GocContextPath.php to allow deployment of GOCDB in other 
     environments such as a Symfony component (allows web assets to be located 
