@@ -226,9 +226,11 @@
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
+                                <?php if($params['authenticated']) { ?>
                                 <a href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId() ?>">
                                     <span>&nbsp;&nbsp;</span><?php xecho($role->getUser()->getFullName())/*.' ['.$role->getUser()->getId().']' */?>
                                 </a>
+                                <?php } else {echo 'PROTECTED'; } ?>
                             </span>
                         </div>
                     </td>
@@ -236,7 +238,9 @@
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
+                                <?php if($params['authenticated']) { ?>
                                 <span>&nbsp;&nbsp;</span><?php xecho($role->getRoleType()->getName())?>
+                                <?php } else {echo 'PROTECTED'; } ?>
                             </span>
                         </div>
                     </td>

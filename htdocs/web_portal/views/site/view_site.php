@@ -220,19 +220,49 @@ $siteProperties = $site->getSiteProperties();
             <img src="<?php echo \GocContextPath::getPath()?>img/pin.png" height="25px" style="float: right; padding-right: 0.5em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
-                    <td class="site_table">Country</td><td class="site_table"><?php xecho($site->getCountry()->getName()) ?></td>
+                    <td class="site_table">Country</td><td class="site_table">
+                    <?php 
+                    if($params['authenticated']) { 
+                         xecho($site->getCountry()->getName()); 
+                    } else { echo 'PROTECTED'; }
+                    ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">Latitude</td><td class="site_table"><?php xecho($site->getLatitude()) ?></td>
+                    <td class="site_table">Latitude</td><td class="site_table">
+                    <?php 
+                    if($params['authenticated']) {
+                        xecho($site->getLatitude());  
+                    } else { echo 'PROTECTED'; }
+                    ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">Longitude</td><td class="site_table"><?php xecho($site->getLongitude()) ?></td>
+                    <td class="site_table">Longitude</td><td class="site_table">
+                    <?php 
+                    if($params['authenticated']) { 
+                        xecho($site->getLongitude()) ; 
+                    } else {echo 'PROTECTED'; }
+                    ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">Time Zone</td><td class="site_table"><?php xecho($site->getTimezoneId()) ?></td>
+                    <td class="site_table">Time Zone</td><td class="site_table">
+                    <?php 
+                    if($params['authenticated']) { 
+                        xecho($site->getTimezoneId()); 
+                    } else { echo 'PROTECTED'; }
+                    ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">Location</td><td class="site_table"><?php xecho($site->getLocation()) ?></td>
+                    <td class="site_table">Location</td><td class="site_table">
+                    <?php 
+                    if($params['authenticated']) { 
+                        xecho($site->getLocation()); 
+                    } else { echo 'PROTECTED'; }
+                    ?>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -406,13 +436,19 @@ $siteProperties = $site->getSiteProperties();
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table">
                     <div style="background-color: inherit;">
+                    <?php if($params['authenticated']) { ?>
                         <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
-                            <?php xecho($role->getUser()->getFullName())/*.' ['.$role->getUser()->getId().']'*/ ?>
+                            <?php xecho($role->getUser()->getFullName()) ?>
                         </a>
+                    <?php } else {echo 'PROTECTED'; } ?>
                     </div>
                 </td>
                 <td class="site_table">
-                    <?php xecho($role->getRoleType()->getName()) ?>
+                    <?php 
+                    if($params['authenticated']) { 
+                       xecho($role->getRoleType()->getName()) ; 
+                    } else {echo 'PROTECTED'; }
+                    ?>
                 </td>
             </tr>
             <?php

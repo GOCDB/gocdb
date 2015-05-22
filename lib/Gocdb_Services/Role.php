@@ -156,28 +156,32 @@ class Role extends AbstractEntityService{
      }
 
     /**
-     * Returns all sites the user holds a role over
-     * (Includes sites under an NGI that the holds a role over)
+     * Returns an array of sites where the user has a GRANTED role over a 
+     * parent OwnedObject including Site and NGI, but not Project.  
+     * Important: This does <b>NOT</b> grant permissions over the returned sites, 
+     * it simply means that the user has a Role over one of the owning OwnedObjects. 
+     * 
      * @param \User $user
      * @return array Of \Site objects
      */
-    public function getSites(\User $user) {
+    public function getReachableSitesFromOwnedObjectRoles(\User $user) {
     	// Build the list of sites a user is allowed to add an SE to
     	$sites = array();
     	$roles = $user->getRoles();
     	foreach($roles as $role) {
-    		if($role->getOwnedEntity() instanceof \Site) {
-    			$sites[] = $role->getOwnedEntity();
-    		}
+            if($role->getStatus() == \RoleStatus::GRANTED){
+                if($role->getOwnedEntity() instanceof \Site) {
+                    $sites[] = $role->getOwnedEntity();
+                }
 
-    		// If the role is over an NGI add all of the NGI's child sites to the list
-    		if($role->getOwnedEntity() instanceof \NGI) {
-    			$ngiSites = $role->getOwnedEntity()->getSites();
-    			foreach($ngiSites as $site) {
-    				$sites[] = $site;
-    			}
-    		}
-
+                // If the role is over an NGI add all of the NGI's child sites to the list
+                if($role->getOwnedEntity() instanceof \NGI) {
+                    $ngiSites = $role->getOwnedEntity()->getSites();
+                    foreach($ngiSites as $site) {
+                        $sites[] = $site;
+                    }
+                }
+            }
     	}
     	$sites = array_unique($sites);
 
@@ -189,20 +193,24 @@ class Role extends AbstractEntityService{
 
 
     /**
-     * Returns an array of \Services the user holds a role over
+     * Returns an array of services where the user has a GRANTED role over a 
+     * parent OwnedObject including Site and NGI, but not Project.  
+     * Important: This does <b>NOT</b> grant permissions over the returned services, 
+     * it simply means that the user has a Role over one of the owning OwnedObjects. 
+     * 
      * @param \User $user
-     * @return array
+     * @return array of \Service entities 
      */
-    public function getServices(\User $user) {
+    public function getReachableServicesFromOwnedObjectRoles(\User $user) {
         $ses = array();
         // Get all sites the user has a role over
-        $sites = $this->getSites($user);
+        $sites = $this->getReachableSitesFromOwnedObjectRoles($user);
         foreach($sites as $site) {
             foreach($site->getServices() as $se) {
                 $ses[] = $se;
             }
         }
-        return $ses;
+        return array_unique($ses);
     }
 
     /**

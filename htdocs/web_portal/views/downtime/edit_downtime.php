@@ -17,6 +17,9 @@ if(count($affectedSites == 1)){
    $siteTimezoneId = 'UTC';  
 }
 
+$nowInTargetTz = new \DateTime(null, new \DateTimeZone($siteTimezoneId)); 
+$offsetInSecsFromUtc = $nowInTargetTz->getOffset(); 
+
 foreach($downtime->getEndpointLocations() as $endpoints){
     $affectedEndpoints[] = $endpoints;
 }
@@ -29,6 +32,8 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 	<h1>Edit Downtime</h1>
     <ul>
         <li>Downtimes can only be <b>shortened &rAarr;&lAarr;</b>, add a new downtime to extend.
+        <li>To be <strong>SCHEDULED</strong>, start must be <strong>24hrs</strong> in the future</li>
+        <li>Time in UTC since last page refresh <strong><?php xecho($params['nowUtc']);?></strong></li>
     </ul>
 	<br>
 
@@ -59,26 +64,26 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         <br>
         <br>
 
+        <div class="alert alert-warning" role="alert">
+          You may need to update your site's timezone from UTC to the required value for your site - this version of GOCDB uses
+          a new timezone logic with new timezone labels taken from the 'Olsen' database. Where possible, the
+          old values have been copied over, but some legacy values including those starting 'Etc/' are not supported and so UTC 
+          is specified by default.
+        </div>
 
-        <div class="form-group" id="timezoneSelectGroup">
-            <label class="control-label">Specify Start/End Time In UTC or Site's local Timezone:</label>
-            <br>
-            <ul>
-                <li>If Site timezone is selected, the time will be converted and saved as UTC</li> 
-            </ul>
-            <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" value="utc" checked>
-            UTC (time in UTC since last refresh <?php xecho($params['nowUtc']);?>) &nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" value="site">
-            Site's Timezone 
+
+        <div class="form-group" id="timezoneSelectGroup" onchange="updateStartEndTimesInUtc()">
+            <label class="control-label">Enter Times In:</label>&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="utcRadioButton" value="utc" checked>UTC&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="siteRadioButton" value="site">Site Timezone 
             <input type="text" id="siteTimezoneText" placeholder="Updated on site selection" readonly>
         </div>    
 
         
 		<label for="startDate">Starts on:</label>
-		<div class="smallLabelText">(DD/MM/YYYY) (HH:MM AM/PM)</div>
-		<div class="form-group" id="startDateGroup">
+		<mark><label id="startUtcLabel"></label></mark> 
+		<div class="form-group" id="startDateGroup" onchange="updateStartEndTimesInUtc()">
 			<!-- Date Picker -->
-
 			<div class="input-group date datePicker" id="startDate">
 				<input type='text' name="startDate" class="form-control"
 					data-format="DD/MM/YYYY" readonly="true" id="startDateContent" /> <span
@@ -96,10 +101,9 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 		<div class="form-group"><span id="startError" class="label label-danger hidden"></span>&nbsp</div> <!-- Single space reserves a line for the label -->
 		
 		<label for="endDate">Ends on:</label>
-		<div class="smallLabelText">(DD/MM/YYYY) (HH:MM AM/PM)</div>
-		<div class="form-group" id="endDateGroup">
+		<mark><label id="endUtcLabel"></label></mark>
+		<div class="form-group" id="endDateGroup" onchange="updateStartEndTimesInUtc()">
 			<!-- Date Picker -->
-
 			<div class="input-group date datePicker" id="endDate">
 				<input type='text' class="form-control" data-format="DD/MM/YYYY"
 					readonly="true" id="endDateContent" /> <span
@@ -177,6 +181,55 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 
 
 <script type="text/javascript">
+   /* global moment */
+   /* global TARGETTIMEZONEID: true */
+   /* global TARGETTIMEZONEOFFSETFROMUTCSECS: true */
+   /* global M_START_UTC: true */
+   /* global M_END_UTC: true */ 
+   
+   var TARGETTIMEZONEID = "UTC";  // e.g. Europe/London 
+   var TARGETTIMEZONEOFFSETFROMUTCSECS = 0; // e.g. 3600 if TARGETTIMEZONEID is ahead of UTC by 1hr
+   var M_START_UTC = null; 
+   var M_END_UTC = null; 
+
+   $(document).ready(function() {
+        TARGETTIMEZONEID =  "<?php xecho($siteTimezoneId); ?>";  
+        TARGETTIMEZONEOFFSETFROMUTCSECS = <?php echo($offsetInSecsFromUtc); ?>; 
+        $('#siteTimezoneText').val(TARGETTIMEZONEID); 
+        
+        //Setup datetimepicker
+        $('#startDate, #endDate').datetimepicker({
+    		pickTime:false,
+    		startDate:getDate()     //Only show dates 48hrs in the past
+    	});
+
+        $('#startTime, #endTime').datetimepicker({
+        	format: 'HH:mm',
+            pickDate: false,
+            pickSeconds: false,
+            pick12HourFormat: false
+        });
+
+        //echo out the start and end date into the Jquery setters for the datetime picker
+        $('#startDate').data("DateTimePicker").setDate("<?php echo date_format($startDate,"m/d/Y"); ?>");
+        $('#endDate').data("DateTimePicker").setDate("<?php echo date_format($endDate,"m/d/Y"); ?>");
+
+        //Set the start and finish times - we echo in the full date but DateTimePicker will only render the time values
+        $('#startTime').data("DateTimePicker").setDate("<?php echo date_format($startDate,"m/d/Y H:i"); ?>");
+        $('#endTime').data("DateTimePicker").setDate("<?php echo date_format($endDate,"m/d/Y H:i"); ?>");
+
+        // By default select the original affected services and endpoints  
+        loadSitesServicesAndEndpoints();
+
+        // Calculate the start end times in UTC/site timezone 
+        updateStartEndTimesInUtc(); 
+  
+        // Run through the validate and set edit downtime submit button to enabled or not.  
+        validate();
+        
+    });
+
+
    
    function validate(){
 	    var epValid=false;
@@ -186,7 +239,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 
 	    //----------Validate the Severity-------------//
     	var severityStatus = $('#severity').val();
-    	if(severityStatus != null){
+    	if(severityStatus){
     		severityValid=true;
     		$('#severityGroup').removeClass("has-error");
     		$('#severityGroup').addClass("has-success");
@@ -204,7 +257,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         var regEx = /^[^`'\";<>]{0,4000}$/;  
 	    var description = $('#description').val();
 
-    	if(description != '' && regEx.test(description) != false){
+    	if(description && regEx.test(description) !== false){
     		descriptionValid=true;
     		$("#descriptionError").addClass("hidden");    		
     		$('#descriptionGroup').addClass("has-success");
@@ -213,7 +266,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
     		descriptionValid=false;
     		$('#descriptionGroup').removeClass("has-success");
 	    	$('#descriptionGroup').addClass("has-error");  
-	    	if(regEx.test(description) == false){
+	    	if(regEx.test(description) === false){
 	    		$("#descriptionError").removeClass("hidden");
 	    		$("#descriptionError").text("You have used an invalid character in this description");			    	
 	    	}	
@@ -224,7 +277,216 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 //    		$("#descriptionGroup").removeClass("has-error");
 //    	}
 
-    	//----------Validate the Dates-------------//
+        datesValid = validateUtcDates(); //validateDates(); 	
+        
+	    //----------Validate the Endpoints-------------//
+        //Get the selected options from the select services and endpoints list
+        
+    	//var selectedEPs = $('#Select_Services').val();
+        //If this string contains an e then and endpoint has been selected
+        //if(selectedEPs != null){            
+        //	$(selectedEPs).each(function(index){    //Iterate over each selected option and check for e.        	
+        //   	if(this.indexOf('e') >= 0){
+        //        	epValid = true;
+        //    		$('#chooseSite').addClass("has-success");
+        //    		$('#chooseServices').addClass("has-success");                	
+        //    	}else{
+        //        	$('#chooseSite').removeClass("has-success");
+        //    		$('#chooseServices').removeClass("has-success");                        	
+        //    	}
+        //	});
+        //}else{
+        //	epValid=false;
+        //	$('#chooseSite').removeClass("has-success");
+    	//	$('#chooseServices').removeClass("has-success");
+        //}
+
+        var selectedEPs = $('#Select_Services').val();
+        //If this string contains an e then and endpoint has been selected
+        if(selectedEPs){
+            epValid = true;
+            $('#chooseSite').addClass("has-success");
+            $('#chooseServices').addClass("has-success");                	
+            
+        }else{
+        	epValid=false;
+        	$('#chooseSite').removeClass("has-success");
+    		$('#chooseServices').removeClass("has-success");
+        }
+        
+	    //----------Set the Button based on validate status-------------//
+
+	    if(epValid && severityValid && descriptionValid && datesValid){
+	    	$('#submitDowntime_btn').addClass('btn btn-success');
+	    	$('#submitDowntime_btn').prop('disabled', false);
+	    }else{
+	    	$('#submitDowntime_btn').removeClass('btn btn-success');
+	    	$('#submitDowntime_btn').addClass('btn btn-default');
+	    	$('#submitDowntime_btn').prop('disabled', true);
+	    }
+   }
+
+
+    
+    /**
+     * Load the affected services and endpoints of the original downtime (before edit). 
+     * This loads an html <select> list that displays all of the site's 
+     * services and all of their endpoints, and HIGHLIGHTS ONLY THE SERVICES AND 
+     * ENDPOINTS THAT ARE AFFECTED BY THE CURRENT DOWNTIME. 
+     * The services and endpoints that are affected by the current downtime can
+     * be subsequently re-selected for update.
+     * Note, only the services and endpoints belonging to the original site can 
+     * be udpated, and at least one service must be selected.   
+     * 
+     * @returns {undefined}
+     */
+    function loadSitesServicesAndEndpoints(){
+    	var dtId = <?php echo $downtime->getId();?>;
+    	var siteId=$('#Select_Sites').val();    	    	
+    	
+    	$('#chooseServices').empty(); //Remove any previous content from the endpoints select list         	    	
+        // The Page_Type handler for 'Edit_Downtime_view_endpoint_tree' in the front controller loads the 
+        // following view: 'views/downtime/downtime_edit_view_nested_endpoints_list.php'
+        // loading the downtime and the site. 
+    	$('#chooseServices').load('index.php?Page_Type=Edit_Downtime_view_endpoint_tree&dt_id='+dtId+'&site_id='+siteId,
+          function( response, status, xhr ) {
+    		  if ( status == "success" ) {
+    			    validate();
+    			  }
+        });
+    	
+    }      
+
+    //This function will select all of a services endpoints when the user clicks just the service option in the list
+    function selectServicesEndpoint(){
+    	//Loop through all the selected options of the list
+    	var id = $('#Select_Services').children(":selected").attr("id");
+    	console.log(id);
+		$('#'+id).prop('selected', true);	    //Set the service parent to be selected
+    	
+    }   
+
+
+    /**
+     * Get the start/end time strings and calculate the UTC equivalents using 
+     * the {@link TARGETTIMEZONEID} and {@link TARGETTIMEZONEOFFSETFROMUTCSECS} 
+     * values, then update the global vars {@link M_START_UTC} and {@link M_END_UTC}. 
+     * and the startTimestamp and endTimestamp form submission parameters.  
+     * Finally update the GUI labels.  
+     * 
+     * @returns {null}
+     */
+    function updateStartEndTimesInUtc(){
+        // get date/time text strings from GUI
+        var sDate = $('#startDateContent').val();
+    	var eDate = $('#endDateContent').val();
+    	var sTime = $('#startTimeContent').val();
+    	var eTime = $('#endTimeContent').val(); 
+        
+        // calculate the start date time in UTC 
+        if(sDate && sTime){
+            // First Parse the input string as UTC
+            // (use moment.utc(), otherwise moment parses in current timezone)
+        	var start = sDate +" "+sTime; 
+        	var mStart = moment.utc(start, "DD-MM-YYYY, HH:mm"); // parse in utc
+            //console.log(mStart); 
+            // Then update utc time to time in target timezone; 
+            // if SiteTimezone RB is selected, subtract offset from time to 
+            // get time in specified tz 
+            if($('#siteRadioButton').is(':checked')){ 
+               mStart.subtract(TARGETTIMEZONEOFFSETFROMUTCSECS, 's'); 
+            }
+            M_START_UTC = mStart; 
+            //console.log(M_START_UTC.format("DD-MM-YYYY, HH:mm")); 
+            //console.log(M_START_UTC.format()); 
+            $('#startUtcLabel').text(M_START_UTC.format("DD/MM/YYYY HH:mm")+' UTC'); 
+            $('#startTimestamp').val(M_START_UTC.format("DD/MM/YYYY HH:mm")); 
+        }
+        // calculate the end date time in UTC 
+        if(eDate && eTime){
+            // First Parse the input string as UTC
+            // (use moment.utc(), otherwise moment parses in current timezone)
+        	var end = eDate +" "+eTime;    
+        	var mEnd = moment.utc(end, "DD-MM-YYYY, HH:mm"); // parse in utc
+            //console.log(mEnd);
+            // Then update utc time to time in target timezone; 
+            // if SiteTimezone RB is selected, subtract offset from time to 
+            // get time in specified tz 
+            if($('#siteRadioButton').is(':checked')){  
+                mEnd.subtract(TARGETTIMEZONEOFFSETFROMUTCSECS, 's'); 
+            }
+            M_END_UTC = mEnd; 
+            //console.log(M_END_UTC.format("DD-MM-YYYY, HH:mm")); 
+            //console.log(M_END_UTC.format()); 
+            $('#endUtcLabel').text(M_END_UTC.format("DD/MM/YYYY HH:mm")+' UTC'); 
+            $('#endTimestamp').val(M_END_UTC.format("DD/MM/YYYY HH:mm")); 
+        }
+   }
+
+
+    function validateUtcDates(){
+       var datesValid = false; 
+       if(M_END_UTC && M_START_UTC){
+        //Check end is after start:
+            var diff1 = moment.duration(M_END_UTC - M_START_UTC);
+            //console.log(diff1);
+        	var now = moment.utc();    
+        	var diff2 = moment.duration(now - M_START_UTC);
+            //console.log(diff2);
+            //Downtime either ends before it begins or its start is over 48 hours ago 
+            if(diff1 <= 0 || diff2 > 172800000){  // if (diff2 > 2daysInMilliSecs) 
+            	$('#startDateGroup').removeClass("has-success");
+            	$('#endDateGroup').removeClass("has-success");
+            	if(diff1 <= 0){
+            		$('#endError').removeClass("hidden");
+            		$("#endError").text("A downtime cannot end before it begins.");
+            		$('#endDateGroup').addClass("has-error");                    
+                }else{
+                	$('#startError').addClass("hidden");
+                	$('#endDateGroup').removeClass("has-error");
+                }
+                if(diff2 > 172800000){
+                    $('#startError').removeClass("hidden");
+            		$("#startError").text("The start time of the downtime must be within the last 48 hrs");
+            		$('#startDateGroup').addClass("has-error");            		
+                }else{
+                    $('#startError').addClass("hidden");       
+                    $('#startDateGroup').removeClass("has-error");             
+                }             
+                datesValid=false;
+            }else{
+                datesValid=true;
+        		$('#endError').addClass("hidden");
+        		$('#startError').addClass("hidden");    
+                $('#startDateGroup').addClass("has-success");
+                $('#endDateGroup').addClass("has-success");             
+            }    
+       } 
+       return datesValid; 
+    }
+
+    //This function uses pure javascript to return the date - 2 days
+    function getDate(){
+    	   var today = new Date();
+    	   var dd = today.getDate()-2;
+    	   var mm = today.getMonth()+1; //January is 0!
+
+    	   var yyyy = today.getFullYear();
+    	   if(dd<10){
+    		   dd='0'+dd
+    	   } 
+    	   if(mm<10){
+    		   mm='0'+mm
+    	   } 
+
+    	   date = mm+'/'+dd+'/'+yyyy;
+    	   return date;
+    }
+
+
+    /*function validateDates(){
+        var datesValid = false; 
+        //----------Validate the Dates-------------//
     	var sDate = $('#startDateContent').val();
     	var eDate = $('#endDateContent').val();
     	var sTime = $('#startTimeContent').val();
@@ -277,148 +539,8 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         }else{
         	datesValid=false;
         }
-        
-	    //----------Validate the Endpoints-------------//
-        //Get the selected options from the select services and endpoints list
-        
-    	//var selectedEPs = $('#Select_Services').val();
-        //If this string contains an e then and endpoint has been selected
-        //if(selectedEPs != null){            
-        //	$(selectedEPs).each(function(index){    //Iterate over each selected option and check for e.        	
-        //   	if(this.indexOf('e') >= 0){
-        //        	epValid = true;
-        //    		$('#chooseSite').addClass("has-success");
-        //    		$('#chooseServices').addClass("has-success");                	
-        //    	}else{
-        //        	$('#chooseSite').removeClass("has-success");
-        //    		$('#chooseServices').removeClass("has-success");                        	
-        //    	}
-        //	});
-        //}else{
-        //	epValid=false;
-        //	$('#chooseSite').removeClass("has-success");
-    	//	$('#chooseServices').removeClass("has-success");
-        //}
-
-        var selectedEPs = $('#Select_Services').val();
-        //If this string contains an e then and endpoint has been selected
-        if(selectedEPs != null){
-            epValid = true;
-            $('#chooseSite').addClass("has-success");
-            $('#chooseServices').addClass("has-success");                	
-            
-        }else{
-        	epValid=false;
-        	$('#chooseSite').removeClass("has-success");
-    		$('#chooseServices').removeClass("has-success");
-        }
-        
-	    //----------Set the Button based on validate status-------------//
-
-	    if(epValid && severityValid && descriptionValid && datesValid){
-	    	$('#submitDowntime_btn').addClass('btn btn-success');
-	    	$('#submitDowntime_btn').prop('disabled', false);
-	    }else{
-	    	$('#submitDowntime_btn').removeClass('btn btn-success');
-	    	$('#submitDowntime_btn').addClass('btn btn-default');
-	    	$('#submitDowntime_btn').prop('disabled', true);
-	    	
-	    }
-	    
-		   
-   }
-
-
-    $(function () {
-        $('#siteTimezoneText').val("<?php echo($siteTimezoneId); ?>");  
-    }); 
-    
-    $(function () {
-        //Setup datetimepicker
-        $('#startDate, #endDate').datetimepicker({
-    		pickTime:false,
-    		startDate:getDate()     //Only show dates 48hrs in the past
-    	});
-
-        $('#startTime, #endTime').datetimepicker({
-        	format: 'HH:mm',
-            pickDate: false,
-            pickSeconds: false,
-            pick12HourFormat: false
-        });
-
-        //echo out the start and end date into the Jquery setters for the datetime picker
-        $('#startDate').data("DateTimePicker").setDate("<?php echo date_format($startDate,"m/d/Y"); ?>");
-        $('#endDate').data("DateTimePicker").setDate("<?php echo date_format($endDate,"m/d/Y"); ?>");
-
-        //Set the start and finish times - we echo in the full date but DateTimePicker will only render the time values
-        $('#startTime').data("DateTimePicker").setDate("<?php echo date_format($startDate,"m/d/Y H:i"); ?>");
-        $('#endTime').data("DateTimePicker").setDate("<?php echo date_format($endDate,"m/d/Y H:i"); ?>");
-
-        // By default select the original affected services and endpoints  
-        loadSitesServicesAndEndpoints();
-        // Run through the validate and set edit downtime submit button to enabled or not.  
-        validate();
-        
-    });
-    
-    /**
-     * Load the affected services and endpoints of the original downtime (before edit). 
-     * This loads an html <select> list that displays all of the site's 
-     * services and all of their endpoints, and HIGHLIGHTS ONLY THE SERVICES AND 
-     * ENDPOINTS THAT ARE AFFECTED BY THE CURRENT DOWNTIME. 
-     * The services and endpoints that are affected by the current downtime can
-     * be subsequently re-selected for update.
-     * Note, only the services and endpoints belonging to the original site can 
-     * be udpated, and at least one service must be selected.   
-     * 
-     * @returns {undefined}
-     */
-    function loadSitesServicesAndEndpoints(){
-    	var dtId = <?php echo $downtime->getId();?>;
-    	var siteId=$('#Select_Sites').val();    	    	
-    	
-    	$('#chooseServices').empty(); //Remove any previous content from the endpoints select list         	    	
-        // The Page_Type handler for 'Edit_Downtime_view_endpoint_tree' in the front controller loads the 
-        // following view: 'views/downtime/downtime_edit_view_nested_endpoints_list.php'
-        // loading the downtime and the site. 
-    	$('#chooseServices').load('index.php?Page_Type=Edit_Downtime_view_endpoint_tree&dt_id='+dtId+'&site_id='+siteId,
-          function( response, status, xhr ) {
-    		  if ( status == "success" ) {
-    			    validate();
-    			  }
-        });
-    	
-    }      
-
-    //This function will select all of a services endpoints when the user clicks just the service option in the list
-    function selectServicesEndpoint(){
-
-    	//Loop through all the selected options of the list
-    	var id = $('#Select_Services').children(":selected").attr("id");
-    	console.log(id);
-		$('#'+id).prop('selected', true);	    //Set the service parent to be selected
-    	
-    }   
-
-    //This function uses pure javascript to return the date - 2 days
-    function getDate(){
-    	   var today = new Date();
-    	   var dd = today.getDate()-2;
-    	   var mm = today.getMonth()+1; //January is 0!
-
-    	   var yyyy = today.getFullYear();
-    	   if(dd<10){
-    		   dd='0'+dd
-    	   } 
-    	   if(mm<10){
-    		   mm='0'+mm
-    	   } 
-
-    	   date = mm+'/'+dd+'/'+yyyy;
-    	   return date;
-    }
-    
+        return datesValid; 
+    }*/
 </script>
 
 

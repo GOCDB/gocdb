@@ -141,7 +141,7 @@ class Downtime extends AbstractEntityService{
         //echo($startStr. ' '.$endStr); // 14/05/2015 16:16      14/05/2015 16:17   d/m/Y H:i
 
         // did the user specify the downtime info in utc (default) or in site's local timezone? 
-        $requestUtcOrSiteTimezone = $values['DOWNTIME']['DEFINE_TZ_BY_UTC_OR_SITE'];
+        /*$requestUtcOrSiteTimezone = $values['DOWNTIME']['DEFINE_TZ_BY_UTC_OR_SITE'];
         $tzStr = 'UTC'; // the timezone label specified by the user (e.g. 'UTC' or 'Europe/London') 
         if($requestUtcOrSiteTimezone == 'site'){
             // if there are multiple affected services from multiple sites, 
@@ -175,7 +175,10 @@ class Downtime extends AbstractEntityService{
         } else {
             $start = \DateTime::createFromFormat($this::FORMAT, $startStr, $UTC);
             $end = \DateTime::createFromFormat($this::FORMAT, $endStr, $UTC); 
-        }
+        }*/
+
+        $start = \DateTime::createFromFormat($this::FORMAT, $startStr, new \DateTimeZone("UTC"));
+        $end = \DateTime::createFromFormat($this::FORMAT, $endStr, new \DateTimeZone("UTC"));  
 
         $this->validateDates($start, $end);
 
@@ -400,7 +403,7 @@ class Downtime extends AbstractEntityService{
         //echo($newStartStr. ' '.$newEndStr); // 14/05/2015 16:16      14/05/2015 16:17   d/m/Y H:i
 
         // did the user specify the downtime info in utc (default) or in site's local timezone? 
-        $requestUtcOrSiteTimezone = $newValues['DOWNTIME']['DEFINE_TZ_BY_UTC_OR_SITE'];
+        /*$requestUtcOrSiteTimezone = $newValues['DOWNTIME']['DEFINE_TZ_BY_UTC_OR_SITE'];
         $tzStr = 'UTC'; // the timezone label specified by the user (e.g. 'UTC' or 'Europe/London') 
         if($requestUtcOrSiteTimezone == 'site'){
             // if there are multiple affected services from multiple sites, 
@@ -435,7 +438,10 @@ class Downtime extends AbstractEntityService{
         } else {
             $newStart = \DateTime::createFromFormat($this::FORMAT, $newStartStr, $UTC);
             $newEnd = \DateTime::createFromFormat($this::FORMAT, $newEndStr, $UTC); 
-        }
+        }*/
+
+        $newStart = \DateTime::createFromFormat($this::FORMAT, $newStartStr, new \DateTimeZone("UTC"));
+        $newEnd = \DateTime::createFromFormat($this::FORMAT, $newEndStr, new \DateTimeZone("UTC")); 
 
 
         // check the new start/end times of the downtime are valid according 

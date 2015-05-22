@@ -90,11 +90,7 @@ function submit(\User $user = null) {
 	$confirmed = $_POST['CONFIRMED'];	
     if($confirmed == true){
     	//Downtime is confirmed, submit it
-    	//$downtimeInfo = unserialize($_REQUEST['newValues']); // didn't cater for UTF-8 chars  	
         $downtimeInfo = json_decode($_POST['newValues'], TRUE); 
-        //print_r($_REQUEST['newValues']) ; 
-        //print_r($downtimeInfo); 
-        //die('forced die');
         
     	$serv = \Factory::getDowntimeService();   	
         $dt = $serv->getDowntime($downtimeInfo['DOWNTIME']['EXISTINGID']);

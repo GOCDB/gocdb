@@ -146,7 +146,7 @@ class Action {
     const SITE_EDIT_CERT_STATUS = 'ACTION_SITE_EDIT_CERT_STATUS'; 
     
     // Actions that apply to Service
-    const SE_ADD_DOWNTIME = 'ACTION_SE_ADD_DOWNTIME';
+    //const SE_ADD_DOWNTIME = 'ACTION_SE_ADD_DOWNTIME';
     
     /**
      * private constructor to limit instantiation

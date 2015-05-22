@@ -73,29 +73,52 @@ class DateTimeConvertTests extends PHPUnit_Framework_TestCase {
 
     /**
      * Print what PHP thinks are the current times in the specified timezones. 
+     * You can run this test to check that you have configured the PHP timezone 
+     * settings correctly and have an up to date timezonedb.so|dll installed. 
      */
     public function testCurrentTimeInTimezones(){
         print __METHOD__ . "\n";
         print "To check your daylight timezone settings are correct and that "
         . "your php timezone.db is up to date, compare the output below with "
                 . "the current real times on the web. You may need to update your"
-                . "timezone.db lib. \n"; 
+                . "timezonedb.so|dll lib. \n"; 
         // see: http://stackoverflow.com/questions/2532729/daylight-saving-time-and-time-zone-best-practices
 
         //date_default_timezone_set("UTC");
+        $utcTz = new \DateTimeZone("UTC"); 
         $targetTz1 = new \DateTimeZone("Europe/Moscow"); 
         $targetTz2 = new \DateTimeZone("Europe/Amsterdam"); 
         $targetTz3 = new \DateTimeZone("America/New_York"); 
         $targetTz4 = new \DateTimeZone("America/Denver"); 
-        
+        $targetTz5 = new \DateTimeZone("Europe/London"); 
+       
+        // now in specified Tz 
         $nowTz = new \DateTime(null, $targetTz1); 
         print_r($nowTz);  
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n"); //Returns the timezone offset in seconds from UTC on success or FALSE on failure. 
+        
         $nowTz = new \DateTime(null, $targetTz2); 
         print_r($nowTz);  
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n");
+        
         $nowTz = new \DateTime(null, $targetTz3); 
         print_r($nowTz);  
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n");
+        
         $nowTz = new \DateTime(null, $targetTz4); 
         print_r($nowTz);  
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n"); 
+        
+        $nowTz = new \DateTime(null, $targetTz5); 
+        print_r($nowTz);  
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n"); 
+
+        
+        // now in utc 
+        $nowUtc = new \DateTime(null, $utcTz); 
+        print_r($nowUtc); 
+        print_r("Offset from UTC in secs: ".$nowUtc->getOffset()."\n\n"); 
+        
     }
 
     public function ntestDateConvert1(){

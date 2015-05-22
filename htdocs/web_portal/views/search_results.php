@@ -151,35 +151,37 @@
                     Users
                 </h3>
             </div>
-            <table class="vSiteResults" style="table-layout: fixed">
-                <tr class="site_table_row_1">
-                    <th class="site_table">Name</th>
-                    <th class="site_table">E-Mail</th>
-                </tr>
-                <?php           
-                $num = 2;
-                foreach($params['userResults'] as $user) {
-                ?>
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table" style="width: 25%">
-                        <div style="background-color: inherit;">
-                            <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
-                                    <span>&raquo; </span><?php xecho($user->getFullName()); ?>
-                                </a>
-                            </span>
-                        </div>
-                    </td>
-                        
-                    <td class="site_table">
-                        <?php if($params['authenticated']){ xecho($user->getEmail()); } else {echo 'PROTECTED - Authentication required'; } ?>
-                    </td>
-                </tr>
-                <?php  
-                    if($num == 1) { $num = 2; } else { $num = 1; }
-                    } // End of the foreach loop iterating over users
-                ?>
-            </table>
+            <?php if($params['authenticated']) { ?>
+                <table class="vSiteResults" style="table-layout: fixed">
+                    <tr class="site_table_row_1">
+                        <th class="site_table">Name</th>
+                        <th class="site_table">E-Mail</th>
+                    </tr>
+                    <?php           
+                    $num = 2;
+                    foreach($params['userResults'] as $user) {
+                    ?>
+                    <tr class="site_table_row_<?php echo $num ?>">
+                        <td class="site_table" style="width: 25%">
+                            <div style="background-color: inherit;">
+                                <span style="vertical-align: middle;">
+                                    <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
+                                        <span>&raquo; </span><?php xecho($user->getFullName()); ?>
+                                    </a>
+                                </span>
+                            </div>
+                        </td>
+                            
+                        <td class="site_table">
+                            <?php if($params['authenticated']){ xecho($user->getEmail()); } else {echo 'PROTECTED - Authentication required'; } ?>
+                        </td>
+                    </tr>
+                    <?php  
+                        if($num == 1) { $num = 2; } else { $num = 1; }
+                        } // End of the foreach loop iterating over users
+                    ?>
+                </table>
+            <?php } else {echo 'PROTECTED'; } ?>
         </div>
     <?php } // end of "if users is > 0"?>
     

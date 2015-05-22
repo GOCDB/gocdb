@@ -280,7 +280,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $this->assertTrue(count($roleService->getUserRoleNamesOverEntity($site3, $u)) == 0);
         
         // assert that the user has an expected site count with roles over those sites  
-        $mySites = $roleService->getSites($u); 
+        $mySites = $roleService->getReachableSitesFromOwnedObjectRoles($u); 
         $this->assertEquals(3, sizeof($mySites)); 
         
         // assert user don't have these pending/revoked roles

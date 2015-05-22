@@ -81,7 +81,7 @@ function draw($user) {
     }
 
     // Add sites which user has required action permission to array. 
-    $allUserSites = \Factory::getRoleService()->getSites($user);
+    $allUserSites = \Factory::getUserService()->getSitesFromRoles($user);
     $sites = array(); 
     foreach ($allUserSites as $s) {
         if (count(\Factory::getSiteService()->authorizeAction(\Action::SITE_ADD_SERVICE, $s, $user)) != 0) {
@@ -91,7 +91,7 @@ function draw($user) {
    
     //For admin users, return all sites instead.
     if($user->isAdmin()){
-    $sites = \Factory::getSiteService()->getSitesBy();
+       $sites = \Factory::getSiteService()->getSitesBy();
     }
     
     if(count($sites)==0 and !$user->isAdmin()){

@@ -407,12 +407,12 @@ class ServiceService extends AbstractEntityService{
      * action on the given Service. If the user has no roles that 
      * permit the requested action, then return an empty array. 
      * <p>
-     * Supported actions: SE_ADD_DOWNTIME, EDIT_OBJECT
-     * 
+     * Supported actions: EDIT_OBJECT
      * @see \Action  
-     * @param \User $user
+     * 
      * @param string $action @see \Action 
      * @param \Service $se
+     * @param \User $user
      * @return array of RoleName string values that grant the requested action  
      * @throws \LogicException if action is not supported or is unknown 
      */
@@ -426,7 +426,7 @@ class ServiceService extends AbstractEntityService{
         if(is_null($user->getId())){
             return array(); 
         }
-        if($action == \Action::SE_ADD_DOWNTIME || $action == \Action::EDIT_OBJECT) {
+        if($action == \Action::EDIT_OBJECT) {
             $usersActualRoleNames = array();
             $site = $se->getParentSite();
             if (is_null($site)) {

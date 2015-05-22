@@ -22,8 +22,8 @@ if(isset($params['isEdit'])){
     <ul>
     <li><b>Severity: </b><?php xecho($params['DOWNTIME']['SEVERITY'])?></li>
     <li><b>Description: </b><?php xecho($params['DOWNTIME']['DESCRIPTION'])?></li>
-    <li><b>Times defined in: </b><?php xecho($params['DOWNTIME']['DEFINE_TZ_BY_UTC_OR_SITE'])?> timezone</li> 
-    <li><b>Starting: </b>
+    <?php /*<li><b>Times defined in: </b><?php xecho($params['DOWNTIME']['DEFINE_TZ_BY_UTC_OR_SITE'])?> timezone</li> */ ?>
+    <li><b>Starting (UTC): </b>
     <?php 
         //$startStamp = $params['DOWNTIME']['START_TIMESTAMP'];
 	    //$timestamp = new DateTime("@$startStamp"); //Little PHP magic to create date object directly from timestamp
@@ -31,7 +31,7 @@ if(isset($params['isEdit'])){
         xecho($params['DOWNTIME']['START_TIMESTAMP']);
     ?>
     </li>
-    <li><b>Ending: </b>    
+    <li><b>Ending (UTC): </b>    
     <?php
         //$endStamp = $params['DOWNTIME']['END_TIMESTAMP'];
 	    //$timestamp = new DateTime("@$endStamp"); //Little PHP magic to create date object directly from timestamp

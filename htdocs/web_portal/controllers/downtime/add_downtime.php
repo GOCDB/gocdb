@@ -2,7 +2,7 @@
 /*______________________________________________________
  *======================================================
  * File: add_downtime.php
- * Author: John Casson, George Ryall, David Meredith
+ * Author: James McCarthy, John Casson, George Ryall, David Meredith
  * Description: Processes a new downtime request. If the user
  *              hasn't POSTed any data we draw the add downtime
  *              form. If they post data we assume they've posted it from
@@ -26,12 +26,25 @@ require_once __DIR__.'/../utils.php';
 require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
     
 /**
- * Controller for a new_downtime request
+ * Controller for a new_downtime request. 
+ * 
+ * DM: The downtime interface/logic needs to be reworked and tidied-up: 
+ * - It needs to allow services from multiple sites to be put into downtime 
+ * (currently it only allows a single site to be selected which limits the
+ * selectable services to those only from that site). 
+ *
+ * - There is almost certainly a more elegant way to pass down the UTC offset 
+ * (secs) and timezoneId label for each site (rather than using an AJAX call to query 
+ * for these values on site selection). This will be needed in order to cater for 
+ * multi-site selection. Perhaps pass down a set of DataTransferObjects or JSON string
+ * rather than the Site entities themselves, and specify tz, offset in the DTO/JSON. 
+ * 
  * @global array $_POST only set if the browser has POSTed data
  * @return null
  */
 function add() {
     $dn = Get_User_Principle();
+    /* @var $user \User */
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
@@ -48,7 +61,8 @@ function add() {
  * Retrieves the raw new downtime's data from a portal request and submit it
  * to the services layer's downtime functions.
  * @param \User $user current user
- * @return null */
+ * @return null 
+ */
 function submit(\User $user = null) {
     
     
@@ -110,7 +124,7 @@ function submit(\User $user = null) {
 }
 
 /**
- *  Draws a form to add a new downtime
+ * Draws a form to add a new downtime
  * @param \User $user current user 
  * @return null
  */
@@ -125,13 +139,23 @@ function draw(\User $user = null) {
 
     
     // URL mapping
-    // Return the specified site's timezone label - used in ajax requests for display purposes
+    // Return the specified site's timezone label and the offset from now in UTC 
+    // Used in ajax requests for display purposes
     if(isset($_GET['siteid_timezone']) && is_numeric($_GET['siteid_timezone'])){
         $site = \Factory::getSiteService()->getSite($_GET['siteid_timezone']); 
         if($site != null){
-            die($site->getTimeZoneId()); 
+            $siteTzId = $site->getTimeZoneId();  
+            if( !empty($siteTzId) ){
+                $nowInTargetTz = new \DateTime(null, new \DateTimeZone($siteTzId)); 
+                $offsetInSecsFromUtc = $nowInTargetTz->getOffset(); 
+            } else {
+                $siteTzId = 'UTC';  
+                $offsetInSecsFromUtc = 0;  // assume 0 (no offset from UTC)  
+            }
+            $timezoneId_Offset = array($siteTzId, $offsetInSecsFromUtc); 
+            die(json_encode($timezoneId_Offset)); 
         }
-        die(); 
+        die(json_encode(array('UTC', 0))); 
     }
 
     // URL Mapping 
@@ -152,7 +176,7 @@ function draw(\User $user = null) {
 	// If the user wants to add a downtime to a specific SE, show only that SE
 	else if(isset($_GET['se'])) {
 	    $se = \Factory::getServiceService()->getService($_GET['se']);
-        if(count(\Factory::getServiceService()->authorizeAction(\Action::SE_ADD_DOWNTIME, $se, $user))==0){
+        if(count(\Factory::getServiceService()->authorizeAction(\Action::EDIT_OBJECT, $se, $user))==0){
            throw new \Exception("You do not have permission over $se."); 
         } 
         
@@ -164,12 +188,22 @@ function draw(\User $user = null) {
 
 	// If the user doesn't want to add a downtime to a specific SE or site show all SEs
     else {
+        $ses = array(); 
         if($user->isAdmin()){
             //If a user is an admin, return all SEs instead
             $ses = \Factory::getServiceService()->getAllSesJoinParentSites(); 
         } else {
-            // All ses the user has permission over
-            $ses = \Factory::getRoleService()->getServices($user);
+             //$allSites = \Factory::getUserService()->getSitesFromRoles($user);          
+            
+            // Get all ses where the user has a GRANTED role over one of its 
+            // parent OwnedObjects (includes Site and NGI but not currently Project) 
+            $sesAll = \Factory::getRoleService()->getReachableServicesFromOwnedObjectRoles($user);
+            // drop the ses where the user does not have edit permissions over  
+            foreach($sesAll as $se){
+                if(count(\Factory::getServiceService()->authorizeAction(\Action::EDIT_OBJECT, $se, $user))>0){ 
+                    $ses[] = $se; 
+                }
+            }
         }
         if(empty($ses)) {
             throw new Exception("You don't hold a role over a NGI " 

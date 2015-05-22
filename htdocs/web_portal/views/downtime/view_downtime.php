@@ -93,7 +93,7 @@ $dt = $params['downtime'];
 
             <!--  Timing -->
             <div class="tableContainer" style="width: 42%; float: right;">
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Timing</span>
+                <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Timing (UTC)</span>
                 <img src="<?php echo \GocContextPath::getPath()?>img/clock.png" height="25px" style="float: right; padding-right: 0.5em; padding-top: 0.5em; padding-bottom: 0.5em;" />
                 <table style="clear: both; width: 100%;">
                     <tr class="site_table_row_1">

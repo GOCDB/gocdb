@@ -191,13 +191,19 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
                 <td class="site_table">
                     <div style="background-color: inherit;">
                         <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
-                        <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
-                            <?php xecho($role->getUser()->getFullName())/*.' ['.$role->getUser()->getId().']' */?>
-                        </a>
+                        <?php if($params['authenticated']) { ?>
+                            <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
+                                <?php xecho($role->getUser()->getFullName())?>
+                            </a>
+                        <?php } else {echo 'PROTECTED'; } ?>
                     </div>
                 </td>
                 <td class="site_table">
-                	<?php xecho($role->getRoleType()->getName()) ?>
+                    <?php 
+                    if($params['authenticated']) { 
+                	   xecho($role->getRoleType()->getName()) ; 
+                    } else {echo 'PROTECTED'; } 
+                    ?>
                 </td>
             </tr>
             <?php
