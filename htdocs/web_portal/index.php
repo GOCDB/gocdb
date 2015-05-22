@@ -575,6 +575,8 @@ function Draw_Page($Page_Type) {
             edit_endpoint();
             break;                     
         default:
+            // require auth by default 
+            rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/start_page.php';
             startPage();
             break;
