@@ -12,7 +12,9 @@
  * After running this script, you need to run the MEP GOCDBv5.3 
  * (v5.2 will not work against the udpated DB, you have been warned!).   
  * 
- * 
+ * Usage:
+ * ======
+ *  
  * 1) Update DB tables
  * ====================
  * Before running this script, you MUST update the DB schema to correspond to the 
@@ -34,11 +36,10 @@
  *  
  * 2) Run this script 
  * ====================
- * // 2.1) Copy this scrip into '<GOCDB_SRC_HOME>/lib/Doctrine' dir and 
- *         cd into this dir.  
+ * // 2.1) Cd into '<GOCDB_SRC_HOME>/lib/Doctrine/versionUpdateScripts'  
  * 
  * // 2.2) Run this script on the command line using: 
- * $php MEPS_update_script.php --force  
+ * $php MEPS_update_scriptRunner.php --force  
  * 
  * 
  * The script does the following: 
@@ -52,7 +53,7 @@
  */
 use Doctrine\ORM\EntityManager; 
 
-require_once dirname(__FILE__) . "/bootstrap.php";
+require_once dirname(__FILE__) . "/../bootstrap.php";
   
     if(!isset($argv[1]) || strcmp($argv[1],  '--force') ){ //strcmp returns 0 (i.e. false) if strings are equal
         die("Error. Usage:  php ".basename(__FILE__)." --force \n"); 

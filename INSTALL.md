@@ -5,6 +5,8 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 * [Prerequisites](#prerequisites)
 * [Deployment](#deployment)
 * [First Use Config](#firstuse)
+* [Updating the DB Schema](#updateddl)
+* [Updating From Old Versions](#versionupdate)
 
 ##Prerequisites <a id="prerequisites"></a>
 * [PHP](#php) 
@@ -327,7 +329,7 @@ runs as expected against your chosen DB. It is therefore recommended you run the
 before running a production GocDB instance. See `tests/README.md` for details. 
 
 
-##Updating the DB Schema
+##Updating the DB Schema <a id="updateddl"></a>
 If you modify the `lib/Doctrine/entities` objects, to add new values for example, 
 you will need to update your DB schema. This can be done using the doctrine 
 command line tool. For example: 
@@ -341,3 +343,10 @@ $ doctrine orm:schema-tool:update --force
 Updating database schema...
 Database schema updated successfully! "1" queries were executed
 ```
+
+
+## Updating from old versions (5.2+) <a id="versionupdate"></a>
+Newer releases of Gocdb require updating the DB schema and updating the legacy 
+data to be compliant with the newer version. A number of scripts are provided 
+to assist with this. Please see `lib/Doctrine/versionUpdateScripts/README.md` for details.  
+   
