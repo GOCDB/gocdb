@@ -12,25 +12,30 @@ require_once __DIR__ . '/../IAuthentication.php';
 class X509AuthenticationToken implements IAuthentication {
 
     private $userDetails = null;
-    private $authorities;
+    private $authorities = array();
     private $initialDN = null;
-    //private $principle = null;
 
     public function __construct() {
         $this->initialDN = $this->getDN();
-        //$this->principle = $this-initialDN; 
-        
+        $this->userDetails = array('AuthenticationRealm' => array('IGTF')); 
     }
 
+    /**
+     * {@see IAuthentication::isStateless()} 
+     */
     public static function isStateless() {
         return true;
     } 
 
+    /**
+     * {@see IAuthentication::isPreAuthenticating()} 
+     */
     public static function isPreAuthenticating() {
         return true;   
     }
 
     /**
+     * {@see IAuthentication::getCredentials()}
      * @return string An empty string as passwords are not used in X509. 
      */
     public function getCredentials() {
@@ -38,6 +43,7 @@ class X509AuthenticationToken implements IAuthentication {
     }
 
     /**
+     * {@see IAuthentication::eraseCredentials()}
      * Does nothing, passwords not ussed in X509. 
      */
     public function eraseCredentials() {
@@ -46,22 +52,21 @@ class X509AuthenticationToken implements IAuthentication {
 
     /**
      * Return the user's DN string from the client's certificate stored in their 
-     * browser. The DN is fetched once and cached on object creation. Subsquent 
+     * browser. The DN is fetched once and cached on object creation. Subsequent 
      * invocations return the cached value.  
-     *  
+     * {@see IAuthentication::getPrinciple()) 
+     * 
      * @return String Certifiate DN. 
      * @throws \RuntimeException if DN can't be extracted. 
      */
     public function getPrinciple() {
         return $this->initialDN;
-        // return $this->principle; 
     }
-    /*
-     public function setPrinciple($principle){
-        $this->principle = $principle; 
-     }  
-     */
 
+    /**
+     * {@see IAuthentication::validate()} 
+     * @throws AuthenticationException if validation fails
+     */
     public function validate() {
         // if current DN is not the same as intial DN, if not raise hue and cry ! 
         if (strcmp($this->initialDN, $this->getDN()) != 0) {
@@ -90,6 +95,8 @@ class X509AuthenticationToken implements IAuthentication {
      * A custom object used to store additional user details.  
      * Allows non-security related user information (such as email addresses, 
      * telephone numbers etc) to be stored in a convenient location. 
+     * {@see IAuthentication::getDetails()}
+     * 
      * @return Object or null if not used 
      */
     public function getDetails() {
@@ -97,17 +104,25 @@ class X509AuthenticationToken implements IAuthentication {
     }
 
     /**
-     * @see getDetails()
+     * {@see IAuthentication::getDetails()}
      * @param Object $userDetails
      */
     public function setDetails($userDetails) {
         $this->userDetails = $userDetails;
     }
 
+    /**
+     * {@see IAuthentication::getAuthorities()}
+     * @return array 
+     */
     public function getAuthorities() {
         return $this->authorities;
     }
 
+    /**
+     * {@see IAuthentication::setAuthorities($authorities)} 
+     * @param array $authorities
+     */
     public function setAuthorities($authorities) {
         $this->authorities = $authorities;
     }
@@ -116,4 +131,3 @@ class X509AuthenticationToken implements IAuthentication {
 
 }
 
-?>

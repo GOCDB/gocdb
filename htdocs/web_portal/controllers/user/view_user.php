@@ -61,12 +61,18 @@ function view_user() {
         }
     }
 
+    // Check to see if the current calling user has permission to edit the target user 
     try {
     	\Factory::getUserService()->editUserAuthorization($user, $callingUser);
         $params['ShowEdit'] = true; 
     } catch (Exception $e) {
         $params['ShowEdit'] = false; 
     }
+
+    /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
+    $authToken = Get_User_AuthToken();
+    $params['authAttributes'] = $authToken->getDetails(); 
+    
     
     $params['roles'] = $roles;
     $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();

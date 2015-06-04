@@ -62,7 +62,7 @@
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">Certificate DN</td>
+                    <td class="site_table">Identity String</td>
                     <td class="site_table">
                     	<div style="word-wrap: break-word;">
                         	<?php xecho($params['user']->getCertificateDn()) ?>
@@ -97,6 +97,25 @@
             </table>
         </div>
     </div>
+
+
+    
+    <div class="listContainer">
+        <b>Authentication Attributes:</b>
+        <br>
+        <?php
+        foreach ($params['authAttributes'] as $key => $val) {
+            $attributeValStr = '';
+            foreach ($val as $v) {
+                $attributeValStr .= ', '.$v;
+            }
+            if(strlen($attributeValStr) > 2){$attributeValStr = substr($attributeValStr, 2);}
+            xecho('[' . $key . ']  [' . $attributeValStr . ']');
+            echo '<br>';
+        }
+        ?>
+    </div>
+
 
     <!-- Roles -->
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">

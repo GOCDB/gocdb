@@ -56,6 +56,10 @@ function draw() {
 	    die();
 	}
 
+    /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
+    $authToken = Get_User_AuthToken();
+    $params['authAttributes'] = $authToken->getDetails();
+    
     $params['dn'] = $dn;
     show_view('user/register.php', $params);
 }

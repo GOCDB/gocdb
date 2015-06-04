@@ -28,7 +28,8 @@ require_once __DIR__.'/../IAuthentication.php';
 class SimpleSamlPhpAuthToken implements IAuthentication {
  
     private $userDetails = null;
-    private $authorities;
+    private $authorities = array();
+    private $principle; 
   
     /*
      * Implementation note:  
@@ -77,7 +78,7 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
  */
 
     public function __construct() {
-          
+       $this->getAttributesInitToken();   
     }
 
     /**
@@ -96,7 +97,7 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
 
     /**
      * {@see IAuthentication::getCredentials()}
-     * @return string An empty string as passwords are not used in this token. 
+     * @return string An empty string as passwords are not used by this token. 
      */
     public function getCredentials() {
         return ""; // none used in this token, handled by SSO/SAML 
@@ -119,6 +120,10 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
      * @return string unique principle string of user  
      */
     public function getPrinciple() {
+       return $this->principle;  
+    }
+
+    private function getAttributesInitToken(){
         require_once('/var/simplesamlphp/lib/_autoload.php');
         $auth = new \SimpleSAML_Auth_Simple('default-sp');
         $auth->requireAuth();
@@ -129,25 +134,39 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
             $idp = $auth->getAuthData('saml:sp:IdP');
             // EGI IdP 
             if($idp == 'https://www.egi.eu/idp/shibboleth'){
-                    // For EGI federated id:
-                    //return $attributes['eduPersonPrincipalName'][0];
-                    $dnAttribute = $attributes['urn:oid:1.3.6.1.4.1.11433.2.2.1.9'][0];
-                    if (!empty($dnAttribute)) {
-                        return str_replace("emailAddress=", "Email=", $dnAttribute);
-                    }
+                // For EGI federated id:
+                //$dnAttribute = $attributes['urn:oid:1.3.6.1.4.1.11433.2.2.1.9'][0];
+                //if (!empty($dnAttribute)) {
+                //    $this->principle = str_replace("emailAddress=", "Email=", $dnAttribute);
+                //    $this->userDetails = array('AuthenticationRealm' => array('EGI_SSO_IDP'));
+                //}
+                $nameID = $auth->getAuthData('saml:sp:NameID');
+                $this->principle = $nameID['Value'];
+                $this->userDetails = array('AuthenticationRealm' => array('EGI_SSO_IDP'));
+                // iterate the attributes and store in the userDetails
+                // Each attribute name can be used as an index into $attributes to obtain the value. 
+                // Every attribute value is an array - a single-valued attribute is an array of a single element.
+                foreach($attributes as $key => $valArray){
+                   $this->userDetails[$key] = $valArray;  
+                }
             }
             // EUDAT IdP 
             else if($idp == 'https://unity.eudat-aai.fz-juelich.de:8443/saml-idp/metadata'){
-                    // For EUDAT federated id:
-                    //$dnAttribute = $attributes['urn:oid:2.5.4.49'][0];
-                    //$dnAttribute = $attributes['unity:identity:persistent'][0];
-                    //print_r($attributes);
-                    $nameID = $auth->getAuthData('saml:sp:NameID');
-                    //die('DEBUG forced die');
-                    return $nameID['Value'];
+                // For EUDAT federated id:
+                //$dnAttribute = $attributes['urn:oid:2.5.4.49'][0];
+                //$dnAttribute = $attributes['unity:identity:persistent'][0];
+                //print_r($attributes);
+                $nameID = $auth->getAuthData('saml:sp:NameID');
+                $this->principle = $nameID['Value'];
+                $this->userDetails = array('AuthenticationRealm' => array('EUDAT_SSO_IDP'));
+                // iterate the attributes and store in the userDetails
+                // Each attribute name can be used as an index into $attributes to obtain the value. 
+                // Every attribute value is an array - a single-valued attribute is an array of a single element.
+                foreach($attributes as $key => $valArray){
+                   $this->userDetails[$key] = $valArray;  
+                }
             }
         }
-        return null;
     }
 
     /**

@@ -1,16 +1,7 @@
 <?php
 namespace org\gocdb\security\authentication;
 include_once __DIR__.'/../_autoload.php';
-//require_once __DIR__.'/../IAuthenticationProvider.php'; 
-//require_once __DIR__.'/../IAuthentication.php'; 
-//require_once __DIR__.'/../Exceptions/AuthenticationException.php'; 
-//require_once __DIR__.'/../Exceptions/BadCredentialsException.php'; 
-//require_once __DIR__.'/../Exceptions/UsernameNotFoundException.php'; 
-//require_once __DIR__.'/../IUserDetails.php'; 
-//require_once __DIR__.'/../ApplicationSecurityConfigService.php'; 
-//require_once __DIR__.'/../AuthTokens/X509AuthenticationToken.php'; 
-//require_once __DIR__.'/../AuthTokens/SimpleSamlPhpAuthToken.php'; 
-//require_once __DIR__.'/../AuthTokens/UsernamePasswordAuthenticationToken.php'; 
+
 
 
 /**
@@ -38,14 +29,20 @@ class GOCDBAuthProvider implements IAuthenticationProvider {
         //    return $this->authenticateAgainstDB($auth); 
         //}
 
-        // If not un/pw token, the x509 and SimpleSaml_with_x509SamlAttribute 
-        // prove the user has a certificate, so we can authenticate our user.  
-        $x509DN = $auth->getPrinciple() ;
-        if($x509DN == null || $x509DN == ''){
-            throw new AuthenticationException(null, 'x509 DN could not be extracted from token ['.  get_class($auth).']');
+        // If not un/pw token, get the principle string which authenitcates our user 
+        // and perform any extra authentication logic, e.g. compare principle to 
+        // an authenitcated user list (not needed in this AuthProvider) 
+        $authPrincipleStr = $auth->getPrinciple() ;  
+        if($authPrincipleStr == null || $authPrincipleStr == ''){
+            throw new AuthenticationException(null, 'Principle string could not be extracted from token ['.  get_class($auth).']');
         }
         $roles = array();  
-        $roles[] = 'ROLE_CERTOWNER';
+        if($auth instanceof X509AuthenticationToken){
+            $roles[] = 'ROLE_CERTOWNER';    
+        }
+        else if($auth instanceof SimpleSamlPhpAuthToken){
+            $roles[] = 'ROLE_SAMLUSER'; 
+        } 
         $auth->setAuthorities($roles); 
         return $auth; 
     }

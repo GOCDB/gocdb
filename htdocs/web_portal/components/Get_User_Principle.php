@@ -3,7 +3,7 @@
  *======================================================
  * File: Get_User_Principle.php
  * Author: David Meredith
- * Description: Returns the user's principle ID string for the user that's currently
+ * Description: Returns the user's principle ID string or AuthToken for the user that's currently
  *				connected (for x509 this is a DN).
  *
  * License information
@@ -29,9 +29,9 @@ require_once __DIR__ . '/../../../lib/Authentication/_autoload.php';
  * allows fast lookups during current request processing. Calling code such as 
  * {@link Get_User_Principle()} can callout for the stored value rather than 
  * running through the authentication process again for each invocation  
- * (for the current request only).       
+ * (for to the current request only).       
  */
-class myStaticPrincipleHolder {
+class MyStaticPrincipleHolder {
     private static $_instance;
     private $principleString = null; 
     private function __construct() {
@@ -52,13 +52,77 @@ class myStaticPrincipleHolder {
     public function setPrincipleString($principleString){
         $this->principleString = $principleString;  
     }
-
+}
+/**
+ * Holds the AuthToken of the authenticated user.  
+ * <p>
+ * Saving the token in a singleton after authentication 
+ * allows fast lookups during current request processing. Calling code such as 
+ * {@link Get_User_AuthToken()} can callout for the stored value rather than 
+ * running through the authentication process again for each invocation  
+ * (applies to the current request only).       
+ */
+class MyStaticAuthTokenHolder {
+    private static $_instance; 
+    private $authToken = null; 
+    private function __construct() {
+    }
+    private function __clone(){
+       // defining an empty clone closes small loophole in PHP that could make 
+       // a copy of the object and defeat singletone responsibility  
+    }
+    public static function getInstance() {
+        if (!(self::$_instance instanceof self)) {
+            self::$_instance = new self();
+        }
+        return self::$_instance;
+    }
+    public function getAuthToken(){
+        return $this->authToken; 
+    }
+    public function setAuthToken($authToken){
+        $this->authToken = $authToken;   
+    }
 }
 
 /**
- * Get the x509 DN from certificate or from SAML attribute. 
+ * Get the IAuthenticationToken for the user. 
  * <p>
- * Called from the portal to allow authentication via x509 or SSO/SAML.  
+ * Called from the portal to allow authentication.  
+ * This method serves as the global integration point for all authentication requests. 
+ * If you intend to support a different authentication mechanism, you will need 
+ * to modify this method to support your chosen authentication scheme or call another version. 
+ * 
+ * @return \org\gocdb\security\authentication\IAuthenticationToken or null if can't authenticate request 
+ */
+function Get_User_AuthToken(){
+    // The token may have already been set in the static holder, 
+    // if true/not-null, then return rather than going through slower auth process again
+    if(MyStaticAuthTokenHolder::getInstance()->getAuthToken() != null){
+        return MyStaticAuthTokenHolder::getInstance()->getAuthToken(); 
+    }
+    // Token has not yet been stored for the current request, 
+    // therefore we need to authenticate. 
+    $fwMan = \org\gocdb\security\authentication\FirewallComponentManager::getInstance(); 
+    $firewallArray = $fwMan->getFirewallArray(); 
+    /* @var $firewall \org\gocdb\security\authentication\IFirewallComponent */
+    $firewall = $firewallArray['fwC1']; // select which firewall component you need  
+    $auth = $firewall->getAuthentication();  // invoke token resolution process 
+    if ($auth != null) {
+        $principleString = $auth->getPrinciple();  
+        // update the static holder so we can quickly return the token 
+        // for the current request on repeat callouts to Get_User_AuthToken (is quicker than authenticating again). 
+        MyStaticPrincipleHolder::getInstance()->setPrincipleString($principleString); 
+        MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth); 
+        return $auth;
+    } 
+    return null; 
+}
+
+/**
+ * Get the user's principle string (x509 DN from certificate or from SAML attribute). 
+ * <p>
+ * Called from the portal to allow authentication.  
  * This method serves as the global integration point for all authentication requests. 
  * If you intend to support a different authentication mechanism, you will need 
  * to modify this method to support your chosen authentication scheme or call another version. 
@@ -68,21 +132,23 @@ class myStaticPrincipleHolder {
 function Get_User_Principle(){
     // The principle may have already been set in the static holder, 
     // if true/not-null, then return rather than going through slower auth process again
-    if(myStaticPrincipleHolder::getInstance()->getPrincipleString() != null){
-        return myStaticPrincipleHolder::getInstance()->getPrincipleString(); 
+    if(MyStaticPrincipleHolder::getInstance()->getPrincipleString() != null){
+        return MyStaticPrincipleHolder::getInstance()->getPrincipleString(); 
     }
     
     // Principle has not yet been stored for the current request, 
     // therefore we need to authenticate. 
     $fwMan = \org\gocdb\security\authentication\FirewallComponentManager::getInstance(); 
     $firewallArray = $fwMan->getFirewallArray(); 
+    /* @var $firewall \org\gocdb\security\authentication\IFirewallComponent */
     $firewall = $firewallArray['fwC1']; // select which firewall component you need  
     $auth = $firewall->getAuthentication();  // invoke token resolution process 
     if ($auth != null) {
         $principleString = $auth->getPrinciple();  
         // update the static holder so we can quickly return the principle 
         // for the current request on repeat callouts to Get_User_Principle (is quicker than authenticating again). 
-        myStaticPrincipleHolder::getInstance()->setPrincipleString($principleString); 
+        MyStaticPrincipleHolder::getInstance()->setPrincipleString($principleString); 
+        MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth); 
         return $principleString;
     } 
     return null; 
