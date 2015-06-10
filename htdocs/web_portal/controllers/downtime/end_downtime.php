@@ -30,8 +30,13 @@ function endDt() {
 	require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
     require_once __DIR__ . '/../utils.php';
     
-    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
-        throw new Exception("An id must be specified");
+    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
+        throw new Exception("A downtime id must be specified");
+    }
+    $serv = \Factory::getDowntimeService();
+    $dt = $serv->getDowntime($_GET['id']);
+    if($dt == null){
+        throw new Exception("No downtime with that id"); 
     }
     
    	$dn = Get_User_Principle();
@@ -40,12 +45,9 @@ function endDt() {
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
     
-	$serv = \Factory::getDowntimeService();
-	$dt = $serv->getDowntime($_REQUEST['id']);
 
     $serv->endDowntime($dt, $user);
 
     $params = array('downtime' => $dt);
     show_view("downtime/ended_downtime.php", $params);
 }
-?>

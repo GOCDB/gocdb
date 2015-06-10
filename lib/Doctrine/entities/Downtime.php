@@ -239,7 +239,7 @@ class Downtime {
 	 * @return boolean
 	 */
 	public function isOngoing() {
-	    $now = new \DateTime();
+	    $now = new \DateTime(null, new \DateTimeZone('UTC'));
 	    if($this->getStartDate() < $now && $this->getEndDate() > $now) {
 	        return true;
 	    } else {
@@ -252,7 +252,7 @@ class Downtime {
 	 * @return boolean
 	 */
 	public function hasStarted() {
-        $now = new \DateTime();
+        $now = new \DateTime(null, new \DateTimeZone('UTC'));
         if($this->getStartDate() < $now) {
             return true;
         } else {

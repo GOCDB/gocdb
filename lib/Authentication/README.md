@@ -165,7 +165,7 @@ Sample usage is:
     require_once "path to Authentication lib/_autoload.php"; 
 
     /**
-     * @return user principle string if request is authenticated or null of not 
+     * @return user principle string if request is authenticated or null if not 
      */
     function Get_User_Principle(){
         // get the FirewallComponentManager instance (singleton) 

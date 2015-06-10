@@ -1,7 +1,12 @@
 
 ## Todo
+* When authenticating via SAML, need to map certain attributes to GocDB account
+  fields, and when editing. Also, what to do with all the attributes received from IdP. 
+* After a downtime has started, remove downtime delete/edit buttons
 * Look at the retrieve account logic/page 
 * Update role-approve notification email 
+* Change <CertificateDN> in PI output to <Principle> and consider adding the 
+  <AuthenticationRealm> element and DB column. 
 * Add instructions for deployment to MySQL 
 * Add LoA attribute to AuthToken details  
 * Modularise RoleLogic into one class and support RoleActionPermissions.xml, see below. 

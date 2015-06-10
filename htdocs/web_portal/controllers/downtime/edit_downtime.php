@@ -60,14 +60,11 @@ function draw(\User $user = null) {
         throw new Exception("No downtime with that id"); 
     }
 
-    
-    $nowUtcDateTime = new \DateTime(null, new \DateTimeZone("UTC"));
-    if($dt->getEndDate() < $nowUtcDateTime ){
-      throw new Exception("Can't edit a downtime that has already finished");  
-    } 
-    
+    // check that this downtime is eligible for editing, throws exception if not.  
+    $serv->editValidationDatePreConditions($dt); 
     $serv->authorization($dt->getServices(), $user);
     
+    $nowUtcDateTime = new \DateTime(null, new \DateTimeZone("UTC"));
     $twoDaysAgoUtcDateTime = $nowUtcDateTime->sub(\DateInterval::createFromDateString('2 days'));
     $twoDaysAgoUtc = $twoDaysAgoUtcDateTime->format('d/m/Y H:i'); //e.g.  02/10/2013 13:20
     

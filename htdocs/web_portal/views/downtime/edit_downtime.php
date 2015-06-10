@@ -33,7 +33,8 @@ foreach($downtime->getEndpointLocations() as $endpoints){
     <ul>
         <li>Downtimes can only be <b>shortened &rAarr;&lAarr;</b>, add a new downtime to extend.
         <li>To be <strong>SCHEDULED</strong>, start must be <strong>24hrs</strong> in the future</li>
-        <li>Time in UTC since last page refresh <strong><?php xecho($params['nowUtc']);?></strong></li>
+        <?php /*<li>Time in UTC since last page refresh <strong><?php xecho($params['nowUtc']);?></strong></li>*/ ?>
+        <li>Time in UTC: <label id="timeinUtcNowLabel"></label></li>
     </ul>
 	<br>
 
@@ -77,6 +78,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
             <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="utcRadioButton" value="utc" checked>UTC&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="siteRadioButton" value="site">Site Timezone 
             <input type="text" id="siteTimezoneText" placeholder="Updated on site selection" readonly>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="schedulingStatusLabel"></label>
         </div>    
 
         
@@ -191,6 +193,8 @@ foreach($downtime->getEndpointLocations() as $endpoints){
    var TARGETTIMEZONEOFFSETFROMUTCSECS = 0; // e.g. 3600 if TARGETTIMEZONEID is ahead of UTC by 1hr
    var M_START_UTC = null; 
    var M_END_UTC = null; 
+   var M_START_UTC_PRE_EDIT = null; 
+   var M_END_UTC_PRE_EDIT = null; 
 
    $(document).ready(function() {
         TARGETTIMEZONEID =  "<?php xecho($siteTimezoneId); ?>";  
@@ -226,6 +230,11 @@ foreach($downtime->getEndpointLocations() as $endpoints){
   
         // Run through the validate and set edit downtime submit button to enabled or not.  
         validate();
+
+        // Store the start/end times before the user starts to modify (are 
+        // used when validating the new duration which can only be shorter) 
+        M_START_UTC_PRE_EDIT = M_START_UTC; 
+        M_END_UTC_PRE_EDIT = M_END_UTC; 
         
     });
 
@@ -401,6 +410,9 @@ foreach($downtime->getEndpointLocations() as $endpoints){
             //console.log(M_START_UTC.format()); 
             $('#startUtcLabel').text(M_START_UTC.format("DD/MM/YYYY HH:mm")+' UTC'); 
             $('#startTimestamp').val(M_START_UTC.format("DD/MM/YYYY HH:mm")); 
+
+            // refresh the SCHEDULED/UNSCHEDULED label  
+            refreshScheduledStatus();  
         }
         // calculate the end date time in UTC 
         if(eDate && eTime){
@@ -423,21 +435,77 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         }
    }
 
+   /*
+    * Dynamically update the UTC time label and SCHEDULED/UNSCHEDULED labels. 
+    */
+   setInterval(refreshScheduledStatus,5000);
+   setInterval(refreshCurrentUtcTimeLabel,1000); 
+  
+   /**
+    * Update the UTC time label, executed every second. 
+    * @returns {null}
+    */
+   function refreshCurrentUtcTimeLabel(){
+       var nowUtc = moment.utc(); 
+       $('#timeinUtcNowLabel').text(nowUtc.format("DD/MM/YYYY HH:mm:ss"));  
+   } 
+
+   /**
+    * Update the SCHEDULED/UNSCHEDULED status label depending on 
+    * currently specified start/end time values, executed every 5 secs.   
+    * @returns {null}
+    */
+   function refreshScheduledStatus(){
+        var sDate = $('#startDateContent').val();
+    	var sTime = $('#startTimeContent').val();
+
+        // calculate the start date time in UTC 
+        if(sDate && sTime){
+            // First Parse the input string as UTC
+            // (use moment.utc(), otherwise moment parses in current timezone)
+        	var start = sDate +" "+sTime; 
+        	var mStart = moment.utc(start, "DD-MM-YYYY, HH:mm"); // parse in utc
+            // Is M_START_UTC >24hrs in future (SCHEDULED) or <24hrs (UNSCHEDULED) 
+            // this logic should go into a self-refresh loop. 
+            if(mStart){    // if mStart is not null
+                $('#schedulingStatusLabel').text(''); 
+                var nowUtc = moment.utc();    
+                var duration24hrs = moment.duration(24, 'hours'); 
+                if( mStart > (nowUtc + duration24hrs)){
+                   $('#schedulingStatusLabel').text('SCHEDULED'); 
+                } else {
+                   $('#schedulingStatusLabel').text('UNSCHEDULED'); 
+                }
+            }
+        }
+   }
+
 
     function validateUtcDates(){
-       var datesValid = false; 
        if(M_END_UTC && M_START_UTC){
-        //Check end is after start:
-            var diff1 = moment.duration(M_END_UTC - M_START_UTC);
-            //console.log(diff1);
+            var newDuration = moment.duration(M_END_UTC - M_START_UTC);
+        	var startDuration = moment.duration(now - M_START_UTC);
         	var now = moment.utc();    
-        	var diff2 = moment.duration(now - M_START_UTC);
+
+            if(M_END_UTC_PRE_EDIT && M_START_UTC_PRE_EDIT){
+                var originalDuration = moment.duration(M_END_UTC_PRE_EDIT - M_START_UTC_PRE_EDIT); 
+                if(newDuration > originalDuration){
+                    $('#startDateGroup').removeClass("has-success");
+                    $('#endDateGroup').removeClass("has-success");
+                    $('#endError').removeClass("hidden");
+                    $("#endError").text("Downtime durations can't be extended, add a new DT to extend.");
+                    $('#endDateGroup').addClass("has-error");  
+                    $('#startDateGroup').addClass("has-error");  
+                    return false; 
+                }
+            }
+            
             //console.log(diff2);
             //Downtime either ends before it begins or its start is over 48 hours ago 
-            if(diff1 <= 0 || diff2 > 172800000){  // if (diff2 > 2daysInMilliSecs) 
+            if(newDuration <= 0 || startDuration > 172800000){  // if (diff2 > 2daysInMilliSecs) 
             	$('#startDateGroup').removeClass("has-success");
             	$('#endDateGroup').removeClass("has-success");
-            	if(diff1 <= 0){
+            	if(newDuration <= 0){
             		$('#endError').removeClass("hidden");
             		$("#endError").text("A downtime cannot end before it begins.");
             		$('#endDateGroup').addClass("has-error");                    
@@ -445,7 +513,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
                 	$('#startError').addClass("hidden");
                 	$('#endDateGroup').removeClass("has-error");
                 }
-                if(diff2 > 172800000){
+                if(startDuration > 172800000){
                     $('#startError').removeClass("hidden");
             		$("#startError").text("The start time of the downtime must be within the last 48 hrs");
             		$('#startDateGroup').addClass("has-error");            		
@@ -453,16 +521,17 @@ foreach($downtime->getEndpointLocations() as $endpoints){
                     $('#startError').addClass("hidden");       
                     $('#startDateGroup').removeClass("has-error");             
                 }             
-                datesValid=false;
-            }else{
-                datesValid=true;
-        		$('#endError').addClass("hidden");
-        		$('#startError').addClass("hidden");    
-                $('#startDateGroup').addClass("has-success");
-                $('#endDateGroup').addClass("has-success");             
-            }    
+                return false;
+            }
+
+            // ok, dates seem valid 
+            $('#endError').addClass("hidden");
+            $('#startError').addClass("hidden");    
+            $('#startDateGroup').addClass("has-success");
+            $('#endDateGroup').addClass("has-success");             
+            return true; 
        } 
-       return datesValid; 
+       return false; 
     }
 
     //This function uses pure javascript to return the date - 2 days

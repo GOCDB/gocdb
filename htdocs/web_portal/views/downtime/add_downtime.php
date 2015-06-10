@@ -20,7 +20,8 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
     <div>
     <ul>    
         <li>To be <strong>SCHEDULED</strong>, start must be <strong>24hrs</strong> in the future</li>
-        <li>Time in UTC since last page refresh <strong><?php xecho($params['nowUtc']);?></strong></li>
+        <?php /*<li>Time in UTC since last page refresh <strong><?php xecho($params['nowUtc']);?></strong></li>*/ ?>
+        <li>Time in UTC: <label id="timeinUtcNowLabel"></label></li>
     </ul>
     </div>
 	<br>
@@ -63,6 +64,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="utcRadioButton" value="utc" checked>UTC&nbsp;&nbsp;&nbsp;&nbsp; 
             <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="siteRadioButton" value="site">Site Timezone 
             <input type="text" id="siteTimezoneText" value="UTC" placeholder="Updated on site selection" readonly> 
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="schedulingStatusLabel"></label>
         </div>    
 
 
@@ -226,7 +228,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
     	var eDate = $('#endDateContent').val();
     	var sTime = $('#startTimeContent').val();
     	var eTime = $('#endTimeContent').val(); 
-        
+
         // calculate the start date time in UTC 
         if(sDate && sTime){
             // First Parse the input string as UTC
@@ -245,6 +247,9 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             //console.log(M_START_UTC.format()); 
             $('#startUtcLabel').text(M_START_UTC.format("DD/MM/YYYY HH:mm")+' UTC'); 
             $('#startTimestamp').val(M_START_UTC.format("DD/MM/YYYY HH:mm")); 
+
+            // refresh the SCHEDULED/UNSCHEDULED label  
+            refreshScheduledStatus();  
         }
         // calculate the end date time in UTC 
         if(eDate && eTime){
@@ -264,6 +269,51 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             //console.log(M_END_UTC.format()); 
             $('#endUtcLabel').text(M_END_UTC.format("DD/MM/YYYY HH:mm")+' UTC'); 
             $('#endTimestamp').val(M_END_UTC.format("DD/MM/YYYY HH:mm")); 
+        }
+   }
+
+   /*
+    * Dynamically update the UTC time label and SCHEDULED/UNSCHEDULED labels. 
+    */
+   setInterval(refreshScheduledStatus,5000);
+   setInterval(refreshCurrentUtcTimeLabel,1000); 
+  
+   /**
+    * Update the UTC time label, executed every second. 
+    * @returns {null}
+    */
+   function refreshCurrentUtcTimeLabel(){
+       var nowUtc = moment.utc(); 
+       $('#timeinUtcNowLabel').text(nowUtc.format("DD/MM/YYYY HH:mm:ss"));  
+   } 
+
+   /**
+    * Update the SCHEDULED/UNSCHEDULED status label depending on 
+    * currently specified start/end time values, executed every 5 secs.   
+    * @returns {null}
+    */
+   function refreshScheduledStatus(){
+        var sDate = $('#startDateContent').val();
+    	var sTime = $('#startTimeContent').val();
+
+        // calculate the start date time in UTC 
+        if(sDate && sTime){
+            // First Parse the input string as UTC
+            // (use moment.utc(), otherwise moment parses in current timezone)
+        	var start = sDate +" "+sTime; 
+        	var mStart = moment.utc(start, "DD-MM-YYYY, HH:mm"); // parse in utc
+                   // Is M_START_UTC >24hrs in future (SCHEDULED) or <24hrs (UNSCHEDULED) 
+            // this logic should go into a self-refresh loop. 
+            if(mStart){    // if mStart is not null
+                $('#schedulingStatusLabel').text(''); 
+                var nowUtc = moment.utc();    
+                var duration24hrs = moment.duration(24, 'hours'); 
+                if( mStart > (nowUtc + duration24hrs)){
+                   $('#schedulingStatusLabel').text('SCHEDULED'); 
+                } else {
+                   $('#schedulingStatusLabel').text('UNSCHEDULED'); 
+                }
+            }
         }
    }
 
