@@ -1,4 +1,4 @@
 {
-        "require": {"doctrine/orm": "2.3.3"}
+        "require": {"doctrine/orm": "2.3.3",
+                "monolog/monolog": "^1.13"}
 }
-

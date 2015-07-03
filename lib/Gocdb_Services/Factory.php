@@ -17,6 +17,10 @@ require_once __DIR__ . '/RoleConstants.php';
  * A factory for returning GOCDB business services.
  * Most services are managed as static singleton instances, but you can choose
  * to instantiate a service class instance directly if necessary.
+ * 
+ * Without a dependency injection framework, this class implements an object 
+ * creational pattern
+ * {@link https://en.wikipedia.org/wiki/Creational_pattern Object creation} 
  *
  * @author David Meredith
  */

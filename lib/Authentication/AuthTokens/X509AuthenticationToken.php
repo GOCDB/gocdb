@@ -3,6 +3,9 @@ namespace org\gocdb\security\authentication;
 
 require_once __DIR__ . '/../IAuthentication.php';
 
+//use Monolog\Logger;
+//use Monolog\Handler\StreamHandler;
+
 /**
  * An implementation of <code>IAuthentication</code> for use with X509 certificates. 
  *
@@ -14,8 +17,14 @@ class X509AuthenticationToken implements IAuthentication {
     private $userDetails = null;
     private $authorities = array();
     private $initialDN = null;
+    /** @var \Psr\Log\LoggerInterface logger methods */
+    //private $logger; 
 
     public function __construct() {
+        // create logger 
+        //$this->logger = new Logger('X509AuthenticationTokenLogger');
+        //$this->logger->pushHandler(new StreamHandler(__DIR__.'/../../../gocdb.log', Logger::DEBUG));
+        
         $this->initialDN = $this->getDN();
         $this->userDetails = array('AuthenticationRealm' => array('IGTF')); 
     }
@@ -75,6 +84,7 @@ class X509AuthenticationToken implements IAuthentication {
     }
 
     private function getDN() {
+        //$this->logger->addDebug('getDN()'); 
         if (isset($_SERVER['SSL_CLIENT_CERT'])) {
             $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
             if (isset($Raw_Client_Certificate)) {

@@ -13,6 +13,7 @@ GOCDB-5.4 Release (TBC)
     Deprecation of the lib/Doctrine/entities/Timezone.php entity. 
   - Specify downtime dates in site's local timezone with conversion to utc 
     Removal of extraneous date_default_timezone_set("UTC") calls (legacy artefact) 
+    Improved add/edit downtime interface 
   - BugFix - get_service method was ignoring the `monitored` url parameter. 
   - BugFix - limit to reachable sites when adding downtimes 
     

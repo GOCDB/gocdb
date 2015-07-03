@@ -26,11 +26,14 @@ function view() {
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
+    $downtime = \Factory::getDowntimeService()->getDowntime($_REQUEST['id']);
+    if($downtime == null){
+        throw new Exception('No downtime with id ['.$_REQUEST['id'].']'); 
+    }
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
     
-    $downtime = \Factory::getDowntimeService()->getDowntime($_REQUEST['id']);
     $params['downtime'] = $downtime;
     $title = $downtime->getDescription();
     show_view("downtime/view_downtime.php", $params, $title);

@@ -113,6 +113,7 @@ class PIRequest {
             switch($this->method) {            	
                 case "get_site":
                     require_once($directory.'GetSite.php');
+                    $this->authAnyCert();
                 	$getSite =  new GetSite($em);  
                 	$getSite->validateParameters($this->params);                	           	 
                     $getSite->createQuery();

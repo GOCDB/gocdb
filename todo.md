@@ -5,7 +5,7 @@
 * After a downtime has started, remove downtime delete/edit buttons
 * Look at the retrieve account logic/page 
 * Update role-approve notification email 
-* Change <CertificateDN> in PI output to <Principle> and consider adding the 
+* Change <CERTDN> in PI output to <PRINCIPAL> and consider adding the 
   <AuthenticationRealm> element and DB column. 
 * Add instructions for deployment to MySQL 
 * Add LoA attribute to AuthToken details  
@@ -30,13 +30,15 @@
 * Add filtering of resources by 'project' 
 * Add 'project' URL param to PI get_project, get_site, get_service, get_downtime
 * Add <scopes> elements to PI output
+* Introduce READ action for roles? - currently, once a user is authenticated, all info can 
+  be viewed in GOCDB. We may need fine-grained READ permissions on selected content. 
 
 ## Recently Done
 * Show all/additional SAML attributes retrieved from IdP after successful user 
   authentication. Show attributes in view user page.  
 * Define downtime in sites local timezone 
 * Replace timezone lookup table with php Olson timezonedb values and create 
-  migration scripts (if a legacy timezone can't be mapped to new value, then 
+  migration scripts (if a legacy timezone cant be mapped to new value, then 
   default to UTC). 
 
 ### Sample RoleActionPermissions.xml (TODO) 
