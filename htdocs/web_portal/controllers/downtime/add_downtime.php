@@ -176,11 +176,13 @@ function draw(\User $user = null) {
 	// If the user wants to add a downtime to a specific SE, show only that SE
 	else if(isset($_GET['se'])) {
 	    $se = \Factory::getServiceService()->getService($_GET['se']);
+        $site = \Factory::getSiteService()->getSite($se->getParentSite()->getId());
         if(count(\Factory::getServiceService()->authorizeAction(\Action::EDIT_OBJECT, $se, $user))==0){
            throw new \Exception("You do not have permission over $se."); 
         } 
         
-	    $ses = array($se);
+	    //$ses = array($se);
+        $ses = $site->getServices();
 		$params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'), 'selectAll' => true);
 		show_view("downtime/add_downtime.php", $params);
 		die();
