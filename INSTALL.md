@@ -113,10 +113,30 @@ Doctrine Command Line Interface version 2.3.3
 * See: [composer](https://getcomposer.org/)
 * Download composer.phar into the GOCDB root directory. 
   * If you are behind a proxy, you may need to set your `http_proxy` and `https_proxy` env vars. 
+  * Note, you may need to unset `https_proxy` and play with the `HTTPS_PROXY_REQUEST_FULLURI` value, 
+    see following links:
+    * [http-proxy](https://getcomposer.org/doc/03-cli.md#http-proxy-or-http-proxy) 
+    * [composer stopped working behind proxy](https://github.com/composer/composer/issues/3611) 
+ 
+ * To run composer you can use `php composer.phar --version` or rename it, e.g. `mv composer.phar composer`
+ * Use the `composer diag` option to test that it has connectivity to download packages (see below)
   * If you are on Win, you can create a `composer.bat` file with the following content: `php "%~dp0composer.phar" %*`
 ```bash
 $ composer --version
 Composer version 1.0-dev (6d76142907fca2478a1b8867ee6c86b04a3f4ff5) 2015-04-30 10:04:17
+$ 
+$ composer diag
+...blah...
+Checking git settings: OK
+Checking http connectivity to packagist: OK
+Checking https connectivity to packagist: OK
+Checking HTTP proxy: OK
+Checking HTTP proxy support for request_fulluri: OK
+Checking HTTPS proxy support for request_fulluri: OK
+Checking github.com rate limit: OK
+Checking disk free space: OK
+Checking composer version: OK
+
 ```
 * The composer.json and lock files are provided for you so you can simply run `composer install` 
 * Running `composer install` will create a `vendor` directory in the GOCDB root 

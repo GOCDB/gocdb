@@ -72,7 +72,11 @@
 		</extensions>
 
 
-        <!-- Send email true or false (Useful to turn off on a test server to avoid spamming users) -->
+        <!-- 
+        Server send email true or false (set to false on a test server to avoid spamming users).  
+        Emails are sent by the server when managing/requesting roles, retrieving user 
+        accounts (e.g. associating a user account with a new cert DN).   
+        -->
         <send_email>false</send_email>
 
 		

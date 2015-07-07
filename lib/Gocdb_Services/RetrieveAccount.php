@@ -165,13 +165,15 @@ class RetrieveAccount extends AbstractEntityService {
         $link = $portal_url."/index.php?Page_Type=User_Validate_DN_Change&c=".$confirmationCode;
         $subject = "Validation of changes on your GOCDB account";
         $body = "Dear GOCDB User,\n\n"
-            ."A request to retrieve your GOCDB account and privileges with an new certificate has just been made on GOCDB."
-            ."\n\nThe new certificate DN is: $newDn"
-            ."\n\nIf you wish to associate your GOCDB account with this new certificate, please validate your request by clicking on the link below:\n"
-            ."$link";
+            ."A request to retrieve and associate your GOCDB account and privileges with a "
+                . "new account ID has just been made on GOCDB (e.g. you have a new certificate with a different DN)."
+            ."\n\nThe new account ID is: $newDn"
+            ."\n\nIf you wish to associate your GOCDB account with this account ID, please validate your request by clicking on the link below:\n"
+            ."$link".
+            "\n\nIf you did not create this request in GOCDB, please immediately contact gocdb-admins@mailman.egi.eu" ;
             ;
         //If "sendmail_from" is set in php.ini, use second line ($headers = '';):
-        $headers = "From: no-reply@gocdb.eu";           
+        $headers = "From: no-reply@goc.egi.eu";           
         //$headers = "";
         
         //mail command returns boolean. False if message not accepted for delivery.
