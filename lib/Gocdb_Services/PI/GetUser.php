@@ -217,10 +217,10 @@ class GetUser implements IPIQuery{
                             $type = "site";
                             $entityPk = $ownedEntity->getPrimaryKey();
                     } else if ($ownedEntity instanceof \NGI) {
-                            $type = "group"; //"ngi"; // this should be ngi not group
+                            $type = "ngi"; //"ngi"; // this should be ngi not group
                             $entityPk = $ownedEntity->getId();
                     } else if ($ownedEntity instanceof \Project) {
-                            $type = "group"; //"project"; // this should be project not group
+                            $type = "project"; //"project"; // this should be project not group
                             $entityPk = $ownedEntity->getId();
                     } else if ($ownedEntity instanceof \ServiceGroup) {
                             $type = 'servicegroup';
