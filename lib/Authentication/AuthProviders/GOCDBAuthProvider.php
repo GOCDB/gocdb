@@ -94,13 +94,17 @@ class GOCDBAuthProvider implements IAuthenticationProvider {
 
 
     public function supports(IAuthentication $auth){
-        if($auth instanceof X509AuthenticationToken){
+        if($auth != null){
+            return true; 
+        }
+        // You can limit support to specific token types:
+        /*if($auth instanceof X509AuthenticationToken){
             return true; 
         }
         if($auth instanceof SimpleSamlPhpAuthToken){
             return true; 
         }
-        return false; 
+        return false; */
     }
 
     
