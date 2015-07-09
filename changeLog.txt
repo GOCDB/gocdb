@@ -11,11 +11,15 @@ GOCDB-5.4 Release (TBC)
   - Improved content rendering to hide Edit/Delete links according to permissions. 
   - Update to php timezonedb rather than by static seed values insert into DB, inc:  
     Deprecation of the lib/Doctrine/entities/Timezone.php entity. 
-  - Specify downtime dates in site's local timezone with conversion to utc 
+  - Specify downtime dates in site's local timezone with automatic conversion to UTC 
     Removal of extraneous date_default_timezone_set("UTC") calls (legacy artefact) 
     Improved add/edit downtime interface 
   - BugFix - get_service method was ignoring the `monitored` url parameter. 
   - BugFix - limit to reachable sites when adding downtimes 
+  - Addition of ShibAuthToken.php for easier integration with ShibSP. 
+  - Modified 'lib/Authentication/AuthProviders/GOCDBAuthProvider.php' to support 
+    any non-null IAuthentication token by default, rather than limiting to known 
+    sub-classes. 
     
     
 
@@ -29,7 +33,7 @@ GOCDB-5.3.1 Release (16/02/2015)
   - Major improvements to Authentication package to enable different auth schemes. 
   - Support for SAML2.0 SSO logins using SimpleSamlPhp (disabled by default).  
   - Update DB entity model to add new value (User->$username1) and new script 
-    (QueryPopulateSSO_UsernameRunner.php) to query the EGI Idp to populdate this value. 
+    (QueryPopulateSSO_UsernameRunner.php) to query the EGI Idp to populate this value. 
   - Update of get_user PI method (GetUser.php): 
     - ENTITY_TYPE element values updated ( 'group' value is separated into 'ngi' and 'project')
     - New elements: SSOUSERNAME and PRIMARY_KEY (PK of the target role entity). 

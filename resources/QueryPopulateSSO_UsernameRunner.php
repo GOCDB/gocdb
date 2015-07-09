@@ -59,7 +59,7 @@ foreach ($users as $user) {
             $ssousername = null;
         }
         //echo $count . ' ' . $user->getCertificateDn() . "  " . $ssousername . "\n";
-        echo $count.",";   
+        //echo $count.",";   
         if($ssousername != null){
           $user->setUsername1($ssousername); 
           $em->persist($user); 
