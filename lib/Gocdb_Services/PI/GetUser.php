@@ -175,13 +175,12 @@ class GetUser implements IPIQuery{
 			$xmlUser->addChild ( 'WORKING_HOURS_END', $user->getWorkingHoursEnd () );
 			$xmlUser->addChild ( 'CERTDN', $user->getCertificateDn () );
           
-            /*  Comment out temporarily until ready to release
             $ssousername = $user->getUsername1(); 
             if($ssousername != null){
                $xmlUser->addChild ( 'SSOUSERNAME', $ssousername); 
             } else {
                 $xmlUser->addChild ( 'SSOUSERNAME');  
-            }*/
+            }
             
 			/*
 			 * APPROVED and ACTIVE are always blank in the GOCDBv4 get_user 
