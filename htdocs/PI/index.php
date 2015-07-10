@@ -36,8 +36,12 @@ require_once __DIR__.'/../web_portal/components/Get_User_Principle.php';
 // get_downtime and should not be used in the GUI/portal scripts. 
 //set_time_limit(500); 
 
-// Set the timezone
-//date_default_timezone_set("UTC");
+// Set the timezone to UTC for rendering all times/dates in PI.  
+// The date-times stored in the DB are in UTC, however, we still need to 
+// set the TZ to utc when re-readig those date-times for subsequent 
+// getTimestamp() calls; without setting the TZ to UTC, the calculated timestamp 
+// value will be according to the server's default timezone (e.g. GMT). 
+date_default_timezone_set("UTC");
 
 /**
  * Safely escape and return the data string (xss mitigation function). 
