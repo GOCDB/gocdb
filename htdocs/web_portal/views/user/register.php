@@ -6,6 +6,16 @@
         <br/> 
         <br/> 
 
+        
+        <div class="alert alert-warning" role="alert">
+            * By registering below <b>you accept that this identity string
+            can be used by EGI</b> and its data processing systems. The GOCDB will re-publish this
+            ID for sharing with EGI Monitoring, Accounting and Operations.
+            If you do not provide this consent, please do <b>NOT</b> register.
+
+        </div>
+
+
         <div class="listContainer">
             <b>Authentication Attributes:</b>
             <br>

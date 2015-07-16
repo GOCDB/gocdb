@@ -26,8 +26,7 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 * [Doctrine](#doctrine) 
   * 2.3.3 (newer versions should be fine but are untested)
 
-* PhpUnit (optional, for running DBUnit tests only, see `tests/INSTALL.md` for more info) 
-  * PDO driver for selected DB 
+* PhpUnit and PDO driver for selected DB (optional, required for running DBUnit tests only, see `tests/INSTALL.md` for more info) 
 
 
 

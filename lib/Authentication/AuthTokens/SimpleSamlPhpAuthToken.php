@@ -20,7 +20,10 @@ require_once __DIR__.'/../IAuthentication.php';
  * <p>
  * Requires installation of SimpleSamlPhp lib before use. 
  * You will almost certainly need to modify this class to request the necessary 
- * SAML attribute that is used as the principle string. 
+ * SAML attribute from the IdP that is used as the principle string. 
+ * <p>
+ * The token is stateless because it relies on the SSPhp session and simply 
+ * reads the attributes stored in the SSPhp session. 
  *
  * @see IAuthentication 
  * @author David Meredith 
@@ -199,6 +202,8 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
     }
 
     /**
+     * Returns true, this token reads the SSPhp session attributes and so 
+     * does not need to be stateful itself.  
      * {@see IAuthentication::isStateless()} 
      */
     public static function isStateless() {

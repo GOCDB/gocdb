@@ -20,8 +20,10 @@ require_once __DIR__.'/../IAuthentication.php';
  * <p>
  * Requires installation/config of ShibSP before use. 
  * You will almost certainly need to modify this class to request the necessary 
- * SAML attribute that is used as the principle string and configure other 
- * attributes for the userDetails. 
+ * SAML attribute from the IdP that is used as the principle string. 
+ * <p>
+ * The token is stateless because it relies on the ShibSP session and simply 
+ * reads the attributes stored in the ShibSP session. 
  *
  * @see IAuthentication 
  * @author David Meredith 
@@ -89,9 +91,14 @@ class ShibAuthToken implements IAuthentication {
             $this->userDetails = array('AuthenticationRealm' => array('EUDAT_SSO_IDP'));
             return; 
             //die($_SERVER['distinguishedName']);
-        } else {
-            die('Now go configure this AuthToken file ['.__FILE__.']');   
+        } else if($idp == 'https://idp.ebi.ac.uk/idp/shibboleth'){
+            $this->principle = $_SERVER['eduPersonPrincipalName'];
+            $this->userDetails = array('AuthenticationRealm' => array('UK_ACCESS_FED'));
+            return; 
         }
+//        else {
+//            die('Now go configure this AuthToken file ['.__FILE__.']');   
+//        }
         // if we have not set the principle/userDetails, re-direct to our Discovery Service 
         $target = urlencode("https://" . gethostname() . "/portal/");
         header("Location: https://" . gethostname() . "/Shibboleth.sso/Login?target=" . $target);
@@ -128,6 +135,8 @@ class ShibAuthToken implements IAuthentication {
     }
 
     /**
+     * Returns true, this token reads the ShibSP session attributes and so 
+     * does not need to be stateful itself. 
      * {@see IAuthentication::isStateless()} 
      */
     public static function isStateless() {

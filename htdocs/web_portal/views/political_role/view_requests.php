@@ -31,6 +31,14 @@
                             echo "<option value=\"{$entity['Object_ID']}\">{$entName}</option>";
                         } else {
                             $entName = xssafe($entity['Name']); 
+                            // eudat customisations: 
+                            /*if($entName == 'NGIs'){
+                               $entName = 'EUDAT';  
+                            } else if($entName == 'Projects'){
+                               $entName = 'Admin Domain';  
+                            } else {
+                                $entName = 'Site'; 
+                            } */
                             echo "<option class=\"sectionTitle\">{$entName}</option>";
                         }
                     }?>

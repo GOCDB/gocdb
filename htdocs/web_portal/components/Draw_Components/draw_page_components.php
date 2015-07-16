@@ -125,7 +125,10 @@
 		$HTML .= '<div align="center"><a href="http://www.stfc.ac.uk" target="_blank"><img src="'.\GocContextPath::getPath().'img/STFC.jpg" height="25"/></a>&nbsp;&nbsp;';
 		$HTML .= '<a href="http://europa.eu" target="_blank"><img src="'.\GocContextPath::getPath().'img/eu.jpg" height="25"/></a>&nbsp;&nbsp;';
 		//$HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="img/egi.gif" height="25"/></a></div>';
-		$HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="'.\GocContextPath::getPath().'img/egi_logo.jpg" height="25"/></a></div>';
+		$HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="'.\GocContextPath::getPath().'img/egi_logo.jpg" height="25"/></a>';
+        $HTML .= '</div>';
+        $HTML .= '<br>';
+        $HTML .= 'GOCDB is an EGI service provided by <a href="http://stfc.ac.uk">STFC</a> co-funded by <a href="http://egi.eu">EGI.eu</a> and <a href="http://go.egi.eu/eng">EGI-Engage</a>'; 
 		$HTML .= '</div>';
 
 		return $HTML;
