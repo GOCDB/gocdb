@@ -4,10 +4,10 @@
   fields, and when editing. Also, what to do with all the attributes received from IdP. 
 * After a downtime has started, remove downtime delete/edit buttons
 * Update role-approve notification email 
-* Change <CERTDN> in PI output to <PRINCIPAL> and consider adding the 
-  <AuthenticationRealm> element and DB column. 
+* Change `<CERTDN>` element in PI output to `<PRINCIPAL>` and consider adding the 
+  `<AuthenticationRealm>` element and DB column. 
 * Add instructions for deployment to MySQL 
-* Modularise RoleLogic into one class and support RoleActionPermissions.xml, see below. 
+* Modularise RoleLogic into one class and support `RoleActionPermissions.xml`, see below. 
 * Refactor page view/template logic and remove nasty menu/header/footer php 
   rendering logic (an inherited legacy) 
 * Add new regex and logic for filtering by custom properties (new regex is far
@@ -36,12 +36,12 @@
 
 
 ### Sample RoleActionPermissions.xml (TODO, see above) 
-
+* Modularise RoleLogic into one class and support `RoleActionPermissions.xml`. 
 * The actions that can be performed on the different OwnedEntity objects (Project, Ngi, Site, SG)
 could be declared in an xml file. 
 * The necessary role names that are needed to perform those actions can also be declared
 alongside those actions. 
-* These mappings could be defined per-project using multiple <RoleActionMapping>s. 
+* These mappings could be defined per-project using multiple `<RoleActionMapping>`s. 
 * A default fallback mapping could be made mandatory when a project-specific mapping is not defined. 
  
 ```xml
