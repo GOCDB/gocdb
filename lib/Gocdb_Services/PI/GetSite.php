@@ -130,7 +130,7 @@ class GetSite implements IPIQuery{
             $ExtensionsQueryBuilder = new ExtensionsQueryBuilder($parameters ['extensions'], $qb, $this->em, $bc, 'Site');
             //Get the modified query
             $qb = $ExtensionsQueryBuilder->getQB();
-            $bc = $ExtensionsQueryBuilder->getBindCount();
+            $bc = $ExtensionsQueryBuilder->getParameterBindCounter();
             //Get the binds and store them in the local bind array
             foreach($ExtensionsQueryBuilder->getValuesToBind() as $value){
                 $binds[] = $value;
@@ -225,6 +225,31 @@ class GetSite implements IPIQuery{
 				    $xmlSiteProperty->addChild ( 'LOCAL_ID', $siteProp->getId () );				    
 					$xmlSiteProperty->addChild ( 'KEY', xssafe($siteProp->getKeyName ()) );
 					$xmlSiteProperty->addChild ( 'VALUE', xssafe($siteProp->getKeyValue ()) );
+                   
+                    // If we want support any char in a property, then we will probably 
+                    // need to support CDATA sections rather than escaping the
+                    // value using xsafe. Below shows how this can be done.  
+                    
+                    // this don't work for obvious reasons: 
+					//$xmlSiteProperty->addChild ( 'VALUE', '<![CDATA[<dave>d</dave>]]>' );
+					//$xmlSiteProperty->addChild ( 'VALUE', '<dave>d</dave>' );
+                   
+                    // Both the samples below show how a CDATA section can be 
+                    // added to a SimpleXMLElement. The logic uses the DOM api 
+                    // because the SimpleXML api don't support adding CDATA. 
+                    // For performance reasons, it may be necessary to create the 
+                    // whole doc using DOM rather than SimpleXML which would save
+                    // on expesnive conversion to/from the SimpleXML to/from DOM. 
+//                    $myextended = new SimpleXMLExtended('<mycdata/>');
+//                    $myextended->title = NULL; // VERY IMPORTANT! We need a node where to append
+//                    $myextended->title->addCData('<dave>d</dave>');
+//                    $myextended->title->addAttribute('lang', 'en');
+//                    $this->sxml_append($xmlSiteProperty, $myextended); 
+                    
+//                    $myextended = new SimpleXMLExtended('<mycdata/>');
+//                    $myextended->addCData('<dave>https://dave.dl.ac.uk/query?a=b&c=d</dave>');
+//                    $myextended->addAttribute('lang', 'en');
+//                    $this->sxml_append($xmlSiteProperty, $myextended); 
 				}
 			}
 		    
@@ -240,8 +265,19 @@ class GetSite implements IPIQuery{
 		$xmlString = $dom->saveXML ();
 		return $xmlString;
 	}
-	
-	/** Returns the site data in Glue2 XML string.
+
+    /**
+     * Append the $to element as a child to $from. 
+     * @param \SimpleXMLElement $to
+     * @param \SimpleXMLElement $from
+     */
+    function sxml_append(\SimpleXMLElement $to, \SimpleXMLElement $from) {
+        $toDom = dom_import_simplexml($to);
+        $fromDom = dom_import_simplexml($from);
+        $toDom->appendChild($toDom->ownerDocument->importNode($fromDom, true));
+    }
+
+    /** Returns the site data in Glue2 XML string.
 	 * 
 	 * @return String
 	 */
@@ -395,4 +431,14 @@ class GetSite implements IPIQuery{
 	}
 	
 	
+}
+
+
+// http://coffeerings.posterous.com/php-simplexml-and-cdata
+class SimpleXMLExtended extends \SimpleXMLElement {
+  public function addCData($cdata_text) {
+    $node = dom_import_simplexml($this); 
+    $no   = $node->ownerDocument; 
+    $node->appendChild($no->createCDATASection($cdata_text)); 
+  } 
 }

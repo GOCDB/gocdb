@@ -127,7 +127,7 @@ class GetServiceGroup implements IPIQuery{
             $ExtensionsQueryBuilder = new ExtensionsQueryBuilder($parameters ['extensions'], $qb, $this->em, $bc, 'ServiceGroup');
             //Get the modified query
             $qb = $ExtensionsQueryBuilder->getQB();
-            $bc = $ExtensionsQueryBuilder->getBindCount();
+            $bc = $ExtensionsQueryBuilder->getParameterBindCounter();
             //Get the binds and store them in the local bind array
             foreach($ExtensionsQueryBuilder->getValuesToBind() as $value){
                 $binds[] = $value;

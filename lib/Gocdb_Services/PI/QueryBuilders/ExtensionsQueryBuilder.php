@@ -11,47 +11,58 @@ namespace org\gocdb\services;
  * express or implied. See the License for the specific language governing 
  * permissions and limitations under the License.
 */
-require_once __DIR__ . '/ExtensionsParser.php';
+//require_once __DIR__ . '/ExtensionsParser.php';
+require_once __DIR__ . '/ExtensionsParser2.php';
 use Doctrine\ORM\EntityManager, Doctrine\ORM\QueryBuilder;
 
 /** 
- * This class is used to apply additional filtering to a query according to the
- * extension properties an entity owns. For example {@link \Site} owns  
- * {@link \SiteProperty} while {@link \Service} owns {@link \ServiceProperty}. 
- * The class can therefore be used to narrow the returned entities based on these 
- * key/value pair extension properties.  
+ * Appends sub-queries to the WHERE clause of a DQL query builder 
+ * by parsing the value of the 'extensions' URL query parameter. 
+ * <p>
+ * For example, a {@link \Site} owns {@link \SiteProperty} proprties while a 
+ * {@link \Service} owns {@link \ServiceProperty} properties - this allows 
+ * clients to use the 'extensions' URL parameter to define a key=value 
+ * type expression to filter the selected entities according to their properties. 
  * <p> 
  * The class takes a Doctrine {@link QueryBuilder} object which represents 
- * the current query that will be appended/updated. This query may contain other 
- * bind parameters. This class also takes a raw LDAP style query string that 
- * specifies the required key/value pair props the extension properties must support. 
+ * the current query that will be appended. This query may contain other 
+ * bind parameters. This class also takes a raw 'extensions' query string that 
+ * specifies the query expression {@see IExtensionsParser::parseQuery($extensionsQuery)}. 
  * <p>  
- * It parses the query using {@link ExtensionsParser} and creates a sub-query to limit 
- * the results. This subquery is then appended to the original.
+ * It parses the query using an {@link IExtensionsParser} and creates 
+ * subqueries to limit the results. These subqueries are then appended to the original.
+ * <p>
  * This query and its bind variables can then be fetched and used with getQB() and getBinds().
  * Important: This does not return the query or bind variables, they must be fetched. 
  *
  * @author James McCarthy
- * @author David Meredith 
+ * @author David Meredith (modifications)  
  */
 class ExtensionsQueryBuilder{
 
 	private $parsedExt = null;	
+    
+    /* @var $qb \Doctrine\ORM\QueryBuilder */
 	private $qb = null;
-	private $bc = null;
+    
+    /* @var $parmeterBindCounter int */
+	private $parameterBindCounter = null;
+    
+    /* @var $em \Doctrine\ORM\EntityManager */
 	private $em;
+    
 	private $type;
 	private $propertyType;
 	private $ltype;	
-	private $valuesToBind;
-	/** This is used as the number to value to bind to each individual 
-	 * sub statement, eg: WHERE 'sp2.keyName'. Without this repeated clauses
-	 * may end up using the same identifier and break the query. This variable
-	 * is used to keep a global incrementing variable which will ensure each sub
-	 * queries identifiers are unique.  
-	 * @var Unique ID
+	private $valuesToBind = array();
+	/** 
+     * An ever increasing integer used to create unique table aliases used 
+	 * in the DQL query, eg: WHERE 'sp2.keyName' (uID is 2). 
+     * Without this, repeated clauses may end up using the same identifier and 
+     * break the query.   
+	 * @var integer 
 	 */
-	private $uID=0;
+	private $tableAliasBindCounter=0;
 	
 	private function setParsedExtensions($pExt){
 		$this->parsedExt = $pExt;
@@ -64,19 +75,38 @@ class ExtensionsQueryBuilder{
 	private function setQB($qb){
 		$this->qb = $qb;
 	}
-	
+
+    /**
+     * Get the updated query builder with the newly added WHERE clauses.    
+     * @return \Doctrine\ORM\QueryBuilder 
+     */
 	public function getQB(){
 		return $this->qb;
 	}
-	
-	public function getBindCount(){
-	    return $this->bc;
+
+    /**
+     * Get the current bind-parameter counter (an ever increasing integer). 
+     * Incrementing this value creates unique positional bind parameters in the QueryBuilder.   
+     * @return int 
+     */
+	public function getParameterBindCounter(){
+	    return $this->parameterBindCounter;
 	}
 	
-	private function setBindCount($bc){
-		$this->bc= $bc;
+	private function setParameterBindCounter($bc){
+		$this->parameterBindCounter= $bc;
 	}
 
+    /**
+     * 2D array of 'parameterBindCounter-to-bindValue' mappings for the 
+     * new WHERE clauses that are appended to the QueryBuilder.  
+     * <p>
+     * Each outer element stores a child array that has two elements; 
+     * 1st element stores the parameterBindCounter (int) used for the positional bind param. 
+     * 2nd element stores the bindValue (string).
+     * 
+     * @return array counter-to-value mapping array or empty array    
+     */
 	public function getValuesToBind(){
 	    return $this->valuesToBind;
 	}
@@ -84,13 +114,19 @@ class ExtensionsQueryBuilder{
 	private function setValues($valuesToBind){
 	    $this->valuesToBind = $valuesToBind;
 	}
-	
-	public function getUniqueID(){
-	    return $this->uID;
+
+    /**
+     * Get current table-alias bind counter (an ever increasing integer). 
+     * Used to create unique table alias names in the appended QueryBuilder 
+     * (unique aliases are created by appending an int incremented from this value to the alias) 
+     * @return int 
+     */
+	public function getTableAliasBindCounter(){
+	    return $this->tableAliasBindCounter;
 	}
 	
-	private function setUniqueID($uID){
-	    $this->uID = $uID;
+	private function setTableAliasBindCounter($uID){
+	    $this->tableAliasBindCounter = $uID;
 	}
 	
 	
@@ -128,34 +164,29 @@ class ExtensionsQueryBuilder{
 	 * Construct a new instance, initialize variables, then stores the 
      * new query ready for fetching by calling code. 
      * <p>
-     * The rawExt parameter represents an LDAP style query.  Sample queries shown below: 
-     * <ul>
-     *   <li>Simple: <code>keyname=keyvalue</code></li>
-     *   <li>And together keys and values (all extension properties must 
-     *   exist with the specified values): 
-     *   <code>AND(keyname1=keyvalueX)(keyname1=keyvalueY)(keyname3=keyvalueZ)</code>
-     *   </li>
-     *   <li>Single key can have value1 OR value2: 
-     *   <code>OR(keyname=keyvalueX)(keyname=keyvalueY)</code>
-     *   </li>
-     *   <li>Wildcard, keyname can have any value: <code>keyname=*</code></li>
-     * </ul>
+     * The $extensionsQuery parameter represents an 'extensions' query. 
+     * See {@see IExtensionsParser::parseQuery($extensionsQuery)} for details.  
      *  
-     * @param string $rawExt See above 
-     * @param \Doctrine\ORM\QueryBuilder $qb
+     * @param string $extensionsQuery Value of the 'extensions' URL query parameter.   
+     * @param \Doctrine\ORM\QueryBuilder $qb QueryBuilder that will be appended 
+     *    with new where clause restrictions. 
      * @param \Doctrine\ORM\EntityManager $em
-     * @param int $bc Current bind count, used to create unique bind param names 
-     *        (bind params will be created by appending an int incremented from this value)
+     * @param int $parameterBindCounter Current bind-parameter count 
+     *        (this value is incremented to create new unique positional bind parameters)
      * @param string $entityType The name of the entity that owns the extensions, 
-     *        e.g. 'Site' or 'Service'
+     *        one of 'Site' 'Service' or 'ServiceGroup' 
+     * @param int $tableAliasBindCounter Current table-alias bind count, used to create unique table alias names 
+     *        (aliases will be created by appending an int incremented from this value to the alias)
+     * @throws \InvalidArgumentException if query can't be processed. 
      */
-    public function __construct($rawExt, \Doctrine\ORM\QueryBuilder 
-                                $qb, \Doctrine\ORM\EntityManager $em, $bc, $entityType, $uID=0){
-
-        $this->setUniqueID($uID);                                    
+    public function __construct($extensionsQuery, \Doctrine\ORM\QueryBuilder $qb, 
+            \Doctrine\ORM\EntityManager $em, $parameterBindCounter, 
+            $entityType, $tableAliasBindCounter=0){
+        //die($rawExt); 
+        $this->setTableAliasBindCounter($tableAliasBindCounter);                                    
         $this->em=$em;
-		$this->parseExtensions($rawExt);
-		$this->setBindCount($bc); 
+		$this->parseExtensions($extensionsQuery);
+		$this->setParameterBindCounter($parameterBindCounter); 
 		$this->setQB($qb);
 		$this->setPropType($entityType);
 		foreach($this->getParsedExtensions() as $query){
@@ -171,9 +202,13 @@ class ExtensionsQueryBuilder{
 	 * @param unknown $rawExt
 	 */ 
 	private function parseExtensions($rawExt){
-		$ExtensionsParser =  new ExtensionsParser();
-		$parsedLDAP = $ExtensionsParser->parseQuery($rawExt);
-		$this->setParsedExtensions($parsedLDAP);
+//		$extensionsParser =  new ExtensionsParser();
+//		$parsedLDAP = $extensionsParser->parseQuery($rawExt);
+//		$this->setParsedExtensions($parsedLDAP);
+
+        $extensionsParser = new ExtensionsParser2(); 
+        $normalisedQuery = $extensionsParser->parseQuery($rawExt); 
+        $this->setParsedExtensions($normalisedQuery); 
 	}
     
            
@@ -198,18 +233,23 @@ class ExtensionsQueryBuilder{
 	private function createSubQuery($entityT, $propT, $query){
 	    //Get core variables    	    
 	    $valuesToBind = $this->getValuesToBind();
-	    $bc = $this->getBindCount();
-	    $uID = $this->getUniqueID(); //Use the unique ID to keep each subqueries identifiers unique
+	    $bc = $this->getParameterBindCounter();
+	    $uID = $this->getTableAliasBindCounter(); //Used to keep each subqueries table aliases unique
 
 	    
 	    //Create query builder and start of the subquery
+        /* @var $sQ \Doctrine\ORM\QueryBuilder */
 	    $sQ = $this->em->createQueryBuilder();
 	    $sQ ->select('s'.$uID.'.id')
     	    ->from($entityT, 's'.$uID)
 	        ->join('s'.$uID.'.'.$propT, 'sp'.$uID);
         
-	        // Split each given keyname and keyvalue pair on = char
-	        $namevalue = explode ( '=', $query[1]);
+	        // Split each given keyname and keyvalue pair on the first '=' char
+            // If limit arg is set and positive, the returned array will contain a 
+            // maximum of limit elements with the last element containing the rest of string. 
+            // namevalue[0] = keyName
+            // namevalue[1] = keyValue 
+	        $namevalue = explode( '=', $query[1], 2);
             
             if(trim($namevalue[1]) == null){ //if no value or no value after trim do a wildcard search
                 $namevalue[1]='%%'; //Set value as database wildcard symbol	                        
@@ -233,11 +273,11 @@ class ExtensionsQueryBuilder{
             $valuesToBind[] = array(($bc), $namevalue[1]);   //Bind for keyValue
 
             //Update core variables
-            $this->setUniqueID(++$uID);
-	        $this->setBindCount($bc);
+            $this->setTableAliasBindCounter(++$uID);
+	        $this->setParameterBindCounter($bc);
 	        $this->setValues($valuesToBind);
-	    //Add this sub query to the main query
-	    $this->addSubQueryToMainQuery($sQ, $query[0]);
+            //Add this sub query to the main query
+            $this->addSubQueryToMainQuery($sQ, $query[0]);
 	}
 
 	
@@ -254,23 +294,37 @@ class ExtensionsQueryBuilder{
 	 */
 	private function addSubQueryToMainQuery($sQ, $operator){
 	    //Get the query that was passed at initialization
-	    $qb = $this->getQB();
+        /* @var $qb \Doctrine\ORM\QueryBuilder */
+	    $qb = $this->getQB(); 
        
-        // QueryBuilder orWhere() + addWhere() *APPENDS* the specified restrictions to the 
-        // query results, forming a logical AND/OR conjunction with any **PREVIOUSLY** 
-        // specified restrictions! Therefore, the order of AND/OR in URL query string 
+        // QueryBuilder:  
+        // orWhere() forms a logical DISCJUNCTION with all 
+        // previously specfied restrictions while andWhere() forms a logical 
+        // CONJUNCTION with any previously specified restrictions. 
+        // 
+        // Therefore, the order of AND/OR in URL query string 
         // is significant (we iterate subqueries from left to right, each time 
-        // adding the new conjunction to the previous restrictions. 
+        // adding the new conjunction/disjunction to the previous restrictions. 
+        
+        // To support nesting parethesis around different subqueries 
+        // to create complex where clauses, e.g.  
+        // 'ConditionA OR (ConditionB AND ConditionC)'  versus 
+        // '(ConditionA OR ConditionB) AND ConditionC'
+        // will require something like a 'whereParamWrap()' 
+        // method as described in the following post: 
+        // http://criticalpursuits.com/solving-the-doctrine-parenthesis-problem/
+        // Of course, this will also require a change in the syntax of the 
+        // 'expressions' query string to support nesting parethesis.  
                 
 	    switch ($operator) {
         	case 'OR': //OR
-        	    $qb ->orWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));
+        	    $qb->orWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));
         	    break;
         	case 'AND': //AND        	           
-        	    $qb ->andWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));	        	    
+        	    $qb->andWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));	        	    
         	    break;	   
     	    case 'NOT': //NOT
-    	        $qb ->andWhere($qb->expr()->notIn($this->ltype, $sQ->getDQL()));        	        	
+    	        $qb->andWhere($qb->expr()->notIn($this->ltype, $sQ->getDQL()));        	        	
     	        break;	        	    
 	    }	       	
 

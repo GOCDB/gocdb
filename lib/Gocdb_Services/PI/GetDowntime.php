@@ -228,8 +228,8 @@ class GetDowntime implements IPIQuery{
 		    $ExtensionsQueryBuilder = new ExtensionsQueryBuilder($parameters ['site_extensions'], $qb, $this->em, $bc, 'Site');
 		    //Get the modified query
 		    $qb = $ExtensionsQueryBuilder->getQB();
-		    $bc = $ExtensionsQueryBuilder->getBindCount();
-		    $uID = $ExtensionsQueryBuilder->getUniqueID();
+		    $bc = $ExtensionsQueryBuilder->getParameterBindCounter();
+		    $uID = $ExtensionsQueryBuilder->getTableAliasBindCounter();
 		    //Get the binds and store them in the local bind array
 		    foreach($ExtensionsQueryBuilder->getValuesToBind() as $value){
 		        $binds[] = $value;
@@ -243,7 +243,7 @@ class GetDowntime implements IPIQuery{
 		    $ExtensionsQueryBuilder = new ExtensionsQueryBuilder($parameters ['service_extensions'], $qb, $this->em, $bc, 'Service', $uID);
 		    //Get the modified query
 		    $qb = $ExtensionsQueryBuilder->getQB();
-		    $bc = $ExtensionsQueryBuilder->getBindCount();
+		    $bc = $ExtensionsQueryBuilder->getParameterBindCounter();
 		    //Get the binds and store them in the local bind array
 		    foreach($ExtensionsQueryBuilder->getValuesToBind() as $value){
 		        $binds[] = $value;
