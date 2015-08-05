@@ -32,7 +32,7 @@ class ShibAuthToken implements IAuthentication {
     
     private $userDetails = null;
     private $authorities = array();
-    private $principle;  
+    private $principal;  
 
       public function __construct() {
        $this->getAttributesInitToken();   
@@ -77,22 +77,22 @@ class ShibAuthToken implements IAuthentication {
      * @return string unique principle string of user  
      */
     public function getPrinciple() {
-       return $this->principle;  
+       return $this->principal;  
     }
 
     private function getAttributesInitToken(){
+        $hostname = gethostname(); // gocdb-test.esc.rl.ac.uk, goc.egi.eu 
         // specify location of the Shib Logout handler 
-        \Factory::$properties['LOGOUTURL'] = 'https://' . gethostname() . '/Shibboleth.sso/Logout';
+        \Factory::$properties['LOGOUTURL'] = 'https://'.$hostname.'/Shibboleth.sso/Logout';
         $idp = $_SERVER['Shib-Identity-Provider'];
-        if ($idp == 'https://unity.eudat-aai.fz-juelich.de:8443/saml-idp/metadata') {
-            //&&  $_SERVER['distinguishedName'] != null){
-            $this->principle = $_SERVER['distinguishedName'];
-            //$this->principle = "/C=DE/L=Juelich/O=FZJ/OU=JSC/CN=someone";
+        if ($idp == 'https://unity.eudat-aai.fz-juelich.de:8443/saml-idp/metadata' 
+                &&  $_SERVER['distinguishedName'] != null){
+            $this->principal = $_SERVER['distinguishedName'];
             $this->userDetails = array('AuthenticationRealm' => array('EUDAT_SSO_IDP'));
             return; 
-            //die($_SERVER['distinguishedName']);
-        } else if($idp == 'https://idp.ebi.ac.uk/idp/shibboleth'){
-            $this->principle = $_SERVER['eduPersonPrincipalName'];
+        } else if($idp == 'https://idp.ebi.ac.uk/idp/shibboleth' 
+                &&  $_SERVER['eppn'] != null){
+            $this->principal = $_SERVER['eppn'];
             $this->userDetails = array('AuthenticationRealm' => array('UK_ACCESS_FED'));
             return; 
         }
@@ -100,8 +100,8 @@ class ShibAuthToken implements IAuthentication {
 //            die('Now go configure this AuthToken file ['.__FILE__.']');   
 //        }
         // if we have not set the principle/userDetails, re-direct to our Discovery Service 
-        $target = urlencode("https://" . gethostname() . "/portal/");
-        header("Location: https://" . gethostname() . "/Shibboleth.sso/Login?target=" . $target);
+        $target = urlencode("https://" . $hostname . "/portal/");
+        header("Location: https://" . $hostname . "/Shibboleth.sso/Login?target=" . $target);
         die();
     }
 
