@@ -1,5 +1,6 @@
 <div class="rightPageContainer">
-    <form name="Register" action="index.php?Page_Type=Register" method="post" class="inputForm">
+    <form name="Register" action="index.php?Page_Type=Register" method="post" class="inputForm"
+          onsubmit="return confirm('Click OK to confirm you provide consent for your ID and user details to be re-published by GOCDB and made visible to the EGI infrastructure and IGTF?');">
     	<h1>Register</h1>
     	<br />
         Register Unique Identity: <b> <?php echo($params['dn']); ?> </b>
@@ -8,11 +9,15 @@
 
         
         <div class="alert alert-warning" role="alert">
-            * By registering below <b>you accept that this identity string
-            can be used by EGI</b> and its data processing systems. The GOCDB will re-publish this
-            ID for sharing with EGI Monitoring, Accounting and Operations.
-            If you do not provide this consent, please do <b>NOT</b> register.
-
+            <ul>
+               <li>By registering <b>you accept that your identity string and 
+                 the information you enter below will be accessible to the EGI infrastructure
+                 and other users and services trusted by the by the IGTF</b> 
+                 <a href="https://www.igtf.net">(Interoperable Global Trust Federation)</a>.</li>   
+               <li>This data is re-published by GOCDB and used by EGI for 
+                 Monitoring, Accounting and used in its data processing systems.</li> 
+               <li>If you do not provide this consent, please do <b>NOT</b> register.</li>
+            </ul>
         </div>
 
 
