@@ -1,4 +1,23 @@
-GOCDB-5.4 Release (TBC) 
+GOCDB-5.4.1 Release (TBC). No DB schema changes.  
+  - New improved ExtensionsParser2.php implementation for tokenising  
+    the value of the 'extensions' URL param in PI - the value 
+    part of key=value expressions can now contain any char including escaped 
+    parenthesis and html special chars. Note, this does not affect the input 
+    interface which still restricts which chars are allowed in property values. 
+    To support input of any char in a property value, the regex rules for need to be updated,
+    and the property values need to be rendered in CDATA sections in the PI output
+    (i.e. rather than using htmlspecialchars() on the value, sample logic to do 
+    this is provided in getSite()).  
+  - Bug fix, when ending/editing a downtime, the returned downtime->dateTime 
+    properties are in the server's default timezone and not UTC, this caused problems 
+    in time/duration calculations when applied to ending/ending downtimes. The downtime
+    editing logic has been updated to convert the downtime dateTimes to UTC before
+    performing time calculations. A single global call to date_default_timezone_set("UTC")
+    has also been re-added to the index.php file to treat all times in UTC. 
+  - Bug fix, ShibAuthToken uses $_SERVER['eppn'] to fetch eduPersonPrincipleName 
+ 
+
+GOCDB-5.4 Release (06/07/2015). Includes DB schema changes.  
   - Addition of RoleActionRecord entity for recording all role request actions (deny, approve, revoke). 
   - Improved Role approve/deny page rendering and logic.
   - Improved deployment scripts and install docs. 

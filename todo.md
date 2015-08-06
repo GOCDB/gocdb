@@ -1,8 +1,7 @@
 
 ## Todo
-* When authenticating via SAML, need to map certain attributes to GocDB account
-  fields, and when editing. Also, what to do with all the attributes received from IdP. 
-* After a downtime has started, remove downtime delete/edit buttons
+* Record user last login date in new datetime field. 
+* After a downtime has started, remove downtime delete buttons
 * Update role-approve notification email 
 * Change `<CERTDN>` element in PI output to `<PRINCIPAL>` and consider adding the 
   `<AuthenticationRealm>` element and DB column. 

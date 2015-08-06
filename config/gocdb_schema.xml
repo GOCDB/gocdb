@@ -427,24 +427,28 @@
 	<entity>
 		<name>siteproperty</name>
 		<field>
+            <!-- site ID value -->
 			<fname>SITE</fname>
             <length>255</length>
             <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
 		</field>
 		<field>
+            <!-- property key name-->
 			<fname>NAME</fname>
             <length>255</length>
             <regex>/^[a-zA-Z0-9\s@_\-\[\]\+\.]+$/</regex>
 		</field>
 		<field>
+            <!-- property key value -->
 			<fname>VALUE</fname>
             <length>255</length>
-            <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
+            <!-- negation regex - allow all chars except negated -->
             <regex>/^[^`'\"=()&lt;&gt;]+$/</regex>
             <!-- positive regex - more strict -->
             <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 		</field>
 		<field>
+            <!-- Property ID value for when editing property -->
 			<fname>PROP</fname>
             <length>255</length>
             <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
