@@ -440,6 +440,9 @@ class Downtime extends AbstractEntityService{
             $newEnd = \DateTime::createFromFormat($this::FORMAT, $newEndStr, $UTC); 
         }*/
 
+        // Make sure all dates are treated as UTC!
+	    //date_default_timezone_set("UTC");
+        
         $newStart = \DateTime::createFromFormat($this::FORMAT, $newStartStr, new \DateTimeZone("UTC"));
         $newEnd = \DateTime::createFromFormat($this::FORMAT, $newEndStr, new \DateTimeZone("UTC")); 
 
@@ -511,9 +514,13 @@ class Downtime extends AbstractEntityService{
      * @throws \Exception if the downtime is not eligible for editing. 
      */
     public function editValidationDatePreConditions(\Downtime $dt){
+        // Make sure all dates are treated as UTC!
+	    //date_default_timezone_set("UTC");
         $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
-        $oldStart = $dt->getStartDate();
-        $oldEnd = $dt->getEndDate(); 
+        /* @var $oldStart \DateTime */
+        $oldStart = $dt->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
+        /* @var $oldEnd \DateTime */
+        $oldEnd = $dt->getEndDate()->setTimezone(new \DateTimeZone('UTC')); 
         
         // Can't change a downtime if it's already ended
         if($oldEnd < $nowUtc) {
@@ -542,8 +549,8 @@ class Downtime extends AbstractEntityService{
     private function editValidation(\Downtime $dt, \DateTime $newStart, \DateTime $newEnd) {
         $this->editValidationDatePreConditions($dt); 
         
-        $oldStart = $dt->getStartDate();
-        $oldEnd = $dt->getEndDate();
+        $oldStart = $dt->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
+        $oldEnd = $dt->getEndDate()->setTimezone(new \DateTimeZone('UTC'));
         $now = new \DateTime(null, new \DateTimeZone('UTC'));
 
         // Duration can't increase
@@ -600,11 +607,11 @@ class Downtime extends AbstractEntityService{
         //$this->validateDates($dt->getStartDate(), $end);
 
         // dt start date is in the future
-        if ($dt->getStartDate() >= $sixtySecsFromNow) {
+        if ($dt->getStartDate()->setTimezone(new \DateTimeZone('UTC')) >= $sixtySecsFromNow) {
             throw new \Exception ("Logic error - Downtime start time is after the requested end time");
         }
         // dt has already ended 
-        if($dt->getEndDate() < $now){
+        if($dt->getEndDate()->setTimezone(new \DateTimeZone('UTC')) < $now){
             throw new \Exception ("Logic error - Downtime has already ended or will within the next 60 secs"); 
         }
         // ok. dt endDate is in the future and dt is ongoing/has started. 
@@ -633,8 +640,11 @@ class Downtime extends AbstractEntityService{
 
         
         $ses = $dt->getServices(); 
-        
         $this->authorization($ses, $user); 
+
+        // Make sure all dates are treated as UTC!
+	    //date_default_timezone_set("UTC");
+        
         if($dt->hasStarted()) {
             throw new \Exception("This downtime has already started.");
         }

@@ -27,7 +27,7 @@ require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/GocContextPath.php';
 
 // Set the timezone
-//date_default_timezone_set("UTC");
+date_default_timezone_set("UTC");
 
 /**
  * Safely escape and return the data string (xss mitigation function). 

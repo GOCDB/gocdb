@@ -26,6 +26,7 @@ function view() {
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
+    //date_default_timezone_set("UTC");
     $downtime = \Factory::getDowntimeService()->getDowntime($_REQUEST['id']);
     if($downtime == null){
         throw new Exception('No downtime with id ['.$_REQUEST['id'].']'); 

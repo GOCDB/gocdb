@@ -92,16 +92,58 @@ class Downtime {
 		return $this->classification;
 	}
 
+    /**
+     * Downtime insert date in server's default timezone (which may not be UTC).
+     * <p> 
+     * You will almost certainly need to set the returned DateTime's timezone to 
+     * UTC. This is not done here to allow calling code to either set the tz individually 
+     * per DateTime instance, or globally via <code>date_default_timezone_set("UTC");</code> 
+     * which is more performant for processing large result sets (e.g. as in the PI).  
+     * 
+     * @return \DateTime or null
+     */
     public function getInsertDate() {
-		return $this->insertDate;
+        // Adds overhead when processing large result-sets. 
+//        if($this->insertDate != NULL){
+//     	  $this->insertDate->setTimezone(new \DateTimeZone('UTC'));
+//        }
+        return $this->insertDate; 
 	}
 
+    /**
+     * Get downtime start date in server's default timezone (which may not be UTC).
+     * <p> 
+     * You will almost certainly need to set the returned DateTime's timezone to 
+     * UTC. This is not done here to allow calling code to either set the tz individually 
+     * per DateTime instance, or globally via <code>date_default_timezone_set("UTC");</code> 
+     * which is more performant for processing large result sets (e.g. as in the PI).  
+     * 
+     * @return \DateTime or null
+     */
     public function getStartDate() {
-		return $this->startDate;
+        // Adds overhead when processing large result-sets. 
+//        if($this->startDate != NULL){
+//		   $this->startDate->setTimezone(new \DateTimeZone('UTC'));
+//        }
+        return $this->startDate; 
 	}
 
+    /**
+     * Get downtime end date in server's default timezone (which may not be UTC).
+     * <p> 
+     * You will almost certainly need to set the returned DateTime's timezone to 
+     * UTC. This is not done here to allow calling code to either set the tz individually 
+     * per DateTime instance, or globally via <code>date_default_timezone_set("UTC");</code> 
+     * which is more performant for processing large result sets (e.g. as in the PI).  
+     * 
+     * @return \DateTime or null
+     */
     public function getEndDate() {
-		return $this->endDate;
+        // Adds overhead when processing large result-sets. 
+//        if($this->endDate != NULL){
+//		   $this->endDate->setTimezone(new \DateTimeZone('UTC'));
+//        }
+        return $this->endDate; 
 	}
 
 	/* SCHEDULED: 	Announce Date = 24 hours before Start Date
@@ -239,8 +281,10 @@ class Downtime {
 	 * @return boolean
 	 */
 	public function isOngoing() {
-	    $now = new \DateTime(null, new \DateTimeZone('UTC'));
-	    if($this->getStartDate() < $now && $this->getEndDate() > $now) {
+	    $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
+        $endDateUtc = $this->getEndDate()->setTimezone(new \DateTimeZone('UTC')); 
+        $startDateUtc = $this->getStartDate()->setTimezone(new \DateTimeZone('UTC')); 
+	    if($startDateUtc < $nowUtc && $endDateUtc > $nowUtc) {
 	        return true;
 	    } else {
 	        return false;
@@ -252,8 +296,9 @@ class Downtime {
 	 * @return boolean
 	 */
 	public function hasStarted() {
-        $now = new \DateTime(null, new \DateTimeZone('UTC'));
-        if($this->getStartDate() < $now) {
+        $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
+        $startDateUtc = $this->getStartDate()->setTimezone(new \DateTimeZone('UTC')); 
+        if($startDateUtc < $nowUtc) {
             return true;
         } else {
             return false;

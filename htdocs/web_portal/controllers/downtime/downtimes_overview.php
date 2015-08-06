@@ -27,6 +27,7 @@ function view() {
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
     
+    //date_default_timezone_set("UTC");
     
     $timePeriod = 1;
     if(isset($_REQUEST['timePeriod'])) {
