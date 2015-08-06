@@ -47,42 +47,132 @@ alongside those actions.
 <RoleActionMappings>
 
     <RoleActionMapping forProjects="EGI,EUDAT"> 
- 
+
+       <!-- 
+       Define the Role names and which of the owned entities 
+       they apply to 
+       --> 
+       <RoleNames over="Project">
+              COD_STAFF,
+              COD_ADMIN,
+              EGI_CSIRT_OFFICER,
+              COO
+       </RoleNames>  
+
+       <RoleNames over="Ngi">
+              NGI_OPS_MAN,
+              NGI_OPS_DEP_MAN,
+              NGI_SEC_OFFICER,
+              REG_STAFF_ROD,
+              REG_FIRST_LINE_SUPPORT
+       </RoleName>
+
+       <RoleNames over="Site"> 
+             SITE_ADMIN, 
+             SITE_SECOFFICER,
+             SITE_OPS_DEP_MAN,
+             SITE_OPS_MAN,
+       </RoleNames> 
+
+
        <!--
-       The listed Roles held over the specified OwnedEntity type enable the 
-       Actions over the target object(s). 
+       The listed Roles enable the Actions over the target object(s). 
        --> 
 
-       <RoleMapping forOwnedEntityType="Project">
-           <Roles>COD_STAFF,COD_ADMIN,EGI_CSIRT_OFFICER,COO</RoleNames>  
+       <RoleMapping>
+           <Roles>
+              COD_STAFF,
+              COD_ADMIN,
+              EGI_CSIRT_OFFICER,
+              COO
+           </Roles>  
            <EnabledActions>
-                <RoleActions>EDIT_OBJECT,GRANT_ROLE,REJECT_ROLE,REVOKE_ROLE</RoleActions> 
-                <ActionTargets>Project</ActionTargets> 
+                <Actions>EDIT_OBJECT,GRANT_ROLE,REJECT_ROLE,REVOKE_ROLE</Actions> 
+                <Targets>Project</Targets> 
            </EnabledActions>
            <EnabledActions>
-                <RoleActions>GRANT_ROLE,REJECT_ROLE,REVOKE_ROLE</RoleActions>
-                <ActionTargets>Ngi</ActionTargets>
+                <Actions>GRANT_ROLE,REJECT_ROLE,REVOKE_ROLE</Actions>
+                <Targets>Ngi</Targets>
            </EnabledActions>
        </RoleMapping>
 
-       <RoleMapping forOwnedEntityType="Ngi">
+       <RoleMapping>
            <Roles>
-              NGI_OPS_MAN,NGI_OPS_DEP_MAN,NGI_SEC_OFFICER,
-              REG_STAFF_ROD,REG_FIRST_LINE_SUPPORT
+              NGI_OPS_MAN,
+              NGI_OPS_DEP_MAN,
+              NGI_SEC_OFFICER,
+              REG_STAFF_ROD,
+              REG_FIRST_LINE_SUPPORT
            </Roles>
            <EnabledActions>
-               <RoleActions>EDIT_OBJECT</RoleActions>
-               <ActionTargets>Ngi</ActionTargets>
+               <Actions>EDIT_OBJECT</Actions>
+               <Targets>Ngi</Targets>
            </EnabledActions>
        </RoleMapping>
 
-        <RoleMapping forOwnedEntityType="Ngi">
-           <Roles>NGI_OPS_MAN,NGI_OPS_DEP_MAN,NGI_SEC_OFFICER</Roles>
+        <RoleMapping>
+           <Roles>
+              NGI_OPS_MAN,
+              NGI_OPS_DEP_MAN,
+              NGI_SEC_OFFICER
+           </Roles>
            <EnabledActions>
-               <RoleActions>NGI_ADD_SITE</RoleActions>
-               <ActionTargets>Ngi</ActionTargets>
+               <Actions>NGI_ADD_SITE,GRANT_ROLE,REJECT_ROLE,REVOKE_ROLE</Actions>
+               <Targets>Ngi</Targets>
            </EnabledActions>
        </RoleMapping>
+
+       <RoleMapping> 
+          <Roles>
+            SITE_ADMIN, 
+            SITE_SECOFFICER, 
+            SITE_OPS_DEP_MAN, 
+            SITE_OPS_MAN
+            REG_FIRST_LINE_SUPPORT, 
+            REG_STAFF_ROD, 
+            NGI_SEC_OFFICER, 
+            NGI_OPS_DEP_MAN, 
+            NGI_OPS_MAN 
+          </Roles>  
+          <EnabledActions> 
+            <Actions>EDIT_OBJECT, SITE_ADD_SERVICE, SITE_DELETE_SERVICE</Actions> 
+            <Targets>Site</Targets>   
+          </EnabledActions> 
+       </RoleMapping> 
+
+
+       <RoleMapping> 
+          <Roles>
+            SITE_SECOFFICER, 
+            SITE_OPS_DEP_MAN, 
+            SITE_OPS_MAN
+            NGI_SEC_OFFICER, 
+            NGI_OPS_DEP_MAN, 
+            NGI_OPS_MAN 
+          </Roles> 
+          <EnabledActions> 
+            <Actions>GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE</Actions> 
+            <Targets>Site</Targets>   
+          </EnabledActions> 
+       </RoleMapping> 
+
+ 
+       <RoleMapping> 
+          <Roles>
+              NGI_SEC_OFFICER, 
+              NGI_OPS_DEP_MAN, 
+              NGI_OPS_MAN  
+              COD_STAFF,
+              COD_ADMIN,
+              EGI_CSIRT_OFFICER,
+              COO
+          </Roles>  
+          <EnabledActions> 
+            <Actions>SITE_EDIT_CERT_STATUS</Actions> 
+            <Targets>Site</Targets>   
+          </EnabledActions> 
+       </RoleMapping> 
+ 
 
     </RoleActionRoleMapping> 
 
