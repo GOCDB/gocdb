@@ -1,5 +1,6 @@
 
 ## Todo
+* Add new ngi_cert_status entity and link to each NGI. For details see https://rt.egi.eu/rt/Ticket/Display.html?id=9084 
 * Record user last login date in new datetime field (is problematic if user authenticates
   with x509 as there is no session started which means field would need to be 
   updated in DB on each/every page request - desirable?). 
