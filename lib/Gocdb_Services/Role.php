@@ -40,6 +40,101 @@ class Role extends AbstractEntityService{
     }
 
 
+    /**
+     * Get all {@see \Project}s that are reachable from the given ownedEntity 
+     * when moving up the domain model, e.g. Site->Ngi->Project. 
+     * <p>
+     * The ownedEntity therefore comes under the 'remit' of the returned projects. 
+     * 
+     * @param \OwnedEntity $ownedEntity Search up the domain graph from this entity 
+     * @return array of \Project entities 
+     */
+    public function getReachableProjectsFromOwnedEntity(\OwnedEntity $ownedEntity){
+        if ($ownedEntity instanceof \Site) {
+            /* @var $ownedEntity \Site */ 
+            $projects = $ownedEntity->getNgi()->getProjects()->toArray(); 
+            
+        } else if($ownedEntity instanceof \NGI) {
+            /* @var $ownedEntity NGI */
+            $projects = $ownedEntity->getProjects()->toArray(); 
+            
+        } else if($ownedEntity instanceof \Project){
+           $projects = array($ownedEntity);
+           
+        } else {
+            //throw new \LogicException('ownedEntity type is not a descendant '
+            //        . 'of Project ['.$ownedEntity->getType().']'); 
+            return array(); 
+        }
+        return $projects; 
+    }
+    
+    /**
+     * Get all the user's granted {@see \Role}s over {@see \OwnedEntity} 
+     * that are descendants of the specified targetProject. 
+     * <p>
+     * The returned roles will be over: {@see \Site}, {@see \NGI}s and {@see \Project}s, 
+     * note (no {@see \ServiceGroup}s as they are not children of a project.   
+     * 
+     * @param \User $user
+     * @param \Project $targetProject Only roles over entities under the targetProject are returned. 
+     * @return array Return the granted {@see \Role}s that the user owns 
+     * over entities in the given project. 
+     */
+    public function getUserRolesByProject(\User $user, \Project $targetProject){
+        //fail early
+        if($targetProject->getId() == null){
+            throw new \LogicException('Project does not exist in the DB'); 
+        }
+        if($user->getId() == null){
+            throw new \LogicException('User does not exist in the DB'); 
+        }
+        // get all the user's granted roles 
+        //$userRoles = $user->getRoles(); 
+        $userRoles = $this->getUserRoles($user, \RoleStatus::GRANTED);  
+        $rolesInProject = array(); 
+        
+        // foreach role, get the ownedEntity, and navigate up the domain model 
+        // to reach the entity's owning project. If this project is the 
+        // same as the targetProject, then the role is collected/returned. 
+        /* @var $role \Role */
+        foreach($userRoles as $role){
+            if($role->getStatus() != \RoleStatus::GRANTED){
+                continue;    
+            }
+            
+            $ownedEntity = $role->getOwnedEntity(); 
+            if ($ownedEntity instanceof \Site) {
+                // query may be better performance? 
+               
+                if($ownedEntity->getNgi() != null){
+                    $projects = $ownedEntity->getNgi()->getProjects(); 
+                    foreach($projects as $proj){
+                        if($proj->getId() == $targetProject->getId()){
+                        //if($proj == $targetProject){
+                            $rolesInProject[] = $role; 
+                        }
+                    }
+                }
+            } else if ($ownedEntity instanceof \NGI) {
+                  $projects = $ownedEntity->getProjects();  
+                  foreach($projects as $proj){
+                    if($proj->getId() == $targetProject->getId()){
+                    //if($proj == $targetProject ){
+                        $rolesInProject[] = $role; 
+                    }
+                }
+            } else if ($ownedEntity instanceof \Project) {
+                if( $ownedEntity->getId() == $targetProject->getId()){
+                //if( $ownedEntity == $targetProject){
+                    $rolesInProject[] = $role; 
+                }
+            }
+            // note, dont include \ServiceGroup because a sg is not under 
+            // a project in terms of domain model hierarchy 
+        } 
+        return $rolesInProject; 
+    }
     
     /**
      * Get all the RoleType names that the user has DIRECTLY over the given entity,   
@@ -52,14 +147,10 @@ class Role extends AbstractEntityService{
      * @return array of RoleType names or an empty array
      * @throws \LogicException if the classifications array is given and contains unknown values.
      */
-    public function getUserRoleNamesOverEntity(\OwnedEntity $entity, \User $user = null,
+    public function getUserRoleNamesOverEntity(\OwnedEntity $entity, \User $user,
             /*$classifications = null,*/ $roleStatus = \RoleStatus::GRANTED) {
         //This method replaces userHasSiteRole, userHasNgiRole, userHasSGroupRole
         
-        // user/entity is not manged, so return no roles. 
-        if(is_null($user)){
-            return array(); 
-        }
         if($user->getId() == null || $entity->getId() == null){
             return array(); 
         }
@@ -283,6 +374,7 @@ class Role extends AbstractEntityService{
     /**
      * Get the given User's roles that have the specified role status.
      * For valid role status values, see RoleStatus class. 
+     * \RoleStatus::GRANTED is default.  
      * 
      * @see \RoleStatus
      * @param \User $user Get roles for this user
@@ -290,7 +382,10 @@ class Role extends AbstractEntityService{
      * @return array of \Role objects
      * @throws \LogicException if given roleStatus is not supported
      */
-    public function getUserRoles(\User $user, $roleStatus) {
+    public function getUserRoles(\User $user, $roleStatus = NULL) {
+        if($roleStatus == null){
+            $roleStatus = \RoleStatus::GRANTED; 
+        }
         if(!$this->isValidRoleStatus($roleStatus)){
             throw new \LogicException('Coding error - Invalid roleStatus');
         }

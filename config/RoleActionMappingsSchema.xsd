@@ -26,7 +26,7 @@
         <annotation>
             <documentation>
         <![CDATA[
-        This is the root element. It is used to define
+        This is the root element. TODO 
         ]]>
             </documentation>
         </annotation>
@@ -36,6 +36,11 @@
             </xs:sequence>
         </xs:complexType> 
         <xs:unique name="testRoleActionMappingTargetProjectUnique">
+            <xs:annotation>
+                <xs:documentation>
+                   <![CDATA[ ]]>
+                </xs:documentation>
+            </xs:annotation>
             <xs:selector xpath="goc:RoleActionMapping/goc:TargetProject"/>
             <xs:field xpath="."/>
         </xs:unique>
@@ -90,80 +95,85 @@
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element name="Role" type="goc:Role_t" minOccurs="0" maxOccurs="unbounded"/> 
+                <xs:element name="Role" minOccurs="0" maxOccurs="unbounded">
+                    <xs:annotation>
+                        <xs:documentation>
+                <![CDATA[ ]]>
+                        </xs:documentation> 
+                    </xs:annotation>
+                    <xs:complexType>
+                        <xs:simpleContent>
+                            <xs:extension base="xs:string">
+                                <xs:attribute name="id" type="xs:ID">
+                                </xs:attribute>
+                            </xs:extension>
+                        </xs:simpleContent>
+                    </xs:complexType>
+                </xs:element> 
             </xs:sequence>    
             <xs:attribute name="over" type="string"/>
         </xs:complexType> 
     </xs:element>
-
   
-    <xs:complexType name="Role_t">
-        <xs:simpleContent>
-            <xs:extension base="xs:string">
-                <xs:attribute name="id" type="xs:ID">
-                </xs:attribute>
-            </xs:extension>
-        </xs:simpleContent>
-    </xs:complexType>
-
-
-    <element name="RoleMapping" type="goc:RoleMapping_t">
+    <element name="RoleMapping">
         <xs:annotation>
             <xs:documentation>
                 <![CDATA[ ]]>
             </xs:documentation> 
         </xs:annotation>
+        <complexType>
+            <sequence>
+                <!-- Inline Roles element -->
+                <xs:element name="Roles">
+                    <xs:complexType>
+                        <xs:sequence>
+                            <xs:element name="RoleRef" minOccurs="0" maxOccurs="unbounded">
+                                <xs:complexType>
+                                    <xs:attribute name="idRef" type="xs:IDREF" use="required" />
+                                </xs:complexType> 
+                            </xs:element>
+                        </xs:sequence>
+                    </xs:complexType> 
+                </xs:element>
+                <element name="EnabledActions" minOccurs="0" maxOccurs="unbounded">
+                    <complexType>
+                        <sequence>
+                            <element name="Actions">
+                                <xs:annotation>
+                                    <xs:documentation>
+                <![CDATA[ ]]>
+                                    </xs:documentation> 
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:sequence>
+                                        <xs:element name="Action" minOccurs="0" maxOccurs="unbounded">
+                                            <xs:simpleType>
+                                                <xs:restriction base="xs:string">
+                                                    <xs:pattern value="[a-zA-Z0-9_\s]+"/>
+                                                </xs:restriction>
+                                            </xs:simpleType>
+                                        </xs:element>
+                                    </xs:sequence>
+                                </xs:complexType>
+                            </element>
+                            <element name="Target" minOccurs="1" maxOccurs="unbounded">
+                                <xs:annotation>
+                                    <xs:documentation>
+                <![CDATA[ ]]>
+                                    </xs:documentation> 
+                                </xs:annotation>
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:string">
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>  
+                            </element>
+                        </sequence>
+                    </complexType> 
+                </element>  
+            </sequence> 
+        </complexType>
     </element>
-    <complexType name="RoleMapping_t">
-        <sequence>
-            <!-- Inline Roles element -->
-            <xs:element name="Roles">
-                <xs:complexType>
-                    <xs:sequence>
-                        <xs:element name="RoleRef" minOccurs="0" maxOccurs="unbounded">
-                            <xs:complexType>
-                                <xs:attribute name="idRef" type="xs:IDREF" use="required" />
-                            </xs:complexType> 
-                        </xs:element>
-                    </xs:sequence>
-                </xs:complexType> 
-            </xs:element>
-            <element name="EnabledActions" type="goc:EnabledActions_t" minOccurs="0" maxOccurs="unbounded"/>  
-        </sequence> 
-    </complexType>
-
-
-    <complexType name="EnabledActions_t">
-        <sequence>
-            <element name="Actions">
-                <xs:annotation>
-                    <xs:documentation>
-                <![CDATA[ ]]>
-                    </xs:documentation> 
-                </xs:annotation>
-                <xs:complexType>
-                    <xs:simpleContent>
-                        <xs:extension base="xs:string">
-                            <!--<xs:attribute name="value" type="xs:string"/>-->
-                        </xs:extension>
-                    </xs:simpleContent>
-                </xs:complexType>  
-            </element>
-            <element name="Target" minOccurs="1" maxOccurs="unbounded">
-                <xs:annotation>
-                    <xs:documentation>
-                <![CDATA[ ]]>
-                    </xs:documentation> 
-                </xs:annotation>
-                <xs:complexType>
-                    <xs:simpleContent>
-                        <xs:extension base="xs:string">
-                            <!--<xs:attribute name="value" type="xs:string"/>-->
-                        </xs:extension>
-                    </xs:simpleContent>
-                </xs:complexType>  
-            </element>
-        </sequence>
-    </complexType>
 
 </xs:schema>

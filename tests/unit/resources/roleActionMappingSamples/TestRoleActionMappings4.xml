@@ -34,7 +34,9 @@ XML doc instance for unit testing.
                 <RoleRef idRef="RH"/>
             </Roles>
             <EnabledActions>
-                <Actions>AZ</Actions>
+                <Actions>
+                    <Action>AZ</Action>
+                </Actions>
                 <Target>project</Target>
             </EnabledActions>
         </RoleMapping>
@@ -60,7 +62,12 @@ XML doc instance for unit testing.
                 <RoleRef idRef="RC"/>
             </Roles>
             <EnabledActions>
-                <Actions>A1, A2, A3, AX</Actions>
+                <Actions>
+                    <Action>A1</Action>
+                    <Action>A2</Action>
+                    <Action>A3</Action>
+                    <Action>AX</Action>
+                </Actions>
                 <Target>site</Target>
                 <Target>service</Target>
             </EnabledActions>
@@ -72,7 +79,11 @@ XML doc instance for unit testing.
                 <RoleRef idRef="RE"/>
             </Roles>
             <EnabledActions>
-                <Actions>A4,A5,AX</Actions>
+                <Actions>
+                    <Action>A4</Action>
+                    <Action>A5</Action>
+                    <Action>AX</Action>
+                </Actions>
                 <Target>site</Target>
                 <Target>service</Target>
                 <Target>project</Target>
@@ -84,7 +95,11 @@ XML doc instance for unit testing.
                 <RoleRef idRef="RF"/>
             </Roles>
             <EnabledActions>
-                <Actions>A4,A5,AY</Actions>
+                <Actions>
+                    <Action>A4</Action>
+                    <Action>A5</Action>
+                    <Action>AY</Action>
+                </Actions>
                 <Target>project</Target>
             </EnabledActions>
         </RoleMapping>

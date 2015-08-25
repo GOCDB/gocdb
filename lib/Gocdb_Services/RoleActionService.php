@@ -17,13 +17,16 @@ namespace org\gocdb\services;
 //require_once __DIR__ . '/AbstractEntityService.php';
 
 /**
- * Service facade for querying the Role-Action mappings as defined in the 
+ * Service for querying the Role-Action mapping definitions defined in the 
  * RoleActionMappingRules XML file. 
  * <p>
- * The role action mappings xml file and XSD can be configured for non-default
- * locations. The XSD defines the tns as specified by ROLE_ACTION_MAPPING_NS. 
- * The XML file is used to define custom Roles and Role-to-Action mappings on 
- * a per-project basis.   
+ * The role action mappings xml file and its XSD can be configured for non-default
+ * locations. The XSD defines the TNS specified by <code>ROLE_ACTION_MAPPING_NS</code>. 
+ * <p>
+ * The mappings file is used to define which {@see \RoleType}s enable which actions on  
+ * a target object(s) on a per-project basis. The role type names specified in 
+ * the XML mappings file (mapped as <code>//RoleActionMapping/RoleNames/Role</code>) 
+ * need to already exist in the DB as {@see \RoleType} entities.     
  *
  * @author David Meredith
  */
@@ -35,7 +38,7 @@ class RoleActionService /* extends AbstractEntityService */ {
     const ROLE_ACTION_MAPPING_NS = 'http://goc.egi.eu/2015/03/spec1.0_r1';
 
     /**
-     * Service facade for validating and querying against a role action mappings XML file. 
+     * Service for querying the Role-Action mappings defined in the RoleActionMappingRules XML file. 
      */
     function __construct() {
         //parent::__construct();
@@ -45,7 +48,7 @@ class RoleActionService /* extends AbstractEntityService */ {
 
     /**
      * Set the path to the XML role action mapping file, the default is: 
-     * <code><Path to RoleActionService.php>/../../config/RoleActionMappingsSchema.xsd</code>
+     * <code>GOCDB_HOME/config/RoleActionMappingsSchema.xsd</code>
      * @param string $xmlDocPath Path to role action mapping file. 
      */
     public function setRoleActionMappingsXmlPath($xmlDocPath) {
@@ -54,7 +57,7 @@ class RoleActionService /* extends AbstractEntityService */ {
 
     /**
      * Set the path to the XSD schema for the role action mapping file, the default is: 
-     * <code><Path to RoleActionService.php>/../../config/RoleActionMappingsSchema.xsd</code>
+     * <code>GOCDB_HOME/config/RoleActionMappingsSchema.xsd</code>
      * @param string $xsdDocPath Path to XSD schema  
      */
     public function setRoleActionMappingsXsdPath($xsdDocPath) {
@@ -62,12 +65,17 @@ class RoleActionService /* extends AbstractEntityService */ {
     }
 
     /**
-     * Validate the class $roleActionMappingsXmlPath with $roleActionMappingsXsdPath
+     * Validate the XML file located at $roleActionMappingsXmlPath with the XSD 
+     * located at $roleActionMappingsXsdPath. 
+     * 
      * @return array an array with LibXMLError objects if there are any errors 
      * or an empty array otherwise.
-     * @throws \LogicException if couldn't load the xml file
+     * @throws \LogicException if XML/XSD fiels can't be loaded 
+     * @throws \Exception If the role action mapping file is invalid against its XSD.  
      */
     public function validateRoleActionMappingFileAgainstXsd() {
+        // http://stackoverflow.com/questions/12368453/domdocumentschemavalidate-throwing-warning-errors
+        //libxml_use_internal_errors(true);
         $xml = new \DOMDocument();
         if (FALSE === $xml->load($this->roleActionMappingsXmlPath)) {
             throw new \LogicException("Couldn't load RoleActionMappings file, "
@@ -84,33 +92,45 @@ class RoleActionService /* extends AbstractEntityService */ {
     }
 
     /**
-     * Get an associative array of unique Role names (array keys) and the object type
-     * the role applies over (array values). 
-     *  
+     * Returns all of the Role type names defined for the named project. 
+     * Returns an associative array where keys map to unique role type names 
+     * {@see \RoleType::getName()} and values define the name of the 
+     * {@see \OwnedEntity::getType()} type that the role is over. 
+     * Note, array values do NOT reference the target object 
+     * over which actions are enabled.     
+     * <p> 
+     * The returned Role type names (keys) are looked up from: 
+     * </code>RoleActionMapping/RoleNames/Role</code> for the specfied project. 
+     * <p>
+     * The returned object names the roles are over (values) are looked up from: 
+     * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project. 
+     * 
      * @param string $projectName
-     * @return array Associative array of unique Role names (keys) and the 
-     *   object type the role applies over (value) 
-     * @throws \LogicException if an invalid projectName, or if  
-     *   document is invalid 
+     * @return array Associative array of unique Role type names (keys) and the 
+     *   owned object type the role is over (value) 
+     * @throws \LogicException if an invalid projectName or XSD/XML files can't be loaded.  
+     * @throws \Exception If the role action mapping file is invalid against its XSD.  
      */
-    public function getRoleNamesForProject($projectName) {
+    public function getRoleTypeNamesForProject($projectName) {
         //$projectName = 'WLCG'; //'EGI'; 
         if (!is_string($projectName) || strlen(trim($projectName)) == 0) {
             throw new \LogicException('Invalid projectName');
         }
 
         // Load file 
+        //http://stackoverflow.com/questions/12368453/domdocumentschemavalidate-throwing-warning-errors
+        //libxml_use_internal_errors(true); 
         $roleActionMapXmlDom = new \DOMDocument();
         if (FALSE === $roleActionMapXmlDom->load($this->roleActionMappingsXmlPath)) {
             throw new \LogicException("Couldn't load RoleActionMappings file, "
-            . "invalid roleActionMappingsXmlPath: [$this->roleActionMappingsXmlPath]");
+            . "invalid roleActionMappingsXmlPath: [$this->roleActionMappingsXmlPath].");
         }
         
         $errors = $this->_validateRoleActionMappingFileAgainstXsd($roleActionMapXmlDom); 
         if(count($errors) > 0){
             throw new \LogicException("Invalid RoleActionMappingsFile "
                     . "[$this->roleActionMappingsXmlPath], use libxml_get_errors() "
-                    . "for error details"); 
+                    . "for error details."); 
         }
 
         $xpath = new \DOMXPath($roleActionMapXmlDom);
@@ -132,7 +152,7 @@ class RoleActionService /* extends AbstractEntityService */ {
                if (!array_key_exists($role->nodeValue, $roleNamesOver)) {
                     $roleNamesOver[$role->nodeValue] = $over; // associative array 
                 } else {
-                    throw new \LogicException("Duplicate Role value detected");
+                    throw new \LogicException("Duplicate Role value detected.");
                 } 
             }
         } 
@@ -140,23 +160,29 @@ class RoleActionService /* extends AbstractEntityService */ {
     }
 
     /**
-     * Lookup which Role names enable the specified action on the target 
-     * object type for the specified project. 
+     * Return associative array of Role type names {@see \RoleType::getName()} (keys)
+     * that enable the specified action on the target objectType (values) for 
+     * the specified projectName. 
      * <p>
-     * The returned id values are the idRef attribute values, 
-     * i.e. </code>RoleMapping/Roles/RoleRef[@idRef]</code>
+     * The returned Role type names (keys) are looked up from:  
+     * </code>RoleActionMapping/RoleNames/Role</code> for the specified project. 
+     * <p>
+     * The returned object names the roles are over (values) are looked up from: 
+     * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project.
      * 
      * @param string $action The type of action, matches to element value:
-     *   <code>//RoleMapping/EnabledActions/Actions</code>
+     *   <code>//RoleActionMapping/RoleMapping/EnabledActions/Actions</code>
      * @param string $objectType The type of entity, matches to element value: 
      *   <code>//RoleMapping/EnabledActions/Target</code>
      * @param string $projectName The projectName, matches to element value:
      *   <code>//RoleActionMapping/TargetProject</code>
-     * @return array Associative array where Role names are keys and the object type
-     * the role applies over is the value. Can be empty if no rules map to the requested action.  
-     * @throws \LogicException If the role action mapping file is invalid.  
+     * @return array Associative array where Role type names are keys and the 
+     * owned object type the role applies over is the value. 
+     * Can be empty if no rules map to the requested action.  
+     * @throws \LogicException If an arg is invalid or XML/XSD files can't be loaded.  
+     * @throws \Exception If the role action mapping file is invalid against its XSD.  
      */
-    public function getRolesThatEnableActionOnTargetObjectType($action, $objectType, $projectName) {
+    public function getRoleTypeNamesThatEnableActionOnTargetObjectType($action, $objectType, $projectName) {
         // fail early 
         if (!is_string($action) || strlen(trim($action)) == 0) {
             throw new \LogicException('Invalid action');
@@ -179,11 +205,13 @@ class RoleActionService /* extends AbstractEntityService */ {
         //$roleActionMapping = $xml->xpath("//goc:RoleActionMapping"); 
 
         // load dom 
+        //http://stackoverflow.com/questions/12368453/domdocumentschemavalidate-throwing-warning-errors
+        //libxml_use_internal_errors(true); 
         $roleActionMapXmlDom = new \DOMDocument();
         //print_r("Debug: [$this->roleActionMappingsXmlPath]"); 
         if (FALSE === $roleActionMapXmlDom->load($this->roleActionMappingsXmlPath)) {
             throw new \LogicException("Couldn't load RoleActionMappings file, "
-            . "invalid roleActionMappingsXmlPath: [$this->roleActionMappingsXmlPath]");
+            . "invalid roleActionMappingsXmlPath: [$this->roleActionMappingsXmlPath].");
         }
         
         // validate dom 
@@ -191,7 +219,7 @@ class RoleActionService /* extends AbstractEntityService */ {
         if(count($errors) > 0){
             throw new \LogicException("Invalid RoleActionMappingsFile "
                     . "[$this->roleActionMappingsXmlPath], use libxml_get_errors() "
-                    . "for error details"); 
+                    . "for error details."); 
         }
 
         // create xpath 
@@ -214,7 +242,12 @@ class RoleActionService /* extends AbstractEntityService */ {
         // conforming element would be: 
         // 
         //  <EnabledActions>
-        //      <Actions>ACtion_EDIT_OBJECT,ACTION_GRANT_ROLE, ACTION_REJECT_ROLE, ACTION_REVOKE_ROLE</Actions>
+        //      <Actions>
+        //            <Action>ACTION_EDIT_OBJECT</Action>
+        //            <Action>ACTION_GRANT_ROLE</Action>
+        //            <Action>ACTION_REJECT_ROLE</Action>
+        //            <Action>ACTION_REVOKE_ROLE</Action> 
+        //      </Actions>      
         //      <Target>SERviceGroup</Target> 
         //  </EnabledActions> 
         // 
@@ -226,21 +259,41 @@ class RoleActionService /* extends AbstractEntityService */ {
                     "goc:EnabledActions[goc:Target['$entityTypeU'=" // .'text()', 
                     . "translate(text(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')]]", $roleMapping);
 
-            // Filter the <EnabledActions> to those that have the required action   
+            // Filter the <EnabledActions> to those that have the required <Action>    
             foreach ($enabledActionsNodes as $enabledAction) {
-                $actionsTextNodes = $xpath->query('goc:Actions[text()]', $enabledAction);
-                foreach ($actionsTextNodes as $actionsText) {
-                    //print_r($actionsText->nodeValue. "\n");  
-                    $explodedActionsMixedCase = explode(",", $actionsText->nodeValue);
-                    $explodedActionsNotTrimmed = array_map('strtoupper', $explodedActionsMixedCase);
-                    $explodedActions = array_map('trim', $explodedActionsNotTrimmed);
-                    //print_r($explodedActions);  
+                $actionsNodes = $xpath->query("goc:Actions", $enabledAction);  
+                foreach ($actionsNodes as $actionsNode){
+                    //print_r($actionsNode); 
+                    $actionsUpper = array(); 
+                    $actionNodes = $xpath->query('goc:Action', $actionsNode); 
+                    foreach($actionNodes as $actionNode){
+                        //print_r($actionNode); 
+                        $actionVal = trim($actionNode->nodeValue); 
+                        //print_r($actionVal); 
+                        $actionsUpper[] = strtoupper($actionVal); 
+                    }
+                    //print_r($actionsUpper); 
                     // Collect this RoleMapping, it has required action and target 
-                    if (in_array($actionU, $explodedActions)) {
+                    if(in_array($actionU, $actionsUpper)){
                         $inScopeRoleMappings[] = $roleMapping;
-                        //print_r($explodedActions); 
+                        //print_r($explodedActions);  
                     }
                 }
+//                // when actions were listed as a single text node value using comma sep list e.g.  
+//                //  <Actions>ACtion_EDIT_OBJECT,ACTION_GRANT_ROLE, ACTION_REJECT_ROLE, ACTION_REVOKE_ROLE</Actions>
+//                $actionsNodes = $xpath->query('goc:Actions[text()]', $enabledAction);
+//                foreach ($actionsTextNodes as $actionsText) {
+//                    //print_r($actionsText->nodeValue. "\n");  
+//                    $explodedActionsMixedCase = explode(",", $actionsText->nodeValue);
+//                    $explodedActionsNotTrimmed = array_map('strtoupper', $explodedActionsMixedCase);
+//                    $explodedActions = array_map('trim', $explodedActionsNotTrimmed);
+//                    //print_r($explodedActions);  
+//                    // Collect this RoleMapping, it has required action and target 
+//                    if (in_array($actionU, $explodedActions)) {
+//                        $inScopeRoleMappings[] = $roleMapping;
+//                        //print_r($explodedActions); 
+//                    }
+//                }
             }
         }
 
@@ -279,7 +332,7 @@ class RoleActionService /* extends AbstractEntityService */ {
                     if (!array_key_exists($role->nodeValue, $enablingRoleNamesOver)) {
                         $enablingRoleNamesOver[$role->nodeValue] = $over; // associative array 
                     } else {
-                        throw new \LogicException("Duplicate Role value detected");
+                        throw new \LogicException("Duplicate Role value detected.");
                     }
                 }
             }
@@ -313,7 +366,7 @@ class RoleActionService /* extends AbstractEntityService */ {
                 . "translate(text(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')]]");
 
         if (FALSE === $roleActionMappings) {
-            throw new \LogicException("Coding error - invalid xpath query");
+            throw new \LogicException("Coding error - invalid xpath query.");
         }
 
         //print_r("ram Size: ".($roleActionMappings->length));
@@ -324,7 +377,7 @@ class RoleActionService /* extends AbstractEntityService */ {
         if ($roleActionMappings->length > 1) {
             throw new \LogicException("There are multiple RoleActionMapping elements for the "
             . "specified project when there should only be one - please check "
-            . "your RoleActionMapping XML file", 20);
+            . "your RoleActionMapping XML file.", 20);
         }
 
         // 0 or 1 roleActionMapping DOMNodes 
@@ -341,19 +394,19 @@ class RoleActionService /* extends AbstractEntityService */ {
             if ($roleActionMappings->length == 0) {
                 throw new \LogicException("Can't find a default RoleActionMapping element "
                 . "or a RoleActionMapping for the specified project [$projectName] "
-                . "- check your RoleActionMapping XML file", 21);
+                . "- check your RoleActionMapping XML file.", 21);
             }
             if ($roleActionMappings->length > 1) {
                 throw new \LogicException("There are multiple default RoleActionMapping elements "
                 . "and there should only be one (default mappings have no TargetProject elements) "
-                . "- check your RoleActionMapping XML file", 22);
+                . "- check your RoleActionMapping XML file.", 22);
             }
             $roleActionMapping = $roleActionMappings->item(0);
         }
 
         if ($roleActionMapping == NULL) {
             throw new \LogicException("Couldn't find a RoleActionMapping element for "
-            . "specified project [$projectName] - check your RoleActionMapping XML file", 30);
+            . "specified project [$projectName] - check your RoleActionMapping XML file.", 30);
         }
         return $roleActionMapping; 
     }

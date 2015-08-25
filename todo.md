@@ -1,9 +1,9 @@
 
 ## Todo
-* Add new ngi_cert_status entity and link to each NGI. For details see https://rt.egi.eu/rt/Ticket/Display.html?id=9084 
-* Record user last login date in new datetime field (is problematic if user authenticates
+* TOP Priority - Record user last login date in new datetime field (is problematic if user authenticates
   with x509 as there is no session started which means field would need to be 
   updated in DB on each/every page request - desirable?). 
+* Add new ngi_cert_status entity and link to each NGI. For details see https://rt.egi.eu/rt/Ticket/Display.html?id=9084 
 * After a downtime has started, remove downtime delete buttons
 * Update role-approve notification email 
 * Change `<CERTDN>` element in PI output to `<PRINCIPAL>` and consider adding the 
@@ -262,7 +262,7 @@ public function authoriseAction($action, \OwnedEntity $entity, \User $user){
     } 
 }
 
-private function getRequiredRolesForActionTargetedAction($action, \OwnedEntity $entity){
+private function getRequiredRolesForTargetedAction($action, \OwnedEntity $entity){
   // XPath query for the relevant RoleActionMapping element (defined per-project or default)  
   // XPath query for all child RoleMapping elements where Target element value == $entity type 
   // Iterate RoleMapping elements and drop those that don't have an EnabledActions->Actions 

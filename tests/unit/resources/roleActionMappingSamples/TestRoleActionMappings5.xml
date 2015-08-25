@@ -94,11 +94,20 @@
                 <RoleRef idRef="COO"/>
             </Roles>  
             <EnabledActions>
-                <Actions>ACTION_EDIT_OBJECT,ACTION_GRANT_ROLE,ACTION_REJECT_ROLE,ACTION_REVOKE_ROLE</Actions> 
+                <Actions>
+                    <Action>ACTION_EDIT_OBJECT</Action>
+                    <Action>ACTION_GRANT_ROLE</Action>
+                    <Action>ACTION_REJECT_ROLE</Action>
+                    <Action>ACTION_REVOKE_ROLE</Action>
+                </Actions> 
                 <Target>Project</Target> 
             </EnabledActions>
             <EnabledActions>
-                <Actions>ACTION_GRANT_ROLE,ACTION_REJECT_ROLE,ACTION_REVOKE_ROLE</Actions>
+                <Actions>
+                    <Action>ACTION_GRANT_ROLE</Action>
+                    <Action>ACTION_REJECT_ROLE</Action>
+                    <Action>ACTION_REVOKE_ROLE</Action>
+                </Actions>
                 <Target>Ngi</Target>
             </EnabledActions>
         </RoleMapping>
@@ -112,7 +121,9 @@
                 <RoleRef idRef="REG_FIRST_LINE_SUPPORT"/>
             </Roles>
             <EnabledActions>
-                <Actions>ACTION_EDIT_OBJECT</Actions>
+                <Actions>
+                    <Action>ACTION_EDIT_OBJECT</Action>
+                </Actions>
                 <Target>Ngi</Target>
             </EnabledActions>
         </RoleMapping>
@@ -124,7 +135,12 @@
                 <RoleRef idRef="NGI_SEC_OFFICER"/>
             </Roles>
             <EnabledActions>
-                <Actions>ACTION_NGI_ADD_SITE,ACTION_GRANT_ROLE,ACTION_REJECT_ROLE,ACTION_REVOKE_ROLE</Actions>
+                <Actions>
+                    <Action>ACTION_NGI_ADD_SITE</Action>
+                    <Action>ACTION_GRANT_ROLE</Action>
+                    <Action>ACTION_REJECT_ROLE</Action>
+                    <Action>ACTION_REVOKE_ROLE</Action>
+                </Actions>
                 <Target>Ngi</Target>
             </EnabledActions>
         </RoleMapping>
@@ -142,7 +158,11 @@
                 <RoleRef idRef="NGI_OPS_MAN"/> 
             </Roles>  
             <EnabledActions> 
-                <Actions>ACTION_EDIT_OBJECT, ACTION_SITE_ADD_SERVICE, ACTION_SITE_DELETE_SERVICE</Actions> 
+                <Actions>
+                    <Action>ACTION_EDIT_OBJECT</Action>
+                    <Action>ACTION_SITE_ADD_SERVICE</Action>
+                    <Action>ACTION_SITE_DELETE_SERVICE</Action>
+                </Actions> 
                 <Target>Site</Target>   
             </EnabledActions> 
         </RoleMapping> 
@@ -158,7 +178,11 @@
                 <RoleRef idRef="NGI_OPS_MAN"/> 
             </Roles> 
             <EnabledActions> 
-                <Actions>ACTION_GRANT_ROLE,  ACTION_REJECT_ROLE,  ACTION_REVOKE_ROLE</Actions> 
+                <Actions>
+                    <Action>ACTION_GRANT_ROLE</Action> 
+                    <Action> ACTION_REJECT_ROLE</Action> 
+                    <Action> ACTION_REVOKE_ROLE</Action>
+                </Actions> 
                 <Target>Site</Target>   
             </EnabledActions> 
         </RoleMapping> 
@@ -175,7 +199,9 @@
                 <RoleRef idRef="COO"/>
             </Roles>  
             <EnabledActions> 
-                <Actions>ACTION_SITE_EDIT_CERT_STATUS</Actions> 
+                <Actions>
+                    <Action>ACTION_SITE_EDIT_CERT_STATUS</Action>
+                </Actions> 
                 <Target>Site</Target>   
             </EnabledActions> 
         </RoleMapping> 
@@ -186,7 +212,12 @@
                 <RoleRef idRef="SERVICE_GROUP_ADMIN"/>
             </Roles>
             <EnabledActions>
-                <Actions>ACtion_EDIT_OBJECT,ACTION_GRANT_ROLE, ACTION_REJECT_ROLE, ACTION_REVOKE_ROLE</Actions>
+                <Actions>
+                    <Action>ACtion_EDIT_OBJECT</Action>
+                    <Action>ACTION_GRANT_ROLE</Action> 
+                    <Action>ACTION_REJECT_ROLE</Action> 
+                    <Action>ACTION_REVOKE_ROLE</Action>
+                </Actions>
                 <Target>SERviceGroup</Target> 
             </EnabledActions>
         </RoleMapping>
@@ -201,7 +232,7 @@
                <RoleRef idRef="COO"/>
            </Roles>  
            <EnabledActions> 
-             <Actions>ACTION_NGI_EDIT_CERT_STATUS</Actions> 
+             <Actions><Action>ACTION_NGI_EDIT_CERT_STATUS</Action></Actions> 
              <Target>Ngi</Target>   
            </EnabledActions> 
         </RoleMapping> 
