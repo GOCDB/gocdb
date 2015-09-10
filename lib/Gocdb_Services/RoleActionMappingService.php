@@ -17,8 +17,8 @@ namespace org\gocdb\services;
 //require_once __DIR__ . '/AbstractEntityService.php';
 
 /**
- * Service for querying the Role-Action mapping definitions defined in the 
- * RoleActionMappingRules XML file. 
+ * Service for querying the Role-Action mapping definitions defined in a 
+ * RoleActionMappings.xml file. 
  * <p>
  * The role action mappings xml file and its XSD can be configured for non-default
  * locations. The XSD defines the TNS specified by <code>ROLE_ACTION_MAPPING_NS</code>. 
@@ -30,7 +30,7 @@ namespace org\gocdb\services;
  *
  * @author David Meredith
  */
-class RoleActionService /* extends AbstractEntityService */ {
+class RoleActionMappingService /* extends AbstractEntityService */ {
 
     private $roleActionMappingsXmlPath;
     private $roleActionMappingsXsdPath;
@@ -134,7 +134,7 @@ class RoleActionService /* extends AbstractEntityService */ {
         }
 
         $xpath = new \DOMXPath($roleActionMapXmlDom);
-        $xpath->registerNamespace("goc", RoleActionService::ROLE_ACTION_MAPPING_NS);
+        $xpath->registerNamespace("goc", RoleActionMappingService::ROLE_ACTION_MAPPING_NS);
 
         // Throws a LogicException if there is no RoleActionMapping for the requested project 
         $roleActionMapping = $this->getRoleActionMappingForProject($xpath, $projectName);  
@@ -160,26 +160,36 @@ class RoleActionService /* extends AbstractEntityService */ {
     }
 
     /**
-     * Return associative array of Role type names {@see \RoleType::getName()} (keys)
-     * that enable the specified action on the target objectType (values) for 
-     * the specified projectName. 
+     * For the specified project, return an associative array of role type names 
+     * that enable the specified action on the target object type. 
+     * <p> 
+     * The format of the array is ['RoleTypeName_AsKey'] => 'overOwnedEntityType_AsValue', 
+     * i.e. Role type names are keys {@see \RoleType::getName()} and the names 
+     * of object type that the role is over/linked-to is the array value.  
      * <p>
      * The returned Role type names (keys) are looked up from:  
      * </code>RoleActionMapping/RoleNames/Role</code> for the specified project. 
      * <p>
-     * The returned object names the roles are over (values) are looked up from: 
+     * The returned object-type names that the roles are over (values) are looked up from: 
      * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project.
+     * <p>
+     * For example, the following role-types over the specified object types could 
+     * enable 'actionX': 
+     * <code> array (['Site Administrator'] => 'Site', ['NGI Operations Manager']  => 'Ngi',   
+     *   ['Chief Operations Officer'] => 'Project');  
+     * </code>
      * 
-     * @param string $action The type of action, matches to element value:
+     * @param string $action The type of action, case-insensitive, matches to element value:
      *   <code>//RoleActionMapping/RoleMapping/EnabledActions/Actions</code>
-     * @param string $objectType The type of entity, matches to element value: 
+     * @param string $objectType The type of entity, case-insensitive, matches to element value: 
      *   <code>//RoleMapping/EnabledActions/Target</code>
      * @param string $projectName The projectName, matches to element value:
      *   <code>//RoleActionMapping/TargetProject</code>
      * @return array Associative array where Role type names are keys and the 
      * owned object type the role applies over is the value. 
-     * Can be empty if no rules map to the requested action.  
-     * @throws \LogicException If an arg is invalid or XML/XSD files can't be loaded.  
+     * Can be empty if no roles map to the requested action.  
+     * @throws \LogicException If there is no RoleActionMapping elelment for the requested project, 
+     *  and if the XML/XSD files are logically invalid.  
      * @throws \Exception If the role action mapping file is invalid against its XSD.  
      */
     public function getRoleTypeNamesThatEnableActionOnTargetObjectType($action, $objectType, $projectName) {
@@ -201,7 +211,7 @@ class RoleActionService /* extends AbstractEntityService */ {
 
         // Lets not use simplexml, DOMXPath is more powerful 
         //$xml = simplexml_load_file($this->roleActionMappingsXmlPath);
-        //$xml->registerXPathNamespace('goc', RoleActionService::ROLE_ACTION_MAPPING_NS); 
+        //$xml->registerXPathNamespace('goc', RoleActionMappingService::ROLE_ACTION_MAPPING_NS); 
         //$roleActionMapping = $xml->xpath("//goc:RoleActionMapping"); 
 
         // load dom 
@@ -224,7 +234,7 @@ class RoleActionService /* extends AbstractEntityService */ {
 
         // create xpath 
         $xpath = new \DOMXPath($roleActionMapXmlDom);
-        $xpath->registerNamespace("goc", RoleActionService::ROLE_ACTION_MAPPING_NS);
+        $xpath->registerNamespace("goc", RoleActionMappingService::ROLE_ACTION_MAPPING_NS);
 
         // Throws a LogicException if there is no RoleActionMapping for the requested project 
         $roleActionMapping = $this->getRoleActionMappingForProject($xpath, $projectName);  
@@ -341,7 +351,18 @@ class RoleActionService /* extends AbstractEntityService */ {
     }
 
 
-
+    /**
+     * Get the (single) RoleActionMapping element for the specified projectName. 
+     * Returns either a RoleActionMapping that specifies the named project 
+     * using a nested TargetProject child element, or the default RoleActionMapping
+     * that applies to all projects (if defined).  
+     * 
+     * @param \DOMXPath $xpath
+     * @param string $projectName
+     * @return DOMNode The RoleActionMapping element 
+     * @throws \LogicException if a RoleActionMapping element can't be found for 
+     *  the specified project. 
+     */
     private function getRoleActionMappingForProject(\DOMXPath $xpath, $projectName){
         $projectNameU = strtoupper($projectName); 
 

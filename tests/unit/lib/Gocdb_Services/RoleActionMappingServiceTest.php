@@ -13,15 +13,15 @@
  * limitations under the License.
  */
 
- require_once __DIR__.'/../../../../lib/Gocdb_Services/RoleActionService.php';
+ require_once __DIR__.'/../../../../lib/Gocdb_Services/RoleActionMappingService.php';
 
 /**
- * Test case for the {@see \org\gocdb\services\RoleActionService} service class. 
+ * Test case for the {@see \org\gocdb\services\RoleActionMappingService} service class. 
  * The tests utilise the sample xml files in test/unit/resources.  
  *
  * @author David Meredith 
  */
-class RoleActionServiceTest extends PHPUnit_Framework_TestCase {
+class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
     
     /**
      * Called once, before any of the tests are executed.
@@ -72,7 +72,7 @@ class RoleActionServiceTest extends PHPUnit_Framework_TestCase {
 
     public function testValidateRoleActionMappingsAgainstSchema() {
         print __METHOD__ . "\n";
-        $roleActionService = new org\gocdb\services\RoleActionService(); 
+        $roleActionService = new org\gocdb\services\RoleActionMappingService(); 
         $errors = $roleActionService->validateRoleActionMappingFileAgainstXsd(); 
         $this->assertEmpty($errors); 
         /*$xml = new \DOMDocument();
@@ -88,7 +88,7 @@ class RoleActionServiceTest extends PHPUnit_Framework_TestCase {
 
     public function testGetRoleNamesForProject(){
         print __METHOD__ . "\n";
-        $roleActionService = new org\gocdb\services\RoleActionService(); 
+        $roleActionService = new org\gocdb\services\RoleActionMappingService(); 
         $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings5.xml"); 
         
         $rolenamesOver = $roleActionService->getRoleTypeNamesForProject('EGI'); 
@@ -107,7 +107,7 @@ class RoleActionServiceTest extends PHPUnit_Framework_TestCase {
 
     public function testGetEnablingRolesForTargetedAction1(){
         print __METHOD__ . "\n";
-        $roleActionService = new org\gocdb\services\RoleActionService(); 
+        $roleActionService = new org\gocdb\services\RoleActionMappingService(); 
         $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings5.xml"); 
         
         $expected = array('COD Staff', 'COD Administrator', 'EGI CSIRT Officer', 'Chief Operations Officer');
@@ -174,7 +174,7 @@ class RoleActionServiceTest extends PHPUnit_Framework_TestCase {
 
     public function testGetEnablingRolesForTargetedAction2(){
         print __METHOD__ . "\n";
-        $roleActionService = new org\gocdb\services\RoleActionService(); 
+        $roleActionService = new org\gocdb\services\RoleActionMappingService(); 
         $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings4.xml"); 
 
         // EGI project 
@@ -232,7 +232,7 @@ class RoleActionServiceTest extends PHPUnit_Framework_TestCase {
      */
     public function testInvalidDocMultipleDefaultElements(){
         print __METHOD__ . "\n";
-        $roleActionService = new org\gocdb\services\RoleActionService(); 
+        $roleActionService = new org\gocdb\services\RoleActionMappingService(); 
         $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings1.xml"); 
         $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("action", "hello", "world"); 
 
@@ -240,7 +240,7 @@ class RoleActionServiceTest extends PHPUnit_Framework_TestCase {
 
     public function testInvalidDocMultipleRoleActionMappingsForProject(){
         print __METHOD__ . "\n";
-        $roleActionService = new org\gocdb\services\RoleActionService(); 
+        $roleActionService = new org\gocdb\services\RoleActionMappingService(); 
         $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestInvalidRoleActionMappings2.xml"); 
         try { 
             $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("action", "hello", "EGI"); 
@@ -258,7 +258,7 @@ class RoleActionServiceTest extends PHPUnit_Framework_TestCase {
      */
     public function testRequestedProjectDontExist(){
         print __METHOD__ . "\n";
-        $roleActionService = new org\gocdb\services\RoleActionService(); 
+        $roleActionService = new org\gocdb\services\RoleActionMappingService(); 
         $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings3.xml"); 
         $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("action", "hello", "projDontExist"); 
     }

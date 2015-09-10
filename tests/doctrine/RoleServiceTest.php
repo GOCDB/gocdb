@@ -134,7 +134,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
 
 
     
-    public function ntest_getPendingRolesUserCanApprove(){
+    public function test_getPendingRolesUserCanApprove(){
         print __METHOD__ . "\n";
         // Create fixture data
         // RoleTypes
@@ -183,7 +183,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
    
 
     
-    public function ntest_getUserRoleNamesOverEntity(){
+    public function test_getUserRoleNamesOverEntity(){
         print __METHOD__ . "\n";
     	// Create fixture data
         // RoleTypes
@@ -226,7 +226,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
     }
 
     
-    public function ntestGetUserRoles(){
+    public function testGetUserRoles(){
     	print __METHOD__ . "\n";
     	// Create two roletypes
     	$ngiRoleType = TestUtil::createSampleRoleType("RT1_NAME"/*, RoleTypeClass::SITE_USER*/);
@@ -291,7 +291,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
     /**
      * @expectedException \LogicException 
      */
-    public function ntestInvalidRoleStatus(){
+    public function testInvalidRoleStatus(){
     	print __METHOD__ . "\n";
        $roleService = new org\gocdb\services\Role();   
        $this->assertFalse($roleService->isValidRoleStatus("some invalid role"));
@@ -300,7 +300,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
     }
 
 
-    public function ntest_getReachableProjectsFromOwnedEntity(){
+    public function test_getReachableProjectsFromOwnedEntity(){
     	print __METHOD__ . "\n";
         include __DIR__ . '/resources/sampleFixtureData5.php';
         $this->em->flush(); 
@@ -420,7 +420,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $this->assertEquals($r1->getId(), $roles[0]->getId()); 
 
         
-         /*
+        /*
          * p1     p2     p3
          * |      |     /|
          * n1     n2-r1  n3-r2
@@ -614,6 +614,198 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $this->assertTrue(in_array($r7, $roles)); 
 
     }
+
+
+    public function test_getUserRolesOnAndAboveEntity(){
+        print __METHOD__ . "\n";
+        include __DIR__ . '/resources/sampleFixtureData5.php';
+
+        // create a user 
+        $u = TestUtil::createSampleUser("dave", "meredith", "idSTring"); 
+        $this->em->persist($u); 
+        
+        // add some roles to domain model 
+        $ngiRoleType = TestUtil::createSampleRoleType("NGI_RT");
+        $siteRoleType = TestUtil::createSampleRoleType("SITE_RT");
+        $siteRoleType2 = TestUtil::createSampleRoleType("SITE_RT2");
+        $projRoleType = TestUtil::createSampleRoleType("PROJ_RT");
+    	$this->em->persist($ngiRoleType);
+    	$this->em->persist($siteRoleType);
+    	$this->em->persist($siteRoleType2);
+    	$this->em->persist($projRoleType);
+        
+        $this->em->flush(); 
+
+        $roleService = new org\gocdb\services\Role();  
+
+        // We could create/inject a new em connection into the roleService 
+        // to test the transactional isolation of its methods (rather than injecting
+        // $this->em instance), e.g.:  
+        //   $em = $this->createEntityManager();
+        //   $roleService->setEntityManager($em); 
+        //   
+        // However, this is problematic for this test which 
+        // needs to use the in_array() method to assert that the tested methods return 
+        // the expected roles - in_array() uses object-instance-equality to deterine
+        // if the role exists in the array, and using a different $em instance 
+        // means the returned roles will be considered different      
+        // instances. We could get round this by comparing the Ids, but this makes 
+        // checking more of hassle as we need to extract all the Ids from the roles  
+        // into another array to assert the ids are expected, as in:     
+        //   $roleIds = array(); 
+        //   foreach($roles as $r){ $roleIds[] = $r->getId(); }
+        //   $this->assertTrue(in_array($r1->getId(), $roleIds)); 
+        //   $this->assertTrue(in_array($r2->getId(), $roleIds));
+        //
+        // For this test, we will therefore re-use $this->em to ensure 
+        // object-equality:
+        $roleService->setEntityManager($this->em); 
+
+        // confirm that function runs with no user roles over entity 
+        $roles = $roleService->getUserRolesByProject($u, $p1); 
+        $this->assertEmpty($roles); 
+        $roles = $roleService->getUserRolesOnAndAboveEntity($u, $p1); 
+        $this->assertEmpty($roles); 
+
+
+        // Create a Role and link to the User, ngiRoleType and ngi 
+        /*
+         * p1     p2     p3
+         * |      |     /|
+         * n1     n2-r1  n3
+         * |      |      | 
+         * s1     s2     s3 
+         */
+        $r1 = TestUtil::createSampleRole($u, $ngiRoleType, $n2, RoleStatus::GRANTED); 
+    	$this->em->persist($r1);
+        $this->em->flush(); 
+
+        $rolesDirect = $u->getRoles(); 
+        $this->assertEquals(1, count($rolesDirect)); 
+
+        $roles = $roleService->getUserRolesOnAndAboveEntity($u, $s1); 
+        $this->assertEmpty($roles); 
+
+        $roles = $roleService->getUserRolesOnAndAboveEntity($u, $s2); 
+        $this->assertEquals(1, count($roles)); 
+        $this->assertTrue(in_array($r1, $roles));  
+
+        /*
+         * p1     p2     p3
+         * |      |     /|
+         * n1     n2-r1  n3-r2
+         * |      |      | 
+         * s1     s2     s3 
+         */
+        $r2 = TestUtil::createSampleRole($u, $ngiRoleType, $n3, RoleStatus::GRANTED); 
+    	$this->em->persist($r2);
+        $this->em->flush(); 
+
+        $roles = $roleService->getUserRolesOnAndAboveEntity($u, $s2); 
+        $this->assertEquals(1, count($roles)); 
+        $this->assertTrue(in_array($r1, $roles));  
+
+        $roles = $roleService->getUserRolesOnAndAboveEntity($u, $s3); 
+        $this->assertEquals(1, count($roles)); 
+        $this->assertTrue(in_array($r2, $roles));  
+
+         /*
+         * p1     p2     p3
+         * |      |     /|
+         * n1     n2-r1  n3-r2
+         * |      |      | 
+         * s1     s2     s3-r3 
+         */
+        $r3 = TestUtil::createSampleRole($u, $siteRoleType, $s3, RoleStatus::GRANTED); 
+    	$this->em->persist($r3);
+        $this->em->flush(); 
+
+        $roles = $roleService->getUserRolesOnAndAboveEntity($u, $s3); 
+        $this->assertEquals(2, count($roles)); 
+        $this->assertTrue(in_array($r2, $roles)); 
+        $this->assertTrue(in_array($r3, $roles)); 
+       
+        /*
+         * p1     p2     p3-r4
+         * |      |     /|
+         * n1     n2-r1  n3-r2
+         * |      |      | 
+         * s1     s2     s3-r3 
+         */
+        $r4 = TestUtil::createSampleRole($u, $projRoleType, $p3, RoleStatus::GRANTED); 
+    	$this->em->persist($r4);
+        $this->em->flush(); 
+
+         /*
+         * p1     p2     p3-r4
+         * |      |     /|
+         * n1     n2-r1  n3-r2
+         * |      |      | 
+         * s1     s2-r5  s3-r3 
+         */
+        $r5 = TestUtil::createSampleRole($u, $siteRoleType, $s2, RoleStatus::GRANTED); 
+    	$this->em->persist($r5);
+        $this->em->flush(); 
+
+        /*
+         * p1     p2     p3-r4
+         * |      |     /|
+         * n1     n2-r1  n3-r2
+         * |      |      | 
+         * s1-r6  s2-r5  s3-r3 
+         */
+        $r6 = TestUtil::createSampleRole($u, $siteRoleType, $s1, RoleStatus::GRANTED); 
+    	$this->em->persist($r6);
+        $this->em->flush(); 
+
+        /*
+         * p1     p2     p3-r4
+         * |      |     /|
+         * n1     n2-r1  n3-r2
+         * |      |      | 
+         * s1-r6  s2-r5  s3-r3,r7 
+         */
+        $r7 = TestUtil::createSampleRole($u, $siteRoleType2, $s3, RoleStatus::GRANTED); 
+    	$this->em->persist($r7);
+        $this->em->flush(); 
+
+        /*
+         * p1     p2-r8  p3-r4
+         * |      |     /|
+         * n1     n2-r1  n3-r2
+         * |      |      | 
+         * s1-r6  s2-r5  s3-r3,r7 
+         */
+        $r8 = TestUtil::createSampleRole($u, $projRoleType, $p2, RoleStatus::GRANTED); 
+    	$this->em->persist($r8);
+        $this->em->flush(); 
+
+        $roles = $roleService->getUserRolesOnAndAboveEntity($u, $s1); 
+        $this->assertEquals(1, count($roles)); 
+        $this->assertTrue(in_array($r6, $roles)); 
+        
+        $roles = $roleService->getUserRolesOnAndAboveEntity($u, $s2); 
+        $this->assertEquals(4, count($roles)); 
+        $this->assertTrue(in_array($r5, $roles)); 
+        $this->assertTrue(in_array($r1, $roles)); 
+        $this->assertTrue(in_array($r8, $roles)); 
+        $this->assertTrue(in_array($r4, $roles)); 
+
+        $roles = $roleService->getUserRolesOnAndAboveEntity($u, $s3); 
+        $this->assertEquals(4, count($roles)); 
+        $this->assertTrue(in_array($r2, $roles)); 
+        $this->assertTrue(in_array($r3, $roles)); 
+        $this->assertTrue(in_array($r4, $roles)); 
+        $this->assertTrue(in_array($r7, $roles)); 
+       
+    }
+
+
+
+
+
+    
+    
 
     /*public function testRoleTypeValues(){
     	print __METHOD__ . "\n";

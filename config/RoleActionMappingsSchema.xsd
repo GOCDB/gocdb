@@ -12,6 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+@author David Meredith 
 --> 
 
 <xs:schema targetNamespace="http://goc.egi.eu/2015/03/spec1.0_r1" 
@@ -26,7 +27,15 @@
         <annotation>
             <documentation>
         <![CDATA[
-        This is the root element. TODO 
+        <RoleActionMappingRules> is the root element. 
+        It defines zero or more <RoleActionMapping>s, one for each project. 
+        
+        Each <RoleActionMapping> declares mappings between role names and the actions 
+        they grant over the specified target object types.  
+        
+        If a <RoleActionMapping> is not specified for a particular project, 
+        a single default <RoleActionMapping> MAY be defined as a fallback 
+        (this default <RoleActionMapping> will define NO <TargetProject> element). 
         ]]>
             </documentation>
         </annotation>
@@ -38,7 +47,10 @@
         <xs:unique name="testRoleActionMappingTargetProjectUnique">
             <xs:annotation>
                 <xs:documentation>
-                   <![CDATA[ ]]>
+                <![CDATA[ 
+                Declares a unique constraint on the value of <TargetProject> 
+                to ensure only ONE <RoleActionMapping> applies to a particular project. 
+                ]]>
                 </xs:documentation>
             </xs:annotation>
             <xs:selector xpath="goc:RoleActionMapping/goc:TargetProject"/>
@@ -49,7 +61,18 @@
     <xs:element name="RoleActionMapping">
         <xs:annotation>
             <xs:documentation>
-                <![CDATA[ ]]>
+            <![CDATA[ 
+            Defines the role-to-action mappings for a set of projects named by
+            the nested <TargetProject> elements. The basic structure of the 
+            element is as follows: 
+            
+            <RoleActionMapping> 
+                <TargetProject/> (0..*) 
+                <RoleNames/>     (0..*) 
+                <RoleMapping/>   (0..*)   
+            </RoleActionMapping> 
+            
+            ]]>
             </xs:documentation> 
         </xs:annotation>
         <xs:complexType>
@@ -57,7 +80,11 @@
                 <xs:element name="TargetProject" minOccurs="0" maxOccurs="unbounded">
                     <xs:annotation>
                         <xs:documentation>
-                <![CDATA[ ]]>
+                <![CDATA[ 
+                 Optional; used to name which project(s) this <RoleActionMapping> applies to. 
+                 There can be only one <RoleActionMapping> that does not define any 
+                 <TargetProject> elements, and this serves as the default. 
+                ]]>
                         </xs:documentation> 
                     </xs:annotation>
                     <xs:complexType>
@@ -90,7 +117,10 @@
     <xs:element name="RoleNames">
         <xs:annotation>
             <xs:documentation>
-                <![CDATA[ ]]>
+            <![CDATA[ 
+            Defines the role names that apply 'over' a specified object type by 
+            nesting zero or more <Role> elements. 
+            ]]>
             </xs:documentation> 
         </xs:annotation>
         <xs:complexType>
@@ -98,7 +128,10 @@
                 <xs:element name="Role" minOccurs="0" maxOccurs="unbounded">
                     <xs:annotation>
                         <xs:documentation>
-                <![CDATA[ ]]>
+                <![CDATA[ 
+                Defines a role name as the element value, and an id attribute 
+                that is used as a shortcut to reference this role name. 
+                ]]>
                         </xs:documentation> 
                     </xs:annotation>
                     <xs:complexType>
@@ -118,7 +151,11 @@
     <element name="RoleMapping">
         <xs:annotation>
             <xs:documentation>
-                <![CDATA[ ]]>
+                <![CDATA[
+                Used to specify which roles enable a set of actions over the 
+                specified target object(s), i.e. it actually defines 
+                the role-to-action mapping. 
+                ]]>
             </xs:documentation> 
         </xs:annotation>
         <complexType>

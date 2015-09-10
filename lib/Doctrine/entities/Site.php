@@ -287,6 +287,17 @@ class Site extends OwnedEntity implements IScopedEntity{
         return $this->ngi;
     }
 
+    /**
+     * @return ArrayCollection Contains parent NGI or empty collection if no parent. 
+     */
+    public function getParentOwnedEntities() {
+        $ngiArray = new ArrayCollection();
+        if($this->ngi != null){
+            $ngiArray->add($this->ngi); 
+        }
+        return $ngiArray; 
+    }
+
     public function getInfrastructure() {
         return $this->infrastructure;
     }

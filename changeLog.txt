@@ -1,4 +1,8 @@
-GOCDB-5.4.1 Release (TBC). No DB schema changes.  
+GOCDB-5.5 Release (TBC). No DB schema changes.  
+  - Role mapping and abstractions to define different roles types on a per-project
+    basis. Different role types are defined in the RoleActionMappings.xml 
+    file for different projects. The mapping file defines which actions are enabled 
+    for each role. The role types have to be pre-inserted into the DB.     
   - New improved ExtensionsParser2.php implementation for tokenising  
     the value of the 'extensions' URL param in PI - the value 
     part of key=value expressions can now contain any char including escaped 

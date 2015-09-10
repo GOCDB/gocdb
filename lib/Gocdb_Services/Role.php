@@ -68,9 +68,93 @@ class Role extends AbstractEntityService{
         }
         return $projects; 
     }
+
+    /**
+     * Get all the Roles that the user has DIRECTLY over the given OwnedEntity AND 
+     * over all the reachable parent and ancestor OwnedEntities encountered when 
+     * moving up through the domain model.  
+     * 
+     * @param \User $user
+     * @param \OwnedEntity $ownedEntity
+     * @param string $roleStatus Role status, GRANTED by default 
+     * @return array {@see \Role} array  
+     */
+    public function getUserRolesOnAndAboveEntity(\User $user, \OwnedEntity $ownedEntity, 
+            $roleStatus = \RoleStatus::GRANTED){
+        $roles = array(); 
+        $this->getUserRolesOnAndAboveEntityRecurse($user, $ownedEntity, $roles, $roleStatus);  
+        return $roles;         
+    }
+    
+    private function getUserRolesOnAndAboveEntityRecurse(\User $user, 
+            \OwnedEntity $ownedEntity, &$roles, $roleStatus){
+        
+        $_roles = $this->getUserRolesOverEntity($ownedEntity, $user, $roleStatus);  
+        foreach($_roles as $r){
+            $roles[] = $r; 
+        }
+        $parentOEs = $ownedEntity->getParentOwnedEntities(); 
+        foreach($parentOEs as $parentOE){
+            // recurse
+            $this->getUserRolesOnAndAboveEntityRecurse($user, $parentOE, $roles, $roleStatus);  
+        }
+    }
+ 
+    /* Non-recursive (less elegant) version of above. 
+     * public function getUserRolesOnAndAboveEntity(\User $user, \OwnedEntity $ownedEntity, 
+            $roleStatus = \RoleStatus::GRANTED){
+        //throw new \LogicException("not implemented yet"); 
+        //$userRoles = $this->getUserRoles($user, \RoleStatus::GRANTED);   
+       
+        // This could be more elegant by introducing a new abstract method on the OwnedEntity 
+        // interface, e.g. $ownedEntity->getParentOwnedEntities(). We could then 
+        // use recursion to move up the entity graph and populate the roles array.  
+           
+        // starting from the ownedEntity, move up the tree and fetch all the parent
+        // entities and for each parent, get the users roles over the entity. 
+        $roles = array(); 
+        if ($ownedEntity instanceof \Project) {
+            // just get roles directly over project; it is top in hierarchy and has no parents  
+            $roles = $this->getUserRolesOverEntity($ownedEntity, $user, $roleStatus); 
+        } 
+        else if ($ownedEntity instanceof \NGI) {
+            // get roles over the ngi
+            $roles = $this->getUserRolesOverEntity($ownedEntity, $user, $roleStatus);  
+            // get roles over each of the parent projects (1 or more) 
+            $projects = $ownedEntity->getProjects(); 
+            foreach($projects as $proj){
+               $projXRoles = $this->getUserRolesOverEntity($proj, $user, $roleStatus);   
+               foreach($projXRoles as $r){
+                   $roles[] = $r; 
+               }
+            }
+        }
+        // @var $ownedEntity \Site         
+        else if ($ownedEntity instanceof \Site) {
+            $roles = $this->getUserRolesOverEntity($ownedEntity, $user, $roleStatus);
+            // @var $ngi \NGI 
+            $ngi = $ownedEntity->getNgi();
+            $ngiRoles = $this->getUserRolesOverEntity($ngi, $user, $roleStatus);
+            foreach ($ngiRoles as $r) {
+                $roles[] = $r;
+            }
+            $projects = $ngi->getProjects();
+            foreach ($projects as $proj) {
+                $projXRoles = $this->getUserRolesOverEntity($proj, $user, $roleStatus);
+                foreach ($projXRoles as $r) {
+                    $roles[] = $r;
+                }
+            }
+        } 
+        else if ($ownedEntity instanceof \ServiceGroup) {
+            // just get roles directly over sg, it has no parents 
+            $roles = $this->getUserRolesOverEntity($ownedEntity, $user);   
+        }
+        return $roles;  
+    }*/
     
     /**
-     * Get all the user's granted {@see \Role}s over {@see \OwnedEntity} 
+     * Get all the user's granted {@see \Role}s over {@see \OwnedEntity} objects 
      * that are descendants of the specified targetProject. 
      * <p>
      * The returned roles will be over: {@see \Site}, {@see \NGI}s and {@see \Project}s, 
@@ -135,7 +219,47 @@ class Role extends AbstractEntityService{
         } 
         return $rolesInProject; 
     }
-    
+
+
+    /**
+     * Get all the RoleType names that the user has DIRECTLY over the given entity,   
+     * and optionally limit the returned RoleType names to those with the specified  
+     * RoleStatus (GRANTED by default).
+     * 
+     * @param \OwnedEntity $entity An entity that extends OwnedEntity (Site, NGI, ServiceGroup, Project) 
+     * @param \User $user
+     * @param string $roleStatus
+     * @return array of {@see \Role}s 
+     */
+    public function getUserRolesOverEntity(\OwnedEntity $entity, \User $user, $roleStatus = \RoleStatus::GRANTED) {
+        if ($user->getId() == null || $entity->getId() == null) {
+            return array();
+        }
+        //$entityClassName= get_class($entity);
+        require_once __DIR__.'/OwnedEntity.php';
+        $OwnedEntityService = new \org\gocdb\services\OwnedEntity();
+        $entityClassName = $OwnedEntityService->getOwnedEntityDerivedClassName($entity); 
+        //$entityClassName = $entity->getType(); // DQL is case sensitive for class names and field names, so can't use this 
+
+        $dql = "SELECT r
+            FROM Role r
+            JOIN r.roleType rt
+            JOIN r.user u
+            JOIN r.ownedEntity o
+            WHERE u.id = :userId
+            AND o.id = :entityId
+            AND r.status = :roleStatus
+            AND o INSTANCE OF $entityClassName";
+        
+        /* @var $query \Doctrine\ORM\Query */
+        $query = $this->em->createQuery($dql)
+                ->setParameter('userId', $user->getId())
+                ->setParameter('roleStatus', $roleStatus)
+                ->setParameter('entityId', $entity->getId());
+        $roles = $query->getResult();
+        return $roles; 
+    }
+
     /**
      * Get all the RoleType names that the user has DIRECTLY over the given entity,   
      * and optionally limit the returned RoleType names to those with the specified  
