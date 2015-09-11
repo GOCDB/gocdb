@@ -99,8 +99,13 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
             }
         }
 
-         
-        $dbUserRolesAboveEntity = $this->roleService->getUserRolesOnAndAboveEntity($user, $entity);  
+        // Get all the roles over/above the entity. Note, in future it may be 
+        // necessary to introduce getUserRolesFromEntityDescendDomainGraph($user, $entity) 
+        // e.g. IF we want to enable actions on parent objects from roles held over 
+        // child objects, e.g. consider the case where users with roles over site/ngis 
+        // want to post comments on a Project board - a user may need a role 
+        // over a child object to do this. 
+        $dbUserRolesAboveEntity = $this->roleService->getUserRolesFromEntityAscendDomainGraph($user, $entity);  
 
         $grantingUserRoles = array();
         foreach ($dbUserRolesAboveEntity as $candidateUserRole) {

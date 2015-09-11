@@ -128,7 +128,7 @@ class NGI extends OwnedEntity implements IScopedEntity {
     public function getParentOwnedEntities() {
         return $this->projects;
     }
-    
+
     public function getScopes() {
         return $this->scopes;
     }

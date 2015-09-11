@@ -64,8 +64,16 @@ abstract class OwnedEntity {
 
 
     /**
-     * Get the direct parents of this entity. 
-     * @return \Doctrine\Common\Collections\ArrayCollection An array of OwnedEntity instances or an empty array  
+     * Get the direct parent OwnedEntities that own this instance. 
+     * @return \Doctrine\Common\Collections\ArrayCollection An array of {@see \OwnedEntity} 
+     * instances or an empty array  
      */
     abstract public function getParentOwnedEntities(); 
+
+    /**
+     * Get the direct child OwnedEntities owned by this instance. 
+     * @return \Doctrine\Common\Collections\ArrayCollection An array of {@see \OwnedEntity} 
+     * instances or an empty array  
+     */
+    //abstract public function getChildOwnedEntities(); 
 }

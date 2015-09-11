@@ -79,7 +79,7 @@ class Role extends AbstractEntityService{
      * @param string $roleStatus Role status, GRANTED by default 
      * @return array {@see \Role} array  
      */
-    public function getUserRolesOnAndAboveEntity(\User $user, \OwnedEntity $ownedEntity, 
+    public function getUserRolesFromEntityAscendDomainGraph(\User $user, \OwnedEntity $ownedEntity, 
             $roleStatus = \RoleStatus::GRANTED){
         $roles = array(); 
         $this->getUserRolesOnAndAboveEntityRecurse($user, $ownedEntity, $roles, $roleStatus);  

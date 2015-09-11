@@ -183,7 +183,7 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
      *   <code>//RoleActionMapping/RoleMapping/EnabledActions/Actions</code>
      * @param string $objectType The type of entity, case-insensitive, matches to element value: 
      *   <code>//RoleMapping/EnabledActions/Target</code>
-     * @param string $projectName The projectName, matches to element value:
+     * @param string $projectName The projectName, case-insensitive, matches to element value:
      *   <code>//RoleActionMapping/TargetProject</code>
      * @return array Associative array where Role type names are keys and the 
      * owned object type the role applies over is the value. 
@@ -358,7 +358,7 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
      * that applies to all projects (if defined).  
      * 
      * @param \DOMXPath $xpath
-     * @param string $projectName
+     * @param string $projectName, case-insensitive 
      * @return DOMNode The RoleActionMapping element 
      * @throws \LogicException if a RoleActionMapping element can't be found for 
      *  the specified project. 
