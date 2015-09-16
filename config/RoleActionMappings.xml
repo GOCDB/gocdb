@@ -20,7 +20,27 @@
     xmlns='http://goc.egi.eu/2015/03/spec1.0_r1'
     xsi:schemaLocation='http://goc.egi.eu/2015/03/spec1.0_r1 ./RoleActionMappingsSchema.xsd'> 
 
-    
+   
+    <RoleActionMapping>
+        <RoleNames over="ServiceGroup">
+            <Role id="SERVICE_GROUP_ADMIN">Service Group Administrator</Role>
+        </RoleNames>
+        
+        <RoleMapping>
+            <Roles>
+                <RoleRef idRef="SERVICE_GROUP_ADMIN"/>
+            </Roles>
+            <EnabledActions>
+                <Actions>
+                    <Action>ACTION_EDIT_OBJECT</Action>
+                    <Action>ACTION_GRANT_ROLE</Action>
+                    <Action>ACTION_REJECT_ROLE</Action>
+                    <Action>ACTION_REVOKE_ROLE</Action>
+                </Actions>
+                <Target>ServiceGroup</Target> 
+            </EnabledActions>
+        </RoleMapping>
+    </RoleActionMapping> 
 
     <RoleActionMapping> 
         <TargetProject>EGI</TargetProject> 
@@ -53,9 +73,7 @@
             <Role id="SITE_OPS_MAN">Site Operations Manager</Role>
         </RoleNames> 
 
-        <RoleNames over="ServiceGroup">
-            <Role id="SERVICE_GROUP_ADMIN">Service Group Administrator</Role>
-        </RoleNames>
+
 
 
         <!--
@@ -183,20 +201,7 @@
         </RoleMapping> 
 
 
-        <RoleMapping>
-            <Roles>
-                <RoleRef idRef="SERVICE_GROUP_ADMIN"/>
-            </Roles>
-            <EnabledActions>
-                <Actions>
-                    <Action>ACtion_EDIT_OBJECT</Action>
-                    <Action>ACTION_GRANT_ROLE</Action>
-                    <Action>ACTION_REJECT_ROLE</Action>
-                    <Action>ACTION_REVOKE_ROLE</Action>
-                </Actions>
-                <Target>SERviceGroup</Target> 
-            </EnabledActions>
-        </RoleMapping>
+
 
         <!-- 
         For the newly proposed edit NGI cert status: 

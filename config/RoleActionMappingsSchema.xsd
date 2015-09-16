@@ -29,9 +29,17 @@
 <![CDATA[
 This XSD defines role-action mapping rules for GOCDB projects stored in the DB 
 ==============================================================================
-Authorisation rules are implemented by comparing a user's roles {@see Role}s, which 
-are held over different {@see \OwnedEntity} objects, to the role action mapping 
-rules defined in an instance doc of this XSD.  
+Authorisation decisions are made by comparing a user's actual roles 
+held over different {@see \OwnedEntity} objects (OEs) in the DB, with the role 
+action mapping rules defined in an instance doc of this XSD. 
+- The relevant user's Roles that are included in this comparison are those that are 
+  'reachable' from the target entity when ASCENDING the OE domain graph. 
+- The relevant role-action-mapping rules are those defined for the PARENT/ANCESTOR 
+  Project(s) of the target entity;  parent/ancestor projects are those that are 
+  'reachable' from the target entity when ASCENDING the OE domain graph.
+- Note, some OEs (currently only ServiceGroup) are Project agnostic and the 
+  rules for these entities must be defined in the default <RoleActionMapping> 
+  (see below). 
 
 The root element is <RoleActionMappingRules>. It defines zero or more 
 <RoleActionMapping>s; each mapping defines a set of role-action mapping rules 
@@ -41,7 +49,7 @@ Actions the different Role types enable over the different types of target objec
 Domain Model
 ------------
 The domain model is hierarchical; a parent object links to child objects in a 
-tree like structure. It is not a strict tree model since many-to-many 
+tree like structure. It is not a strict tree since many-to-many 
 relationships can exist, e.g. between Project and NGI where a single Project can 
 link many child NGIs while a single NGI can link to many parent Projects.  
 The basic domain model is illustrated below:
@@ -57,18 +65,20 @@ The basic domain model is illustrated below:
       r2->Ngi(OE)  
            |1 
            |*
-      r3->Site(OE) ServiceGroup(OE)<-r5,r6
-           |1     /1
-           |*    /*
-      r4->Service(OE)
-           |1    |1
-           |*    |* 
-       Endpoint Downtime
+      r3->Site(OE)  ServiceGroup(OE)<-r5,r6
+           |1      /1
+           |*     /*
+      r4->Service
+           |1     \1  
+           |*      | 
+      EndpointLoc  |
+            \*     |*  
+             \* Downtime
 
 The role-action mappings for a particular project propagate to all its children 
 -------------------------------------------------------------------------------
 If a domain object is 'reachable' from a project by navigating down through
-the object graph, this object and all its descendents become subject to the 
+the OE object graph, this object and all its descendents become subject to the 
 mapping rules of that particular project. For example: 
 
   p1   p2      Domain graph: p = project, n = ngi, s = site 
@@ -88,11 +98,16 @@ mapping rules of that particular project. For example:
 
 Default <RoleActionMapping>
 ---------------------------
-A single <RoleActionMapping> that does not define any child <TargetProject>s 
-MAY be defined as a default. If a <RoleActionMapping> is not defined for a 
-project, the mappings defined by the default will apply.  
-Only one default <RoleActionMapping> is allowed (currently enforced by additional 
+- A single <RoleActionMapping> that does not define any child <TargetProject>s 
+MAY be defined as a default. 
+- If a <RoleActionMapping> is not defined for a project, the mappings defined by 
+the default will apply.  
+- Only one default <RoleActionMapping> is allowed (currently enforced by additional 
 logic in the gocdb code - the XSD could be updated in future to enforce this). 
+- Some OEs (currently only ServiceGroup) are Project agnostic and are not 
+subject to the Roles/rules of a project. The rules for these OEs must be 
+defined in a default <RoleActionMapping>.   
+
 
 Sample Instance Document
 ------------------------

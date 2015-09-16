@@ -165,11 +165,11 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
                 __DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings6.xml"); 
 
         //Create Role Service 
-        $roleService = new \org\gocdb\services\Role(); 
+        $roleService = new org\gocdb\services\Role(); 
         $roleService->setEntityManager($em2); 
         
         // Create RoleActionAuthorisationService with dependencies 
-        $roleAuthServ = new \org\gocdb\services\RoleActionAuthorisationService
+        $roleAuthServ = new org\gocdb\services\RoleActionAuthorisationService
                 ($roleActionMappingService, $roleService);  
         $roleAuthServ->setEntityManager($em2); 
 

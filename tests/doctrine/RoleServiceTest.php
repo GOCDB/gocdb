@@ -664,7 +664,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         // confirm that function runs with no user roles over entity 
         $roles = $roleService->getUserRolesByProject($u, $p1); 
         $this->assertEmpty($roles); 
-        $roles = $roleService->getUserRolesFromEntityAscendDomainGraph($u, $p1); 
+        $roles = $roleService->getUserRolesReachableFromEntityASC($u, $p1); 
         $this->assertEmpty($roles); 
 
 
@@ -683,10 +683,10 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $rolesDirect = $u->getRoles(); 
         $this->assertEquals(1, count($rolesDirect)); 
 
-        $roles = $roleService->getUserRolesFromEntityAscendDomainGraph($u, $s1); 
+        $roles = $roleService->getUserRolesReachableFromEntityASC($u, $s1); 
         $this->assertEmpty($roles); 
 
-        $roles = $roleService->getUserRolesFromEntityAscendDomainGraph($u, $s2); 
+        $roles = $roleService->getUserRolesReachableFromEntityASC($u, $s2); 
         $this->assertEquals(1, count($roles)); 
         $this->assertTrue(in_array($r1, $roles));  
 
@@ -701,11 +701,11 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
     	$this->em->persist($r2);
         $this->em->flush(); 
 
-        $roles = $roleService->getUserRolesFromEntityAscendDomainGraph($u, $s2); 
+        $roles = $roleService->getUserRolesReachableFromEntityASC($u, $s2); 
         $this->assertEquals(1, count($roles)); 
         $this->assertTrue(in_array($r1, $roles));  
 
-        $roles = $roleService->getUserRolesFromEntityAscendDomainGraph($u, $s3); 
+        $roles = $roleService->getUserRolesReachableFromEntityASC($u, $s3); 
         $this->assertEquals(1, count($roles)); 
         $this->assertTrue(in_array($r2, $roles));  
 
@@ -720,7 +720,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
     	$this->em->persist($r3);
         $this->em->flush(); 
 
-        $roles = $roleService->getUserRolesFromEntityAscendDomainGraph($u, $s3); 
+        $roles = $roleService->getUserRolesReachableFromEntityASC($u, $s3); 
         $this->assertEquals(2, count($roles)); 
         $this->assertTrue(in_array($r2, $roles)); 
         $this->assertTrue(in_array($r3, $roles)); 
@@ -780,18 +780,18 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
     	$this->em->persist($r8);
         $this->em->flush(); 
 
-        $roles = $roleService->getUserRolesFromEntityAscendDomainGraph($u, $s1); 
+        $roles = $roleService->getUserRolesReachableFromEntityASC($u, $s1); 
         $this->assertEquals(1, count($roles)); 
         $this->assertTrue(in_array($r6, $roles)); 
         
-        $roles = $roleService->getUserRolesFromEntityAscendDomainGraph($u, $s2); 
+        $roles = $roleService->getUserRolesReachableFromEntityASC($u, $s2); 
         $this->assertEquals(4, count($roles)); 
         $this->assertTrue(in_array($r5, $roles)); 
         $this->assertTrue(in_array($r1, $roles)); 
         $this->assertTrue(in_array($r8, $roles)); 
         $this->assertTrue(in_array($r4, $roles)); 
 
-        $roles = $roleService->getUserRolesFromEntityAscendDomainGraph($u, $s3); 
+        $roles = $roleService->getUserRolesReachableFromEntityASC($u, $s3); 
         $this->assertEquals(4, count($roles)); 
         $this->assertTrue(in_array($r2, $roles)); 
         $this->assertTrue(in_array($r3, $roles)); 

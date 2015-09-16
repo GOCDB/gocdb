@@ -92,7 +92,9 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
     }
 
     /**
-     * Returns all of the Role type names defined for the named project. 
+     * Returns all of the Role type names defined for the named project or for 
+     * the default RoleActionMapping (if defined).
+     * <p> 
      * Returns an associative array where keys map to unique role type names 
      * {@see \RoleType::getName()} and values define the name of the 
      * {@see \OwnedEntity::getType()} type that the role is over. 
@@ -105,15 +107,16 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
      * The returned object names the roles are over (values) are looked up from: 
      * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project. 
      * 
-     * @param string $projectName
+     * @param string $projectName, nullable, if null, then the default RoleActionMappings are returned (if defined)  
      * @return array Associative array of unique Role type names (keys) and the 
      *   owned object type the role is over (value) 
-     * @throws \LogicException if an invalid projectName or XSD/XML files can't be loaded.  
+     * @throws \LogicException if an invalid projectName or XSD/XML files can't be loaded, 
+     *   or if a set of role action mappings can't be resolved.  
      * @throws \Exception If the role action mapping file is invalid against its XSD.  
      */
     public function getRoleTypeNamesForProject($projectName) {
         //$projectName = 'WLCG'; //'EGI'; 
-        if (!is_string($projectName) || strlen(trim($projectName)) == 0) {
+        if ($projectName !== NULL && (!is_string($projectName) || strlen(trim($projectName)) == 0)) {
             throw new \LogicException('Invalid projectName');
         }
 
@@ -160,39 +163,32 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
     }
 
     /**
-     * For the specified project, return an associative array of role type names 
-     * that enable the specified action on the target object type. 
-     * <p> 
-     * The format of the array is ['RoleTypeName_AsKey'] => 'overOwnedEntityType_AsValue', 
-     * i.e. Role type names are keys {@see \RoleType::getName()} and the names 
-     * of object type that the role is over/linked-to is the array value.  
-     * <p>
-     * The returned Role type names (keys) are looked up from:  
-     * </code>RoleActionMapping/RoleNames/Role</code> for the specified project. 
-     * <p>
-     * The returned object-type names that the roles are over (values) are looked up from: 
-     * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project.
-     * <p>
-     * For example, the following role-types over the specified object types could 
-     * enable 'actionX': 
+     * Return an associative array of role type names that enable the specified 
+     * action on the target object type. 
+     * Role type names are array keys {@see \RoleType::getName()} and values are the names 
+     * of object types that the role is over/linked-to. For example: 
      * <code> array (['Site Administrator'] => 'Site', ['NGI Operations Manager']  => 'Ngi',   
-     *   ['Chief Operations Officer'] => 'Project');  
-     * </code>
+     *   ['Chief Operations Officer'] => 'Project');</code>
      * 
      * @param string $action The type of action, case-insensitive, matches to element value:
      *   <code>//RoleActionMapping/RoleMapping/EnabledActions/Actions</code>
      * @param string $objectType The type of entity, case-insensitive, matches to element value: 
      *   <code>//RoleMapping/EnabledActions/Target</code>
-     * @param string $projectName The projectName, case-insensitive, matches to element value:
-     *   <code>//RoleActionMapping/TargetProject</code>
+     * @param string $projectName The projectName, case-insensitive, nullable, 
+     * if specified it matches to element value:
+     *   <code>//RoleActionMapping/TargetProject</code>. If null, the default 
+     *   RoleActionMapping is queried. 
      * @return array Associative array where Role type names are keys and the 
-     * owned object type the role applies over is the value. 
-     * Can be empty if no roles map to the requested action.  
-     * @throws \LogicException If there is no RoleActionMapping elelment for the requested project, 
-     *  and if the XML/XSD files are logically invalid.  
-     * @throws \Exception If the role action mapping file is invalid against its XSD.  
+     * owned object type the role applies over is the value. Can be empty if no roles map to the requested action.  
+     * @throws \LogicException If role action mappings can't be resolved, or if the XML/XSD files are logically invalid.  
      */
     public function getRoleTypeNamesThatEnableActionOnTargetObjectType($action, $objectType, $projectName) {
+//     * The returned Role type names (keys) are looked up from:  
+//     * </code>RoleActionMapping/RoleNames/Role</code> for the specified project. 
+//     * <p>
+//     * The returned object-type names that the roles are over (values) are looked up from: 
+//     * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project.
+                 
         // fail early 
         if (!is_string($action) || strlen(trim($action)) == 0) {
             throw new \LogicException('Invalid action');
@@ -200,7 +196,7 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
         if (!is_string($objectType) || strlen(trim($objectType)) == 0) {
             throw new \LogicException('Invalid entityType');
         }
-        if (!is_string($projectName) || strlen(trim($projectName)) == 0) {
+        if ($projectName !== NULL && (!is_string($projectName) || strlen(trim($projectName)) == 0)) {
             throw new \LogicException('Invalid projectName');
         }
 
@@ -352,57 +348,62 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
 
 
     /**
-     * Get the (single) RoleActionMapping element for the specified projectName. 
+     * Get the (single) RoleActionMapping element for the optional projectName. 
+     * <p>
      * Returns either a RoleActionMapping that specifies the named project 
      * using a nested TargetProject child element, or the default RoleActionMapping
-     * that applies to all projects (if defined).  
+     * that applies to all projects (if defined). If null is specified for the 
+     * projectName, then the default RoleActionMapping is returned (if defined).    
      * 
      * @param \DOMXPath $xpath
-     * @param string $projectName, case-insensitive 
+     * @param string $projectName, case-insensitive, nullable  
      * @return DOMNode The RoleActionMapping element 
-     * @throws \LogicException if a RoleActionMapping element can't be found for 
-     *  the specified project. 
+     * @throws \LogicException If a RoleActionMapping element can't be resolved  
      */
     private function getRoleActionMappingForProject(\DOMXPath $xpath, $projectName){
-        $projectNameU = strtoupper($projectName); 
-
-        // Query for all RoleMapping elements where there is a child 
-        // 'EnabledActions/Target' element with a text val == $entity type
-        // This version is case-sensitive version: 
-        //$roleMappings = $xpath->query("goc:RoleMapping[goc:EnabledActions/goc:Target[text()='$entityType']]", $roleActionMapping);
+        $roleActionMappings = NULL; 
         
-        // Use xpath to populate the roleActionMappings array with 
-        // the relevant elements for the requested action 
-        // First, query for any RoleActionMapping elements for the named project 
-        // i.e. those that have a child <TargetProject> with text value == $projectName 
-        // 
-        // Next comment-line shows case-sensitive version: 
-        // $roleActionMappings = $xpath->query("/goc:RoleActionMappingRules/goc:RoleActionMapping[goc:TargetProject[text()='$projectName']]");
-        // Need to use translate() with XPath1.0 in order to perform a 
-        // case-insensitive comparison, see: 
-        // http://stackoverflow.com/questions/2893551/case-insensitive-matching-in-xpath
-        $roleActionMappings = $xpath->query(
-                "/goc:RoleActionMappingRules/goc:RoleActionMapping"
-                . "[goc:TargetProject['$projectNameU'="
-                . "translate(text(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')]]");
+        if($projectName !== NULL){
+            $projectNameU = strtoupper($projectName); 
 
-        if (FALSE === $roleActionMappings) {
-            throw new \LogicException("Coding error - invalid xpath query.");
-        }
+            // Query for all RoleMapping elements where there is a child 
+            // 'EnabledActions/Target' element with a text val == $entity type
+            // This version is case-sensitive version: 
+            //$roleMappings = $xpath->query("goc:RoleMapping[goc:EnabledActions/goc:Target[text()='$entityType']]", $roleActionMapping);
+            
+            // Use xpath to populate the roleActionMappings array with 
+            // the relevant elements for the requested action 
+            // First, query for any RoleActionMapping elements for the named project 
+            // i.e. those that have a child <TargetProject> with text value == $projectName 
+            // 
+            // Next comment-line shows case-sensitive version: 
+            // $roleActionMappings = $xpath->query("/goc:RoleActionMappingRules/goc:RoleActionMapping[goc:TargetProject[text()='$projectName']]");
+            // Need to use translate() with XPath1.0 in order to perform a 
+            // case-insensitive comparison, see: 
+            // http://stackoverflow.com/questions/2893551/case-insensitive-matching-in-xpath
+            $roleActionMappings = $xpath->query(
+                    "/goc:RoleActionMappingRules/goc:RoleActionMapping"
+                    . "[goc:TargetProject['$projectNameU'="
+                    . "translate(text(), 'abcdefghijklmnopqrstuvwxyz', 'ABCDEFGHIJKLMNOPQRSTUVWXYZ')]]");
 
-        //print_r("ram Size: ".($roleActionMappings->length));
-        //foreach($roleActionMappings as $ram){
-        //    print_r("[".$ram->nodeValue."]\n");     
-        //} 
+            if (FALSE === $roleActionMappings) {
+                throw new \LogicException("Coding error - invalid xpath query.");
+            }
 
-        if ($roleActionMappings->length > 1) {
-            throw new \LogicException("There are multiple RoleActionMapping elements for the "
-            . "specified project when there should only be one - please check "
-            . "your RoleActionMapping XML file.", 20);
-        }
+            //print_r("ram Size: ".($roleActionMappings->length));
+            //foreach($roleActionMappings as $ram){
+            //    print_r("[".$ram->nodeValue."]\n");     
+            //} 
+
+            if ($roleActionMappings->length > 1) {
+                throw new \LogicException("There are multiple RoleActionMapping elements for the "
+                . "specified project when there should only be one - please check "
+                . "your RoleActionMapping XML file.", 20);
+            }
+        } 
 
         // 0 or 1 roleActionMapping DOMNodes 
-        if ($roleActionMappings->length == 1) {
+        if ($roleActionMappings !== NULL && $roleActionMappings->length == 1) {
             $roleActionMapping = $roleActionMappings->item(0);
             //print_r($roleActionMapping->nodeValue); 
         } else {

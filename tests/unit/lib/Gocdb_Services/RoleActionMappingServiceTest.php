@@ -102,6 +102,10 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
         $rolenamesOver = $roleActionService->getRoleTypeNamesForProject('EUDAT'); 
         $this->assertEquals(5, count($rolenamesOver)); 
         //print_r($rolenamesOver); 
+
+        $rolenamesOver = $roleActionService->getRoleTypeNamesForProject(NULL); 
+        $this->assertEquals(1, count($rolenamesOver)); 
+        //print_r($rolenamesOver); 
     }
     
 
@@ -113,14 +117,17 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
         $expected = array('COD Staff', 'COD Administrator', 'EGI CSIRT Officer', 'Chief Operations Officer');
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'PRoJect', 'EGI'); 
         $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames)); 
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
-        $expected = array('COD Staff', 'COD Administrator', 'EGI CSIRT Officer', 'Chief Operations Officer');
+        $expected = array('COD Staff', 'COD Administrator', 'EGI CSIRT Officer', 'Chief Operations Officer', 'NGI Operations Manager', 'NGI Operations Deputy Manager', 'NGI Security Officer');
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_GRANT_ROLE", 'ngi', 'EGI'); 
         $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames)); 
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
         $expected = array('Service Group Administrator');  
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'SErviceGroup', 'EGI'); 
         $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames)); 
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
         $expected = array(
             'NGI Operations Manager' => 'Ngi', 
@@ -130,16 +137,19 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
             'Regional First Line Support' => 'Ngi');  
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'ngi', 'egi'); 
         $this->assertArraySubset($expected, ($enablingRoleTypeNames)); 
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
         // the action don't exist in the XML doc, so expect an empty array 
         $expected = array();  
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_dont_exist", 'ngi', 'egi'); 
         $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames)); 
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
         // the Target entityType don't exist in the XML doc, so expect an empty array
         $expected = array();  
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'ngix_dont_exist', 'egi'); 
         $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames)); 
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
 
         $expected = array(
@@ -152,10 +162,13 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
             ); 
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_GRANT_ROLE", 'site', 'egi'); 
         $this->assertArraySubset($expected, $enablingRoleTypeNames);
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_REJECT_ROLE", 'site', 'egi'); 
         $this->assertArraySubset($expected, $enablingRoleTypeNames);
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_REVOKE_ROLE", 'site', 'egi'); 
         $this->assertArraySubset($expected, $enablingRoleTypeNames);
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
         $expected = array(
             'NGI Operations Deputy Manager' => 'Ngi', 
@@ -168,7 +181,14 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
             ); 
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_SITE_EDIT_CERT_STATUS", 'site', 'egi'); 
         $this->assertArraySubset($expected, $enablingRoleTypeNames);
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
+        $expected = array(
+            'defService Group Administrator' => 'ServiceGroup', 
+            ); 
+        $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'serviceGroup', NULL); 
+        $this->assertArraySubset($expected, $enablingRoleTypeNames);
+        $this->assertEquals(count($expected), count($enablingRoleTypeNames));
     }
 
 

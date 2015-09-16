@@ -64,7 +64,7 @@ class Role {
      * RoleType over the OwnedEntity.
      *
      * @param \RoleType $roleType The role's type
-     * @param strig $name The role name 
+     * @param string $name The role name 
      * @param \User $user The role is for this user
      * @param \OwnedEntity $ownedEntity The role is over this entity
      * @param string $status The current Role status, e.g. 'STATUS_PENDING' for
