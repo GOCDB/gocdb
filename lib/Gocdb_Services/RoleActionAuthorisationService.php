@@ -16,7 +16,7 @@
 namespace org\gocdb\services;
 require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/RoleActionMappingService.php';
-require_once __DIR__ . '/Role.php';
+//require_once __DIR__ . '/Role.php';
 
 /**
  * Used to determine if a user can perform an action on an object by 
@@ -28,17 +28,16 @@ require_once __DIR__ . '/Role.php';
 class RoleActionAuthorisationService  extends AbstractEntityService  {
 
     private $roleActionMappingService; 
-    private $roleService; 
+    //private $roleService; 
    
     /**
      * Create a new instance.  
      * @param org\gocdb\services\RoleActionMappingService $roleActionMappingService
-     * @param org\gocdb\services\Role $roleService
      */
-    public function __construct(RoleActionMappingService $roleActionMappingService, Role $roleService) {
+    public function __construct(RoleActionMappingService $roleActionMappingService /*, Role $roleService*/) {
         parent::__construct();
         $this->roleActionMappingService = $roleActionMappingService; //new RoleActionMappingService(); 
-        $this->roleService = $roleService; //new Role();  
+        //$this->roleService = $roleService; //new Role();  
     }
 
    
@@ -68,10 +67,15 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
      * @throws \LogicException If role action mappings can't be resolved.  
      */
     public function authoriseAction($action, \OwnedEntity $targetEntity, \User $user){
-        //throw new \LogicException('not implemented yet'); 
         if (!is_string($action) || strlen(trim($action)) == 0) {
             throw new \LogicException('Invalid action');
         } 
+        if(is_null($user)){
+            return array(); 
+        }
+         if(is_null($user->getId())){
+            return array(); 
+        }
         // If we limit the actions, then its hard to test using some sample 
         // roleActionMapping files. Need to decide to include this.  
 //        if(!in_array($action, \Action::getAsArray())){
@@ -82,13 +86,14 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
         // by moving up the OwnedEntity hierarchy. 
         // Note, some objects don't come under the remit of a Project, e.g. 
         // ServiceGroups, so dbProjects may be empty (this is normal). 
-        $dbProjects = $this->roleService->getReachableProjectsFromOwnedEntity($targetEntity); 
+        $dbProjects = $this->getReachableProjectsFromOwnedEntity($targetEntity); 
 
         // For each DB project, lookup+store the role type mappings that enable 
         // the action on the specified entity type (mappings in RoleActionMappings XML). 
         $requiredRoleTypesPerProj = array();
 
         if(count($dbProjects) > 0){
+            // If there is an ancestor project, then we ignore the default role action mappings
             foreach ($dbProjects as $dbProject) {
                 //print_r('reachable project: ['.$dbProject->getName()."] \n"); 
                 
@@ -132,7 +137,7 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
         // child objects, e.g. consider the case where users with roles over sites/ngis 
         // want to post comments on a Project's notifications-board - a user may need a role 
         // over a child object to do this. 
-        $dbUserRoles = $this->roleService->getUserRolesReachableFromEntityASC($user, $targetEntity);  
+        $dbUserRoles = $this->getUserRolesReachableFromEntityASC($user, $targetEntity);  
         
         //   Note, don't get all the user's roles in the project (to compare
         //   with the role-action-mappings) because this would include roles that 
@@ -140,7 +145,7 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
         //   an action on an NGI, we wouldn't want to include Roles linked to another NGI!
         //   in the same project. Therefore, doing the following would be wrong:  
         //   foreach ($dbProjects as $dbProject) {
-        //      $rolesInProj = $this->roleService->getUserRolesByProject($user, $dbProject); 
+        //      $rolesInProj = $this->getUserRolesByProject($user, $dbProject); 
         //      foreach($rolesInProj as $r){
         //           $dbUserRoles[] = $r
         //      } 
@@ -174,6 +179,107 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
         //print_r("Granting User Roles size: [".count($grantingUserRoles)."]"); 
 
         return $grantingUserRoles; 
+    }
+
+    /**
+     * Get all the Roles that the user has DIRECTLY over the given OwnedEntity AND 
+     * over all the reachable parent and ancestor OwnedEntities encountered when 
+     * moving up through the domain model.  
+     * 
+     * @param \User $user
+     * @param \OwnedEntity $ownedEntity
+     * @param string $roleStatus Role status, GRANTED by default 
+     * @return array {@see \Role} array  
+     */
+    public function getUserRolesReachableFromEntityASC(\User $user, \OwnedEntity $ownedEntity, 
+            $roleStatus = \RoleStatus::GRANTED){
+        $roles = array(); 
+        $this->getUserRolesReachableFromEntityAscRecurse($user, $ownedEntity, $roles, $roleStatus);  
+        return $roles;         
+    }
+    
+    private function getUserRolesReachableFromEntityAscRecurse(\User $user, 
+            \OwnedEntity $ownedEntity, &$roles, $roleStatus){
+        
+        $_roles = $this->getUserRolesOverEntity($ownedEntity, $user, $roleStatus);  
+        foreach($_roles as $r){
+            $roles[] = $r; 
+        }
+        $parentOEs = $ownedEntity->getParentOwnedEntities(); 
+        foreach($parentOEs as $parentOE){
+            // recurse
+            $this->getUserRolesReachableFromEntityAscRecurse($user, $parentOE, $roles, $roleStatus);  
+        }
+    }
+    
+
+    /**
+     * Get all {@see \Project}s that are reachable from the given ownedEntity 
+     * when moving up the domain model, e.g. Site->Ngi->Project. 
+     * <p>
+     * The ownedEntity therefore comes under the 'remit' of the returned projects. 
+     * 
+     * @param \OwnedEntity $ownedEntity Search up the domain graph from this entity 
+     * @return array of \Project entities 
+     */
+    public function getReachableProjectsFromOwnedEntity(\OwnedEntity $ownedEntity){
+        if ($ownedEntity instanceof \Site) {
+            /* @var $ownedEntity \Site */ 
+            $projects = $ownedEntity->getNgi()->getProjects()->toArray(); 
+            
+        } else if($ownedEntity instanceof \NGI) {
+            /* @var $ownedEntity NGI */
+            $projects = $ownedEntity->getProjects()->toArray(); 
+            
+        } else if($ownedEntity instanceof \Project){
+           $projects = array($ownedEntity);
+           
+        } else {
+            //throw new \LogicException('ownedEntity type is not a descendant '
+            //        . 'of Project ['.$ownedEntity->getType().']'); 
+            return array(); 
+        }
+        return $projects; 
+    }
+    
+
+    /**
+     * Get all the RoleType names that the user has DIRECTLY over the given entity,   
+     * and optionally limit the returned RoleType names to those with the specified  
+     * RoleStatus (GRANTED by default).
+     * 
+     * @param \OwnedEntity $entity An entity that extends OwnedEntity (Site, NGI, ServiceGroup, Project) 
+     * @param \User $user
+     * @param string $roleStatus
+     * @return array of {@see \Role}s 
+     */
+    public function getUserRolesOverEntity(\OwnedEntity $entity, \User $user, $roleStatus = \RoleStatus::GRANTED) {
+        if ($user->getId() == null || $entity->getId() == null) {
+            return array();
+        }
+        //$entityClassName= get_class($entity);
+        require_once __DIR__.'/OwnedEntity.php';
+        $OwnedEntityService = new \org\gocdb\services\OwnedEntity();
+        $entityClassName = $OwnedEntityService->getOwnedEntityDerivedClassName($entity); 
+        //$entityClassName = $entity->getType(); // DQL is case sensitive for class names and field names, so can't use this 
+
+        $dql = "SELECT r
+            FROM Role r
+            JOIN r.roleType rt
+            JOIN r.user u
+            JOIN r.ownedEntity o
+            WHERE u.id = :userId
+            AND o.id = :entityId
+            AND r.status = :roleStatus
+            AND o INSTANCE OF $entityClassName";
+        
+        /* @var $query \Doctrine\ORM\Query */
+        $query = $this->em->createQuery($dql)
+                ->setParameter('userId', $user->getId())
+                ->setParameter('roleStatus', $roleStatus)
+                ->setParameter('entityId', $entity->getId());
+        $roles = $query->getResult();
+        return $roles; 
     }
 
     
