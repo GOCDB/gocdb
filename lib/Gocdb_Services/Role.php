@@ -18,6 +18,7 @@ require_once __DIR__ . '/Site.php';
 require_once __DIR__ . '/NGI.php';
 require_once __DIR__ . '/ServiceGroup.php';
 require_once __DIR__ . '/Project.php';
+//require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
 
 
 /**
@@ -29,6 +30,7 @@ require_once __DIR__ . '/Project.php';
  */
 class Role extends AbstractEntityService{
     private $downtimeService; 
+    //private $roleActionAuthorisationService; 
 
     
     /**
@@ -38,6 +40,10 @@ class Role extends AbstractEntityService{
     public function setDowntimeService(\org\gocdb\services\Downtime $downtimeService){
        $this->downtimeService = $downtimeService;  
     }
+
+//    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+//        $this->roleActionAuthorisationService = $roleActionAuthService; 
+//    }
 
 
     /**
@@ -79,26 +85,26 @@ class Role extends AbstractEntityService{
      * @param string $roleStatus Role status, GRANTED by default 
      * @return array {@see \Role} array  
      */
-    public function getUserRolesFromEntityAscendDomainGraph(\User $user, \OwnedEntity $ownedEntity, 
-            $roleStatus = \RoleStatus::GRANTED){
-        $roles = array(); 
-        $this->getUserRolesOnAndAboveEntityRecurse($user, $ownedEntity, $roles, $roleStatus);  
-        return $roles;         
-    }
-    
-    private function getUserRolesOnAndAboveEntityRecurse(\User $user, 
-            \OwnedEntity $ownedEntity, &$roles, $roleStatus){
-        
-        $_roles = $this->getUserRolesOverEntity($ownedEntity, $user, $roleStatus);  
-        foreach($_roles as $r){
-            $roles[] = $r; 
-        }
-        $parentOEs = $ownedEntity->getParentOwnedEntities(); 
-        foreach($parentOEs as $parentOE){
-            // recurse
-            $this->getUserRolesOnAndAboveEntityRecurse($user, $parentOE, $roles, $roleStatus);  
-        }
-    }
+//    public function getUserRolesReachableFromEntityASC(\User $user, \OwnedEntity $ownedEntity, 
+//            $roleStatus = \RoleStatus::GRANTED){
+//        $roles = array(); 
+//        $this->getUserRolesReachableFromEntityAscRecurse($user, $ownedEntity, $roles, $roleStatus);  
+//        return $roles;         
+//    }
+//    
+//    private function getUserRolesReachableFromEntityAscRecurse(\User $user, 
+//            \OwnedEntity $ownedEntity, &$roles, $roleStatus){
+//        
+//        $_roles = $this->getUserRolesOverEntity($ownedEntity, $user, $roleStatus);  
+//        foreach($_roles as $r){
+//            $roles[] = $r; 
+//        }
+//        $parentOEs = $ownedEntity->getParentOwnedEntities(); 
+//        foreach($parentOEs as $parentOE){
+//            // recurse
+//            $this->getUserRolesReachableFromEntityAscRecurse($user, $parentOE, $roles, $roleStatus);  
+//        }
+//    }
  
     /* Non-recursive (less elegant) version of above. 
      * public function getUserRolesOnAndAboveEntity(\User $user, \OwnedEntity $ownedEntity, 
@@ -231,7 +237,7 @@ class Role extends AbstractEntityService{
      * @param string $roleStatus
      * @return array of {@see \Role}s 
      */
-    public function getUserRolesOverEntity(\OwnedEntity $entity, \User $user, $roleStatus = \RoleStatus::GRANTED) {
+    /*public function getUserRolesOverEntity(\OwnedEntity $entity, \User $user, $roleStatus = \RoleStatus::GRANTED) {
         if ($user->getId() == null || $entity->getId() == null) {
             return array();
         }
@@ -251,14 +257,14 @@ class Role extends AbstractEntityService{
             AND r.status = :roleStatus
             AND o INSTANCE OF $entityClassName";
         
-        /* @var $query \Doctrine\ORM\Query */
+        // @var $query \Doctrine\ORM\Query
         $query = $this->em->createQuery($dql)
                 ->setParameter('userId', $user->getId())
                 ->setParameter('roleStatus', $roleStatus)
                 ->setParameter('entityId', $entity->getId());
         $roles = $query->getResult();
         return $roles; 
-    }
+    }*/
 
     /**
      * Get all the RoleType names that the user has DIRECTLY over the given entity,   

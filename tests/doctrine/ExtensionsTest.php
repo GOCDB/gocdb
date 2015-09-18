@@ -4,6 +4,8 @@
 //require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
 require_once dirname(__FILE__) . '/TestUtil.php';
 require_once dirname(__FILE__). '/../../lib/Gocdb_Services/ServiceService.php'; 
+require_once dirname(__FILE__). '/../../lib/Gocdb_Services/RoleActionMappingService.php'; 
+require_once dirname(__FILE__). '/../../lib/Gocdb_Services/RoleActionAuthorisationService.php'; 
 
 use Doctrine\ORM\EntityManager;
 
@@ -339,9 +341,14 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
         $this->em->persist($adminUser);
 
         //Delete the property from the service group
-        $serviceService = new org\gocdb\services\ServiceGroup();
-        $serviceService->setEntityManager($this->em);
-        $serviceService->deleteServiceGroupProperty($sg, $adminUser, $prop1);
+
+        $roleActionMappingService = new org\gocdb\services\RoleActionMappingService(); 
+        $roleService = new org\gocdb\services\Role(); 
+        $roleService->setEntityManager($this->em); 
+        $authService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService/*, $roleService*/); 
+        $sgService = new org\gocdb\services\ServiceGroup($authService);
+        $sgService->setEntityManager($this->em);
+        $sgService->deleteServiceGroupProperty($sg, $adminUser, $prop1);
 		
 		//Check that the sg now only has 2 properties
 		$properties = $sg->getServiceGroupProperties();
@@ -365,7 +372,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
 	    $this->assertEquals(2, $result->getRowCount());
 
 		//Now delete the service group and check that it cascades the delete to remove the services associated properties
-		$serviceService->deleteServiceGroup($sg, $adminUser, true);
+		$sgService->deleteServiceGroup($sg, $adminUser, true);
 		$this->em->flush();
 
 		//Check service group is gone		

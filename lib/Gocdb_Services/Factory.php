@@ -29,6 +29,8 @@ class Factory {
     private static $siteService = null;
     private static $scopeService = null;
     private static $roleService = null;
+    private static $roleActionAuthorisationService = null; 
+    private static $roleActionMappingService = null; 
     private static $userService = null;
     private static $searchService = null;
     private static $downtimeService = null;
@@ -128,8 +130,10 @@ class Factory {
     public static function getServiceGroupService() {
     	if (self::$serviceGroupService == null) {
     		require_once __DIR__ . '/ServiceGroup.php';
+    		//self::$serviceGroupService = new org\gocdb\services\ServiceGroup(self::getRoleActionAuthorisationService());
     		self::$serviceGroupService = new org\gocdb\services\ServiceGroup();
             self::$serviceGroupService->setEntityManager(self::getEntityManager());
+            //self::$serviceGroupService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
     	}
     	return self::$serviceGroupService;
     }
@@ -171,8 +175,36 @@ class Factory {
             self::$roleService = new org\gocdb\services\Role(); 
             self::$roleService->setEntityManager(self::getEntityManager()); 
             self::$roleService->setDowntimeService(self::getDowntimeService()); 
+            self::$roleService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
         }
         return self::$roleService;
+    }
+
+    /**
+     * Get singleton RoleActionAuthorisationService instance with injected dependencies. 
+     * @return org\gocdb\services\RoleActionAuthorisationService
+     */
+    public static function getRoleActionAuthorisationService(){
+        if(self::$roleActionAuthorisationService == null){
+            require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
+            $roleActionMappingService = self::getRoleActionMappingService(); 
+            //$roleService = self::getRoleService(); 
+            self::$roleActionAuthorisationService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService/*, $roleService*/); 
+            self::$roleActionAuthorisationService->setEntityManager(self::getEntityManager());  
+        }
+        return self::$roleActionAuthorisationService; 
+    }
+
+    /**
+     * Get singleton RoleActionMappingService instance with injected dependencies. 
+     * @return org\gocdb\services\RoleActionMappingService
+     */
+    public static function getRoleActionMappingService(){
+        if(self::$roleActionMappingService == null){
+            require_once __DIR__ . '/RoleActionMappingService.php'; 
+            self::$roleActionMappingService = new \org\gocdb\services\RoleActionMappingService(); 
+        }
+        return self::$roleActionMappingService; 
     }
 
 
