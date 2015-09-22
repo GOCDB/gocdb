@@ -50,11 +50,13 @@ function draw(\User $user = null) {
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
-    $serv = \Factory::getNgiService();
-    $ngi = $serv->getNgi($_REQUEST['id']);
+    $ngi = \Factory::getNgiService()->getNgi($_REQUEST['id']);
 
-    // Old way: //$serv->edit Authorization($ngi, $user);
-    if(count($serv->authorizeAction(Action::EDIT_OBJECT, $ngi, $user)) == 0){ 
+    if($user == null){
+       throw new Exception('You do not have permission to edit this NGI, null user'); 
+    }
+    //if(count($serv->authorize Action(Action::EDIT_OBJECT, $ngi, $user)) == 0){ 
+    if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsoute(Action::EDIT_OBJECT, $ngi, $user) == FALSE){
         throw new Exception('You do not have permission to edit this NGI');
     }
      

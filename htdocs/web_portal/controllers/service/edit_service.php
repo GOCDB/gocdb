@@ -67,8 +67,9 @@ function draw(\User $user = null) {
 	$serv = \Factory::getServiceService();
 	$se = $serv->getService($id);
 
-	if(count(Factory::getServiceService()->authorizeAction(\Action::EDIT_OBJECT, $se, $user)) == 0){
-       throw new \Exception("You do not have permission over $se."); 
+	//if(count(Factory::getServiceService()->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $se->getParentSite(), $user)==FALSE){
+       throw new \Exception("You do not have permission over $se.");  
     }
     
     $configservice = \Factory::getConfigService();

@@ -13,6 +13,7 @@ namespace org\gocdb\services;
  */
 require_once __DIR__ . '/Site.php';
 require_once __DIR__ . '/AbstractEntityService.php';;
+require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
 
 /**
  * GOCDB Stateless service facade (business routines) for Service objects.
@@ -25,6 +26,19 @@ require_once __DIR__ . '/AbstractEntityService.php';;
  * @author James McCarthy
  */
 class ServiceService extends AbstractEntityService{
+
+
+    private $roleActionAuthorisationService;
+
+    function __construct(/*$roleActionAuthorisationService*/) {
+        parent::__construct();
+        //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+    }
+
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+        $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
+    
     /**
      * Finds a single service by ID and returns its entity
      * @param int $id the service ID
@@ -310,11 +324,12 @@ class ServiceService extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
           	
         //Authorise the change
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $se, $user)) == 0){
-          throw new \Exception("You do not have permission over $se.");
+        //if(count($this->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
+        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $se->getParentSite(), $user) == FALSE) {
+            throw new \Exception("You do not have permission over $se.");
         }
-        
-    	// Explicity demarcate our tx boundary
+
+        // Explicity demarcate our tx boundary
     	$this->em->getConnection()->beginTransaction();
 
         $st = $this->getServiceType($newValues['serviceType']);
@@ -416,7 +431,7 @@ class ServiceService extends AbstractEntityService{
      * @return array of RoleName string values that grant the requested action  
      * @throws \LogicException if action is not supported or is unknown 
      */
-    public function authorizeAction($action, \Service $se, \User $user = null){
+    /*public function authorize Action($action, \Service $se, \User $user = null){
         if(!in_array($action, \Action::getAsArray())){
             throw new \LogicException('Coding Error - Invalid action not known'); 
         } 
@@ -460,7 +475,7 @@ class ServiceService extends AbstractEntityService{
            $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;  
         }
         return array_unique($enablingRoles);
-    }
+    } */
     
     /**
      * Validates user inputted service data against the
@@ -551,11 +566,15 @@ class ServiceService extends AbstractEntityService{
         // get the service type
         $st = $this->getServiceType($values['serviceType']);
     
-        $siteService = new \org\gocdb\services\Site(); 
+        /*$siteService = new \org\gocdb\services\Site(); 
         $siteService->setEntityManager($this->em); 
-        if(count($siteService->authorizeAction(\Action::SITE_ADD_SERVICE, $site, $user))==0){
+        if(count($siteService->authorize Action(\Action::SITE_ADD_SERVICE, $site, $user))==0){
            throw new \Exception("You don't hold a role over $site."); 
-        } 
+        } */
+        //if(count($this->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
+        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::SITE_ADD_SERVICE, $site, $user) == FALSE) {
+             throw new \Exception("You don't have permission to add a service to this site."); 
+        }
         
         $this->validate($values['SE'], 'service');
         $this->validateEndpointUrl($values['endpointUrl']);
@@ -737,9 +756,12 @@ class ServiceService extends AbstractEntityService{
      */
     public function validateAddEditDeleteActions(\User $user, \Service $service){
         // Check to see whether the user has a role that covers this service
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $service, $user))==0){
-            throw new \Exception("You don't have permission over ". $service->getHostName());
-        }
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $service, $user))==0){
+//            throw new \Exception("You don't have permission over ". $service->getHostName());
+//        }
+         if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $service->getParentSite(), $user) == FALSE){
+            throw new \Exception("You don't have permission over service.");  
+         } 
     }
     
     /** TODO
@@ -960,11 +982,13 @@ class ServiceService extends AbstractEntityService{
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        //$this->editAuthorization($se, $user);
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $s, $user)) == 0){
-          throw new \Exception("You do not have permission to remove" . $s->getHostName());
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $s, $user)) == 0){
+//          throw new \Exception("You do not have permission to remove" . $s->getHostName());
+//        }
+        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $s->getParentSite(), $user) == FALSE) {
+            throw new \Exception("You don't have permission to delete service.");
         }
-            
+
         $this->em->getConnection()->beginTransaction();
         try {
             $serviceDAO = new \ServiceDAO;

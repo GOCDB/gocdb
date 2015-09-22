@@ -45,10 +45,40 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
     // action-mapping rules that do not apply to a specified target entity 
     //public function authoriseActionInProject($action, $projectName, \User $user){}
          
-   
+ 
+    /**
+     * Can the user perform the specified action on the target entity? If true
+     * return true otherwise return false. If the user is the gocdb admin user, 
+     * true is always returned, otherwise the result is determined from the 
+     * user's roles {@see \org\gocdb\services\RoleActionAuthorisationService::authoriseAction($action, $targetEntity, $user)}
+     *  
+     * @param string $action The action the user wants to perform over the entity 
+     * @param \OwnedEntity $targetEntity The target entity for the action
+     * @param \User $user The user who wants to peform the action on the entity, if null FALSE is returned  
+     * @return boolean
+     * @throws \LogicException
+     */
+    public function authoriseActionAbsolute($action, \OwnedEntity $targetEntity, $user){
+       if (!is_string($action) || strlen(trim($action)) == 0) {
+            throw new \LogicException('Invalid action');
+        } 
+        if(is_null($user)){
+            return FALSE;  
+        }
+        if(is_null($user->getId())){
+            return FALSE;  
+        } 
+        if($user->isAdmin()){
+            return TRUE; 
+        }
+        if(count($this->authoriseAction($action, $targetEntity, $user)) > 0){
+            return TRUE; 
+        } 
+        return FALSE; 
+    }
     
     /**
-     * Analyse the user's roles to determine if the user can peform the 
+     * Analyse the user's roles to determine if the user can perform the 
      * specified action over the target entity? if true, return all the user's 
      * roles that grant the action, otherwise return an empty array. 
      * Note, there is no special Role for the GOCDB admin user, so calling 
@@ -223,7 +253,11 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
      * @return array of \Project entities 
      */
     public function getReachableProjectsFromOwnedEntity(\OwnedEntity $ownedEntity){
+        $projects = array(); 
         if ($ownedEntity instanceof \Site) {
+            // maybe below line needs to be more 'defensive' ? not sure, the 
+            // role logic requires that a site is not an orphan and 
+            // checking that parents/ancestors are not null could mask problems.  
             /* @var $ownedEntity \Site */ 
             $projects = $ownedEntity->getNgi()->getProjects()->toArray(); 
             

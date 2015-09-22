@@ -119,6 +119,7 @@ class Factory {
             require_once __DIR__ . '/Site.php';
             self::$siteService = new org\gocdb\services\Site();
             self::$siteService->setEntityManager(self::getEntityManager()); 
+            self::$siteService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
         }
         return self::$siteService;
     }
@@ -133,7 +134,7 @@ class Factory {
     		//self::$serviceGroupService = new org\gocdb\services\ServiceGroup(self::getRoleActionAuthorisationService());
     		self::$serviceGroupService = new org\gocdb\services\ServiceGroup();
             self::$serviceGroupService->setEntityManager(self::getEntityManager());
-            //self::$serviceGroupService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
+            self::$serviceGroupService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
     	}
     	return self::$serviceGroupService;
     }
@@ -147,6 +148,7 @@ class Factory {
             require_once __DIR__ . '/Downtime.php';
             self::$downtimeService = new org\gocdb\services\Downtime();
             self::$downtimeService->setEntityManager(self::getEntityManager()); 
+            self::$downtimeService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService());
         }
         return self::$downtimeService;
     }
@@ -160,6 +162,7 @@ class Factory {
             require_once __DIR__ . '/ServiceService.php';
             self::$seService = new org\gocdb\services\ServiceService();
             self::$seService->setEntityManager(self::getEntityManager()); 
+            self::$seService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService());
         }
         return self::$seService;
     }
@@ -175,7 +178,7 @@ class Factory {
             self::$roleService = new org\gocdb\services\Role(); 
             self::$roleService->setEntityManager(self::getEntityManager()); 
             self::$roleService->setDowntimeService(self::getDowntimeService()); 
-            //self::$roleService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
+            self::$roleService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
         }
         return self::$roleService;
     }
@@ -230,6 +233,7 @@ class Factory {
     		require_once __DIR__ . '/NGI.php';
     		self::$ngiService = new org\gocdb\services\NGI();
     		self::$ngiService->setEntityManager(self::getEntityManager());
+            self::$ngiService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService());  
     	}
     	return self::$ngiService;
     }
@@ -306,6 +310,7 @@ class Factory {
             require_once __DIR__ . '/CertificationStatus.php';
             self::$certStatusService = new org\gocdb\services\CertificationStatus();
             self::$certStatusService->setEntityManager(self::getEntityManager());
+            self::$certStatusService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
         }
         return self::$certStatusService;
     }
@@ -332,6 +337,7 @@ class Factory {
             require_once __DIR__ . '/Project.php';
             self::$projectService = new org\gocdb\services\Project;
             self::$projectService->setEntityManager(self::getEntityManager());
+            self::$projectService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService());  
         }
         return self::$projectService;
     }

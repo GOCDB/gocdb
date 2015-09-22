@@ -51,11 +51,12 @@ function view_ngi() {
     $ngi = $ngiServ->getNgi($ngiId);
 
     // Does current viewer have edit permissions over NGI ?
-    $params['ShowEdit'] = false;  
-    if(count($ngiServ->authorizeAction(\Action::EDIT_OBJECT, $ngi, $user))>=1){
-       $params['ShowEdit'] = true;  
-    } 
-
+    $params['ShowEdit'] = false;
+    //if(count($ngiServ->authorize Action(\Action::EDIT_OBJECT, $ngi, $user))>=1){
+    if (\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $ngi, $user))  {
+        $params['ShowEdit'] = true;
+    }
+      
     // Add ngi to params 
 	$params['ngi'] = $ngi;
 

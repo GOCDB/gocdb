@@ -107,7 +107,7 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
      * The returned object names the roles are over (values) are looked up from: 
      * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project. 
      * 
-     * @param string $projectName, nullable, if null, then the default RoleActionMappings are returned (if defined)  
+     * @param string $projectName nullable, if null, then the default RoleActionMappings are returned (if defined)  
      * @return array Associative array of unique Role type names (keys) and the 
      *   owned object type the role is over (value) 
      * @throws \LogicException if an invalid projectName or XSD/XML files can't be loaded, 

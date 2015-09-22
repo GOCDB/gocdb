@@ -5,7 +5,7 @@ require_once __DIR__.'/doctrine/NGIServiceTest.php';
 require_once __DIR__.'/doctrine/RoleCascadeDeletionsTest.php';
 require_once __DIR__.'/doctrine/RoleServiceTest.php';
 require_once __DIR__.'/doctrine/RolesTest.php';
-require_once __DIR__.'/doctrine/ServiceAuthorizeActionTest.php';
+//require_once __DIR__.'/doctrine/ServiceAuthorizeActionTest.php';
 require_once __DIR__.'/doctrine/ServiceDAOTest.php';
 require_once __DIR__.'/doctrine/ServiceMoveTest.php';
 require_once __DIR__.'/doctrine/Site_CertStatusLogCascadeDeletionsTest.php';
@@ -13,6 +13,8 @@ require_once __DIR__.'/doctrine/SiteMoveTest.php';
 require_once __DIR__.'/doctrine/ExtensionsTest.php';
 require_once __DIR__.'/doctrine/Scoped_IPIQuery_Test1.php';
 require_once __DIR__.'/doctrine/DowntimeServiceEndpointTest1.php';
+require_once __DIR__.'/unit/lib/Gocdb_Services/RoleActionAuthorisationServiceTest.php';
+require_once __DIR__.'/unit/lib/Gocdb_Services/RoleActionMappingServiceTest.php';
 
 /**
  * TestSuite designed to run the main doctrine tests
@@ -35,7 +37,7 @@ class DoctrineTestSuite1 {
 		$suite->addTestSuite('RoleCascadeDeletionsTest');
 		$suite->addTestSuite('RoleServiceTest');
 		$suite->addTestSuite('RolesTest');
-		$suite->addTestSuite('ServiceAuthorizeActionTest');
+		//$suite->addTestSuite('ServiceAuthorizeActionTest');
 		$suite->addTestSuite('ServiceDAOTest');
 		$suite->addTestSuite('ServiceMoveTest');
 		$suite->addTestSuite('Site_CertStatusLogCascadeDeletionsTest');
@@ -43,6 +45,9 @@ class DoctrineTestSuite1 {
 		$suite->addTestSuite('ExtensionsTest');
 		$suite->addTestSuite('Scoped_IPIQuery_Test1');
 		$suite->addTestSuite('DowntimeServiceEndpointTest1');
+
+		$suite->addTestSuite('RoleActionAuthorisationServiceTest');
+		$suite->addTestSuite('RoleActionMappingServiceTest');
 
         return $suite;
     }

@@ -162,8 +162,7 @@ function draw(\User $user = null) {
 	// If the user wants to add a downtime to a specific site, show only that site's SEs
 	else if(isset($_GET['site'])) {
 		$site = \Factory::getSiteService()->getSite($_GET['site']);
-	    //old way: \Factory::getSiteService()->edit Authorization($site, $user);
-        if(count(\Factory::getSiteService()->authorizeAction(\Action::EDIT_OBJECT, $site, $user))==0){
+        if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $site, $user) == FALSE){
            throw new \Exception("You don't have permission over $site"); 
         }
 		$ses = $site->getServices();
@@ -177,7 +176,7 @@ function draw(\User $user = null) {
 	else if(isset($_GET['se'])) {
 	    $se = \Factory::getServiceService()->getService($_GET['se']);
         $site = \Factory::getSiteService()->getSite($se->getParentSite()->getId());
-        if(count(\Factory::getServiceService()->authorizeAction(\Action::EDIT_OBJECT, $se, $user))==0){
+        if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $se->getParentSite(), $user) == FALSE){
            throw new \Exception("You do not have permission over $se."); 
         } 
         
@@ -202,7 +201,7 @@ function draw(\User $user = null) {
             $sesAll = \Factory::getRoleService()->getReachableServicesFromOwnedObjectRoles($user);
             // drop the ses where the user does not have edit permissions over  
             foreach($sesAll as $se){
-                if(count(\Factory::getServiceService()->authorizeAction(\Action::EDIT_OBJECT, $se, $user))>0){ 
+                if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $se->getParentSite(), $user)){ 
                     $ses[] = $se; 
                 }
             }

@@ -638,6 +638,219 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
 
 
 
+    /**
+     * Persist some seed data - roletypes, user, Project, NGI, sites and SEs and 
+     * assert that the user has the expected number of roles that grant specific 
+     * actions over the owned objects. For example, assert that the user has 'n' 
+     * number of roles that allow a particular site to be edited, or 'n' number 
+     * of roles that allow an NGI certification status change.  
+     */
+    public function testAuthoriseAction2(){
+    	print __METHOD__ . "\n";
+    	// Create roletypes
+    	$siteAdminRT = TestUtil::createSampleRoleType(RoleTypeName::SITE_ADMIN/*, RoleTypeClass::SITE_USER*/);
+        $ngiManRT = TestUtil::createSampleRoleType(RoleTypeName::NGI_OPS_MAN/*, RoleTypeClass::REGIONAL_MANAGER*/);
+        $rodRT = TestUtil::createSampleRoleType(RoleTypeName::REG_STAFF_ROD/*, RoleTypeClass::REGIONAL_USER*/);
+        $codRT = TestUtil::createSampleRoleType(RoleTypeName::COD_ADMIN/*, RoleTypeClass::PROJECT*/);
+    	$this->em->persist($siteAdminRT); // edit site1 (but not cert status) 
+    	$this->em->persist($ngiManRT); // edit owned site1/site2 and cert status
+    	$this->em->persist($rodRT);  // edit owned sites 1and2 (but not cert status)
+    	$this->em->persist($codRT);  // edit all sites cert status only  
+    
+    	// Create a user
+    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+    	$this->em->persist($u);
+    
+    	// Create a linked object graph 
+/*
+                                 p1
+                                 |
+                                 ngi      <- ngiManRT, rodRT, 
+                                 |    \
+             siteAdminRT  ->   site1   site2
+                                 |
+                                 se1
+                                 
+ */
+        
+    	$ngi = TestUtil::createSampleNGI("MYNGI");
+    	$this->em->persist($ngi);
+    	$site1 = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
+        //$site1->setNgiDoJoin($ngi); 
+        $ngi->addSiteDoJoin($site1); 
+    	$this->em->persist($site1);
+        $se1 = TestUtil::createSampleService('somelabel'); 
+        $site1->addServiceDoJoin($se1); 
+    	$this->em->persist($se1);
+        $site2_userHasNoDirectRole = TestUtil::createSampleSite("SITENAME_2"/*, "PK01"*/);
+        $ngi->addSiteDoJoin($site2_userHasNoDirectRole); 
+        //$site2_userHasNoDirectRole->setNgiDoJoin($ngi);
+    	$this->em->persist($site2_userHasNoDirectRole);
+
+        $p1 = new \Project("EGI");
+        $this->em->persist($p1);
+        $p1->addNgi($ngi); 
+        
+
+    
+    	// Create ngiManagerRole, ngiUserRole, siteAdminRole and link user and owned entities  
+        $ngiManagerRole = TestUtil::createSampleRole($u, $ngiManRT, $ngi, RoleStatus::GRANTED); 
+    	$this->em->persist($ngiManagerRole);
+        $rodUserRole = TestUtil::createSampleRole($u, $rodRT, $ngi, RoleStatus::GRANTED); 
+    	$this->em->persist($rodUserRole);
+        $siteAdminRole = TestUtil::createSampleRole($u, $siteAdminRT, $site1, RoleStatus::GRANTED) ; 
+    	$this->em->persist($siteAdminRole);
+    	
+    	$this->em->flush();
+
+        // ********MUST******** start a new connection to test transactional 
+        // isolation of RoleService methods.  
+        //$em = $this->createEntityManager();
+        //$siteService = new org\gocdb\services\Site();  
+        //$siteService->setEntityManager($em); 
+        $roleActionMappingService = new org\gocdb\services\RoleActionMappingService(); 
+        $roleActionAuthService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService);
+        $roleActionAuthService->setEntityManager($this->em); 
+        
+        
+        // Assert user can edit site using 3 enabling roles
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site1, $u); 
+        $this->assertEquals(3, count($enablingRoles)); 
+        $this->assertTrue(in_array($siteAdminRole, $enablingRoles)); 
+        $this->assertTrue(in_array($rodUserRole, $enablingRoles)); 
+        $this->assertTrue(in_array($ngiManagerRole, $enablingRoles)); 
+        
+
+        // Assert user can only edit cert status through his NGI_OPS_MAN role 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site1, $u); 
+        $this->assertEquals(1, count($enablingRoles)); 
+        $this->assertTrue(in_array($ngiManagerRole, $enablingRoles)); 
+// 
+//        // Add a new project role and link ngi and give user COD_ADMIN Project role (use $this->em to isolate)
+        $codRole = TestUtil::createSampleRole($u, $codRT, $p1, RoleStatus::GRANTED); 
+    	$this->em->persist($codRole); 
+        $this->em->flush();
+
+/*
+                                 p1      <- codRT
+                                 |
+                                 ngi      <- ngiManRT, rodRT, 
+                                 |    \
+             siteAdminRT  ->   site1   site2
+                                 |
+                                 se1
+                                 
+*/
+       
+        // Assert user now has 2 roles that enable SITE_EDIT_CERT_STATUS change action 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site1, $u); 
+        $this->assertEquals(2, count($enablingRoles)); 
+        $this->assertTrue(in_array($ngiManagerRole, $enablingRoles)); 
+        $this->assertTrue(in_array($codRole, $enablingRoles)); 
+
+        // Assert user can edit SE using SITE_ADMIN, NGI_OPS_MAN, REG_STAFF_ROD roles (but not COD role)  
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $se1->getParentSite(), $u);  
+        $this->assertEquals(3, count($enablingRoles)); 
+        $this->assertTrue(in_array($siteAdminRole, $enablingRoles)); 
+        $this->assertTrue(in_array($ngiManagerRole, $enablingRoles));  
+        $this->assertTrue(in_array($rodUserRole, $enablingRoles)); 
+    
+        // Assert User can only edit Site2 through his 2 indirect ngi roles 
+        // (user don't have any direct site level roles on this site and COD don't give edit perm)
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site2_userHasNoDirectRole, $u); 
+        $this->assertEquals(2, count($enablingRoles)); 
+        $this->assertTrue(in_array($ngiManagerRole, $enablingRoles)); 
+        $this->assertTrue(in_array($rodUserRole, $enablingRoles));  
+
+        // Delete the user's Project COD role 
+        $this->em->remove($codRole);  
+        $this->em->flush();
+/*
+                                 p1      
+                                 |
+                                 ngi      <- ngiManRT, rodRT, 
+                                 |    \
+             siteAdminRT  ->   site1   site2
+                                 |
+                                 se1
+                                 
+*/
+        
+        // Assert user can only SITE_EDIT_CERT_STATUS through 1 role for both sites
+        $enablingRoles =  $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site2_userHasNoDirectRole, $u); 
+        $this->assertEquals(1, count($enablingRoles)); 
+        $this->assertTrue(in_array($ngiManagerRole, $enablingRoles)); 
+        $enablingRoles =  $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site1, $u); 
+        $this->assertEquals(1, count($enablingRoles)); 
+        $this->assertTrue(in_array($ngiManagerRole, $enablingRoles));  
+        
+        // Delete the user's NGI manager role 
+        $this->em->remove($ngiManagerRole);  
+        $this->em->flush(); 
+/*
+                                 p1      
+                                 |
+                                 ngi      <- rodRT, 
+                                 |    \
+             siteAdminRT  ->   site1   site2
+                                 |
+                                 se1
+                                 
+*/
+
+        // Assert user can't edit site2 cert status  
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site2_userHasNoDirectRole, $u); 
+        $this->assertEquals(0, count($enablingRoles)); 
+        // Assert user can still edit site via his ROD role 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site2_userHasNoDirectRole, $u); 
+        $this->assertEquals(1, count($enablingRoles)); 
+        $this->assertTrue(in_array($rodUserRole, $enablingRoles));  
+
+        // Delete the user's NGI ROD role 
+        $this->em->remove($rodUserRole);  
+        $this->em->flush(); 
+
+/*
+                                 p1      
+                                 |
+                                 ngi      
+                                 |    \
+             siteAdminRT  ->   site1   site2
+                                 |
+                                 se1
+                                 
+*/
+
+        // User can't edit site2
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site2_userHasNoDirectRole, $u); 
+        $this->assertEquals(0, count($enablingRoles)); 
+       
+        // Assert user can still edit SITE1 through his direct site level role (this role has not been deleted)  
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site1, $u); 
+        $this->assertEquals(1, count($enablingRoles)); 
+        $this->assertTrue(in_array($siteAdminRole, $enablingRoles)); 
+        
+        // Delete user's remaining Site role 
+        $this->em->remove($siteAdminRole);  
+        $this->em->flush();  
+/*
+                                 p1      
+                                 |
+                                 ngi      
+                                 |    \
+                               site1   site2
+                                 |
+                                 se1
+                                 
+*/
+        // User can't edit site1 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site1, $u); 
+        $this->assertEquals(0, count($enablingRoles)); 
+    }
+
+
+
+
 
 
     

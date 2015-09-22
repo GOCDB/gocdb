@@ -14,7 +14,7 @@ namespace org\gocdb\services;
 require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/RoleConstants.php';
-//require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
+require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
 
 /**
  * GOCDB Stateless service facade (business routnes) for Service Group objects.
@@ -41,7 +41,7 @@ class ServiceGroup extends AbstractEntityService{
      * connection (thus maintaining the atomicity of the service method).
      */
 
-    //private $roleActionAuthorisationService;
+    private $roleActionAuthorisationService;
 
     function __construct(/*$roleActionAuthorisationService*/) {
         parent::__construct();
@@ -49,9 +49,9 @@ class ServiceGroup extends AbstractEntityService{
     }
 
 
-//    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
-//        $this->roleActionAuthorisationService = $roleActionAuthService; 
-//    }
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+        $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
     
     
 
@@ -202,14 +202,12 @@ class ServiceGroup extends AbstractEntityService{
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
         
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-            throw new \Exception("You don't have permission over $sg");  
-        }
-//        if (!$user->isAdmin()) {
-//            if(count($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)) == 0){
-//               throw new \Exception("You don't have permission over $sg");  
-//            }
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
 //        }
+        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user) == FALSE){
+           throw new \Exception("You don't have permission over this service group.");  
+        }
 		$this->validate($newValues['SERVICEGROUP']);
         
         //check there are the required number of scopes specified
@@ -273,7 +271,7 @@ class ServiceGroup extends AbstractEntityService{
      * @return array of RoleName string values that grant the requested action  
      * @throws \LogicException if action is not supported or is unknown 
      */
-    public function authorizeAction($action, \ServiceGroup $sg, \User $user = null){
+    /*public function authorize Action($action, \ServiceGroup $sg, \User $user = null){
         if(!in_array($action, \Action::getAsArray())){
             throw new \LogicException('Coding Error - Invalid action not known'); 
         } 
@@ -304,7 +302,7 @@ class ServiceGroup extends AbstractEntityService{
             $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;
         }
         return array_unique($enablingRoles);
-    }
+    }*/
     
 
 	/**
@@ -341,14 +339,12 @@ class ServiceGroup extends AbstractEntityService{
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-            throw new \Exception("You don't have permission over $sg");  
-        }
-//        if (!$user->isAdmin()) {
-//            if(count($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-//               throw new \Exception("You don't have permission over $sg");  
-//            }
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
 //        }
+        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user)==FALSE){
+           throw new \Exception("You don't have permission over this service group.");  
+        }
 		$this->em->getConnection()->beginTransaction();
 		try {
 			foreach($ses as $se) {
@@ -374,14 +370,12 @@ class ServiceGroup extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
         
 		//$this->editAuthorization($sg, $user);
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-            throw new \Exception("You don't have permission over $sg");  
-        }
-//        if (!$user->isAdmin()) {
-//            if(count($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-//               throw new \Exception("You don't have permission over $sg");  
-//            }
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
 //        }
+        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user) == FALSE){
+           throw new \Exception("You don't have permission over this service group");  
+        }
 		$this->em->getConnection()->beginTransaction();
 		try {
 			$sg->removeService($se);
@@ -454,7 +448,7 @@ class ServiceGroup extends AbstractEntityService{
             $this->em->persist($sg);
             
             $sgAdminroleType = $this->em->createQuery("SELECT rt FROM RoleType rt WHERE rt.name = ?1")
-                ->setParameter(1, \RoleTypeName::SERVICEGROUP_ADMIN)
+                ->setParameter(1, 'Service Group Administrator')
                 ->getSingleResult();
             $newRole = new \Role($sgAdminroleType, $user, $sg, \RoleStatus::GRANTED);
             $this->em->persist($newRole);
@@ -500,14 +494,12 @@ class ServiceGroup extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
         
         //$this->editAuthorization($sg, $user);
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-            throw new \Exception("You don't have permission over $sg");  
-        }
-//        if (!$user->isAdmin()) {
-//            if (count($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)) == 0) {
-//                throw new \Exception("You don't have permission over $sg");
-//            }
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
 //        }
+        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user) == FALSE) {
+            throw new \Exception("You don't have permission over this service group.");
+        }
 
         $this->em->getConnection()->beginTransaction();
         try {
@@ -555,14 +547,12 @@ class ServiceGroup extends AbstractEntityService{
      */
     public function validatePropertyActions(\User $user, \ServiceGroup $sg){
         // Check to see whether the user has a role that covers this site
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-            throw new \Exception("You don't have permission over $sg");  
-        }
-//        if (!$user->isAdmin()) {
-//            if(count($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-//                throw new \Exception("You don't have permission over ". $sg->getName());
-//            }
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
 //        }
+        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user)==FALSE){
+            throw new \Exception("You don't have permission over ". $sg->getName());
+        }
     }
     
     /** TODO

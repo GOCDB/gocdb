@@ -15,6 +15,7 @@ require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/RoleConstants.php'; 
 require_once __DIR__ . '/NGI.php'; 
+require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
 
 /**
  * GOCDB Stateless service facade (business routines) for Site objects.
@@ -27,6 +28,18 @@ require_once __DIR__ . '/NGI.php';
  * @author James McCarthy
  */
 class Site extends AbstractEntityService{
+   
+    private $roleActionAuthorisationService;
+     
+    function __construct(/*$roleActionAuthorisationService*/) {
+        parent::__construct();
+        //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+    }
+
+
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+        $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
     
     /*
      * Since all the service methods in a service facade are atomic and fully
@@ -100,9 +113,13 @@ class Site extends AbstractEntityService{
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
+        if($user == null){
+            throw new \Exception("Null user can't edit site"); 
+        }
         // Check to see whether the user has a role that covers this site
         //$this->edit Authorization($site, $user);
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $site, $user))==0){
+        //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
+        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $site, $user)==FALSE){
             throw new \Exception("You don't have permission over ". $site->getShortName());
         }
         
@@ -199,7 +216,7 @@ class Site extends AbstractEntityService{
      * @return array of RoleName strings that grant the requested action  
      * @throws \LogicException if action is not supported or is unknown 
      */
-    public function authorizeAction($action, \Site $site, \User $user = null ) {
+    /*public function authorize Action($action, \Site $site, \User $user = null ) {
         if(is_null($user)){
             return array(); // empty array if null user 
         }
@@ -271,7 +288,7 @@ class Site extends AbstractEntityService{
                 \RoleTypeName::NGI_OPS_DEP_MAN,
                 \RoleTypeName::NGI_OPS_MAN, 
                 // E  
-                //\RoleTypeName::CIC_STAFF, /* dont' think this role type should grant edit cert status changes */
+                //\RoleTypeName::CIC_STAFF, 
                 \RoleTypeName::COD_STAFF,
                 \RoleTypeName::COD_ADMIN,
                 \RoleTypeName::EGI_CSIRT_OFFICER,
@@ -301,7 +318,7 @@ class Site extends AbstractEntityService{
            $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;  
         }
         return array_unique($enablingRoles);
-    }
+    }*/
 
     
   
@@ -877,9 +894,10 @@ class Site extends AbstractEntityService{
 	 */
 	public function validatePropertyActions(\User $user, \Site $site){	    
 	    // Check to see whether the user has a role that covers this site
-	    if(count($this->authorizeAction(\Action::EDIT_OBJECT, $site, $user))==0){
-	        throw new \Exception("You don't have permission over ". $site->getShortName());
-	    }
+	    //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
+        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $site, $user)== FALSE){
+            throw new \Exception("You don't have permission over ". $site->getShortName());
+        }
 	}
 	
 	/** TODO

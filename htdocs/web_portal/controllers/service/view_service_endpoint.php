@@ -22,13 +22,18 @@ function view_endpoint() {
     $serv = \Factory::getServiceService();
     
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
+    /* @var $endpoint \EndpointLocation */
     $endpoint = $serv->getEndpoint($id);
+    /* @var $service \Service */
+    $service = $endpoint->getService(); 
+    $site = $service->getParentSite(); 
 
     // Does current viewer have edit permissions over object ?
     $params['ShowEdit'] = false;  
-    if(count($serv->authorizeAction(\Action::EDIT_OBJECT, $endpoint->getService(), $user))>=1){
+    //if(count($serv->authorize Action(\Action::EDIT_OBJECT, $endpoint->getService(), $user))>=1){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $site, $user)){
        $params['ShowEdit'] = true;  
-    } 
+    }
 
     $title = $endpoint->getName();
     $params['endpoint'] = $endpoint;

@@ -7,6 +7,8 @@ use Doctrine\ORM\EntityManager;
 require_once dirname(__FILE__) . '/bootstrap.php';
 require_once dirname(__FILE__). '/../../lib/Gocdb_Services/Role.php'; 
 require_once dirname(__FILE__). '/../../lib/Gocdb_Services/Site.php'; 
+require_once dirname(__FILE__). '/../../lib/Gocdb_Services/RoleActionMappingService.php'; 
+require_once dirname(__FILE__). '/../../lib/Gocdb_Services/RoleActionAuthorisationService.php'; 
 
 /**
  * Test the role functionality. 
@@ -152,6 +154,13 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         // Site
     	$site1 = TestUtil::createSampleSite("SITENAME");
     	$this->em->persist($site1);
+        $n1 = TestUtil::createSampleNGI("NGI_UK"); 
+        $this->em->persist($n1); 
+        $p1 = new \Project("EGI");  
+        $this->em->persist($p1); 
+
+        $n1->addSiteDoJoin($site1); 
+        $p1->addNgi($n1); 
         
         // Create a SITE_OPS_MAN Role and link to the User, RoleType and site 
         $roleSite = TestUtil::createSampleRole($u, $siteManRT, $site1, RoleStatus::GRANTED); 
@@ -166,8 +175,14 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $this->em->flush();
 
         // ********NOTE******** Role Service uses a new connection for its transactional methods
+        $em2 = $this->createEntityManager(); 
         $roleService = new org\gocdb\services\Role();  
-        $roleService->setEntityManager($this->createEntityManager());  
+        $roleService->setEntityManager($em2);  
+        $roleActionMappingService = new org\gocdb\services\RoleActionMappingService(); 
+        $roleActionAuthorisationService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService); 
+        $roleActionAuthorisationService->setEntityManager($em2);  
+        $roleService->setRoleActionAuthorisationService($roleActionAuthorisationService); 
+        
         $pendingGrantableRolesU1 = $roleService->getPendingRolesUserCanApprove($u); 
        
         // show that u1 has one pending role request 

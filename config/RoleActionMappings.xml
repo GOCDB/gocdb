@@ -42,6 +42,24 @@
         </RoleMapping>
     </RoleActionMapping> 
 
+<!--    <RoleActionMapping> 
+        <TargetProject>DaveProject</TargetProject> 
+        <RoleNames over="Project">
+            <Role id="dEGI_CSIRT_OFFICER">dEGI CSIRT Officer</Role>
+            <Role id="dCOO">dChief Operations Officer</Role>
+        </RoleNames>  
+        <RoleNames over="Ngi">
+            <Role id="dNGI_OPS_MAN">dNGI Operations Manager</Role>
+            <Role id="dNGI_OPS_DEP_MAN">dNGI Operations Deputy Manager</Role>
+            <Role id="dNGI_SEC_OFFICER">dNGI Security Officer</Role>
+        </RoleNames>
+        <RoleNames over="Site"> 
+            <Role id="dSITE_ADMIN">dSite Administrator</Role>
+            <Role id="dSITE_SECOFFICER">dSite Security Officer</Role>
+        </RoleNames> 
+    </RoleActionMapping>-->
+
+
     <RoleActionMapping> 
         <TargetProject>EGI</TargetProject> 
 

@@ -41,10 +41,17 @@ function view_user() {
    
     // can the calling user revoke the targetUser's roles?  
     if($user != $callingUser){
+        /* @var $r \Role */
         foreach ($roles as $r) {
             //$ownedEntityDetail = $r->getOwnedEntity()->getName(). ' ('. $r->getOwnedEntity()->getType().')'; 
-            $authorisingRoleNames = \Factory::getRoleService()->authorizeAction(
-                    \Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser); 
+            //$authorisingRoleNames = \Factory::getRoleService()->authorize Action(\Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser); 
+            $authorisingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser); 
+            $authorisingRoleNames = array(); 
+            /* @var $authRole \Role */
+            foreach($authorisingRoles as $authRole){
+               $authorisingRoleNames[] = $authRole->getRoleType()->getName();  
+            }
+            
             if(count($authorisingRoleNames)>=1){
                 $allAuthorisingRoleNames = ''; 
                 foreach($authorisingRoleNames as $arName){
@@ -53,6 +60,14 @@ function view_user() {
                 $allAuthorisingRoleNames = substr($allAuthorisingRoleNames, 0, strlen($allAuthorisingRoleNames)-2);  
                 $r->setDecoratorObject('['.$allAuthorisingRoleNames.'] ');
             } 
+            if($callingUser->isAdmin()){
+                $existingVal = $r->getDecoratorObject(); 
+                if($existingVal != null){
+                   $r->setDecoratorObject('GOCDB ADMIN: '.$existingVal);
+                } else {
+                    $r->setDecoratorObject('GOCDB ADMIN'); 
+                }
+            }
         }
     } else {
         // current user is viewing their own roles, so they can revoke their own roles 

@@ -80,7 +80,13 @@ function view_requests() {
         $grantRejectRoleNamesArray['deny'] = ''; 
         
         // get list of roles that allows user to to grant the role request
-        $grantRoleAuthorisingRoleNames = \Factory::getRoleService()->authorizeAction(\Action::GRANT_ROLE, $r->getOwnedEntity(), $user); 
+        //$grantRoleAuthorisingRoleNames = \Factory::getRoleService()->authorize Action(\Action::GRANT_ROLE, $r->getOwnedEntity(), $user); 
+        $grantRoleAuthorisingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $r->getOwnedEntity(), $user); 
+        $grantRoleAuthorisingRoleNames = array(); 
+        foreach($grantRoleAuthorisingRoles as $grantRole){
+            $grantRoleAuthorisingRoleNames[] = $grantRole->getRoleType()->getName(); 
+        }
+        
         if(count($grantRoleAuthorisingRoleNames)>=1){
             $allAuthorisingRoleNames = ''; 
             foreach($grantRoleAuthorisingRoleNames as $arName){
@@ -89,9 +95,18 @@ function view_requests() {
             $allAuthorisingRoleNames = substr($allAuthorisingRoleNames, 0, strlen($allAuthorisingRoleNames)-2);  
             $grantRejectRoleNamesArray['grant'] = '['.$allAuthorisingRoleNames.']'; 
         } 
-        
+        if($user->isAdmin()){
+           $grantRejectRoleNamesArray['grant'] = 'GOCDB ADMIN ' . $grantRejectRoleNamesArray['grant']; 
+        }
+
         // get list of roles that allows user to reject the role request
-        $denyRoleAuthorisingRoleNames = \Factory::getRoleService()->authorizeAction(\Action::REJECT_ROLE, $r->getOwnedEntity(), $user); 
+        //$denyRoleAuthorisingRoleNames = \Factory::getRoleService()->authorize Action(\Action::REJECT_ROLE, $r->getOwnedEntity(), $user); 
+        $denyRoleAuthorisingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::REJECT_ROLE, $r->getOwnedEntity(), $user);  
+        $denyRoleAuthorisingRoleNames = array();  
+        foreach($denyRoleAuthorisingRoles as $denyingRole){
+          $denyRoleAuthorisingRoleNames[] = $denyingRole->getRoleType()->getName();   
+        } 
+        
         if(count($denyRoleAuthorisingRoleNames)>=1){
            $allAuthorisingRoleNames = ''; 
             foreach($denyRoleAuthorisingRoleNames as $arName){
@@ -99,6 +114,9 @@ function view_requests() {
             }
             $allAuthorisingRoleNames = substr($allAuthorisingRoleNames, 0, strlen($allAuthorisingRoleNames)-2);  
             $grantRejectRoleNamesArray['deny'] = '['.$allAuthorisingRoleNames.']'; 
+        }
+        if($user->isAdmin()){
+           $grantRejectRoleNamesArray['deny'] = 'GOCDB ADMIN ' . $grantRejectRoleNamesArray['deny']; 
         }
         // store array of role names in decorator object 
         $r->setDecoratorObject($grantRejectRoleNamesArray); 

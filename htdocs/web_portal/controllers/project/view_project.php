@@ -45,9 +45,12 @@ function show_project() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['ShowEdit'] = false;  
-    if(count($serv->authorizeAction(\Action::EDIT_OBJECT, $project, $user))>=1){
-       $params['ShowEdit'] = true;  
+    if (\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $project, $user))  {
+        $params['ShowEdit'] = true;
     }
+//    if(count($serv->authorize Action(\Action::EDIT_OBJECT, $project, $user))>=1){
+//       $params['ShowEdit'] = true;  
+//    }
     
     $params['authenticated'] = false; 
     if($user != null){

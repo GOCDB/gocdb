@@ -12,6 +12,7 @@ namespace org\gocdb\services;
  * limitations under the License.
  */
 require_once __DIR__ . '/AbstractEntityService.php';
+require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
 
 /**
  * GOCDB Stateless service facade (business routnes) for certification status entities.
@@ -21,6 +22,17 @@ require_once __DIR__ . '/AbstractEntityService.php';
  * @author David Meredith
  */
 class CertificationStatus extends AbstractEntityService{
+
+    private $roleActionAuthorisationService;
+
+    function __construct(/*$roleActionAuthorisationService*/) {
+        parent::__construct();
+        //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+    }
+
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+        $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
 
     /**
      * @param int Certification status ID
@@ -54,12 +66,13 @@ class CertificationStatus extends AbstractEntityService{
      */
     public function editCertificationStatus(\Site $site, \CertificationStatus $newCertStatus, \User $user, $reason) {
         //$this->editAuthorization($site, $user);
-        require_once __DIR__ . '/Site.php'; 
-        $siteService = new \org\gocdb\services\Site(); 
-        $siteService->setEntityManager($this->em);
-        if(count($siteService->authorizeAction(\Action::SITE_EDIT_CERT_STATUS, $site, $user))==0 ){
+        //require_once __DIR__ . '/Site.php'; 
+        //$siteService = new \org\gocdb\services\Site(); 
+        //$siteService->setEntityManager($this->em);
+        //if(count($siteService->authorize Action(\Action::SITE_EDIT_CERT_STATUS, $site, $user))==0 ){
+       if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::SITE_EDIT_CERT_STATUS, $site, $user)== FALSE){ 
            throw new \Exception('You do not have permission to change site certification status'); 
-        }
+       }
         // TODO use validate service 
         if(empty($reason) ){
            throw new \LogicException('A reason is required');     

@@ -75,25 +75,28 @@ function draw($user) {
         if ($site == null) {
             throw new Exception('Invalid site');
         }
-        if (count(\Factory::getSiteService()->authorizeAction(\Action::SITE_ADD_SERVICE, $site, $user)) == 0) {
+        //if (count(\Factory::getSiteService()->authorize Action(\Action::SITE_ADD_SERVICE, $site, $user)) == 0) {
+        if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::SITE_ADD_SERVICE, $site, $user) == FALSE){
             throw new Exception('You do not have permission to add a service to this site');
         }
     }
 
     // Add sites which user has required action permission to array. 
     $allUserSites = \Factory::getUserService()->getSitesFromRoles($user);
-    $sites = array(); 
-    foreach ($allUserSites as $s) {
-        if (count(\Factory::getSiteService()->authorizeAction(\Action::SITE_ADD_SERVICE, $s, $user)) != 0) {
-           $sites[] = $s; 
-        } 
+    $sites = array();
+    if (!$user->isAdmin()) {
+        foreach ($allUserSites as $s) {
+            //if (count(\Factory::getSiteService()->authorize Action(\Action::SITE_ADD_SERVICE, $s, $user)) != 0) {
+            if (\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::SITE_ADD_SERVICE, $s, $user)) {
+                $sites[] = $s;
+            }
+        }
     }
-   
     //For admin users, return all sites instead.
-    if($user->isAdmin()){
-       $sites = \Factory::getSiteService()->getSitesBy();
+    else {
+        $sites = \Factory::getSiteService()->getSitesBy();
     }
-    
+
     if(count($sites)==0 and !$user->isAdmin()){
       throw new Exception("You need at least one NGI or Site level role to add a new service.");  
     }

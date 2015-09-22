@@ -13,6 +13,7 @@ namespace org\gocdb\services;
  */
 
 require_once __DIR__ . '/AbstractEntityService.php';
+require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
 
 /**
  * GOCDB Stateless service facade (business routnes) for project objects.
@@ -23,6 +24,18 @@ require_once __DIR__ . '/AbstractEntityService.php';
  * @author David Meredith
  */
 class Project  extends AbstractEntityService{
+
+    private $roleActionAuthorisationService;
+
+    function __construct(/*$roleActionAuthorisationService*/) {
+        parent::__construct();
+        //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+    }
+
+
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+        $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
 
     /*
      * All the public service methods in a service facade are typically atomic -
@@ -90,16 +103,17 @@ class Project  extends AbstractEntityService{
      * @throws \Exception
      * @throws \org\gocdb\services\Exception
      */
-    public function editProject(\Project $project, $values, \user $user = null){
+    public function editProject(\Project $project, $values, \User $user){
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         // Check to see whether the user has a role that covers this project
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $project, $user))==0){
-            throw new \Exception("You don't have a role that allows you to edit ". $project->getName());
+        //if(count($this->authorize Action(\Action::EDIT_OBJECT, $project, $user))==0){
+        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $project, $user) == FALSE) {
+            throw new \Exception("You don't have a role that allows you to edit " . $project->getName());
         }
 
-         //Check all the required values are present and validate the new values using the GOCDB schema file
+        //Check all the required values are present and validate the new values using the GOCDB schema file
         $this->validate($values);
         
         //check the name is unique (or that it has not changed)
@@ -338,7 +352,7 @@ class Project  extends AbstractEntityService{
      * @return array of RoleName string values that grant the requested action  
      * @throws \LogicException if action is not supported or is unknown 
      */
-    public function authorizeAction($action, \Project $project, \User $user = null){
+    /*public function authorize Action($action, \Project $project, \User $user = null){
         require_once __DIR__ . '/Role.php';
         
         if(!in_array($action, \Action::getAsArray())){
@@ -356,7 +370,7 @@ class Project  extends AbstractEntityService{
         if($action == \Action::EDIT_OBJECT){
             // Only Project (E) level roles can edit project 
             $requiredRoles = array(  
-                //\RoleTypeName::CIC_STAFF, /* not sure this role should be used to edit project */
+                //\RoleTypeName::CIC_STAFF, 
                 \RoleTypeName::COD_ADMIN,
                 \RoleTypeName::COD_STAFF,
                 \RoleTypeName::EGI_CSIRT_OFFICER,
@@ -367,7 +381,7 @@ class Project  extends AbstractEntityService{
         } else if($action == \Action::GRANT_ROLE ||
                 $action == \Action::REJECT_ROLE || $action == \Action::REVOKE_ROLE){
            $requiredRoles = array(
-                //\RoleTypeName::CIC_STAFF, /* not sure this role should be used to manage roles over project*/
+                //\RoleTypeName::CIC_STAFF, 
                 \RoleTypeName::COD_ADMIN,
                 \RoleTypeName::COD_STAFF,
                 \RoleTypeName::EGI_CSIRT_OFFICER,
@@ -382,7 +396,7 @@ class Project  extends AbstractEntityService{
            $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;  
         }
         return array_unique($enablingRoles);
-    }
+    }*/
     
     /**
      * returns all those NGIs which are not a member of a given project

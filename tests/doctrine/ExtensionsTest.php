@@ -153,6 +153,10 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
         //Delete the property from the site
         $siteService = new org\gocdb\services\Site();
         $siteService->setEntityManager($this->em);
+        $roleActionMappingService = new org\gocdb\services\RoleActionMappingService(); 
+        $roleActionAuthService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService); 
+        $roleActionAuthService->setEntityManager($this->em);  
+        $siteService->setRoleActionAuthorisationService($roleActionAuthService); 
         $siteService->deleteSiteProperty($site, $adminUser, $prop1);
 		
 		//Check that the site now only has 2 properties
@@ -245,6 +249,10 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
         //Delete the property from the service
         $serviceService = new org\gocdb\services\ServiceService();
         $serviceService->setEntityManager($this->em);
+        $roleActionMappingService = new org\gocdb\services\RoleActionMappingService(); 
+        $roleActionAuthService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService); 
+        $roleActionAuthService->setEntityManager($this->em);  
+        $serviceService->setRoleActionAuthorisationService($roleActionAuthService); 
         $serviceService->deleteServiceProperty($service, $adminUser, $prop1);
 		
 		//Check that the service now only has 2 properties
@@ -348,6 +356,8 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
         $authService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService/*, $roleService*/); 
         $sgService = new org\gocdb\services\ServiceGroup($authService);
         $sgService->setEntityManager($this->em);
+        $sgService->setRoleActionAuthorisationService($authService); 
+        
         $sgService->deleteServiceGroupProperty($sg, $adminUser, $prop1);
 		
 		//Check that the sg now only has 2 properties
@@ -440,6 +450,11 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
         //Delete the property from the service
         $serviceService = new org\gocdb\services\ServiceService();
         $serviceService->setEntityManager($this->em);
+        $roleActionMappingService = new org\gocdb\services\RoleActionMappingService(); 
+        $roleActionAuthService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService); 
+        $roleActionAuthService->setEntityManager($this->em);  
+        $serviceService->setRoleActionAuthorisationService($roleActionAuthService);  
+        
         $serviceService->deleteEndpointProperty($adminUser, $prop1);
 		
 		//Check that the service now only has 2 properties
