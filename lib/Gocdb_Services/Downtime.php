@@ -19,6 +19,7 @@ require_once __DIR__ . '/RoleActionAuthorisationService.php';
  * The public API methods are transactional.
  *
  * @author John Casson
+ * @author James McCarthy
  * @author David Meredith
  */
 class Downtime extends AbstractEntityService{
@@ -456,7 +457,7 @@ class Downtime extends AbstractEntityService{
         }*/
 
         // Make sure all dates are treated as UTC!
-	    //date_default_timezone_set("UTC");
+        //date_default_timezone_set("UTC");
         
         $newStart = \DateTime::createFromFormat($this::FORMAT, $newStartStr, new \DateTimeZone("UTC"));
         $newEnd = \DateTime::createFromFormat($this::FORMAT, $newEndStr, new \DateTimeZone("UTC")); 
@@ -530,7 +531,7 @@ class Downtime extends AbstractEntityService{
      */
     public function editValidationDatePreConditions(\Downtime $dt){
         // Make sure all dates are treated as UTC!
-	    //date_default_timezone_set("UTC");
+        //date_default_timezone_set("UTC");
         $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
         /* @var $oldStart \DateTime */
         $oldStart = $dt->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
@@ -610,7 +611,7 @@ class Downtime extends AbstractEntityService{
         $this->authorisation($ses, $user); 
 
         // Make sure all dates are treated as UTC!
-	    //date_default_timezone_set("UTC");
+        //date_default_timezone_set("UTC");
         
         if(!$dt->isOnGoing()) {
             throw new \Exception("Downtime isn't on-going.");
@@ -658,7 +659,7 @@ class Downtime extends AbstractEntityService{
         $this->authorisation($ses, $user); 
 
         // Make sure all dates are treated as UTC!
-	    //date_default_timezone_set("UTC");
+        //date_default_timezone_set("UTC");
         
         if($dt->hasStarted()) {
             throw new \Exception("This downtime has already started.");
@@ -703,92 +704,90 @@ class Downtime extends AbstractEntityService{
      * @param \Date $windowStart
      * @param \Date $windowEnd
      */
-    public function getActiveAndImminentDowntimes($windowStart, $windowEnd){
-    	$dql =  "SELECT DISTINCT d, se, s, st
+    public function getActiveAndImminentDowntimes($windowStart, $windowEnd) {
+	$dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
-				JOIN d.services se
-				JOIN se.parentSite s
-                JOIN se.serviceType st    	
-				WHERE (
-					:windowStart IS null
-					OR d.endDate > :windowStart
-				)    	
-				AND (
-					:windowEnd IS null
-					OR d.startDate < :windowEnd
-				)    			
-    			OR (
+                JOIN d.services se
+                JOIN se.parentSite s
+                JOIN se.serviceType st        
+                WHERE (
+                    :windowStart IS null
+                    OR d.endDate > :windowStart
+                )        
+                AND (
+                    :windowEnd IS null
+                    OR d.startDate < :windowEnd
+                )                
+                OR (
                         :onGoingOnly = 'no'
                         OR
-						(:onGoingOnly = 'yes'
-						AND d.startDate < :now
-						AND d.endDate > :now)
-				)
+                        (:onGoingOnly = 'yes'
+                        AND d.startDate < :now
+                        AND d.endDate > :now)
+                )
                 ORDER BY d.startDate DESC";
-    	
-    	$q = $this->em->createQuery($dql)
-    					->setParameter('onGoingOnly', 'yes')
-    	    			->setParameter('now', new \DateTime())
-    					->setParameter('windowStart', $windowStart)
-    					->setParameter('windowEnd', $windowEnd);
-    	
-    	return $downtimes = $q->getResult();   	
-    	
+
+	$q = $this->em->createQuery($dql)
+		->setParameter('onGoingOnly', 'yes')
+		->setParameter('now', new \DateTime())
+		->setParameter('windowStart', $windowStart)
+		->setParameter('windowEnd', $windowEnd);
+
+	return $downtimes = $q->getResult();
     }
-    
+
     /**
      * 
      */
-    public function getActiveDowntimes(){
-    	$dql =  "SELECT DISTINCT d, se, s, st
+    public function getActiveDowntimes() {
+	$dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
-				JOIN d.services se
-				JOIN se.parentSite s
+                JOIN d.services se
+                JOIN se.parentSite s
                 JOIN se.serviceType st
-				WHERE (
+                WHERE (
                         :onGoingOnly = 'no'
                         OR
-						(:onGoingOnly = 'yes'
-						AND d.startDate < :now
-						AND d.endDate > :now)
-				)
+                        (:onGoingOnly = 'yes'
+                        AND d.startDate < :now
+                        AND d.endDate > :now)
+                )
                 ORDER BY d.startDate DESC";
-    	 
-    	$q = $this->em->createQuery($dql)
-    	->setParameter('onGoingOnly', 'yes')
-    	->setParameter('now', new \DateTime());
-    	 
-    	return $downtimes = $q->getResult();
-    	 
+
+	$q = $this->em->createQuery($dql)
+		->setParameter('onGoingOnly', 'yes')
+		->setParameter('now', new \DateTime());
+
+	return $downtimes = $q->getResult();
     }
-    
+
     /**
-     * 
+     * Get downtimes where the downtime endDate is after windowStart, and 
+     * downtime start date is before windowEnd. 
      * @param \Date $windowStart
      * @param \Date $windowEnd
      */
-    public function getImminentDowntimes($windowStart, $windowEnd){
-    	$dql =  "SELECT DISTINCT d, se, s, st
+    public function getImminentDowntimes($windowStart, $windowEnd) {
+	$dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
-				JOIN d.services se
-				JOIN se.parentSite s
+                JOIN d.services se
+                JOIN se.parentSite s
                 JOIN se.serviceType st
-				WHERE (
-					:windowStart IS null
-					OR d.endDate > :windowStart
-				)
-				AND (
-					:windowEnd IS null
-					OR d.startDate < :windowEnd
-				)
+                WHERE (
+                    :windowStart IS null
+                    OR d.endDate > :windowStart
+                )
+                AND (
+                    :windowEnd IS null
+                    OR d.startDate < :windowEnd
+                )
                 ORDER BY d.startDate DESC";
-    	 
-    	$q = $this->em->createQuery($dql)
-    	->setParameter('windowStart', $windowStart)
-    	->setParameter('windowEnd', $windowEnd);
-    	 
-    	return $downtimes = $q->getResult();
-    	 
+
+	$q = $this->em->createQuery($dql)
+		->setParameter('windowStart', $windowStart)
+		->setParameter('windowEnd', $windowEnd);
+
+	return $downtimes = $q->getResult();
     }
-    
+
 }
