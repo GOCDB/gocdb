@@ -32,18 +32,16 @@ This XSD defines role-action mapping rules for GOCDB projects stored in the DB
 Authorisation decisions are made by comparing a user's actual roles 
 held over different {@see \OwnedEntity} objects (OEs) in the DB, with the role 
 action mapping rules defined in an instance doc of this XSD. 
-- The relevant user's Roles that are included in this comparison are those that are 
-  'reachable' from the target entity when ASCENDING the OE domain graph. 
+- Only the relevant user's Roles that are included in this comparison which 
+  includes those that are 'reachable' from the target entity when ASCENDING 
+  the OE domain graph. 
 - The relevant role-action-mapping rules are those defined for the PARENT/ANCESTOR 
   Project(s) of the target entity;  parent/ancestor projects are those that are 
   'reachable' from the target entity when ASCENDING the OE domain graph.
-- Note, some OEs (currently only ServiceGroup) are Project agnostic and the 
-  rules for these entities must be defined in the default <RoleActionMapping> 
-  (see below). 
 
-The root element is <RoleActionMappingRules>. It defines zero or more 
-<RoleActionMapping>s; each mapping defines a set of role-action mapping rules 
-that apply to its named project(s). A single <RoleActionMapping> declares which 
+The root element is <RoleActionMappingRules>. It defines one 
+<RoleActionMapping>s. The mapping defines a set of role-action mapping rules 
+that apply to all projects in the DB. A single <RoleActionMapping> declares which 
 Actions the different Role types enable over the different types of target object. 
 
 Domain Model
@@ -96,18 +94,6 @@ mapping rules of that particular project. For example:
   |    | 
   s1   s2 
 
-Default <RoleActionMapping>
----------------------------
-- A single <RoleActionMapping> that does not define any child <TargetProject>s 
-MAY be defined as a default. 
-- If a <RoleActionMapping> is not defined for a project, the mappings defined by 
-the default will apply.  
-- Only one default <RoleActionMapping> is allowed (currently enforced by additional 
-logic in the gocdb code - the XSD could be updated in future to enforce this). 
-- Some OEs (currently only ServiceGroup) are Project agnostic and are not 
-subject to the Roles/rules of a project. The rules for these OEs must be 
-defined in a default <RoleActionMapping>.   
-
 
 Sample Instance Document
 ------------------------
@@ -118,13 +104,11 @@ Sample Instance Document
     xsi:schemaLocation='http://goc.egi.eu/2015/03/spec1.0_r1 ../../../../config/RoleActionMappingsSchema.xsd'> 
 
     <!-- 
-    For the EGI project: 
-    Mapping 1: 'RoleH' held over a 'Project' enables action 'AZ' on sites and the project. 
-    Mapping 2: 'RoleN' held over a 'Ngi' enables action 'AY' on ngis and sites.  
+    RoleMapping 1: 'RoleH' held over a 'Project' enables action 'AZ' on sites and the project. 
+    RoleMapping 2: 'RoleN' held over a 'Ngi' enables action 'AY' on ngis and sites.  
     -->
 
     <RoleActionMapping> 
-        <TargetProject>EGI</TargetProject>
 
         <RoleNames over="Project">
             <Role id="RH">RoleH</Role>
@@ -165,9 +149,10 @@ Sample Instance Document
         </annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="goc:RoleActionMapping" minOccurs="0" maxOccurs="unbounded"></xs:element> 
+                <xs:element ref="goc:RoleActionMapping" minOccurs="1" maxOccurs="1"></xs:element> 
             </xs:sequence>
         </xs:complexType> 
+        <!--
         <xs:unique name="testRoleActionMappingTargetProjectUnique">
             <xs:annotation>
                 <xs:documentation>
@@ -179,6 +164,7 @@ to ensure only ONE <RoleActionMapping> applies to a particular project.
             <xs:selector xpath="goc:RoleActionMapping/goc:TargetProject"/>
             <xs:field xpath="."/>
         </xs:unique>
+	-->
     </xs:element>
     
     <xs:element name="RoleActionMapping">
@@ -188,7 +174,6 @@ to ensure only ONE <RoleActionMapping> applies to a particular project.
 the nested <TargetProject> elements. The basic structure of the element is as follows: 
 
 <RoleActionMapping> 
-    <TargetProject/> (0..*) 
     <RoleNames/>     (0..*) 
     <RoleMapping/>   (0..*)   
 </RoleActionMapping> 
@@ -197,6 +182,7 @@ the nested <TargetProject> elements. The basic structure of the element is as fo
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
+                <!--
                 <xs:element name="TargetProject" minOccurs="0" maxOccurs="unbounded">
                     <xs:annotation>
                         <xs:documentation>
@@ -209,11 +195,11 @@ There can be only one <RoleActionMapping> that does not define any
                     <xs:complexType>
                         <xs:simpleContent>
                             <xs:extension base="xs:string">
-                                <!--<xs:attribute name="value" type="xs:string"/>-->
                             </xs:extension>
                         </xs:simpleContent>
                     </xs:complexType>  
                 </xs:element>
+		-->
                 <xs:element ref="goc:RoleNames" minOccurs="0" maxOccurs="unbounded"></xs:element> 
                 <xs:element ref="goc:RoleMapping" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>

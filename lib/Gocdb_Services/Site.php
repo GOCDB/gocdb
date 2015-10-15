@@ -22,9 +22,9 @@ require_once __DIR__ . '/RoleActionAuthorisationService.php';
  * The public API methods are transactional.
  * @todo Implement the ISiteService interface when ready.
  *
- * @author David Meredith
  * @author John Casson
  * @author George Ryall
+ * @author David Meredith
  * @author James McCarthy
  */
 class Site extends AbstractEntityService{
@@ -119,7 +119,7 @@ class Site extends AbstractEntityService{
         // Check to see whether the user has a role that covers this site
         //$this->edit Authorization($site, $user);
         //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
-        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $site, $user)==FALSE){
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction()==FALSE){
             throw new \Exception("You don't have permission over ". $site->getShortName());
         }
         
@@ -892,24 +892,15 @@ class Site extends AbstractEntityService{
 	 * @param \Site $site	 
 	 * @throws \Exception
 	 */
-	public function validatePropertyActions(\User $user, \Site $site){	    
+	public function validatePropertyActions(\User $user, \Site $site) {
 	    // Check to see whether the user has a role that covers this site
 	    //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
-        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $site, $user)== FALSE){
-            throw new \Exception("You don't have permission over ". $site->getShortName());
-        }
+	    if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE) {
+		throw new \Exception("You don't have permission over " . $site->getShortName());
+	    }
 	}
-	
-	/** TODO
-	 * Before adding or editing a key pair check that the keyname is not a reserved keyname
-	 * 
-	 * @param String $keyname
-	 */
-	private function checkNotReserved(\User $user, \Site $site, $keyname){
-	    //TODO Function: This function is called but not yet filled out with an action
-	}
-	
-	/**
+
+    /**
 	 * Adds a key value pair to a site
 	 * @param $values
 	 * @param \User $user
@@ -981,16 +972,16 @@ class Site extends AbstractEntityService{
 	    }
 	}
 	
-	/**
-	 * Edits a site property
-	 *
-	 * @param \Site $site
-	 * @param \User $user
-	 * @param \SiteProperty $prop
-	 * @param
-	 *        	$newValues
-	 */
-	public function editSiteProperty(\Site $site,\User $user = null,\SiteProperty $prop, $newValues) {
+    /**
+     * Edit a site's properties. 
+     * 
+     * @param \Site $site
+     * @param \User $user
+     * @param \SiteProperty $prop
+     * @param array $newValues
+     * @throws \Exception
+     */
+	public function editSiteProperty(\Site $site,\User $user,\SiteProperty $prop, $newValues) {
 	    // Check the portal is not in read only mode, throws exception if it is
 	    $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );	    
 	    
@@ -1002,7 +993,7 @@ class Site extends AbstractEntityService{
 	    $keyname=$newValues ['SITEPROPERTIES'] ['NAME'];
 	    $keyvalue=$newValues ['SITEPROPERTIES'] ['VALUE'];
 
-	    $this->checkNotReserved($user, $site, $keyname);
+	    //$this->checkNotReserved($user, $site, $keyname);
 	    
 	    $this->em->getConnection ()->beginTransaction ();
 	

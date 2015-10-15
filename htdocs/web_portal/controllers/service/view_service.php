@@ -28,7 +28,7 @@ function view_se() {
 //    if($user != null && count($serv->authorize Action(\Action::EDIT_OBJECT, $se, $user))>=1){
 //       $params['ShowEdit'] = true;  
 //    } 
-    if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $se->getParentSite(), $user)){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction()){
        $params['ShowEdit'] = true;   
     } 
         

@@ -115,7 +115,7 @@ class NGI extends AbstractEntityService{
             $entity = $grantedUserRole->getOwnedEntity(); 
             if ($entity instanceof \NGI) {
                 //$enablingRoles = $this->authorize Action($action, $entity, $user);
-                if($this->roleActionAuthorisationService->authoriseActionAbsolute($action, $entity, $user)){
+                if($this->roleActionAuthorisationService->authoriseAction($action, $entity, $user)->getGrantAction()){
                     //print_r($enablingRoles); 
                     if(!in_array($entity, $ngiArray)){
                         $ngiArray[] = $entity; 
@@ -269,7 +269,7 @@ class NGI extends AbstractEntityService{
            throw new \Exception("You don't have permission to edit this NGI (null user).");
         }
         //if(count($this->authorize Action(\Action::EDIT_OBJECT, $ngi, $user)) == 0){
-        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $ngi, $user) == FALSE) {
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $ngi, $user)->getGrantAction() == FALSE) {
             throw new \Exception("You don't have permission to edit this NGI.");
         }
         $this->validate($newValues['NGI']);

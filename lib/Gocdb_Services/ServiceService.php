@@ -325,7 +325,7 @@ class ServiceService extends AbstractEntityService{
           	
         //Authorise the change
         //if(count($this->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
-        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $se->getParentSite(), $user) == FALSE) {
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() == FALSE) {
             throw new \Exception("You do not have permission over $se.");
         }
 
@@ -572,7 +572,7 @@ class ServiceService extends AbstractEntityService{
            throw new \Exception("You don't hold a role over $site."); 
         } */
         //if(count($this->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
-        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::SITE_ADD_SERVICE, $site, $user) == FALSE) {
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::SITE_ADD_SERVICE, $site, $user)->getGrantAction() == FALSE) {
              throw new \Exception("You don't have permission to add a service to this site."); 
         }
         
@@ -759,7 +759,7 @@ class ServiceService extends AbstractEntityService{
 //        if(count($this->authorize Action(\Action::EDIT_OBJECT, $service, $user))==0){
 //            throw new \Exception("You don't have permission over ". $service->getHostName());
 //        }
-         if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $service->getParentSite(), $user) == FALSE){
+         if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $service->getParentSite(), $user)->getGrantAction() == FALSE){
             throw new \Exception("You don't have permission over service.");  
          } 
     }
@@ -985,7 +985,7 @@ class ServiceService extends AbstractEntityService{
 //        if(count($this->authorize Action(\Action::EDIT_OBJECT, $s, $user)) == 0){
 //          throw new \Exception("You do not have permission to remove" . $s->getHostName());
 //        }
-        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $s->getParentSite(), $user) == FALSE) {
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $s->getParentSite(), $user)->getGrantAction() == FALSE) {
             throw new \Exception("You don't have permission to delete service.");
         }
 

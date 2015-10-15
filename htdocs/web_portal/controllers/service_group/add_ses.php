@@ -60,7 +60,7 @@ function draw(\User $user = null) {
     //try { $serv->editAuthorization($sg, $user); } catch(Exception $e) {
     //    show_view('error.php', $e->getMessage()); die(); }
     //if(count($serv->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
-    if (\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user) == FALSE)  {
+    if (\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE)  {
         show_view('error.php', 'You do not have permission to edit this ServiceGroup');
         die();
     }

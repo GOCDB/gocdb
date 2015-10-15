@@ -39,7 +39,7 @@ class NotificationService extends AbstractEntityService {
         
         // Now for each role get the user
         foreach ( $roles as $role ) {
-            $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $role->getUser()); 
+            $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $role->getUser())->getGrantingRoles(); 
             if ($entity instanceof \Site) {
                 //$enablingRoles = \Factory::getSiteService ()->authorize Action ( \Action::GRANT_ROLE, $entity, $role->getUser () );
                 

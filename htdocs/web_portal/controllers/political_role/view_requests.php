@@ -81,7 +81,7 @@ function view_requests() {
         
         // get list of roles that allows user to to grant the role request
         //$grantRoleAuthorisingRoleNames = \Factory::getRoleService()->authorize Action(\Action::GRANT_ROLE, $r->getOwnedEntity(), $user); 
-        $grantRoleAuthorisingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $r->getOwnedEntity(), $user); 
+        $grantRoleAuthorisingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $r->getOwnedEntity(), $user)->getGrantingRoles(); 
         $grantRoleAuthorisingRoleNames = array(); 
         foreach($grantRoleAuthorisingRoles as $grantRole){
             $grantRoleAuthorisingRoleNames[] = $grantRole->getRoleType()->getName(); 
@@ -101,7 +101,7 @@ function view_requests() {
 
         // get list of roles that allows user to reject the role request
         //$denyRoleAuthorisingRoleNames = \Factory::getRoleService()->authorize Action(\Action::REJECT_ROLE, $r->getOwnedEntity(), $user); 
-        $denyRoleAuthorisingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::REJECT_ROLE, $r->getOwnedEntity(), $user);  
+        $denyRoleAuthorisingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::REJECT_ROLE, $r->getOwnedEntity(), $user)->getGrantingRoles();  
         $denyRoleAuthorisingRoleNames = array();  
         foreach($denyRoleAuthorisingRoles as $denyingRole){
           $denyRoleAuthorisingRoleNames[] = $denyingRole->getRoleType()->getName();   

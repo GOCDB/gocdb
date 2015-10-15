@@ -64,7 +64,7 @@ function CheckCurrentUserCanEditProject(\Project $project) {
     
     //$enablingRoles = \Factory::getProjectService()->authorize Action('ACTION_EDIT_OBJECT', $project, $user);
     //if (count($enablingRoles) == 0){
-    if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $project, $user) == FALSE){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $project, $user)->getGrantAction() == FALSE){
         throw new Exception("You do not have a role that enables you to edit this project");
     }
 }

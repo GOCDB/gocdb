@@ -31,7 +31,7 @@ function view_endpoint() {
     // Does current viewer have edit permissions over object ?
     $params['ShowEdit'] = false;  
     //if(count($serv->authorize Action(\Action::EDIT_OBJECT, $endpoint->getService(), $user))>=1){
-    if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $site, $user)){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction()){
        $params['ShowEdit'] = true;  
     }
 

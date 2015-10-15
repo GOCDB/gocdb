@@ -92,8 +92,11 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
     }
 
     /**
-     * Returns all of the Role type names defined for the named project or for 
-     * the default RoleActionMapping (if defined).
+     * Returns all of the Role type names defined for the named project.
+     * <p>
+     * Note, the projectName is ignored and is nullable - the same role type names  
+     * are returned for all projects (in future, different role types may need
+     * to be declared for differnt projects, but this is not yet implemented). 
      * <p> 
      * Returns an associative array where keys map to unique role type names 
      * {@see \RoleType::getName()} and values define the name of the 
@@ -107,11 +110,11 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
      * The returned object names the roles are over (values) are looked up from: 
      * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project. 
      * 
-     * @param string $projectName nullable, if null, then the default RoleActionMappings are returned (if defined)  
+     * @param string $projectName Currently ignored and is nullable 
      * @return array Associative array of unique Role type names (keys) and the 
      *   owned object type the role is over (value) 
-     * @throws \LogicException if an invalid projectName or XSD/XML files can't be loaded, 
-     *   or if a set of role action mappings can't be resolved.  
+     * @throws \LogicException if XSD/XML files can't be loaded, 
+     *   or if the role action mappings can't be resolved.  
      * @throws \Exception If the role action mapping file is invalid against its XSD.  
      */
     public function getRoleTypeNamesForProject($projectName) {
@@ -139,8 +142,10 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
         $xpath = new \DOMXPath($roleActionMapXmlDom);
         $xpath->registerNamespace("goc", RoleActionMappingService::ROLE_ACTION_MAPPING_NS);
 
-        // Throws a LogicException if there is no RoleActionMapping for the requested project 
-        $roleActionMapping = $this->getRoleActionMappingForProject($xpath, $projectName);  
+	// In future, may need to fetch different role action mappings on a per
+	// project basis - needs finishing if required.  
+        //$roleActionMapping = $this->getRoleActionMappingForProject($xpath, $projectName);  
+	$roleActionMapping = $this->getRoleActionMapping($xpath); 
         //print_r($roleActionMapping); 
 
         $roleNamesOver = array();
@@ -169,26 +174,21 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
      * of object types that the role is over/linked-to. For example: 
      * <code> array (['Site Administrator'] => 'Site', ['NGI Operations Manager']  => 'Ngi',   
      *   ['Chief Operations Officer'] => 'Project');</code>
-     * 
+     * <p>
+     * Note, the projectName param is ignored and is nullable - the same results  
+     * are returned for all projects (in future, different role types may need
+     * to be declared for differnt projects, but this is not yet implemented). 
+     *
      * @param string $action The type of action, case-insensitive, matches to element value:
      *   <code>//RoleActionMapping/RoleMapping/EnabledActions/Actions</code>
      * @param string $objectType The type of entity, case-insensitive, matches to element value: 
      *   <code>//RoleMapping/EnabledActions/Target</code>
-     * @param string $projectName The projectName, case-insensitive, nullable, 
-     * if specified it matches to element value:
-     *   <code>//RoleActionMapping/TargetProject</code>. If null, the default 
-     *   RoleActionMapping is queried. 
+     * @param string $projectName Currently ignored and is nullable. 
      * @return array Associative array where Role type names are keys and the 
      * owned object type the role applies over is the value. Can be empty if no roles map to the requested action.  
      * @throws \LogicException If role action mappings can't be resolved, or if the XML/XSD files are logically invalid.  
      */
     public function getRoleTypeNamesThatEnableActionOnTargetObjectType($action, $objectType, $projectName) {
-//     * The returned Role type names (keys) are looked up from:  
-//     * </code>RoleActionMapping/RoleNames/Role</code> for the specified project. 
-//     * <p>
-//     * The returned object-type names that the roles are over (values) are looked up from: 
-//     * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project.
-                 
         // fail early 
         if (!is_string($action) || strlen(trim($action)) == 0) {
             throw new \LogicException('Invalid action');
@@ -196,9 +196,24 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
         if (!is_string($objectType) || strlen(trim($objectType)) == 0) {
             throw new \LogicException('Invalid entityType');
         }
-        if ($projectName !== NULL && (!is_string($projectName) || strlen(trim($projectName)) == 0)) {
-            throw new \LogicException('Invalid projectName');
-        }
+	
+//	 IGNORE THIS COMMENT BLOCK - DECLARING DIFFERENT ROLE ACTION MAPPINGS PER  
+//       PROJECT MAY BE NEEDED IN FUTURE, BUT RIGHT NOW IT ADDS UNNECESSARY COMPLEXITY.   
+//       IF THE NEED ARISES, THIS STUFF WILL BE USEFUL:
+//       =======================================================================
+//       if ($projectName !== NULL && (!is_string($projectName) || strlen(trim($projectName)) == 0)) {
+//            throw new \LogicException('Invalid projectName');
+//       }
+//     * The returned Role type names (keys) are looked up from:  
+//     * </code>RoleActionMapping/RoleNames/Role</code> for the specified project. 
+//     * The returned object-type names that the roles are over (values) are looked up from: 
+//     * <code>RoleActionMapping/RoleNames[@over]</code> for the specified project.
+//     * 	
+//     * @param string $projectName The projectName, case-insensitive, nullable, 
+//     * if specified it matches to element value:
+//     *   <code>//RoleActionMapping/TargetProject</code>. 
+//     * If null, the default RoleActionMapping is queried. 
+//       =======================================================================
 
         // Upper case the parameters so we can perform case-insensitive matches
         // when reading the XML file 
@@ -232,8 +247,10 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
         $xpath = new \DOMXPath($roleActionMapXmlDom);
         $xpath->registerNamespace("goc", RoleActionMappingService::ROLE_ACTION_MAPPING_NS);
 
-        // Throws a LogicException if there is no RoleActionMapping for the requested project 
-        $roleActionMapping = $this->getRoleActionMappingForProject($xpath, $projectName);  
+	// In future, may need to fetch different role action mappings on a per
+	// project basis - needs finishing if required. 
+        //$roleActionMapping = $this->getRoleActionMappingForProject($xpath, $projectName);  
+        $roleActionMapping = $this->getRoleActionMapping($xpath);  
 
         /* @var $roleMappings DOMNodeList */
         $roleMappings = $xpath->query(
@@ -348,6 +365,40 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
 
 
     /**
+     * Get the (single) RoleActionMapping element from the XML file. 
+     * @param \DOMXPath $xpath
+     * @return DOMNode The RoleActionMapping element 
+     * @throws \LogicException
+     */
+    private function getRoleActionMapping(\DOMXPath $xpath) {
+	// Query for Single/Default RoleActionMapping element 
+	$roleActionMappings = $xpath->query(
+		"/goc:RoleActionMappingRules/goc:RoleActionMapping");
+
+	if ($roleActionMappings->length == 0) {
+	    throw new \LogicException("Can't find a default RoleActionMapping element "
+	    . "- check your RoleActionMapping XML file.", 21);
+	}
+	if ($roleActionMappings->length > 1) {
+	    throw new \LogicException("There are multiple default RoleActionMapping elements "
+	    . "and there should only be one  "
+	    . "- check your RoleActionMapping XML file.", 22);
+	}
+	$roleActionMapping = $roleActionMappings->item(0);
+
+	if ($roleActionMapping == NULL) {
+	    throw new \LogicException("Couldn't find a RoleActionMapping element "
+	    . "- check your RoleActionMapping XML file.", 30);
+	}
+	return $roleActionMapping;
+    }
+
+    
+
+    /**
+     * NOT NEEDED (YET) - DECLARING DIFFERENT ROLE ACTION MAPPINGS PER PROJECT MAY BE 
+     * NEEDED IN FUTURE, BUT RIGHT NOW IT ADDS UNNECESSARY COMPLEXITY.   
+     * 
      * Get the (single) RoleActionMapping element for the optional projectName. 
      * <p>
      * Returns either a RoleActionMapping that specifies the named project 
@@ -356,11 +407,11 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
      * projectName, then the default RoleActionMapping is returned (if defined).    
      * 
      * @param \DOMXPath $xpath
-     * @param string $projectName, case-insensitive, nullable  
+     * @param string $projectName case-insensitive, nullable  
      * @return DOMNode The RoleActionMapping element 
      * @throws \LogicException If a RoleActionMapping element can't be resolved  
      */
-    private function getRoleActionMappingForProject(\DOMXPath $xpath, $projectName){
+    /*private function getRoleActionMappingForProject(\DOMXPath $xpath, $projectName){
         $roleActionMappings = NULL; 
         
         if($projectName !== NULL){
@@ -400,6 +451,16 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
                 . "specified project when there should only be one - please check "
                 . "your RoleActionMapping XML file.", 20);
             }
+	    
+	    // Lets not throw if a RAM can't be found for the project because 
+	    // its plausable that old/legacy Projects exist in the DB but are 
+	    // not mapped in the XML file. In this scenario, attempt to  
+	    // query the default RAM instead. 
+//            if ($roleActionMappings->length == 0) {
+//                throw new \LogicException("Can't find a RoleActionMapping elements for the "
+//                . "specified project [$projectName] - please check "
+//                . "your RoleActionMapping XML file.", 20);
+//            }
         } 
 
         // 0 or 1 roleActionMapping DOMNodes 
@@ -431,6 +492,6 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
             . "specified project [$projectName] - check your RoleActionMapping XML file.", 30);
         }
         return $roleActionMapping; 
-    }
+    }*/
 
 }

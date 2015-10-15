@@ -67,8 +67,8 @@ function drawViewRequestRole($entityId, \User $user = null){
     $params['entityType'] = \Factory::getOwnedEntityService()->getOwnedEntityDerivedClassName($ownedEntity);
     $params['objectId'] = $entityId;
     // array ([0] => array(RoleTypeName => ProjectName)) 
-    $roleTypesAndProj = \Factory::getRoleService()->getRoleTypeNamesForOwnedEntity($ownedEntity);
-    $params['roles'] = $roleTypesAndProj;
+    $roleTypes = \Factory::getRoleService()->getRoleTypeNamesForOwnedEntity($ownedEntity);
+    $params['roles'] = $roleTypes;
     //print_r($params['roles']); 
     
     show_view('political_role/request_role.php', $params);

@@ -259,7 +259,7 @@ class Downtime extends AbstractEntityService{
          if (!$user->isAdmin()) {
             foreach ($ses as $se) {
                 //if(count($serviceService->authorize Action(\Action::EDIT_OBJECT, $se, $user))==0){
-                if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $se->getParentSite(), $user) == FALSE ) {
+                if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() == FALSE ) {
                     throw new \Exception("You do not have permission over $se.");
                 }
             }

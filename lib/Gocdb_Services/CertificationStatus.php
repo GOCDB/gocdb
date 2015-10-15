@@ -70,7 +70,7 @@ class CertificationStatus extends AbstractEntityService{
         //$siteService = new \org\gocdb\services\Site(); 
         //$siteService->setEntityManager($this->em);
         //if(count($siteService->authorize Action(\Action::SITE_EDIT_CERT_STATUS, $site, $user))==0 ){
-       if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::SITE_EDIT_CERT_STATUS, $site, $user)== FALSE){ 
+       if($this->roleActionAuthorisationService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site, $user)->getGrantAction()== FALSE){ 
            throw new \Exception('You do not have permission to change site certification status'); 
        }
         // TODO use validate service 

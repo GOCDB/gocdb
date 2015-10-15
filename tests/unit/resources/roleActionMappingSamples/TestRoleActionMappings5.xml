@@ -20,7 +20,7 @@
     xmlns='http://goc.egi.eu/2015/03/spec1.0_r1'
     xsi:schemaLocation='http://goc.egi.eu/2015/03/spec1.0_r1 ../../../../config/RoleActionMappingsSchema.xsd'> 
 
-    <RoleActionMapping>
+    <!--<RoleActionMapping>
         <TargetProject>EUDAT</TargetProject>
            
         <RoleNames over="Project">
@@ -31,9 +31,9 @@
             <Role id="eudat_COOCOO">eCOOChief Operations Officer</Role>
         </RoleNames>  
         
-    </RoleActionMapping> 
+    </RoleActionMapping>--> 
 
-    <RoleActionMapping>
+    <!--<RoleActionMapping>
         <TargetProject>WLCG</TargetProject>
            
         <RoleNames over="site">
@@ -43,10 +43,10 @@
             <Role id="wlcg_COO">wlcgChief Operations Officer</Role>
         </RoleNames>  
         
-    </RoleActionMapping> 
+    </RoleActionMapping>--> 
 
 
-    <RoleActionMapping>
+    <!--<RoleActionMapping>
            
         <RoleNames over="ServiceGroup">
             <Role id="defSERVICE_GROUP_ADMIN">defService Group Administrator</Role>
@@ -67,11 +67,11 @@
             </EnabledActions>
         </RoleMapping>
         
-    </RoleActionMapping> 
+    </RoleActionMapping>--> 
 
 
     <RoleActionMapping> 
-        <TargetProject>EGI</TargetProject> 
+        <!--<TargetProject>EGI</TargetProject>--> 
 
         <!-- 
         Define the Role names and which of the owned entity types they apply to. 

@@ -109,7 +109,7 @@ class Project  extends AbstractEntityService{
 
         // Check to see whether the user has a role that covers this project
         //if(count($this->authorize Action(\Action::EDIT_OBJECT, $project, $user))==0){
-        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $project, $user) == FALSE) {
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $project, $user)->getGrantAction() == FALSE) {
             throw new \Exception("You don't have a role that allows you to edit " . $project->getName());
         }
 

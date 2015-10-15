@@ -76,7 +76,7 @@ function draw($user) {
             throw new Exception('Invalid site');
         }
         //if (count(\Factory::getSiteService()->authorize Action(\Action::SITE_ADD_SERVICE, $site, $user)) == 0) {
-        if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::SITE_ADD_SERVICE, $site, $user) == FALSE){
+        if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::SITE_ADD_SERVICE, $site, $user)->getGrantAction() == FALSE){
             throw new Exception('You do not have permission to add a service to this site');
         }
     }
@@ -87,7 +87,7 @@ function draw($user) {
     if (!$user->isAdmin()) {
         foreach ($allUserSites as $s) {
             //if (count(\Factory::getSiteService()->authorize Action(\Action::SITE_ADD_SERVICE, $s, $user)) != 0) {
-            if (\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::SITE_ADD_SERVICE, $s, $user)) {
+            if (\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::SITE_ADD_SERVICE, $s, $user)->getGrantAction()) {
                 $sites[] = $s;
             }
         }

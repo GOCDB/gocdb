@@ -205,7 +205,7 @@ class ServiceGroup extends AbstractEntityService{
 //        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
 //            throw new \Exception("You don't have permission over $sg");  
 //        }
-        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user) == FALSE){
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
            throw new \Exception("You don't have permission over this service group.");  
         }
 		$this->validate($newValues['SERVICEGROUP']);
@@ -342,7 +342,7 @@ class ServiceGroup extends AbstractEntityService{
 //        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
 //            throw new \Exception("You don't have permission over $sg");  
 //        }
-        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user)==FALSE){
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction()==FALSE){
            throw new \Exception("You don't have permission over this service group.");  
         }
 		$this->em->getConnection()->beginTransaction();
@@ -373,7 +373,7 @@ class ServiceGroup extends AbstractEntityService{
 //        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
 //            throw new \Exception("You don't have permission over $sg");  
 //        }
-        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user) == FALSE){
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
            throw new \Exception("You don't have permission over this service group");  
         }
 		$this->em->getConnection()->beginTransaction();
@@ -497,7 +497,7 @@ class ServiceGroup extends AbstractEntityService{
 //        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
 //            throw new \Exception("You don't have permission over $sg");  
 //        }
-        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user) == FALSE) {
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE) {
             throw new \Exception("You don't have permission over this service group.");
         }
 
@@ -550,7 +550,7 @@ class ServiceGroup extends AbstractEntityService{
 //        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
 //            throw new \Exception("You don't have permission over $sg");  
 //        }
-        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sg, $user)==FALSE){
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction()==FALSE){
             throw new \Exception("You don't have permission over ". $sg->getName());
         }
     }
