@@ -43,7 +43,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 		<div class="form-group" id="severityGroup">
 			<label for="severity">Severity:</label> <select class="form-control"
 				name="SEVERITY" id="severity" size="2">
-				<?php if($severity == 'Outage'): ?>
+				<?php if($severity == 'OUTAGE'): ?>
 				<option value="OUTAGE" SELECTED>Outage</option>
 				<option value="WARNING">Warning</option>
 				<?php else: ?>
