@@ -70,16 +70,25 @@ function showAllSites(){
     if(isset($_GET['selectedSiteKeyValue'])) {
         $siteKeyValues = $_GET['selectedSiteKeyValue'];
     }
+
+//    if(!empty($_GET['scope'])) { 
+//	print_r($_GET['scope']); 
+//	foreach($_GET['scope'] as $key => $val){
+//	    print_r($key. ' '.$val); 
+//	}
+//	die('forced diave');
+//    }
    
     $scope = '%%';
     if(!empty($_GET['scope'])) { 
        $scope = $_GET['scope'];
-    }
+       }
 	
     $serv = \Factory::getSiteService();
 
-    $params['scopes']=  \Factory::getScopeService()->getScopes();
+    $params['scopes']=  \Factory::getScopeService()->getScopes(); 
     $params['sites'] = $serv->getSitesBy($ngi, $prodStatus, $certStatus, $scope, $showClosed, null, $siteKeyNames, $siteKeyValues); 
+    //$params['sites'] = $serv->getSitesByTest2(); 
     $params['NGIs'] = $serv->getNGIs();
     $params['prodStatuses'] = $serv->getProdStatuses();
         
