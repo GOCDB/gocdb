@@ -227,32 +227,36 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Service Group Extension Properties</span>        
         <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table" >Value</th>  
+        <table id="sgExtensionPropsTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>  
                 <?php if(!$params['portalIsReadOnly']): ?>
-                <th class="site_table" >Edit</th>  
-                <th class="site_table" >Remove</th>  
+                <th>Edit</th>  
+                <th>Remove</th>  
                 <?php endif; ?>              
             </tr>
+	    </thead>
+	    <tbody>
             <?php
-            $num = 2;
+            //$num = 2;
             foreach($serivceGroupProperties as $sp) {
 	            ?>
 
-	            <tr class="site_table_row_<?php echo $num ?>">
-	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyName()); ?></td>
-	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyValue()); ?></td>
+	            <tr>
+	                <td style="width: 35%;"><?php xecho($sp->getKeyName()); ?></td>
+	                <td style="width: 35%;"><?php xecho($sp->getKeyValue()); ?></td>
 	                <?php if(!$params['portalIsReadOnly']): ?>	                
-	               	<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-	                <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
+	               	<td style="width: 10%;"><a href="index.php?Page_Type=Edit_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+	                <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
 	                <?php endif; ?>
 	            </tr>
 	            <?php
-	            if($num == 1) { $num = 2; } else { $num = 1; }
+	            //if($num == 1) { $num = 2; } else { $num = 1; }
             }
             ?>
+	    </tbody>
         </table>
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
@@ -304,3 +308,27 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
     } ?>
         
 </div>
+
+
+    <script type="text/javascript">
+	$(document).ready(function () {
+
+	    // sort on first and second table cols only 
+	    $("#sgExtensionPropsTable").tablesorter({
+		// pass the headers argument and assing a object 
+		headers: {
+		    // assign the third column (we start counting zero) 
+		    2: {
+			// disable it by setting the property sorter to false 
+			sorter: false
+		    },
+		    3: {
+			// disable it by setting the property sorter to false 
+			sorter: false
+		    }
+		}
+	    });
+
+	}
+	);
+    </script>  

@@ -310,36 +310,31 @@ $siteProperties = $site->getSiteProperties();
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Site Extension Properties</span>        
         <img src="<?php echo \GocContextPath::getPath() ?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table" >Value</th>  
-		<?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
-    		<th class="site_table" >Edit</th>  
-    		<th class="site_table" >Remove</th>  
-		<?php endif; ?>              
-            </tr>
-	    <?php
-	    $num = 2;
-	    foreach ($siteProperties as $sp) {
-		?>
-
-    	    <tr class="site_table_row_<?php echo $num ?>">
-    		<td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyName()); ?></td>
-    		<td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyValue()); ?></td>
-		    <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>	                
-			<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Site_Property&propertyid=<?php echo($sp->getId()); ?>&id=<?php echo($site->getId()); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/pencil.png"/></a></td>
-			<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Site_Property&propertyid=<?php echo $sp->getId(); ?>&id=<?php echo $site->getId(); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/cross.png"/></a></td>
-		    <?php endif; ?>
-    	    </tr>
+        <table id="siteExtensionPropsTable"  class="table table-striped table-condensed tablesorter">
+	    <thead>
+		<tr>
+		    <th>Name</th>
+		    <th>Value</th>  
+		    <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
+		    <th>Edit</th>  
+		    <th>Remove</th>  
+		    <?php endif; ?>              
+		</tr>
+	    </thead>
+	    <tbody>
 		<?php
-		if ($num == 1) {
-		    $num = 2;
-		} else {
-		    $num = 1;
-		}
-	    }
-	    ?>
+		foreach ($siteProperties as $sp) {
+		    ?>
+		<tr>
+		    <td style="width: 35%;"><?php xecho($sp->getKeyName()); ?></td>
+		    <td style="width: 35%;"><?php xecho($sp->getKeyValue()); ?></td>
+			<?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>	                
+			    <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Site_Property&propertyid=<?php echo($sp->getId()); ?>&id=<?php echo($site->getId()); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/pencil.png"/></a></td>
+			    <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Site_Property&propertyid=<?php echo $sp->getId(); ?>&id=<?php echo $site->getId(); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/cross.png"/></a></td>
+			<?php endif; ?>
+		</tr>
+		<?php } ?>
+	    </tbody>
         </table>
         <!--  only show this link if we're in read / write mode -->
 	<?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
@@ -581,3 +576,25 @@ $siteProperties = $site->getSiteProperties();
     ?>
 
 </div>
+
+<script>
+   $(document).ready(function() 
+    { 
+	// sort on first and second table cols only 
+        $("#siteExtensionPropsTable").tablesorter({ 
+        // pass the headers argument and assing a object 
+        headers: { 
+            // assign the third column (we start counting zero) 
+            2: { 
+                // disable it by setting the property sorter to false 
+                sorter: false 
+            }, 
+            3: { 
+                // disable it by setting the property sorter to false 
+                sorter: false 
+            } 
+        } 
+    });  
+    } 
+);  
+</script>  

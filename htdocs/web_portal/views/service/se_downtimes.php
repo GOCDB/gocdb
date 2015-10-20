@@ -16,12 +16,12 @@
         <div class="listContainer">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">All Downtimes (Year-Month-Day Time in UTC)</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-            <table id="allServiceDowntimesTable" class="table table-striped table-condensed tablesorter" style="clear: both; width: 100%;">
+            <table id="allServiceDowntimesTable" class="table table-striped table-condensed tablesorter">
 		<thead
 		    <tr>
 			<th>Description</th>
-			<th style="width: 20%">From</th>
-			<th style="width: 20%">To</th>
+			<th>From</th>
+			<th>To</th>
 		    </tr>
 		</thead>
 		<tbody>
@@ -36,8 +36,8 @@
 			    </a>
 			</td>
 			
-			<td class="site_table"><?php echo $downtime->getStartDate()->format('Y-m-d H:i'/*$downtime::DATE_FORMAT*/); ?></td>
-			<td class="site_table"><?php echo $downtime->getEndDate()->format('Y-m-d H:i'/*$downtime::DATE_FORMAT*/); ?></td>
+			<td style="width: 20%"><?php echo $downtime->getStartDate()->format('Y-m-d H:i'/*$downtime::DATE_FORMAT*/); ?></td>
+			<td style="width: 20%"><?php echo $downtime->getEndDate()->format('Y-m-d H:i'/*$downtime::DATE_FORMAT*/); ?></td>
 		    </tr>
 		    <?php } ?>
 		</tbody>

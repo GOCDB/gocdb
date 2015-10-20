@@ -12,33 +12,45 @@
         
         <!--  Downtimes -->
         <div class="listContainer">
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">All Downtimes</span>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">All Downtimes (Year-Month-Day Time in UTC)</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-            <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
-                	<th class="site_table">Description</th>
-                    <th class="site_table" style="width: 9em;">From</th>
-                    <th class="site_table" style="width: 9em;">To</th>
+            <table id="allSgDowntimesTable" class="table table-striped table-condensed tablesorter" >
+		<thead>
+                <tr>
+		    <th>Description</th>
+                    <th>From</th>
+                    <th>To</th>
                 </tr>
+		</thead>
+		<tbody>
                 <?php
-	                $num = 2;
+	                //$num = 2;
 	                foreach($params['downtimes'] as $d) {
                 ?>
                 
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table">
+                <tr>
+                    <td>
                     	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
                     		<?php xecho($d->getDescription()) ?>
                     	</a>
                     </td>
-                    <td class="site_table"><?php echo $d->getStartDate()->format($d::DATE_FORMAT); ?></td>
-                    <td class="site_table"><?php echo $d->getStartDate()->format($d::DATE_FORMAT); ?></td>
+                    <td style="width: 20%"><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/); ?></td>
+                    <td style="width: 20%"><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/); ?></td>
                 </tr>
                 <?php 
-                	if($num == 1) { $num = 2; } else { $num = 1; }
+                	//if($num == 1) { $num = 2; } else { $num = 1; }
                 }
                 ?>
+		</tbody>
             </table>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function ()
+    {
+	$("#allSgDowntimesTable").tablesorter();
+    }
+    );
+</script> 
