@@ -13,7 +13,7 @@ use Doctrine\ORM\EntityManager;
 
 /** 
  * This class is used to apply additional filtering to a query according to the
- * scope tag an entity has. 
+ * scope tags that are joined to the target entity. 
  * <p> 
  * The class takes a Doctrine {@link QueryBuilder} object which represents 
  * the current query that will be appended/updated. This query may contain other 
@@ -29,275 +29,291 @@ use Doctrine\ORM\EntityManager;
  */
 class ScopeQueryBuilder{
 
-	private $binds = null;	
-	private $qb = null;
-	private $scopeMatch = null;
-	private $bc;
-	private $tableType;
-	private $em;
-	
-	private function setQB($qb){
-		$this->qb = $qb;
-	}
-	
-	private function setScopeMatch($scopeMatch){
-		$this->scopeMatch = $scopeMatch;
-	}
-	
-	public function getQB(){
-		return $this->qb;
-	}
-		
-	public function getBinds(){
-		return $this->binds;
-	}
-	
-	private function setBindCount($bc){
-		$this->bc= $bc;
-	}
-	
-	public function getBindCount(){
-		return $this->bc;
-	}
-	
-	private function setTableType($tableType, $tId){
-		$this->tableType = $tableType;
-		$this->tId = $tId;
-	}
-	
-	private function getTableType(){
-		return $this->tableType;
-	}
-	
-	/**
+    private $binds = null;
+    private $qb = null;
+    private $scopeMatch = null;
+    private $bc;
+    private $tableType;
+    private $em;
+
+    private function setQB($qb) {
+	$this->qb = $qb;
+    }
+
+    private function setScopeMatch($scopeMatch) {
+	$this->scopeMatch = $scopeMatch;
+    }
+
+    public function getQB() {
+	return $this->qb;
+    }
+
+    /**
+     * 2D array of postitional bind parameter to bindValue mappings for the 
+     * new WHERE clauses that are appended to the QueryBuilder.  
+     * <p>
+     * Each outer element stores a child array that has two elements; 
+     * 1st element stores the parameterBindCounter (int) used for the positional bind param. 
+     * 2nd element stores the bindValue (mixed).
+     * 
+     * @return array counter-to-value mapping array or empty array    
+     */
+    public function getBinds() {
+	return $this->binds;
+    }
+
+    private function setBindCount($bc) {
+	$this->bc = $bc;
+    }
+
+    public function getBindCount() {
+	return $this->bc;
+    }
+
+    private function setTableType($tableType, $tId) {
+	$this->tableType = $tableType;
+	$this->tId = $tId;
+    }
+
+    private function getTableType() {
+	return $this->tableType;
+    }
+
+    /**
      * The constructor takes the scope value(s) to search. It takes the currently built query which
      * it will then append the sub query to. It takes the bind count which is used as a unique identifier
      * to create bind variables. It takes the table type that the scope is from, eg Service or Site and the 
      * identifier used in the main query for this table. Eg Site would be S and Service would be se.   
-	 * 
-	 * @param string $scopeParameter (either single scope tag value 'EGI' or comma sep list 'EGI,EUDAT,SCOPEX')
-	 * @param string $scopeMatch ('any' or 'all') 
-     * @param \Doctrine\ORM\QueryBuilder $qb
-     * @param \Doctrine\ORM\EntityManager $em
+     * 
+     * @param string $scopeParameter either null, a single scope tag value e.g. 'EGI' or comma sep list 'EGI,EUDAT,SCOPEX'
+     * @param string $scopeMatch either null, 'any' or 'all' 
+     * @param \Doctrine\ORM\QueryBuilder $qb QueryBuilder instance to update
+     * @param \Doctrine\ORM\EntityManager $em EntityManager to use for query 
      * @param int $bc Current bind count, used to create unique bind param names 
      *        (bind params will be created by appending an int incremented from this value)
      * @param string $tableType The name of the entity that owns the scopes, 
      *        e.g. 'Site' or 'Service'
      * @param string $tId The alias used in the query for this table, ie 's' or 'se'
-	 */
-	public function __construct($scopeParameter, $scopeMatch, \Doctrine\ORM\QueryBuilder 
+     */
+    public function __construct($scopeParameter, $scopeMatch, \Doctrine\ORM\QueryBuilder 
                                 $qb, \Doctrine\ORM\EntityManager $em, $bc, $tableType, $tId){				
-		$this->em=$em;
-		$this->setQB($qb);
-		$this->setBindCount($bc);
-		$this->setScopeMatch($scopeMatch);
-		$this->setTableType($tableType, $tId);
-		
-		if($scopeParameter==NULL && !isset($scopeParameter)){
-			$this->createDefaultSubQuery();
-		}else{
-			$this->createSubQuery($scopeParameter, $scopeMatch);
-		}
-		
-	}
-	
-	/** 
-	 *  The TTS alias used in these statements refers to Table To Select,
-	 *  a generic term to which means less inserting of unique names into the 
-	 *  query when selecting from sites, ngis, services etc. 
-	 */
-	
-	/**
-	 * Generates the sub query from the scope that will be appended
-	 * to the existing query
-	 * 
-	 * @param String $scopeParameters
-	 * @param String $scopeMatch
-	 */
-	private function createSubQuery($scopeParameters, $scopeMatch){
-		/*If user has specified "&scope=" as a parameter then don't add any 
-		 *scope clause to the query - do nothing with scopes including no default*/
-		if($scopeParameters!=NULL){		
-			$tId = $this->tId;
-			$bc=$this->getBindCount();
-			$tableType = $this->tableType;
-			$qb = $this->getQB();
-			$valuesToBind;
-			
-			//If scopes does not contain a comma then not a list do a standard query		
-			if(!strpos($scopeParameters, ',')){
-				$qb2 = $this->em->createQueryBuilder();
-				$qb2->select('tts')
-				->from($tableType, 'tts')
-				->innerJoin('tts.scopes', 'sc2')
-				->where($qb->expr()->eq('sc2.name', '?'.++$bc));				
-				
-				//Join sub-clause onto main query
-				$qb ->andWhere($qb->expr()->in($tId, $qb2->getDQL()));
-				//Store bind name and variable for later binding
-				$this->binds[] = array($bc, $scopeParameters); 
-			}else{
-				//Contains multiple terms do a where IN query
-				$terms = $scopeParameters;
-				
-				
-				//If no scope match was provided get the default
-				if($scopeMatch == null){
-	               $configService = \Factory::getConfigService();
-				   $scopeMatch = $configService->getDefaultScopeMatch ();
-				}
-				
-				//If scope match was all then use having and group by to ensure all
-				if($scopeMatch == 'all'){
-				    $qb2 = $this->em->createQueryBuilder();
-				    $qb2->select('sc2.id')
-				    ->from('Scope', 'sc2')
-				    ->where($qb2->expr()->in('sc2.name', '?'.++$bc));
-				    //Store bind name and variable for later binding
-				    $this->binds[] = array($bc, $terms);
-				    /**------------IMPORTANT-------------------------------------------------
-				     * We need this extra parent clause when performing a group by and having.
-				    * Without this doctrine will get confused when creating the SQL it sends
-				    * to the database. At first look this extra clause will seem un-needed
-				    * but this is not the case.
-				    */
-				    $qb1 = $this->em->createQueryBuilder();
-				    $qb1->select('tts.id')
-				    ->from($tableType, 'tts')
-				    ->innerJoin('tts.scopes', 'sc1')
-				    ->where($qb1->expr()->in('sc1.id', $qb2->getDQL()));
-				    
-					$qb1->groupBy('tts.id')
-					->andHaving($qb1->expr()->eq($qb1->expr()->count('tts.id'), '?'.++$bc));
-					$this->binds[] = array($bc, count(explode(',', $terms)));	//Count split terms
-					//Join sub-clause onto main query
-					$qb ->andWhere($qb->expr()->in($tId, $qb1->getDQL()));
-				}else{
-				    /* Any scope_match so no need for extra parent query as we aren't using
-				     * having and group by.
-				     */
-				    
-				    $qb2 = $this->em->createQueryBuilder();
-				    $qb2->select('tts')
-    				    ->from($tableType, 'tts')
-    				    ->innerJoin('tts.scopes', 'sc2')
-    				    ->where($qb->expr()->in('sc2.name', '?'.++$bc));
-				    $this->binds[] = array($bc, $terms);
-				    				    
-				    //Join sub-clause onto main query
-				    $qb ->andWhere($qb->expr()->in($tId, $qb2->getDQL()));
-				    //Store bind name and variable for later binding
-				}
-			
+	$this->em = $em;
+	$this->setQB($qb);
+	$this->setBindCount($bc);
+	$this->setScopeMatch($scopeMatch);
+	$this->setTableType($tableType, $tId);
 
-			}				
-			//finally replace original query with updated joined query
-				$this->setBindCount($bc);		
-				$this->setQB($qb);
-		}
+	if ($scopeParameter == NULL && !isset($scopeParameter)) {
+	    $this->createDefaultSubQuery();
+	} else {
+	    $this->createSubQuery($scopeParameter, $scopeMatch);
 	}
+    }
 	
-
-	/**
-	 * When no scope is specified the default is set via defaultScope 
-	 * which in turn is read from a local_info.xml file in config folder.
-	 */
-	private function createDefaultSubQuery(){
-	    /* If no default scope is provided in local_info then don't do
-	     * anything to the query and leave it without a where clause for scope
-	     */	        
-	    if($this->defaultScope() != null){	    
-    		$tId = $this->tId;
-    		$tableType = $this->getTableType();
-    		$qb = $this->getQB();
-    		$bc = $this->getBindCount();
-    		$qb2 = $this->em->createQueryBuilder();
-    		$qb2->select('tts')
-    		->from($tableType, 'tts')
-    		->innerJoin('tts.scopes', 'sc2')
-    		->where($qb->expr()->like('sc2.name', '?'.++$bc));
-    
-    		//Add subquery to main query
-    		$qb ->andWhere($qb->expr()->in($tId, $qb2->getDQL()));
-    		
-    		//Store bind name and variable for later binding
-    		$this->binds[] = array($bc, $this->defaultScope()); 															 
-    		//Replace original query with updated query
-    		$this->setBindCount($bc);				
-    		$this->setQB($qb);
-	    }
-	}
-	
-	/**
-	 * Gets the name of the default scope from the config service 
-	 * and returns it as a string value. 
-	 * @return $scopes
-	 */
-	private function defaultScope() {
-	    $configService = \Factory::getConfigService();
-		$scopes = $configService->getDefaultScopeName();
-
-		if($scopes==null || trim($scopes) ==""){
-		  return null;
-		}else{
-		  return $scopes;  
-		}
-		
-	}
+    /** 
+     *  The TTS alias used in these statements refers to Table To Select,
+     *  a generic term to which means less inserting of unique names into the 
+     *  query when selecting from sites, ngis, services etc. 
+     */
 	
     /**
-     * This is a backup function encase the other function utilizing group by and having 
+     * Generates the sub query from the scope that will be appended
+     * to the existing query
+     * 
+     * @param String $scopeParameters either null, a single scope tag value e.g. 
+     *    'EGI' or comma sep list 'EGI,EUDAT,SCOPEX'
+     * @param String $scopeMatch either null, 'any' or 'all' 
+     */
+    private function createSubQuery($scopeParameters, $scopeMatch) {
+	// If user has specified "&scope=" as a parameter then don't add any 
+	// scope clause to the query - do nothing with scopes including no default 
+	if ($scopeParameters != NULL) {
+	    $tId = $this->tId;
+	    $bc = $this->getBindCount();
+	    $tableType = $this->tableType;
+	    $qb = $this->getQB();
+
+	    //If scopes does not contain a comma then it is not a list so do a standard query		
+	    if (!strpos($scopeParameters, ',')) {
+		$qb2 = $this->em->createQueryBuilder();
+		$qb2->select('tts')
+			->from($tableType, 'tts')
+			->innerJoin('tts.scopes', 'sc2')
+			->where($qb->expr()->eq('sc2.name', '?' . ++$bc));
+
+		//Join sub-clause onto main query
+		$qb->andWhere($qb->expr()->in($tId, $qb2->getDQL()));
+		//Store bind name and variable for later binding
+		$this->binds[] = array($bc, $scopeParameters);
+	    } else {
+		//$scopeParameters Contains multiple scope tags, so construct a 'WHERE IN' query
+		// trim whitespace and trailing comma (if present) 
+		$scopeParameters = trim($scopeParameters); 
+		$scopeParameters = rtrim($scopeParameters, ','); 
+		
+		//If no scope match was provided get the default
+		if ($scopeMatch == null) {
+		    $configService = \Factory::getConfigService();
+		    $scopeMatch = $configService->getDefaultScopeMatch();
+		}
+
+		//If scope match was 'all' then construct query using HAVING and 
+		//GROUP BY clauses to ensure all scopes are matched 
+		if ($scopeMatch == 'all') {
+		    $qb2 = $this->em->createQueryBuilder();
+		    $qb2->select('sc2.id')
+			    ->from('Scope', 'sc2')
+			    ->where($qb2->expr()->in('sc2.name', '?' . ++$bc));
+		    
+		    // Store bind name and value for later binding, e.g. 
+		    // $this->binds[] = array(15, array('EGI', 'WLCG' ,'Local'))
+		    $scopesArray = explode(',', $scopeParameters);
+		    $this->binds[] = array($bc, $scopesArray);
+		    
+		    /* ------------IMPORTANT-------------------------------------------------
+		     * We need this extra parent clause when performing a GROUP BY and HAVING.
+		     * Without this doctrine will get confused when creating the SQL it sends
+		     * to the database. At first look this extra clause will seem un-needed
+		     * but this is not the case.
+		     */
+		    $qb1 = $this->em->createQueryBuilder();
+		    $qb1->select('tts.id')
+			    ->from($tableType, 'tts')
+			    ->innerJoin('tts.scopes', 'sc1')
+			    ->where($qb1->expr()->in('sc1.id', $qb2->getDQL()));
+
+		    $qb1->groupBy('tts.id')
+			    ->andHaving($qb1->expr()->eq($qb1->expr()->count('tts.id'), '?' . ++$bc));
+		    
+		    // Count split terms and store, e.g. array(15, 3), is needed
+		    // for HAVING clause above 
+		    $this->binds[] = array($bc, count($scopesArray)); 
+		    
+		    //Join sub-clause onto main query
+		    $qb->andWhere($qb->expr()->in($tId, $qb1->getDQL()));
+		    
+		} else {
+		    // scope_match == 'any' so there is no need for an extra 
+		    // parent query as we aren't using HAVING and GROUP BY.
+
+		    $qb2 = $this->em->createQueryBuilder();
+		    $qb2->select('tts')
+			    ->from($tableType, 'tts')
+			    ->innerJoin('tts.scopes', 'sc2')
+			    ->where($qb->expr()->in('sc2.name', '?' . ++$bc));
+		    
+		    // bind the array of scope values 
+		    $this->binds[] = array($bc, explode(',', $scopeParameters));
+
+		    //Join sub-clause onto main query
+		    $qb->andWhere($qb->expr()->in($tId, $qb2->getDQL()));
+		}
+	    }
+	    //finally replace original query with updated joined query
+	    $this->setBindCount($bc);
+	    $this->setQB($qb);
+	}
+    }
+
+
+    /**
+     * When no scope is specified the default is set via defaultScope 
+     * which in turn is read from a local_info.xml file in config folder.
+     */
+    private function createDefaultSubQuery() {
+	// If no default scope is provided in local_info then don't do
+	// anything to the query and leave it without a where clause for scope
+	if ($this->defaultScope() != null) {
+	    $tId = $this->tId;
+	    $tableType = $this->getTableType();
+	    $qb = $this->getQB();
+	    $bc = $this->getBindCount();
+	    $qb2 = $this->em->createQueryBuilder();
+	    $qb2->select('tts')
+		    ->from($tableType, 'tts')
+		    ->innerJoin('tts.scopes', 'sc2')
+		    ->where($qb->expr()->like('sc2.name', '?' . ++$bc));
+
+	    //Add subquery to main query
+	    $qb->andWhere($qb->expr()->in($tId, $qb2->getDQL()));
+
+	    //Store bind name and variable for later binding
+	    $this->binds[] = array($bc, $this->defaultScope());
+	    //Replace original query with updated query
+	    $this->setBindCount($bc);
+	    $this->setQB($qb);
+	}
+    }
+
+    /**
+     * Gets the name of the default scope from the config service 
+     * and returns it as a string value. 
+     * @return $scopes
+     */
+    private function defaultScope() {
+	$configService = \Factory::getConfigService();
+	$scopes = $configService->getDefaultScopeName();
+
+	if ($scopes == null || trim($scopes) == "") {
+	    return null;
+	} else {
+	    return $scopes;
+	}
+    }
+
+    /**
+     * This is a backup function incase the other function utilizing group by and having 
      * breaks. This can be switched over to with a function name change and will use 
      * repeated AND/OR queries to filter by scope
-	 * 
-	 * @param String $scopeParameters
-	 * @param String $scopeMatch
-	 */
-	private function BACKUP_createSubQuery($scopeParameters, $scopeMatch){
-	    /*If user has specified "&scope=" as a parameter then don't add any
-	     *scope clause to the query - do nothing with scopes including no default*/
-	    if($scopeParameters!=NULL){
-	        $tId = $this->tId;
-	        $bc=$this->getBindCount();
-	        $tableType = $this->getTableType();
-	        $qb = $this->getQB();
-	        $valuesToBind;
-	        	
-	        //If scopes does not contain a comma then not a list do a standard query
-	        if(!strpos($scopeParameters, ',')){
-	            $qb2 = $this->em->createQueryBuilder();
-	            $qb2->select('tts')
-	            ->from($tableType, 'tts')
-	            ->innerJoin('tts.scopes', 'sc2')
-	            ->where($qb->expr()->eq('sc2.name', '?'.++$bc));
-	    
-	            //Join sub-clause onto main query
-	            $qb ->andWhere($qb->expr()->in($tId, $qb2->getDQL()));
-	            //Store bind name and variable for later binding
-	            $this->binds[] = array($bc, $scopeParameters);
-	        }else{
-	            $splitScopes = explode(',', $scopeParameters);
-	            $uID=0;
-	            //For each supplied scope create a new AND or OR clause
-	            foreach($splitScopes as $scope){
-	                $qb1 = $this->em->createQueryBuilder();
-	                $qb1->select('tts'.$uID)
-    	                ->from($tableType, 'tts'.$uID)
-    	                ->innerJoin('tts'.$uID.'.scopes', 'sc'.$uID)
-    	                ->where($qb->expr()->eq('sc'.$uID++.'.name', '?'.++$bc));
-	                 
-	                //Join sub-clause onto main query
-				    if($scopeMatch == 'all'){
-	                   $qb ->andWhere($qb->expr()->in($tId, $qb1->getDQL()));
-				    }else{
-				       $qb ->orWhere($qb->expr()->in($tId, $qb1->getDQL()));
-				    }
-	                //Store bind name and variable for later binding
-	                $this->binds[] = array($bc, $scope);
-	            }
-	        }
+     * 
+     * @param String $scopeParameters
+     * @param String $scopeMatch
+     */
+    private function BACKUP_createSubQuery($scopeParameters, $scopeMatch) {
+	/* If user has specified "&scope=" as a parameter then don't add any
+	 * scope clause to the query - do nothing with scopes including no default */
+	if ($scopeParameters != NULL) {
+	    $tId = $this->tId;
+	    $bc = $this->getBindCount();
+	    $tableType = $this->getTableType();
+	    $qb = $this->getQB();
+	    $valuesToBind;
+
+	    //If scopes does not contain a comma then not a list do a standard query
+	    if (!strpos($scopeParameters, ',')) {
+		$qb2 = $this->em->createQueryBuilder();
+		$qb2->select('tts')
+			->from($tableType, 'tts')
+			->innerJoin('tts.scopes', 'sc2')
+			->where($qb->expr()->eq('sc2.name', '?' . ++$bc));
+
+		//Join sub-clause onto main query
+		$qb->andWhere($qb->expr()->in($tId, $qb2->getDQL()));
+		//Store bind name and variable for later binding
+		$this->binds[] = array($bc, $scopeParameters);
+	    } else {
+		$splitScopes = explode(',', $scopeParameters);
+		$uID = 0;
+		//For each supplied scope create a new AND or OR clause
+		foreach ($splitScopes as $scope) {
+		    $qb1 = $this->em->createQueryBuilder();
+		    $qb1->select('tts' . $uID)
+			    ->from($tableType, 'tts' . $uID)
+			    ->innerJoin('tts' . $uID . '.scopes', 'sc' . $uID)
+			    ->where($qb->expr()->eq('sc' . $uID++ . '.name', '?' . ++$bc));
+
+		    //Join sub-clause onto main query
+		    if ($scopeMatch == 'all') {
+			$qb->andWhere($qb->expr()->in($tId, $qb1->getDQL()));
+		    } else {
+			$qb->orWhere($qb->expr()->in($tId, $qb1->getDQL()));
+		    }
+		    //Store bind name and variable for later binding
+		    $this->binds[] = array($bc, $scope);
+		}
 	    }
-	}	
+	}
+    }
 
 }
 
