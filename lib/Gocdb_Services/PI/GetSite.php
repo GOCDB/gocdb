@@ -75,7 +75,7 @@ class GetSite implements IPIQuery {
 
 	$qb = $this->em->createQueryBuilder();
 
-	$qb->select('s', 'sc', 'sp', 'i', 'cs', 'c', 'n', 'sgrid', 'ti') //, 'tz')
+	$qb->select('DISTINCT s', 'sc', 'sp', 'i', 'cs', 'c', 'n', 'sgrid', 'ti') //, 'tz')
 		->from('Site', 's')
 		->leftJoin('s.siteProperties', 'sp')
 		->leftJoin('s.scopes', 'sc')

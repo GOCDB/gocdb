@@ -358,16 +358,20 @@ class Site extends AbstractEntityService{
         }
     }
    
-//    public function getSitesByTest2(){
-//        require_once __DIR__.'/PI/GetSite.php'; 
-//	$getSite = new GetSite($this->em); 
-//        //$params = array('scope' => 'EGI,DAVE', 'sitename' => 'GRIDOPS-GOCDB');  	
-//	$params = array('scope' => 'EGI,Local', 'scope_match' => 'any', ''); //, 'certification_status' => 'Certified'); 
-//	$getSite->validateParameters($params); 
-//	$getSite->createQuery(); 
-//	$sites = $getSite->executeQuery(); 
-//	return $sites; 
-//    }
+    public function getSitesByApiParams($params){
+        require_once __DIR__.'/PI/GetSite.php'; 
+	$getSite = new GetSite($this->em); 
+	//$params = array('sitename' => 'GRIDOPS-GOCDB');  
+        //$params = array('scope' => 'EGI,DAVE', 'sitename' => 'GRIDOPS-GOCDB');  	
+	//$params = array('scope' => 'EGI,Local', 'scope_match' => 'any', 'exclude_certification_status' => 'Closed');  
+	//$params = array('scope' => 'EGI,Local', 'scope_match' => 'all');  
+	//$params = array('scope' => 'EGI,DAVE', 'scope_match' => 'all');  
+	//$params = array('extensions' => '(aaa=123)(dave=\(someVal with parethesis\))(test=test)'); 
+	$getSite->validateParameters($params); 
+	$getSite->createQuery(); 
+	$sites = $getSite->executeQuery(); 
+	return $sites; 
+    }
 
     
     /**

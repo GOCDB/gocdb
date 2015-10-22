@@ -84,7 +84,7 @@ class Helpers {
      */
     public function validateParams($supportedParams, $testParams) {
 	if (!is_array($supportedParams) || !is_array($testParams)) {
-	    throw new \InvalidArgumentException(); 
+	    throw new \InvalidArgumentException('Invalid parameters passed to PI query'); 
 	}
 
 	// Check the parameter keys are supoported

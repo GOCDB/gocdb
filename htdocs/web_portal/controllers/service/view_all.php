@@ -178,13 +178,22 @@ function drawSEs(){
     if(count($ses) == 0) {
     	$startRecord = 0;
     }
-    
+  
+    // TODO: 
+    //$filterParams = array(); 
+    //$filterParams['scope'] = ''; 
+    // Issue two query invocations: 1st to get service count (no paging), 
+    // 2nd to get service objects (with paging)  
+    //$seCountByParams = $seServ->getServiceByApiParams($filterParams, true);
+    //print_r('dave['.$seCountByParams.']'); 
+    // $filterParams['page'] = 1; 
+    // $seByParams = $seServ->getServiceByApiParams($filterParams);  
     
     /* Doctrine will provide keynames that are the same even when selecting distinct becase the object
      * is distinct even though the name is not unique. To avoid showing the same name repeatdly in the filter
     * we will load all the keynames into an array before making it unique
     */
-	$keynames=array();		
+    $keynames=array();		
     foreach($exServ->getServiceExtensionsKeyNames() as $extension){
         $keynames[] = $extension->getKeyName();
     }

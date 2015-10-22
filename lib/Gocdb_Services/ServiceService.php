@@ -77,7 +77,25 @@ class ServiceService extends AbstractEntityService{
        $query = $this->em->createQuery($dql);
        return $query->getResult(); 
     }
-    
+   
+
+    public function getServiceByApiParams($params, $count=false){
+        require_once __DIR__.'/PI/GetService.php'; 
+	$getService = new GetService($this->em); 
+	$getService->validateParameters($params); 
+	$getService->createQuery();
+	if($count){
+	    $qb = $getService->getQueryBuilder(); 
+	    // re-set the select clause (want to count, not fetch all the ses) 
+	    $qb->select('count(DISTINCT se)');
+	    $query = $qb->getQuery(); 
+	    $seCount = $query->getSingleScalarResult(); 
+	    return $seCount; 
+	} else {
+           $services = $getService->executeQuery(); 
+	   return $services; 
+	}
+    }
 
     /**
      * Return all {@link \Service} entities that satisfy the specfied search parameters.  
@@ -138,7 +156,7 @@ class ServiceService extends AbstractEntityService{
     	$qb = $this->em->createQueryBuilder();
     	     	
     	if($count){
-    	    $qb ->select('DISTINCT count(se)');
+    	    $qb ->select('count(DISTINCT se)');
     	}else{
         	$qb ->select('DISTINCT se', 'si', 'st', 'cs', 'n');        	
     	}

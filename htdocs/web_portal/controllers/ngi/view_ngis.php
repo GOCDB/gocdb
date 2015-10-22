@@ -23,19 +23,39 @@
 function view_ngis() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     
-    $scope = '%%';
-    if(!empty($_GET['scope'])) { 
-       $scope = $_GET['scope'];
-    }
+    $filterParams = array(); 
+    
+//    $scope = '%%';
+//    if(!empty($_GET['scope'])) { 
+//       $scope = $_GET['scope'];
+//    }
+
+    // Scope parameters 
+    // By default, use an empty value to return all scopes, i.e. in the PI '&scope=' 
+    // which is same as the PI. If the 'scope' param is not set, then it would fall 
+    // back to the default scope (if set), but this is not what we want in this interface.  
+    $filterParams['scope'] = ''; 	
+    $selectedScopes = array();
+    if(!empty($_GET['mscope'])) { 
+	$scopeStringParam = ''; 
+	foreach($_GET['mscope'] as $key => $scopeVal){
+	    $scopeStringParam .= $scopeVal.','; 
+	    $selectedScopes[] = $scopeVal; 
+	}
+	$filterParams['scope'] = $scopeStringParam; 
+	$filterParams['scope_match'] = 'all';
+    } 
     
     $scopes = \Factory::getScopeService()->getScopes();
     
-    $ngis = \Factory::getNgiService()->getNGIs($scope);
+    $ngis = \Factory::getNgiService()->getNGIsByApiParams($filterParams);
+    //$ngis = \Factory::getNgiService()->getNGIs($scope);
     
     
     $params['ngis'] = $ngis;
     $params['scopes']=$scopes;
-    $params['selectedScope']=$scope;
+    //$params['selectedScope']=$scope;
+    $params['selectedScopes']=$selectedScopes;
     show_view('ngi/view_ngis.php', $params, "NGIs");
 }
 

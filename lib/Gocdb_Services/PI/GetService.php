@@ -30,9 +30,11 @@ class GetService implements IPIQuery {
     protected $query;
     protected $validParams;
     protected $em;
+    protected $queryBuilder; 
     private $helpers;
     private $serviceEndpoints;
     private $renderMultipleEndpoints;
+    
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
@@ -61,7 +63,8 @@ class GetService implements IPIQuery {
 	    'monitored',
 	    'scope',
 	    'scope_match',
-	    'extensions'
+	    'extensions',
+	    'page'
 	);
 
 	$this->helpers->validateParams($supportedQueryParams, $parameters);
@@ -79,10 +82,11 @@ class GetService implements IPIQuery {
 	$qb = $this->em->createQueryBuilder();
 
 	//Initialize base query
-	$qb->select('se', 'sp', 's', 'sc', 'el', 'c', 'n', 'st', 'elp')
+	$qb->select('DISTINCT se', 'sp', 's', 'sc', 'el', 'c', 'n', 'st', 'elp', 'sescopes')
 		->from('Service', 'se')
 		->leftjoin('se.parentSite', 's')
 		->leftjoin('s.certificationStatus', 'cs')
+		->leftJoin('se.scopes', 'sescopes')
 		->leftJoin('s.scopes', 'sc')
 		->leftJoin('se.serviceProperties', 'sp')
 		->leftjoin('se.endpointLocations', 'el')
@@ -92,6 +96,16 @@ class GetService implements IPIQuery {
 		->leftjoin('se.serviceType', 'st')
 		->andWhere($qb->expr()->neq('cs.name', '?' . ++$bc))
 		->orderBy('se.id', 'ASC');
+
+	// Validate page parameter
+	if (isset($parameters['page'])) {
+	    if (is_int(intval($parameters['page'])) && (int) $parameters['page'] > 0) {
+		$this->page = (int) $parameters['page'];
+	    } else {
+		echo "<error>Invalid 'page' parameter - must be a whole number greater than zero</error>";
+		die();
+	    }
+	}
 
 	//Add closed parameter to binds
 	$binds[] = array($bc, 'Closed');
@@ -112,7 +126,9 @@ class GetService implements IPIQuery {
 
 	//Run ScopeQueryBuilder regardless of if scope is set.
 	$scopeQueryBuilder = new ScopeQueryBuilder(
-		(isset($parameters['scope'])) ? $parameters['scope'] : null, (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null, $qb, $this->em, $bc, 'Service', 'se'
+		(isset($parameters['scope'])) ? $parameters['scope'] : null, 
+		(isset($parameters['scope_match'])) ? $parameters['scope_match'] : null,
+		$qb, $this->em, $bc, 'Service', 'se'
 	);
 
 	//Get the result of the scope builder
@@ -154,8 +170,30 @@ class GetService implements IPIQuery {
 	//Get the dql query from the Query Builder object
 	$query = $qb->getQuery();
 
+	
+	if (isset($parameters['page'])) {
+	    $maxResults = 30; //1000;
+	    $page = $parameters['page'];
+	    if ($page == 1) {
+		$offset = 0; // offset is zero-offset (starts from 0 not 1)
+	    } elseif ($page > 1) {
+		$offset = (($page - 1) * $maxResults);
+	    } else {
+		throw new \LogicException('Coding error - invalid page parameter, must be positive int.');
+	    }
+	    // sets the position of the first result to retrieve (the "offset")
+	    $query->setFirstResult($offset); 
+	    // Sets the maximum number of results to retrieve (the "limit")
+	    $query->setMaxResults($maxResults);
+	}
+	 
+        $this->queryBuilder = $qb; 
 	$this->query = $query;
 	return $this->query;
+    }
+
+    public function getQueryBuilder(){
+	return $this->queryBuilder; 
     }
 
     /**

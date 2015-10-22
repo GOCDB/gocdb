@@ -20,72 +20,84 @@
 
 	    <div class="topMargin leftFloat clearLeft">
 		<span class="">NGI: </span>
-                <select name="NGI" onchange="form.submit()">
+                <select name="NGI">
                     <option value="">(all)</option>
 		    <?php foreach ($params['NGIs'] as $ngi) { ?>
-    		    <option value="<?php xecho($ngi->getName()); ?>"<?php if ($params['selectedNgi'] == $ngi->getName()) echo " selected" ?>><?php xecho($ngi->getName()); ?></option> 
+    		    <option value="<?php xecho($ngi->getName()); ?>"
+			<?php if ($params['selectedNgi'] == $ngi->getName()){ echo " selected";} ?>>
+			    <?php xecho($ngi->getName()); ?>
+		    </option> 
 		    <?php } ?>
                 </select>
 	    </div>
 
 	    <div class="topMargin leftFloat siteFilter">
 		<span class="">Certification: </span>
-                <select name="certStatus" onchange="form.submit()">
+                <select name="certStatus" >
                     <option value="">(all)</option>
 		    <?php foreach ($params['certStatuses'] as $certStatus) { ?>
-    		    <option value="<?php xecho($certStatus->getName()); ?>"<?php if ($params['selectedCertStatus'] == $certStatus->getName()) echo " selected" ?>><?php xecho($certStatus->getName()); ?></option> 
+    		    <option value="<?php xecho($certStatus->getName()); ?>"
+			<?php if ($params['selectedCertStatus'] == $certStatus->getName()){ echo " selected";} ?> >
+			    <?php xecho($certStatus->getName()); ?>
+		    </option> 
 		    <?php } ?>   
                 </select>
 	    </div>
 
 	    <div class="topMargin leftFloat siteFilter">
 		<span class="">Infrastructure: </span>
-                <select name="prodStatus" onchange="form.submit()">
+                <select name="prodStatus" >
                     <option value="">(all)</option>
 		    <?php foreach ($params['prodStatuses'] as $prodStatus) { ?>
-    		    <option value="<?php xecho($prodStatus->getName()); ?>"<?php if ($params['selectedProdStatus'] == $prodStatus->getName()) echo " selected" ?>><?php xecho($prodStatus->getName()); ?></option> 
+    		    <option value="<?php xecho($prodStatus->getName()); ?>"
+			<?php if ($params['selectedProdStatus'] == $prodStatus->getName()){ echo " selected";} ?>>
+			    <?php xecho($prodStatus->getName()); ?>
+		    </option> 
 		    <?php } ?>   
                 </select>
 	    </div>
 
 	    <div class="topMargin leftFloat siteFilter">
 		<span class=""><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
-		<!--<select multiple="multiple" name="scope[]" size="4">-->
-		<select name="scope" onchange="form.submit()">
-                    <option value="">(all)</option>
+		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
 		    <?php foreach ($params['scopes'] as $scope) { ?>
-    		    <option value="<?php xecho($scope->getName()); ?>"><?php xecho($scope->getName()); ?></option>
-		    <?php } ?>    
+			<option value="<?php xecho($scope->getName()); ?>" 
+			    <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
+			    <?php xecho($scope->getName()); ?>
+			</option>
+		    <?php } ?>
 		</select>
 	    </div>
 
 	    <div class="topMargin leftFloat siteFilter">
 		<span class="">Include Closed Sites: </span>
-		<input type="checkbox" value=""<?php if ($params['showClosed'] == true) echo " checked=checked" ?> name="showClosed" onchange="form.submit()"> 
+		<input type="checkbox" value=""<?php if ($params['showClosed'] == true){ echo " checked=checked";} ?> name="showClosed"> 
 	    </div>
 	    <br>  
 
 	    <div class="topMargin leftFloat siteFilter">
 		<span class="">Extension Name:</span>
-                <select name="siteKeyNames" onchange="form.submit()">
+                <select name="siteKeyNames">
 		    <option value="">(none)</option>
 		    <?php foreach ($params['siteKeyNames'] as $siteExtensions) { ?>
-    		    <option value="<?php echo $siteExtensions; ?>"<?php if ($params['selectedSiteKeyNames'] == $siteExtensions) echo " selected" ?>><?php echo $siteExtensions; ?></option> 
+    		    <option value="<?php echo $siteExtensions; ?>"
+			<?php if ($params['selectedSiteKeyNames'] == $siteExtensions) echo " selected" ?>>
+			    <?php echo $siteExtensions; ?>
+		    </option> 
 		    <?php } ?>                  
                 </select>
 	    </div> 
-	    
-	    <?php if ($params['selectedSiteKeyNames'] != "") { ?> 
+
     	    <div class="topMargin leftFloat siteFilter">
     		<span class="middle" style="margin-right: 0.4em">Extension Value: </span>
-    		<input class="middle" style="width: 5.5em;" type="text" name="selectedSiteKeyValue" <?php if (isset($params['selectedSiteKeyValue'])) echo "value=\"{$params['selectedSiteKeyValue']}\""; ?>/>
-    		<input class="middle" type="image" src="<?php echo \GocContextPath::getPath() ?>img/enter.png" name="image" width="20" height="20">        
+    		<input class="middle" type="text" name="selectedSiteKeyValue" 
+		    <?php if (isset($params['selectedSiteKeyValue'])) echo "value=\"{$params['selectedSiteKeyValue']}\""; ?>/>
     	    </div>        	
-	    <?php } ?>   
 	    
-<!--	    <div class="topMargin leftFloat siteFilter">
-	    <input type="submit" value="Filter Sites">
-	    </div>-->
+	    
+	    <div class="topMargin leftFloat siteFilter clearLeft">
+		<input type="submit" value="Filter Sites">
+	    </div>
         </form>
     </div>
 
@@ -158,3 +170,15 @@
         </table>
     </div>
 </div>
+
+
+<script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>
+
+<script>
+    $(document).ready(function() 
+    {
+	$('#scopeSelect').multipleSelect({
+            placeholder: "Site Scopes"
+        });
+    }); 
+</script>

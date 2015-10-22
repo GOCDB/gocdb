@@ -12,13 +12,13 @@ namespace org\gocdb\services;
 use Doctrine\ORM\EntityManager;
 
 /** 
- * This class is used to apply additional filtering to a query according to the
- * scope tags that are joined to the target entity. 
+ * Builds and appends additional WHERE clauses to the QueryBuilder for filtering 
+ * a selected target entity by its scope tags. 
  * <p> 
  * The class takes a Doctrine {@link QueryBuilder} object which represents 
  * the current query that will be appended/updated. This query may contain other 
  * bind parameters. This class also takes scope type, scope match, bind count and entity type
- * and uses these to build a sub query that will filter the results based on the correct entities scope
+ * and uses these to build a sub query that will filter the results based on the correct entities scope tags. 
  * <p>  
  * This subquery is then appended to the original.
  * This query and its bind variables can then be fetched and used with getQB() and getBinds().
@@ -80,7 +80,7 @@ class ScopeQueryBuilder{
     }
 
     /**
-     * The constructor takes the scope value(s) to search. It takes the currently built query which
+     * The constructor takes the scope value(s) to join. It takes the currently built query which
      * it will then append the sub query to. It takes the bind count which is used as a unique identifier
      * to create bind variables. It takes the table type that the scope is from, eg Service or Site and the 
      * identifier used in the main query for this table. Eg Site would be S and Service would be se.   
@@ -147,9 +147,10 @@ class ScopeQueryBuilder{
 		$this->binds[] = array($bc, $scopeParameters);
 	    } else {
 		//$scopeParameters Contains multiple scope tags, so construct a 'WHERE IN' query
-		// trim whitespace and trailing comma (if present) 
+		// trim whitespace and leadind/trailing commas (if present) 
 		$scopeParameters = trim($scopeParameters); 
 		$scopeParameters = rtrim($scopeParameters, ','); 
+		$scopeParameters = ltrim($scopeParameters, ','); 
 		
 		//If no scope match was provided get the default
 		if ($scopeMatch == null) {

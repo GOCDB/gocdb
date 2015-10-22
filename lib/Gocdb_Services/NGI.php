@@ -70,25 +70,35 @@ class NGI extends AbstractEntityService{
     	return $ngi;
     }
 
+
+    
+    public function getNGIsByApiParams($params){
+        require_once __DIR__.'/PI/GetNGI.php'; 
+	$getNgi = new GetNGI($this->em); 	
+	$getNgi->validateParameters($params); 
+	$getNgi->createQuery(); 
+	$ngis = $getNgi->executeQuery();
+	return $ngis; 
+    }
+
     /**
      * Get all NGIs as an object array with joined scopes. 
      * @see NGI
      * @return \NGI object array
      */
-     public function getNGIs($scope=NULL) {
-        $qb = $this->em->createQueryBuilder();
-		$qb->select('n', 'sc')->from('NGI', 'n') 
-        ->leftjoin('n.scopes', 'sc')->orderBy('n.name', 'ASC');  
-           
-        if($scope != null && $scope != '%%'){
-			    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
-                ->setParameter(':scope', $scope);            
-        }
-        $query = $qb->getQuery();
-        $ngis = $query->execute();
-        return $ngis;
-    } 
+     public function getNGIs($scope = NULL) {
+	$qb = $this->em->createQueryBuilder();
+	$qb->select('n', 'sc')->from('NGI', 'n')
+		->leftjoin('n.scopes', 'sc')->orderBy('n.name', 'ASC');
 
+	if ($scope != null && $scope != '%%') {
+	    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
+		    ->setParameter(':scope', $scope);
+	}
+	$query = $qb->getQuery();
+	$ngis = $query->execute();
+	return $ngis;
+    }
 
     /**
      * Return all of the NGIs that the user has permission to execute the  
@@ -515,5 +525,5 @@ class NGI extends AbstractEntityService{
             $this->em->close();
             throw $e;
         }
-	}
+    }
 }

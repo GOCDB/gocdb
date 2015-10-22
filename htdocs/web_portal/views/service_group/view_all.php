@@ -20,40 +20,46 @@
     <!-- Filter -->
     <div class="siteContainer">
         <form action="index.php?Page_Type=Service_Groups" method="GET" class="inline">
-        <input type="hidden" name="Page_Type" value="Service_Groups" />
-        
-        <span class="header leftFloat">
-            Filter <a href="index.php?Page_Type=Service_Groups">&nbsp;&nbsp;(clear)</a>
-        </span>
-        <br />      
-        <div class="topMargin leftFloat clearLeft">
-            <span class="">Scope: </span>
-                <select name="scope" onchange="form.submit()">
-                    <option value="">(all)</option>
-                    <?php foreach ($params['scopes'] as $scope){ ?>
-                        <option value="<?php echo $scope->getName(); ?>"<?php if($params['selectedScope'] ==  $scope->getName()) echo " selected" ?>><?php echo $scope->getName(); ?></option>
-                    <?php } ?>          
-                </select>
-        </div>                  
+	    <input type="hidden" name="Page_Type" value="Service_Groups" />
 
-        	<div class="topMargin leftFloat siteFilter">
-            	<span class="">Extension Name:</span>
-                <select name="sgKeyNames" onchange="form.submit()">
-					<option value="">(none)</option>
-                    <?php foreach($params['sgKeyName'] as $sgExtensions) { ?>
-                        <option value="<?php echo $sgExtensions; ?>"<?php if($params['selectedSGKeyName'] == $sgExtensions) echo " selected"?>><?php echo $sgExtensions; ?></option> 
-                    <?php  } ?>                  
+	    <span class="header leftFloat">
+		Filter <a href="index.php?Page_Type=Service_Groups">&nbsp;&nbsp;(clear)</a>
+	    </span>
+	    
+	    <div class="topMargin leftFloat siteFilter clearLeft">
+		<span class=""><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
+		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
+		    <?php foreach ($params['scopes'] as $scope) { ?>
+			<option value="<?php xecho($scope->getName()); ?>" 
+			    <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
+			    <?php xecho($scope->getName()); ?>
+			</option>
+		    <?php } ?>
+		</select>
+	    </div>                 
+
+	    <div class="topMargin leftFloat siteFilter">
+		<span class="">Extension Name:</span>
+                <select name="extKeyNames">
+		    <option value="">(none)</option>
+		    <?php foreach ($params['extKeyName'] as $extensions) { ?>
+    		    <option value="<?php echo $extensions; ?>"
+			<?php if ($params['selectedExtKeyName'] == $extensions){ echo " selected";} ?>>
+			    <?php echo $extensions; ?>
+		    </option> 
+		    <?php } ?>                  
                 </select>
-        	</div> 
-        	
-        	<?php        	
-        	if($params['selectedSGKeyName'] != ""){ ?> 
-             <div class="topMargin leftFloat siteFilter">
-                <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
-                <input class="middle" style="width: 5.5em;" type="text" name="selectedSGKeyValue" <?php if(isset($params['selectedSGKeyValue'])) echo "value=\"{$params['selectedSGKeyValue']}\"";?>/>
-                <input class="middle" type="image" src="<?php echo \GocContextPath::getPath()?>img/enter.png" name="image" width="20" height="20">        
+	    </div> 
+
+    	    <div class="topMargin leftFloat siteFilter">
+                    <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
+                    <input class="middle" type="text" name="selectedExtKeyValue" 
+			<?php if (isset($params['selectedExtKeyValue'])){ echo "value=\"{$params['selectedExtKeyValue']}\""; } ?>/>
             </div>        	
-            <?php }?>  
+
+	    <div class="topMargin leftFloat siteFilter clearLeft">
+		<input type="submit" value="Filter ServiceGroups">
+	    </div>
         </form>
     </div>
 
@@ -103,3 +109,14 @@
         </table>
     </div>
 </div>
+
+<script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>
+
+<script>
+    $(document).ready(function() 
+    {
+	$('#scopeSelect').multipleSelect({
+            placeholder: "SG Scopes"
+        });
+    }); 
+</script>

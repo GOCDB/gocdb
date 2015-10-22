@@ -75,10 +75,11 @@ class GetServiceGroup implements IPIQuery {
 	$qb = $this->em->createQueryBuilder();
 
 	//Initialize base query
-	$qb->select('sg', 's', 'st', 'sp', 'sc', 'els', 'elp', 'servp')
+	$qb->select('DISTINCT sg', 's', 'st', 'sp', 'sc', 'els', 'elp', 'servp', 'sgscopes')
 		->from('ServiceGroup', 'sg')
 		->leftJoin('sg.serviceGroupProperties', 'sp')
 		->leftJoin('sg.services', 's')
+		->leftJoin('sg.scopes', 'sgscopes')
 		->leftJoin('s.serviceProperties', 'servp')
 		->leftJoin('s.serviceType', 'st')
 		->leftJoin('s.scopes', 'sc')

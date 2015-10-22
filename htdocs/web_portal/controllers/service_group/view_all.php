@@ -21,32 +21,50 @@
 /*====================================================== */ 
 function showAllServiceGroups(){
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
+
+    $filterParams = array(); 
 	
-    $scope = '%%';
-    if(!empty($_GET['scope'])) { 
-       $scope = $_GET['scope'];
+    // Scope parameters 
+    // By default, use an empty value to return all scopes, i.e. in the PI '&scope=' 
+    // which is same as the PI. If the 'scope' param is not set, then it would fall 
+    // back to the default scope (if set), but this is not what we want in this interface.  
+    $filterParams['scope'] = ''; 	
+    $selectedScopes = array();
+    if(!empty($_GET['mscope'])) { 
+	$scopeStringParam = ''; 
+	foreach($_GET['mscope'] as $key => $scopeVal){
+	    $scopeStringParam .= $scopeVal.','; 
+	    $selectedScopes[] = $scopeVal; 
+	}
+	$filterParams['scope'] = $scopeStringParam; 
+	$filterParams['scope_match'] = 'all';
+    } 
+    
+    
+    // extension property (currently only support filtering by one ext prop) 
+    // Can add filtering by many like scopes in future 
+    $extensionPropName = "";
+    $extensionPropValue ="";
+    if(!empty($_GET['extKeyNames'])) {
+        $extensionPropName = $_GET['extKeyNames'];
+	// only set the ext prop value if the keyName has been set too, otherwise
+	// we could end up with an illegal extensions parameter such as: '(=value)' 
+	if(!empty($extensionPropName) && !empty($_GET['selectedExtKeyValue']) ) {
+	    $extensionPropValue = $_GET['selectedExtKeyValue'];
+	}
+	$filterParams['extensions'] = '('.$extensionPropName.'='.$extensionPropValue.')'; 
     }
     
     $scopes = \Factory::getScopeService()->getScopes();
-    
-    $sgKeyNames = "";
-    if(isset($_GET['sgKeyNames'])) {
-        $sgKeyNames = $_GET['sgKeyNames'];
-    }
-    
-    $sgKeyValues ="";
-    if(isset($_GET['selectedSGKeyValue'])) {
-        $sgKeyValues = $_GET['selectedSGKeyValue'];
-    }
-    
-    $sGroups = \Factory::getServiceGroupService()->getServiceGroups($scope, $sgKeyNames, $sgKeyValues);
+    //$sGroups = \Factory::getServiceGroupService()->getServiceGroups($scope, $sgKeyNames, $sgKeyValues);
+    $sGroups = \Factory::getServiceGroupService()->getServiceGroupsByApiParams($filterParams);
     $exServ = \Factory::getExtensionsService();
     
     /* Doctrine will provide keynames that are the same even when selecting distinct becase the object
      * is distinct even though the name is not unique. To avoid showing the same name repeatdly in the filter
     * we will load all the keynames into an array before making it unique
     */
-	$keynames=array();		
+    $keynames=array();		
     foreach($exServ->getServiceGroupExtensionsKeyNames() as $extension){
         $keynames[] = $extension->getKeyName();
     }
@@ -54,9 +72,9 @@ function showAllServiceGroups(){
         
     $params['sGroups'] = $sGroups;
     $params['scopes']=$scopes;
-    $params['selectedScope']=$scope;
-    $params['selectedSGKeyName']=$sgKeyNames;
-    $params['selectedSGKeyValue']=$sgKeyValues;
-    $params['sgKeyName']=$keynames;
+    $params['selectedScopes']=$selectedScopes; //$scope;
+    $params['selectedExtKeyName']= $extensionPropName; //$sgKeyNames;
+    $params['selectedExtKeyValue']= $extensionPropValue; //$sgKeyValues;
+    $params['extKeyName']=$keynames;
     show_view("service_group/view_all.php", $params);
 }

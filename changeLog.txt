@@ -1,5 +1,19 @@
 GOCDB-5.5 Release (TBC). No DB schema changes.  
-  - Adding JQuery Table sorter lib. 
+  - Adding <RECOGNISED_IN_PROJECTS/>  element to the XML output of the get_user
+    query to show which projects the users roles apply to. This is needed for 
+    multi-tenant where a single GOC instance can host multiple projects.  
+  - Adding <SCOPES/> element to the XML output of the following PI queries: 
+    get_site, get_service, get_service_endpoint, get_ngi, get_service_group 
+  - Adding 'jquery.multiple.select.js' lib to allow selecting of multiple scopes when 
+    filtering sites/services/ngis/sgs in the GUI. This also required use of PI queries to 
+    create new service methods in order to take advantage of the filtering by 
+    multiple scopes with scope and scope_match params.  
+  - Bug fix to allow comma chars in the values of custom extension properties.  
+    The presence of a comma in the value of an ext prop was previously clashing 
+    with the ScopeQueryBuilder which explodes the scope string on commas. The 
+    fix removes this clash.    
+  - Adding JQuery Table sorter lib and applied to sorting of many tables including
+    custom properties and downtimes. 
   - Role mapping and abstractions to define different roles on a per-project
     basis. Different roles are defined in the RoleActionMappings.xml 
     file. The mapping file defines which actions are enabled 
@@ -12,10 +26,10 @@ GOCDB-5.5 Release (TBC). No DB schema changes.
     part of key=value expressions can now contain any char including escaped 
     parenthesis and html special chars. Note, this does not affect the input 
     interface which still restricts which chars are allowed in property values. 
-    To support input of any char in a property value, the regex rules for need to be updated,
-    and the property values need to be rendered in CDATA sections in the PI output
-    (i.e. rather than using htmlspecialchars() on the value, sample logic to do 
-    this is provided in getSite()).  
+    To support input of any char in a property value, the regex rules for validating
+    input need to be updated, and the property values need to be rendered in 
+    CDATA sections in the PI output (i.e. rather than using htmlspecialchars() 
+    on the value, sample logic to do this is provided in getSite()).  
   - Bug fix, when ending/editing a downtime, the returned downtime->dateTime 
     properties are in the server's default timezone and not UTC, this caused problems 
     in time/duration calculations when applied to ending/ending downtimes. The downtime

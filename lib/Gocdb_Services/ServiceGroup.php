@@ -72,6 +72,16 @@ class ServiceGroup extends AbstractEntityService{
     	return $serviceGroup;
     }
 
+
+    public function getServiceGroupsByApiParams($params){
+	require_once __DIR__.'/PI/GetServiceGroup.php'; 
+	$getSg = new GetServiceGroup($this->em); 
+	$getSg->validateParameters($params); 
+	$getSg->createQuery(); 
+	$sgs = $getSg->executeQuery(); 
+	return $sgs; 
+    }
+
     /**
      * Returns an array of all Service Group entities and joined scopes. 
      * @param string $scope Scope name
@@ -79,41 +89,39 @@ class ServiceGroup extends AbstractEntityService{
      * @param string $keyvalue ServiceGroup extension property key value 
      * @return array An array of ServiceGroup objects
      */
-	public function getServiceGroups($scope=NULL, $keyname=NULL, $keyvalue=NULL) {
-        $qb = $this->em->createQueryBuilder();
-		$qb->select('s', 'sc')->from('ServiceGroup', 's')
-           ->leftJoin('s.scopes', 'sc'); 
-           
-        if($scope != null && $scope != '%%'){
-			    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
-                   ->setParameter(':scope', $scope);            
-        }
-        
-        if($keyname != null && $keyname != '%%'){
-            if($keyvalue == null || $keyvalue == ''){
-                $keyvalue='%%';
-            }
-        
-            $sQ = $this->em->createQueryBuilder();
-            $sQ ->select('s1'.'.id')
-                ->from('ServiceGroup', 's1')
-                ->join('s1.serviceGroupProperties', 'sp')
-                ->andWhere($sQ->expr()->andX(
-                        $sQ->expr()->eq('sp.keyName', ':keyname'),
-                        $sQ->expr()->like('sp.keyValue', ':keyvalue')));
-        
-            $qb ->andWhere($qb->expr()->in('s', $sQ->getDQL()));
-            $qb ->setParameter(':keyname', $keyname)
-                ->setParameter(':keyvalue', $keyvalue);
-        
-        }
+    public function getServiceGroups($scope = NULL, $keyname = NULL, $keyvalue = NULL) {
+	$qb = $this->em->createQueryBuilder();
+	$qb->select('s', 'sc')->from('ServiceGroup', 's')
+		->leftJoin('s.scopes', 'sc');
 
-        $query = $qb->getQuery();
-        $serviceGroups = $query->execute();
-        return $serviceGroups;
+	if ($scope != null && $scope != '%%') {
+	    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
+		    ->setParameter(':scope', $scope);
 	}
 
-	/**
+	if ($keyname != null && $keyname != '%%') {
+	    if ($keyvalue == null || $keyvalue == '') {
+		$keyvalue = '%%';
+	    }
+
+	    $sQ = $this->em->createQueryBuilder();
+	    $sQ->select('s1' . '.id')
+		    ->from('ServiceGroup', 's1')
+		    ->join('s1.serviceGroupProperties', 'sp')
+		    ->andWhere($sQ->expr()->andX(
+				    $sQ->expr()->eq('sp.keyName', ':keyname'), $sQ->expr()->like('sp.keyValue', ':keyvalue')));
+
+	    $qb->andWhere($qb->expr()->in('s', $sQ->getDQL()));
+	    $qb->setParameter(':keyname', $keyname)
+		    ->setParameter(':keyvalue', $keyvalue);
+	}
+
+	$query = $qb->getQuery();
+	$serviceGroups = $query->execute();
+	return $serviceGroups;
+    }
+
+    /**
 	 * Returns the downtimes linked to a service group.
 	 * @param integer $id Service Group ID
 	 * @param integer $dayLimit Limit to downtimes that are only $dayLimit old (can be null) */

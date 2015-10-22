@@ -14,24 +14,31 @@
         </span>
     </div>
     
-        <!-- Filter -->
+    <!-- Filter -->
     <div class="siteContainer">
         <form action="index.php?Page_Type=NGIs" method="GET" class="inline">
-        <input type="hidden" name="Page_Type" value="NGIs" />
-        
-        <span class="header leftFloat">
-            Filter <a href="index.php?Page_Type=NGIs">&nbsp;&nbsp;(clear)</a>
-        </span>
-        <br />      
-        <div class="topMargin leftFloat clearLeft">
-            <span class="">Scope: </span>
-                <select name="scope" onchange="form.submit()">
-                    <option value="">(all)</option>
-                    <?php foreach ($params['scopes'] as $scope){ ?>
-                        <option value="<?php echo $scope->getName(); ?>"<?php if($params['selectedScope'] ==  $scope->getName()) echo " selected" ?>><?php echo $scope->getName(); ?></option>
-                    <?php } ?>          
-                </select>
-        </div>       
+	    <input type="hidden" name="Page_Type" value="NGIs" />
+
+	    <span class="header leftFloat">
+		Filter <a href="index.php?Page_Type=NGIs">&nbsp;&nbsp;(clear)</a>
+	    </span>
+	    <br />      
+
+	    <div class="topMargin leftFloat siteFilter">
+		<span class=""><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
+		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
+		    <?php foreach ($params['scopes'] as $scope) { ?>
+			<option value="<?php xecho($scope->getName()); ?>" 
+			    <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
+			    <?php xecho($scope->getName()); ?>
+			</option>
+		    <?php } ?>
+		</select>
+	    </div>
+	    
+	    <div class="topMargin leftFloat siteFilter">
+		<input type="submit" value="Filter NGIs">
+	    </div>
         </form>
     </div>
     
@@ -80,3 +87,14 @@
         </table>
     </div>
 </div>
+
+<script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>
+
+<script>
+    $(document).ready(function() 
+    {
+	$('#scopeSelect').multipleSelect({
+            placeholder: "NGI Scopes"
+        });
+    }); 
+</script>
