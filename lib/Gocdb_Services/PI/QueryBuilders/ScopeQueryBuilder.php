@@ -9,27 +9,96 @@ namespace org\gocdb\services;
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
 */
-use Doctrine\ORM\EntityManager;
+//use Doctrine\ORM\EntityManager;
 
 /** 
- * Builds and appends additional WHERE clauses to the QueryBuilder for filtering 
- * a selected target entity by its scope tags. 
- * <p> 
- * The class takes a Doctrine {@link QueryBuilder} object which represents 
- * the current query that will be appended/updated. This query may contain other 
- * bind parameters. This class also takes scope type, scope match, bind count and entity type
- * and uses these to build a sub query that will filter the results based on the correct entities scope tags. 
+ * Appends new WHERE clauses with positional bind parameters to the given 
+ * QueryBuilder for filtering a particular target entity by its associated scope tags. 
  * <p>  
- * This subquery is then appended to the original.
- * This query and its bind variables can then be fetched and used with getQB() and getBinds().
- * Important: This does not return the query or bind variables, they must be fetched. 
+ * The updated QueryBuilder and the new bind variables must then be fetched 
+ * using the getQB() and getBinds() methods.
+ * <p>
+ * Example Queries shown belowm, + indicates the appended WHERE clauses:  
+ * <p> 
+ * When a single scope or no scope is provided and a default scope is provided in local_info.xml:
+ * <code>   
+ *    SELECT s, sc, sp
+ *    FROM Site s
+ *    LEFT JOIN s.siteProperties sp
+ *    LEFT JOIN s.scopes sc
+ *    LEFT JOIN s.ngi n
+ *    LEFT JOIN s.country c
+ *    LEFT JOIN s.certificationStatus cs
+ *    LEFT JOIN s.infrastructure i
+ * +   WHERE s IN                     --('s' is passed to constructor as $tableType)
+ * +       (SELECT tts
+ * +        FROM Site tts             --('Site' is passed to constructor as $tId) 
+ * +        INNER JOIN tts.scopes sc2
+ * +        WHERE sc2.name LIKE ?0)   --(?0 created from single scope value passed via $scopeParameter in constructor, e.g. 'EGI' )
+ *    ORDER BY s.shortName ASC
+ *  </code> 
+ *  
+ * When the user supplies multiple scopes and scope match = 'all' or default scope match = 'all'
+ * eg scope=EGI,Prace,Local&scope_match=all:
+ * <code> 
+ *    SELECT s, sc, sp
+ *    FROM Site s
+ *    LEFT JOIN s.siteProperties sp
+ *    LEFT JOIN s.scopes sc
+ *    LEFT JOIN s.ngi n
+ *    LEFT JOIN s.country c
+ *    LEFT JOIN s.certificationStatus cs
+ *    LEFT JOIN s.infrastructure i
+ * +    WHERE s IN                     --('s' is passed to constructor as $tableType)
+ * +        (SELECT tts.id
+ * +         FROM Site tts             --('Site' is passed to constructor as $tId)
+ * +         INNER JOIN tts.scopes sc1
+ * +         WHERE sc1.id IN
+ * +             (SELECT sc2.id
+ * +              FROM SCOPE sc2
+ * +              WHERE sc2.name IN(?0))   --(?0 created from multiple scope values passed via $scopeParameter, e.g. 'EGI,Prace,Local')
+ * +         GROUP BY tts.id HAVING COUNT(tts.id) = ?1)  --(?1 created by counting comma separated scopes)
+ *    ORDER BY s.shortName ASC
+ * </code> 
+ * When the user supplies multiple scopes  and scope match = any or default scope match = any
+ * eg scope=EGI,Prace,Local&scope_match=any:
+ * <code>  
+ *    SELECT s, sc, sp
+ *    FROM Site s
+ *    LEFT JOIN s.siteProperties sp
+ *    LEFT JOIN s.scopes sc
+ *    LEFT JOIN s.ngi n
+ *    LEFT JOIN s.country c
+ *    LEFT JOIN s.certificationStatus cs
+ *    LEFT JOIN s.infrastructure i
+ *    WHERE s.shortName LIKE ?0      --(an existing positional bind param)
+ * +    AND s IN                     --('s' is passed to constructor as $tableType)
+ * +      (SELECT tts
+ * +       FROM Site tts             --('Site' is passed to constructor as $tId)
+ * +       INNER JOIN tts.scopes sc2
+ * +       WHERE sc2.name IN(?1))    --(?1 created from multiple scope values passed via $scopeParameter, e.g. 'EGI,Prace,Local')
+ *    ORDER BY s.shortName ASC
+ * </code>
+ *   
+ * When the user specifies 'scope=' which represents no scope specified so no sub query for scope at all:
+ * <code>
+ *    SELECT s, sc, sp
+ *    FROM Site s
+ *    LEFT JOIN s.siteProperties sp
+ *    LEFT JOIN s.scopes sc
+ *    LEFT JOIN s.ngi n
+ *    LEFT JOIN s.country c
+ *    LEFT JOIN s.certificationStatus cs
+ *    LEFT JOIN s.infrastructure i
+ *    ORDER BY s.shortName ASC
+ * </code>
  *
  * @author James McCarthy
  * @author David Meredith 
  */
 class ScopeQueryBuilder{
 
-    private $binds = null;
+    private $binds = array();
     private $qb = null;
     private $scopeMatch = null;
     private $bc;
@@ -44,12 +113,16 @@ class ScopeQueryBuilder{
 	$this->scopeMatch = $scopeMatch;
     }
 
+    /**
+     * Get the updated query builder. 
+     * @return \Doctrine\ORM\QueryBuilder
+     */
     public function getQB() {
 	return $this->qb;
     }
 
     /**
-     * 2D array of postitional bind parameter to bindValue mappings for the 
+     * 2D array of postitional bind parameter IDs to bindValue mappings for the 
      * new WHERE clauses that are appended to the QueryBuilder.  
      * <p>
      * Each outer element stores a child array that has two elements; 
@@ -66,6 +139,12 @@ class ScopeQueryBuilder{
 	$this->bc = $bc;
     }
 
+    /**
+     * Get the current positional bind parameter value. 
+     * This value is needed if you need to add more positional bind params 
+     * to the query builder after using this class.  
+     * @return int Bind count
+     */
     public function getBindCount() {
 	return $this->bc;
     }
@@ -80,23 +159,39 @@ class ScopeQueryBuilder{
     }
 
     /**
-     * The constructor takes the scope value(s) to join. It takes the currently built query which
-     * it will then append the sub query to. It takes the bind count which is used as a unique identifier
-     * to create bind variables. It takes the table type that the scope is from, eg Service or Site and the 
-     * identifier used in the main query for this table. Eg Site would be S and Service would be se.   
+     * Appends new WHERE clauses with positional bind parameters to the 
+     * given QueryBuilder for filtering a target entity type by its associated scope tags. 
+     * <p> 
+     * The class takes a Doctrine {@link \Doctrine\ORM\QueryBuilder} which represents 
+     * the current query that will be appended/updated. This query may contain other 
+     * positional bind parameters - the query should NOT contain any named params. 
+     * <p>
+     * The constructor also takes the scope value(s) to filter on, the bind count which 
+     * is used to create new unique bind parameters, the name of the entity type and 
+     * the alias used in the query (these values should match the values already 
+     * used in the query).   
+     * <p>  
+     * The updated QueryBuilder and the new bind variables must then be fetched 
+     * using the getQB() and getBinds() methods.
+     * See class doc for example appended WHERE clauses.  
      * 
-     * @param string $scopeParameter either null, a single scope tag value e.g. 'EGI' or comma sep list 'EGI,EUDAT,SCOPEX'
+     * @param string $scopeParameter either null, a single scope tag value e.g. 'EGI' 
+     *   or comma sep list 'EGI,EUDAT,SCOPEX'
      * @param string $scopeMatch either null, 'any' or 'all' 
-     * @param \Doctrine\ORM\QueryBuilder $qb QueryBuilder instance to update
-     * @param \Doctrine\ORM\EntityManager $em EntityManager to use for query 
-     * @param int $bc Current bind count, used to create unique bind param names 
-     *        (bind params will be created by appending an int incremented from this value)
-     * @param string $tableType The name of the entity that owns the scopes, 
-     *        e.g. 'Site' or 'Service'
-     * @param string $tId The alias used in the query for this table, ie 's' or 'se'
+     * @param \Doctrine\ORM\QueryBuilder $qb QueryBuilder instance to update with 
+     *   new WHERE clauses and postional bind params 
+     * @param \Doctrine\ORM\EntityManager $em EntityManager Used for creating the query 
+     * @param int $bc Current bind count, used to create new positional bind params 
+     *   (new bind params will be created by incrementing from this value)
+     * @param string $tableType The entity type name that owns the scopes used in the query, 
+     *   e.g. 'Site' or 'Service' (must be an {@see \IScopedEntity} implementation) 
+     * @param string $tId Alias of the entity type used in the query, e.g.   
+     *   's' for Site or 'se' for Service
      */
-    public function __construct($scopeParameter, $scopeMatch, \Doctrine\ORM\QueryBuilder 
-                                $qb, \Doctrine\ORM\EntityManager $em, $bc, $tableType, $tId){				
+    public function __construct($scopeParameter, $scopeMatch, 
+	    \Doctrine\ORM\QueryBuilder $qb, \Doctrine\ORM\EntityManager $em, 
+	    $bc, $tableType, $tId){				
+
 	$this->em = $em;
 	$this->setQB($qb);
 	$this->setBindCount($bc);
@@ -320,88 +415,6 @@ class ScopeQueryBuilder{
 
 
 
-/*  Example Queries (+ indicate the appended sub-query added by this class) 
-  
-    When a single scope or no scope is provided and a default scope is provide in local_info.xml:
-   
-    SELECT s,
-           sc,
-           sp
-    FROM Site s
-    LEFT JOIN s.siteProperties sp
-    LEFT JOIN s.scopes sc
-    LEFT JOIN s.ngi n
-    LEFT JOIN s.country c
-    LEFT JOIN s.certificationStatus cs
-    LEFT JOIN s.infrastructure i
- +   WHERE s IN                     ('s' is passed to constructor as $tableType)
- +       (SELECT tts
- +        FROM Site tts             ('Site' is passed to constructor as $tId) 
- +        INNER JOIN tts.scopes sc2
- +        WHERE sc2.name LIKE 'EGI') ('EGI' is passed to constr as $scopeParameter)
-    ORDER BY s.shortName ASC
-  
-  
-   When the user supplies multiple scopes  and scope match = all or default scope match = all
-   eg scope=EGI,Prace,Local&scope_match=all:
-  
-     SELECT s,
-           sc,
-           sp
-    FROM Site s
-    LEFT JOIN s.siteProperties sp
-    LEFT JOIN s.scopes sc
-    LEFT JOIN s.ngi n
-    LEFT JOIN s.country c
-    LEFT JOIN s.certificationStatus cs
-    LEFT JOIN s.infrastructure i
- +    WHERE s IN                     ('s' is passed to constructor as $tableType)
- +        (SELECT tts.id
- +         FROM Site tts             ('Site' is passed to constructor as $tId)
- +         INNER JOIN tts.scopes sc1
- +         WHERE sc1.id IN
- +             (SELECT sc2.id
- +              FROM SCOPE sc2
- +              WHERE sc2.name IN('EGI','Prace','Local'))
- +         GROUP BY tts.id HAVING COUNT(tts.id) = 3)
-    ORDER BY s.shortName ASC
-  
-   When the user supplies multiple scopes  and scope match = any or default scope match = any
-   eg scope=EGI,Prace,Local&scope_match=any:
-  
-     SELECT s,
-       sc,
-       sp
-    FROM Site s
-    LEFT JOIN s.siteProperties sp
-    LEFT JOIN s.scopes sc
-    LEFT JOIN s.ngi n
-    LEFT JOIN s.country c
-    LEFT JOIN s.certificationStatus cs
-    LEFT JOIN s.infrastructure i
-    WHERE s.shortName LIKE ?0
- +    AND s IN                     ('s' is passed to constructor as $tableType)
- +      (SELECT tts
- +       FROM Site tts             ('Site' is passed to constructor as $tId)
- +       INNER JOIN tts.scopes sc2
- +       WHERE sc2.name IN('EGI','Prace','Local'))
-    ORDER BY s.shortName ASC
-  
-   When the user specifies 'scope=' which should represent no scope specified 
-   so no sub query for scope at all:
-
-   SELECT s,
-           sc,
-           sp
-    FROM Site s
-    LEFT JOIN s.siteProperties sp
-    LEFT JOIN s.scopes sc
-    LEFT JOIN s.ngi n
-    LEFT JOIN s.country c
-    LEFT JOIN s.certificationStatus cs
-    LEFT JOIN s.infrastructure i
-    ORDER BY s.shortName ASC
- */
 
 /** BACKUP SQL
  * &scope=EGI,Local&scope_match=any:

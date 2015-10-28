@@ -46,7 +46,11 @@
                 <input type="submit">
             </form>
 
-            <span>Newly requested roles will be queued for approval</span>
+	    <ul>
+		<li>Newly requested roles will be queued for approval.</li>
+		<li>See the <a href="index.php?Page_Type=View_Role_Action_Mappings">role action mappings</a> page to see which permissions are granted by different roles.</li>
+	    </ul>
+	    
         </div>
     <?php endif; ?>
         

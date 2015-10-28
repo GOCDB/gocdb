@@ -357,8 +357,28 @@ class Site extends AbstractEntityService{
             }
         }
     }
-   
-    public function getSitesByApiParams($params){
+  
+    /**
+     * Return all {@see \Site}s that satisfy the specfied filter parameters. 
+     * <p>  
+     * $filterParams defines an associative array of optional parameters for 
+     * filtering the sites. The supported Key => Value pairs include: 
+     * <ul>
+     *   <li>'sitename' => String site name</li>
+     *   <li>'roc' => String name of parent NGI/ROC</li> 
+     *   <li>'country' => String country name</li>
+     *   <li>'certification_status' => String certification status value e.g. 'Certified'</li>
+     *   <li>'exclude_certification_status' => String exclude sites with this certification status</li>
+     *   <li>'production_status' => String site production status value</li>
+     *   <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
+     *   <li>'scope_match' => String 'any' or 'all' </li>
+     *   <li>'extensions' => String extensions expression to filter custom key=value pairs</li>
+     * <ul>
+     * 
+     * @param array $filterParams
+     * @return array Site array
+     */
+    public function getSitesFilterByParams($filterParams){
         require_once __DIR__.'/PI/GetSite.php'; 
 	$getSite = new GetSite($this->em); 
 	//$params = array('sitename' => 'GRIDOPS-GOCDB');  
@@ -367,7 +387,7 @@ class Site extends AbstractEntityService{
 	//$params = array('scope' => 'EGI,Local', 'scope_match' => 'all');  
 	//$params = array('scope' => 'EGI,DAVE', 'scope_match' => 'all');  
 	//$params = array('extensions' => '(aaa=123)(dave=\(someVal with parethesis\))(test=test)'); 
-	$getSite->validateParameters($params); 
+	$getSite->validateParameters($filterParams); 
 	$getSite->createQuery(); 
 	$sites = $getSite->executeQuery(); 
 	return $sites; 

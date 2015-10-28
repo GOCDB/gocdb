@@ -95,7 +95,7 @@ function showAllSites(){
 
     $params['scopes']=  \Factory::getScopeService()->getScopes(); 
     //$params['sites'] = $serv->getSitesBy($ngi, $prodStatus, $certStatus, $scope, $showClosed, null, $siteKeyNames, $siteKeyValues); 
-    $params['sites'] = $serv->getSitesByApiParams($filterParams); 
+    $params['sites'] = $serv->getSitesFilterByParams($filterParams); 
     $params['NGIs'] = $serv->getNGIs();
     $params['prodStatuses'] = $serv->getProdStatuses();
         

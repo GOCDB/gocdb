@@ -57,7 +57,7 @@ function showAllServiceGroups(){
     
     $scopes = \Factory::getScopeService()->getScopes();
     //$sGroups = \Factory::getServiceGroupService()->getServiceGroups($scope, $sgKeyNames, $sgKeyValues);
-    $sGroups = \Factory::getServiceGroupService()->getServiceGroupsByApiParams($filterParams);
+    $sGroups = \Factory::getServiceGroupService()->getServiceGroupsFilterByParams($filterParams);
     $exServ = \Factory::getExtensionsService();
     
     /* Doctrine will provide keynames that are the same even when selecting distinct becase the object

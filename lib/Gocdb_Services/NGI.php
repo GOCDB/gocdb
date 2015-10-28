@@ -71,11 +71,25 @@ class NGI extends AbstractEntityService{
     }
 
 
-    
-    public function getNGIsByApiParams($params){
+   
+    /**
+     * Return all {@see \NGI}s that satisfy the specfied filter parameters. 
+     * <p>  
+     * $filterParams defines an associative array of optional parameters for 
+     * filtering. The supported Key => Value pairs include: 
+     * <ul>
+     *   <li>'roc' => String name of the NGI/ROC</li>
+     *   <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
+     *   <li>'scope_match' => String 'any' or 'all' </li>
+     * <ul>
+     * 
+     * @param array $filterParams
+     * @return array NGI array
+     */
+    public function getNGIsFilterByParams($filterParams){
         require_once __DIR__.'/PI/GetNGI.php'; 
 	$getNgi = new GetNGI($this->em); 	
-	$getNgi->validateParameters($params); 
+	$getNgi->validateParameters($filterParams); 
 	$getNgi->createQuery(); 
 	$ngis = $getNgi->executeQuery();
 	return $ngis; 

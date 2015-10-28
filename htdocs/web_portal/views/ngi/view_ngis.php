@@ -48,27 +48,29 @@
             <?php echo sizeof($params['ngis']) ?> NGI<?php if(sizeof($params['ngis']) != 1) echo "s"?>
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
-        <table class="vSiteResults" id="selectedSETable">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table">E-Mail</th>
-                <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
+        <table id="selectedNgisTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+		<th></th>
+                <th>Name</th>
+                <th>E-Mail</th>
+                <th>Scope(s)</th>
             </tr>
+	    </thead>
+	    <tbody>
             <?php           
             $num = 2;
             if(sizeof($params['ngis'] > 0)) {
                 foreach($params['ngis'] as $ngi) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table" style="width: 30%">
-                        <div style="background-color: inherit;">
-                            <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
-                                    <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
-                                    <span>&nbsp;&nbsp;</span><?php echo $ngi->getName(); ?>
-                                </a>
-                            </span>
-                        </div>
+                <tr>
+                    <td style="width: 10%">
+			<img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
+		    </td>
+		    <td>
+			<a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
+			    <?php xecho($ngi->getName()); ?>
+			</a>
                     </td>
                     
                     <td class="site_table">
@@ -76,14 +78,15 @@
                     </td> 
                     
                     <td class="site_table">
-                        <input type="text" value="<?php xecho($ngi->getScopeNamesAsString()); ?>" readonly>
+                         <textarea readonly="true" style="height: 22px;"><?php xecho($ngi->getScopeNamesAsString()); ?></textarea>
                     </td>
                 </tr>
                 <?php  
-                    if($num == 1) { $num = 2; } else { $num = 1; }
+                    //if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over sites
             }
             ?>
+	    </tbody>
         </table>
     </div>
 </div>
@@ -93,6 +96,18 @@
 <script>
     $(document).ready(function() 
     {
+
+	// sort on first and second table cols only 
+	$("#selectedNgisTable").tablesorter({ 
+	    // pass the headers argument and assing a object 
+	    headers: { 
+		// assign the third column (we start counting zero) 
+		0: { 
+		    sorter: false 
+		}
+	    } 
+	}); 
+	
 	$('#scopeSelect').multipleSelect({
             placeholder: "NGI Scopes"
         });

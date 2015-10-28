@@ -20,7 +20,8 @@ require_once __DIR__ . '/IPIQuery.php';
  * <pre>
  * 	'service_group_name',
  * 	'scope',
- * 	'scope_match' 
+ * 	'scope_match', 
+ *      'extensions' 
  * </pre>
  * 
  * @author James McCarthy

@@ -72,11 +72,25 @@ class ServiceGroup extends AbstractEntityService{
     	return $serviceGroup;
     }
 
-
-    public function getServiceGroupsByApiParams($params){
+    /**
+     * Return all {@see \ServiceGroup}s that satisfy the specfied filter parameters. 
+     * <p>  
+     * $filterParams defines an associative array of optional parameters for 
+     * filtering the serviceGroups. The supported Key => Value pairs include: 
+     * <ul>
+     *   <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
+     *   <li>'service_group_name' => String name of service group</li>
+     *   <li>'scope_match' => String 'any' or 'all' </li>
+     *   <li>'extensions' => String extensions expression to filter custom key=value pairs</li>
+     * <ul>
+     * 
+     * @param array $filterParams
+     * @return array ServiceGroup array
+     */
+    public function getServiceGroupsFilterByParams($filterParams){
 	require_once __DIR__.'/PI/GetServiceGroup.php'; 
 	$getSg = new GetServiceGroup($this->em); 
-	$getSg->validateParameters($params); 
+	$getSg->validateParameters($filterParams); 
 	$getSg->createQuery(); 
 	$sgs = $getSg->executeQuery(); 
 	return $sgs; 

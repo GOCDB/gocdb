@@ -1,6 +1,6 @@
 GOCDB-5.5 Release (TBC). No DB schema changes.  
   - Adding <RECOGNISED_IN_PROJECTS/>  element to the XML output of the get_user
-    query to show which projects the users roles apply to. This is needed for 
+    query to show which projects a user's roles apply to. This is needed for 
     multi-tenant where a single GOC instance can host multiple projects.  
   - Adding <SCOPES/> element to the XML output of the following PI queries: 
     get_site, get_service, get_service_endpoint, get_ngi, get_service_group 

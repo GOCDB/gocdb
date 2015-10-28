@@ -133,10 +133,13 @@
         ?>
     </div>
 
+    <div style="float: left; width: 100%; margin-top: 2em;" class="alert alert-info" role="alert">
+	See the <a href="index.php?Page_Type=View_Role_Action_Mappings">role action mappings</a> page to see which permissions are granted by which roles.
+    </div>
 
     <!-- Roles per Project -->
     <?php foreach($params['projectNamesIds'] as $projId => $projName){ ?>
-    <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
+    <div class="listContainer" style="width: 99.5%; float: left; margin-top: 1em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
 	    Roles in Project 
 	    <a href="index.php?Page_Type=Project&id=<?php echo $projId ?>">

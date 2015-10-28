@@ -23,34 +23,33 @@
             <?php echo sizeof($params['Projects']) ?> Project<?php if(sizeof($params['Projects']) != 1) echo "s"?>
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
-        <table class="vSiteResults" id="selectedSETable">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table">Description</th>
+	
+        <table id="selectedProjTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
             </tr>
+	    </thead>
             <?php           
-            $num = 2;
+            //$num = 2;
             foreach($params['Projects'] as $project) {
             ?>
-            <tr class="site_table_row_<?php echo $num ?>">
-                <td class="site_table">
-                    <div style="background-color: inherit;">
-                        <span style="vertical-align: middle;">
-                            <a href="index.php?Page_Type=Project&id=<?php echo $project->getId()?>">
-                                <span>&raquo; </span><?php xecho($project->getName()); ?>
-                            </a>
-                        </span>
-                    </div>
+            <tr>
+                <td>
+		    <a href="index.php?Page_Type=Project&id=<?php echo $project->getId()?>">
+			<?php xecho($project->getName()); ?>
+		    </a>
                 </td>
                     
-                <td class="site_table">
+                <td>
                     <?php xecho($project->getDescription()); ?>
                 </td>
                 
             </tr>
             <?php  
-                if($num == 1) { $num = 2; } else { $num = 1; }
-                } // End of the foreach loop iterating over SEs
+                //if($num == 1) { $num = 2; } else { $num = 1; }
+                } // End of the foreach loop iterating over Projs
             ?>
         </table>
     </div>

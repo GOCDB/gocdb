@@ -18,19 +18,25 @@
                 Filter <a href="index.php?Page_Type=Services">&nbsp;&nbsp;(clear)</a>
             </span>
             
-            <div class="topMargin leftFloat clearLeft">
-                <span class="">Service Type: </span>
-                <select name="serviceType" onchange="form.submit()">
-                	<option value="">(all)</option>
+            <div class="topMargin leftFloat clearLeft siteFilter">
+                <span>Service Type: </span>
+                <select id="serviceTypeSelect" name="serviceType"  multiple="multiple">
+<!--		<input name="serviceType" list="seTypes">-->
+<!--		<datalist id="seTypes">-->
+		    <option value="">(all)</option>
                     <?php foreach($params['serviceTypes'] as $serviceType) { ?>
-                      	<option value="<?php xecho($serviceType->getName()); ?>"<?php if($params['selectedServiceType'] == $serviceType->getName()) echo " selected"?>><?php xecho($serviceType->getName()); ?></option> 
+                      	<option value="<?php xecho($serviceType->getName()); ?>"<?php if($params['selectedServiceType'] == $serviceType->getName()) echo " selected"?>>
+			    <?php xecho($serviceType->getName()); ?>
+			</option> 
                     <?php  } ?>   
+<!--		</datalist>	-->
                 </select>
+		<!--<button id="uncheckAllSeTypeBtn" onclick="return false;">&laquo;Any</button>-->
             </div>
             
             <div class="topMargin leftFloat siteFilter">
-            	<span class="">NGI:</span>
-                <select name="ngi" onchange="form.submit()">                                        
+            	<span>NGI:</span>
+                <select name="ngi">                                        
                     <option value="">(all)</option>
                     <?php foreach ($params['ngis'] as $ngi){ ?>
                     	<option value="<?php xecho($ngi->getName())?>"<?php if($params['selectedNgi'] == $ngi->getName()){echo " selected";} ?>><?php xecho($ngi->getName())?></option>
@@ -44,157 +50,157 @@
                 $params['searchTerm'] = str_replace('%', '', $params['searchTerm']);
             } 
             ?>
-            <div class="topMargin leftFloat siteFilter">
-                <span class="middle" style="margin-right: 0.4em">Search: </span>
-                <input class="middle" style="width: 5.5em;" type="text" name="searchTerm" <?php if(isset($params['searchTerm'])) echo "value=\"{$params['searchTerm']}\"";?>/>
-                <input class="middle" type="image" src="<?php echo \GocContextPath::getPath()?>img/enter.png" name="image" width="20" height="20">        
+            <div class="topMargin leftFloat clearLeft siteFilter">
+                <span>Search for text in Hostname or Service Description: </span>
+                <input type="text" name="searchTerm" style="width: 400px" <?php if(isset($params['searchTerm'])) echo "value=\"{$params['searchTerm']}\"";?>/>
             </div>
             
-            <div class="topMargin leftFloat clearLeft">
-            	<span class="">Production: </span>
-                <select name="production" onchange="form.submit()">
+            <div class="topMargin leftFloat clearLeft siteFilter">
+            	<span>Production: </span>
+                <select name="production">
                     <option value="">(all)</option>
                     <option value="TRUE"<?php if($params['selectedProduction'] == "TRUE") echo " selected" ?>>Y</option>
                     <option value="FALSE"<?php if($params['selectedProduction'] == "FALSE") echo " selected" ?>>N</option>
                 </select>
         	</div>
         	
-        	<div class="topMargin leftFloat siteFilter">
+	    <div class="topMargin leftFloat siteFilter">
             	<span class="">Monitored: </span>
-                <select name="monitored" onchange="form.submit()">
+                <select name="monitored">
                     <option value="">(all)</option>
                     <option value="TRUE"<?php if($params['selectedMonitored'] == "TRUE") echo " selected" ?>>Y</option>
                     <option value="FALSE"<?php if($params['selectedMonitored'] == "FALSE") echo " selected" ?>>N</option>
                 </select>
-        	</div>
+	    </div>
+        
+	    
+	    <div class="topMargin leftFloat siteFilter">
+		<span class=""><a href="index.php?Page_Type=Scope_Help">With Scopes:</a> </span>
+		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
+		    <?php foreach ($params['scopes'] as $scope) { ?>
+			<option value="<?php xecho($scope->getName()); ?>" 
+			    <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
+			    <?php xecho($scope->getName()); ?>
+			</option>
+		    <?php } ?>
+		</select>
+	    </div>
         	
-        	<div class="topMargin leftFloat siteFilter">
-            	<span class=""><a href="index.php?Page_Type=Scope_Help">Scope</a></span>
-                <select name="scope" onchange="form.submit()">
-                    <option value="">(all)</option>
-                    <?php foreach ($params['scopes'] as $scope){ ?>
-                        <option value="<?php xecho($scope->getName())?>"<?php if($params['selectedScope'] == $scope->getName()){echo " selected";} ?>><?php xecho($scope->getName())?></option>
-                    <?php }?>
-                </select>
-        	</div>
         	
-        	
-        	<div class="topMargin leftFloat siteFilter">
+	    <div class="topMargin leftFloat siteFilter">
             	<span class="">Certification:</span>
-                <select name="certificationStatus" onchange="form.submit()">
-					<option value="">(all)</option>
+                <select name="certificationStatus">
+		    <option value="">(all)</option>
                     <?php foreach($params['certStatuses'] as $certStatus) { ?>
-                        <option value="<?php xecho($certStatus->getName()); ?>"<?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>><?php xecho($certStatus->getName()); ?></option> 
+                        <option value="<?php xecho($certStatus->getName()); ?>"
+			    <?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>>
+				<?php xecho($certStatus->getName()); ?>
+			</option> 
                     <?php  } ?>                  
                 </select>
-        	</div>
+	    </div>
 
         	
-        	<div class="topMargin leftFloat siteFilter">
-            	<span class="">Include Closed Sites: </span>
-            	<input type="checkbox" value=""<?php if($params['showClosed'] == true) echo " checked=checked" ?> name="showClosed" onchange="form.submit()"> 
-        	</div>        	<br>  
 
-        	<div class="topMargin leftFloat siteFilter">
-            	<span class="">Extension Name:</span>
-                <select name="servKeyNames" onchange="form.submit()">
-					<option value="">(none)</option>
-                    <?php foreach($params['servKeyNames'] as $servExtensions) { ?>
-                        <option value="<?php xecho($servExtensions); ?>"<?php if($params['selectedServKeyNames'] == $servExtensions) echo " selected"?>><?php xecho($servExtensions); ?></option> 
-                    <?php  } ?>                  
+	    <div class="topMargin leftFloat clearLeft siteFilter">
+		<span class="">Extension Name:</span>
+                <select name="servKeyNames">
+		    <option value="">(none)</option>
+		    <?php foreach ($params['servKeyNames'] as $servExtensions) { ?>
+    		    <option value="<?php xecho($servExtensions); ?>"<?php if ($params['selectedServKeyNames'] == $servExtensions) echo " selected" ?>>
+			    <?php xecho($servExtensions); ?>
+    		    </option> 
+		    <?php } ?>                  
                 </select>
-        	</div> 
-        	<?php        	
-        	if($params['selectedServKeyNames'] != ""){ ?>
- 
-             <div class="topMargin leftFloat siteFilter">
-                <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
-                <input class="middle" style="width: 5.5em;" type="text" name="selectedServKeyValue" <?php if(isset($params['selectedServKeyValue'])) echo "value=\"{$params['selectedServKeyValue']}\"";?>/>
-                <input class="middle" type="image" src="<?php echo \GocContextPath::getPath()?>img/enter.png" name="image" width="20" height="20">        
-            </div>
+	    </div> 
+
+
+	    <div class="topMargin leftFloat siteFilter siteFilter">
+		<span class="middle" style="margin-right: 0.4em">Extension Value: </span>
+		<input class="middle" type="text" name="servKeyValue" 
+		    <?php if (isset($params['selectedServKeyValue'])) echo "value=\"{$params['selectedServKeyValue']}\""; ?>/>
+	    </div>
+
+
+	    <div class="topMargin leftFloat clearLeft siteFilter">
+		<span class="">Include Closed Sites: </span>
+		<input type="checkbox" value=""<?php if ($params['showClosed'] == true) echo " checked=checked" ?> name="showClosed" /> 
+		<input type="submit" value="Filter Services">
+	    </div>
         	
-            <?php }?>               	
         </form>
     </div>
     
     <!--  Services -->
     <div class="listContainer">
         <span class="header listHeader">
-            <?php echo $params['totalServices'] ?> Service<?php if($params['totalServices'] != 1) echo "s"?>
+            <?php echo $params['totalServices'] ?> Services
         </span>
         <span class="listHeader">
             (Showing <?php echo $params['startRecord'] ?> - <?php echo $params['endRecord'] ?>)
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
-        <table class="vSiteResults" id="selectedSETable">
-            <tr class="site_table_row_1">
-                <th class="site_table">Hostname</th>
-                <th class="site_table">Service Type</th>
-                <th class="site_table">Production</th>
-                <th class="site_table">Monitored</th>
-                <th class="site_table">Host Site</th>
-                <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
-            </tr>
-            <?php
-            $num = 2;
-            if(count($params['services']) > 0) {
-            foreach($params['services'] as $se) {
-                        
-            $scopeC = count($se->getScopes());
-            $style=""; //Set no style as the default
-                if($scopeC != 0){
-                    if($se->getScopes()->first()->getName() == "Local") { 
-                        $style = " style=\"background-color: #A3D7A3;\"";
-                    } 
-                } 
-            ?>
-            <tr class="site_table_row_<?php echo $num ?>" <?php echo $style ?>>
-                <td class="site_table">
-                    <div style="background-color: inherit;">
-                        <span style="vertical-align: middle;">
-                            <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
-                                <span>&raquo; </span><?php xecho($se->getHostName()); ?>
-                            </a>
-                        </span>
-                    </div>
-                </td>
-                    
-                <td class="site_table">
-                    <?php xecho($se->getServiceType()->getName()); ?>
-                </td>
-                
-                <td class="site_table">
-                    <?php if($se->getProduction() == true) { ?>
-                    	<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height=22px />
-                   	<?php } else { ?>
-                   		<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height=22px />
-                   	<?php } ?>
-                </td>
-                
-                <td class="site_table">
-                    <?php if($se->getMonitored() == true) { ?>
-                    	<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height=22px />
-                   	<?php } else { ?>
-                   		<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height=22px />
-                   	<?php } ?>
-                </td>
-                
-                <td class="site_table">
-                    <a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId(); ?>">
-                        <?php xecho($se->getParentSite()->getShortName()); ?>
-                    </a>
-                </td>
-                
-                <td class="site_table">
-                    <input type="text" value="<?php xecho($se->getScopeNamesAsString()); ?>" readonly>
-                </td>
-            </tr>
-            <?php  
-                if($num == 1) { $num = 2; } else { $num = 1; }
-                } // End of the foreach loop iterating over sites
-            }
-            ?>
-        </table>
+
+	<table id="selectedSETable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+		<tr>
+		    <th>Hostname</th>
+		    <th>Service Type</th>
+		    <th>Production</th>
+		    <th>Monitored</th>
+		    <th>Host Site</th>
+		    <th>Scope(s)</th>
+		</tr>
+	    </thead>
+	    <tbody>
+		<?php
+		if (count($params['services']) > 0) {
+		    foreach ($params['services'] as $se) {
+			?>	
+			<tr>
+			    <td>
+				<a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
+				    <?php xecho($se->getHostName()); ?>
+				</a>
+			    </td>
+			    <td>
+				<?php xecho($se->getServiceType()->getName()); ?>
+			    </td>
+			    <td>
+				<?php if ($se->getProduction() == true) { ?>
+	    			<img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height=22px />
+				<?php } else { ?>
+	    			<img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height=22px />
+				<?php } ?>
+			    </td>
+
+			    <td>
+				<?php if ($se->getMonitored() == true) { ?>
+	    			<img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height=22px />
+				<?php } else { ?>
+	    			<img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height=22px />
+				<?php } ?>
+			    </td>
+
+			    <td>
+				<a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId(); ?>">
+				    <?php xecho($se->getParentSite()->getShortName()); ?>
+				</a>
+			    </td>
+
+			    <td>
+				<textarea readonly="true" style="height: 22px;"><?php xecho($se->getScopeNamesAsString()); ?></textarea>
+			    </td>
+
+			</tr> 	
+		    <?php
+		    }
+		}
+		?>
+
+	    </tbody>
+	</table>
+
         <!--  Navigation -->
         <div style="text-align: center">
             <a href="<?php echo $params['firstLink'] ?>">
@@ -213,3 +219,42 @@
         
     </div>
 </div>
+
+<script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>
+
+<script>
+    $(document).ready(function() 
+    {
+
+	//$("#selectedSETable").tablesorter(); 
+
+	// sort on first and second table cols only 
+	$("#selectedSETable").tablesorter({ 
+	    // pass the headers argument and assing a object 
+	    headers: { 
+		// assign the third column (we start counting zero) 
+		2: { 
+		    sorter: false 
+		}, 
+		3: { 
+		    sorter: false 
+		}
+	    } 
+	}); 
+    
+	 
+	$('#scopeSelect').multipleSelect({
+            placeholder: "Service Scopes"
+        });
+	// serviceType
+	$('#serviceTypeSelect').multipleSelect({
+	    filter: true,
+	    single: true,
+            placeholder: "Service Types" 
+        });
+//	$("#uncheckAllSeTypeBtn").click(function() {
+//            $("#serviceTypeSelect").multipleSelect("uncheckAll");
+//        });
+    }); 
+</script>
+ 

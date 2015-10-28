@@ -44,7 +44,8 @@ class ParameterBuilder {
 	return $this->qb;
     }
 
-    /** Initialize variables, convert then store the new query
+    /** 
+     * Initialize variables, convert then store the new query
      * @param Array $parameters
      * @param QueryBuilder $qb
      * @param EntityManager $em
@@ -53,8 +54,9 @@ class ParameterBuilder {
 	$this->em = $em;
 	$this->setQB($qb);
 	$this->setBindCount($bc);
-	if ($parameters != null)
+	if ($parameters != null){
 	    $this->ifSet($parameters, $qb);
+	}
     }
 
     private function ifSet($parameters, $qb) {

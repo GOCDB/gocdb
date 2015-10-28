@@ -69,43 +69,39 @@
             <?php echo sizeof($params['sGroups']) ?> Service Group<?php if(sizeof($params['sGroups']) != 1) echo "s"?>
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
-        <table class="vSiteResults" id="selectedSETable">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table">Description</th>
-                <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
+        <table id="selectedSgTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Scope(s)</th>
             </tr>
+	    </thead>
+	    <tbody>
             <?php           
-            $num = 2;
+            //$num = 2;
             foreach($params['sGroups'] as $sGroup) {
             ?>
-            <?php 
-            if($sGroup->getScopes()->first() != null && 
-                    $sGroup->getScopes()->first()->getName() == "Local") { $style = " style=\"background-color: #A3D7A3;\""; } else { $style = ""; } ?>
-            <tr class="site_table_row_<?php echo $num ?>" <?php echo $style ?>>
-                <td class="site_table">
-                    <div style="background-color: inherit;">
-                        <span style="vertical-align: middle;">
-                            <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
-                                <span>&raquo; </span><?php xecho($sGroup->getName()); ?>
-                            </a>
-                        </span>
-                    </div>
+            <tr>
+                <td>
+		    <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
+			<?php xecho($sGroup->getName()); ?>
+		    </a>
                 </td>
                     
-                <td class="site_table">
+                <td>
                     <?php xecho($sGroup->getDescription()); ?>
                 </td>
                 
-                
-                <td class="site_table">
-                   <input type="text" value="<?php xecho($sGroup->getScopeNamesAsString()); ?>" readonly>
+                <td>
+		   <textarea readonly="true" style="height: 22px;"><?php xecho($sGroup->getScopeNamesAsString()); ?></textarea>
                 </td>
             </tr>
             <?php  
-                if($num == 1) { $num = 2; } else { $num = 1; }
+                //if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
             ?>
+	    </tbody>
         </table>
     </div>
 </div>
@@ -115,6 +111,8 @@
 <script>
     $(document).ready(function() 
     {
+	$("#selectedSgTable").tablesorter(); 
+	
 	$('#scopeSelect').multipleSelect({
             placeholder: "SG Scopes"
         });

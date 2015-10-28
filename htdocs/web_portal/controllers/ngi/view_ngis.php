@@ -48,7 +48,7 @@ function view_ngis() {
     
     $scopes = \Factory::getScopeService()->getScopes();
     
-    $ngis = \Factory::getNgiService()->getNGIsByApiParams($filterParams);
+    $ngis = \Factory::getNgiService()->getNGIsFilterByParams($filterParams);
     //$ngis = \Factory::getNgiService()->getNGIs($scope);
     
     

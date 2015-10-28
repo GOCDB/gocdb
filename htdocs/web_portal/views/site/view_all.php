@@ -69,11 +69,7 @@
 		</select>
 	    </div>
 
-	    <div class="topMargin leftFloat siteFilter">
-		<span class="">Include Closed Sites: </span>
-		<input type="checkbox" value=""<?php if ($params['showClosed'] == true){ echo " checked=checked";} ?> name="showClosed"> 
-	    </div>
-	    <br>  
+
 
 	    <div class="topMargin leftFloat siteFilter">
 		<span class="">Extension Name:</span>
@@ -96,6 +92,8 @@
 	    
 	    
 	    <div class="topMargin leftFloat siteFilter clearLeft">
+		<span class="">Include Closed Sites: </span>
+		<input type="checkbox" value=""<?php if ($params['showClosed'] == true){ echo " checked=checked";} ?> name="showClosed"> 
 		<input type="submit" value="Filter Sites">
 	    </div>
         </form>
@@ -107,66 +105,65 @@
 	    <?php echo sizeof($params['sites']) ?> Site<?php if (sizeof($params['sites']) != 1) echo "s" ?>
         </span>
         <img src="<?php echo \GocContextPath::getPath() ?>img/grid.png" class="decoration" />
-        <table class="vSiteResults" id="selectedSETable">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table">NGI</th>
-                <th class="site_table">Infrastructure</th>
-                <th class="site_table">Certification Status</th>
-                <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
+	
+        <table id="selectedSiteTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Name</th>
+                <th>NGI</th>
+                <th>Infrastructure</th>
+                <th>Certification Status</th>
+                <th>Scope(s)</th>
             </tr>
+	    </thead>
+	    <tbody>
 	    <?php
-	    $num = 2;
+	    //$num = 2;
 	    if (sizeof($params['sites'] > 0)) {
 		foreach ($params['sites'] as $site) {
+		    
+//		    $scopeC = count($site->getScopes());
+//		    $style = ""; //Set no style as the default
+//		    if ($scopeC != 0) {
+//			if ($site->getScopes()->first()->getName() == "Local") {
+//			    $style = " style=\"background-color: #A3D7A3;\"";
+//			}
+//		    }
 		    ?>
-		    <?php
-		    $scopeC = count($site->getScopes());
-		    $style = ""; //Set no style as the default
-		    if ($scopeC != 0) {
-			if ($site->getScopes()->first()->getName() == "Local") {
-			    $style = " style=\"background-color: #A3D7A3;\"";
-			}
-		    }
-		    ?>
-		    <tr class="site_table_row_<?php echo $num ?>" <?php echo $style ?>>
-			<td class="site_table">
-			    <div style="background-color: inherit;">
-				<span style="vertical-align: middle;">
-				    <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-					<span>&raquo; </span><?php echo $site->getShortName(); ?>
-				    </a>
-				</span>
-			    </div>
+		    <tr>
+			<td>
+			    <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+				<?php echo $site->getShortName(); ?>
+			    </a>
 			</td>
 
-			<td class="site_table">
+			<td>
 			    <?php xecho($site->getNGI()->getName()); ?>
 			</td>
 
-			<td class="site_table">
+			<td>
 			    <?php xecho($site->getInfrastructure()->getName()); ?>
 			</td>
 
-			<td class="site_table">
+			<td>
 			    <?php xecho($site->getCertificationStatus()->getName()); ?>
 			</td>
 
-
-			<td class="site_table">
-			    <input type="text" value="<?php xecho($site->getScopeNamesAsString()); ?>" readonly>
+			<td>
+			    <textarea readonly="true" style="height: 22px;"><?php xecho($site->getScopeNamesAsString()); ?></textarea>
 			</td>
 
 		    </tr>
 		    <?php
-		    if ($num == 1) {
-			$num = 2;
-		    } else {
-			$num = 1;
-		    }
+//		    if ($num == 1) {
+//			$num = 2;
+//		    } else {
+//			$num = 1;
+//		    }
 		} // End of the foreach loop iterating over sites
 	    }
 	    ?>
+	    </tbody>	    
         </table>
     </div>
 </div>
@@ -177,6 +174,19 @@
 <script>
     $(document).ready(function() 
     {
+        $("#selectedSiteTable").tablesorter(); 
+
+	// sort on first and second table cols only 
+//	$("#selectedSiteTable").tablesorter({ 
+//	    // pass the headers argument and assing a object 
+//	    headers: { 
+//		// assign the third column (we start counting zero) 
+//		4: { 
+//		    sorter: false 
+//		}
+//	    } 
+//	}); 
+	
 	$('#scopeSelect').multipleSelect({
             placeholder: "Site Scopes"
         });

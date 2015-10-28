@@ -1,18 +1,18 @@
 
 ## Todo
-* TOP Priority - Record user last login date in new datetime field (is problematic if user authenticates
-  with x509 as there is no session started which means field would need to be 
-  updated in DB on each/every page request - desirable?). 
-* Add new ngi_cert_status entity and link to each NGI. For details see https://rt.egi.eu/rt/Ticket/Display.html?id=9084 
+* Refactor page view/template logic and remove NASTY menu/header/footer php 
+  rendering logic (an inherited legacy) 
+* Record user last login date in new datetime field (note, if user authenticates
+  with x509 there is no HTTP session started which may mean this field would need to be 
+  updated in DB on each/every page request(desirable?), or could start a new GOC session 
+  if required). 
+* Add new ngi_cert_status entity to define NGI certification status rules and 
+  link to each NGI. For details see https://rt.egi.eu/rt/Ticket/Display.html?id=9084 
 * After a downtime has started, remove downtime delete buttons
 * Update role-approve notification email 
 * Change `<CERTDN>` element in PI output to `<PRINCIPAL>` and consider adding the 
   `<AuthenticationRealm>` element and DB column. 
-* Add instructions for deployment to MySQL 
-* Modularise RoleLogic into one class and support `RoleActionMappings.xml`, see below. 
-* Refactor page view/template logic and remove nasty menu/header/footer php 
-  rendering logic (an inherited legacy) 
-* Add new gocdb website on github
+* Add instructions for deployment to MySQL/Mariadb 
 * Scope pull down multiple select (HTML5 multiple keyword on select).  
 * Update the datetime picker to latest version 
 * Allow downtime to affect services across multiple sites (currently DT 
@@ -20,6 +20,7 @@
 * Improve the downtime service selection GUI by showing some extra tags/info 
   to distinguish that particular service (show id or fist x chars of description)  
 * Introduce Monolog package
+* Add new gocdb website on github
 
 ## Maybe Todo 
 * Add LoA attribute to AuthToken details  
