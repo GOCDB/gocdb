@@ -75,7 +75,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
                         <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal">Scope(s)</a>
                     </td>
                     <td class="site_table">
-			<textarea readonly="true" style="height: 22px;"><?php xecho($params['sGroup']->getScopeNamesAsString())?></textarea>
+			<textarea readonly="true" style="height: 25px;"><?php xecho($params['sGroup']->getScopeNamesAsString())?></textarea>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
@@ -144,7 +144,7 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
 				?>
 				</td>
                 <td class="site_table">
-		    <textarea readonly="true" style="height: 22px;"><?php xecho($se->getScopeNamesAsString())?></textarea>
+		    <textarea readonly="true" style="height: 25px;"><?php xecho($se->getScopeNamesAsString())?></textarea>
                 </td>
             </tr>
             <?php

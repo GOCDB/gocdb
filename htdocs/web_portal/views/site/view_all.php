@@ -150,7 +150,7 @@
 			</td>
 
 			<td>
-			    <textarea readonly="true" style="height: 22px;"><?php xecho($site->getScopeNamesAsString()); ?></textarea>
+			    <textarea readonly="true" style="height: 25px;"><?php xecho($site->getScopeNamesAsString()); ?></textarea>
 			</td>
 
 		    </tr>

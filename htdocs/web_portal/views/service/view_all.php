@@ -89,7 +89,7 @@
         	
 	    <div class="topMargin leftFloat siteFilter">
             	<span class="">Certification:</span>
-                <select name="certificationStatus">
+                <select name="certStatus">
 		    <option value="">(all)</option>
                     <?php foreach($params['certStatuses'] as $certStatus) { ?>
                         <option value="<?php xecho($certStatus->getName()); ?>"
@@ -189,7 +189,7 @@
 			    </td>
 
 			    <td>
-				<textarea readonly="true" style="height: 22px;"><?php xecho($se->getScopeNamesAsString()); ?></textarea>
+				<textarea readonly="true" style="height: 25px;"><?php xecho($se->getScopeNamesAsString()); ?></textarea>
 			    </td>
 
 			</tr> 	

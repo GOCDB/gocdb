@@ -121,7 +121,7 @@
                         <tr class="site_table_row_1">
                             <td class="site_table" >
                                 <span style="float: left;">
-				    <textarea readonly="true" style="height: 22px;"><?php xecho($params['ngi']->getScopeNamesAsString()); ?></textarea>
+				    <textarea readonly="true" style="height: 25px;"><?php xecho($params['ngi']->getScopeNamesAsString()); ?></textarea>
                                 </span>
                                 <span style="float: right">
                                     <a href="index.php?Page_Type=Scope_Help">?</a>&nbsp
@@ -195,7 +195,7 @@
                                          $scopeString .= ", ";
                                      }
                                  } ?>   
-                          <textarea readonly="true" style="height: 22px;"><?php xecho($scopeString); ?></textarea>
+                          <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
                     </td>
 
                     

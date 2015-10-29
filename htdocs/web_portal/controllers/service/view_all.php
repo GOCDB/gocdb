@@ -74,8 +74,8 @@ function drawSEs(){
         $showClosed = true; 
     }
     $certStatus = "";
-    if(!empty($_GET['certificationStatus'])) { 
-       $certStatus = $_GET['certificationStatus']; 
+    if(!empty($_GET['certStatus'])) { 
+       $certStatus = $_GET['certStatus']; 
        //set show closed as true if production status selected is 'closed' - otherwise
        // there will be no results
        if($certStatus == 'Closed'){
@@ -136,7 +136,10 @@ function drawSEs(){
     $thisPage .= '&serviceType=' . $serviceType;
     $thisPage .= '&production=' . $production;
     $thisPage .= '&monitored=' . $monitored;
-    $thisPage .= '&scope=' . $scope;
+    //$thisPage .= '&scope=' . $scope;
+    foreach($selectedScopes as $sc){
+        $thisPage .= '&mscope[]='.$sc;	    
+    }
     $thisPage .= '&ngi=' . $ngi;
     $thisPage .= '&certStatus=' . $certStatus;
     $thisPage .= '&servKeyNames=' . $servKeyNames;

@@ -170,7 +170,7 @@ $siteProperties = $site->getSiteProperties();
 			    }
 			}
 			?>   
-			<textarea readonly="true" style="height: 22px;"><?php xecho($scopeString); ?></textarea>
+			<textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
                     </td>
                 </tr>
 
@@ -432,7 +432,7 @@ $siteProperties = $site->getSiteProperties();
 			}
 		    }
 		    ?>   
-		    <textarea readonly="true" style="height: 22px;"><?php xecho($scopeString); ?></textarea>
+		    <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
     		</td>
     	    </tr>
 		<?php

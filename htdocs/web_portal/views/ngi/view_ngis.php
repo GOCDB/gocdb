@@ -78,7 +78,7 @@
                     </td> 
                     
                     <td class="site_table">
-                         <textarea readonly="true" style="height: 22px;"><?php xecho($ngi->getScopeNamesAsString()); ?></textarea>
+                         <textarea readonly="true" style="height: 25px;"><?php xecho($ngi->getScopeNamesAsString()); ?></textarea>
                     </td>
                 </tr>
                 <?php  
