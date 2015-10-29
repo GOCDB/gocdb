@@ -96,7 +96,7 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
      * wraps the result.  
      * @throws \LogicException If role action mappings can't be resolved.  
      */
-    public function authoriseAction($action, \OwnedEntity $targetEntity, \User $user){
+    public function authoriseAction($action, \OwnedEntity $targetEntity, $user){
         if (!is_string($action) || strlen(trim($action)) == 0) {
             throw new \LogicException('Invalid action');
         } 
