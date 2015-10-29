@@ -244,6 +244,7 @@
     
 	 
 	$('#scopeSelect').multipleSelect({
+	    filter: true,
             placeholder: "Service Scopes"
         });
 	// serviceType

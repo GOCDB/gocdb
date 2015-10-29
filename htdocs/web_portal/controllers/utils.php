@@ -87,6 +87,12 @@ function getSiteDataFromWeb() {
     foreach($fields as $field){
         $site_data [$field] = $_REQUEST [$field];
     }
+   
+    if(isset($_REQUEST['childServiceScopeAction'])){
+	$site_data['childServiceScopeAction'] = $_REQUEST['childServiceScopeAction']; 
+    } else {
+	$site_data['childServiceScopeAction'] = 'noModify'; 
+    }
     
     // get scopes if any are selected, if not set as null
     if (isset($_REQUEST ['Scope_ids'])){

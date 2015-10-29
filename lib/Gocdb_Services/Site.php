@@ -128,6 +128,13 @@ class Site extends AbstractEntityService{
         
         //check there are the required number of scopes specified
         $this->checkNumberOfScopes($newValues['Scope_ids']);
+
+	// check childServiceScopeAction is a known value
+	if($newValues['childServiceScopeAction'] != 'noModify' &&
+		$newValues['childServiceScopeAction'] != 'inherit' && 
+		$newValues['childServiceScopeAction'] != 'override' ){
+	    throw new \Exception("Invalid scope update action"); 
+	}
         
         $this->em->getConnection()->beginTransaction();
 
@@ -175,6 +182,47 @@ class Site extends AbstractEntityService{
                              ->getSingleResult();
                 $site->addScope($scope);
             }
+
+	    // Update the child service scopes 
+	    if($newValues['childServiceScopeAction'] == 'noModify'){
+	        // do nothing to child service scopes, leave intact 	
+	    } else if($newValues['childServiceScopeAction'] == 'inherit'){
+		// iterate each child service and ensure it has all the site scopes 
+		$services = $site->getServices();
+		/* @var $service \Service */
+		foreach($services as $service){
+		    // for this service, see if it has each siteScope, if not add it  
+		    foreach($site->getScopes() as $siteScope){
+			$addScope = true; 
+			foreach($service->getScopes() as $servScope){
+			    if($siteScope == $servScope){
+				$addScope = false; 
+				break; 
+			    }
+			}
+			if($addScope){
+			   $service->addScope($siteScope);  
+			}
+		    }
+		}
+		
+	    } else if($newValues['childServiceScopeAction'] == 'override'){
+		$services = $site->getServices();
+		/* @var $service \Service */
+		foreach($services as $service){
+		    // remove all service's existing scopes
+		    foreach($service->getScopes() as $servScope){
+			$service->removeScope($servScope); 
+		    }
+		    // add all site scopes 
+		    foreach($site->getScopes() as $siteScope){
+			$service->addScope($siteScope); 
+		    }
+		}
+	        	
+	    } else {
+		throw new \Exception("Invalid scope update action"); 	
+	    }
             
             // get / set the country
             $dql = "SELECT c FROM Country c WHERE c.name = ?1";

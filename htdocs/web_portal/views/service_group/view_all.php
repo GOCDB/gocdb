@@ -114,6 +114,7 @@
 	$("#selectedSgTable").tablesorter(); 
 	
 	$('#scopeSelect').multipleSelect({
+	    filter: true,
             placeholder: "SG Scopes"
         });
     }); 

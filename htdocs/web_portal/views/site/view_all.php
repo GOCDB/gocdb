@@ -188,6 +188,7 @@
 //	}); 
 	
 	$('#scopeSelect').multipleSelect({
+	    filter: true,
             placeholder: "Site Scopes"
         });
     }); 

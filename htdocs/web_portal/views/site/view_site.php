@@ -170,7 +170,7 @@ $siteProperties = $site->getSiteProperties();
 			    }
 			}
 			?>   
-			<input type="text" value="<?php xecho($scopeString); ?>" readonly>
+			<textarea readonly="true" style="height: 22px;"><?php xecho($scopeString); ?></textarea>
                     </td>
                 </tr>
 
@@ -363,7 +363,7 @@ $siteProperties = $site->getSiteProperties();
                 </th>
             </tr>
             <td  colspan="4"> 
-		Note, Scope values marked with (x) indicate the parent NGI does not share that scope. 
+		Note, Scope values marked with (x) indicate the Site does not share that scope. 
             </td> 
 
 	    <?php
@@ -435,7 +435,7 @@ $siteProperties = $site->getSiteProperties();
 			    }
 			}
 			?>   
-    		    <input type="text" value="<?php xecho($scopeString); ?>" readonly>
+		    <textarea readonly="true" style="height: 22px;"><?php xecho($scopeString); ?></textarea>
     		</td>
     	    </tr>
 		<?php

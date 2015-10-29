@@ -109,6 +109,7 @@
 	}); 
 	
 	$('#scopeSelect').multipleSelect({
+	    filter: true,
             placeholder: "NGI Scopes"
         });
     }); 

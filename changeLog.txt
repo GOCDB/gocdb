@@ -1,4 +1,7 @@
 GOCDB-5.5 Release (TBC). No DB schema changes.  
+  - Added 'Action to take For all child service scopes' field when editing a 
+    site so that the site's scopes can be easily inherited or used to override 
+    all child service scopes. 
   - Adding <RECOGNISED_IN_PROJECTS/>  element to the XML output of the get_user
     query to show which projects a user's roles apply to. This is needed for 
     multi-tenant where a single GOC instance can host multiple projects.  

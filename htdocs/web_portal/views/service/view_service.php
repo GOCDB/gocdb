@@ -144,7 +144,7 @@ $configService = \Factory::getConfigService();
                             }
                         }
                         ?>   
-                        <input type="text" value="<?php xecho($scopeString); ?>" readonly>
+			<textarea readonly="true" style="height: 22px;"><?php xecho($scopeString); ?></textarea>
                     </td>
                 </tr>
 
