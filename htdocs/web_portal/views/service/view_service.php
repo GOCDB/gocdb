@@ -371,32 +371,37 @@ $configService = \Factory::getConfigService();
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
         <a href="index.php?Page_Type=SE_Downtimes&id=<?php echo $se->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Description</th>
-                <th class="site_table">From</th>
-                <th class="site_table">To</th>
-
+	
+        <table id="downtimesTable"  class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Description</th>
+                <th>From</th>
+                <th>To</th>
             </tr>
+	    </thead>
+	    <tbody>
             <?php
-            $num = 2;
+            //$num = 2;
             foreach($params['Downtimes'] as $d) {
             ?>
 
-            <tr class="site_table_row_<?php echo $num ?>">
-                <td class="site_table">
+            <tr>
+                <td>
                 	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
                 		<?php xecho($d->getDescription()) ?>
                 	</a>
                 </td>
-                <td class="site_table"><?php echo $d->getStartDate()->format($d::DATE_FORMAT) ?></td>
-                <td class="site_table"><?php echo $d->getEndDate()->format($d::DATE_FORMAT) ?></td>
+                <td><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
+                <td><?php echo $d->getEndDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
             </tr>
             <?php
-                if($num == 1) { $num = 2; } else { $num = 1; }
+                //if($num == 1) { $num = 2; } else { $num = 1; }
             }
             ?>
+	    </tbody>
         </table>
+	
         <!--  only show this link if we're in read / write mode -->
 		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Downtime Link -->
@@ -416,6 +421,7 @@ $configService = \Factory::getConfigService();
         $('#serviceEndpointLink').tooltip();
         $('#extensionsLink').tooltip(); 
 
+        $('#downtimesTable').tablesorter(); 
 	// sort on first and second table cols only 
         $("#serviceExtensionPropsTable").tablesorter({ 
         // pass the headers argument and assing a object 

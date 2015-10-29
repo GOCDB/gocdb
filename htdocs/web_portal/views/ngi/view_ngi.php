@@ -121,7 +121,7 @@
                         <tr class="site_table_row_1">
                             <td class="site_table" >
                                 <span style="float: left;">
-                                    <input type="text" value="<?php echo $params['ngi']->getScopeNamesAsString() ?>" readonly>
+				    <textarea readonly="true" style="height: 22px;"><?php xecho($params['ngi']->getScopeNamesAsString()); ?></textarea>
                                 </span>
                                 <span style="float: right">
                                     <a href="index.php?Page_Type=Scope_Help">?</a>&nbsp

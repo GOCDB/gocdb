@@ -20,35 +20,36 @@
                     NGIs
                 </h3>
             </div>
-            <table class="vSiteResults" style="table-layout: fixed">
-                <tr class="site_table_row_1">
-                    <th class="site_table">Name</th>
-                    <th class="site_table">Description</th>
-                </tr>
+	    
+            <table id="ngisTable" class="table table-striped table-condensed tablesorter">
+		<thead>
+		    <tr>
+			<th>Name</th>
+			<th>Description</th>
+		    </tr>
+		</thead>
+		<tbody>
                 <?php           
                 $num = 2;
                 foreach($params['ngiResults'] as $ngi) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table" style="width: 25%">
-                        <div style="background-color: inherit;">
-                            <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId()?>">
-                                    <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg" style="vertical-align: middle">
-                                    <span> </span><?php xecho($ngi->getName()); ?>
-                                </a>
-                            </span>
-                        </div>
+                <tr>
+                    <td style="width: 25%">
+			<a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId()?>">
+			    <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg" style="vertical-align: middle">
+			    &nbsp;&nbsp;&nbsp;<?php xecho($ngi->getName()); ?>
+			</a>
                     </td>
                         
-                    <td class="site_table">
+                    <td>
                         <?php xecho($ngi->getDescription()); ?>
                     </td>
                 </tr>
                 <?php  
-                    if($num == 1) { $num = 2; } else { $num = 1; }
+                    //if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over users
                 ?>
+		</tbody>
             </table>
         </div>
     <?php } // end of "if NGIs is > 0"?>
@@ -62,36 +63,37 @@
                     Sites
                 </h3>
             </div>
-            <table class="vSiteResults">
-                <tr class="site_table_row_1">
-                    <th class="site_table">Short Name</th>
-                    <th class="site_table">Official Name</th>
+	    
+            <table id="sitesTable" class="table table-striped table-condensed tablesorter">
+		<thead>
+                <tr>
+                    <th>Short Name</th>
+                    <th>Official Name</th>
                 </tr>
+		</thead>
+		<tbody>
                 <?php           
                 $num = 2;
                 if(sizeof($params['siteResults'] > 0)) {
                 foreach($params['siteResults'] as $site) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table" style="width: 30%">
-                        <div style="background-color: inherit;">
-                            <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-                                    <span>&raquo; </span><?php xecho($site->getShortName()); ?>
-                                </a>
-                            </span>
-                        </div>
+                <tr>
+                    <td style="width: 30%">
+			<a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+			    <?php xecho($site->getShortName()); ?>
+			</a>
                     </td>
                         
-                    <td class="site_table">
+                    <td>
                         <?php xecho($site->getOfficialName()); ?>
                     </td>
                 </tr>
                 <?php  
-                    if($num == 1) { $num = 2; } else { $num = 1; }
+                    //if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over sites
                 }
                 ?>
+		</tbody>
             </table>
         </div>
     <?php } // end of "if sites is > 0"?>
@@ -105,39 +107,39 @@
                     Services
                 </h3>
             </div>
-            <table class="vSiteResults">
-                <tr class="site_table_row_1">
-                    <th class="site_table">Hostname</th>
-                    <th class="site_table">Service Type</th>
-                    <th class="site_table">Description</th>
+            <table id="servicesTable" class="table table-striped table-condensed tablesorter">
+		<thead>
+                <tr>
+                    <th>Hostname</th>
+                    <th>Service Type</th>
+                    <th>Description</th>
                 </tr>
+		</thead>
+		<tbody>
                 <?php           
                 $num = 2;
                 foreach($params['serviceResults'] as $ser) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table" style="width: 30%">
-                        <div style="background-color: inherit;">
-                            <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Service&id=<?php echo $ser->getId() ?>">
-                                    <span>&raquo; </span><?php xecho($ser->getHostName()); ?>
-                                </a>
-                            </span>
-                        </div>
+                <tr>
+                    <td style="width: 30%">
+			<a href="index.php?Page_Type=Service&id=<?php echo $ser->getId() ?>">
+			    <?php xecho($ser->getHostName()); ?>
+			</a>
                     </td>
                         
-                    <td class="site_table">
+                    <td>
                         <?php xecho($ser->getServiceType()->getName()); ?>
                     </td>
                     
-                    <td class="site_table">
+                    <td>
                         <?php xecho($ser->getDescription()); ?>
                     </td>
                 </tr>
                 <?php  
-                    if($num == 1) { $num = 2; } else { $num = 1; }
+                    //if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over services 
                 ?>
+		</tbody>
             </table>
         </div>
     <?php } // end of "if services is > 0"?>
@@ -152,27 +154,26 @@
                 </h3>
             </div>
             <?php if($params['authenticated']) { ?>
-                <table class="vSiteResults" style="table-layout: fixed">
-                    <tr class="site_table_row_1">
-                        <th class="site_table">Name</th>
-                        <th class="site_table">E-Mail</th>
+                <table id="usersTable" class="table table-striped table-condensed tablesorter">
+		    <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>E-Mail</th>
                     </tr>
+		    </thead>
+		    <tbody>
                     <?php           
                     $num = 2;
                     foreach($params['userResults'] as $user) {
                     ?>
-                    <tr class="site_table_row_<?php echo $num ?>">
-                        <td class="site_table" style="width: 25%">
-                            <div style="background-color: inherit;">
-                                <span style="vertical-align: middle;">
-                                    <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
-                                        <span>&raquo; </span><?php xecho($user->getFullName()); ?>
-                                    </a>
-                                </span>
-                            </div>
+                    <tr >
+                        <td style="width: 25%">
+			    <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
+				<?php xecho($user->getFullName()); ?>
+			    </a>
                         </td>
                             
-                        <td class="site_table">
+                        <td>
                             <?php if($params['authenticated']){ xecho($user->getEmail()); } else {echo 'PROTECTED - Authentication required'; } ?>
                         </td>
                     </tr>
@@ -180,6 +181,7 @@
                         if($num == 1) { $num = 2; } else { $num = 1; }
                         } // End of the foreach loop iterating over users
                     ?>
+		    </tbody>
                 </table>
             <?php } else {echo 'PROTECTED'; } ?>
         </div>
@@ -191,4 +193,14 @@
         </div>
     <?php }?>
 </div>
+
+<script>
+   $(document).ready(function() 
+    { 
+	$("#ngisTable").tablesorter(); 
+	$("#sitesTable").tablesorter(); 
+	$("#servicesTable").tablesorter(); 
+	$("#usersTable").tablesorter(); 
+    });  
+</script>  
 

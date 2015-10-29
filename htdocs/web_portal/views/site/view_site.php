@@ -350,103 +350,99 @@ $siteProperties = $site->getSiteProperties();
 
     <!--  Services -->
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Services</span>
+        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+	    Services (Note, Service scope values marked with (x) indicate the Site does not share that scope)
+	</span>
         <img src="<?php echo \GocContextPath::getPath() ?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Hostname (service type)</th>
-                <th class="site_table">URL</th>
-                <th class="site_table">Production</th>
-                <th class="site_table">Monitored</th>
-                <th class="site_table">
-                    <a href="index.php?Page_Type=Scope_Help">Scope(s)</a>
+	
+        <table id="servicesTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Hostname (service type)</th>
+                <th>URL</th>
+                <th>Production</th>
+                <th>Monitored</th>
+                <th>
+                    Scope(s)
                 </th>
             </tr>
-            <td  colspan="4"> 
-		Note, Scope values marked with (x) indicate the Site does not share that scope. 
-            </td> 
-
+	    </thead>
+            <tbody>
 	    <?php
 	    $num = 2;
-
 	    foreach ($params['ServicesAndScopes'] as $serviceAndScopes) {
 		$se = $serviceAndScopes['Service'];
 		$scopes = $serviceAndScopes['Scopes'];
 		?>
 
-    	    <tr class="site_table_row_<?php echo $num ?>">
-    		<td class="site_table">
-    		    <div style="background-color: inherit;">
-    			<span style="vertical-align: middle;">
-    			    <a href="index.php?Page_Type=Service&id=<?php echo($se->getId()) ?>">
-				    <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
-    			    </a>
-    			</span>
-    		    </div>
+    	    <tr>
+    		<td>
+		    <a href="index.php?Page_Type=Service&id=<?php echo($se->getId()) ?>">
+			    <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
+		    </a>
     		</td>
-    		<td class="site_table"><?php xecho((string) $se->getUrl()) ?></td>
+    		<td><?php xecho((string) $se->getUrl()) ?></td>
 
-    		<td class="site_table">
-			<?php
-			switch ($se->getProduction()) {
-			    case true:
-				?>
-	    		    <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
-				<?php
-				break;
-			    case false:
-				?>
-	    		    <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
-				<?php
-				break;
-			}
-			?>
+    		<td>
+		    <?php
+		    switch ($se->getProduction()) {
+			case true:
+			    ?>
+			<img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
+			    <?php
+			    break;
+			case false:
+			    ?>
+			<img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
+			    <?php
+			    break;
+		    }
+		    ?>
     		</td>
 
-    		<td class="site_table">
-			<?php
-			switch ($se->getMonitored()) {
-			    case true:
-				?>
-	    		    <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
-				<?php
-				break;
-			    case false:
-				?>
-	    		    <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
-				<?php
-				break;
-			}
-			?>
+    		<td>
+		    <?php
+		    switch ($se->getMonitored()) {
+			case true:
+			    ?>
+			<img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
+			    <?php
+			    break;
+			case false:
+			    ?>
+			<img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
+			    <?php
+			    break;
+		    }
+		    ?>
     		</td>
-    		<td class="site_table">
-			<?php
-			$count = 0;
-			$numScopes = sizeof($scopes);
-			$scopeString = '';
-			foreach ($scopes as $scopeName => $sharedWithParent) {
-			    if ($sharedWithParent) {
-				$scopeString .= $scopeName;
-			    } else {
-				$scopeString .= $scopeName . '(x)';
-			    }
-			    if (++$count != $numScopes) {
-				$scopeString .= ", ";
-			    }
+    		<td>
+		    <?php
+		    $count = 0;
+		    $numScopes = sizeof($scopes);
+		    $scopeString = '';
+		    foreach ($scopes as $scopeName => $sharedWithParent) {
+			if ($sharedWithParent) {
+			    $scopeString .= $scopeName;
+			} else {
+			    $scopeString .= $scopeName . '(x)';
 			}
-			?>   
+			if (++$count != $numScopes) {
+			    $scopeString .= ", ";
+			}
+		    }
+		    ?>   
 		    <textarea readonly="true" style="height: 22px;"><?php xecho($scopeString); ?></textarea>
     		</td>
     	    </tr>
 		<?php
-		if ($num == 1) {
-		    $num = 2;
-		} else {
-		    $num = 1;
-		}
+		//if ($num == 1) { $num = 2; } else { $num = 1; }
 	    } // End of the foreach loop iterating over SEs
 	    ?>
+	    </tbody>
         </table>
+
+	
 	<!--  only show this link if we're in read / write mode -->
 	<?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
     	<!-- Add new Service Link -->
@@ -464,18 +460,22 @@ $siteProperties = $site->getSiteProperties();
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
         <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table">Role</th>
+	
+        <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Name</th>
+                <th>Role</th>
             </tr>
+	    </thead>
+	    <tbody>
 	    <?php
-	    $num = 2;
+	    //$num = 2;
 	    foreach ($params['roles'] as $role) {
-		?>
+	    ?>
 
-    	    <tr class="site_table_row_<?php echo $num ?>">
-    		<td class="site_table">
+    	    <tr>
+    		<td>
     		    <div style="background-color: inherit;">
 			    <?php if ($params['authenticated']) { ?>
 				<a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
@@ -488,7 +488,7 @@ $siteProperties = $site->getSiteProperties();
 			    ?>
     		    </div>
     		</td>
-    		<td class="site_table">
+    		<td>
 			<?php
 			if ($params['authenticated']) {
 			    xecho($role->getRoleType()->getName());
@@ -499,13 +499,10 @@ $siteProperties = $site->getSiteProperties();
     		</td>
     	    </tr>
 		<?php
-		if ($num == 1) {
-		    $num = 2;
-		} else {
-		    $num = 1;
-		}
+		//if ($num == 1) { $num = 2; } else { $num = 1; }
 	    }
 	    ?>
+	    </tbody>
         </table>
 
 	<!-- Request Role Link -->
@@ -527,35 +524,35 @@ $siteProperties = $site->getSiteProperties();
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes Affecting <?php xecho($site->getShortName()) ?>'s SEs </span>
         <a href="index.php?Page_Type=Site_Downtimes&id=<?php echo($site->getId()); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Description</th>
-                <th class="site_table" style="width: 9em;">From</th>
-                <th class="site_table" style="width: 9em;">To</th>
-            </tr>
+	
+        <table id="siteDowntimesTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+		<tr>
+		    <th>Description</th>
+		    <th>From</th>
+		    <th>To</th>
+		</tr>
+	    </thead>
 	    <?php
-	    $num = 2;
+	    //$num = 2;
 	    foreach ($downtimes as $dt) {
 		?>
 
-    	    <tr class="site_table_row_<?php echo $num ?>">
-    		<td class="site_table">
+    	    <tr>
+    		<td>
     		    <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo($dt->getId()) ?>">
 			    <?php xecho($dt->getDescription()) ?>
     		    </a>
     		</td>
-    		<td class="site_table"><?php echo($dt->getStartDate()->format($dt::DATE_FORMAT)) ?></td>
-    		<td class="site_table"><?php echo($dt->getEndDate()->format($dt::DATE_FORMAT)) ?></td>
+    		<td><?php echo($dt->getStartDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
+    		<td><?php echo($dt->getEndDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
     	    </tr>
 		<?php
-		if ($num == 1) {
-		    $num = 2;
-		} else {
-		    $num = 1;
-		}
+		//if ($num == 1) { $num = 2; } else { $num = 1; }
 	    }
 	    ?>
         </table>
+	
         <!--  only show this link if we're in read / write mode -->
 	<?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
     	<!-- Add new Downtime Link -->
@@ -580,6 +577,22 @@ $siteProperties = $site->getSiteProperties();
 <script>
    $(document).ready(function() 
     { 
+	$("#siteDowntimesTable").tablesorter(); 
+	$("#siteUsersTable").tablesorter(); 
+	
+       $("#servicesTable").tablesorter( { 
+	    // pass the headers argument and assing a object 
+	    headers: { 
+		// assign the third column (we start counting zero) 
+		2: { 
+		    sorter: false 
+		}, 
+		3: { 
+		    sorter: false 
+		} 
+	    } 
+	}); 
+
 	// sort on first and second table cols only 
         $("#siteExtensionPropsTable").tablesorter({ 
         // pass the headers argument and assing a object 
