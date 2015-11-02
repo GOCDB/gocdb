@@ -22,7 +22,7 @@ XML doc instance for unit testing.
     xmlns='http://goc.egi.eu/2015/03/spec1.0_r1'
     xsi:schemaLocation='http://goc.egi.eu/2015/03/spec1.0_r1 ../../../../config/RoleActionMappingsSchema.xsd'> 
 
-    <RoleActionMapping> 
+    <!--<RoleActionMapping> 
         <TargetProject>EGI</TargetProject>
 
         <RoleNames over="Project">
@@ -40,11 +40,11 @@ XML doc instance for unit testing.
                 <Target>project</Target>
             </EnabledActions>
         </RoleMapping>
-    </RoleActionMapping> 
+    </RoleActionMapping>--> 
 
 
     <RoleActionMapping> 
-        <TargetProject>EGI2</TargetProject>
+        <!--<TargetProject>EGI2</TargetProject>-->
 
         <RoleNames over="Project">
             <Role id="RA">RoleA</Role>

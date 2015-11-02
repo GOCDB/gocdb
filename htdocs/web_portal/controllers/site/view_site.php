@@ -37,7 +37,7 @@ function view_site() {
     // Does current viewer have edit permissions over Site ?
     $params['ShowEdit'] = false;  
     //if(count($serv->authorize Action(\Action::EDIT_OBJECT, $site, $user))>=1){
-    if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $site, $user)){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction()){
        $params['ShowEdit'] = true;  
     } 
     

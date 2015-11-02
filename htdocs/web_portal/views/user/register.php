@@ -8,19 +8,24 @@
         <br/> 
 
         
-        <div class="alert alert-warning" role="alert">
+	<div class="alert alert-warning" role="alert">
+            <h3>Terms and Conditions of Account Registration</h3>
             <ul>
-               <li>By registering <b>you accept that your identity string and 
-                 the information you enter below will be visible to other 
-                 authenticated users and client-services of GOCDB</b>, including  
-                 those authenticated 
-                 by the <a href="https://www.igtf.net">Interoperable Global Trust Federation (IGTF)</a> 
-                 and <a href="http://www.ukfederation.org.uk/">UK Access Management Federation</a>.</li>   
-               <li>This data is re-published by GOCDB and used by EGI for 
-                 Monitoring, Accounting and used in its data processing systems.</li> 
-               <li>If you do not provide this consent, please do <b>NOT</b> register.</li>
+               <li>Registering a GOCDB account means <b>you accept that your ID string, your basic user details and roles will be visible to other authenticated users and client-services of GOCDB</b>, including those authenticated by: </br></br>
+                  <ol>
+                    <li>a certificate issed from a Certification Authority (CA) that is registered with the <a href="https://www.igtf.net">Interoperable Global Trust Federation (IGTF).</a></li>
+                    <li>new authentication/security realms will be added here and you will be notified by email and in the portal.</li>
+                  </ol>
+               </li>
+            </ul>
+            <br>
+            <ul>
+               <li>Your details are re-published by GOCDB and used by EGI for Monitoring, Accounting and for use in its data processing systems.</li>
+               <li><a href="https://wiki.egi.eu/wiki/GOCDB/data_privacy">Further details and terms/conditions of use here</a>.</li>
+               <li>If you do not provide this consent, please <b>DO NOT register</b>.</li>
             </ul>
         </div>
+
 
 
         <div class="listContainer">

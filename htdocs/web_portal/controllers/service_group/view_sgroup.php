@@ -39,7 +39,7 @@ function showServiceGroup() {
     // Does current viewer have edit permissions over object ?
     $params['ShowEdit'] = false;  
     //if(count( \Factory::getServiceGroupService()->authorize Action(\Action::EDIT_OBJECT, $sGroup, $user))>=1){
-    if(\Factory::getRoleActionAuthorisationService()->authoriseActionAbsolute(\Action::EDIT_OBJECT, $sGroup, $user)){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $sGroup, $user)->getGrantAction()){
        $params['ShowEdit'] = true;  
     } 
 

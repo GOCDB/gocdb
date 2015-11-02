@@ -15,9 +15,9 @@
             action="index.php?Page_Type=Request_Role" method="post" class="inputForm">    
         <select name="Role_Name_Value">        
         <?php foreach($params['roles'] as $roleName) { ?>
-            <option value="<?php xecho($roleName[0]) ?>"><?php xecho($roleName[0].' ('.$roleName[1].')') ?></option>
+            <option value="<?php xecho($roleName) ?>"><?php xecho($roleName) ?></option>
         <?php } ?>
-        </select> : [RoleTypeName (Project That Recognises Role)] 
+        </select> : [RoleTypeName] 
         <br/><br/>
         <input type="hidden" name="Object_ID" value="<?php echo $params['objectId'] ?>"/>
         <input type="submit" />

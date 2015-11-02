@@ -122,6 +122,63 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
     }
 
 
+    public function NOT_RUN_test_authoriseActionBug(){
+        print __METHOD__ . "\n";	
+	$codRT = TestUtil::createSampleRoleType(TestRoleTypeName::COD_ADMIN);
+	$this->em->persist($codRT);  // edit all sites cert status only  
+
+	// Create a user
+    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+    	$this->em->persist($u);
+
+	/*
+         * Create test data with the following structure 
+         * 
+         *   p1  EGI
+         *    \  /
+         *     n1  
+         */
+        $p1 = new \Project("p1");  
+	$p2 = new \Project("EGI");  
+    	$n1 = TestUtil::createSampleNGI("n1");
+	$this->em->persist($p1);
+	$this->em->persist($p2);
+	$this->em->persist($n1);
+	$p1->addNgi($n1); 
+	$p2->addNgi($n1); 
+
+	// Build dependencies and inject business objects: 
+        // start a new connection to test transactional isolation of RoleService methods.  
+        //$em2 = $this->createEntityManager();
+        $em2 = $this->em;
+
+        // Create RoleActionMappingService with non-default roleActionMappings file
+        $roleActionMappingService = new org\gocdb\services\RoleActionMappingService(); 
+        $roleActionMappingService->setRoleActionMappingsXmlPath(
+                __DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings7.xml"); 
+
+	// Create RoleActionAuthorisationService with dependencies 
+        $roleAuthServ = new org\gocdb\services\RoleActionAuthorisationService
+                ($roleActionMappingService/*, $roleService*/);  
+        $roleAuthServ->setEntityManager($em2); 
+
+        // Create role and link user and owned entities (user link not shown) 
+	/*
+         * r1->p1  EGI
+         *      \  /
+         *       n1  
+         */
+	$r1 = TestUtil::createSampleRole($u, $codRT, $p1, RoleStatus::GRANTED); 
+    	$this->em->persist($r1);
+    	$this->em->flush();
+
+	// Assert user has no authorising roles over n1 BECAUSE p1 is not 
+	// mapped in XML file and there is no default mapping!
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::REVOKE_ROLE, $n1, $u)->getGrantingRoles(); 
+	//print_r("dave: ".$enablingRoles[0]->getRoleType()->getName()); 
+        $this->assertEquals(0, count($enablingRoles)); 
+    }
+
     public function test_authoriseAction(){
         print __METHOD__ . "\n";
     	// Create roletypes
@@ -187,29 +244,28 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
     	$this->em->flush();
         
         // Assert user can edit s1 using r1 
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s1, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s1, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r1, $enablingRoles)); 
         $this->assertEquals(TestRoleTypeName::NGI_OPS_MAN, $enablingRoles[0]->getRoleType()->getName()); 
         
         // Assert user can edit n1 using r1
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n1, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n1, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r1, $enablingRoles)); 
         $this->assertEquals(TestRoleTypeName::NGI_OPS_MAN, $enablingRoles[0]->getRoleType()->getName()); 
 
         // Assert user can change s1 cert status with r1
-        //$this->assertEquals(1, count($roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s1, $u))); 
-        $this->assertTrue(in_array($r1, $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s1, $u)) ); 
+        $this->assertTrue(in_array($r1, $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s1, $u)->getGrantingRoles()) ); 
         
         // Assert user can't edit other sites/ngis/projects 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p1, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u))); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p1, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u)->getGrantingRoles())); 
        
          /*
          *    p1  p2  p3
@@ -223,7 +279,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $this->em->flush(); 
 
         // Assert user can edit s1 using r1 + r2 
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s1, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s1, $u)->getGrantingRoles(); 
         $this->assertEquals(2, count($enablingRoles)); 
         $this->assertTrue(in_array($r1, $enablingRoles));  
         $this->assertTrue(in_array($r2, $enablingRoles));  
@@ -232,18 +288,18 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         //$this->assertTrue(in_array(TestRoleTypeName::SITE_ADMIN, $enablingRoleNames)); 
         
         // Assert user can change site cert status with r1 
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s1, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s1, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r1, $enablingRoles));  
 
         // Assert user can't edit other sites/ngis/projects 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p1, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u))); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p1, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u)->getGrantingRoles())); 
 
         /*
          *    p1     p2  p3
@@ -257,32 +313,32 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $this->em->flush(); 
 
         // Assert user can edit s1 via r1 + r2 
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s1, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s1, $u)->getGrantingRoles(); 
         $this->assertEquals(2, count($enablingRoles)); 
         $this->assertTrue(in_array($r1, $enablingRoles));  
         $this->assertTrue(in_array($r2, $enablingRoles));  
 
         // Assert user can edit s2 via r3 
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s2, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s2, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r3, $enablingRoles));  
         
         // Assert user can change s1 cert status via r1
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s1, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s1, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r1, $enablingRoles));  
        
         // Assert user cant change s2 cert status 
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s2, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s2, $u)->getGrantingRoles(); 
         $this->assertEquals(0, count($enablingRoles)); 
 
         // Assert user can't edit other sites/ngis/projects 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p1, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u))); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p1, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u)->getGrantingRoles())); 
 
 
         /*
@@ -297,25 +353,25 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $this->em->flush(); 
 
         // Assert user can edit p2 via r4
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p2, $u);
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p2, $u)->getGrantingRoles();
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r4, $enablingRoles));  
 
         // Assert user can grantRole on p2 via r4
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::GRANT_ROLE, $p2, $u);
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::GRANT_ROLE, $p2, $u)->getGrantingRoles();
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r4, $enablingRoles));
         
         // Assert user can grantRole on n2 via r4
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::GRANT_ROLE, $n2, $u);
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::GRANT_ROLE, $n2, $u)->getGrantingRoles();
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r4, $enablingRoles));
 
         // Assert user can't edit other sites/ngis/projects 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u))); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u)->getGrantingRoles())); 
        
         /*
          *    p1  r4-p2  p3-r5
@@ -329,20 +385,20 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $this->em->flush(); 
 
         // Assert user can edit p3 with r5 
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u);
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $p3, $u)->getGrantingRoles();
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r5, $enablingRoles));
         
         // Assert user can grant role on n2 + n3 via r5
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::GRANT_ROLE, $n2, $u);
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::GRANT_ROLE, $n2, $u)->getGrantingRoles();
         $this->assertEquals(2, count($enablingRoles)); 
         $this->assertTrue(in_array($r5, $enablingRoles));
         $this->assertTrue(in_array($r4, $enablingRoles));
 
         // Assert user can't edit other sites/ngis/projects 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u))); 
-        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u))); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n2, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u)->getGrantingRoles())); 
+        $this->assertEquals(0, count($roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $n3, $u)->getGrantingRoles())); 
 
 
 
@@ -369,7 +425,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $this->em->flush(); 
 
         // Assert user can edit s3 with r6 + r7
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u);
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u)->getGrantingRoles();
         $this->assertEquals(2, count($enablingRoles)); 
         $this->assertTrue(in_array($r7, $enablingRoles));
         $this->assertTrue(in_array($r6, $enablingRoles));
@@ -386,13 +442,13 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
     	$this->em->persist($r8);
         $this->em->flush(); 
         
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s2, $u);
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s2, $u)->getGrantingRoles();
         $this->assertEquals(3, count($enablingRoles)); 
         $this->assertTrue(in_array($r8, $enablingRoles));
         $this->assertTrue(in_array($r4, $enablingRoles));
         $this->assertTrue(in_array($r5, $enablingRoles));
         
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s3, $u);
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s3, $u)->getGrantingRoles();
         $this->assertEquals(2, count($enablingRoles)); 
         $this->assertTrue(in_array($r6, $enablingRoles));
         $this->assertTrue(in_array($r5, $enablingRoles));
@@ -409,14 +465,14 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $this->em->flush(); 
 
         // Assert user can edit s3 with r7, r9, r6
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u);
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u)->getGrantingRoles();
         $this->assertEquals(3, count($enablingRoles)); 
         $this->assertTrue(in_array($r7, $enablingRoles));
         $this->assertTrue(in_array($r9, $enablingRoles));
         $this->assertTrue(in_array($r6, $enablingRoles));
 
         // Assert user can change s3 cert status with r6 + r5
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s3, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s3, $u)->getGrantingRoles(); 
         $this->assertEquals(2, count($enablingRoles)); 
         $this->assertTrue(in_array($r6, $enablingRoles)); 
         $this->assertTrue(in_array($r5, $enablingRoles)); 
@@ -432,14 +488,14 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
     	$this->em->persist($r10);
         $this->em->flush(); 
 
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u)->getGrantingRoles(); 
         $this->assertEquals(4, count($enablingRoles)); 
         $this->assertTrue(in_array($r6, $enablingRoles)); 
         $this->assertTrue(in_array($r10, $enablingRoles)); 
         $this->assertTrue(in_array($r7, $enablingRoles)); 
         $this->assertTrue(in_array($r9, $enablingRoles)); 
 
-        $enablingRoles = $roleAuthServ->authoriseAction(\Action::NGI_ADD_SITE, $n3, $u); 
+        $enablingRoles = $roleAuthServ->authoriseAction(\Action::NGI_ADD_SITE, $n3, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($r6, $enablingRoles)); 
 
@@ -714,7 +770,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         
         
         // Assert user can edit site using 3 enabling roles
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site1, $u); 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site1, $u)->getGrantingRoles(); 
         $this->assertEquals(3, count($enablingRoles)); 
         $this->assertTrue(in_array($siteAdminRole, $enablingRoles)); 
         $this->assertTrue(in_array($rodUserRole, $enablingRoles)); 
@@ -722,7 +778,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         
 
         // Assert user can only edit cert status through his NGI_OPS_MAN role 
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site1, $u); 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site1, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($ngiManagerRole, $enablingRoles)); 
 // 
@@ -743,13 +799,13 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
 */
        
         // Assert user now has 2 roles that enable SITE_EDIT_CERT_STATUS change action 
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site1, $u); 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site1, $u)->getGrantingRoles(); 
         $this->assertEquals(2, count($enablingRoles)); 
         $this->assertTrue(in_array($ngiManagerRole, $enablingRoles)); 
         $this->assertTrue(in_array($codRole, $enablingRoles)); 
 
         // Assert user can edit SE using SITE_ADMIN, NGI_OPS_MAN, REG_STAFF_ROD roles (but not COD role)  
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $se1->getParentSite(), $u);  
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $se1->getParentSite(), $u)->getGrantingRoles();  
         $this->assertEquals(3, count($enablingRoles)); 
         $this->assertTrue(in_array($siteAdminRole, $enablingRoles)); 
         $this->assertTrue(in_array($ngiManagerRole, $enablingRoles));  
@@ -757,7 +813,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
     
         // Assert User can only edit Site2 through his 2 indirect ngi roles 
         // (user don't have any direct site level roles on this site and COD don't give edit perm)
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site2_userHasNoDirectRole, $u); 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site2_userHasNoDirectRole, $u)->getGrantingRoles(); 
         $this->assertEquals(2, count($enablingRoles)); 
         $this->assertTrue(in_array($ngiManagerRole, $enablingRoles)); 
         $this->assertTrue(in_array($rodUserRole, $enablingRoles));  
@@ -777,10 +833,10 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
 */
         
         // Assert user can only SITE_EDIT_CERT_STATUS through 1 role for both sites
-        $enablingRoles =  $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site2_userHasNoDirectRole, $u); 
+        $enablingRoles =  $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site2_userHasNoDirectRole, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($ngiManagerRole, $enablingRoles)); 
-        $enablingRoles =  $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site1, $u); 
+        $enablingRoles =  $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site1, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($ngiManagerRole, $enablingRoles));  
         
@@ -799,10 +855,10 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
 */
 
         // Assert user can't edit site2 cert status  
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site2_userHasNoDirectRole, $u); 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site2_userHasNoDirectRole, $u)->getGrantingRoles(); 
         $this->assertEquals(0, count($enablingRoles)); 
         // Assert user can still edit site via his ROD role 
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site2_userHasNoDirectRole, $u); 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site2_userHasNoDirectRole, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($rodUserRole, $enablingRoles));  
 
@@ -822,11 +878,11 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
 */
 
         // User can't edit site2
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site2_userHasNoDirectRole, $u); 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site2_userHasNoDirectRole, $u)->getGrantingRoles(); 
         $this->assertEquals(0, count($enablingRoles)); 
        
         // Assert user can still edit SITE1 through his direct site level role (this role has not been deleted)  
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site1, $u); 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site1, $u)->getGrantingRoles(); 
         $this->assertEquals(1, count($enablingRoles)); 
         $this->assertTrue(in_array($siteAdminRole, $enablingRoles)); 
         
@@ -844,7 +900,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
                                  
 */
         // User can't edit site1 
-        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site1, $u); 
+        $enablingRoles = $roleActionAuthService->authoriseAction(\Action::EDIT_OBJECT, $site1, $u)->getGrantingRoles(); 
         $this->assertEquals(0, count($enablingRoles)); 
     }
 

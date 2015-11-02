@@ -236,7 +236,7 @@ class Role extends AbstractEntityService{
         /* @var $role \Role */
         foreach ($allPendingRoles as $role) {
             $targetEntity = $role->getOwnedEntity();
-            if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::GRANT_ROLE, $targetEntity, $user) ){
+            if($this->roleActionAuthorisationService->authoriseAction(\Action::GRANT_ROLE, $targetEntity, $user)->getGrantAction() ){
                $grantablePendingRoles[] = $role;   
             }
         }
@@ -335,55 +335,21 @@ class Role extends AbstractEntityService{
 
 
    /**
-    * Get the role type names configured for the given owned entity type and 
-    * the name of the project that the role type is configured for.   
+    * Get the role type names configured for the given owned entity type.   
     * <p>
     * The method consults the role action mapping xml file that defines which 
-    * role types are defined for the entity's root project(s).  
-    * <p>
-    * Each element of the returned 2D array nests a two-element array where the 1st element 
-    * is the role type name, the 2nd element is the project name, e.g.  
-    * <code>
-    *  Array ( 
-    *   [0] => Array ( [0] => Site Administrator [1] => EGI ) 
-    *   [1] => Array ( [0] => Site Security Officer [1] => EGI ) 
-    *   [2] => Array ( [0] => Site Operations Deputy Manager [1] => EGI ) 
-    *   [3] => Array ( [0] => Site Operations Manager [1] => EGI ) )  
-    * </code>
-    * 
+    * role types are defined for the entity type.  
     * @param \OwnedEntity $ownedEntity Get roles type names for this entity 
-    * @return array Two dimensional array 
+    * @return array Role type names for entity  
     */
     public function getRoleTypeNamesForOwnedEntity(\OwnedEntity $ownedEntity) {
         $roleTypeNamesForOE = array();
-        // get the projects that this OE is a Descendant of 
-        $projects = $this->roleActionAuthorisationService->getReachableProjectsFromOwnedEntity($ownedEntity);
-        
-        if (count($projects) > 0) {
-            foreach ($projects as $proj) {
-                $projectName = $proj->getName();
-                $projRoleMappings = $this->roleActionMappingService->getRoleTypeNamesForProject($projectName);
-                //print_r("roleMappings For proj: $projectName "); 
-                //print_r($projRoleMappings);
-                foreach ($projRoleMappings as $keyRoleTypeName => $valOwnedObjectType) {
-                    //print_r("$keyRoleTypeName $valOwnedObjectType, "); 
-                    if( strtoupper($ownedEntity->getType()) == strtoupper($valOwnedObjectType) ) {
-                        //print_r("$keyRoleTypeName $valOwnedObjectType, "); 
-                        //print_r($projRoleMappings);
-                        $roleTypeNamesForOE[] = array($keyRoleTypeName, $projectName); //$keyRoleTypeName;
-                    }
-                }
-            }
-        } else {
-            // OE was project agnostic, e.g. a ServiceGroup which don't belong to a Project 
-            $projRoleMappings = $this->roleActionMappingService->getRoleTypeNamesForProject(null);
-            foreach ($projRoleMappings as $keyRoleTypeName => $valOwnedObjectType) {
-                //if (!in_array($keyRoleTypeName, $roleTypeNamesForOE) &&
-                if(     strtoupper($ownedEntity->getType()) == strtoupper($valOwnedObjectType)) {
-                    $roleTypeNamesForOE[] =  array($keyRoleTypeName, ''); //$keyRoleTypeName;
-                }
-            }
-        }
+	$projRoleMappings = $this->roleActionMappingService->getRoleTypeNamesForProject(null);
+	foreach ($projRoleMappings as $keyRoleTypeName => $valOwnedObjectType) {
+	    if(strtoupper($ownedEntity->getType()) == strtoupper($valOwnedObjectType)) {
+		$roleTypeNamesForOE[] =  $keyRoleTypeName; 
+	    }
+	}
         return $roleTypeNamesForOE;
     }
 
@@ -533,10 +499,7 @@ class Role extends AbstractEntityService{
             throw new \LogicException('Coding error - invalid roleStatus');
         }
         // Check the requested roleName is suitable for the ownedEntity 
-        $roleTypeNamesForOE = array(); 
-        foreach($this->getRoleTypeNamesForOwnedEntity($entity) as $roleTypeNameProjectArray){
-           $roleTypeNamesForOE[] = $roleTypeNameProjectArray[0];  
-        } 
+        $roleTypeNamesForOE = $this->getRoleTypeNamesForOwnedEntity($entity); 
         
         if (!in_array($roleTypeName, $roleTypeNamesForOE) ) {
             throw new \LogicException("Role requested [$roleTypeName] is not valid for this OwnedEntity");
@@ -600,7 +563,7 @@ class Role extends AbstractEntityService{
         }
         // check calling user has permission to grant this role  
         //$grantingRoles = $this->authorize Action(\Action::GRANT_ROLE, $entity, $callingUser); 
-        if ($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::GRANT_ROLE, $entity, $callingUser) == FALSE) {
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::GRANT_ROLE, $entity, $callingUser)->getGrantAction() == FALSE) {
             throw new \Exception('You do not have permission to grant this role');
         }
 
@@ -654,7 +617,7 @@ class Role extends AbstractEntityService{
         if ($role->getUser() != $callingUser) {
             // Revocation by 2nd party 
             //$grantingRoles = $this->authorize Action(\Action::REVOKE_ROLE, $entity, $callingUser); 
-            if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::REVOKE_ROLE, $entity, $callingUser) == FALSE){
+            if($this->roleActionAuthorisationService->authoriseAction(\Action::REVOKE_ROLE, $entity, $callingUser)->getGrantAction() == FALSE){
                 throw new \Exception('You do not have permission to revoke this role');
             }
         } else {
@@ -716,7 +679,7 @@ class Role extends AbstractEntityService{
             throw new \LogicException('Error - target entity of role is null');
         }
         //$grantingRoles = $this->authorize Action(\Action::REJECT_ROLE, $entity, $callingUser);
-        if($this->roleActionAuthorisationService->authoriseActionAbsolute(\Action::REJECT_ROLE, $entity, $callingUser) == FALSE){
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::REJECT_ROLE, $entity, $callingUser)->getGrantAction() == FALSE){
             throw new \Exception('You do not have permission to reject this role');
         }
         // ok, lets delete the role

@@ -12,6 +12,7 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
+@author David Meredith 
 -->
 
 
@@ -21,53 +22,17 @@
     xsi:schemaLocation='http://goc.egi.eu/2015/03/spec1.0_r1 ./RoleActionMappingsSchema.xsd'> 
 
    
-    <RoleActionMapping>
-        <RoleNames over="ServiceGroup">
-            <Role id="SERVICE_GROUP_ADMIN">Service Group Administrator</Role>
-        </RoleNames>
-        
-        <RoleMapping>
-            <Roles>
-                <RoleRef idRef="SERVICE_GROUP_ADMIN"/>
-            </Roles>
-            <EnabledActions>
-                <Actions>
-                    <Action>ACTION_EDIT_OBJECT</Action>
-                    <Action>ACTION_GRANT_ROLE</Action>
-                    <Action>ACTION_REJECT_ROLE</Action>
-                    <Action>ACTION_REVOKE_ROLE</Action>
-                </Actions>
-                <Target>ServiceGroup</Target> 
-            </EnabledActions>
-        </RoleMapping>
-    </RoleActionMapping> 
-
-<!--    <RoleActionMapping> 
-        <TargetProject>DaveProject</TargetProject> 
-        <RoleNames over="Project">
-            <Role id="dEGI_CSIRT_OFFICER">dEGI CSIRT Officer</Role>
-            <Role id="dCOO">dChief Operations Officer</Role>
-        </RoleNames>  
-        <RoleNames over="Ngi">
-            <Role id="dNGI_OPS_MAN">dNGI Operations Manager</Role>
-            <Role id="dNGI_OPS_DEP_MAN">dNGI Operations Deputy Manager</Role>
-            <Role id="dNGI_SEC_OFFICER">dNGI Security Officer</Role>
-        </RoleNames>
-        <RoleNames over="Site"> 
-            <Role id="dSITE_ADMIN">dSite Administrator</Role>
-            <Role id="dSITE_SECOFFICER">dSite Security Officer</Role>
-        </RoleNames> 
-    </RoleActionMapping>-->
-
-
     <RoleActionMapping> 
-        <TargetProject>EGI</TargetProject> 
 
         <!-- 
         Define the Role names and which of the owned entity types they apply to. 
         Note, role name and alias values must be unique (names have a DB unique constraint).  
         Aliases are used as a convenient shorthand to define the XML rules. 
         --> 
+	<RoleNames over="ServiceGroup">
+            <Role id="SERVICE_GROUP_ADMIN">Service Group Administrator</Role>
+        </RoleNames>
+	
         <RoleNames over="Project">
             <Role id="COD_STAFF">COD Staff</Role>
             <Role id="COD_ADMIN">COD Administrator</Role>
@@ -92,11 +57,24 @@
         </RoleNames> 
 
 
-
-
         <!--
         The listed Roles enable the Actions over the target object(s). 
         --> 
+
+	<RoleMapping>
+            <Roles>
+                <RoleRef idRef="SERVICE_GROUP_ADMIN"/>
+            </Roles>
+            <EnabledActions>
+                <Actions>
+                    <Action>ACTION_EDIT_OBJECT</Action>
+                    <Action>ACTION_GRANT_ROLE</Action>
+                    <Action>ACTION_REJECT_ROLE</Action>
+                    <Action>ACTION_REVOKE_ROLE</Action>
+                </Actions>
+                <Target>ServiceGroup</Target> 
+            </EnabledActions>
+        </RoleMapping>
 
         <RoleMapping>
             <Roles>

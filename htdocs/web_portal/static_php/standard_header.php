@@ -19,6 +19,7 @@ function get_standard_header($title = null) {
         <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>
 	    <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/jquery-validation/jquery.validate.min.js"></script>
 	    <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/jquery-validation/additional-methods.min.js"></script>
+	    <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/tablesorter/jquery.tablesorter.js"></script>
         <link rel="stylesheet" href="'.GocContextPath::getPath().'javascript/bootstrap/css/bootstrap.css" />
         <link rel="stylesheet" href="'.GocContextPath::getPath().'javascript/datetimepicker/css/bootstrap-datetimepicker.min.css" />
 	    <link rel="stylesheet" type="text/css" href="'.GocContextPath::getPath().'css/web_portal.css" />	    

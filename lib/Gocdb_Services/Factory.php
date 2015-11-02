@@ -129,14 +129,14 @@ class Factory {
      * @return org\gocdb\services\ServiceGroup
      */
     public static function getServiceGroupService() {
-    	if (self::$serviceGroupService == null) {
-    		require_once __DIR__ . '/ServiceGroup.php';
-    		//self::$serviceGroupService = new org\gocdb\services\ServiceGroup(self::getRoleActionAuthorisationService());
-    		self::$serviceGroupService = new org\gocdb\services\ServiceGroup();
+        if (self::$serviceGroupService == null) {
+            require_once __DIR__ . '/ServiceGroup.php';
+            //self::$serviceGroupService = new org\gocdb\services\ServiceGroup(self::getRoleActionAuthorisationService());
+            self::$serviceGroupService = new org\gocdb\services\ServiceGroup();
             self::$serviceGroupService->setEntityManager(self::getEntityManager());
             self::$serviceGroupService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
-    	}
-    	return self::$serviceGroupService;
+        }
+        return self::$serviceGroupService;
     }
 
     /**
@@ -229,13 +229,13 @@ class Factory {
      * @return org\gocdb\services\NGI
      */
     public static function getNgiService() {
-    	if (self::$ngiService == null) {
-    		require_once __DIR__ . '/NGI.php';
-    		self::$ngiService = new org\gocdb\services\NGI();
-    		self::$ngiService->setEntityManager(self::getEntityManager());
+        if (self::$ngiService == null) {
+            require_once __DIR__ . '/NGI.php';
+            self::$ngiService = new org\gocdb\services\NGI();
+            self::$ngiService->setEntityManager(self::getEntityManager());
             self::$ngiService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService());  
-    	}
-    	return self::$ngiService;
+        }
+        return self::$ngiService;
     }
 
     /**

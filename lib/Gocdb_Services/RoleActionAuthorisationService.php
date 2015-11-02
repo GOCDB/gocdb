@@ -18,6 +18,42 @@ require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/RoleActionMappingService.php';
 //require_once __DIR__ . '/Role.php';
 
+
+/**
+ * Context object to return the authorisation result from the service method:
+ * {@see \org\gocdb\services\RoleActionAuthorisationService::authoriseAction($action, $targetEntity, $user)}
+ * The object wraps a boolean that determines whether the action can be performed, 
+ * and an array of roles that enable the action (or not).  
+ * 
+ * @author David Meredith
+ */
+class AuthoriseActionResult {
+   private $grantingRoles = array(); 
+   private $grantAction = FALSE; 
+
+   public function setGrantingRoles($grantingRoles){
+       $this->grantingRoles = $grantingRoles; 
+   }
+   public function setGrantAction($grantAction){
+       $this->grantAction = $grantAction; 
+   }
+   /**
+    * @return array {@see \Role} objects that grant the action, or an empty array.
+    */
+   public function getGrantingRoles(){
+       return $this->grantingRoles; 
+   }
+   /**
+    * Can the user perform the specified action? If the user is the gocdb admin, 
+    * True is always returned. 
+    * @return boolean True if the user can perform the action, otherwise False. 
+    */
+   public function getGrantAction(){
+       return $this->grantAction; 
+   }
+}
+
+
 /**
  * Used to determine if a user can perform an action on an object by 
  * comparing the user's granted DB roles against the rules/roles defined in the 
@@ -40,60 +76,24 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
         //$this->roleService = $roleService; //new Role();  
     }
 
-   
-    // In future we may need the following method if we want to introduce role-
-    // action-mapping rules that do not apply to a specified target entity 
-    //public function authoriseActionInProject($action, $projectName, \User $user){}
-         
  
     /**
-     * Can the user perform the specified action on the target entity? If true
-     * return true otherwise return false. If the user is the gocdb admin user, 
-     * true is always returned, otherwise the result is determined from the 
-     * user's roles {@see \org\gocdb\services\RoleActionAuthorisationService::authoriseAction($action, $targetEntity, $user)}
-     *  
-     * @param string $action The action the user wants to perform over the entity 
-     * @param \OwnedEntity $targetEntity The target entity for the action
-     * @param \User $user The user who wants to peform the action on the entity, if null FALSE is returned  
-     * @return boolean
-     * @throws \LogicException
-     */
-    public function authoriseActionAbsolute($action, \OwnedEntity $targetEntity, $user){
-       if (!is_string($action) || strlen(trim($action)) == 0) {
-            throw new \LogicException('Invalid action');
-        } 
-        if(is_null($user)){
-            return FALSE;  
-        }
-        if(is_null($user->getId())){
-            return FALSE;  
-        } 
-        if($user->isAdmin()){
-            return TRUE; 
-        }
-        if(count($this->authoriseAction($action, $targetEntity, $user)) > 0){
-            return TRUE; 
-        } 
-        return FALSE; 
-    }
-    
-    /**
-     * Analyse the user's roles to determine if the user can perform the 
-     * specified action over the target entity? if true, return all the user's 
-     * roles that grant the action, otherwise return an empty array. 
-     * Note, there is no special Role for the GOCDB admin user, so calling 
-     * code needs to determine this itself.  
+     * Analyse the user's roles to determine if they can perform the 
+     * specified action over the target entity? Return a context object that
+     * wraps the authorisation result. If the user is the gocdb admin, 
+     * true is always returned as a param of context object result, otherwise 
+     * the result is determined from the user's roles. 
      * <p>
-     * Authorisation decisions are made by comparing the user's Roles that are
-     * reachable from the target entity when ascending the domain graph with the
+     * The authorisation decisions are made by comparing a) the user's Roles that are
+     * reachable from the target entity when ascending the domain graph with b) the
      * role-action-mapping rules for the relevant project(s). The relevant 
      * projects include those that are a parents/ancestors to the target entity.   
      * 
      * @param string $action The action the user wants to perform over the entity 
      * @param \OwnedEntity $targetEntity The target entity for the action 
      * @param \User $user The user who wants to peform the action on the entity 
-     * @return array of {@see \Role}s that grant the action over entity. 
-     * Can be an empty array if no role grants the action. 
+     * @return \org\gocdb\services\AuthoriseActionResult Context object that 
+     * wraps the result.  
      * @throws \LogicException If role action mappings can't be resolved.  
      */
     public function authoriseAction($action, \OwnedEntity $targetEntity, \User $user){
@@ -101,10 +101,10 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
             throw new \LogicException('Invalid action');
         } 
         if(is_null($user)){
-            return array(); 
+            return new AuthoriseActionResult();  
         }
          if(is_null($user->getId())){
-            return array(); 
+            return new AuthoriseActionResult(); 
         }
         // If we limit the actions, then its hard to test using some sample 
         // roleActionMapping files. Need to decide to include this.  
@@ -112,53 +112,70 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
 //            throw new \LogicException('Coding Error - Invalid action not known'); 
 //        } 
 
-        // Get a list of DB projects that are 'reachable' from the given entity 
-        // by moving up the OwnedEntity hierarchy. 
-        // Note, some objects don't come under the remit of a Project, e.g. 
-        // ServiceGroups, so dbProjects may be empty (this is normal). 
-        $dbProjects = $this->getReachableProjectsFromOwnedEntity($targetEntity); 
+//	 IGNORE THIS COMMENT BLOCK - DECLARING DIFFERENT ROLE ACTION MAPPINGS PER  
+//       PROJECT MAY BE NEEDED IN FUTURE, BUT RIGHT NOW IT ADDS UNNECESSARY COMPLEXITY.   
+//       IF THE NEED ARISES, THIS STUFF WILL BE USEFUL:
+//       =======================================================================
+//       // Get a list of DB projects that are 'reachable' from the given entity 
+//       // by moving up the OwnedEntity hierarchy. 
+//       // Note, some objects don't come under the remit of a Project, e.g. 
+//       // ServiceGroups, so dbProjects may be empty (this is normal). 
+//       //$dbProjects = $this->getReachableProjectsFromOwnedEntity($targetEntity); 
+//
+//	// TODO? 
+//	// iterate the dbProjects and exclude those that are not mapped in the 
+//	// roleActionMappings file
+//	foreach($dbProjects as $dbProj){
+//	   if($this->roleActionMappingService->isProjectMapped($dbProj->getName())){
+//	      $dbProjects[] = $dbProj;  
+//	   } 
+//	}
+//	
+//        if(count($dbProjects) > 0){
+//            // If there is an ancestor project, then we ignore the default role action mappings
+//            foreach ($dbProjects as $dbProject) {
+//                //print_r('reachable project: ['.$dbProject->getName()."] \n"); 
+//                // Lookup the role type mappings for this project (['RoleTypeName'] => 'overOwnedEntity'). 
+//                // throws LogicException if the dbProjectName does not exist in the 
+//                // mapping file! (not so with action or entity-type)  
+//                // For example, the following role-types over the specified object 
+//                // types could enable 'actionX': 
+//                // array (
+//                //   ['Site Administrator'] => 'Site', 
+//                //   ['NGI Operations Manager'] => 'Ngi', 
+//                //   ['Chief Operations Officer'] => 'Project'
+//                // );      
+//                $roleTypeMappingsForProj = $this->roleActionMappingService->
+//                        getRoleTypeNamesThatEnableActionOnTargetObjectType(
+//                        $action, $targetEntity->getType(), $dbProject->getName());
+//                //print_r('roleTypeMappings for reachable project: ['.$dbProject->getName()."] \n"); 
+//                //print_r($roleTypeMappingsForProj); 
+//                
+//                // If there are roles that enable the action, store the roles for the project 
+//                if (count($roleTypeMappingsForProj) > 0) {
+//                    $requiredRoleTypesPerProj[] = $roleTypeMappingsForProj;
+//                }
+//            }
+//        } else {
+//            // The entity dont come under a Project, e.g. the entity was 
+//            // Project agnostic like a ServiceGroup, or there was an instance of 
+//	    // an orphan NGI or Site, therefore get the default RoleActionMappings. 
+//            $requiredRoleTypesPerProj[] = $this->roleActionMappingService->
+//                    getRoleTypeNamesThatEnableActionOnTargetObjectType(
+//                        $action, $targetEntity->getType(), null);
+//            //print_r($requiredRoleTypesPerProj); // e.g. 
+//            // Array ( [0] => Array ( [Service Group Administrator] => ServiceGroup ) ) 
+//        }
+//       =======================================================================
 
-        // For each DB project, lookup+store the role type mappings that enable 
-        // the action on the specified entity type (mappings in RoleActionMappings XML). 
+
+	
+        // Lookup+store the role type mappings that enable 
+        // the action on the specified entity type (mappings stored in RoleActionMappings XML). 
         $requiredRoleTypesPerProj = array();
-
-        if(count($dbProjects) > 0){
-            // If there is an ancestor project, then we ignore the default role action mappings
-            foreach ($dbProjects as $dbProject) {
-                //print_r('reachable project: ['.$dbProject->getName()."] \n"); 
-                
-                // Lookup the role type mappings for this project (['RoleTypeName'] => 'overOwnedEntity'). 
-                // throws LogicException if the dbProjectName does not exist in the 
-                // mapping file! (not so with action or entity-type)  
-                // For example, the following role-types over the specified object 
-                // types could enable 'actionX': 
-                // array (
-                //   ['Site Administrator'] => 'Site', 
-                //   ['NGI Operations Manager'] => 'Ngi', 
-                //   ['Chief Operations Officer'] => 'Project'
-                // );      
-                $roleTypeMappingsForProj = $this->roleActionMappingService->
-                        getRoleTypeNamesThatEnableActionOnTargetObjectType(
-                        $action, $targetEntity->getType(), $dbProject->getName());
-               
-                //print_r('roleTypeMappings for reachable project: ['.$dbProject->getName()."] \n"); 
-                //print_r($roleTypeMappingsForProj); 
-                
-                // If there are roles that enable the action, store the roles for the project 
-                if (count($roleTypeMappingsForProj) > 0) {
-                    $requiredRoleTypesPerProj[/*$dbProject->getId()*/] = $roleTypeMappingsForProj;
-                }
-            }
-        } else {
-            // The entity does'nt come under a Project, e.g. the entity was 
-            // Project agnostic like a ServiceGroup, therefore get the default
-            // RoleActionMappings. 
-            $requiredRoleTypesPerProj[] = $this->roleActionMappingService->
+	$requiredRoleTypesPerProj[] = $this->roleActionMappingService->
                     getRoleTypeNamesThatEnableActionOnTargetObjectType(
                         $action, $targetEntity->getType(), null);
-            //print_r($requiredRoleTypesPerProj); // e.g. 
-            // Array ( [0] => Array ( [Service Group Administrator] => ServiceGroup ) ) 
-        }
 
         // Get all the roles occurring over and above the entity. Note, in future it may be 
         // necessary to introduce getUserRolesReachableFromEntityDESC($user, $entity) too 
@@ -206,9 +223,19 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
                 }
             }
         }
-        //print_r("Granting User Roles size: [".count($grantingUserRoles)."]"); 
 
-        return $grantingUserRoles; 
+	
+        //print_r("Granting User Roles size: [".count($grantingUserRoles)."]"); 
+	$grantResult = new AuthoriseActionResult();
+	$grantResult->setGrantingRoles($grantingUserRoles); 
+	if($user->isAdmin()){
+	    $grantResult->setGrantAction(TRUE); 
+	} else {
+	    if(count($grantingUserRoles) > 0){
+		$grantResult->setGrantAction(TRUE); 
+	    }
+	}
+        return $grantResult; 
     }
 
     /**
