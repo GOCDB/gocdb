@@ -23,6 +23,8 @@ namespace org\gocdb\services;
  */
 
 abstract class AbstractEntityService {
+
+    /* @var $em \Doctrine\ORM\EntityManager */
     protected $em;
 
     public function __construct() {

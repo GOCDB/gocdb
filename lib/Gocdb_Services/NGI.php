@@ -25,9 +25,21 @@ require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/Validate.php';
 require_once __DIR__ . '/RoleConstants.php';
+require_once __DIR__ . '/RoleActionAuthorisationService.php';
 use Doctrine\ORM\QueryBuilder; 
 
 class NGI extends AbstractEntityService{
+
+    private $roleActionAuthorisationService;
+
+    function __construct(/*$roleActionAuthorisationService*/) {
+        parent::__construct();
+        //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+    }
+
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+        $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
    
     /*
      * All the public service methods in a service facade are typically atomic -
@@ -58,25 +70,49 @@ class NGI extends AbstractEntityService{
     	return $ngi;
     }
 
+
+   
+    /**
+     * Return all {@see \NGI}s that satisfy the specfied filter parameters. 
+     * <p>  
+     * $filterParams defines an associative array of optional parameters for 
+     * filtering. The supported Key => Value pairs include: 
+     * <ul>
+     *   <li>'roc' => String name of the NGI/ROC</li>
+     *   <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
+     *   <li>'scope_match' => String 'any' or 'all' </li>
+     * <ul>
+     * 
+     * @param array $filterParams
+     * @return array NGI array
+     */
+    public function getNGIsFilterByParams($filterParams){
+        require_once __DIR__.'/PI/GetNGI.php'; 
+	$getNgi = new GetNGI($this->em); 	
+	$getNgi->validateParameters($filterParams); 
+	$getNgi->createQuery(); 
+	$ngis = $getNgi->executeQuery();
+	return $ngis; 
+    }
+
     /**
      * Get all NGIs as an object array with joined scopes. 
      * @see NGI
      * @return \NGI object array
      */
-     public function getNGIs($scope=NULL) {
-        $qb = $this->em->createQueryBuilder();
-		$qb->select('n', 'sc')->from('NGI', 'n') 
-        ->leftjoin('n.scopes', 'sc')->orderBy('n.name', 'ASC');  
-           
-        if($scope != null && $scope != '%%'){
-			    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
-                ->setParameter(':scope', $scope);            
-        }
-        $query = $qb->getQuery();
-        $ngis = $query->execute();
-        return $ngis;
-    } 
+     public function getNGIs($scope = NULL) {
+	$qb = $this->em->createQueryBuilder();
+	$qb->select('n', 'sc')->from('NGI', 'n')
+		->leftjoin('n.scopes', 'sc')->orderBy('n.name', 'ASC');
 
+	if ($scope != null && $scope != '%%') {
+	    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
+		    ->setParameter(':scope', $scope);
+	}
+	$query = $qb->getQuery();
+	$ngis = $query->execute();
+	return $ngis;
+    }
 
     /**
      * Return all of the NGIs that the user has permission to execute the  
@@ -102,8 +138,8 @@ class NGI extends AbstractEntityService{
         foreach ($grantedUserRoles as $grantedUserRole) {
             $entity = $grantedUserRole->getOwnedEntity(); 
             if ($entity instanceof \NGI) {
-                $enablingRoles = $this->authorizeAction($action, $entity, $user);
-                if(count($enablingRoles) != 0){
+                //$enablingRoles = $this->authorize Action($action, $entity, $user);
+                if($this->roleActionAuthorisationService->authoriseAction($action, $entity, $user)->getGrantAction()){
                     //print_r($enablingRoles); 
                     if(!in_array($entity, $ngiArray)){
                         $ngiArray[] = $entity; 
@@ -130,7 +166,7 @@ class NGI extends AbstractEntityService{
      * @return array of RoleName values 
      * @throws \LogicException
      */
-    public function authorizeAction($action, \NGI $ngi, \User $user = null){
+    /*public function authorize Action($action, \NGI $ngi, \User $user = null){
         if(is_null($user)){
             return array(); // return empty array 
         }
@@ -172,7 +208,7 @@ class NGI extends AbstractEntityService{
             // Project (E) level roles required to approve-reject/revoke role 
             // requests over the owned NGI (to bootstrap) 
             $requiredProjectRoles = array(
-                //\RoleTypeName::CIC_STAFF, /* not sure this role should be used to manage roles over ngi*/
+                //\RoleTypeName::CIC_STAFF, // not sure this role should be used to manage roles over ngi
                 \RoleTypeName::COD_STAFF,
                 \RoleTypeName::COD_ADMIN,
                 \RoleTypeName::EGI_CSIRT_OFFICER,
@@ -185,12 +221,12 @@ class NGI extends AbstractEntityService{
                 }
             }
             // rather than below that queries for all user roles and extracts ANY project role: 
-            /*$allUserRoles = $roleService->getUserRoles($user, \RoleStatus::GRANTED);
-            foreach ($allUserRoles as $role) {
-                if (in_array($role->getRoleType()->getName(), $requiredProjectRoles)) {
-                    $usersActualRoleNames[] = $role->getRoleType()->getName();
-                }
-            }*/
+            //$allUserRoles = $roleService->getUserRoles($user, \RoleStatus::GRANTED);
+            //foreach ($allUserRoles as $role) {
+            //    if (in_array($role->getRoleType()->getName(), $requiredProjectRoles)) {
+            //        $usersActualRoleNames[] = $role->getRoleType()->getName();
+            //    }
+            //}
             $enablingRoles = array_intersect(array_merge($requiredNgiRoles, $requiredProjectRoles), array_unique($usersActualRoleNames));
         } else {
             throw new \LogicException('Unsupported Action');  
@@ -200,7 +236,7 @@ class NGI extends AbstractEntityService{
            $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;  
         }
         return array_unique($enablingRoles);
-    }
+    }*/
 
     /**
      * Check to see if the current user is allowed to edit the passed NGI
@@ -253,11 +289,14 @@ class NGI extends AbstractEntityService{
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-    	//$this->edit Authorization($ngi, $user);
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $ngi, $user)) == 0){
-          throw new \Exception("You don't have permission to edit this NGI.");  
+        if ($user == null) {
+           throw new \Exception("You don't have permission to edit this NGI (null user).");
         }
-    	$this->validate($newValues['NGI']);
+        //if(count($this->authorize Action(\Action::EDIT_OBJECT, $ngi, $user)) == 0){
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $ngi, $user)->getGrantAction() == FALSE) {
+            throw new \Exception("You don't have permission to edit this NGI.");
+        }
+        $this->validate($newValues['NGI']);
         
         //check the required number of scopes have been specified
         $this->checkNumberOfScopes($newValues['SCOPES']);
@@ -500,5 +539,5 @@ class NGI extends AbstractEntityService{
             $this->em->close();
             throw $e;
         }
-	}
+    }
 }

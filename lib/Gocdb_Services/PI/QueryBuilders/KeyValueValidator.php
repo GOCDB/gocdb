@@ -15,7 +15,7 @@
 
 namespace org\gocdb\services;
 
-require_once __DIR__ . '/../../Validation/IValidator.php';
+require_once __DIR__ . '/../../validation/IValidator.php';
 
 /**
  * Validator for a 'Key=Value' pair expressiosn (assumes no enclosing chars). 

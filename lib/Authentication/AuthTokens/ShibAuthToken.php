@@ -92,7 +92,7 @@ class ShibAuthToken implements IAuthentication {
             return; 
         } else if($idp == 'https://idp.ebi.ac.uk/idp/shibboleth' 
                 &&  $_SERVER['eppn'] != null){
-            $this->principal = $_SERVER['eppn'];
+            $this->principal = hash('sha256', $_SERVER['eppn']);
             $this->userDetails = array('AuthenticationRealm' => array('UK_ACCESS_FED'));
             return; 
         }

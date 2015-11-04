@@ -92,5 +92,12 @@ class Project extends OwnedEntity {
     public function getType() {
         return parent::TYPE_PROJECT; 
     }
+
+    /**
+     * @return ArrayCollection Empty collection, Project has no owning parents.  
+     */
+    public function getParentOwnedEntities() {
+        return new ArrayCollection();
+    }
     
 }

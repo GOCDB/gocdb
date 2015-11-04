@@ -21,7 +21,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
     <ul>    
         <li>To be <strong>SCHEDULED</strong>, start must be <strong>24hrs</strong> in the future</li>
         <?php /*<li>Time in UTC since last page refresh <strong><?php xecho($params['nowUtc']);?></strong></li>*/ ?>
-        <li>Time in UTC: <label id="timeinUtcNowLabel"></label></li>
+        <li>Time in UTC: <mark><label id="timeinUtcNowLabel"></label></mark></li>
     </ul>
     </div>
 	<br>
@@ -64,7 +64,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="utcRadioButton" value="utc" checked>UTC&nbsp;&nbsp;&nbsp;&nbsp; 
             <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="siteRadioButton" value="site">Site Timezone 
             <input type="text" id="siteTimezoneText" value="UTC" placeholder="Updated on site selection" readonly> 
-            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label id="schedulingStatusLabel"></label>
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<mark><label id="schedulingStatusLabel"></label></mark>
         </div>    
 
 
@@ -293,8 +293,20 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
     * @returns {null}
     */
    function refreshScheduledStatus(){
-        var sDate = $('#startDateContent').val();
-    	var sTime = $('#startTimeContent').val();
+        $('#schedulingStatusLabel').text(''); 
+        var nowUtc = moment.utc();    
+        var duration24hrs = moment.duration(24, 'hours'); 
+        if(M_START_UTC){
+            if( M_START_UTC > (nowUtc + duration24hrs)){
+                $('#schedulingStatusLabel').text('SCHEDULED'); 
+            } else {
+                $('#schedulingStatusLabel').text('UNSCHEDULED'); 
+            }
+        }
+            
+        /*var sDate = $('#startDateContent').val();
+    	var sTime = $('#startTimeContent').val(); 
+        console.log("sDate: ["+sDate+"] sTime: ["+sTime+"]"); 
 
         // calculate the start date time in UTC 
         if(sDate && sTime){
@@ -302,20 +314,28 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             // (use moment.utc(), otherwise moment parses in current timezone)
         	var start = sDate +" "+sTime; 
         	var mStart = moment.utc(start, "DD-MM-YYYY, HH:mm"); // parse in utc
-                   // Is M_START_UTC >24hrs in future (SCHEDULED) or <24hrs (UNSCHEDULED) 
+            
+            // Is M_START_UTC >24hrs in future (SCHEDULED) or <24hrs (UNSCHEDULED) 
             // this logic should go into a self-refresh loop. 
-            if(mStart){    // if mStart is not null
-                $('#schedulingStatusLabel').text(''); 
-                var nowUtc = moment.utc();    
-                var duration24hrs = moment.duration(24, 'hours'); 
-                if( mStart > (nowUtc + duration24hrs)){
-                   $('#schedulingStatusLabel').text('SCHEDULED'); 
-                } else {
-                   $('#schedulingStatusLabel').text('UNSCHEDULED'); 
-                }
+            //console.log("mStart utc: "+mStart.format("DD/MM/YYYY HH:mm:ss")); 
+
+            // Then update utc time to time in target timezone; 
+            // if SiteTimezone RB is selected, subtract offset from time to 
+            // get time in specified tz 
+            if($('#siteRadioButton').is(':checked')){ 
+               mStart.subtract(TARGETTIMEZONEOFFSETFROMUTCSECS, 's'); 
             }
-        }
-   }
+            
+            $('#schedulingStatusLabel').text(''); 
+            var nowUtc = moment.utc();    
+            var duration24hrs = moment.duration(24, 'hours'); 
+            if( mStart > (nowUtc + duration24hrs)){
+               $('#schedulingStatusLabel').text('SCHEDULED'); 
+            } else {
+               $('#schedulingStatusLabel').text('UNSCHEDULED'); 
+            }
+        }*/
+    }
 
     function validate(){
 	    var epValid=false;
@@ -489,7 +509,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
               // update global variables - used when calculating DT rules 
               TARGETTIMEZONEID = jsonRsp[0]; 
               TARGETTIMEZONEOFFSETFROMUTCSECS = jsonRsp[1]; //Returns the targetTimezone offset in seconds from UTC 
-              //console.log("updating siteTimezoneText ["+siteId+"]"); 
+              //console.log("updateSiteTimezoneVars, siteId: ["+siteId+"] TARGETTIMEZONEID: ["+TARGETTIMEZONEID+"] TARGETTIMEZONEOFFSETFROMUTCSECS: ["+TARGETTIMEZONEOFFSETFROMUTCSECS+"]"); 
               $('#siteTimezoneText').val(TARGETTIMEZONEID); 
            }); 
         }

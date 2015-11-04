@@ -93,9 +93,15 @@
       <spacer>About GOCDB5</spacer>
       <show_on_instance>all</show_on_instance>
     </spacer>
+
+    <RoleActionMappings>
+      <show_on_instance>all</show_on_instance>
+      <name>Role Action Map</name>
+      <link>index.php?Page_Type=View_Role_Action_Mappings</link>
+    </RoleActionMappings>
 	
     <Help_And_Contact>
-	  <show_on_instance>all</show_on_instance>
+      <show_on_instance>all</show_on_instance>
       <name>Doc, Help &amp; Support</name>
       <link>index.php?Page_Type=Static_HTML&amp;Page=Help_And_Contact</link>
     </Help_And_Contact>

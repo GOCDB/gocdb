@@ -61,4 +61,19 @@ abstract class OwnedEntity {
      * @return string The entity name as a string. 
      */
     abstract public function getName(); 
+
+
+    /**
+     * Get the direct parent OwnedEntities that own this instance. 
+     * @return \Doctrine\Common\Collections\ArrayCollection An array of {@see \OwnedEntity} 
+     * instances or an empty array  
+     */
+    abstract public function getParentOwnedEntities(); 
+
+    /**
+     * Get the direct child OwnedEntities owned by this instance. 
+     * @return \Doctrine\Common\Collections\ArrayCollection An array of {@see \OwnedEntity} 
+     * instances or an empty array  
+     */
+    //abstract public function getChildOwnedEntities(); 
 }

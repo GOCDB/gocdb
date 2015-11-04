@@ -127,6 +127,12 @@ $siteName = $service->getParentSite()->getName();
         <span class="input_name">Scope(s)
             <span class="input_syntax">(Select at least <?php echo $params['numberOfScopesRequired']?>)</span>
         </span>
+	   <div class="alert alert-warning" role="alert">
+	    Note, rather than setting service-scopes individually below, you can update
+	    the scopes of all child services on-mass when editing the parent Site 
+	    (options such as 'Inherit Site scopes' and 'Override Service scopes with Site scopes' 
+	    are provided for your convenience) 
+	    </div>
         <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirmScope.js"></script>
         <div style="margin-left: 2em">    
         <?php foreach ($params['scopes'] as $scopeArray){ ?>
@@ -142,13 +148,13 @@ $siteName = $service->getParentSite()->getName();
                 $onClick = " onclick=\"return confirmScopeSelect('$scopeName', '$siteName', '$serviceName', this.checked)\"";
             }
             ?>
-            <br />
             <input type="checkbox" name="Scope_ids[]" value="<?php echo $scopeId;?>"<?php echo $checkedParamater;?> <?php echo $onClick;?>>
             <?php echo $scopeName;?>   
+	    <br/>
         <?php } ?>
         </div> 
 
-		<input class="input_input_hidden" type="hidden" value="<?php echo $service->getId() ?>" name="ID">
+	<input class="input_input_hidden" type="hidden" value="<?php echo $service->getId() ?>" name="ID">
 
         <input class="input_button" type="submit" value="Edit Service">
     </form>

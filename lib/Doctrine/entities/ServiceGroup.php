@@ -70,6 +70,15 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
         $this->services = new ArrayCollection();
     }
 
+
+    /**
+     * @return ArrayCollection Empty collection, ServiceGroup has no owning parents.  
+     */
+    public function getParentOwnedEntities() {
+        // return empty collection - no parents 
+        return new ArrayCollection();
+    }
+
     public function getName() {
         return $this->name;
     }

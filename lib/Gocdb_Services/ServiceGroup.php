@@ -14,6 +14,7 @@ namespace org\gocdb\services;
 require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/RoleConstants.php';
+require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
 
 /**
  * GOCDB Stateless service facade (business routnes) for Service Group objects.
@@ -40,6 +41,20 @@ class ServiceGroup extends AbstractEntityService{
      * connection (thus maintaining the atomicity of the service method).
      */
 
+    private $roleActionAuthorisationService;
+
+    function __construct(/*$roleActionAuthorisationService*/) {
+        parent::__construct();
+        //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+    }
+
+
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+        $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
+    
+    
+
     /**
      * Finds a single service group by ID and returns its entity
      * @param int $id the service group ID
@@ -58,47 +73,69 @@ class ServiceGroup extends AbstractEntityService{
     }
 
     /**
+     * Return all {@see \ServiceGroup}s that satisfy the specfied filter parameters. 
+     * <p>  
+     * $filterParams defines an associative array of optional parameters for 
+     * filtering the serviceGroups. The supported Key => Value pairs include: 
+     * <ul>
+     *   <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
+     *   <li>'service_group_name' => String name of service group</li>
+     *   <li>'scope_match' => String 'any' or 'all' </li>
+     *   <li>'extensions' => String extensions expression to filter custom key=value pairs</li>
+     * <ul>
+     * 
+     * @param array $filterParams
+     * @return array ServiceGroup array
+     */
+    public function getServiceGroupsFilterByParams($filterParams){
+	require_once __DIR__.'/PI/GetServiceGroup.php'; 
+	$getSg = new GetServiceGroup($this->em); 
+	$getSg->validateParameters($filterParams); 
+	$getSg->createQuery(); 
+	$sgs = $getSg->executeQuery(); 
+	return $sgs; 
+    }
+
+    /**
      * Returns an array of all Service Group entities and joined scopes. 
      * @param string $scope Scope name
      * @param string $keyname ServiceGroup extension property key name
      * @param string $keyvalue ServiceGroup extension property key value 
      * @return array An array of ServiceGroup objects
      */
-	public function getServiceGroups($scope=NULL, $keyname=NULL, $keyvalue=NULL) {
-        $qb = $this->em->createQueryBuilder();
-		$qb->select('s', 'sc')->from('ServiceGroup', 's')
-           ->leftJoin('s.scopes', 'sc'); 
-           
-        if($scope != null && $scope != '%%'){
-			    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
-                   ->setParameter(':scope', $scope);            
-        }
-        
-        if($keyname != null && $keyname != '%%'){
-            if($keyvalue == null || $keyvalue == ''){
-                $keyvalue='%%';
-            }
-        
-            $sQ = $this->em->createQueryBuilder();
-            $sQ ->select('s1'.'.id')
-                ->from('ServiceGroup', 's1')
-                ->join('s1.serviceGroupProperties', 'sp')
-                ->andWhere($sQ->expr()->andX(
-                        $sQ->expr()->eq('sp.keyName', ':keyname'),
-                        $sQ->expr()->like('sp.keyValue', ':keyvalue')));
-        
-            $qb ->andWhere($qb->expr()->in('s', $sQ->getDQL()));
-            $qb ->setParameter(':keyname', $keyname)
-                ->setParameter(':keyvalue', $keyvalue);
-        
-        }
+    public function getServiceGroups($scope = NULL, $keyname = NULL, $keyvalue = NULL) {
+	$qb = $this->em->createQueryBuilder();
+	$qb->select('s', 'sc')->from('ServiceGroup', 's')
+		->leftJoin('s.scopes', 'sc');
 
-        $query = $qb->getQuery();
-        $serviceGroups = $query->execute();
-        return $serviceGroups;
+	if ($scope != null && $scope != '%%') {
+	    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
+		    ->setParameter(':scope', $scope);
 	}
 
-	/**
+	if ($keyname != null && $keyname != '%%') {
+	    if ($keyvalue == null || $keyvalue == '') {
+		$keyvalue = '%%';
+	    }
+
+	    $sQ = $this->em->createQueryBuilder();
+	    $sQ->select('s1' . '.id')
+		    ->from('ServiceGroup', 's1')
+		    ->join('s1.serviceGroupProperties', 'sp')
+		    ->andWhere($sQ->expr()->andX(
+				    $sQ->expr()->eq('sp.keyName', ':keyname'), $sQ->expr()->like('sp.keyValue', ':keyvalue')));
+
+	    $qb->andWhere($qb->expr()->in('s', $sQ->getDQL()));
+	    $qb->setParameter(':keyname', $keyname)
+		    ->setParameter(':keyvalue', $keyvalue);
+	}
+
+	$query = $qb->getQuery();
+	$serviceGroups = $query->execute();
+	return $serviceGroups;
+    }
+
+    /**
 	 * Returns the downtimes linked to a service group.
 	 * @param integer $id Service Group ID
 	 * @param integer $dayLimit Limit to downtimes that are only $dayLimit old (can be null) */
@@ -186,9 +223,12 @@ class ServiceGroup extends AbstractEntityService{
 	public function editServiceGroup(\ServiceGroup $sg, $newValues, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-           throw new \Exception("You don't have permission over $sg");  
+        
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
+//        }
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
+           throw new \Exception("You don't have permission over this service group.");  
         }
 		$this->validate($newValues['SERVICEGROUP']);
         
@@ -245,14 +285,15 @@ class ServiceGroup extends AbstractEntityService{
      * <p>
      * Suppored actions: EDIT_OBJECT 
      * GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE  
-     * 
+     * @deprecated since version 5.5 use {@see \org\gocdb\services\RoleActionAuthorisationService::authoriseAction($action, $targetEntity, $user)} instead
+     *  
      * @param string $action @see \Action 
      * @param \ServiceGroup $sg
      * @param \User $user
      * @return array of RoleName string values that grant the requested action  
      * @throws \LogicException if action is not supported or is unknown 
      */
-    public function authorizeAction($action, \ServiceGroup $sg, \User $user = null){
+    /*public function authorize Action($action, \ServiceGroup $sg, \User $user = null){
         if(!in_array($action, \Action::getAsArray())){
             throw new \LogicException('Coding Error - Invalid action not known'); 
         } 
@@ -283,7 +324,7 @@ class ServiceGroup extends AbstractEntityService{
             $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;
         }
         return array_unique($enablingRoles);
-    }
+    }*/
     
 
 	/**
@@ -320,8 +361,11 @@ class ServiceGroup extends AbstractEntityService{
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-           throw new \Exception("You don't have permission over $sg");  
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
+//        }
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction()==FALSE){
+           throw new \Exception("You don't have permission over this service group.");  
         }
 		$this->em->getConnection()->beginTransaction();
 		try {
@@ -348,8 +392,11 @@ class ServiceGroup extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
         
 		//$this->editAuthorization($sg, $user);
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-           throw new \Exception("You don't have permission over $sg");  
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
+//        }
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
+           throw new \Exception("You don't have permission over this service group");  
         }
 		$this->em->getConnection()->beginTransaction();
 		try {
@@ -423,7 +470,7 @@ class ServiceGroup extends AbstractEntityService{
             $this->em->persist($sg);
             
             $sgAdminroleType = $this->em->createQuery("SELECT rt FROM RoleType rt WHERE rt.name = ?1")
-                ->setParameter(1, \RoleTypeName::SERVICEGROUP_ADMIN)
+                ->setParameter(1, 'Service Group Administrator')
                 ->getSingleResult();
             $newRole = new \Role($sgAdminroleType, $user, $sg, \RoleStatus::GRANTED);
             $this->em->persist($newRole);
@@ -469,8 +516,11 @@ class ServiceGroup extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
         
         //$this->editAuthorization($sg, $user);
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $sg, $user))==0){
-           throw new \Exception("You don't have permission over $sg");  
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
+//        }
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE) {
+            throw new \Exception("You don't have permission over this service group.");
         }
 
         $this->em->getConnection()->beginTransaction();
@@ -514,13 +564,16 @@ class ServiceGroup extends AbstractEntityService{
      * a site property.
      *
      * @param \User $user
-     * @param \ServiceGroup $serviceGroup
+     * @param \ServiceGroup $sg
      * @throws \Exception
      */
-    public function validatePropertyActions(\User $user, \ServiceGroup $serviceGroup){
+    public function validatePropertyActions(\User $user, \ServiceGroup $sg){
         // Check to see whether the user has a role that covers this site
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $serviceGroup, $user))==0){
-            throw new \Exception("You don't have permission over ". $serviceGroup->getName());
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
+//        }
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction()==FALSE){
+            throw new \Exception("You don't have permission over ". $sg->getName());
         }
     }
     

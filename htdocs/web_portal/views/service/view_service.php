@@ -144,7 +144,7 @@ $configService = \Factory::getConfigService();
                             }
                         }
                         ?>   
-                        <input type="text" value="<?php xecho($scopeString); ?>" readonly>
+			<textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
                     </td>
                 </tr>
 
@@ -323,32 +323,36 @@ $configService = \Factory::getConfigService();
             </a>
         </span>        
         <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table" >Value</th>  
+        <table id="serviceExtensionPropsTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>  
                 <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
-                    <th class="site_table" >Edit</th>  
-                    <th class="site_table" >Remove</th>  
+                    <th>Edit</th>  
+                    <th>Remove</th>  
                 <?php endif; ?>              
             </tr>
+	    </thead>
+	    <tbody>
             <?php
-            $num = 2;
+            //$num = 2;
             foreach($serviceProperties as $sp) {
 	            ?>
 
-	            <tr class="site_table_row_<?php echo $num ?>">
-	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyName()); ?></td>
-	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyValue()); ?></td>
+	            <tr>
+	                <td style="width: 35%;"><?php xecho($sp->getKeyName()); ?></td>
+	                <td style="width: 35%;"><?php xecho($sp->getKeyValue()); ?></td>
 	                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>	                
-                        <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-                        <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
+                        <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+                        <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
 	                <?php endif; ?>
 	            </tr>
 	            <?php
-	            if($num == 1) { $num = 2; } else { $num = 1; }
+	            //if($num == 1) { $num = 2; } else { $num = 1; }
             }
             ?>
+	    </tbody>
         </table>
         <!--  only show this link if we're in read / write mode -->
 		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
@@ -367,32 +371,37 @@ $configService = \Factory::getConfigService();
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
         <a href="index.php?Page_Type=SE_Downtimes&id=<?php echo $se->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Description</th>
-                <th class="site_table">From</th>
-                <th class="site_table">To</th>
-
+	
+        <table id="downtimesTable"  class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Description</th>
+                <th>From</th>
+                <th>To</th>
             </tr>
+	    </thead>
+	    <tbody>
             <?php
-            $num = 2;
+            //$num = 2;
             foreach($params['Downtimes'] as $d) {
             ?>
 
-            <tr class="site_table_row_<?php echo $num ?>">
-                <td class="site_table">
+            <tr>
+                <td>
                 	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
                 		<?php xecho($d->getDescription()) ?>
                 	</a>
                 </td>
-                <td class="site_table"><?php echo $d->getStartDate()->format($d::DATE_FORMAT) ?></td>
-                <td class="site_table"><?php echo $d->getEndDate()->format($d::DATE_FORMAT) ?></td>
+                <td><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
+                <td><?php echo $d->getEndDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
             </tr>
             <?php
-                if($num == 1) { $num = 2; } else { $num = 1; }
+                //if($num == 1) { $num = 2; } else { $num = 1; }
             }
             ?>
+	    </tbody>
         </table>
+	
         <!--  only show this link if we're in read / write mode -->
 		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Downtime Link -->
@@ -411,6 +420,25 @@ $configService = \Factory::getConfigService();
     $(document).ready(function() {
         $('#serviceEndpointLink').tooltip();
         $('#extensionsLink').tooltip(); 
-    }); 
-</script>
+
+        $('#downtimesTable').tablesorter(); 
+	// sort on first and second table cols only 
+        $("#serviceExtensionPropsTable").tablesorter({ 
+        // pass the headers argument and assing a object 
+        headers: { 
+            // assign the third column (we start counting zero) 
+            2: { 
+                // disable it by setting the property sorter to false 
+                sorter: false 
+            }, 
+            3: { 
+                // disable it by setting the property sorter to false 
+                sorter: false 
+            } 
+        } 
+    });  
+    
+    } 
+);  
+</script>  
     

@@ -35,6 +35,7 @@ class RoleStatus {
 /**
  * Class for defining enum vals for role type definitions. 
  * <p>
+ * @deprecated since version 5.5 RoleTypes are now defined in role action mapping xml file
  * Note, these enums should NOT be referenced from within the DB entities (entities
  * should use strings only). Intended for use by higher level business logic only.
  * @author David Meredith
@@ -166,33 +167,4 @@ class Action {
     }
 }
 
-/*
- * Class for defining enum vals for the <code>Roletype.classification</code> class attribute.
- * <p>
- * Note, these enum vals should NOT be referenced from within entities (entities
- * should use strings only). Intended for use by higher level business logic only.
- * @author David Meredith
- * @deprecated We will be removing role type class 
- */
-/*class RoleTypeClass {
-
-    const UNREGISTERED_USER = 'A';
-    const REGISTERED_USER = 'B';
-    const SERVICEGROUP_ADMIN = "ServiceGroupC'";  
-    const SITE_USER = 'C';
-    const SITE_MANAGER = "C'";
-    const REGIONAL_USER = 'D';
-    const REGIONAL_MANAGER = "D'";
-    const PROJECT = 'E';
-
-    private function __construct() {
-    }
-
-    public static function getAsArray() {
-        $tmp = new ReflectionClass(get_called_class());
-        $a = $tmp->getConstants();
-        return $a;
-    }
-
-}*/
 ?>

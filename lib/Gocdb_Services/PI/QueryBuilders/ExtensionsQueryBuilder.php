@@ -40,62 +40,62 @@ use Doctrine\ORM\EntityManager, Doctrine\ORM\QueryBuilder;
  */
 class ExtensionsQueryBuilder{
 
-	private $parsedExt = null;	
-    
+    private $parsedExt = null;
+
     /* @var $qb \Doctrine\ORM\QueryBuilder */
-	private $qb = null;
-    
+    private $qb = null;
+
     /* @var $parmeterBindCounter int */
-	private $parameterBindCounter = null;
-    
+    private $parameterBindCounter = null;
+
     /* @var $em \Doctrine\ORM\EntityManager */
-	private $em;
-    
-	private $type;
-	private $propertyType;
-	private $ltype;	
-	private $valuesToBind = array();
-	/** 
+    private $em;
+    private $type;
+    private $propertyType;
+    private $ltype;
+    private $valuesToBind = array();
+
+    /**
      * An ever increasing integer used to create unique table aliases used 
-	 * in the DQL query, eg: WHERE 'sp2.keyName' (uID is 2). 
+     * in the DQL query, eg: WHERE 'sp2.keyName' (uID is 2). 
      * Without this, repeated clauses may end up using the same identifier and 
      * break the query.   
-	 * @var integer 
-	 */
-	private $tableAliasBindCounter=0;
-	
-	private function setParsedExtensions($pExt){
-		$this->parsedExt = $pExt;
-	}
-	
-	private function getParsedExtensions(){
-	    return $this->parsedExt;
-	}
-	
-	private function setQB($qb){
-		$this->qb = $qb;
-	}
+     * @var integer 
+     */
+    private $tableAliasBindCounter = 0;
+
+    private function setParsedExtensions($pExt) {
+	$this->parsedExt = $pExt;
+    }
+
+    private function getParsedExtensions() {
+	return $this->parsedExt;
+    }
+
+    private function setQB($qb) {
+	$this->qb = $qb;
+    }
 
     /**
      * Get the updated query builder with the newly added WHERE clauses.    
      * @return \Doctrine\ORM\QueryBuilder 
      */
-	public function getQB(){
-		return $this->qb;
-	}
+    public function getQB() {
+	return $this->qb;
+    }
 
     /**
      * Get the current bind-parameter counter (an ever increasing integer). 
      * Incrementing this value creates unique positional bind parameters in the QueryBuilder.   
      * @return int 
      */
-	public function getParameterBindCounter(){
-	    return $this->parameterBindCounter;
-	}
-	
-	private function setParameterBindCounter($bc){
-		$this->parameterBindCounter= $bc;
-	}
+    public function getParameterBindCounter() {
+	return $this->parameterBindCounter;
+    }
+
+    private function setParameterBindCounter($bc) {
+	$this->parameterBindCounter = $bc;
+    }
 
     /**
      * 2D array of 'parameterBindCounter-to-bindValue' mappings for the 
@@ -107,13 +107,13 @@ class ExtensionsQueryBuilder{
      * 
      * @return array counter-to-value mapping array or empty array    
      */
-	public function getValuesToBind(){
-	    return $this->valuesToBind;
-	}
-	
-	private function setValues($valuesToBind){
-	    $this->valuesToBind = $valuesToBind;
-	}
+    public function getValuesToBind() {
+	return $this->valuesToBind;
+    }
+
+    private function setValues($valuesToBind) {
+	$this->valuesToBind = $valuesToBind;
+    }
 
     /**
      * Get current table-alias bind counter (an ever increasing integer). 
@@ -121,47 +121,46 @@ class ExtensionsQueryBuilder{
      * (unique aliases are created by appending an int incremented from this value to the alias) 
      * @return int 
      */
-	public function getTableAliasBindCounter(){
-	    return $this->tableAliasBindCounter;
-	}
-	
-	private function setTableAliasBindCounter($uID){
-	    $this->tableAliasBindCounter = $uID;
-	}
-	
-	
-	/** 
-	 * Sets the two table names needed to get properties from
-	 * can easily be extended for any other entities.
-	 * Type is the main entity whos properties we are searching for, eg; 'Site'
-	 * PropertyType is the corrosponding table where the properties are stored eg; 'siteProperties'
-	 * Ltype is the single letter designator used in the main select statment  eg; 's'
-	 * which needs to be consistent through the statement
-	 * 
-	 * @param String $entityType
-	 */
-    private function setPropType($entityType){
-        switch($entityType){
-        	case 'Site':
-        	    $this->type = 'Site';
-        	    $this->propertyType = 'siteProperties';
-        	    $this->ltype = 's';
-        	    break;
-        	case 'Service':
-        	    $this->type = 'Service';
-        	    $this->propertyType = 'serviceProperties';
-        	    $this->ltype = 'se';
-        	    break;
-    	    case 'ServiceGroup':
-    	        $this->type = 'ServiceGroup';
-    	        $this->propertyType = 'serviceGroupProperties';
-    	        $this->ltype = 'sg';
-    	        break;        	            	    
-        }
+    public function getTableAliasBindCounter() {
+	return $this->tableAliasBindCounter;
     }
-	
-	/** 
-	 * Construct a new instance, initialize variables, then stores the 
+
+    private function setTableAliasBindCounter($uID) {
+	$this->tableAliasBindCounter = $uID;
+    }
+
+    /**
+     * Sets the two table names needed to get properties from
+     * can easily be extended for any other entities.
+     * Type is the main entity whos properties we are searching for, eg; 'Site'
+     * PropertyType is the corrosponding table where the properties are stored eg; 'siteProperties'
+     * Ltype is the single letter designator used in the main select statment  eg; 's'
+     * which needs to be consistent through the statement
+     * 
+     * @param String $entityType
+     */
+    private function setPropType($entityType) {
+	switch ($entityType) {
+	    case 'Site':
+		$this->type = 'Site';
+		$this->propertyType = 'siteProperties';
+		$this->ltype = 's';
+		break;
+	    case 'Service':
+		$this->type = 'Service';
+		$this->propertyType = 'serviceProperties';
+		$this->ltype = 'se';
+		break;
+	    case 'ServiceGroup':
+		$this->type = 'ServiceGroup';
+		$this->propertyType = 'serviceGroupProperties';
+		$this->ltype = 'sg';
+		break;
+	}
+    }
+
+    /** 
+     * Construct a new instance, initialize variables, then stores the 
      * new query ready for fetching by calling code. 
      * <p>
      * The $extensionsQuery parameter represents an 'extensions' query. 
@@ -180,38 +179,37 @@ class ExtensionsQueryBuilder{
      * @throws \InvalidArgumentException if query can't be processed. 
      */
     public function __construct($extensionsQuery, \Doctrine\ORM\QueryBuilder $qb, 
-            \Doctrine\ORM\EntityManager $em, $parameterBindCounter, 
-            $entityType, $tableAliasBindCounter=0){
-        //die($rawExt); 
-        $this->setTableAliasBindCounter($tableAliasBindCounter);                                    
-        $this->em=$em;
-		$this->parseExtensions($extensionsQuery);
-		$this->setParameterBindCounter($parameterBindCounter); 
-		$this->setQB($qb);
-		$this->setPropType($entityType);
-		foreach($this->getParsedExtensions() as $query){
-		  $this->createSubQuery($this->type, $this->propertyType, $query);
-		}						
+	    \Doctrine\ORM\EntityManager $em, $parameterBindCounter, $entityType, 
+	    $tableAliasBindCounter = 0) {
+	//die($rawExt); 
+	$this->setTableAliasBindCounter($tableAliasBindCounter);
+	$this->em = $em;
+	$this->parseExtensions($extensionsQuery);
+	$this->setParameterBindCounter($parameterBindCounter);
+	$this->setQB($qb);
+	$this->setPropType($entityType);
+	foreach ($this->getParsedExtensions() as $query) {
+	    $this->createSubQuery($this->type, $this->propertyType, $query);
 	}
-	
-	/** 
-	 * This method takes the raw extensions from the extensions parameter
-	 * and uses the ExtensionsParser() class to convert this into a normalized
-	 * array of queries and their opereators.
-	 * 
-	 * @param unknown $rawExt
-	 */ 
-	private function parseExtensions($rawExt){
+    }
+
+    /**
+     * This method takes the raw extensions from the extensions parameter
+     * and uses the ExtensionsParser() class to convert this into a normalized
+     * array of queries and their opereators.
+     * 
+     * @param unknown $rawExt
+     */
+    private function parseExtensions($rawExt) {
 //		$extensionsParser =  new ExtensionsParser();
 //		$parsedLDAP = $extensionsParser->parseQuery($rawExt);
 //		$this->setParsedExtensions($parsedLDAP);
 
-        $extensionsParser = new ExtensionsParser2(); 
-        $normalisedQuery = $extensionsParser->parseQuery($rawExt); 
-        $this->setParsedExtensions($normalisedQuery); 
-	}
-    
-           
+	$extensionsParser = new ExtensionsParser2();
+	$normalisedQuery = $extensionsParser->parseQuery($rawExt);
+	$this->setParsedExtensions($normalisedQuery);
+    }
+
     /**
      * Build a subquery that will be added as a new restriction to the  
      * main class-query in the WHERE clause.   
@@ -230,72 +228,73 @@ class ExtensionsQueryBuilder{
      * @param array $query A two element array, 
      *   [0]=>predicateString, eg 'AND', 'OR' or 'NOT', [1]=>expressionString, eg 'key=value'
      */
-	private function createSubQuery($entityT, $propT, $query){
-	    //Get core variables    	    
-	    $valuesToBind = $this->getValuesToBind();
-	    $bc = $this->getParameterBindCounter();
-	    $uID = $this->getTableAliasBindCounter(); //Used to keep each subqueries table aliases unique
+    private function createSubQuery($entityT, $propT, $query){
+	//Get core variables    	    
+	$valuesToBind = $this->getValuesToBind();
+	$bc = $this->getParameterBindCounter();
+	$uID = $this->getTableAliasBindCounter(); //Used to keep each subqueries table aliases unique
+	
+	//Create query builder and start of the subquery
+	/* @var $sQ \Doctrine\ORM\QueryBuilder */
+	$sQ = $this->em->createQueryBuilder();
+	$sQ->select('s' . $uID . '.id')
+		->from($entityT, 's' . $uID)
+		->join('s' . $uID . '.' . $propT, 'sp' . $uID);
 
-	    
-	    //Create query builder and start of the subquery
-        /* @var $sQ \Doctrine\ORM\QueryBuilder */
-	    $sQ = $this->em->createQueryBuilder();
-	    $sQ ->select('s'.$uID.'.id')
-    	    ->from($entityT, 's'.$uID)
-	        ->join('s'.$uID.'.'.$propT, 'sp'.$uID);
-        
-	        // Split each given keyname and keyvalue pair on the first '=' char
-            // If limit arg is set and positive, the returned array will contain a 
-            // maximum of limit elements with the last element containing the rest of string. 
-            // namevalue[0] = keyName
-            // namevalue[1] = keyValue 
-	        $namevalue = explode( '=', $query[1], 2);
-            
-            if(trim($namevalue[1]) == null){ //if no value or no value after trim do a wildcard search
-                $namevalue[1]='%%'; //Set value as database wildcard symbol	                        
-            }
-            /*
-             * Create the where clause of the subquery, e.g: 
-             * WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1 
-             * ...and append, e.g: 
-             * SELECT s0.id FROM Site s0 INNER JOIN s0.siteProperties sp0 WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1 
-             */
-            // This could be simplified further - no need to andX the property 
-            // value if the query doesn't need to match the property value..
-            $sQ ->where($sQ->expr()->andX(
-            	            $sQ->expr()->eq('sp'.$uID.'.keyName', '?'.++$bc),
-                            $namevalue[1] == "%%" 
-            	            ? $sQ->expr()->like('sp'.$uID.'.keyValue', '?'.++$bc)
-                            : $sQ->expr()->eq('sp'.$uID.'.keyValue', '?'.++$bc) 
-                            ));
-            
-            $valuesToBind[] = array(($bc-1), $namevalue[0]);   //Bind for keyName
-            $valuesToBind[] = array(($bc), $namevalue[1]);   //Bind for keyValue
+	// Split each given keyname and keyvalue pair on the first '=' char
+	// If limit arg is set and positive, the returned array will contain a 
+	// maximum of limit elements with the last element containing the rest of string. 
+	// namevalue[0] = keyName
+	// namevalue[1] = keyValue 
+	$namevalue = explode('=', $query[1], 2);
 
-            //Update core variables
-            $this->setTableAliasBindCounter(++$uID);
-	        $this->setParameterBindCounter($bc);
-	        $this->setValues($valuesToBind);
-            //Add this sub query to the main query
-            $this->addSubQueryToMainQuery($sQ, $query[0]);
+	if (trim($namevalue[1]) == null) { //if no value or no value after trim do a wildcard search
+	    $namevalue[1] = '%%'; //Set value as database wildcard symbol	                        
 	}
+	/*
+	 * Create the where clause of the subquery, e.g: 
+	 * WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1 
+	 * ...and append, e.g: 
+	 * SELECT s0.id FROM Site s0 INNER JOIN s0.siteProperties sp0 WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1 
+	 */
+	// This could be simplified further - no need to andX the property 
+        // value if the query doesn't need to match the property value..
+        $sQ->where($sQ->expr()->andX(
+		$sQ->expr()->eq('sp' . $uID . '.keyName', '?' . ++$bc), 
+		$namevalue[1] == "%%" ? 
+		$sQ->expr()->like('sp' . $uID . '.keyValue', '?' . ++$bc) : 
+	        $sQ->expr()->eq('sp' . $uID . '.keyValue', '?' . ++$bc)
+	));
+
+	// Bind keyName
+	$valuesToBind[] = array(($bc - 1), $namevalue[0]);   
+	// Bind keyValue
+	$valuesToBind[] = array(($bc), $namevalue[1]);   
+	
+	//Update core variables
+        $this->setTableAliasBindCounter(++$uID);
+	$this->setParameterBindCounter($bc);
+	$this->setValues($valuesToBind);
+        //Add this sub query to the main query
+        $this->addSubQueryToMainQuery($sQ, $query[0]);
+    }
 
 	
-	/**
-	 * Add the given subquery as a new clause in the main query's  
+    /**
+     * Add the given subquery as a new clause in the main query's  
      * WHERE clause using and an AND or OR operator. 
      * <p>
      * Important: The method *APPENDS* the suquery as a new restriction in the 
      * WHERE clause, forming a logical AND/OR conjunction with any 
      * **PREVIOUSLY** specified restrictions in the WHERE clause.
-	 * 
-	 * @param QueryBuilder $sQ
+     * 
+     * @param QueryBuilder $sQ
      * @param String $operator AND, OR or NOT 
-	 */
-	private function addSubQueryToMainQuery($sQ, $operator){
-	    //Get the query that was passed at initialization
+     */
+    private function addSubQueryToMainQuery($sQ, $operator){
+	//Get the query that was passed at initialization
         /* @var $qb \Doctrine\ORM\QueryBuilder */
-	    $qb = $this->getQB(); 
+	$qb = $this->getQB(); 
        
         // QueryBuilder:  
         // orWhere() forms a logical DISCJUNCTION with all 
@@ -316,22 +315,21 @@ class ExtensionsQueryBuilder{
         // Of course, this will also require a change in the syntax of the 
         // 'expressions' query string to support nesting parethesis.  
                 
-	    switch ($operator) {
-        	case 'OR': //OR
-        	    $qb->orWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));
-        	    break;
-        	case 'AND': //AND        	           
-        	    $qb->andWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));	        	    
-        	    break;	   
-    	    case 'NOT': //NOT
-    	        $qb->andWhere($qb->expr()->notIn($this->ltype, $sQ->getDQL()));        	        	
-    	        break;	        	    
-	    }	       	
+	switch ($operator) {
+	    case 'OR': //OR
+		$qb->orWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));
+		break;
+	    case 'AND': //AND        	           
+		$qb->andWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));
+		break;
+	    case 'NOT': //NOT
+		$qb->andWhere($qb->expr()->notIn($this->ltype, $sQ->getDQL()));
+		break;
+	}
 
-	    /*finally replace original query with updated query ready for fetching
-	     *by the calling class*/
-	    $this->setQB($qb);
-	}		
+	//finally replace original query with updated query ready for fetching by the calling class
+	$this->setQB($qb);
+    }		
 }  
 
 

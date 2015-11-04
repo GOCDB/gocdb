@@ -43,7 +43,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 		<div class="form-group" id="severityGroup">
 			<label for="severity">Severity:</label> <select class="form-control"
 				name="SEVERITY" id="severity" size="2">
-				<?php if($severity == 'Outage'): ?>
+				<?php if($severity == 'OUTAGE'): ?>
 				<option value="OUTAGE" SELECTED>Outage</option>
 				<option value="WARNING">Warning</option>
 				<?php else: ?>
@@ -456,7 +456,18 @@ foreach($downtime->getEndpointLocations() as $endpoints){
     * @returns {null}
     */
    function refreshScheduledStatus(){
-        var sDate = $('#startDateContent').val();
+       $('#schedulingStatusLabel').text(''); 
+        var nowUtc = moment.utc();    
+        var duration24hrs = moment.duration(24, 'hours'); 
+        if(M_START_UTC){
+            if( M_START_UTC > (nowUtc + duration24hrs)){
+               $('#schedulingStatusLabel').text('SCHEDULED'); 
+            } else {
+               $('#schedulingStatusLabel').text('UNSCHEDULED'); 
+            }
+        }
+        
+        /*var sDate = $('#startDateContent').val();
     	var sTime = $('#startTimeContent').val();
 
         // calculate the start date time in UTC 
@@ -465,9 +476,16 @@ foreach($downtime->getEndpointLocations() as $endpoints){
             // (use moment.utc(), otherwise moment parses in current timezone)
         	var start = sDate +" "+sTime; 
         	var mStart = moment.utc(start, "DD-MM-YYYY, HH:mm"); // parse in utc
-            // Is M_START_UTC >24hrs in future (SCHEDULED) or <24hrs (UNSCHEDULED) 
             // this logic should go into a self-refresh loop. 
-            if(mStart){    // if mStart is not null
+            
+            // Then update utc time to time in target timezone; 
+            // if SiteTimezone RB is selected, subtract offset from time to 
+            // get time in specified tz 
+            if($('#siteRadioButton').is(':checked')){ 
+               mStart.subtract(TARGETTIMEZONEOFFSETFROMUTCSECS, 's'); 
+            }
+             
+            //if(mStart){    // if mStart is not null
                 $('#schedulingStatusLabel').text(''); 
                 var nowUtc = moment.utc();    
                 var duration24hrs = moment.duration(24, 'hours'); 
@@ -476,8 +494,8 @@ foreach($downtime->getEndpointLocations() as $endpoints){
                 } else {
                    $('#schedulingStatusLabel').text('UNSCHEDULED'); 
                 }
-            }
-        }
+            //}
+        }*/
    }
 
 

@@ -17,7 +17,7 @@ class NotificationService extends AbstractEntityService {
     /**
      * This class will take an entity of either site, service group, NGI or Project.
      * It will then get the roles from the entity
-     * and then get the users for each of those roles. Then using the authorizeAction function for the correct entity type it will
+     * and then get the users for each of those roles. Then using the authoriseAction function it will
      * ascertain if a given user has the permission to grant a role. If they do there email address is added to an array. This array
      * of email addresses will then be sent a notification that they have a pending role request they can approve.
      *
@@ -39,20 +39,20 @@ class NotificationService extends AbstractEntityService {
         
         // Now for each role get the user
         foreach ( $roles as $role ) {
-            // Call the correct authorize action service for the type of entity
+            $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $role->getUser())->getGrantingRoles(); 
             if ($entity instanceof \Site) {
-                $enablingRoles = \Factory::getSiteService ()->authorizeAction ( \Action::GRANT_ROLE, $entity, $role->getUser () );
+                //$enablingRoles = \Factory::getSiteService ()->authorize Action ( \Action::GRANT_ROLE, $entity, $role->getUser () );
                 
                 // If the site has no site adminstrators to approve the role request then send an email to the parent NGI users to approve the request
                 if ($roles == null) {
                     $this->roleRequest ( $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
                 }
             } else if ($entity instanceof \ServiceGroup) {
-                $enablingRoles = \Factory::getServiceGroupService ()->authorizeAction ( \Action::GRANT_ROLE, $entity, $role->getUser () );
+                //$enablingRoles = \Factory::getServiceGroupService ()->authorize Action ( \Action::GRANT_ROLE, $entity, $role->getUser () );
             } else if ($entity instanceof \Project) {
-                $enablingRoles = \Factory::getProjectService ()->authorizeAction ( \Action::GRANT_ROLE, $entity, $role->getUser () );
+                //$enablingRoles = \Factory::getProjectService ()->authorize Action ( \Action::GRANT_ROLE, $entity, $role->getUser () );
             } else if ($entity instanceof \NGI) {
-                $enablingRoles = \Factory::getNgiService ()->authorizeAction ( \Action::GRANT_ROLE, $entity, $role->getUser () );
+                //$enablingRoles = \Factory::getNgiService ()->authorize Action ( \Action::GRANT_ROLE, $entity, $role->getUser () );
                 $projects = $entity->getProjects (); // set project with the NGI's parent project and later recurse with this
                                                     
                 // Only send emails to Project users if there are no users with grant_roles over the NGI
@@ -66,10 +66,10 @@ class NotificationService extends AbstractEntityService {
             }
             
             // remove admin from enabling roles
-            $position = array_search ( 'GOCDB_ADMIN', $enablingRoles );
+            /*$position = array_search ( 'GOCDB_ADMIN', $enablingRoles );
             if ($position != null) {
                 unset ( $enablingRoles [$position] );
-            }
+            }*/
             // Get the users email and add it to the array if they have an enabling role
             if (count ( $enablingRoles ) > 0) {
                 $emails [] = $role->getUser ()->getEmail ();

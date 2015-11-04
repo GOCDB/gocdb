@@ -62,7 +62,7 @@ function draw(\User $user = null) {
 
     // check that this downtime is eligible for editing, throws exception if not.  
     $serv->editValidationDatePreConditions($dt); 
-    $serv->authorization($dt->getServices(), $user);
+    $serv->authorisation($dt->getServices(), $user);
     
     $nowUtcDateTime = new \DateTime(null, new \DateTimeZone("UTC"));
     $twoDaysAgoUtcDateTime = $nowUtcDateTime->sub(\DateInterval::createFromDateString('2 days'));

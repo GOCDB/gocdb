@@ -7,7 +7,8 @@
             Select a Role for the <?php xecho($params['entityType'])?>
         </h1>
         <span class="input_name" style="clear: both; float: left;">
-            Select Role to Request for <?php xecho($params['entityType']); echo ' ['; xecho($params['entityName']); echo']'?>:</span><br/>
+            Select Role to Request for <?php xecho($params['entityType']); echo ' ['; xecho($params['entityName']); echo']'?>:
+        </span><br/>
     </div>
 
     <form   style="clear: both; float: left; margin-top: 1em;" 
@@ -16,7 +17,7 @@
         <?php foreach($params['roles'] as $roleName) { ?>
             <option value="<?php xecho($roleName) ?>"><?php xecho($roleName) ?></option>
         <?php } ?>
-        </select>
+        </select> : [RoleTypeName] 
         <br/><br/>
         <input type="hidden" name="Object_ID" value="<?php echo $params['objectId'] ?>"/>
         <input type="submit" />

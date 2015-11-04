@@ -12,15 +12,28 @@ namespace org\gocdb\services;
  * limitations under the License.
  */
 require_once __DIR__ . '/AbstractEntityService.php';
+require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
 
 /**
  * GOCDB Stateless service facade (business routnes) for downtime objects.
  * The public API methods are transactional.
  *
  * @author John Casson
+ * @author James McCarthy
  * @author David Meredith
  */
 class Downtime extends AbstractEntityService{
+
+    private $roleActionAuthorisationService;
+
+    function __construct(/*$roleActionAuthorisationService*/) {
+        parent::__construct();
+        //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+    }
+
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+        $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
     
     // Date format used by the Javascript calendar
     const FORMAT = 'd/m/Y H:i';
@@ -133,7 +146,7 @@ class Downtime extends AbstractEntityService{
         
         
         // Check the user has a role covering the passed SEs
-        $this->authorization($services, $user);
+        $this->authorisation($services, $user);
         $this->validate($values['DOWNTIME']);
 
         $startStr = $values['DOWNTIME']['START_TIMESTAMP'];
@@ -236,16 +249,19 @@ class Downtime extends AbstractEntityService{
      * @param Array $ses An array of Service objects
      * @param \User $user The user making the request
      */
-    public function authorization($ses, \User $user = null) {
+    public function authorisation($ses, \User $user = null) {
         if(is_null($user)) {
             throw new \Exception("Unregistered users can't edit a downtime.");
         }
-        require_once __DIR__.'/ServiceService.php'; 
-        $serviceService = new \org\gocdb\services\ServiceService(); 
-        $serviceService->setEntityManager($this->em);  
-        foreach($ses as $se) {
-            if(count($serviceService->authorizeAction(\Action::EDIT_OBJECT, $se, $user))==0){
-                throw new \Exception("You do not have permission over $se."); 
+        //require_once __DIR__.'/ServiceService.php'; 
+        //$serviceService = new \org\gocdb\services\ServiceService(); 
+        //$serviceService->setEntityManager($this->em);  
+         if (!$user->isAdmin()) {
+            foreach ($ses as $se) {
+                //if(count($serviceService->authorize Action(\Action::EDIT_OBJECT, $se, $user))==0){
+                if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() == FALSE ) {
+                    throw new \Exception("You do not have permission over $se.");
+                }
             }
         }
     }
@@ -333,7 +349,7 @@ class Downtime extends AbstractEntityService{
         foreach($dt->getEndpointLocations() as $els){
             $downtimesExistingSEs[] = $els->getService(); 
         }
-        $this->authorization($downtimesExistingSEs, $user);
+        $this->authorisation($downtimesExistingSEs, $user);
 
 
         
@@ -360,7 +376,7 @@ class Downtime extends AbstractEntityService{
         }
         // Check that the user has permissions over the list of (potentially different) 
         // services affected by this downtime. 
-        $this->authorization($newServices, $user);
+        $this->authorisation($newServices, $user);
 
         // Check that each newEndpoint belongs to one of the newServices. 
         // It is an error if a newEndpoint does not belong to one
@@ -441,7 +457,7 @@ class Downtime extends AbstractEntityService{
         }*/
 
         // Make sure all dates are treated as UTC!
-	    //date_default_timezone_set("UTC");
+        //date_default_timezone_set("UTC");
         
         $newStart = \DateTime::createFromFormat($this::FORMAT, $newStartStr, new \DateTimeZone("UTC"));
         $newEnd = \DateTime::createFromFormat($this::FORMAT, $newEndStr, new \DateTimeZone("UTC")); 
@@ -515,7 +531,7 @@ class Downtime extends AbstractEntityService{
      */
     public function editValidationDatePreConditions(\Downtime $dt){
         // Make sure all dates are treated as UTC!
-	    //date_default_timezone_set("UTC");
+        //date_default_timezone_set("UTC");
         $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
         /* @var $oldStart \DateTime */
         $oldStart = $dt->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
@@ -592,10 +608,10 @@ class Downtime extends AbstractEntityService{
 
         $ses = $dt->getServices(); 
         
-        $this->authorization($ses, $user); 
+        $this->authorisation($ses, $user); 
 
         // Make sure all dates are treated as UTC!
-	    //date_default_timezone_set("UTC");
+        //date_default_timezone_set("UTC");
         
         if(!$dt->isOnGoing()) {
             throw new \Exception("Downtime isn't on-going.");
@@ -640,10 +656,10 @@ class Downtime extends AbstractEntityService{
 
         
         $ses = $dt->getServices(); 
-        $this->authorization($ses, $user); 
+        $this->authorisation($ses, $user); 
 
         // Make sure all dates are treated as UTC!
-	    //date_default_timezone_set("UTC");
+        //date_default_timezone_set("UTC");
         
         if($dt->hasStarted()) {
             throw new \Exception("This downtime has already started.");
@@ -688,92 +704,90 @@ class Downtime extends AbstractEntityService{
      * @param \Date $windowStart
      * @param \Date $windowEnd
      */
-    public function getActiveAndImminentDowntimes($windowStart, $windowEnd){
-    	$dql =  "SELECT DISTINCT d, se, s, st
+    public function getActiveAndImminentDowntimes($windowStart, $windowEnd) {
+	$dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
-				JOIN d.services se
-				JOIN se.parentSite s
-                JOIN se.serviceType st    	
-				WHERE (
-					:windowStart IS null
-					OR d.endDate > :windowStart
-				)    	
-				AND (
-					:windowEnd IS null
-					OR d.startDate < :windowEnd
-				)    			
-    			OR (
+                JOIN d.services se
+                JOIN se.parentSite s
+                JOIN se.serviceType st        
+                WHERE (
+                    :windowStart IS null
+                    OR d.endDate > :windowStart
+                )        
+                AND (
+                    :windowEnd IS null
+                    OR d.startDate < :windowEnd
+                )                
+                OR (
                         :onGoingOnly = 'no'
                         OR
-						(:onGoingOnly = 'yes'
-						AND d.startDate < :now
-						AND d.endDate > :now)
-				)
+                        (:onGoingOnly = 'yes'
+                        AND d.startDate < :now
+                        AND d.endDate > :now)
+                )
                 ORDER BY d.startDate DESC";
-    	
-    	$q = $this->em->createQuery($dql)
-    					->setParameter('onGoingOnly', 'yes')
-    	    			->setParameter('now', new \DateTime())
-    					->setParameter('windowStart', $windowStart)
-    					->setParameter('windowEnd', $windowEnd);
-    	
-    	return $downtimes = $q->getResult();   	
-    	
+
+	$q = $this->em->createQuery($dql)
+		->setParameter('onGoingOnly', 'yes')
+		->setParameter('now', new \DateTime())
+		->setParameter('windowStart', $windowStart)
+		->setParameter('windowEnd', $windowEnd);
+
+	return $downtimes = $q->getResult();
     }
-    
+
     /**
      * 
      */
-    public function getActiveDowntimes(){
-    	$dql =  "SELECT DISTINCT d, se, s, st
+    public function getActiveDowntimes() {
+	$dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
-				JOIN d.services se
-				JOIN se.parentSite s
+                JOIN d.services se
+                JOIN se.parentSite s
                 JOIN se.serviceType st
-				WHERE (
+                WHERE (
                         :onGoingOnly = 'no'
                         OR
-						(:onGoingOnly = 'yes'
-						AND d.startDate < :now
-						AND d.endDate > :now)
-				)
+                        (:onGoingOnly = 'yes'
+                        AND d.startDate < :now
+                        AND d.endDate > :now)
+                )
                 ORDER BY d.startDate DESC";
-    	 
-    	$q = $this->em->createQuery($dql)
-    	->setParameter('onGoingOnly', 'yes')
-    	->setParameter('now', new \DateTime());
-    	 
-    	return $downtimes = $q->getResult();
-    	 
+
+	$q = $this->em->createQuery($dql)
+		->setParameter('onGoingOnly', 'yes')
+		->setParameter('now', new \DateTime());
+
+	return $downtimes = $q->getResult();
     }
-    
+
     /**
-     * 
+     * Get downtimes where the downtime endDate is after windowStart, and 
+     * downtime start date is before windowEnd. 
      * @param \Date $windowStart
      * @param \Date $windowEnd
      */
-    public function getImminentDowntimes($windowStart, $windowEnd){
-    	$dql =  "SELECT DISTINCT d, se, s, st
+    public function getImminentDowntimes($windowStart, $windowEnd) {
+	$dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
-				JOIN d.services se
-				JOIN se.parentSite s
+                JOIN d.services se
+                JOIN se.parentSite s
                 JOIN se.serviceType st
-				WHERE (
-					:windowStart IS null
-					OR d.endDate > :windowStart
-				)
-				AND (
-					:windowEnd IS null
-					OR d.startDate < :windowEnd
-				)
+                WHERE (
+                    :windowStart IS null
+                    OR d.endDate > :windowStart
+                )
+                AND (
+                    :windowEnd IS null
+                    OR d.startDate < :windowEnd
+                )
                 ORDER BY d.startDate DESC";
-    	 
-    	$q = $this->em->createQuery($dql)
-    	->setParameter('windowStart', $windowStart)
-    	->setParameter('windowEnd', $windowEnd);
-    	 
-    	return $downtimes = $q->getResult();
-    	 
+
+	$q = $this->em->createQuery($dql)
+		->setParameter('windowStart', $windowStart)
+		->setParameter('windowEnd', $windowEnd);
+
+	return $downtimes = $q->getResult();
     }
-    
+
 }

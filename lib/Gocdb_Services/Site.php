@@ -15,18 +15,31 @@ require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/RoleConstants.php'; 
 require_once __DIR__ . '/NGI.php'; 
+require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
 
 /**
  * GOCDB Stateless service facade (business routines) for Site objects.
  * The public API methods are transactional.
  * @todo Implement the ISiteService interface when ready.
  *
- * @author David Meredith
  * @author John Casson
  * @author George Ryall
+ * @author David Meredith
  * @author James McCarthy
  */
 class Site extends AbstractEntityService{
+   
+    private $roleActionAuthorisationService;
+     
+    function __construct(/*$roleActionAuthorisationService*/) {
+        parent::__construct();
+        //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+    }
+
+
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
+        $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
     
     /*
      * Since all the service methods in a service facade are atomic and fully
@@ -100,9 +113,13 @@ class Site extends AbstractEntityService{
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
+        if($user == null){
+            throw new \Exception("Null user can't edit site"); 
+        }
         // Check to see whether the user has a role that covers this site
         //$this->edit Authorization($site, $user);
-        if(count($this->authorizeAction(\Action::EDIT_OBJECT, $site, $user))==0){
+        //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
+        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction()==FALSE){
             throw new \Exception("You don't have permission over ". $site->getShortName());
         }
         
@@ -111,6 +128,13 @@ class Site extends AbstractEntityService{
         
         //check there are the required number of scopes specified
         $this->checkNumberOfScopes($newValues['Scope_ids']);
+
+	// check childServiceScopeAction is a known value
+	if($newValues['childServiceScopeAction'] != 'noModify' &&
+		$newValues['childServiceScopeAction'] != 'inherit' && 
+		$newValues['childServiceScopeAction'] != 'override' ){
+	    throw new \Exception("Invalid scope update action"); 
+	}
         
         $this->em->getConnection()->beginTransaction();
 
@@ -158,6 +182,47 @@ class Site extends AbstractEntityService{
                              ->getSingleResult();
                 $site->addScope($scope);
             }
+
+	    // Update the child service scopes 
+	    if($newValues['childServiceScopeAction'] == 'noModify'){
+	        // do nothing to child service scopes, leave intact 	
+	    } else if($newValues['childServiceScopeAction'] == 'inherit'){
+		// iterate each child service and ensure it has all the site scopes 
+		$services = $site->getServices();
+		/* @var $service \Service */
+		foreach($services as $service){
+		    // for this service, see if it has each siteScope, if not add it  
+		    foreach($site->getScopes() as $siteScope){
+			$addScope = true; 
+			foreach($service->getScopes() as $servScope){
+			    if($siteScope == $servScope){
+				$addScope = false; 
+				break; 
+			    }
+			}
+			if($addScope){
+			   $service->addScope($siteScope);  
+			}
+		    }
+		}
+		
+	    } else if($newValues['childServiceScopeAction'] == 'override'){
+		$services = $site->getServices();
+		/* @var $service \Service */
+		foreach($services as $service){
+		    // remove all service's existing scopes
+		    foreach($service->getScopes() as $servScope){
+			$service->removeScope($servScope); 
+		    }
+		    // add all site scopes 
+		    foreach($site->getScopes() as $siteScope){
+			$service->addScope($siteScope); 
+		    }
+		}
+	        	
+	    } else {
+		throw new \Exception("Invalid scope update action"); 	
+	    }
             
             // get / set the country
             $dql = "SELECT c FROM Country c WHERE c.name = ?1";
@@ -199,7 +264,7 @@ class Site extends AbstractEntityService{
      * @return array of RoleName strings that grant the requested action  
      * @throws \LogicException if action is not supported or is unknown 
      */
-    public function authorizeAction($action, \Site $site, \User $user = null ) {
+    /*public function authorize Action($action, \Site $site, \User $user = null ) {
         if(is_null($user)){
             return array(); // empty array if null user 
         }
@@ -271,7 +336,7 @@ class Site extends AbstractEntityService{
                 \RoleTypeName::NGI_OPS_DEP_MAN,
                 \RoleTypeName::NGI_OPS_MAN, 
                 // E  
-                //\RoleTypeName::CIC_STAFF, /* dont' think this role type should grant edit cert status changes */
+                //\RoleTypeName::CIC_STAFF, 
                 \RoleTypeName::COD_STAFF,
                 \RoleTypeName::COD_ADMIN,
                 \RoleTypeName::EGI_CSIRT_OFFICER,
@@ -301,7 +366,7 @@ class Site extends AbstractEntityService{
            $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;  
         }
         return array_unique($enablingRoles);
-    }
+    }*/
 
     
   
@@ -340,6 +405,42 @@ class Site extends AbstractEntityService{
             }
         }
     }
+  
+    /**
+     * Return all {@see \Site}s that satisfy the specfied filter parameters. 
+     * <p>  
+     * $filterParams defines an associative array of optional parameters for 
+     * filtering the sites. The supported Key => Value pairs include: 
+     * <ul>
+     *   <li>'sitename' => String site name</li>
+     *   <li>'roc' => String name of parent NGI/ROC</li> 
+     *   <li>'country' => String country name</li>
+     *   <li>'certification_status' => String certification status value e.g. 'Certified'</li>
+     *   <li>'exclude_certification_status' => String exclude sites with this certification status</li>
+     *   <li>'production_status' => String site production status value</li>
+     *   <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
+     *   <li>'scope_match' => String 'any' or 'all' </li>
+     *   <li>'extensions' => String extensions expression to filter custom key=value pairs</li>
+     * <ul>
+     * 
+     * @param array $filterParams
+     * @return array Site array
+     */
+    public function getSitesFilterByParams($filterParams){
+        require_once __DIR__.'/PI/GetSite.php'; 
+	$getSite = new GetSite($this->em); 
+	//$params = array('sitename' => 'GRIDOPS-GOCDB');  
+        //$params = array('scope' => 'EGI,DAVE', 'sitename' => 'GRIDOPS-GOCDB');  	
+	//$params = array('scope' => 'EGI,Local', 'scope_match' => 'any', 'exclude_certification_status' => 'Closed');  
+	//$params = array('scope' => 'EGI,Local', 'scope_match' => 'all');  
+	//$params = array('scope' => 'EGI,DAVE', 'scope_match' => 'all');  
+	//$params = array('extensions' => '(aaa=123)(dave=\(someVal with parethesis\))(test=test)'); 
+	$getSite->validateParameters($filterParams); 
+	$getSite->createQuery(); 
+	$sites = $getSite->executeQuery(); 
+	return $sites; 
+    }
+
     
     /**
      * Returns all Sites filtered by the given parameters with the following  
@@ -875,23 +976,15 @@ class Site extends AbstractEntityService{
 	 * @param \Site $site	 
 	 * @throws \Exception
 	 */
-	public function validatePropertyActions(\User $user, \Site $site){	    
+	public function validatePropertyActions(\User $user, \Site $site) {
 	    // Check to see whether the user has a role that covers this site
-	    if(count($this->authorizeAction(\Action::EDIT_OBJECT, $site, $user))==0){
-	        throw new \Exception("You don't have permission over ". $site->getShortName());
+	    //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
+	    if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE) {
+		throw new \Exception("You don't have permission over " . $site->getShortName());
 	    }
 	}
-	
-	/** TODO
-	 * Before adding or editing a key pair check that the keyname is not a reserved keyname
-	 * 
-	 * @param String $keyname
-	 */
-	private function checkNotReserved(\User $user, \Site $site, $keyname){
-	    //TODO Function: This function is called but not yet filled out with an action
-	}
-	
-	/**
+
+    /**
 	 * Adds a key value pair to a site
 	 * @param $values
 	 * @param \User $user
@@ -963,16 +1056,16 @@ class Site extends AbstractEntityService{
 	    }
 	}
 	
-	/**
-	 * Edits a site property
-	 *
-	 * @param \Site $site
-	 * @param \User $user
-	 * @param \SiteProperty $prop
-	 * @param
-	 *        	$newValues
-	 */
-	public function editSiteProperty(\Site $site,\User $user = null,\SiteProperty $prop, $newValues) {
+    /**
+     * Edit a site's properties. 
+     * 
+     * @param \Site $site
+     * @param \User $user
+     * @param \SiteProperty $prop
+     * @param array $newValues
+     * @throws \Exception
+     */
+	public function editSiteProperty(\Site $site,\User $user,\SiteProperty $prop, $newValues) {
 	    // Check the portal is not in read only mode, throws exception if it is
 	    $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );	    
 	    
@@ -984,7 +1077,7 @@ class Site extends AbstractEntityService{
 	    $keyname=$newValues ['SITEPROPERTIES'] ['NAME'];
 	    $keyvalue=$newValues ['SITEPROPERTIES'] ['VALUE'];
 
-	    $this->checkNotReserved($user, $site, $keyname);
+	    //$this->checkNotReserved($user, $site, $keyname);
 	    
 	    $this->em->getConnection ()->beginTransaction ();
 	

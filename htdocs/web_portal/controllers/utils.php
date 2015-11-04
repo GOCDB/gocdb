@@ -62,9 +62,9 @@ function CheckCurrentUserCanEditProject(\Project $project) {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     
-    $enablingRoles = \Factory::getProjectService()->authorizeAction('ACTION_EDIT_OBJECT', $project, $user);
-    
-    if (count($enablingRoles) == 0){
+    //$enablingRoles = \Factory::getProjectService()->authorize Action('ACTION_EDIT_OBJECT', $project, $user);
+    //if (count($enablingRoles) == 0){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $project, $user)->getGrantAction() == FALSE){
         throw new Exception("You do not have a role that enables you to edit this project");
     }
 }
@@ -86,6 +86,12 @@ function getSiteDataFromWeb() {
     
     foreach($fields as $field){
         $site_data [$field] = $_REQUEST [$field];
+    }
+   
+    if(isset($_REQUEST['childServiceScopeAction'])){
+	$site_data['childServiceScopeAction'] = $_REQUEST['childServiceScopeAction']; 
+    } else {
+	$site_data['childServiceScopeAction'] = 'noModify'; 
     }
     
     // get scopes if any are selected, if not set as null
