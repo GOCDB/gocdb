@@ -51,85 +51,85 @@
  * c. Finally all endpoints are unlinked from their parent services and deleted 
  *    to allow the MEPS model to be used correctly in the future. 
  */
-use Doctrine\ORM\EntityManager; 
+use Doctrine\ORM\EntityManager;
 
 require_once dirname(__FILE__) . "/../bootstrap.php";
-  
-    if(!isset($argv[1]) || strcmp($argv[1],  '--force') ){ //strcmp returns 0 (i.e. false) if strings are equal
-        die("Error. Usage:  php ".basename(__FILE__)." --force \n"); 
+
+if (!isset($argv[1]) || strcmp($argv[1], '--force')) { //strcmp returns 0 (i.e. false) if strings are equal
+    die("Error. Usage:  php " . basename(__FILE__) . " --force \n");
+}
+//if(true)die("forced die \n"); 
+
+echo "Updating database relations and entities for MEPS \n";
+$em = $entityManager;
+
+//get all services	
+$dql = "SELECT se FROM Service se";
+$services = $entityManager->createQuery($dql)->getResult();
+
+//For each service extract the endpoint(s) and get the URL. Write that URL to the service.
+echo "Copying [Service->EndpointLocation->url] field to [Service->url field]\n";
+foreach ($services as $service) {
+    $endpoints = $service->getEndpointLocations();
+    foreach ($endpoints as $endpoint) {
+	$url = $endpoint->getUrl();
+	if ($url != null) {
+	    //echo "Adding URL to ".$service->getHostName()."\n";
+	    //echo $url."\n";
+	    echo ".";
+	    $service->setUrl($url);
+	    $em->persist($service);
+	}
     }
-    //if(true)die("forced die \n"); 
+}
+//Write changes to db
+$em->flush();
 
-	echo "Updating database relations and entities for MEPS \n";
-    $em = $entityManager; 
-	
-	//get all services	
-	$dql = "SELECT se FROM Service se";
-	$services = $entityManager->createQuery($dql)->getResult();
+//get all downtimes
+$dql = "SELECT d FROM Downtime d";
+$downtimes = $entityManager->createQuery($dql)->getResult();
 
-	//For each service extract the endpoint(s) and get the URL. Write that URL to the service.
-    echo "Copying [Service->EndpointLocation->url] field to [Service->url field]\n";  
-	foreach($services as $service){
-		$endpoints = $service->getEndpointLocations();
-        foreach($endpoints as $endpoint){
-            $url = $endpoint->getUrl();
-            if($url != null){
-                //echo "Adding URL to ".$service->getHostName()."\n";
-                //echo $url."\n";
-                echo "."; 
-                $service->setUrl($url);
-                $em->persist($service);
-            }
-        }
-	}
-    //Write changes to db
-	$em->flush();
+/* For each downtime make a new link to the affected service and remove the join
+ * between the downtime and the endpoint */
+echo "\n";
+echo "Linking [Service-to-Downtime] and deleting the current (single) [Downtime-to-EndpointLocation] association \n";
+foreach ($downtimes as $downtime) {
+    $endpoints = $downtime->getEndpointLocations();
+    foreach ($endpoints as $endpoint) {
+	//echo $downtime->getId().",";
+	echo ".";
+	$service = $endpoint->getService();
+	$downtime->addService($service);
+	$downtime->removeEndpointLocation($endpoint);
+	$em->persist($downtime);
+    }
+}
 
-	//get all downtimes
-	$dql = "SELECT d FROM Downtime d";
-	$downtimes =  $entityManager->createQuery($dql)->getResult();
-    
-	/*For each downtime make a new link to the affected service and remove the join
-	* between the downtime and the endpoint*/
-    echo "\n"; 
-    echo "Linking [Service-to-Downtime] and deleting the current (single) [Downtime-to-EndpointLocation] association \n"; 
-	foreach($downtimes as $downtime){
-		$endpoints = $downtime->getEndpointLocations();
-		foreach($endpoints as $endpoint){
-			//echo $downtime->getId().",";
-            echo "."; 
-			$service = $endpoint->getService();			
-			$downtime->addService($service);
-			$downtime->removeEndpointLocation($endpoint);
-			$em->persist($downtime);
-		}
-	}
-	
-	//Write changes to db
-	$em->flush();
-	
-	//get all services	
-	$dql = "SELECT se FROM Service se";
-	$services = $entityManager->createQuery($dql)->getResult();
-	
-	//For each service remove the endpoint
-    echo "\n"; 
-    echo "Delete Service's single [EndpointLocation] entity \n"; 
-	foreach($services as $service){
-		$endpoints = $service->getEndpointLocations();
-			foreach($endpoints as $endpoint){
-				//echo $endpoint->getId().", ";
-                echo "."; 
-				//Remove the endpoint from the services collection of endpoints
-				//$service->remove_EndpointLocation($endpoint);
-                $service->getEndpointLocations()->removeElement($endpoint); 
-				//Delete the orphaned entity
-		        $em->remove($endpoint);
-				$em->persist($service);				
-			}
-	}
-	
-	//Write changes to db
-	$em->flush();
-    echo "\n Done\n"; 	
+//Write changes to db
+$em->flush();
+
+//get all services	
+$dql = "SELECT se FROM Service se";
+$services = $entityManager->createQuery($dql)->getResult();
+
+//For each service remove the endpoint
+echo "\n";
+echo "Delete Service's single [EndpointLocation] entity \n";
+foreach ($services as $service) {
+    $endpoints = $service->getEndpointLocations();
+    foreach ($endpoints as $endpoint) {
+	//echo $endpoint->getId().", ";
+	echo ".";
+	//Remove the endpoint from the services collection of endpoints
+	//$service->remove_EndpointLocation($endpoint);
+	$service->getEndpointLocations()->removeElement($endpoint);
+	//Delete the orphaned entity
+	$em->remove($endpoint);
+	$em->persist($service);
+    }
+}
+
+//Write changes to db
+$em->flush();
+echo "\n Done\n";
 ?>

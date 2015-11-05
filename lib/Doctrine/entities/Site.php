@@ -67,7 +67,7 @@ class Site extends OwnedEntity implements IScopedEntity{
     /** @Column(type="string", nullable=true) */
     protected $ipRange;
 	
-	/** @Column(type="string", nullable=true) */
+    /** @Column(type="string", nullable=true) */
     protected $ipV6Range;
 	
     /** @Column(type="string", nullable=true) */
@@ -97,7 +97,7 @@ class Site extends OwnedEntity implements IScopedEntity{
      */
     protected $services = null;
 		
-	/**
+    /**
      * Bidirectional - A Site (INVERSE ORM SIDE) can have many properties
      * @OneToMany(targetEntity="SiteProperty", mappedBy="parentSite", cascade={"remove"})
      */
@@ -163,15 +163,15 @@ class Site extends OwnedEntity implements IScopedEntity{
     protected $users = null;
 
     /* DATETIME NOTE:
-	 * Doctrine checks whether a date's been updated by doing a byreference comparison.
-	 * If you just update an existing DateTime object, Doctrine won't persist it!
-	 * Create a new DateTime object and reference that for it to persist during an update.
-	 * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
-	 */
-    
+     * Doctrine checks whether a date's been updated by doing a byreference comparison.
+     * If you just update an existing DateTime object, Doctrine won't persist it!
+     * Create a new DateTime object and reference that for it to persist during an update.
+     * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
+     */
+
     /** @Column(type="datetime", nullable=false) **/
-	protected $creationDate;
-    
+    protected $creationDate;
+
     public function __construct() {
         parent::__construct();
         
@@ -180,7 +180,7 @@ class Site extends OwnedEntity implements IScopedEntity{
         // Set cretion date
         $this->creationDate =  new \DateTime("now");        
         $this->services = new ArrayCollection();
-		$this->siteProperties = new ArrayCollection();
+	$this->siteProperties = new ArrayCollection();
         $this->scopes = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->certificationStatusLog = new ArrayCollection();
@@ -472,7 +472,7 @@ class Site extends OwnedEntity implements IScopedEntity{
      * This method also sets the SiteProperty's parentSite. 
      * @param \SiteProperty $siteProperty
      */
-	public function addSitePropertyDoJoin($siteProperty) {
+    public function addSitePropertyDoJoin($siteProperty) {
         $this->siteProperties[] = $siteProperty;
         $siteProperty->_setParentSite($this);
     }

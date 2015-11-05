@@ -10,12 +10,14 @@ namespace org\gocdb\services;
  * and limitations under the License.
 */
 //use Doctrine\ORM\EntityManager;
+require_once __DIR__.'/../../Factory.php'; 
 
 /** 
  * Appends new WHERE clauses with positional bind parameters to the given 
  * QueryBuilder for filtering a particular target entity by its associated scope tags. 
  * <p>  
- * The updated QueryBuilder and the new bind variables must then be fetched 
+ * The updated Query
+ * Builder and the new bind variables must then be fetched 
  * using the getQB() and getBinds() methods.
  * <p>
  * Example Queries shown belowm, + indicates the appended WHERE clauses:  

@@ -1011,9 +1011,11 @@ class Site extends AbstractEntityService{
 	    $this->em->getConnection ()->beginTransaction ();
 	
 	    try {
+		/* @var $siteProperty \SiteProperty */
 	        $siteProperty = new \SiteProperty ();
 	        $siteProperty->setKeyName ( $keyname );
 	        $siteProperty->setKeyValue ( $keyvalue );
+                /* @var $site \Site */
 	        $site = $this->em->find ( "Site", $siteID );
 	        $site->addSitePropertyDoJoin ( $siteProperty );
 	        $this->em->persist ( $siteProperty );
