@@ -66,8 +66,32 @@ require_once __DIR__ . '/../lib/Gocdb_Services/Site.php';
 //require __DIR__ . '/ApplyScopeTagsToSites_SiteValues.php'; 
 //$requestedSiteNames = $requestedSiteNames2; 
 
-$requestedScopeNames = array('wlcg', 'atlas'); 
-$requestedSiteNames = array(); 
+//$requestedScopeNames = array('wlcg', 'atlas'); 
+//$requestedSiteNames = array(); 
+
+
+$requestedScopeNames = array('tier1'); 
+$requestedSiteNames = array( 'TRIUMF-LCG2', 'IN2P3-CC', 'FZK-LCG2', 'INFN-T1', 'NIKHEF-ELPROD',
+'SARA-MATRIX', 'NDGF-T1', 'KR-KISTI-GSDC-01', 'RRC-KI-T1', 'JINR-T1', 'pic', 'Taiwan-LCG2',
+'RAL-LCG2', 'USCMS-FNAL-WC1', 'BNL-ATLAS'); 
+
+
+//$requestedScopeNames = array('tier2'); 
+//$requestedSiteNames = array( 'Australia-ATLAS', 'HEPHY-UIBK', 'Hephy-Vienna', 'BEgrid-ULB-VUB', 'BelGrid-UCL',
+//'CA-MCGILL-CLUMEQ-T2', 'CA-SCINET-T2', 'CA-VICTORIA-WESTGRID-T2', 'SFU-LCG2', 'BEIJING-LCG2', 'praguelcg2', 'T2_Estonia',
+//'FI_HIP_T2', 'IN2P3-CC-T2', 'IN2P3-CPPM', 'GRIF', 'IN2P3-IRES', 'IN2P3-LAPP', 'IN2P3-LPC', 'IN2P3-LPSC', 'IN2P3-SUBATECH',
+//'DESY-HH', 'DESY-ZN', 'UNI-FREIBURG', 'wuppertalprod', 'GoeGrid', 'LRZ-LMU', 'MPPMU', 'RWTH-Aachen', 'GSI-LCG2', 'GR-12-TEIKAV',
+//'GR-07-UOI-HEPLAB', 'BUDAPEST', 'INDIACMS-TIFR', 'IN-DAE-VECC-02', 'IL-TAU-HEP', 'TECHNION-HEP', 'WEIZMANN-LCG2', 'INFN-BARI',
+//'INFN-CATANIA', 'INFN-CNAF-LHCB', 'INFN-FRASCATI', 'INFN-LNL-2', 'INFN-MILANO-ATLASC', 'INFN-NAPOLI-ATLAS', 'INFN-PISA',
+//'INFN-ROMA1', 'INFN-ROMA1-CMS', 'INFN-TORINO', 'TOKYO-LCG2', 'CBPF', 'EELA-UTFSM', 'ICN-UNAM', 'SAMPA', 'SUPERCOMPUTO-UNAM',
+//'PK-CIIT', 'NCP-LCG2', 'CYFRONET-LCG2', 'ICM', 'PSNC', 'LIP-Coimbra', 'LIP-Lisbon', 'NCG-INGRID-PT', 'LCG_KNU', 'NIHAM',
+//'RO-02-NIPNE', 'RO-07-NIPNE', 'RO-11-NIPNE', 'RO-13-ISS', 'RO-14-ITIM', 'RO-16-UAIC', 'ITEP', 'JINR-LCG2', 'RRC-KI', 'RU-Protvino-IHEP',
+//'RU-SPbSU', 'Ru-Troitsk-INR-LCG2', 'ru-Moscow-FIAN-LCG2', 'ru-Moscow-SINP-LCG2', 'ru-PNPI', 'FMPhI-UNIBA', 'IEPSAS-Kosice', 'SiGNET',
+//'ZA-CHPC', 'IFIC-LCG2', 'UAM-LCG2', 'ifae', 'CIEMAT-LCG2', 'IFCA-LCG2', 'UB-LCG2', 'USC-LCG2', 'SE-SNIC-T2', 'CSCS-LCG2',
+//'UNIBE-LHEP', 'TW-FTT', 'T2-TH-CUNSTDA', 'T2-TH-SUT', 'TR-03-METU', 'TR-10-ULAKBIM', 'UKI-LT2-Brunel', 'UKI-LT2-IC-HEP', 'UKI-LT2-QMUL',
+//'UKI-LT2-RHUL', 'UKI-LT2-UCL-HEP', 'UKI-NORTHGRID-LANCS-HEP', 'UKI-NORTHGRID-LIV-HEP', 'UKI-NORTHGRID-MAN-HEP', 'UKI-NORTHGRID-SHEF-HEP', 'UKI-SCOTGRID-DURHAM',
+//'UKI-SCOTGRID-ECDF', 'UKI-SCOTGRID-GLASGOW', 'EFDA-JET', 'UKI-SOUTHGRID-BHAM-HEP', 'UKI-SOUTHGRID-BRIS-HEP', 'UKI-SOUTHGRID-CAM-HEP', 'UKI-SOUTHGRID-OX-HEP',
+//'UKI-SOUTHGRID-RALPP', 'UKI-SOUTHGRID-SUSX', 'Kharkov-KIPT-LCG2', 'UA-BITP', 'UA-ISMA', 'UA-KNU',); 
 
 // specify '--force' to actually execute the changes, otherwise script will 
 // only show which sites will be updated with which scopes 
@@ -95,6 +119,11 @@ $siteService->setEntityManager($em);
 
 echo "Checking for duplicates in requested sites/scopes \n"; 
 if(count($requestedSiteNames) !== count(array_unique($requestedSiteNames))){
+//    $uarr = array_unique($requestedSiteNames);
+//    $dups = var_dump(array_diff($requestedSiteNames, array_diff($uarr, array_diff_assoc($requestedSiteNames, $uarr))));
+//    foreach($dups as $dup){
+//	echo "$dups\n"; 
+//    }
     die("ERROR - Requested sites has a duplicate entry\n"); 
 }
 if(count($requestedScopeNames) !== count(array_unique($requestedScopeNames))){
@@ -102,7 +131,7 @@ if(count($requestedScopeNames) !== count(array_unique($requestedScopeNames))){
 }
 
 
-// Nasty shortcut just to extract all the names from the site name list 
+// Nasty shortcut just to extract all the GOCDB names from the site name list 
 if ($forceOrShow == '--listSiteNames') {
     foreach ($requestedSiteNames as $requestedSiteName) {
 	$filterParams = array('sitename' => $requestedSiteName);
