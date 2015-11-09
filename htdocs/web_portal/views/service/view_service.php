@@ -323,6 +323,8 @@ $configService = \Factory::getConfigService();
             </a>
         </span>        
         <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+
+
         <table id="serviceExtensionPropsTable" class="table table-striped table-condensed tablesorter">
 	    <thead>
             <tr>
@@ -330,7 +332,7 @@ $configService = \Factory::getConfigService();
                 <th>Value</th>  
                 <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
                     <th>Edit</th>  
-                    <th>Remove</th>  
+                    <th>Select</th>
                 <?php endif; ?>              
             </tr>
 	    </thead>
@@ -345,8 +347,10 @@ $configService = \Factory::getConfigService();
 	                <td style="width: 35%;"><?php xecho($sp->getKeyValue()); ?></td>
 	                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>	                
                         <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-                        <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
-	                <?php endif; ?>
+<!--                        <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=--><?php //echo $sp->getId();?><!--&serviceid=--><?php //echo $seId;?><!--"><img height="25px" src="--><?php //echo \GocContextPath::getPath()?><!--img/cross.png"/></a></td>-->
+                        <!--autocomplete off stops the checkboxes remembering checked state when reloading and revisiting pages-->
+                        <td style="width: 10%;"><input type='checkbox' form="Modify_Service_Properties_Form" name='selectedPropIDs[]' value="<?php echo $sp->getId();?>" autocomplete="off"/></td>
+                    <?php endif; ?>
 	            </tr>
 	            <?php
 	            //if($num == 1) { $num = 2; } else { $num = 1; }
@@ -363,7 +367,25 @@ $configService = \Factory::getConfigService();
                         Add Property
                 </span>
             </a>
-		<?php endif; ?>
+<!--            <a href="index.php?Page_Type=Delete_Service_Properties&se=--><?php //echo $se->getId();?><!--">-->
+<!--                <img src="--><?php //echo \GocContextPath::getPath()?><!--img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>-->
+<!--                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">-->
+<!--                        Delete Selected Properties-->
+<!--                </span>-->
+<!--            </a>-->
+            <form name="Modify_Service_Properties" action="index.php?Page_Type=Service_Properties_Controller" method="post" id="Modify_Service_Properties_Form">
+                <input class="input_input_text" type="hidden" name ="serviceID" value="<?php echo $se->getId();?>" />
+                <select name="action" autocomplete="off">
+                    <option value="" disabled selected>Select action...</option>
+                    <option value="delete">Delete selected</option>
+                    <option value="something">Do something else</option>
+                </select>
+
+
+                <input class="input_button" type="submit" value="Modify Selected Service Properties"/>
+            </form>
+
+        <?php endif; ?>
     </div>
     
         <!--  Downtimes -->
