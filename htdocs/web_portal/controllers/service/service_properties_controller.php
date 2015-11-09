@@ -21,6 +21,10 @@
 
 function control() {
 
+    if (!isset($_REQUEST['action'])) {
+        throw new Exception("Choose an action from the dropdown to perform on the selected properties");
+    }
+
     switch($_REQUEST['action']) {
         case "delete" :
             require_once __DIR__ . '/delete_service_properties.php';
