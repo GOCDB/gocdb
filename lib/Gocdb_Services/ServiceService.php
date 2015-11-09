@@ -926,7 +926,7 @@ class ServiceService extends AbstractEntityService {
 	 * Deletes service properties
 	 * @param \Service $service
 	 * @param \User $user
-	 * @param \ServiceProperties $prop
+	 * @param array $propArr
 	 */
 	public function deleteServiceProperties(\Service $service, \User $user, array $propArr) {
 		//Check the portal is not in read only mode, throws exception if it is

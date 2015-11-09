@@ -7,10 +7,17 @@ $service = $params['service'];
     <p>
         The following properties have been successfully removed from service <?php xecho($service->getHostName());?>:<br/>
 
-    <table>
+
+    <table class="table table-striped table-condensed tablesorter">
+        <thead>
+        <tr>
+            <th>Name</th>
+            <th>Value</th>
+        </tr>
+        </thead>
         <tbody>
+
         <?php
-        //$num = 2;
         foreach($propertyArray as $prop) {
             ?>
 
@@ -19,7 +26,6 @@ $service = $params['service'];
                 <td style="width: 35%;"><?php xecho($prop->getKeyValue()); ?></td>
             </tr>
             <?php
-            //if($num == 1) { $num = 2; } else { $num = 1; }
         }
         ?>
         </tbody>

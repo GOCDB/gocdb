@@ -3,7 +3,9 @@
  *======================================================
  * File: delete_service_properties.php
  * Author: Tom Byrne, George Ryall, John Casson, David Meredith, James McCarthy
- * Description: Answers a site delete request
+ * Description: accepts an array of service property id's and then either
+ * deletes them or prompts the user for confirmation
+ *
  *
  * License information
  *
@@ -69,7 +71,6 @@ function submit(array $propertyArray, \Service $service, \User $user = null) {
 
     $params['propArr'] = $propertyArray;
     $params['service'] = $service;
-    //throw new Exception(var_dump($params));
 
     //remove site property
     try {
