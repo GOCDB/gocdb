@@ -539,9 +539,17 @@ function Draw_Page($Page_Type) {
             rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/service/delete_service_properties.php';
             delete ();
+        case "Delete_Site_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/delete_site_properties.php';
+            delete ();
         case "Service_Properties_Controller" :
             rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/service/service_properties_controller.php';
+            control ();
+        case "Site_Properties_Controller" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/site_properties_controller.php';
             control ();
         case "Delete_Endpoint_Property" :
             rejectIfNotAuthenticated(); 
