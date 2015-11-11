@@ -1055,6 +1055,36 @@ class Site extends AbstractEntityService{
 	        throw $e;
 	    }
 	}
+
+    /**
+     * Deletes site properties
+     * @param \Site $site
+     * @param \User $user
+     * @param array $propArr
+     */
+    public function deleteSiteProperties(\Site $site, \User $user, array $propArr) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        // Validate the user has permission to delete a property
+        $this->validatePropertyActions($user, $site);
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($propArr as $prop) {
+                // Service is the owning side so remove elements from service.
+                $site->getSiteProperties()->removeElement($prop);
+                // Once relationship is removed delete the actual element
+                $this->em->remove($prop);
+            }
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
 	
     /**
      * Edit a site's properties. 

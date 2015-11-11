@@ -317,7 +317,7 @@ $siteProperties = $site->getSiteProperties();
 		    <th>Value</th>  
 		    <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
 		    <th>Edit</th>  
-		    <th>Remove</th>  
+		    <th>Select</th>
 		    <?php endif; ?>              
 		</tr>
 	    </thead>
@@ -330,7 +330,7 @@ $siteProperties = $site->getSiteProperties();
 		    <td style="width: 35%;"><?php xecho($sp->getKeyValue()); ?></td>
 			<?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>	                
 			    <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Site_Property&propertyid=<?php echo($sp->getId()); ?>&id=<?php echo($site->getId()); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/pencil.png"/></a></td>
-			    <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Site_Property&propertyid=<?php echo $sp->getId(); ?>&id=<?php echo $site->getId(); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/cross.png"/></a></td>
+				<td style="width: 10%;"><input type='checkbox' form="Modify_Site_Properties_Form" name='selectedPropIDs[]' value="<?php echo $sp->getId();?>" autocomplete="off"/></td>
 			<?php endif; ?>
 		</tr>
 		<?php } ?>
@@ -345,6 +345,17 @@ $siteProperties = $site->getSiteProperties();
     		Add Properties
     	    </span>
     	</a>
+		<form action="index.php?Page_Type=Site_Properties_Controller" method="post" id="Modify_Site_Properties_Form" style="vertical-align:middle; float: right; padding-top: 1.1em; padding-right: 1em; padding-bottom: 0.9em;">
+			<input class="input_input_text" type="hidden" name ="siteID" value="<?php echo $site->getId();?>" />
+			<select name="action" autocomplete="off">
+				<option value="" disabled selected>Select action...</option>
+				<option value="delete">Delete selected</option>
+				<option value="something">Do something else</option>
+			</select>
+
+
+			<input class="input_button" type="submit" value="Modify Selected Site Properties"/>
+		</form>
 	<?php endif; ?>
     </div>
 
