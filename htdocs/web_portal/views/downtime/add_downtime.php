@@ -211,17 +211,23 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
         // a site is specified in the URL bar) 
         updateSiteTimezoneVars(getURLParameter('site'));
 
-       $("#addDTForm :input").change(function(){
-           validate()
+       // Add the form change event handlers
+       $("#addDTForm").find(":input").change(function(){
+           validate();
        });
 
+       $("#timezoneSelectGroup").find(":input").change(function(){
+           updateStartEndTimesInUtc();
+       });
+
+       // The bootstrap datetimepickers don't fire the change event
+       // so a separate handler is needed.
        $('.date').on("change.dp", function(e) {
            updateStartEndTimesInUtc();
+           validate();
        });
 
-       $("#timezoneSelectGroup :input").change(function(){
-           updateStartEndTimesInUtc();
-       });
+
 
     });
 
