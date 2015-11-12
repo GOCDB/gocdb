@@ -25,6 +25,7 @@ require_once __DIR__ . '/../utils.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 
 function delete() {
+    //throw new Exception(var_dump($_REQUEST));
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     if (empty($_REQUEST['selectedPropIDs'])) {
@@ -34,17 +35,17 @@ function delete() {
         throw new Exception("A site id must be specified");
     }
     //get the service and properties, with the properties stored in an array
-    $site = \Factory::getSiteService()->getSite($_REQUEST['id']);
+    $site = \Factory::getSiteService()->getSite($_REQUEST['siteID']);
     foreach ($_REQUEST['selectedPropIDs'] as $i => $propID){
         $propertyArray[$i] = \Factory::getSiteService()->getProperty($propID);
 
     }
 
     if(isset($_REQUEST['UserConfirmed'])) {
-        submit($propertyArray, $service, $user);
+        submit($propertyArray, $site, $user);
     }
     else {
-        draw($propertyArray, $service, $user);
+        draw($propertyArray, $site, $user);
     }
     
 }
@@ -59,9 +60,9 @@ function draw(array $propertyArray, \Site $site, \User $user=null) {
     $serv->validatePropertyActions ( $user, $site );
           
     $params['propArr'] = $propertyArray;
-    $params['service'] = $site;
+    $params['site'] = $site;
 
-    show_view('/service/delete_site_properties.php', $params);
+    show_view('/site/delete_site_properties.php', $params);
 }
 
 function submit(array $propertyArray, \Site $site, \User $user = null) {
@@ -75,13 +76,13 @@ function submit(array $propertyArray, \Site $site, \User $user = null) {
     //remove site property
     try {
      	$serv = \Factory::getSiteService();
-       	$serv->deleteSiteProperties($service, $user, $propertyArray);
+       	$serv->deleteSiteProperties($site, $user, $propertyArray);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
     }   
     
     
-    show_view('/service/deleted_site_properties.php', $params);
+    show_view('/site/deleted_site_properties.php', $params);
 
 }

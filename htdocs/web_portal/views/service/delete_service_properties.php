@@ -4,7 +4,7 @@ $service = $params['service'];
 ?>
 
 <div class="rightPageContainer">
-	<h1 class="Success">Delete Service Property</h1><br/>
+	<h1 class="Success">Delete Service Properties</h1><br/>
     <p>
 	You are about to delete the following properties:<br/><br/>
     </p>
