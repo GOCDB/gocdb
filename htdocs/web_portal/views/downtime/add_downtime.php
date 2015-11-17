@@ -27,7 +27,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
 	<br>
 
 
-	<form role="form" name="Add_Downtime" id="addDTForm" action="index.php?Page_Type=Add_Downtime" method="post" onchange="validate()">
+	<form role="form" name="Add_Downtime" id="addDTForm" action="index.php?Page_Type=Add_Downtime" method="post">
 
 		<div class="form-group" id="severityGroup">
 			<label for="severity">Severity:</label> <select class="form-control"
@@ -58,7 +58,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
 
 
         
-        <div class="form-group" id="timezoneSelectGroup" onchange="updateStartEndTimesInUtc()">
+        <div class="form-group" id="timezoneSelectGroup">
             <!--If Site timezone is selected, the time will be converted and saved as UTC-->
             <label class="control-label">Enter Times In:</label>&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="utcRadioButton" value="utc" checked>UTC&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -71,7 +71,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
         
 		<label for="startDate">Starts on:</label>
         <mark><label id="startUtcLabel"></label></mark> 
-        <div class="form-group" id="startDateGroup" onchange="updateStartEndTimesInUtc()">
+        <div class="form-group" id="startDateGroup">
 			<!-- Date Picker -->
 			<div class="input-group date datePicker" id="startDate">
 				<input type='text' name="startDate" class="form-control"
@@ -94,7 +94,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
 		
 		<label for="endDate">Ends on:</label>
         <mark><label id="endUtcLabel"></label></mark>
-		<div class="form-group" id="endDateGroup" onchange="updateStartEndTimesInUtc()">
+		<div class="form-group" id="endDateGroup"">
 			<!-- Date Picker -->
 			<div class="input-group date datePicker" id="endDate">
 				<input type='text' class="form-control" data-format="DD/MM/YYYY"
@@ -209,7 +209,25 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
    
         // invoke ajax call to get selected sites timezoneId and offset (if 
         // a site is specified in the URL bar) 
-        updateSiteTimezoneVars(getURLParameter('site')); 
+        updateSiteTimezoneVars(getURLParameter('site'));
+
+       // Add the form change event handlers
+       $("#addDTForm").find(":input").change(function(){
+           validate();
+       });
+
+       $("#timezoneSelectGroup").find(":input").change(function(){
+           updateStartEndTimesInUtc();
+       });
+
+       // The bootstrap datetimepickers don't fire the change event
+       // so a separate handler is needed.
+       $('.date').on("change.dp", function(e) {
+           updateStartEndTimesInUtc();
+           validate();
+       });
+
+
 
     });
 
