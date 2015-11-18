@@ -25,31 +25,35 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 function delete() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    if (!isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid']) ){
-        throw new Exception("An id must be specified");
-    }
-         
-    //get the service and property
-    if (isset($_REQUEST['propertyid'])){
-    	$property = \Factory::getServiceService()->getEndpointProperty($_REQUEST['propertyid']);
-    	$endpoint = $property->getParentEndpoint(); 
-        $service = $endpoint->getService();
-    }else {
-        throw new \Exception("A propertyId must be specified");
+    if (empty($_REQUEST['selectedPropIDs'])) {
+        throw new Exception("At least one property must be selected for deletion");
     }
 
-    //throw new \Exception(var_dump($endpoint));
+    //get the service and properties
+    //$service = \Factory::getServiceService()->getService($_REQUEST['serviceID']);
+    foreach ($_REQUEST['selectedPropIDs'] as $i => $propID){
+        $propertyArray[$i] = \Factory::getServiceService()->getEndpointProperty($propID);
+    }
 
-    if($_POST) {
-        submit($property, $service, $endpoint, $user);
+    //it's useful to have the endpoint object to display to the user and so on.
+    //And since it's impossible to try and delete props from different endpoints
+    //we can just find the parent endpoint and service of the first prop
+    //throw new Exception(var_dump($propertyArray));
+    $endpoint = $propertyArray[0]->getParentEndpoint();
+    $service = $endpoint->getService();
+
+    //throw new Exception(var_dump($propertyArray[1]));
+
+    if(isset($_REQUEST['UserConfirmed'])) {
+        submit($propertyArray, $service, $endpoint, $user);
     }
     else {
-        draw($property, $service, $user);
+        draw($propertyArray, $service, $endpoint, $user);
     }
     
 }
 
-function draw(\EndpointProperty $property, \Service $service, \User $user = null) {
+function draw(array $propertyArray, \Service $service, \EndpointLocation $endpoint, \User $user = null) {
     if(is_null($user)) {
         throw new Exception("Unregistered users can't delete a service property.");
     }
@@ -58,30 +62,31 @@ function draw(\EndpointProperty $property, \Service $service, \User $user = null
     $serv = \Factory::getServiceService();    
     $serv->validateAddEditDeleteActions($user, $service);   
           
-    $params['prop'] = $property;
+    $params['propArr'] = $propertyArray;
     $params['service'] = $service;
+    $params['endpoint'] = $endpoint;
      
-    show_view('/service/delete_endpoint_property.php', $params);     
+    show_view('/service/delete_endpoint_properties.php', $params);
 }
 
-function submit(\EndpointProperty $property, \Service $service, \EndpointLocation $endpoint, \User $user = null) {
+function submit(array $propertyArray, \Service $service, \EndpointLocation $endpoint, \User $user = null) {
     if(is_null($user)) {
         throw new Exception("Unregistered users can't delete a service property.");
     }
     $serv = \Factory::getServiceService();
 
-    $params['prop'] = $property;
+    $params['propArr'] = $propertyArray;
     $params['service'] = $service;
     $params['endpoint'] = $endpoint; 
     
     //remove property
     try {
-       	$serv->deleteEndpointProperty($user, $property);
+       	$serv->deleteEndpointProperties($user, $propertyArray);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
     }   
     
-    show_view('/service/deleted_endpoint_property.php', $params);
+    show_view('/service/deleted_endpoint_properties.php', $params);
 
 }

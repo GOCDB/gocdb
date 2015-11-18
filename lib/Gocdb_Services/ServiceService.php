@@ -984,6 +984,44 @@ class ServiceService extends AbstractEntityService {
 	}
     }
 
+	/**
+	 * Deletes the given EndpointProperty from its parent Endpoint (if set).
+	 * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null)
+	 * then the function simply returns because the user permissions to delete
+	 * the EP can't be determined on a null Endpoint.
+	 * @param \User $user
+	 * @param array $propArr
+	 */
+	public function deleteEndpointProperties(\User $user, array $propArr) {
+		//Check the portal is not in read only mode, throws exception if it is
+		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+		//$firstProp = $propArr[1];
+		$endpoint = $propArr[0]->getParentEndpoint();
+		if ($endpoint == null) {
+			// property endpoint hasn't been set, so just return.
+			return;
+		}
+		$service = $endpoint->getService();
+		$this->validateAddEditDeleteActions($user, $service);
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			foreach ($propArr as $prop) {
+				// EndointLocation is the owning side so remove elements from endpoint.
+				$endpoint->getEndpointProperties()->removeElement($prop);
+				// Once relationship is removed delete the actual element
+				$this->em->remove($prop);
+			}
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $e;
+		}
+	}
+
     /**
      * Edits a service property
      * @param \Service $service
