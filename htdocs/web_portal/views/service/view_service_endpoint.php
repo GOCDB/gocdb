@@ -4,6 +4,9 @@ $se = $endpoint->getService();
 $properties = $endpoint->getEndpointProperties();
 $epId = $endpoint->getId();
 $seId = $se->getId();
+
+	//throw new Exception(var_dump($se));
+
 ?>
 
 <div class="rightPageContainer rounded">
@@ -101,8 +104,8 @@ $seId = $se->getId();
 		    <th>Name</th>
 		    <th>Value</th>  
 		    <?php if (!$params['portalIsReadOnly']): ?>
-    		    <th>Edit</th>  
-    		    <th>Remove</th>  
+    		    <th>Edit</th>
+				<th><input type="checkbox" id="selectAllProps"/> Select All</th>
 		    <?php endif; ?>              
 		</tr>
 	    </thead>
@@ -119,7 +122,9 @@ $seId = $se->getId();
 			    <!--<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId(); ?>&endpointid=<?php echo $epId; ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/pencil.png"/></a></td>-->
 			    <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId(); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/pencil.png"/></a></td>
 			    <!--<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Endpoint_Property&propertyid=<?php echo $prop->getId(); ?>&endpointid=<?php echo $epId; ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/cross.png"/></a></td>-->
-			    <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Endpoint_Property&propertyid=<?php echo $prop->getId(); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/cross.png"/></a></td>
+<!--			    <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Endpoint_Property&propertyid=--><?php //echo $prop->getId(); ?><!--"><img height="25px" src="--><?php //echo \GocContextPath::getPath() ?><!--img/cross.png"/></a></td>-->
+				<!--autocomplete off stops the checkboxes remembering checked state when reloading and revisiting pages-->
+				<td style="width: 10%;"><input type='checkbox' class="propCheckBox" form="Modify_Endpoint_Properties_Form" name='selectedPropIDs[]' value="<?php echo $prop->getId();?>" autocomplete="off"/></td>
 			<?php endif; ?>
     		</tr>
 		    <?php
@@ -137,6 +142,16 @@ $seId = $se->getId();
     		Add Property
     	    </span>
     	</a>
+		<form action="index.php?Page_Type=Endpoint_Properties_Controller" method="post" id="Modify_Endpoint_Properties_Form" style="vertical-align:middle; float: right; padding-top: 1.1em; padding-right: 1em; padding-bottom: 0.9em;">
+			<input class="input_input_text" type="hidden" name ="endpointID" value="<?php echo $endpoint->getId();?>" />
+			<select name="action" autocomplete="off">
+				<option value="" disabled selected>Select action...</option>
+				<option value="delete">Delete selected</option>
+			</select>
+
+
+			<input class="input_button" type="submit" value="Modify Selected Service Properties"/>
+		</form>
 	<?php endif; ?>
     </div>
 
@@ -158,6 +173,11 @@ $seId = $se->getId();
 		    }
 		}
 	    });
+
+		//register handler for the select/deselect all properties checkbox
+		$("#selectAllProps").change(function(){
+			$(".propCheckBox").prop('checked', $(this).prop("checked"));
+		});
 
 	}
 	);

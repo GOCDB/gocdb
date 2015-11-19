@@ -332,7 +332,7 @@ $configService = \Factory::getConfigService();
                 <th>Value</th>  
                 <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
                     <th>Edit</th>  
-                    <th>Select</th>
+                    <th><input type="checkbox" id="selectAllProps"/> Select All</th>
                 <?php endif; ?>              
             </tr>
 	    </thead>
@@ -348,7 +348,7 @@ $configService = \Factory::getConfigService();
 	                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>	                
                         <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
                         <!--autocomplete off stops the checkboxes remembering checked state when reloading and revisiting pages-->
-                        <td style="width: 10%;"><input type='checkbox' form="Modify_Service_Properties_Form" name='selectedPropIDs[]' value="<?php echo $sp->getId();?>" autocomplete="off"/></td>
+                        <td style="width: 10%;"><input type='checkbox' class="propCheckBox" form="Modify_Service_Properties_Form" name='selectedPropIDs[]' value="<?php echo $sp->getId();?>" autocomplete="off"/></td>
                     <?php endif; ?>
 	            </tr>
 	            <?php
@@ -451,7 +451,12 @@ $configService = \Factory::getConfigService();
                 sorter: false 
             } 
         } 
-    });  
+        });
+
+        //register handler for the select/deselect all properties checkbox
+        $("#selectAllProps").change(function(){
+            $(".propCheckBox").prop('checked', $(this).prop("checked"));
+        });
     
     } 
 );  

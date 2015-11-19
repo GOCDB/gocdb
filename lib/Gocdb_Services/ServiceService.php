@@ -936,6 +936,13 @@ class ServiceService extends AbstractEntityService {
 		$this->em->getConnection()->beginTransaction();
 		try {
 			foreach ($propArr as $prop) {
+
+				//check property is in service
+				if ($prop->getParentService() != $service){
+					$id = $prop->getId();
+					throw new \Exception("Property {$id} does not belong to the specified service");
+				}
+
 				// Service is the owning side so remove elements from service.
 				$service->getServiceProperties()->removeElement($prop);
 				// Once relationship is removed delete the actual element
@@ -995,19 +1002,23 @@ class ServiceService extends AbstractEntityService {
 	public function deleteEndpointProperties(\User $user, array $propArr) {
 		//Check the portal is not in read only mode, throws exception if it is
 		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-		//$firstProp = $propArr[1];
-		$endpoint = $propArr[0]->getParentEndpoint();
-		if ($endpoint == null) {
-			// property endpoint hasn't been set, so just return.
-			return;
-		}
-		$service = $endpoint->getService();
-		$this->validateAddEditDeleteActions($user, $service);
 
 		$this->em->getConnection()->beginTransaction();
 
 		try {
 			foreach ($propArr as $prop) {
+
+				//check endpoint property has an parent endpoint
+				$endpoint = $prop->getParentEndpoint();
+				if ($endpoint == null){
+					$id = $prop->getId();
+					throw new \Exception("Property {$id} does not have a parent endpoint");
+				}
+
+				//check user has permissions over the service associated with the endpoint
+				$service = $endpoint->getService();
+				$this->validateAddEditDeleteActions($user, $service);
+
 				// EndointLocation is the owning side so remove elements from endpoint.
 				$endpoint->getEndpointProperties()->removeElement($prop);
 				// Once relationship is removed delete the actual element

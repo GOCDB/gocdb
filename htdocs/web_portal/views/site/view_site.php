@@ -316,9 +316,9 @@ $siteProperties = $site->getSiteProperties();
 		    <th>Name</th>
 		    <th>Value</th>  
 		    <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
-		    <th>Edit</th>  
-		    <th>Select</th>
-		    <?php endif; ?>              
+		    <th>Edit</th>
+			<th><input type="checkbox" id="selectAllProps"/> Select All</th>
+			<?php endif; ?>
 		</tr>
 	    </thead>
 	    <tbody>
@@ -330,7 +330,7 @@ $siteProperties = $site->getSiteProperties();
 		    <td style="width: 35%;"><?php xecho($sp->getKeyValue()); ?></td>
 			<?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>	                
 			    <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Site_Property&propertyid=<?php echo($sp->getId()); ?>&id=<?php echo($site->getId()); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/pencil.png"/></a></td>
-				<td style="width: 10%;"><input type='checkbox' form="Modify_Site_Properties_Form" name='selectedPropIDs[]' value="<?php echo $sp->getId();?>" autocomplete="off"/></td>
+				<td style="width: 10%;"><input type='checkbox' class="propCheckBox" form="Modify_Site_Properties_Form" name='selectedPropIDs[]' value="<?php echo $sp->getId();?>" autocomplete="off"/></td>
 			<?php endif; ?>
 		</tr>
 		<?php } ?>
@@ -618,7 +618,13 @@ $siteProperties = $site->getSiteProperties();
                 sorter: false 
             } 
         } 
-    });  
+    });
+
+	//register handler for the select/deselect all properties checkbox
+	$("#selectAllProps").change(function(){
+		$(".propCheckBox").prop('checked', $(this).prop("checked"));
+	});
+
     } 
 );  
 </script>  

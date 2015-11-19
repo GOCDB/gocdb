@@ -1072,6 +1072,10 @@ class Site extends AbstractEntityService{
         $this->em->getConnection()->beginTransaction();
         try {
             foreach ($propArr as $prop) {
+                if ($prop->getParentSite() != $site){
+                    $id = $prop->getId();
+                    throw new \Exception("Property {$id} does not belong to the specified site");
+                }
                 // Service is the owning side so remove elements from service.
                 $site->getSiteProperties()->removeElement($prop);
                 // Once relationship is removed delete the actual element
