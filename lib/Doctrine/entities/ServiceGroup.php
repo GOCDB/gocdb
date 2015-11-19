@@ -1,15 +1,36 @@
 <?php
+/*
+ * Copyright (C) 2015 STFC
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
+ * A ServiceGroup aggregates existing {@see Service}s that may be hosted across 
+ * different sites into a loosely defined group. 
+ * <p>
+ * Having Roles over the ServiceGroup does NOT cascade any permissions over 
+ * those services. SGs are typically used to group a set of related services 
+ * for monitoring purposes. 
+ * 
+ * @author John Casson 
+ * @author David Meredith <david.meredith@stfc.ac.uk> 
+ * 
  * @Entity @Table(name="ServiceGroups")
  */
 class ServiceGroup extends OwnedEntity implements IScopedEntity {
-    
-    //commented out as this is a duplicate definition - also in owned entity class
-    /* @Id @Column(type="integer") @GeneratedValue */
-    //protected $id;
+   
+    // DM: The SG name should have a unique constraint, added to the todo list. 
+    // Right now there is nasty manual check run when adding a new service group. 
 
     /** @Column(type="string") */
     protected $name;
@@ -45,16 +66,16 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
     protected $services = null;
     
     /* DATETIME NOTE:
-	 * Doctrine checks whether a date's been updated by doing a byreference comparison.
-	 * If you just update an existing DateTime object, Doctrine won't persist it!
-	 * Create a new DateTime object and reference that for it to persist during an update.
-	 * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
-	 */
+     * Doctrine checks whether a date's been updated by doing a byreference comparison.
+     * If you just update an existing DateTime object, Doctrine won't persist it!
+     * Create a new DateTime object and reference that for it to persist during an update.
+     * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
+     */
     
-    /** @Column(type="datetime", nullable=false) **/
-	protected $creationDate;
+    /** @Column(type="datetime", nullable=false) */
+    protected $creationDate;
     
-	/**
+    /**
      * Bidirectional - A ServiceGroup (INVERSE ORM SIDE) can have many properties
      * @OneToMany(targetEntity="ServiceGroupProperty", mappedBy="parentServiceGroup", cascade={"remove"})
      */
@@ -79,6 +100,10 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
         return new ArrayCollection();
     }
 
+    /**
+     * The name of the service group. 
+     * @return string
+     */
     public function getName() {
         return $this->name;
     }
@@ -103,13 +128,13 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
     	return $this->services;
     }
 
-	public function getServiceGroupProperties(){
-		return $this->serviceGroupProperties;
+    public function getServiceGroupProperties(){
+	return $this->serviceGroupProperties;
     }
 	
-     /**
-     * provides a string containg a list of the names of scopes with which the 
-     * object been tagged.
+    /**
+     * A string containg a list of the names of scopes with which the 
+     * object has been tagged.
      * @return string  string containing ", " seperated list of the names 
      */ 
     public function getScopeNamesAsString() {
@@ -170,7 +195,7 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
      * This method also sets the ServiceGroupProperty's parentService.  
      * @param \ServiceGroupProperty $serviceGroupProperty
      */
-	public function addServiceGroupPropertyDoJoin($serviceGroupProperty) {
+    public function addServiceGroupPropertyDoJoin($serviceGroupProperty) {
         $this->serviceGroupProperties[] = $serviceGroupProperty;
         $serviceGroupProperty->_setParentServiceGroup($this);
     }

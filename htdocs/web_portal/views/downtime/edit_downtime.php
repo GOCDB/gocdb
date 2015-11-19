@@ -231,7 +231,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         // Run through the validate and set edit downtime submit button to enabled or not.  
         validate();
 
-       // Add the form change event handlers
+       // Add the jQuery form change event handlers
        $("#addDTForm").find(":input").change(function(){
            validate();
        });
@@ -241,7 +241,8 @@ foreach($downtime->getEndpointLocations() as $endpoints){
        });
 
        // The bootstrap datetimepickers don't fire the change event
-       // so a separate handler is needed.
+       // but they trigger a change.dp event instead so a separate 
+       // jQuery handler is needed.
        $('.date').on("change.dp", function(e) {
            updateStartEndTimesInUtc();
            validate();

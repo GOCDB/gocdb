@@ -1,22 +1,35 @@
 <?php
-// NGI.php
+/*
+ * Copyright (C) 2015 STFC
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 use Doctrine\Common\Collections\ArrayCollection;
 
 require_once 'Site.php';
 require_once 'IScopedEntity.php';
 
 /**
+ * An NGI represents the administrative domain for grouping child Sites. 
+ * It is directly comparable to the GLUE2 AdminDomain class from OGF. 
+ * <p>
+ * An NGI groups zero or more child {@see Site}s, and is linked to one or more 
+ * parent {@see Project}s. Users can request Roles over the NGI which grants 
+ * various permissions over the NGI and its child Sites.  
+ * 
+ * @author David Meredith <david.meredithh@stfc.ac.uk> 
+ * @author John Casson 
+ * 
  * @Entity @Table(name="NGIs")
  */
 class NGI extends OwnedEntity implements IScopedEntity {
-
-    //commented out as this is duplication - id is also defined in the Owned entity class
-    /* 
-     * @Id 
-     * @Column(type="integer") 
-     * @GeneratedValue 
-     */
-    //protected $id;
 
     /** @Column(type="string", unique=true) */
     protected $name;
@@ -61,14 +74,14 @@ class NGI extends OwnedEntity implements IScopedEntity {
     protected $scopes = null;
     
     /* DATETIME NOTE:
-	 * Doctrine checks whether a date's been updated by doing a byreference comparison.
-	 * If you just update an existing DateTime object, Doctrine won't persist it!
-	 * Create a new DateTime object and reference that for it to persist during an update.
-	 * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
-	 */
+     * Doctrine checks whether a date's been updated by doing a byreference comparison.
+     * If you just update an existing DateTime object, Doctrine won't persist it!
+     * Create a new DateTime object and reference that for it to persist during an update.
+     * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
+     */
     
     /** @Column(type="datetime", nullable=false) **/
-	protected $creationDate;
+    protected $creationDate;
 
 
     public function __construct() {
@@ -86,14 +99,26 @@ class NGI extends OwnedEntity implements IScopedEntity {
     //    return $this->id;
     //}
 
+    /**
+     * A unique non-null name for this NGI.
+     * @return String The unique name of this NGI
+     */
     public function getName() {
         return $this->name;
     }
 
+    /**
+     * A nullable string that concatenates contact email addresses for the NGI. 
+     * @return String email  
+     */
     public function getEmail() {
         return $this->email;
     }
 
+    /**
+     * Nullable string that concatenates ROD email addresses (Regional Operator on Duty). 
+     * @return string  
+     */
     public function getRodEmail() {
         return $this->rodEmail;
     }
@@ -137,8 +162,8 @@ class NGI extends OwnedEntity implements IScopedEntity {
         return $this->creationDate;
     }
         
-     /**
-     * provides a string containg a list of the names of scopes with which the 
+    /**
+     * A string containg a list of concatenated scope names with which the 
      * object been tagged.
      * @return string  string containing ", " seperated list of the names 
      */ 

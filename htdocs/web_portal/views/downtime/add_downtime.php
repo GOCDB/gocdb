@@ -211,7 +211,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
         // a site is specified in the URL bar) 
         updateSiteTimezoneVars(getURLParameter('site'));
 
-       // Add the form change event handlers
+       // Add the jQuery form change event handlers
        $("#addDTForm").find(":input").change(function(){
            validate();
        });
@@ -221,7 +221,8 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
        });
 
        // The bootstrap datetimepickers don't fire the change event
-       // so a separate handler is needed.
+       // but they trigger a change.dp event instead so a separate 
+       // jQuery handler is needed.
        $('.date').on("change.dp", function(e) {
            updateStartEndTimesInUtc();
            validate();
