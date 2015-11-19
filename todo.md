@@ -40,7 +40,13 @@
   and better rendering of extension properties in a sortable table with selectAll, 
   deselectAll, and actions such as delete, duplicate. 
 * Add a new view to display the list of service types and their descriptions. 
-* 
+* When filtering sites/services/SGs via the GUI, add a new GUI component to
+  select zero or more custom properties and allow a value to be optionally 
+  specified for the property with a select for AND or NOT. Perhaps a multi-select 
+  pull-down so when a custom prop is selected, a new row is entered into a table
+  which allows the user to specify a value for the prop and provides the AND/NOT option. 
+  The user should be able to edit/delete the added rows. The values entered into 
+  the table can then be used to build an extensions expression as is used in the PI.  
 * More comprehensive change logging: https://rt.egi.eu/rt/Ticket/Display.html?id=9431 
 * Automatic freshness of data check: https://rt.egi.eu/rt/Ticket/Display.html?id=8240  
 
