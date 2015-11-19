@@ -1,4 +1,5 @@
-<?php 
+<!--DEPRECATED: This view has been deprecated by delete_service_properties.php-->
+<?php
 $property = $params['prop'];
 $service = $params['service'];
 ?>
