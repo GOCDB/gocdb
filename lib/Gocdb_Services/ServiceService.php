@@ -897,30 +897,31 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
+	 * DEPRECATED
      * Deletes a service property
      * @param \Service $service
      * @param \User $user
      * @param \SiteProperty $prop
      */
-    public function deleteServiceProperty(\Service $service, \User $user, \ServiceProperty $prop) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$this->validateAddEditDeleteActions($user, $service);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    // Service is the owning side so remove elements from service.
-	    $service->getServiceProperties()->removeElement($prop);
-	    // Once relationship is removed delete the actual element
-	    $this->em->remove($prop);
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-    }
+//    public function deleteServiceProperty(\Service $service, \User $user, \ServiceProperty $prop) {
+//	//Check the portal is not in read only mode, throws exception if it is
+//	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+//	$this->validateAddEditDeleteActions($user, $service);
+//
+//	$this->em->getConnection()->beginTransaction();
+//	try {
+//	    // Service is the owning side so remove elements from service.
+//	    $service->getServiceProperties()->removeElement($prop);
+//	    // Once relationship is removed delete the actual element
+//	    $this->em->remove($prop);
+//	    $this->em->flush();
+//	    $this->em->getConnection()->commit();
+//	} catch (\Exception $e) {
+//	    $this->em->getConnection()->rollback();
+//	    $this->em->close();
+//	    throw $e;
+//	}
+//    }
 
 	/**
 	 * Deletes service properties
@@ -958,6 +959,7 @@ class ServiceService extends AbstractEntityService {
 	}
 
     /**
+	 * DEPRECATED
      * Deletes the given EndpointProperty from its parent Endpoint (if set).
      * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null) 
      * then the function simply returns because the user permissions to delete 
@@ -965,36 +967,36 @@ class ServiceService extends AbstractEntityService {
      * @param \User $user
      * @param \EndpointProperty $prop
      */
-    public function deleteEndpointProperty(\User $user, \EndpointProperty $prop) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$endpoint = $prop->getParentEndpoint();
-	if ($endpoint == null) {
-	    // property endpoint hasn't been set, so just return. 
-	    return;
-	}
-	$service = $endpoint->getService();
-	$this->validateAddEditDeleteActions($user, $service);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    // EndointLocation is the owning side so remove elements from endpoint.
-	    $endpoint->getEndpointProperties()->removeElement($prop);
-	    // Once relationship is removed delete the actual element
-	    $this->em->remove($prop);
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-    }
+//    public function deleteEndpointProperty(\User $user, \EndpointProperty $prop) {
+//	//Check the portal is not in read only mode, throws exception if it is
+//	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+//	$endpoint = $prop->getParentEndpoint();
+//	if ($endpoint == null) {
+//	    // property endpoint hasn't been set, so just return.
+//	    return;
+//	}
+//	$service = $endpoint->getService();
+//	$this->validateAddEditDeleteActions($user, $service);
+//
+//	$this->em->getConnection()->beginTransaction();
+//	try {
+//	    // EndointLocation is the owning side so remove elements from endpoint.
+//	    $endpoint->getEndpointProperties()->removeElement($prop);
+//	    // Once relationship is removed delete the actual element
+//	    $this->em->remove($prop);
+//	    $this->em->flush();
+//	    $this->em->getConnection()->commit();
+//	} catch (\Exception $e) {
+//	    $this->em->getConnection()->rollback();
+//	    $this->em->close();
+//	    throw $e;
+//	}
+//    }
 
 	/**
-	 * Deletes the given EndpointProperty from its parent Endpoint (if set).
-	 * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null)
-	 * then the function simply returns because the user permissions to delete
+	 * Deletes the given EndpointProperties in the array from their parent Endpoints (if set).
+	 * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null
+	 * then the function throws an exception because the user permissions to delete
 	 * the EP can't be determined on a null Endpoint.
 	 * @param \User $user
 	 * @param array $propArr
