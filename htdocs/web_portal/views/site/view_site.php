@@ -350,7 +350,6 @@ $siteProperties = $site->getSiteProperties();
 			<select name="action" autocomplete="off">
 				<option value="" disabled selected>Select action...</option>
 				<option value="delete">Delete selected</option>
-				<option value="something">Do something else</option>
 			</select>
 
 

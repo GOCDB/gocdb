@@ -30,9 +30,6 @@ function control() {
             require_once __DIR__ . '/delete_site_properties.php';
             delete();
             break;
-        case "something" :
-            throw new Exception("ooooooh.");
-
     }
 
 }
