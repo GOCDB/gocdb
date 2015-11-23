@@ -54,3 +54,14 @@ dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
+
+*.log
+.idea/workspace.xml
+.idea/modules.xml
+.idea/deployment.xml
+.idea/gocdb.iml
+.idea/encodings.xml
+.idea/misc.xml
+.idea/vcs.xml
+config/web_portal/menu.xml
+.idea/.name
