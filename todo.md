@@ -12,7 +12,13 @@
 * Record user last login date in new datetime field (note, if user authenticates
   with x509 there is no HTTP session started which may mean this field would need to be 
   updated in DB on each/every page request - is this desirable?, or we could 
-  start a new GOC session if required). 
+  start a new GOC session if required). Needed to delete inactive accounts. 
+* Add UserProperty entity and join with User, for persisting various un-determined 
+  attributes such as AAA/SAML attributes provided by IdP on account registration. 
+* Introduce reserved keyNames for custom properties so that a user can't add/edit  
+  a custom prop with a reserved name, e.g. 'GOC_RESERVED_PROPERTY1'. 
+  These could be defined in the local_info.xml config file for each 
+  type of custom prop (EndpointProperty, SiteProperty, ServiceProperty etc).   
 * Add new ngi_cert_status entity to define NGI certification status rules and 
   link to each NGI. For details see https://rt.egi.eu/rt/Ticket/Display.html?id=9084 
 * Check that after a downtime has started, the downtime edit/delete buttons are removed 
@@ -22,12 +28,12 @@
 * Add instructions for deployment to MySQL/Mariadb 
 * Update the datetime picker to latest version 
 * Allow downtime to affect services across multiple sites (currently DT 
-  can only affect services from a single site) 
+  can only affect services from a single site). Check this is actually needed.  
 * Improve the downtime service selection GUI by showing some extra tags/info 
-  to better distinguish different services (show id or first ~10 chars of description). 
+  to better distinguish the services (show id or first ~10 chars of description). 
   The add/edit downtime page also needs improving to refine the logic.    
 * Introduce Monolog package for logging 
-* Add new gocdb website on github
+* Add new gocdb website on github: https://gocdb.github.io/ 
 * There is a general over-reliance on using setters to inject dependencies, 
   especially objects in the 'lib/Doctrine/entities' and 'lib/Gocdb_Services'. 
   Instead, constructor injection should be used for required dependencies so that
@@ -68,9 +74,10 @@ two existing accounts (will need to merge existing roles, remove duplicate roles
 authenticate for all the authentication-mechanisms during the same HTTP session 
 (e.g. authenticate with x509, then re-authenticate via IdP). Only after successfully 
 authenticating with the multiple login mechanisms, should they be able to link those accounts together. 
+  * Or use Unity / Perun to do the account linking for us? 
 
-* Add filtering of resources by 'project' 
-* Add 'project' URL param to PI get_project, get_site, get_service, get_downtime
+* Add filtering of resources by 'project' ?  
+* Add 'project' URL param to PI get_project, get_site, get_service, get_downtime ? 
 * Introduce READ action for roles? - currently, once a user is authenticated, all info can 
   be viewed in GOCDB. We may need fine-grained READ and content-rendering permissions 
   based on user roles. 

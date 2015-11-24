@@ -68,6 +68,17 @@ class User {
     /** @Column(type="datetime", nullable=false)  */
     protected $creationDate;
 
+    /*
+     * TODO: 
+     * This entity will need to own a property bag (akin to custom props) 
+     * to store zero-to-many additional attributes (e.g. SAML/AAA attributes). 
+     * For example, when a user authenticates via an IdP, a bunch of different attributes 
+     * can be sent in a SAML auth response which will need persisting in the 
+     * DB so that other users can see this data before they are approve any roles 
+     * for this user.    
+     */
+    
+
     public function __construct() {
 	// Set cretion date
 	$this->creationDate = new \DateTime("now");
