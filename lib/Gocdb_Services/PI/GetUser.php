@@ -246,15 +246,15 @@ class GetUser implements IPIQuery {
 	    }
 	}
 
-	/* $dom_sxe = dom_import_simplexml ( $xml );
-	  $dom = new \DOMDocument ( '1.0' );
-	  $dom->encoding = 'UTF-8';
-	  $dom_sxe = $dom->importNode ( $dom_sxe, true );
-	  $dom_sxe = $dom->appendChild ( $dom_sxe );
-	  $dom->formatOutput = true;
-	  $xmlString = $dom->saveXML ();
-	  return $xmlString; */
-	return $xml->asXML();
+	$dom_sxe = dom_import_simplexml ( $xml );
+	$dom = new \DOMDocument ( '1.0' );
+	$dom->encoding = 'UTF-8';
+	$dom_sxe = $dom->importNode ( $dom_sxe, true );
+	$dom_sxe = $dom->appendChild ( $dom_sxe );
+	$dom->formatOutput = true;
+	$xmlString = $dom->saveXML ();
+	return $xmlString; 
+	//return $xml->asXML(); // loses formatting 
     }
 
     /** Returns the user data in Glue2 XML string.

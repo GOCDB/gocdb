@@ -699,15 +699,18 @@ class Site extends AbstractEntityService{
         if(is_null($user)){
             throw new Exception("Unregistered users may not add new sites");
         }
+
+	// get the parent NGI entity
+	$parentNgi = $this->em->createQuery("SELECT n FROM NGI n WHERE n.id = :id")
+		->setParameter('id', $values['NGI'])
+		->getSingleResult(); // throws NonUniqueResultException throws, NoResultException
         
         if(!$user->isAdmin()){
-            $ngiService = new \org\gocdb\services\NGI();
-            $ngiService->setEntityManager($this->em);
-            $usersNGIs = $ngiService->getNGIsBySupportedAction(\Action::NGI_ADD_SITE, $user);
-            if (count($usersNGIs) == 0) {
-                throw new \Exception("You do not have permission to add a new site."
-                        . " To add a new site you require a managing role over an NGI");
-            }
+	    // Check that user has permission to add site to the chosen NGI 
+	    if(!$this->roleActionAuthorisationService->authoriseAction(\Action::NGI_ADD_SITE, $parentNgi, $user)->getGrantAction()){
+		throw new \Exception("You do not have permission to add a new site to the selected NGI"
+			. " To add a new site you require a managing role over an NGI"); 
+	    }
         }
          
 
@@ -717,6 +720,12 @@ class Site extends AbstractEntityService{
         
         //check there are the required number of scopes specified
         $this->checkNumberOfScopes($values['Scope_ids']);
+
+	// TODO
+        // check for selected 'reserved' scopes. Iterate the selected scopes, 
+	// determine if any are reserved, if true check user has required roles, 
+	// throw if user don't have required role. 
+	
         
     	$this->uniqueCheck($values['Site']['SHORT_NAME']);
 
@@ -735,53 +744,49 @@ class Site extends AbstractEntityService{
     	    $this->em->flush();
     	    //$this->em->getConnection()->commit();
     	    //$this->em->getConnection()->beginTransaction();
-	    	$site = new \Site();
-	    	$site->setPrimaryKey($pk->getId() . "G0");
-	    	$site->setOfficialName($values['Site']['OFFICIAL_NAME']);
-	    	$site->setShortName($values['Site']['SHORT_NAME']);
-	    	$site->setDescription($values['Site']['DESCRIPTION']);
-	    	$site->setHomeUrl($values['Site']['HOME_URL']);
-	    	$site->setEmail($values['Site']['EMAIL']);
-	    	$site->setTelephone($values['Site']['CONTACTTEL']);
-	    	$site->setGiisUrl($values['Site']['GIIS_URL']);
-	    	$site->setLatitude($values['Site']['LATITUDE']);
-	    	$site->setLongitude($values['Site']['LONGITUDE']);
-	    	$site->setCsirtEmail($values['Site']['CSIRTEMAIL']);
-	    	$site->setIpRange($values['Site']['IP_RANGE']);	    	
-	    	$site->setIpV6Range($values['Site']['IP_V6_RANGE']);
-	    	$site->setDomain($values['Site']['DOMAIN']);
-	    	$site->setLocation($values['Site']['LOCATION']);
-	    	$site->setCsirtTel($values['Site']['CSIRTTEL']);
-	    	$site->setEmergencyTel($values['Site']['EMERGENCYTEL']);
-	    	$site->setEmergencyEmail($values['Site']['EMERGENCYEMAIL']);
-	    	$site->setHelpdeskEmail($values['Site']['HELPDESKEMAIL']);
+	    $site = new \Site();
+	    $site->setPrimaryKey($pk->getId() . "G0");
+	    $site->setOfficialName($values['Site']['OFFICIAL_NAME']);
+	    $site->setShortName($values['Site']['SHORT_NAME']);
+	    $site->setDescription($values['Site']['DESCRIPTION']);
+	    $site->setHomeUrl($values['Site']['HOME_URL']);
+	    $site->setEmail($values['Site']['EMAIL']);
+	    $site->setTelephone($values['Site']['CONTACTTEL']);
+	    $site->setGiisUrl($values['Site']['GIIS_URL']);
+	    $site->setLatitude($values['Site']['LATITUDE']);
+	    $site->setLongitude($values['Site']['LONGITUDE']);
+	    $site->setCsirtEmail($values['Site']['CSIRTEMAIL']);
+	    $site->setIpRange($values['Site']['IP_RANGE']);	    	
+	    $site->setIpV6Range($values['Site']['IP_V6_RANGE']);
+	    $site->setDomain($values['Site']['DOMAIN']);
+	    $site->setLocation($values['Site']['LOCATION']);
+	    $site->setCsirtTel($values['Site']['CSIRTTEL']);
+	    $site->setEmergencyTel($values['Site']['EMERGENCYTEL']);
+	    $site->setEmergencyEmail($values['Site']['EMERGENCYEMAIL']);
+	    $site->setHelpdeskEmail($values['Site']['HELPDESKEMAIL']);
             $site->setTimezoneId($values['Site']['TIMEZONE']);
 	    	
-	    	// get the parent NGI entity
-	    	$dql = "SELECT n FROM NGI n WHERE n.id = :id";
-	    	$parentNgi = $this->em->createQuery($dql)
-		    	->setParameter('id', $values['NGI'])
-		    	->getSingleResult();
-	    	$site->setNgiDoJoin($parentNgi);
+            // join the site to the parent NGI 
+	    $site->setNgiDoJoin($parentNgi);
 
-	    	// get the target infrastructure
-	    	$dql = "SELECT i FROM Infrastructure i WHERE i.id = :id";
-	    	$inf = $this->em->createQuery($dql)
-		    	->setParameter('id', $values['ProductionStatus'])
-		    	->getSingleResult();
-	    	$site->setInfrastructure($inf);
+	    // get the target infrastructure
+	    $dql = "SELECT i FROM Infrastructure i WHERE i.id = :id";
+	    $inf = $this->em->createQuery($dql)
+		    ->setParameter('id', $values['ProductionStatus'])
+		    ->getSingleResult();
+	    $site->setInfrastructure($inf);
 
-	    	// get the cert status
+	    // get the cert status
             if(!isset($values['Certification_Status']) || 
                     $values['Certification_Status'] == null || $values['Certification_Status'] == ''){
                 throw new \LogicException(
                         "Missing seed data - No certification status values in the DB (required data)"); 
             }
-	    	$dql = "SELECT c FROM CertificationStatus c WHERE c.id = :id";
-	    	$certStatus = $this->em->createQuery($dql)
-	    		->setParameter('id', $values['Certification_Status'])
-	    		->getSingleResult();
-	    	$site->setCertificationStatus($certStatus);
+	    $dql = "SELECT c FROM CertificationStatus c WHERE c.id = :id";
+	    $certStatus = $this->em->createQuery($dql)
+		    ->setParameter('id', $values['Certification_Status'])
+		    ->getSingleResult();
+	    $site->setCertificationStatus($certStatus);
             $now = new \DateTime('now',  new \DateTimeZone('UTC')); 
             $site->setCertificationStatusChangeDate($now); 
 
@@ -796,7 +801,7 @@ class Site extends AbstractEntityService{
             $site->addCertificationStatusLog($certLog); 
             
 
-	    	// Set the scopes
+	    // Set the scopes
             foreach($values['Scope_ids'] as $scopeId){
                 $dql = "SELECT s FROM Scope s WHERE s.id = :id";
                 $scope = $this->em->createQuery($dql)
@@ -805,12 +810,12 @@ class Site extends AbstractEntityService{
                 $site->addScope($scope);
             }
             
-	    	// get the country
-	    	$dql = "SELECT c FROM Country c WHERE c.id = :id";
-	    	$country = $this->em->createQuery($dql)
-	    		->setParameter('id', $values['Country'])
-	    		->getSingleResult();
-	    	$site->setCountry($country);
+	    // get the country
+	    $dql = "SELECT c FROM Country c WHERE c.id = :id";
+	    $country = $this->em->createQuery($dql)
+		    ->setParameter('id', $values['Country'])
+		    ->getSingleResult();
+	    $site->setCountry($country);
 
 	    	// deprecated - don't use the lookup DB entity  
 //	    	$dql = "SELECT t FROM Timezone t WHERE t.id = :id";
@@ -819,15 +824,15 @@ class Site extends AbstractEntityService{
 //	    		->getSingleResult();
 //	    	$site->setTimezone($timezone);
 	    	
-	    	$this->em->persist($site);
-	    	$this->em->flush();
-	    	$this->em->getConnection()->commit();
+	    $this->em->persist($site);
+	    $this->em->flush();
+	    $this->em->getConnection()->commit();
     	} catch(\Exception $ex){
-    		$this->em->getConnection()->rollback();
-    		//$this->em->remove($pk);
-    		//$this->em->flush();
-    		$this->em->close();
-    		throw $ex;
+	    $this->em->getConnection()->rollback();
+	    //$this->em->remove($pk);
+	    //$this->em->flush();
+	    $this->em->close();
+	    throw $ex;
     	}
     	return $site;
 
@@ -1011,9 +1016,11 @@ class Site extends AbstractEntityService{
 	    $this->em->getConnection ()->beginTransaction ();
 	
 	    try {
+		/* @var $siteProperty \SiteProperty */
 	        $siteProperty = new \SiteProperty ();
 	        $siteProperty->setKeyName ( $keyname );
 	        $siteProperty->setKeyValue ( $keyvalue );
+                /* @var $site \Site */
 	        $site = $this->em->find ( "Site", $siteID );
 	        $site->addSitePropertyDoJoin ( $siteProperty );
 	        $this->em->persist ( $siteProperty );

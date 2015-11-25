@@ -39,7 +39,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 	<br>
 
 
-	<form role="form" name="Add_Downtime" id="addDTForm" action="index.php?Page_Type=Edit_Downtime" method="post" onchange="validate()">
+	<form role="form" name="Add_Downtime" id="addDTForm" action="index.php?Page_Type=Edit_Downtime" method="post">
 		<div class="form-group" id="severityGroup">
 			<label for="severity">Severity:</label> <select class="form-control"
 				name="SEVERITY" id="severity" size="2">
@@ -57,7 +57,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 		<div class="form-group" id="descriptionGroup">
 			<label class="control-label" for="description">Description:</label>
 			<div class="controls">
-				<input type="text" class="form-control" name="DESCRIPTION" id="description" onkeyup="validate()" value="<?php xecho($downtime->getDescription());?>">
+				<input type="text" class="form-control" name="DESCRIPTION" id="description"  value="<?php xecho($downtime->getDescription());?>">
 			</div>
 			<span id="descriptionError" class="label label-danger hidden"></span> 
 		</div>
@@ -73,7 +73,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         </div>
 
 
-        <div class="form-group" id="timezoneSelectGroup" onchange="updateStartEndTimesInUtc()">
+        <div class="form-group" id="timezoneSelectGroup">
             <label class="control-label">Enter Times In:</label>&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="utcRadioButton" value="utc" checked>UTC&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="radio" name="DEFINE_TZ_BY_UTC_OR_SITE" id="siteRadioButton" value="site">Site Timezone 
@@ -84,7 +84,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         
 		<label for="startDate">Starts on:</label>
 		<mark><label id="startUtcLabel"></label></mark> 
-		<div class="form-group" id="startDateGroup" onchange="updateStartEndTimesInUtc()">
+		<div class="form-group" id="startDateGroup">
 			<!-- Date Picker -->
 			<div class="input-group date datePicker" id="startDate">
 				<input type='text' name="startDate" class="form-control"
@@ -104,7 +104,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 		
 		<label for="endDate">Ends on:</label>
 		<mark><label id="endUtcLabel"></label></mark>
-		<div class="form-group" id="endDateGroup" onchange="updateStartEndTimesInUtc()">
+		<div class="form-group" id="endDateGroup">
 			<!-- Date Picker -->
 			<div class="input-group date datePicker" id="endDate">
 				<input type='text' class="form-control" data-format="DD/MM/YYYY"
@@ -230,6 +230,23 @@ foreach($downtime->getEndpointLocations() as $endpoints){
   
         // Run through the validate and set edit downtime submit button to enabled or not.  
         validate();
+
+       // Add the jQuery form change event handlers
+       $("#addDTForm").find(":input").change(function(){
+           validate();
+       });
+
+       $("#timezoneSelectGroup").find(":input").change(function(){
+           updateStartEndTimesInUtc();
+       });
+
+       // The bootstrap datetimepickers don't fire the change event
+       // but they trigger a change.dp event instead so a separate 
+       // jQuery handler is needed.
+       $('.date').on("change.dp", function(e) {
+           updateStartEndTimesInUtc();
+           validate();
+       });
 
         // Store the start/end times before the user starts to modify (are 
         // used when validating the new duration which can only be shorter) 
