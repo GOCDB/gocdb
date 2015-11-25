@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2012 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,42 +13,38 @@
  */
 
 /**
- * A standalone entity that logs a role action e.g approval, deletion, denial. 
+ * A standalone entity that logs a role related actions such as Role approval, 
+ * deletion and denial. 
  * <p>
  * The entity is standalone and has no relationships. This is to allow
  * RoleActionRecords to have a lifespan that is independent of the {@link \Role} 
  * and {@link \OwnedEntity} affected by the role action. 
- * Therefore, while roles and owned entities may be deleted, the action log is 
+ * Therefore, while roles and owned entities may be deleted, the action record is 
  * unaffected and serves as a permanent change log.  
  * Once created, object is immutable. 
  *
- * @author David Meredith 
+ * @author David Meredith <david.meredith@stfc.ac.uk>  
  * @Entity @Table(name="RoleActionRecords")
  */
 class RoleActionRecord {
-    
-    /** @Id @Column(type="integer") @GeneratedValue **/
-	protected $id;
 
-    /** @Column(type="datetime", nullable=false) **/
-    protected $actionDate; 
+    /** @Id @Column(type="integer") @GeneratedValue  */
+    protected $id;
 
-    /**
-     * Optional supplementary info for this record? 
-     * @Column(type="string")
-     * @var string 
-     */
-    //protected $description; 
+    /** @Column(type="datetime", nullable=false)  */
+    protected $actionDate;
+
 
     //========================================================================
     // Who created/updated this record  
     //========================================================================
-    /** 
+    /**
      * Id of the {@link \User} who created the record.  
      * @Column(type="integer", nullable=false) 
      * @var int 
      */
-    protected $updatedByUserId; 
+    protected $updatedByUserId;
+
     /**
      * A human readable string to help identify the {@link \User} who last 
      * updated this record, e.g. a principle such as a DN, or the concat of 
@@ -63,25 +58,27 @@ class RoleActionRecord {
     //========================================================================
     // Which Role does this record affect  
     //========================================================================
-    /** 
+    /**
      * Id of the updated {@link \Role}. 
      * @Column(type="integer", nullable=false) 
      * @var int
      */
-    protected $roleId; 
+    protected $roleId;
+
     /**
      * The Role status before update (e.g. STATUS_PENDING)
      * @Column(type="string", nullable=false) 
      * @var string 
      */
-    protected $rolePreStatus; 
+    protected $rolePreStatus;
+
     /**
      * The Role status after update (e.g. STATUS_GRANTED, STATUS_DELETED)
      * @Column(type="string", nullable=false) 
      * @var string 
      */
-    protected $roleNewStatus; 
-
+    protected $roleNewStatus;
+    
     //========================================================================
     // What was the RoleType   
     //========================================================================
@@ -90,39 +87,42 @@ class RoleActionRecord {
      * @Column(type="integer", nullable=false) 
      * @var int 
      */
-    protected $roleTypeId; 
+    protected $roleTypeId;
+
     /**
      * The RoleType name (e.g. 'Site Administrator')
      * @Column(type="string", nullable=false) 
      * @var string 
      */
-    protected $roleTypeName; 
-
+    protected $roleTypeName;
+    
     //========================================================================
     // What was the Roles target OwnedEntity
     //========================================================================
-    /** 
+    /**
      * Id of the Role's affected {@link \OwnedEntity}.  
      * @Column(type="integer", nullable=false) 
      * @var int 
      */
-    protected $roleTargetOwnedEntityId; 
+    protected $roleTargetOwnedEntityId;
+
     /**
      * The type of {@link \OwnedEntity}, i.e. NGI, Site, Service, ServiceGroup
      * @Column(type="string", nullable=false)
      * @var string 
      */
-    protected $roleTargetOwnedEntityType; 
-
+    protected $roleTargetOwnedEntityType;
+    
     //========================================================================
     // Who was the Role's target user 
     //========================================================================
-    /** 
+    /**
      * Id of the {@link \User}.  
      * @Column(type="integer", nullable=false) 
      * @var int 
      */
-    protected $roleUserId; 
+    protected $roleUserId;
+
     /**
      * A human readable string to help identify the {@link \User} who created 
      * this record, e.g. a principle such as a DN, or the concat of 
@@ -131,7 +131,7 @@ class RoleActionRecord {
      * @Column(type="string", nullable=false)
      * @var string 
      */
-    protected $roleUserPrinciple; 
+    protected $roleUserPrinciple;
 
     /**
      * Create a new instance. 
@@ -155,23 +155,24 @@ class RoleActionRecord {
      *               who owns the Role (e.g. concat of 'firstName secondName' or principle string).  
      *               Note, this value should not be used as a natural foreign 
      *               key and is for display purposes only.
-     */ 
-    function __construct($updatedByUserId, $updatedByUserPrinciple, 
-            $roleId, $rolePreStatus, $roleNewStatus, $roleTypeId, $roleTypeName, 
-            $roleTargetOwnedEntityId, $roleTargetOwnedEntityType, $roleUserId, $roleUserPrinciple) {
-        $this->actionDate =  new \DateTime("now");
-        
-        $this->updatedByUserId = $updatedByUserId;
-        $this->updatedByUserPrinciple = $updatedByUserPrinciple;
-        $this->roleId = $roleId;
-        $this->rolePreStatus = $rolePreStatus;
-        $this->roleNewStatus = $roleNewStatus;
-        $this->roleTypeId = $roleTypeId;
-        $this->roleTypeName = $roleTypeName;
-        $this->roleTargetOwnedEntityId = $roleTargetOwnedEntityId;
-        $this->roleTargetOwnedEntityType = $roleTargetOwnedEntityType;
-        $this->roleUserId = $roleUserId; 
-        $this->roleUserPrinciple = $roleUserPrinciple;
+     */
+    function __construct($updatedByUserId, $updatedByUserPrinciple, $roleId, 
+	    $rolePreStatus, $roleNewStatus, $roleTypeId, $roleTypeName, 
+	    $roleTargetOwnedEntityId, $roleTargetOwnedEntityType, $roleUserId, $roleUserPrinciple) {
+	
+	$this->actionDate =  new \DateTime(null, new \DateTimeZone('UTC')); 
+
+	$this->updatedByUserId = $updatedByUserId;
+	$this->updatedByUserPrinciple = $updatedByUserPrinciple;
+	$this->roleId = $roleId;
+	$this->rolePreStatus = $rolePreStatus;
+	$this->roleNewStatus = $roleNewStatus;
+	$this->roleTypeId = $roleTypeId;
+	$this->roleTypeName = $roleTypeName;
+	$this->roleTargetOwnedEntityId = $roleTargetOwnedEntityId;
+	$this->roleTargetOwnedEntityType = $roleTargetOwnedEntityType;
+	$this->roleUserId = $roleUserId;
+	$this->roleUserPrinciple = $roleUserPrinciple;
     }
 
     /**
@@ -183,67 +184,129 @@ class RoleActionRecord {
      * @return \self
      */
     public static function construct(\User $callingUser, \Role $role, $newStatus) {
-        $rar = new self(
-                $callingUser->getId(), /*$callingUser->getCertificateDn(),*/ $callingUser->getFullName(), 
-                $role->getId(), $role->getStatus(), $newStatus, 
-                $role->getRoleType()->getId(), $role->getRoleType()->getName(), 
-                $role->getOwnedEntity()->getId(), $role->getOwnedEntity()->getType(), 
-                $role->getUser()->getId(), $role->getUser()->getFullName());
-        return $rar;
+	$rar = new self(
+		$callingUser->getId(), 
+		/* $callingUser->getCertificateDn(), */ 
+		$callingUser->getFullName(), 
+		$role->getId(), 
+		$role->getStatus(), 
+		$newStatus, 
+		$role->getRoleType()->getId(), 
+		$role->getRoleType()->getName(), 
+		$role->getOwnedEntity()->getId(), 
+		$role->getOwnedEntity()->getType(), 
+		$role->getUser()->getId(), 
+		$role->getUser()->getFullName());
+	return $rar;
     }
 
+    /**
+     * @return int The PK of this entity or null if not persisted
+     */
     function getId() {
-        return $this->id;
+	return $this->id;
     }
 
+    /**
+     * The DateTime that this RoleActionRecord was created. 
+     * @return \DateTime
+     */
     function getActionDate() {
-        return $this->actionDate;
+	return $this->actionDate;
     }
 
+    /**
+     * Get the ID/DN of the user who created/last updated this record. 
+     * @return string
+     */
     function getUpdatedByUserId() {
-        return $this->updatedByUserId;
+	return $this->updatedByUserId;
     }
 
+    /**
+     * A human readable string to help identify the \User who last updated this 
+     * record, e.g. a principle such as a DN or the concat of 'Firstname, Lastname'. 
+     * Note, this value should not be used as a natural foreign key and is for display purposes only.
+     * @return string
+     */
     function getUpdatedByUserPrinciple() {
-        return $this->updatedByUserPrinciple;
+	return $this->updatedByUserPrinciple;
     }
 
+    /**
+     * The PK/Id of the Role this record refers to. 
+     * @return int
+     */
     function getRoleId() {
-        return $this->roleId;
+	return $this->roleId;
     }
 
+    /**
+     * The Role status before update (e.g. STATUS_PENDING)
+     * @return string
+     */
     function getRolePreStatus() {
-        return $this->rolePreStatus;
+	return $this->rolePreStatus;
     }
 
+    /**
+     * The Role status after update (e.g. STATUS_GRANTED, STATUS_DELETED)
+     * @return string
+     */
     function getRoleNewStatus() {
-        return $this->roleNewStatus;
+	return $this->roleNewStatus;
     }
 
+    /**
+     * The RoleType Id. 
+     * @return int 
+     */
     function getRoleTypeId() {
-        return $this->roleTypeId;
+	return $this->roleTypeId;
     }
 
+    /**
+     * The RoleType name (e.g. 'Site Administrator')
+     * @return string
+     */
     function getRoleTypeName() {
-        return $this->roleTypeName;
+	return $this->roleTypeName;
     }
 
+    /**
+     * Id/PK of the Role's affected {@link \OwnedEntity}.
+     * @return int
+     */
     function getRoleTargetOwnedEntityId() {
-        return $this->roleTargetOwnedEntityId;
+	return $this->roleTargetOwnedEntityId;
     }
 
+    /**
+     * The type name of {@see \OwnedEntity} that is the target of the Role, e.g. 
+     * NGI, Site, Service, ServiceGroup 
+     * @return string 
+     */
     function getRoleTargetOwnedEntityType() {
-        return $this->roleTargetOwnedEntityType;
+	return $this->roleTargetOwnedEntityType;
     }
 
+    /**
+     * Id/PK of the {@see \User} who owns/owned the Role. 
+     * @return int
+     */
     function getRoleUserId() {
-        return $this->roleUserId;
+	return $this->roleUserId;
     }
 
+    /**
+     * A human readable string to help identify the {@link \User} who created 
+     * this record, e.g. a principle such as a DN, or the concat of 
+     * 'Firstname, Lastname'. Note, this value should not be used as a natural 
+     * foreign key and is for display purposes only.  
+     * @return string
+     */
     function getRoleUserPrinciple() {
-        return $this->roleUserPrinciple;
+	return $this->roleUserPrinciple;
     }
 
-
-    
 }
