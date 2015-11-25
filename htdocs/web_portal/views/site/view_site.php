@@ -3,7 +3,7 @@ $site = $params['site'];
 $downtimes = $params['Downtimes'];
 $parentNgiName = $site->getNgi()->getName();
 $portalIsReadOnly = $params['portalIsReadOnly'];
-$siteProperties = $site->getSiteProperties();
+$extensionProperties = $site->getSiteProperties();
 ?>
 <div class="rightPageContainer">
     <div style="float: left; text-align: center;">
@@ -307,56 +307,15 @@ $siteProperties = $site->getSiteProperties();
     </div>
 
     <!--  Site Properties -->
-    <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Site Extension Properties</span>        
-        <img src="<?php echo \GocContextPath::getPath() ?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table id="siteExtensionPropsTable"  class="table table-striped table-condensed tablesorter">
-	    <thead>
-		<tr>
-		    <th>Name</th>
-		    <th>Value</th>  
-		    <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
-		    <th>Edit</th>
-			<th><input type="checkbox" id="selectAllProps"/> Select All</th>
-			<?php endif; ?>
-		</tr>
-	    </thead>
-	    <tbody>
-		<?php
-		foreach ($siteProperties as $sp) {
-		    ?>
-		<tr>
-		    <td style="width: 35%;"><?php xecho($sp->getKeyName()); ?></td>
-		    <td style="width: 35%;"><?php xecho($sp->getKeyValue()); ?></td>
-			<?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>	                
-			    <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Site_Property&propertyid=<?php echo($sp->getId()); ?>&id=<?php echo($site->getId()); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/pencil.png"/></a></td>
-				<td style="width: 10%;"><input type='checkbox' class="propCheckBox" form="Modify_Site_Properties_Form" name='selectedPropIDs[]' value="<?php echo $sp->getId();?>" autocomplete="off"/></td>
-			<?php endif; ?>
-		</tr>
-		<?php } ?>
-	    </tbody>
-        </table>
-        <!--  only show this link if we're in read / write mode -->
-	<?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
-    	<!-- Add new data Link -->
-    	<a href="index.php?Page_Type=Add_Site_Property&site=<?php echo($site->getId()); ?>">
-    	    <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-    	    <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-    		Add Properties
-    	    </span>
-    	</a>
-		<form action="index.php?Page_Type=Site_Properties_Controller" method="post" id="Modify_Site_Properties_Form" style="vertical-align:middle; float: right; padding-top: 1.1em; padding-right: 1em; padding-bottom: 0.9em;">
-			<input class="input_input_text" type="hidden" name ="siteID" value="<?php echo $site->getId();?>" />
-			<select name="action" autocomplete="off">
-				<option value="" disabled selected>Select action...</option>
-				<option value="delete">Delete selected</option>
-			</select>
 
 
-			<input class="input_button" type="submit" value="Modify Selected Site Properties"/>
-		</form>
-	<?php endif; ?>
-    </div>
+	<?php
+	$parent = $site;
+	$propertiesController = "Site_Properties_Controller";
+	$addPropertyURL = "index.php?Page_Type=Add_Site_Property&site=";
+
+	require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
+	?>
 
     <!--  Services -->
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
@@ -625,5 +584,7 @@ $siteProperties = $site->getSiteProperties();
 	});
 
     } 
-);  
+);
+
+
 </script>  

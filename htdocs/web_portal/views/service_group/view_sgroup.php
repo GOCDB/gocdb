@@ -1,5 +1,5 @@
-<?php 
-$serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
+<?php
+$extensionProperties = $params['sGroup']->getServiceGroupProperties();
 ?>
 
 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
@@ -222,52 +222,15 @@ $serivceGroupProperties = $params['sGroup']->getServiceGroupProperties();
     </div>
 
     <!--  Service Group Properties -->
-    <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Service Group Extension Properties</span>        
-        <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table id="sgExtensionPropsTable" class="table table-striped table-condensed tablesorter">
-	    <thead>
-            <tr>
-                <th>Name</th>
-                <th>Value</th>  
-                <?php if(!$params['portalIsReadOnly']): ?>
-                <th>Edit</th>  
-                <th>Remove</th>  
-                <?php endif; ?>              
-            </tr>
-	    </thead>
-	    <tbody>
-            <?php
-            //$num = 2;
-            foreach($serivceGroupProperties as $sp) {
-	            ?>
 
-	            <tr>
-	                <td style="width: 35%;"><?php xecho($sp->getKeyName()); ?></td>
-	                <td style="width: 35%;"><?php xecho($sp->getKeyValue()); ?></td>
-	                <?php if(!$params['portalIsReadOnly']): ?>	                
-	               	<td style="width: 10%;"><a href="index.php?Page_Type=Edit_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-	                <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Service_Group_Property&propertyid=<?php echo $sp->getId();?>&id=<?php echo $params['sGroup']->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
-	                <?php endif; ?>
-	            </tr>
-	            <?php
-	            //if($num == 1) { $num = 2; } else { $num = 1; }
-            }
-            ?>
-	    </tbody>
-        </table>
-        <!--  only show this link if we're in read / write mode -->
-        <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
-            <!-- Add new data Link -->
-            <a href="index.php?Page_Type=Add_Service_Group_Property&serviceGroup=<?php echo $params['sGroup']->getId()?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                        Add Properties
-                </span>
-            </a>
-		<?php endif; ?>
-    </div>
-    
+    <?php
+    $parent = $params['sGroup'];
+    $propertiesController = "Service_Group_Properties_Controller";
+    $addPropertyURL = "index.php?Page_Type=Add_Service_Group_Property&serviceGroup=";
+
+    require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
+    ?>
+
     <!--  Downtimes -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>

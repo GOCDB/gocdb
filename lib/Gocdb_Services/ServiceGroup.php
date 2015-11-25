@@ -647,6 +647,46 @@ class ServiceGroup extends AbstractEntityService{
             throw $e;
         }
     }
+
+	public function deleteServiceGroupProperties(\ServiceGroup $serviceGroup,\User $user = null, array $propArr) {
+		// Check the portal is not in read only mode, throws exception if it is
+		$this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+		$this->validatePropertyActions($user, $serviceGroup);
+
+		$this->em->getConnection ()->beginTransaction ();
+//		try {
+//			// Site is the owning side so remove elements from site.
+//			$this->em->remove ( $prop );
+//			$this->em->flush ();
+//			$this->em->getConnection ()->commit ();
+//		} catch ( \Exception $e ) {
+//			$this->em->getConnection ()->rollback ();
+//			$this->em->close ();
+//			throw $e;
+//		}
+		try {
+			foreach ($propArr as $prop) {
+
+				//check property is in service
+				if ($prop->getParentServiceGroup() != $serviceGroup){
+					$id = $prop->getId();
+					throw new \Exception("Property {$id} does not belong to the specified service");
+				}
+
+				// Service is the owning side so remove elements from service.
+				$serviceGroup->getServiceGroupProperties ()->removeElement ( $prop );
+
+				// Once relationship is removed delete the actual element
+				$this->em->remove($prop);
+			}
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $e;
+		}
+	}
     
     /**
      * Edits a service group property

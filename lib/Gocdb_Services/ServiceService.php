@@ -937,7 +937,7 @@ class ServiceService extends AbstractEntityService {
 		$this->em->getConnection()->beginTransaction();
 		try {
 			foreach ($propArr as $prop) {
-
+				//throw new \Exception(var_dump($prop));
 				//check property is in service
 				if ($prop->getParentService() != $service){
 					$id = $prop->getId();
