@@ -31,11 +31,11 @@ function delete() {
     if (empty($_REQUEST['selectedPropIDs'])) {
         throw new Exception("At least one property must be selected for deletion");
     }
-    if (!isset($_REQUEST['siteID']) || !is_numeric($_REQUEST['siteID']) ){
+    if (!isset($_REQUEST['parentID']) || !is_numeric($_REQUEST['parentID']) ){
         throw new Exception("A site id must be specified");
     }
     //get the service and properties, with the properties stored in an array
-    $site = \Factory::getSiteService()->getSite($_REQUEST['siteID']);
+    $site = \Factory::getSiteService()->getSite($_REQUEST['parentID']);
     foreach ($_REQUEST['selectedPropIDs'] as $i => $propID){
         $propertyArray[$i] = \Factory::getSiteService()->getProperty($propID);
 
