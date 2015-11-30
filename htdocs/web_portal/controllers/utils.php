@@ -3,12 +3,13 @@
 /**
  * Parse properties file
  *
- * @param string $txtProperties String contianing the contens of a .propesdf
+ * @param string $txtProperties String containing the contents of a .properties
+ * @return array $results Associative array of key value pairs
  */
 function parse_properties($txtProperties) {
     $result = array();
 
-    $lines = split("\n", $txtProperties);
+    $lines = explode("\n", $txtProperties);
     $key = "";
 
     $isWaitingOtherLine = false;
@@ -17,8 +18,8 @@ function parse_properties($txtProperties) {
         if(empty($line) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
 
         if(!$isWaitingOtherLine) {
-            $key = substr($line,0,strpos($line,'='));
-            $value = substr($line,strpos($line,'=') + 1, strlen($line));
+            $key = trim(substr($line,0,strpos($line,'=')));
+            $value = trim(substr($line,strpos($line,'=') + 1, strlen($line)));
         }
         else {
             $value .= $line;

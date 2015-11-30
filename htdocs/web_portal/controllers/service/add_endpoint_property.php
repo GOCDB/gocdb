@@ -1,7 +1,7 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: add_service_property.php
+ * File: add_service_properties.php
  * Author: John Casson, George Ryall, David Meredith, James McCarthy
  * Description: Processes a new property request. If the user
  *              hasn't POSTed any data we draw the add property

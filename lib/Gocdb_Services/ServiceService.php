@@ -820,6 +820,48 @@ class ServiceService extends AbstractEntityService {
 	//TODO Function: This function is called but not yet filled out with an action
     }
 
+	/**
+	 * Adds a key value pair to a service
+	 * @param $values
+	 * @param \User $user
+	 * @throws Exception
+	 * @return \ServiceProperty
+	 */
+	public function addProperties(\Service $service, \User $user, array $propArr) {
+		//Check the portal is not in read only mode, throws exception if it is
+		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+		//throw new \Exception(var_dump($propArr));
+
+		$this->validateAddEditDeleteActions($user, $service);
+
+		$this->em->getConnection()->beginTransaction();
+		try {
+			foreach ($propArr as $key => $value) {
+
+				$this->checkNotReserved($user, $service, $key);
+
+				//validate key value
+				$this->validate($key, 'serviceproperty');
+
+				$serviceProperty = new \ServiceProperty();
+				$serviceProperty->setKeyName($key);
+				$serviceProperty->setKeyValue(value);
+				//$service = $this->em->find("Service", $serviceID);
+				$service->addServicePropertyDoJoin($serviceProperty);
+			}
+
+			$this->em->persist($serviceProperty);
+
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $e;
+		}
+//		return $serviceProperty;
+	}
+
     /**
      * Adds a key value pair to a service
      * @param $values

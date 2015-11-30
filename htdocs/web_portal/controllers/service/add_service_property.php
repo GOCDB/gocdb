@@ -1,7 +1,7 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: add_service_property.php
+ * File: add_service_properties.php
  * Author: John Casson, George Ryall, David Meredith, James McCarthy
  * Description: Processes a new property request. If the user
  *              hasn't POSTed any data we draw the add property
@@ -50,14 +50,23 @@ function add_service_property() {
  * @param \User $user current user
  * @return null */
 function submit(\User $user = null) {
-    $newValues = getSerPropDataFromWeb();
-    $serviceID = $newValues['SERVICEPROPERTIES']['SERVICE'];  
-    if($newValues['SERVICEPROPERTIES']['NAME'] == null || $newValues['SERVICEPROPERTIES']['VALUE'] == null){
-        show_view('error.php', "A property name and value must be provided.");
+//    $newValues = getSerPropDataFromWeb();
+//    $serviceID = $newValues['SERVICEPROPERTIES']['SERVICE'];
+//    if($newValues['SERVICEPROPERTIES']['NAME'] == null || $newValues['SERVICEPROPERTIES']['VALUE'] == null){
+//        show_view('error.php', "A property name and value must be provided.");
+//        die();
+//    }
+//    $serv = \Factory::getServiceService();
+//    $sp = $serv->addProperty($newValues, $user);
+
+    try {
+        $serv = \Factory::getServiceService();
+        $serv->addProperties($service, $user, $propertyArray);
+    } catch(\Exception $e) {
+        show_view('error.php', $e->getMessage());
         die();
     }
-    $serv = \Factory::getServiceService();
-    $sp = $serv->addProperty($newValues, $user);
+
     show_view("service/added_service_property.php", $serviceID);
 }
 
@@ -71,16 +80,16 @@ function draw(\User $user = null) {
 	if(is_null($user)) {
         throw new Exception("Unregistered users can't add a service property.");
     }
-    if (!isset($_REQUEST['se']) || !is_numeric($_REQUEST['se']) ){
+    if (!isset($_REQUEST['parentid']) || !is_numeric($_REQUEST['parentid']) ){
         throw new Exception("An id must be specified");
     }
     $serv = \Factory::getServiceService();
-    $service = $serv->getService($_REQUEST['se']); //get service by id
+    $service = $serv->getService($_REQUEST['parentid']); //get service by id
     //Check user has permissions to add service property
     $serv->validateAddEditDeleteActions($user, $service);
         
-    $params['serviceid'] = $_REQUEST['se'];
-	show_view("service/add_service_property.php", $params);
+    $params['serviceid'] = $_REQUEST['parentid'];
+	show_view("service/add_service_properties.php", $params);
 
 }
 

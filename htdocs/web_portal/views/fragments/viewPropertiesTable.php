@@ -39,7 +39,7 @@
     <!--  only show this link if we're in read / write mode -->
     <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
         <!-- Add new data Link -->
-        <a href="<?php echo $addPropertyURL?><?php echo $parent->getId()?>">
+        <a href="index.php?Page_Type=<?php echo $addPropertiesPage?>&parentid=<?php echo $parent->getId()?>">
             <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Properties
