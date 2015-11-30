@@ -60,7 +60,7 @@
             //and then asks for conformation, and submits the form.
             function confirmPropAction() {
                 //number of checked properties
-                var numPropsSelected = $('#extensionPropsTable').find('input[type=checkbox]:checked').length;
+                var numPropsSelected = $('#extensionPropsTable').find('input.propCheckBox:checked').length;
                 //name of action
                 var propAction = $("#propActionSelect").val();
                 if (propAction != null && numPropsSelected != 0){
