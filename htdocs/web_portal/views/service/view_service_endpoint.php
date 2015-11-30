@@ -97,8 +97,10 @@ $seId = $se->getId();
 	$parent = $params['endpoint'];
 	$propertiesController = "Endpoint_Properties_Controller";
 	$addPropertyURL = "index.php?Page_Type=Add_Endpoint_Property&endpointid=";
+    $editPropertyPage = "Edit_Endpoint_Property";
 
-	require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
+
+    require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
 	?>
 
     <script type="text/javascript">

@@ -318,6 +318,8 @@ $configService = \Factory::getConfigService();
     $parent = $params['se'];
     $propertiesController = "Service_Properties_Controller";
     $addPropertyURL = "index.php?Page_Type=Add_Service_Property&se=";
+    $editPropertyPage = "Edit_Service_Property";
+
 
     require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
     ?>
