@@ -43,18 +43,18 @@ function register() {
  * @return null
  */
 function draw() {
-	$serv = \Factory::getUserService();
-	$dn = Get_User_Principle();
+    $serv = \Factory::getUserService();
+    $dn = Get_User_Principle();
     if(empty($dn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	    die(); 
+	die(); 
     }
-	$user = $serv->getUserByPrinciple($dn);
+    $user = $serv->getUserByPrinciple($dn);
 
-	if(!is_null($user)) {
-	    show_view('error.php', "Only unregistered users can register");
-	    die();
-	}
+    if(!is_null($user)) {
+	show_view('error.php', "Only unregistered users can register");
+	die();
+    }
 
     /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
     $authToken = Get_User_AuthToken();
@@ -70,9 +70,15 @@ function submit() {
     $dn = Get_User_Principle();
     if(empty($dn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	    die(); 
+	die(); 
     }
     $values['CERTIFICATE_DN'] = $dn;
+
+    // todo: on registering, we also want to persist the authAttributes, this 
+    // will require new UserProperty records owned by the User.php entity. 
+    /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
+    //$authToken = Get_User_AuthToken();
+    //$params['authAttributes'] = $authToken->getDetails();
 
     $serv = \Factory::getUserService();
     try {

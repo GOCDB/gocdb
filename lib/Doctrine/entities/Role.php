@@ -1,27 +1,46 @@
 <?php
+/*
+ * Copyright (C) 2015 STFC
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 //use Doctrine\Common\Collections\ArrayCollection;
+
 /**
- * Role establishes that the User has the specified RoleType over the OwnedEntity.
- * The Role->status value indicates the status of the Role (status values are not defined here).
- * For example, a Role could double as a Role-Request if its status was e.g. 'STATUS_PENDING'
- * and become an official Role if updated to 'STATUS_GRANTED'.
+ * A Role establishes that the {@see User} has the specified {@see \RoleType} over the 
+ * {@see \OwnedEntity} with the specified status.  
+ * <p>
+ * A Role doubles as a Role-Request if its status is e.g. 'STATUS_PENDING'
+ * and becomes an official Role if it is updated to 'STATUS_GRANTED'. Ownership of a 
+ * Role usually grants certain permissions over the OwnedEntity object.  
  * <p>
  * A single Role has ManyToOne relationships with RoleType, User and OwnedEntity
  * (Role is on the many side).
  * <p>
- * A joined Role must be deleted before a related User, OwnedEntity or RoleType
+ * A joined Role must be deleted before a joined User, OwnedEntity or RoleType
  * can be deleted.
- *
- * NoDuplicateRoles: Don't allow creation of user + role type + ownedentity combinations that 
- * already exist  
+ * A user can't own duplcate roles, this is enforced with a 'NoDuplicateRoles' DB
+ * constraint which prevents persisting of user+role type+ownedentity combinations 
+ * that already exist.   
+ * 
+ * @author David Meredith <david.meredithh@stfc.ac.uk> 
+ * @author John Casson 
  * @Entity @Table(name="Roles", uniqueConstraints={@UniqueConstraint(name="NoDuplicateRoles", columns={"user_id", "roleType_id", "ownedEntity_id"})})
  *
  */
 class Role {
-	/** @Id @Column(type="integer") @GeneratedValue **/
-	protected $id;
 
-	/** @ManyToOne(targetEntity="RoleType") **/
+    /** @Id @Column(type="integer") @GeneratedValue **/
+    protected $id;
+
+    /** @ManyToOne(targetEntity="RoleType") **/
     protected $roleType;
 
     /** 
@@ -46,11 +65,8 @@ class Role {
      */
     protected $status;
 
-    ///** @Column(type="string", nullable=false) */
-    //protected $name;
-
     ///** @Column(type="integer") **/
-	//protected $lastUpdatedByUserId;
+    //protected $lastUpdatedByUserId;
 
     /*
      * A transient extension object used to decorate this instance with extra information. 
@@ -79,26 +95,44 @@ class Role {
         // @link http://www.doctrine-project.org/blog/doctrine-2-give-me-my-constructor-back.html Using constructors in Entities
     }
 
+    /**
+     * @return int The PK of this entity or null if not persisted. 
+     */
     public function getId() {
-		return $this->id;
-	}
+	return $this->id;
+    }
 
-	public function getRoleType() {
+    /**
+     * @return \RoleType The type of this role. 
+     */
+    public function getRoleType() {
         return $this->roleType;
     }
 
+    /**
+     * @return \User The owner of this role.
+     */
     public function getUser() {
         return $this->user;
     }
 
+    /**
+     * @return \OwnedEntity The object that this Role is over. 
+     */
     public function getOwnedEntity() {
     	return $this->ownedEntity;
     }
 
+    /**
+     * @param \RoleType $roleType
+     */
     public function setRoleType($roleType) {
         $this->roleType = $roleType;
     }
 
+    /**
+     * @param \User $user
+     */
     public function setUser($user) {
         $this->user = $user;
     }
@@ -117,6 +151,11 @@ class Role {
         return $this->status;
     }
 
+    /**
+     * Set the status of this Role, e.g. STATUS_GRANTED or STATUS_PENDING.
+     * @param String $status
+     * @throws RuntimeException
+     */
     public function setStatus($status){
         if(!is_string($status)){
             throw new RuntimeException('String expected for status value');

@@ -24,7 +24,7 @@
                 <td style="width: 35%;"><?php xecho($prop->getKeyName()); ?></td>
                 <td style="width: 35%;"><?php xecho($prop->getKeyValue()); ?></td>
                 <?php if(!$params['portalIsReadOnly']): ?>
-                    <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Service_Group_Property&propertyid=<?php echo $prop->getId();?>&id=<?php echo $parent->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
+                    <td style="width: 10%;"><a href="index.php?Page_Type=<?php echo $editPropertyPage;?>&propertyid=<?php echo $prop->getId();?>&id=<?php echo $parent->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
                     <!--	                <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Service_Group_Property&propertyid=--><?php //echo $sp->getId();?><!--&id=--><?php //echo $params['sGroup']->getId();?><!--"><img height="25px" src="--><?php //echo \GocContextPath::getPath()?><!--img/cross.png"/></a></td>-->
                     <td style="width: 10%;"><input type='checkbox' class="propCheckBox" form="Modify_Properties_Form" name='selectedPropIDs[]' value="<?php echo $prop->getId();?>" autocomplete="off"/></td>
 
