@@ -725,9 +725,9 @@ class Site extends AbstractEntityService{
         // check for selected 'reserved' scopes. Iterate the selected scopes, 
 	// determine if any are reserved, if true check user has required roles, 
 	// throw if user don't have required role. 
-	
-        
-    	$this->uniqueCheck($values['Site']['SHORT_NAME']);
+
+
+	$this->uniqueCheck($values['Site']['SHORT_NAME']);
 
     	// Populate the entity
     	try {
