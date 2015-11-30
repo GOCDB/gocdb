@@ -1036,32 +1036,70 @@ class Site extends AbstractEntityService{
 	}
 	
 	/**
+     * DEPRECATED
 	 * Deletes a site property
 	 *
 	 * @param \Site $site
 	 * @param \User $user
 	 * @param \SiteProperty $prop
 	 */
-	public function deleteSiteProperty(\Site $site,\User $user = null,\SiteProperty $prop) {
-	    // Check the portal is not in read only mode, throws exception if it is
-	    $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-	   	     
-	    // Validate the user has permission to delete a property	   
-	    $this->validatePropertyActions($user, $site);
-	   	    
-	    $this->em->getConnection ()->beginTransaction ();
-	    try {
-	        // Site is the owning side so remove elements from site.
-	        $site->getSiteProperties ()->removeElement ( $prop );
-	        $this->em->remove ( $prop );
-	        $this->em->flush ();
-	        $this->em->getConnection ()->commit ();
-	    } catch ( \Exception $e ) {
-	        $this->em->getConnection ()->rollback ();
-	        $this->em->close ();
-	        throw $e;
-	    }
-	}
+//	public function deleteSiteProperty(\Site $site,\User $user = null,\SiteProperty $prop) {
+//	    // Check the portal is not in read only mode, throws exception if it is
+//	    $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+//
+//	    // Validate the user has permission to delete a property
+//	    $this->validatePropertyActions($user, $site);
+//
+//	    $this->em->getConnection ()->beginTransaction ();
+//	    try {
+//	        // Site is the owning side so remove elements from site.
+//	        $site->getSiteProperties ()->removeElement ( $prop );
+//	        $this->em->remove ( $prop );
+//	        $this->em->flush ();
+//	        $this->em->getConnection ()->commit ();
+//	    } catch ( \Exception $e ) {
+//	        $this->em->getConnection ()->rollback ();
+//	        $this->em->close ();
+//	        throw $e;
+//	    }
+//	}
+
+    /**
+     * Deletes site properties, before deletion a check is done to confirm the property
+     * is from the parent site specified by the request, and an exception is thrown if this is
+     * not the case
+     * @param \Site $site
+     * @param \User $user
+     * @param array $propArr
+     */
+    public function deleteSiteProperties(\Site $site, \User $user, array $propArr) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        // Validate the user has permission to delete a property
+        $this->validatePropertyActions($user, $site);
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($propArr as $prop) {
+                //Check that the properties parent site the same as the one given
+                if ($prop->getParentSite() != $site){
+                    $id = $prop->getId();
+                    throw new \Exception("Property {$id} does not belong to the specified site");
+                }
+                // Service is the owning side so remove elements from service.
+                $site->getSiteProperties()->removeElement($prop);
+                // Once relationship is removed delete the actual element
+                $this->em->remove($prop);
+            }
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
 	
     /**
      * Edit a site's properties. 

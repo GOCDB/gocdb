@@ -1,8 +1,8 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: delete_site_property.php
- * Author: James McCarthy
+ * File: delete_service_group_property.php
+ * Author: Tom Byrne, James McCarthy, George Ryall, John Casson, David Meredith
  * Description: Answers a site delete request
  *
  * License information
@@ -25,56 +25,41 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 function delete() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-         
-    //get the site
-    if (isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid'])){
-        $property = \Factory::getServiceGroupService()->getProperty($_REQUEST['propertyid']);
-        $serviceGroup = \Factory::getServiceGroupService()->getServiceGroup($_REQUEST['id']);
-    }
-    else {
-        throw new \Exception("A service group must be specified");
+
+
+    if (empty($_REQUEST['selectedPropIDs'])) {
+        throw new Exception("At least one property must be selected for deletion");
     }
 
-    if($_POST) {
-        submit($property, $user, $serviceGroup);
+    if (!isset($_REQUEST['parentID']) || !is_numeric($_REQUEST['parentID']) ){
+        throw new Exception("A service group id must be specified");
     }
-    else {
-        draw($property, $serviceGroup, $user);
+
+    //get the service group and properties
+    $serviceGroup = \Factory::getServiceGroupService()->getServiceGroup($_REQUEST['parentID']);
+    foreach ($_REQUEST['selectedPropIDs'] as $i => $propID){
+        $propertyArray[$i] = \Factory::getServiceGroupService()->getProperty($propID);
     }
-    
+
+    submit($propertyArray, $serviceGroup, $user);
+
 }
 
-function draw(\ServiceGroupProperty $property, \ServiceGroup $serviceGroup, \User $user) {
-     if(is_null($user)) {
-        throw new Exception("Unregistered users can't edit a service property.");
-     }
-  
-     //Check user has permissions to add site property
-     $serv = \Factory::getServiceGroupService();
-     $serv->validatePropertyActions($user, $serviceGroup);
-     
-     $params['prop'] = $property;
-     $params['serviceGroup'] = $serviceGroup;
-     
-     show_view('/service_group/delete_service_group_property.php', $params);
-     
-}
+function submit(array $propertyArray, \ServiceGroup $serviceGroup, \User $user = null) {
 
-function submit(\ServiceGroupProperty $property, \User $user = null, \ServiceGroup $serviceGroup) {
-
-     $params['prop'] = $property;
+     $params['propArr'] = $propertyArray;
      $params['serviceGroup'] = $serviceGroup;
      
      //remove service group property
      try {
      	$serv = \Factory::getServiceGroupService();
-       	$serv->deleteServiceGroupProperty($serviceGroup, $user, $property);
+       	$serv->deleteServiceGroupProperties($serviceGroup, $user, $propertyArray);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
     }   
     
     
-    show_view('/service_group/deleted_service_group_property.php', $params);
+    show_view('/service_group/deleted_service_group_properties.php', $params);
 
 }
