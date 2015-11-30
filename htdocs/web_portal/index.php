@@ -530,17 +530,6 @@ function Draw_Page($Page_Type) {
             require_once __DIR__ . '/controllers/service/add_endpoint_property.php';
             add_endpoint_property ();
             break;
-//DEPRECATED
-//        case "Delete_Site_Property" :
-//            rejectIfNotAuthenticated();
-//            require_once __DIR__ . '/controllers/site/delete_site_property.php';
-//            delete ();
-//            break;
-//        case "Delete_Service_Property" :
-//            rejectIfNotAuthenticated();
-//            require_once __DIR__ . '/controllers/service/delete_service_property.php';
-//            delete ();
-//            break;
         case "Delete_Service_Properties" :
             rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/service/delete_service_properties.php';
@@ -565,12 +554,6 @@ function Draw_Page($Page_Type) {
             rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/service_group/service_group_properties_controller.php';
             control ();
-//DEPRECATED
-//        case "Delete_Endpoint_Property" :
-//            rejectIfNotAuthenticated();
-//            require_once __DIR__ . '/controllers/service/delete_endpoint_property.php';
-//            delete ();
-//            break;
         case "Delete_Endpoint_Properties" :
             rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/service/delete_endpoint_properties.php';
@@ -601,12 +584,6 @@ function Draw_Page($Page_Type) {
             require_once __DIR__ . '/controllers/service_group/edit_service_group_property.php';
             edit_property ();
             break;
-//DEPRECATED
-//        case "Delete_Service_Group_Property" :
-//            rejectIfNotAuthenticated();
-//            require_once __DIR__ . '/controllers/service_group/delete_service_group_property.php';
-//            delete ();
-//            break;
         case "Delete_Service_Group_Properties" :
             rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/service_group/delete_service_group_properties.php';

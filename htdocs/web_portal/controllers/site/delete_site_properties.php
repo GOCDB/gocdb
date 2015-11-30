@@ -25,7 +25,6 @@ require_once __DIR__ . '/../utils.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 
 function delete() {
-    //throw new Exception(var_dump($_REQUEST));
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     if (empty($_REQUEST['selectedPropIDs'])) {
@@ -41,28 +40,8 @@ function delete() {
 
     }
 
-    if(isset($_REQUEST['UserConfirmed'])) {
-        submit($propertyArray, $site, $user);
-    }
-    else {
-        draw($propertyArray, $site, $user);
-    }
-    
-}
+    submit($propertyArray, $site, $user);
 
-function draw(array $propertyArray, \Site $site, \User $user=null) {
-    if(is_null($user)) {
-        throw new Exception("Unregistered users can't delete a service property.");
-    }
-    
-    //Check user has permissions to add site property
-    $serv = \Factory::getSiteService();
-    $serv->validatePropertyActions ( $user, $site );
-          
-    $params['propArr'] = $propertyArray;
-    $params['site'] = $site;
-
-    show_view('/site/delete_site_properties.php', $params);
 }
 
 function submit(array $propertyArray, \Site $site, \User $user = null) {

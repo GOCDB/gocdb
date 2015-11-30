@@ -1,8 +1,8 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: delete_site_property.php
- * Author: George Ryall, John Casson, David Meredith, James McCarthy
+ * File: delete_endpoint_properties.php
+ * Author: Tom Byrne, George Ryall, John Casson, David Meredith, James McCarthy
  * Description: Answers a site delete request
  *
  * License information
@@ -42,31 +42,7 @@ function delete() {
     $endpoint = $propertyArray[0]->getParentEndpoint();
     $service = $endpoint->getService();
 
-    //throw new Exception(var_dump($propertyArray[1]));
-
-    if(isset($_REQUEST['UserConfirmed'])) {
-        submit($propertyArray, $service, $endpoint, $user);
-    }
-    else {
-        draw($propertyArray, $service, $endpoint, $user);
-    }
-    
-}
-
-function draw(array $propertyArray, \Service $service, \EndpointLocation $endpoint, \User $user = null) {
-    if(is_null($user)) {
-        throw new Exception("Unregistered users can't delete a service property.");
-    }
-    
-    //Check user has permissions to add site property
-    $serv = \Factory::getServiceService();    
-    $serv->validateAddEditDeleteActions($user, $service);   
-          
-    $params['propArr'] = $propertyArray;
-    $params['service'] = $service;
-    $params['endpoint'] = $endpoint;
-     
-    show_view('/service/delete_endpoint_properties.php', $params);
+    submit($propertyArray, $service, $endpoint, $user);
 }
 
 function submit(array $propertyArray, \Service $service, \EndpointLocation $endpoint, \User $user = null) {

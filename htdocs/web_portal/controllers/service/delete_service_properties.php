@@ -40,28 +40,7 @@ function delete() {
 
     }
 
-    if(isset($_REQUEST['UserConfirmed'])) {
-        submit($propertyArray, $service, $user);
-    }
-    else {
-        draw($propertyArray, $service, $user);
-    }
-    
-}
-
-function draw(array $propertyArray, \Service $service, \User $user=null) {
-    if(is_null($user)) {
-        throw new Exception("Unregistered users can't delete a service property.");
-    }
-    
-    //Check user has permissions to add site property
-    $serv = \Factory::getServiceService();    
-    $serv->validateAddEditDeleteActions($user, $service);   
-          
-    $params['propArr'] = $propertyArray;
-    $params['service'] = $service;
-
-    show_view('/service/delete_service_properties.php', $params);
+    submit($propertyArray, $service, $user);
 }
 
 function submit(array $propertyArray, \Service $service, \User $user = null) {

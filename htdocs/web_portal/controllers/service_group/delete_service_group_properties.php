@@ -1,8 +1,8 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: delete_site_property.php
- * Author: James McCarthy
+ * File: delete_service_group_property.php
+ * Author: Tom Byrne, James McCarthy, George Ryall, John Casson, David Meredith
  * Description: Answers a site delete request
  *
  * License information
@@ -41,29 +41,8 @@ function delete() {
         $propertyArray[$i] = \Factory::getServiceGroupService()->getProperty($propID);
     }
 
-    if(isset($_REQUEST['UserConfirmed'])) {
-        submit($propertyArray, $serviceGroup, $user);
-    }
-    else {
-        draw($propertyArray, $serviceGroup, $user);
-    }
-    
-}
+    submit($propertyArray, $serviceGroup, $user);
 
-function draw(array $propertyArray, \ServiceGroup $serviceGroup, \User $user) {
-     if(is_null($user)) {
-        throw new Exception("Unregistered users can't edit a service property.");
-     }
-  
-     //Check user has permissions to add site property
-     $serv = \Factory::getServiceGroupService();
-     $serv->validatePropertyActions($user, $serviceGroup);
-     
-     $params['PropArr'] = $propertyArray;
-     $params['serviceGroup'] = $serviceGroup;
-     
-     show_view('/service_group/delete_service_group_properties.php', $params);
-     
 }
 
 function submit(array $propertyArray, \ServiceGroup $serviceGroup, \User $user = null) {
