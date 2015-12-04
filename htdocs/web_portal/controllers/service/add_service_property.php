@@ -50,7 +50,7 @@ function add_service_property() {
  * @param \User $user current user
  * @return null */
 function submit(\User $user = null) {
-//    $newValues = getSerPropDataFromWeb();
+    $newValues = getSerPropDataFromWeb();
 //    $serviceID = $newValues['SERVICEPROPERTIES']['SERVICE'];
 //    if($newValues['SERVICEPROPERTIES']['NAME'] == null || $newValues['SERVICEPROPERTIES']['VALUE'] == null){
 //        show_view('error.php', "A property name and value must be provided.");

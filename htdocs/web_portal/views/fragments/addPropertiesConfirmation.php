@@ -27,13 +27,16 @@
         </tbody>
     </table>
 
-    <p>
-        Do you wish to continue?
-    </p>
 
     <form class="inputForm" method="post" action="index.php?Page_Type=<?php echo $addPropertiesPage;?>" name="addProperties" id="addPropertiesForm">
         <input class="input_input_hidden" type="hidden" name="UserConfirmed" value="true" />
         <input class="input_input_text" type="hidden" name ="PARENT" value="<?php echo $parent->getId();?>" />
+        <input type="checkbox" id="preventOverwriteCheckbox" name="PREVENTOVERWRITE"/>
+        Fail on duplicate property
+        <br/>
+        <br/>
+
+
         <input type="submit" value="Add properties" class="input_button">
     </form>
 

@@ -822,45 +822,64 @@ class ServiceService extends AbstractEntityService {
 
 	/**
 	 * Adds a key value pair to a service
-	 * @param $values
+	 * @param \Service $service
 	 * @param \User $user
+	 * @param array $propArr
+	 * @param bool $preventOverwrite
 	 * @throws Exception
 	 * @return \ServiceProperty
 	 */
-	public function addProperties(\Service $service, \User $user, array $propArr) {
-		//Check the portal is not in read only mode, throws exception if it is
-		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-		//throw new \Exception(var_dump($propArr));
+    public function addProperties(\Service $service, \User $user, array $propArr, $preventOverwrite = false) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        //throw new \Exception(var_dump($propArr));
 
-		$this->validateAddEditDeleteActions($user, $service);
+        $this->validateAddEditDeleteActions($user, $service);
 
-		$this->em->getConnection()->beginTransaction();
-		try {
-			foreach ($propArr as $key => $value) {
+		$existingProperties = $service->getServiceProperties();
 
-				$this->checkNotReserved($user, $service, $key);
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($propArr as $key => $value) {
 
-				//validate key value
-				$this->validate($key, 'serviceproperty');
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
-				$serviceProperty = new \ServiceProperty();
-				$serviceProperty->setKeyName($key);
-				$serviceProperty->setKeyValue(value);
-				//$service = $this->em->find("Service", $serviceID);
-				$service->addServicePropertyDoJoin($serviceProperty);
+				foreach ($existingProperties as $prop) {
+					if ($prop->getKeyName() == $key && $prop->getKeyValue() == $value) {
+						if ($preventOverwrite == false) {
+							continue 2;
+						} else {
+							throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+						}
+					}
+				}
+
+                $this->checkNotReserved($user, $service, $key);
+
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $this->validate($validateArray, 'serviceproperty');
+
+                $serviceProperty = new \ServiceProperty();
+                $serviceProperty->setKeyName($key);
+                $serviceProperty->setKeyValue($value);
+                //$service = $this->em->find("Service", $serviceID);
+                $service->addServicePropertyDoJoin($serviceProperty);
+				$this->em->persist($serviceProperty);
+
 			}
 
-			$this->em->persist($serviceProperty);
 
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			$this->em->close();
-			throw $e;
-		}
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
 //		return $serviceProperty;
-	}
+    }
 
     /**
      * Adds a key value pair to a service
@@ -871,7 +890,7 @@ class ServiceService extends AbstractEntityService {
      */
     public function addProperty($values, \User $user = null) {
 	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 	$this->validate($values['SERVICEPROPERTIES'], 'serviceproperty');
 
 	$keyname = $values['SERVICEPROPERTIES']['NAME'];

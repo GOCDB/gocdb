@@ -42,6 +42,8 @@ function add_service_properties() {
     
     if($_POST) {     	// If we receive a POST request it's for new properties
 
+        $preventOverwrite = false;
+
         //Get the parent service we want to add properties to.
         //I'm trying to use "parent" rather than "service" wherever possible to make this code more generic.
         $service = \Factory::getServiceService()->getService($_REQUEST['PARENT']);
@@ -50,6 +52,7 @@ function add_service_properties() {
         //submitting a .property text file/block, or submitting the parsed and confirmed properties.
 
         //Figure out where the request has come from and format the inputs accordingly.
+        //throw new \Exception(var_dump($_REQUEST));
 
         //if the request is for a multi property input, parse the file and generate the array of properties
         //this will go to confirm()
@@ -71,11 +74,18 @@ function add_service_properties() {
 
             //will go straight to submit()
             $_REQUEST['UserConfirmed'] = "true";
+            //since the user is only adding a single property, warn them if it already exists
+            $preventOverwrite = true;
 
         } else {
             //you really shouldn't end up here unless you are mangling your post requests
             throw new Exception("Properties could not be parsed");
         }
+
+        if(isset($_REQUEST['PREVENTOVERWRITE'])){
+            $preventOverwrite = true;
+        }
+        //throw new \Exception(var_dump($preventOverwrite));
 
         //quick sanity check, are we actually adding any properties?
         if(empty($propertyArray)){
@@ -86,7 +96,7 @@ function add_service_properties() {
 
         //Now we have our $propertyArray, either send it to the confirmation page or actually submit the props
         if(isset($_REQUEST['UserConfirmed'])) {
-            submit($service, $user, $propertyArray);
+            submit($service, $user, $propertyArray, $preventOverwrite);
         }
         else {
             confirm($propertyArray, $service, $user);
@@ -103,7 +113,7 @@ function add_service_properties() {
  * @param User|null $user
  * @throws Exception
  */
-function submit( \Service $service, \User $user = null, array $propArr) {
+function submit( \Service $service, \User $user = null, array $propArr, $preventOverwrite) {
 //    $newValues = getSerPropDataFromWeb();
 //    $serviceID = $newValues['SERVICEPROPERTIES']['SERVICE'];
 //    if($newValues['SERVICEPROPERTIES']['NAME'] == null || $newValues['SERVICEPROPERTIES']['VALUE'] == null){
@@ -111,8 +121,12 @@ function submit( \Service $service, \User $user = null, array $propArr) {
 //        die();
 //    }
     $serv = \Factory::getServiceService();
-    $sp = $serv->addProperties($service, $user, $propArr);
-    //show_view("service/add_service_property.php", $serviceID);
+    $sp = $serv->addProperties($service, $user, $propArr, $preventOverwrite);
+
+    $params['propArr'] = $propArr;
+    $params['service'] = $service;
+
+    show_view("service/added_service_properties.php", $params);
 }
 
 /**

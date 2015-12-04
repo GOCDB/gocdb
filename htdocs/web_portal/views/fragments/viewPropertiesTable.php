@@ -2,7 +2,14 @@
 <!--  Custom Properties -->
 <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
     <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Extension Properties</span>
-    <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+    <a id="exportPropLink">
+        <span class="header" style="float: right; padding-right: 1em; padding-top: 0.9em; padding-bottom: 0.5em; cursor: pointer;">
+            Export Properties
+        </span>
+    </a>
+    <textarea id="exportPropField" style="float: right; padding-right: 1em; padding-top: 0.5em; margin-top: 0.5em; padding-bottom: 0.5em; display: none;"><?php foreach($extensionProperties as $prop) {
+            echo($prop->getKeyName() . " = " . $prop->getKeyValue() . PHP_EOL);
+        }?></textarea>
     <table id="extensionPropsTable" class="table table-striped table-condensed tablesorter">
         <thead>
         <tr>
@@ -16,7 +23,6 @@
         </thead>
         <tbody>
         <?php
-        //$num = 2;
         foreach($extensionProperties as $prop) {
             ?>
 
@@ -25,13 +31,11 @@
                 <td style="width: 35%;"><?php xecho($prop->getKeyValue()); ?></td>
                 <?php if(!$params['portalIsReadOnly']): ?>
                     <td style="width: 10%;"><a href="index.php?Page_Type=<?php echo $editPropertyPage;?>&propertyid=<?php echo $prop->getId();?>&id=<?php echo $parent->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-                    <!--	                <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Service_Group_Property&propertyid=--><?php //echo $sp->getId();?><!--&id=--><?php //echo $params['sGroup']->getId();?><!--"><img height="25px" src="--><?php //echo \GocContextPath::getPath()?><!--img/cross.png"/></a></td>-->
                     <td style="width: 10%;"><input type='checkbox' class="propCheckBox" form="Modify_Properties_Form" name='selectedPropIDs[]' value="<?php echo $prop->getId();?>" autocomplete="off"/></td>
 
                 <?php endif; ?>
             </tr>
             <?php
-            //if($num == 1) { $num = 2; } else { $num = 1; }
         }
         ?>
         </tbody>
@@ -74,9 +78,15 @@
             }
 
             $(document).ready(function () {
+
+
                 //register handler for the select/deselect all properties checkbox
                 $("#selectAllProps").change(function(){
                     $(".propCheckBox").prop('checked', $(this).prop("checked"));
+                });
+                $("#exportPropLink").click(function(){
+                    $("#exportPropField").slideToggle('fast');
+                    $("#exportPropField").select();
                 });
             });
 

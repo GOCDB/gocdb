@@ -7,38 +7,48 @@
  * @return array $results Associative array of key value pairs
  */
 function parse_properties($txtProperties) {
-    $result = array();
 
-    $lines = explode("\n", $txtProperties);
-    $key = "";
+        $result = array();
 
-    $isWaitingOtherLine = false;
-    foreach($lines as $i=>$line) {
+        $lines = explode("\n", $txtProperties);
+        $key = "";
 
-        if(empty($line) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
+        $isWaitingOtherLine = false;
+        foreach($lines as $i=>$line) {
 
-        if(!$isWaitingOtherLine) {
-            $key = trim(substr($line,0,strpos($line,'=')));
-            $value = trim(substr($line,strpos($line,'=') + 1, strlen($line)));
+            if(empty($line) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
+
+            if(!$isWaitingOtherLine) {
+                $key = trim(substr($line,0,strpos($line,'=')));
+                $value = trim(substr($line,strpos($line,'=') + 1, strlen($line)));
+            }
+            else {
+                $value .= $line;
+            }
+
+            /* Check if ends with single '\' */
+            if(strpos($value,"\\") === strlen($value)-strlen("\\")) {
+                $value = substr($value, 0, strlen($value)-1)."\n";
+                $isWaitingOtherLine = true;
+            }
+            else {
+                $isWaitingOtherLine = false;
+            }
+
+            if ($key == NULL) {
+                $line = $i + 1;
+                throw new \Exception("Property name on line {$line} is null");
+            }
+            if ($value == NULL) {
+                $line = $i + 1;
+                throw new \Exception("Property value on line {$line} is null");
+            }
+
+            $result[$key] = $value;
+            unset($lines[$i]);
         }
-        else {
-            $value .= $line;
-        }
 
-        /* Check if ends with single '\' */
-        if(strpos($value,"\\") === strlen($value)-strlen("\\")) {
-            $value = substr($value, 0, strlen($value)-1)."\n";
-            $isWaitingOtherLine = true;
-        }
-        else {
-            $isWaitingOtherLine = false;
-        }
-
-        $result[$key] = $value;
-        unset($lines[$i]);
-    }
-
-    return $result;
+        return $result;
 }
 
 /**
