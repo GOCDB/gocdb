@@ -157,7 +157,8 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
 	$roleActionAuthService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService);
 	$roleActionAuthService->setEntityManager($this->em);
 	$siteService->setRoleActionAuthorisationService($roleActionAuthService);
-	$siteService->deleteSiteProperty($site, $adminUser, $prop1);
+	//$siteService->deleteSiteProperty($site, $adminUser, $prop1);
+	$siteService->deleteSiteProperties($site, $adminUser, array($prop1));
 
 	//Check that the site now only has 2 properties
 	$properties = $site->getSiteProperties();
@@ -251,7 +252,8 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
 	$roleActionAuthService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService);
 	$roleActionAuthService->setEntityManager($this->em);
 	$serviceService->setRoleActionAuthorisationService($roleActionAuthService);
-	$serviceService->deleteServiceProperty($service, $adminUser, $prop1);
+	//$serviceService->deleteServiceProperty($service, $adminUser, $prop1);
+	$serviceService->deleteServiceProperties($service, $adminUser, array($prop1));
 
 	//Check that the service now only has 2 properties
 	$properties = $service->getServiceProperties();
@@ -355,7 +357,8 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
 	$sgService->setEntityManager($this->em);
 	$sgService->setRoleActionAuthorisationService($authService);
 
-	$sgService->deleteServiceGroupProperty($sg, $adminUser, $prop1);
+	//$sgService->deleteServiceGroupProperty($sg, $adminUser, $prop1);
+	$sgService->deleteServiceGroupProperties($sg, $adminUser, array($prop1));
 
 	//Check that the sg now only has 2 properties
 	$properties = $sg->getServiceGroupProperties();
@@ -448,7 +451,8 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
 	$roleActionAuthService->setEntityManager($this->em);
 	$serviceService->setRoleActionAuthorisationService($roleActionAuthService);
 
-	$serviceService->deleteEndpointProperty($adminUser, $prop1);
+	//$serviceService->deleteEndpointProperty($adminUser, $prop1);
+	$serviceService->deleteEndpointProperties($adminUser, array($prop1));
 
 	//Check that the service now only has 2 properties
 	$properties = $endpoint->getEndpointProperties();
