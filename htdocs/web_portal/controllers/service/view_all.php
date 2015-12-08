@@ -20,158 +20,192 @@
  *
 /*====================================================== */
 function drawSEs(){
-    define("RECORDS_PER_PAGE", 30);
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
-
     $seServ = \Factory::getServiceService();
     $exServ = \Factory::getExtensionsService();
+    
     $startRecord = 1;
-    if(isset($_REQUEST['record'])) {
-       $startRecord = $_REQUEST['record'];
+    if(isset($_GET['record'])) {
+       $startRecord = $_GET['record'];
     }
-    // Validation, ensure start record >= 1
-    if($startRecord < 1) {
-        $startRecord = 1;
-    }
-
     $searchTerm = "";
-    if(!empty($_REQUEST['searchTerm'])) {
-       $searchTerm = $_REQUEST['searchTerm'];
+    if(!empty($_GET['searchTerm'])) {
+       $searchTerm = $_GET['searchTerm'];
     }
-    //strip leading and trailing whitespace off search term
-    $searchTerm = strip_tags(trim($searchTerm));
-    if(1 === preg_match("/[';\"]/", $searchTerm)){ throw new Exception("Invalid char in search term"); }
-
     $serviceType = "";
-    if(isset($_REQUEST['serviceType'])) {
-       $serviceType = $_REQUEST['serviceType'];
+    if(isset($_GET['serviceType'])) {
+       $serviceType = $_GET['serviceType'];
     }
     $production = "";
-    if(isset($_REQUEST['production'])) {
-    	$production = $_REQUEST['production'];
+    if(isset($_GET['production'])) {
+    	$production = $_GET['production'];
     }
-
     $monitored = "";
-    if(isset($_REQUEST['monitored'])) {
-    	$monitored = $_REQUEST['monitored'];
+    if(isset($_GET['monitored'])) {
+    	$monitored = $_GET['monitored'];
     }
-
-    $scope = "";
-    if(isset($_REQUEST['scope'])) {
-    	$scope = $_REQUEST['scope'];
-    }
-
+    // By default, use an empty value to return all scopes, i.e. in the PI '&scope=' 
+    // which is same as the PI. We don't want to fall back on default scope if scope param is not set.
+    $selectedScopes = array();
+    $scope = ''; 
+    if(!empty($_GET['mscope'])) { 
+	foreach($_GET['mscope'] as $key => $scopeVal){
+	    $scope .= $scopeVal.','; 
+	    $selectedScopes[] = $scopeVal; 
+	}
+    } 
     $ngi = "";
-    if(isset($_REQUEST['ngi'])) {
-    	$ngi = $_REQUEST['ngi'];
+    if(isset($_GET['ngi'])) {
+    	$ngi = $_GET['ngi'];
     }
-    
+    $servKeyNames = "";
+    if(isset($_GET['servKeyNames'])) {
+        $servKeyNames = $_GET['servKeyNames'];
+    }
+    $servKeyValue ="";    
+    if(isset($_GET['servKeyValue'])) {
+        $servKeyValue = $_GET['servKeyValue'];
+    }
     //must be done before the if certstatus in the block that sets $certStatus
     $showClosed = false;
-    if(isset($_REQUEST['showClosed'])) {
-        $showClosed = true;
+    if(isset($_GET['showClosed'])){
+	// showClosed is a bool, so presence of param indicates it was 
+	// checked, no need to parse the value. 
+        $showClosed = true; 
     }
-    
-    $servKeyNames = "";
-    if(isset($_REQUEST['servKeyNames'])) {
-        $servKeyNames = $_REQUEST['servKeyNames'];
-    }
-    
-    $servKeyValues ="";    
-    if(isset($_REQUEST['selectedServKeyValue'])) {
-        $servKeyValues = $_REQUEST['selectedServKeyValue'];
-    }
-    
     $certStatus = "";
-    if(!empty($_REQUEST['certificationStatus'])) { 
-       $certStatus = $_REQUEST['certificationStatus']; 
+    if(!empty($_GET['certStatus'])) { 
+       $certStatus = $_GET['certStatus']; 
        //set show closed as true if production status selected is 'closed' - otherwise
        // there will be no results
        if($certStatus == 'Closed'){
            $showClosed = true;
        }
     }
-    
-    $thisPage = 'index.php?Page_Type=Services';
+
+
+    // If parsed vars have a value, validate and set the filterParams 
+    $filterParams = array(); 
+    if($startRecord < 1) {
+        $startRecord = 1;
+    }
     if($serviceType != "") {
-        $thisPage .= '&serviceType=' . $serviceType;
+	$filterParams['serviceType'] = $serviceType; 
     }
-
-    if($searchTerm != "") {
-        $thisPage .= '&searchTerm=' . $searchTerm;
-    }
-
     if($production != "") {
-    	$thisPage .= '&production=' . $production;
+	$filterParams['production'] = $production; 
     }
-
     if($monitored != "") {
-    	$thisPage .= '&monitored=' . $monitored;
+	$filterParams['monitored'] = $monitored; 
     }
-
     if($scope != "") {
-    	$thisPage .= '&scope=' . $scope;
+	$filterParams['scope'] = $scope; 
     }
-
     if($ngi != "") {
-    	$thisPage .= '&ngi=' . $ngi;
+	$filterParams['ngi'] = $ngi; 
     }
-    
     if($certStatus != "") {
-    	$thisPage .= '&certStatus=' . $certStatus;
+	$filterParams['certStatus'] = $certStatus; 
     }
-    
-    if($showClosed != "") {
-    	$thisPage .= '&showClosed=' . $showClosed;
-    }
-    
     if($servKeyNames != "") {
-        $thisPage .= '&servKeyNames=' . $servKeyNames;
+	$filterParams['servKeyNames'] = $servKeyNames; 
     }
-    
-    if($servKeyValues != "") {
-        $thisPage .= '&servKeyValues=' . $servKeyValues;
+    if($servKeyValue != "") {
+	$filterParams['servKeyValue'] = $servKeyValue; 
+    }
+    if ($searchTerm != "") {
+	$searchTerm = strip_tags(trim($searchTerm));
+	if (1 === preg_match("/[';\"]/", $searchTerm)) {
+	    throw new Exception("Invalid char in search term");
+	}
+	if (substr($searchTerm, 0, 1) != '%') {
+	    $searchTerm = '%' . $searchTerm;
+	}
+	if (substr($searchTerm, -1) != '%') {
+	    $searchTerm = $searchTerm . '%';
+	}
+	$filterParams['searchTerm'] = $searchTerm; 
+    }
+    if($showClosed) {
+	$filterParams['showClosed'] = $showClosed; 
     }
 
 
-    if($searchTerm != null || $searchTerm != ""){
-        if(substr($searchTerm, 0,1) != '%'){
-            $searchTerm ='%'.$searchTerm;
-        }
-    
-        if(substr($searchTerm,-1) != '%'){
-            $searchTerm = $searchTerm.'%';
-        }
+    // Update the URL params for idempotent page refresh  
+    $thisPage = 'index.php?Page_Type=Services';
+    $thisPage .= '&serviceType=' . $serviceType;
+    $thisPage .= '&production=' . $production;
+    $thisPage .= '&monitored=' . $monitored;
+    //$thisPage .= '&scope=' . $scope;
+    foreach($selectedScopes as $sc){
+        $thisPage .= '&mscope[]='.$sc;	    
     }
-           
-    $numResults = $seServ->getSesCount($searchTerm, $serviceType, $production, $monitored, $scope, $ngi, $certStatus, $showClosed, $servKeyNames, $servKeyValues, null, null, false);
+    $thisPage .= '&ngi=' . $ngi;
+    $thisPage .= '&certStatus=' . $certStatus;
+    $thisPage .= '&servKeyNames=' . $servKeyNames;
+    $thisPage .= '&servKeyValue=' . $servKeyValue;
+    $thisPage .= '&searchTerm=' . $searchTerm;
+    if($showClosed){
+	// showClosed is a bool, so presence of param indicates it was 
+	// checked, no need to add a value. 
+        $thisPage .= '&showClosed=';
+    }
+    //print_r($filterParams); // debug 
+    
+    
+    // Count the total number of services that match the query 
+    $filterParams['count'] = TRUE;
+    $numResults = $seServ->getServicesFilterByParams($filterParams); 
+   
+    // create links to scroll forward/back through results 
+    $recordsPerPage = 50; 
+    $nextInt = 1; 
+    $prevInt = 1; 
+    $lastInt = 1; 
+
+    // < Set the "Previous" link
+    if ($startRecord > $recordsPerPage) {
+	$prevInt = ($startRecord - $recordsPerPage);
+    } else {
+	$prevInt = 1;
+    }
+    // Set the "Next" link >
+    if (($startRecord + $recordsPerPage) < $numResults) { //($numResults - $startRecord) > $recordsPerPage
+	$nextInt = $startRecord + $recordsPerPage;
+    } else {
+	if (($numResults - $startRecord) <= 1) {
+	    $nextInt = 1;
+	} else {
+	    $nextInt = ($numResults + 1) - $recordsPerPage;
+	}
+    }
+    if($nextInt < 1){
+	$nextInt = 1; 
+    }
+    // Set the "Last" link >> 
+    if (($numResults - $startRecord) <= 1) {
+	$lastInt = 1;
+    } else {
+	$lastInt = ($numResults + 1 - $recordsPerPage);
+    }
+    if($lastInt < 1){
+	$lastInt = 1; 
+    }
 
     $firstLink = $thisPage . "&record=1";
-    // Set the "previous" link
-    if($startRecord > RECORDS_PER_PAGE) {
-        // Not showing the first page of results so enable the previous link
-        $previousLink = $thisPage . "&record=" . ($startRecord - RECORDS_PER_PAGE);
-    } else {
-        // First page of results, disable previous button
-        $previousLink = $thisPage . "&record=" . 0;
-    }
+    $previousLink = $thisPage . "&record=" . $prevInt;
+    $nextLink = $thisPage . "&record=" . $nextInt;
+    $lastLink = $thisPage . "&record=" . $lastInt;
 
-    // Set the "Next" link
-    // not the last page of results, normal next link
-    if($numResults - $startRecord > RECORDS_PER_PAGE) {
-        $nextLink = $thisPage . "&record=" . ($startRecord + RECORDS_PER_PAGE);
-    } else {
-        // last page of results, disable next link
-        $nextLink = $thisPage . '&record=' . ($numResults - RECORDS_PER_PAGE + 1);
-    }
 
-    $lastLink = $thisPage . "&record=" . ($numResults + 1 - RECORDS_PER_PAGE);
 
-    // $startRecord + RECORDS_PER_PAGE "-1" because record 1 in the web portal == record 0 from DB
-    $ses = $seServ->getSes($searchTerm, $serviceType, $production, $monitored, $scope, $ngi, $certStatus, $showClosed, $servKeyNames, $servKeyValues,
-            $startRecord - 1, RECORDS_PER_PAGE, false);
-    $endRecord = $startRecord + RECORDS_PER_PAGE - 1;
-
+    $filterParams['count'] = FALSE;
+    $filterParams['startRecord'] = $startRecord - 1; 
+    $filterParams['maxResults'] = $recordsPerPage; 
+    $ses = $seServ->getServicesFilterByParams($filterParams); 
+    
+    
+    $endRecord = $startRecord + $recordsPerPage - 1;
     /* Due to differences in counting, startRecord is still set to 1
      * even if there are zero results. If this is the case it's
      * zero here to display accurately in the portal.  */
@@ -184,13 +218,12 @@ function drawSEs(){
      * is distinct even though the name is not unique. To avoid showing the same name repeatdly in the filter
     * we will load all the keynames into an array before making it unique
     */
-	$keynames=array();		
+    $keynames=array();		
     foreach($exServ->getServiceExtensionsKeyNames() as $extension){
         $keynames[] = $extension->getKeyName();
     }
     $keynames = array_unique($keynames);
     
-    $serv = \Factory::getSiteService();
         
     $params['scopes'] = \Factory::getScopeService()->getScopes();
     $params['serviceTypes'] = $seServ->getServiceTypes();
@@ -206,21 +239,15 @@ function drawSEs(){
     $params['nextLink'] = $nextLink;
     $params['lastLink'] = $lastLink;
     $params['ngis'] = \Factory::getNgiService()->getNGIs();
-    $params['certStatuses'] = $serv->getCertStatuses();
+    $params['certStatuses'] = \Factory::getSiteService()->getCertStatuses();
     $params['showClosed'] = $showClosed;
     $params['selectedProduction'] = $production;
     $params['selectedMonitored'] = $monitored;
-    $params['selectedScope'] = $scope;
+    $params['selectedScopes'] = $selectedScopes; //$scope;
     $params['selectedNgi'] = $ngi;
     $params['selectedClosed'] = $showClosed;
     $params['selectedCertStatus'] = $certStatus;
     $params['selectedServKeyNames'] = $servKeyNames;
-    $params['selectedServKeyValue'] = $servKeyValues;
+    $params['selectedServKeyValue'] = $servKeyValue;
     show_view("service/view_all.php", $params, "Services");
 }
-
-
-
-
-
-

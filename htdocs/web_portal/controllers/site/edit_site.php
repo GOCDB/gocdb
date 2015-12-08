@@ -57,9 +57,10 @@ function draw(\User $user = null) {
     /*Old way: try { \Factory::getSiteService()->edit Authorization($site, $user);
     } catch(Exception $e) { show_view('error.php', $e->getMessage()); die(); }*/
     
-    if(count($serv->authorizeAction(Action::EDIT_OBJECT, $site, $user)) == 0){ 
+    //if(count($serv->authorize Action(Action::EDIT_OBJECT, $site, $user)) == 0){ 
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE){
         throw new Exception('You do not have permission to edit this Site');
-    } //else { print_r($serv->authorizeAction(Action::EDIT_OBJECT, $site, $user));}
+    } 
 
     
     $countries = $serv->getCountries();

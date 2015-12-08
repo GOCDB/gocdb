@@ -51,14 +51,14 @@ function draw(\User $user = null) {
     if(is_null($user)) {
         throw new Exception("Unregistered users can't edit a service property.");
     }
-    if (!isset($_REQUEST['serviceid']) || !is_numeric($_REQUEST['serviceid']) ){
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("A serviceid must be specified");
     }
     if (!isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid']) ){
         throw new Exception("A propertyid must be specified");
     }
     $serv = \Factory::getServiceService(); 
-    $service = $serv->getService($_REQUEST['serviceid']);
+    $service = $serv->getService($_REQUEST['id']);
     $property = $serv->getProperty($_REQUEST['propertyid']);
     
     //Check user has permissions to add site property

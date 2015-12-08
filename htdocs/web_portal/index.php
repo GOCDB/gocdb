@@ -27,7 +27,7 @@ require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/GocContextPath.php';
 
 // Set the timezone
-//date_default_timezone_set("UTC");
+date_default_timezone_set("UTC");
 
 /**
  * Safely escape and return the data string (xss mitigation function). 
@@ -115,61 +115,61 @@ function Draw_Page($Page_Type) {
             view_endpoint();
             break;
         case "Service_Groups":
-            //rejectIfNotAuthenticated();
-        	require_once __DIR__.'/controllers/service_group/view_all.php';
-        	showAllServiceGroups();
-        	break;
-        case "Service_Group":
-            //rejectIfNotAuthenticated();
-        	require_once __DIR__.'/controllers/service_group/view_sgroup.php';
-        	showServiceGroup();
-        	break;
-		case "Site":
-            //rejectIfNotAuthenticated();
-			require_once __DIR__.'/controllers/site/view_site.php';
-			view_site();
-			break;
-		case "NGI":
-            //rejectIfNotAuthenticated();
-			require_once __DIR__.'/controllers/ngi/view_ngi.php';
-			view_ngi();
-			break;
-        case "Service":
-            //rejectIfNotAuthenticated();
-			require_once __DIR__.'/controllers/service/view_service.php';
-			view_se();
-			break;
-        case "Services":
-            //rejectIfNotAuthenticated();
-			require_once __DIR__.'/controllers/service/view_all.php';
-			drawSEs();
-			break; 
-        case "NGIs":
-            //rejectIfNotAuthenticated();
-			require_once __DIR__.'/controllers/ngi/view_ngis.php';
-			view_ngis();
-			break;
-        case "Sites":
-            //rejectIfNotAuthenticated();
-        	require_once __DIR__.'/controllers/site/view_all.php';
-        	showAllSites();
-        	break;
-        case "Projects":
-            //rejectIfNotAuthenticated();
-        	require_once __DIR__.'/controllers/project/view_all.php';
-        	show_all_projects();
-        	break;
-        case "Project":
-            //rejectIfNotAuthenticated();
-        	require_once __DIR__.'/controllers/project/view_project.php';
-        	show_project();
-        	break;
-        case "Scope_Help":
-            //rejectIfNotAuthenticated();
-        	require_once __DIR__.'/controllers/scope_help.php';
-        	show_help();
-        	break;
-        case "Site_Geo_xml" :
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/service_group/view_all.php';
+	    showAllServiceGroups();
+	    break;
+	case "Service_Group":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/service_group/view_sgroup.php';
+	    showServiceGroup();
+	    break;
+	case "Site":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/site/view_site.php';
+	    view_site();
+	    break;
+	case "NGI":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/ngi/view_ngi.php';
+	    view_ngi();
+	    break;
+	case "Service":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/service/view_service.php';
+	    view_se();
+	    break;
+	case "Services":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/service/view_all.php';
+	    drawSEs();
+	    break;
+	case "NGIs":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/ngi/view_ngis.php';
+	    view_ngis();
+	    break;
+	case "Sites":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/site/view_all.php';
+	    showAllSites();
+	    break;
+	case "Projects":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/project/view_all.php';
+	    show_all_projects();
+	    break;
+	case "Project":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/project/view_project.php';
+	    show_project();
+	    break;
+	case "Scope_Help":
+	    //rejectIfNotAuthenticated();
+	    require_once __DIR__ . '/controllers/scope_help.php';
+	    show_help();
+	    break;
+	case "Site_Geo_xml" :
             //rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/sitesForGoogleMapXML.php';
             show_xml ();
@@ -187,6 +187,12 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/search.php';
             search();
             break;
+	case "View_Role_Action_Mappings":
+            //rejectIfNotAuthenticated();
+	    require_once __DIR__.'/controllers/political_role/view_role_action_mappings.php';
+	    view_role_action_mappings(); 
+	    break;
+
 
         // CrUD Pages - These pages MUST have authentication enabled so  
         // the calls to rejectIfNotAuthenticated() must be used. 
@@ -514,24 +520,43 @@ function Draw_Page($Page_Type) {
             require_once __DIR__ . '/controllers/service/add_service_property.php';
             add_service_property ();
             break;
+        case "Add_Service_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service/add_service_properties.php';
+            add_service_properties ();
+            break;
         case "Add_Endpoint_Property" :
             rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/add_endpoint_property.php';
             add_endpoint_property ();
             break;
-        case "Delete_Site_Property" :
-            rejectIfNotAuthenticated(); 
-            require_once __DIR__ . '/controllers/site/delete_site_property.php';
+        case "Delete_Service_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service/delete_service_properties.php';
             delete ();
-            break;
-        case "Delete_Service_Property" :
-            rejectIfNotAuthenticated(); 
-            require_once __DIR__ . '/controllers/service/delete_service_property.php';
+        case "Delete_Site_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/delete_site_properties.php';
             delete ();
-            break;
-        case "Delete_Endpoint_Property" :
-            rejectIfNotAuthenticated(); 
-            require_once __DIR__ . '/controllers/service/delete_endpoint_property.php';
+        case "Service_Properties_Controller" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service/service_properties_controller.php';
+            control ();
+        case "Endpoint_Properties_Controller" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service/endpoint_properties_controller.php';
+            control ();
+        case "Site_Properties_Controller" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/site_properties_controller.php';
+            control ();
+        case "Service_Group_Properties_Controller" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service_group/service_group_properties_controller.php';
+            control ();
+        case "Delete_Endpoint_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service/delete_endpoint_properties.php';
             delete ();
             break;
         case "Edit_Site_Property" :
@@ -559,11 +584,11 @@ function Draw_Page($Page_Type) {
             require_once __DIR__ . '/controllers/service_group/edit_service_group_property.php';
             edit_property ();
             break;
-        case "Delete_Service_Group_Property" :
-            rejectIfNotAuthenticated(); 
-            require_once __DIR__ . '/controllers/service_group/delete_service_group_property.php';
+        case "Delete_Service_Group_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service_group/delete_service_group_properties.php';
             delete ();
-            break;   
+            break;
         case "Delete_Service_Endpoint" :
             rejectIfNotAuthenticated(); 
             require_once __DIR__ . '/controllers/service/delete_service_endpoint.php';

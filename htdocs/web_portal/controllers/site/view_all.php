@@ -28,58 +28,74 @@ function showAllSites(){
     // to the DB always uses bind variables to protect against injection? 
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Validate.php';
     $validatorService = new \org\gocdb\services\Validate();  
+  
+    // stores params to send to the doctrine query 
+    $filterParams = array(); 
     
-    
-    $ngi = '%%';
+    $ngi = ''; 
     if(!empty($_GET['NGI'])) { 
        $ngi = $_GET['NGI'];
        if(!$validatorService->validate('ngi', 'NAME', $ngi)){
           throw new Exception("Invalid NGI parameter value");  
        }
+       $filterParams['roc'] = $ngi; 
     }
         
-    $prodStatus = '%%';
+    $prodStatus = ''; 
     if(!empty($_GET['prodStatus'])) { 
        $prodStatus = $_GET['prodStatus'];
+       $filterParams['production_status'] = $prodStatus; 
     }
     
-    //must be done before the if certstatus in the block that sets $certStatus
     $showClosed = false;
     if(isset($_GET['showClosed'])) {
-        $showClosed = true;
+	$showClosed = true;
+    } else {
+	$filterParams['exclude_certification_status'] = 'Closed'; 
     }
     
-    $certStatus = '%%';
+    $certStatus = ''; 
     if(!empty($_GET['certStatus'])) { 
        $certStatus = $_GET['certStatus']; 
-       //set show closed as true if production status selected is 'closed' - otherwise
-       // there will be no results
-       if($certStatus == 'Closed'){
-           $showClosed = true;
-       }
+       $filterParams['certification_status'] = $certStatus; 
+       $showClosed = false;
     }
    
-    // Site extension property key name
-    $siteKeyNames = "";
-    if(isset($_GET['siteKeyNames'])) {
-        $siteKeyNames = $_GET['siteKeyNames'];
+    // Site extension property (currently only support filtering by one ext prop) 
+    // Can add filtering by many like scopes in future 
+    $siteExtensionPropName = "";
+    $siteExtensionPropValue ="";
+    if(!empty($_GET['siteKeyNames'])) {
+        $siteExtensionPropName = $_GET['siteKeyNames'];
+	// only set the ext prop value if the keyName has been set too, otherwise
+	// we could end up with an illegal extensions parameter such as: '(=value)' 
+	if(!empty($siteExtensionPropName) && !empty($_GET['selectedSiteKeyValue']) ) {
+	    $siteExtensionPropValue = $_GET['selectedSiteKeyValue'];
+	}
+	$filterParams['extensions'] = '('.$siteExtensionPropName.'='.$siteExtensionPropValue.')'; 
     }
-   
-    // Site extension property key value
-    $siteKeyValues ="";
-    if(isset($_GET['selectedSiteKeyValue'])) {
-        $siteKeyValues = $_GET['selectedSiteKeyValue'];
-    }
-   
-    $scope = '%%';
-    if(!empty($_GET['scope'])) { 
-       $scope = $_GET['scope'];
-    }
+
+    // Scope parameters 
+    // By default, use an empty value to return all scopes, i.e. in the PI '&scope=' 
+    // which is same as the PI. If the 'scope' param is not set, then it would fall 
+    // back to the default scope (if set), but this is not what we want in this interface.  
+    $filterParams['scope'] = ''; 	
+    $selectedScopes = array();
+    if(!empty($_GET['mscope'])) { 
+	$scopeStringParam = ''; 
+	foreach($_GET['mscope'] as $key => $scopeVal){
+	    $scopeStringParam .= $scopeVal.','; 
+	    $selectedScopes[] = $scopeVal; 
+	}
+	$filterParams['scope'] = $scopeStringParam; 
+	$filterParams['scope_match'] = 'all';
+    } 
 	
     $serv = \Factory::getSiteService();
 
-    $params['scopes']=  \Factory::getScopeService()->getScopes();
-    $params['sites'] = $serv->getSitesBy($ngi, $prodStatus, $certStatus, $scope, $showClosed, null, $siteKeyNames, $siteKeyValues); 
+    $params['scopes']=  \Factory::getScopeService()->getScopes(); 
+    //$params['sites'] = $serv->getSitesBy($ngi, $prodStatus, $certStatus, $scope, $showClosed, null, $siteKeyNames, $siteKeyValues); 
+    $params['sites'] = $serv->getSitesFilterByParams($filterParams); 
     $params['NGIs'] = $serv->getNGIs();
     $params['prodStatuses'] = $serv->getProdStatuses();
         
@@ -99,7 +115,7 @@ function showAllSites(){
      * is distinct even though the name is not unique. To avoid showing the same name repeatdly in the filter
      * we will load all the keynames into an array before making it unique
      */
-	$keynames=array();	
+    $keynames=array();	
     foreach($exServ->getSiteExtensionsKeyNames() as $extension){
         $keynames[] = $extension->getKeyName();
     }
@@ -109,11 +125,11 @@ function showAllSites(){
     $params['certStatuses'] = $serv->getCertStatuses();
     $params['selectedProdStatus'] = $prodStatus;
     $params['selectedCertStatus'] = $certStatus;
-    $params['selectedScope'] = $scope;
+    $params['selectedScopes'] = $selectedScopes;
     $params['showClosed'] = $showClosed;
     $params['siteKeyNames'] = $keynames;
-    $params['selectedSiteKeyNames'] = $siteKeyNames;
-    $params['selectedSiteKeyValue'] = $siteKeyValues;   
+    $params['selectedSiteKeyNames'] = $siteExtensionPropName;
+    $params['selectedSiteKeyValue'] = $siteExtensionPropValue;   
     
     show_view("site/view_all.php", $params, "Sites");
 }

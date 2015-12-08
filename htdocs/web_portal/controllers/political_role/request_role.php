@@ -30,12 +30,14 @@ require_once '../web_portal/components/Get_User_Principle.php';
  */
 function request_role() {   
     $user = \Factory::getUserService()->getUserByPrinciple(Get_User_Principle());
-    if($user == null) throw new Exception("Unregistered users can't request roles"); 
+    if($user == null) {
+        throw new Exception("Unregistered users can't request roles"); 
+    }
     
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-// If we receive a POST request it's for a new role
+    // If we receive a POST request it's for a new role
     if(isset($_REQUEST['Role_Name_Value']) && isset($_REQUEST['Object_ID']) ) {     
         submitRoleRequest($_REQUEST['Role_Name_Value'], $_REQUEST['Object_ID'], $user);
         
@@ -54,7 +56,9 @@ function request_role() {
  * @param int $entityId
  */
 function drawViewRequestRole($entityId, \User $user = null){
-    if(!is_numeric($entityId)) throw new Exception('Invalid entityId');
+    if(!is_numeric($entityId)){
+        throw new Exception('Invalid entityId');
+    }
     
     $ownedEntity = \Factory::getOwnedEntityService()->getOwnedEntityById($entityId);
     
@@ -62,7 +66,11 @@ function drawViewRequestRole($entityId, \User $user = null){
     $params['entityName'] = $ownedEntity->getName(); 
     $params['entityType'] = \Factory::getOwnedEntityService()->getOwnedEntityDerivedClassName($ownedEntity);
     $params['objectId'] = $entityId;
-    $params['roles'] = \Factory::getRoleService()->getRoleTypeNamesForOwnedEntity($ownedEntity);
+    // array ([0] => array(RoleTypeName => ProjectName)) 
+    $roleTypes = \Factory::getRoleService()->getRoleTypeNamesForOwnedEntity($ownedEntity);
+    $params['roles'] = $roleTypes;
+    //print_r($params['roles']); 
+    
     show_view('political_role/request_role.php', $params);
     die(); 
 }

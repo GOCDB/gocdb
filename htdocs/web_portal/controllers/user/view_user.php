@@ -34,17 +34,35 @@ function view_user() {
     }
     $params['user'] = $user;
 
+
+    // 2D array, each element stores role and a child array holding project Ids 
+    $role_ProjIds = array(); 
+    
     // get the targetUser's roles
     $roles = \Factory::getRoleService()->getUserRoles($user, \RoleStatus::GRANTED); //$user->getRoles();
 
     $callingUser = \Factory::getUserService()->getUserByPrinciple(Get_User_Principle());
    
     // can the calling user revoke the targetUser's roles?  
-    if($user != $callingUser){
-        foreach ($roles as $r) {
-            //$ownedEntityDetail = $r->getOwnedEntity()->getName(). ' ('. $r->getOwnedEntity()->getType().')'; 
-            $authorisingRoleNames = \Factory::getRoleService()->authorizeAction(
-                    \Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser); 
+    /* @var $r \Role */
+    foreach ($roles as $r) {
+	//echo $r->getId().', '.$r->getRoleType()->getName().', '.$r->getOwnedEntity()->getName().'<br>';
+
+	// determine if callingUser can REVOKE this role instance
+	if($user != $callingUser){
+	    //echo '<br>'.$r->getOwnedEntity()->getName().' '; 
+	    
+            $authorisingRoles = \Factory::getRoleActionAuthorisationService()
+		    ->authoriseAction(\Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser)
+		    ->getGrantingRoles(); 
+            $authorisingRoleNames = array(); 
+	    //echo ' callingUser authorising Roles: ';
+            /* @var $authRole \Role */
+            foreach($authorisingRoles as $authRole){
+               $authorisingRoleNames[] = $authRole->getRoleType()->getName();  
+	       //echo $authRole->getRoleType()->getName().', ';
+            }
+            
             if(count($authorisingRoleNames)>=1){
                 $allAuthorisingRoleNames = ''; 
                 foreach($authorisingRoleNames as $arName){
@@ -53,12 +71,38 @@ function view_user() {
                 $allAuthorisingRoleNames = substr($allAuthorisingRoleNames, 0, strlen($allAuthorisingRoleNames)-2);  
                 $r->setDecoratorObject('['.$allAuthorisingRoleNames.'] ');
             } 
-        }
-    } else {
-        // current user is viewing their own roles, so they can revoke their own roles 
-        foreach ($roles as $r) {
-            $r->setDecoratorObject('[Self revoke own role]'); 
-        }
+            if($callingUser->isAdmin()){
+                $existingVal = $r->getDecoratorObject(); 
+                if($existingVal != null){
+                   $r->setDecoratorObject('GOCDB ADMIN: '.$existingVal);
+                } else {
+                    $r->setDecoratorObject('GOCDB ADMIN'); 
+                }
+            }
+	} else {
+	    // current user is viewing their own roles, so they can revoke their own roles 
+	    $r->setDecoratorObject('[Self revoke own role]'); 
+	}
+
+	// Get the names of the parent project(s) for this role so we can 
+	// group by project in the view 
+	$parentProjectsForRole = \Factory::getRoleActionAuthorisationService()
+		->getReachableProjectsFromOwnedEntity($r->getOwnedEntity()); 
+	$projIds = array(); 
+	foreach($parentProjectsForRole as $_proj){
+	    $projIds[] = $_proj->getId(); 
+	}
+	
+	// store role and parent projIds in a 2D array for viewing
+	$role_ProjIds[] = array($r, $projIds); 
+	
+    }// end iterating roles 
+
+    // Get a list of the projects and their Ids for grouping roles by proj in view  
+    $projectNamesIds = array(); 
+    $projects = \Factory::getProjectService()->getProjects();
+    foreach($projects as $proj){
+	$projectNamesIds[$proj->getId()] = $proj->getName();  
     }
 
     // Check to see if the current calling user has permission to edit the target user 
@@ -73,8 +117,8 @@ function view_user() {
     $authToken = Get_User_AuthToken();
     $params['authAttributes'] = $authToken->getDetails(); 
     
-    
-    $params['roles'] = $roles;
+    $params['projectNamesIds'] = $projectNamesIds; 
+    $params['role_ProjIds'] = $role_ProjIds; 
     $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();
     $title = $user->getFullName();
     show_view("user/view_user.php", $params, $title);

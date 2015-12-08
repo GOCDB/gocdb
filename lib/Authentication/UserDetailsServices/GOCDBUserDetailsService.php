@@ -24,7 +24,7 @@ class GOCDBUserDetailsService implements IUserDetailsService {
      * @throws UsernameNotFoundException if the user could not be found or the user has no GrantedAuthority
      */
     public function loadUserByUsername($username) {
-        throw \LogicException('not implemted yet'); 
+        throw new \LogicException('not implemted yet'); 
         
         if ($username == null) {
             throw new UsernameNotFoundException(null, 'null username');

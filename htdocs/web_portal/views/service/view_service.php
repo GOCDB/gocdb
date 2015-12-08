@@ -1,7 +1,7 @@
 <?php
 $se = $params['se'];
 $parentSiteName = $se->getParentSite()->getName();
-$serviceProperties = $se->getServiceProperties();
+$extensionProperties = $se->getServiceProperties();
 $seId = $se->getId();
 $configService = \Factory::getConfigService();
 ?>
@@ -144,7 +144,7 @@ $configService = \Factory::getConfigService();
                             }
                         }
                         ?>   
-                        <input type="text" value="<?php xecho($scopeString); ?>" readonly>
+			<textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
                     </td>
                 </tr>
 
@@ -313,86 +313,53 @@ $configService = \Factory::getConfigService();
    
     
     <!--  Service Properties -->
-    <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-            Service Extension Properties
-            <a href="#" id="extensionsLink" data-toggle="tooltip" data-placement="right" 
-                title="A Service may define optional extension properties to define custom key-value pairs.  
-                Extension properties can be used for fine-grained resource selection in the PI.">
-                (extensions?)
-            </a>
-        </span>        
-        <img src="<?php echo \GocContextPath::getPath()?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table" >Value</th>  
-                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
-                    <th class="site_table" >Edit</th>  
-                    <th class="site_table" >Remove</th>  
-                <?php endif; ?>              
-            </tr>
-            <?php
-            $num = 2;
-            foreach($serviceProperties as $sp) {
-	            ?>
 
-	            <tr class="site_table_row_<?php echo $num ?>">
-	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyName()); ?></td>
-	                <td style="width: 35%;"class="site_table"><?php xecho($sp->getKeyValue()); ?></td>
-	                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>	                
-                        <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-                        <td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Service_Property&propertyid=<?php echo $sp->getId();?>&serviceid=<?php echo $seId;?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/></a></td>
-	                <?php endif; ?>
-	            </tr>
-	            <?php
-	            if($num == 1) { $num = 2; } else { $num = 1; }
-            }
-            ?>
-        </table>
-        <!--  only show this link if we're in read / write mode -->
-		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
-            <!-- Add new Service Property -->
-            <a href="index.php?Page_Type=Add_Service_Property&se=<?php echo $se->getId();?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                        Add Property
-                </span>
-            </a>
-		<?php endif; ?>
-    </div>
+    <?php
+    $parent = $params['se'];
+    $propertiesController = "Service_Properties_Controller";
+    $addPropertyURL = "index.php?Page_Type=Add_Service_Property&se=";
+    $editPropertyPage = "Edit_Service_Property";
+
+
+    require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
+    ?>
     
-        <!--  Downtimes -->
+    <!--  Downtimes -->
     <div class="listContainer rounded" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
         <a href="index.php?Page_Type=SE_Downtimes&id=<?php echo $se->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Description</th>
-                <th class="site_table">From</th>
-                <th class="site_table">To</th>
-
+	
+        <table id="downtimesTable"  class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Description</th>
+                <th>From</th>
+                <th>To</th>
             </tr>
+	    </thead>
+	    <tbody>
             <?php
-            $num = 2;
+            //$num = 2;
             foreach($params['Downtimes'] as $d) {
             ?>
 
-            <tr class="site_table_row_<?php echo $num ?>">
-                <td class="site_table">
+            <tr>
+                <td>
                 	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
                 		<?php xecho($d->getDescription()) ?>
                 	</a>
                 </td>
-                <td class="site_table"><?php echo $d->getStartDate()->format($d::DATE_FORMAT) ?></td>
-                <td class="site_table"><?php echo $d->getEndDate()->format($d::DATE_FORMAT) ?></td>
+                <td><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
+                <td><?php echo $d->getEndDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
             </tr>
             <?php
-                if($num == 1) { $num = 2; } else { $num = 1; }
+                //if($num == 1) { $num = 2; } else { $num = 1; }
             }
             ?>
+	    </tbody>
         </table>
+	
         <!--  only show this link if we're in read / write mode -->
 		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Downtime Link -->
@@ -411,6 +378,25 @@ $configService = \Factory::getConfigService();
     $(document).ready(function() {
         $('#serviceEndpointLink').tooltip();
         $('#extensionsLink').tooltip(); 
-    }); 
-</script>
+
+        $('#downtimesTable').tablesorter(); 
+	// sort on first and second table cols only 
+        $("#serviceExtensionPropsTable").tablesorter({ 
+        // pass the headers argument and assing a object 
+        headers: { 
+            // assign the third column (we start counting zero) 
+            2: { 
+                // disable it by setting the property sorter to false 
+                sorter: false 
+            }, 
+            3: { 
+                // disable it by setting the property sorter to false 
+                sorter: false 
+            } 
+        } 
+        });
+
+    } 
+);  
+</script>  
     

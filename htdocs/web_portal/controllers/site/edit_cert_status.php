@@ -59,7 +59,8 @@ function draw(\User $user = null) {
 
     //try { \Factory::getCertStatusService()->editAuthorization($site, $user);
     //} catch (\Exception $e) { show_view('error.php', $e->getMessage()); die(); }
-    if(count(\Factory::getSiteService()->authorizeAction(Action::SITE_EDIT_CERT_STATUS, $site, $user))==0 ){
+    //if(count(\Factory::getSiteService()->authorize Action(Action::SITE_EDIT_CERT_STATUS, $site, $user))==0 ){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site, $user)->getGrantAction() == FALSE){
        show_view('error.php', 'You do not have permission to change site certification status.'
                ." Either an NGI level role on the parent NGI, or a Project level role on one of the parent NGIs owning projects is required."); 
        die(); 

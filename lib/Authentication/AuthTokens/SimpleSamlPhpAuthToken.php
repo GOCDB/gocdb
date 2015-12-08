@@ -32,7 +32,7 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
  
     private $userDetails = null;
     private $authorities = array();
-    private $principle; 
+    private $principal; 
   
     /*
      * Implementation note:  
@@ -123,7 +123,7 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
      * @return string unique principle string of user  
      */
     public function getPrinciple() {
-       return $this->principle;  
+       return $this->principal;  
     }
 
     private function getAttributesInitToken(){
@@ -133,19 +133,17 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
         \Factory::$properties['LOGOUTURL'] = $auth->getLogoutURL('https://'.  gethostname());
         $attributes = $auth->getAttributes();
         if (!empty($attributes)) {
-            // which idp did the user select?
             $idp = $auth->getAuthData('saml:sp:IdP');
-            // EGI IdP 
-            if($idp == 'https://www.egi.eu/idp/shibboleth'){
+            if($idp == 'https://www.egi.eu/idp/shibboleth'){ // EGI IdP 
+                $nameID = $auth->getAuthData('saml:sp:NameID');
+                $this->principal = $nameID['Value'];
+                $this->userDetails = array('AuthenticationRealm' => array('EGI_SSO_IDP'));
                 // For EGI federated id:
                 //$dnAttribute = $attributes['urn:oid:1.3.6.1.4.1.11433.2.2.1.9'][0];
                 //if (!empty($dnAttribute)) {
                 //    $this->principle = str_replace("emailAddress=", "Email=", $dnAttribute);
                 //    $this->userDetails = array('AuthenticationRealm' => array('EGI_SSO_IDP'));
                 //}
-                $nameID = $auth->getAuthData('saml:sp:NameID');
-                $this->principle = $nameID['Value'];
-                $this->userDetails = array('AuthenticationRealm' => array('EGI_SSO_IDP'));
                 // iterate the attributes and store in the userDetails
                 // Each attribute name can be used as an index into $attributes to obtain the value. 
                 // Every attribute value is an array - a single-valued attribute is an array of a single element.
@@ -160,7 +158,7 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
                 //$dnAttribute = $attributes['unity:identity:persistent'][0];
                 //print_r($attributes);
                 $nameID = $auth->getAuthData('saml:sp:NameID');
-                $this->principle = $nameID['Value'];
+                $this->principal = $nameID['Value'];
                 $this->userDetails = array('AuthenticationRealm' => array('EUDAT_SSO_IDP'));
                 // iterate the attributes and store in the userDetails
                 // Each attribute name can be used as an index into $attributes to obtain the value. 

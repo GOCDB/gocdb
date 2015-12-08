@@ -20,40 +20,46 @@
     <!-- Filter -->
     <div class="siteContainer">
         <form action="index.php?Page_Type=Service_Groups" method="GET" class="inline">
-        <input type="hidden" name="Page_Type" value="Service_Groups" />
-        
-        <span class="header leftFloat">
-            Filter <a href="index.php?Page_Type=Service_Groups">&nbsp;&nbsp;(clear)</a>
-        </span>
-        <br />      
-        <div class="topMargin leftFloat clearLeft">
-            <span class="">Scope: </span>
-                <select name="scope" onchange="form.submit()">
-                    <option value="">(all)</option>
-                    <?php foreach ($params['scopes'] as $scope){ ?>
-                        <option value="<?php echo $scope->getName(); ?>"<?php if($params['selectedScope'] ==  $scope->getName()) echo " selected" ?>><?php echo $scope->getName(); ?></option>
-                    <?php } ?>          
-                </select>
-        </div>                  
+	    <input type="hidden" name="Page_Type" value="Service_Groups" />
 
-        	<div class="topMargin leftFloat siteFilter">
-            	<span class="">Extension Name:</span>
-                <select name="sgKeyNames" onchange="form.submit()">
-					<option value="">(none)</option>
-                    <?php foreach($params['sgKeyName'] as $sgExtensions) { ?>
-                        <option value="<?php echo $sgExtensions; ?>"<?php if($params['selectedSGKeyName'] == $sgExtensions) echo " selected"?>><?php echo $sgExtensions; ?></option> 
-                    <?php  } ?>                  
+	    <span class="header leftFloat">
+		Filter <a href="index.php?Page_Type=Service_Groups">&nbsp;&nbsp;(clear)</a>
+	    </span>
+	    
+	    <div class="topMargin leftFloat siteFilter clearLeft">
+		<span class=""><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
+		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
+		    <?php foreach ($params['scopes'] as $scope) { ?>
+			<option value="<?php xecho($scope->getName()); ?>" 
+			    <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
+			    <?php xecho($scope->getName()); ?>
+			</option>
+		    <?php } ?>
+		</select>
+	    </div>                 
+
+	    <div class="topMargin leftFloat siteFilter">
+		<span class="">Extension Name:</span>
+                <select name="extKeyNames">
+		    <option value="">(none)</option>
+		    <?php foreach ($params['extKeyName'] as $extensions) { ?>
+    		    <option value="<?php echo $extensions; ?>"
+			<?php if ($params['selectedExtKeyName'] == $extensions){ echo " selected";} ?>>
+			    <?php echo $extensions; ?>
+		    </option> 
+		    <?php } ?>                  
                 </select>
-        	</div> 
-        	
-        	<?php        	
-        	if($params['selectedSGKeyName'] != ""){ ?> 
-             <div class="topMargin leftFloat siteFilter">
-                <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
-                <input class="middle" style="width: 5.5em;" type="text" name="selectedSGKeyValue" <?php if(isset($params['selectedSGKeyValue'])) echo "value=\"{$params['selectedSGKeyValue']}\"";?>/>
-                <input class="middle" type="image" src="<?php echo \GocContextPath::getPath()?>img/enter.png" name="image" width="20" height="20">        
+	    </div> 
+
+    	    <div class="topMargin leftFloat siteFilter">
+                    <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
+                    <input class="middle" type="text" name="selectedExtKeyValue" 
+			<?php if (isset($params['selectedExtKeyValue'])){ echo "value=\"{$params['selectedExtKeyValue']}\""; } ?>/>
             </div>        	
-            <?php }?>  
+
+	    <div class="topMargin leftFloat siteFilter clearLeft">
+		<input type="submit" value="Filter ServiceGroups">
+	    </div>
         </form>
     </div>
 
@@ -63,43 +69,53 @@
             <?php echo sizeof($params['sGroups']) ?> Service Group<?php if(sizeof($params['sGroups']) != 1) echo "s"?>
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
-        <table class="vSiteResults" id="selectedSETable">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table">Description</th>
-                <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
+        <table id="selectedSgTable" class="table table-striped table-condensed tablesorter">
+	    <thead>
+            <tr>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Scope(s)</th>
             </tr>
+	    </thead>
+	    <tbody>
             <?php           
-            $num = 2;
+            //$num = 2;
             foreach($params['sGroups'] as $sGroup) {
             ?>
-            <?php 
-            if($sGroup->getScopes()->first() != null && 
-                    $sGroup->getScopes()->first()->getName() == "Local") { $style = " style=\"background-color: #A3D7A3;\""; } else { $style = ""; } ?>
-            <tr class="site_table_row_<?php echo $num ?>" <?php echo $style ?>>
-                <td class="site_table">
-                    <div style="background-color: inherit;">
-                        <span style="vertical-align: middle;">
-                            <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
-                                <span>&raquo; </span><?php xecho($sGroup->getName()); ?>
-                            </a>
-                        </span>
-                    </div>
+            <tr>
+                <td>
+		    <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
+			<?php xecho($sGroup->getName()); ?>
+		    </a>
                 </td>
                     
-                <td class="site_table">
+                <td>
                     <?php xecho($sGroup->getDescription()); ?>
                 </td>
                 
-                
-                <td class="site_table">
-                   <input type="text" value="<?php xecho($sGroup->getScopeNamesAsString()); ?>" readonly>
+                <td>
+		   <textarea readonly="true" style="height: 25px;"><?php xecho($sGroup->getScopeNamesAsString()); ?></textarea>
                 </td>
             </tr>
             <?php  
-                if($num == 1) { $num = 2; } else { $num = 1; }
+                //if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
             ?>
+	    </tbody>
         </table>
     </div>
 </div>
+
+<script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>
+
+<script>
+    $(document).ready(function() 
+    {
+	$("#selectedSgTable").tablesorter(); 
+	
+	$('#scopeSelect').multipleSelect({
+	    filter: true,
+            placeholder: "SG Scopes"
+        });
+    }); 
+</script>

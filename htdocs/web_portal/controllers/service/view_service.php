@@ -25,9 +25,13 @@ function view_se() {
 
     // Does current viewer have edit permissions over object ?
     $params['ShowEdit'] = false;  
-    if($user != null && count($serv->authorizeAction(\Action::EDIT_OBJECT, $se, $user))>=1){
-       $params['ShowEdit'] = true;  
+//    if($user != null && count($serv->authorize Action(\Action::EDIT_OBJECT, $se, $user))>=1){
+//       $params['ShowEdit'] = true;  
+//    } 
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction()){
+       $params['ShowEdit'] = true;   
     } 
+        
 
     $title = $se->getHostName() . " - " . $se->getServiceType()->getName();
     $params['se'] = $se;

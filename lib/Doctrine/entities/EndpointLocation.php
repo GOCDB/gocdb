@@ -1,34 +1,63 @@
 <?php
+
+/*
+ * Copyright (C) 2015 STFC
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 use Doctrine\Common\Collections\ArrayCollection;
+
 /**
+ * A {@see Service} owns zero or more EndpointLocations. ELs are linked to {@see Downtime}s.   
+ * <p>
+ * More formally; an EL models a network location that can be contacted to access certain 
+ * functionalities based on a well-defined interface. The defined attributes 
+ * refer to aspects such as the network location, the exposed interface name, 
+ * the details of the implementation and the linked downtimes. 
+ * 
+ * @author David Meredith <david.meredith@stfc.ac.uk> 
+ * @author John Casson 
+ * 
  * @Entity @Table(name="EndpointLocations")
  */
 class EndpointLocation {
-	/** @Id @Column(type="integer") @GeneratedValue **/
-	protected $id;
-	/** @Column(type="string", nullable=true) **/
-    protected $name;
-	/** @Column(type="string", nullable=true) **/
-	protected $url;
-    /** @Column(type="string", nullable=true) **/
-    protected $interfaceName;	
 
-     /** @Column(type="string", length=2000, nullable=true) **/
-    protected $description;	
+    /** @Id @Column(type="integer") @GeneratedValue  */
+    protected $id;
+
+    /** @Column(type="string", nullable=true)  */
+    protected $name;
+
+    /** @Column(type="string", nullable=true)  */
+    protected $url;
+
+    /** @Column(type="string", nullable=true)  */
+    protected $interfaceName;
+
+    /** @Column(type="string", length=2000, nullable=true)  */
+    protected $description;
 
     /**
      * Bidirectional - An EndpointLocation (OWNING ORM SIDE) can have many properties
      * @OneToMany(targetEntity="EndpointProperty", mappedBy="parentEndpoint", cascade={"remove"})
      */
     protected $endpointProperties = null;
-	
-	
+
+
     /*
      * To make the relationship one-to-one between SE and EL add the unique=true e.g.
      * @ ManyToOne(targetEntity="Service", inversedBy="endpointLocations")
      * @ JoinColumn(name="service_id", referencedColumnName="id", unique=true, onDelete="CASCADE")
      */
-    
+
     /**
      * Bidirectional - Many endpointlocations (DB OWNING SIDE) can link to one Service. 
      *  
@@ -36,7 +65,6 @@ class EndpointLocation {
      * @JoinColumn(name="service_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $service = null;
-
 
     /**
      * Bidirectional - Many Endpoints (INVERSE SIDE) can link to many Downtimes. 
@@ -51,55 +79,106 @@ class EndpointLocation {
     protected $downtimes = null;
 
     public function __construct() {
-        $this->downtimes = new ArrayCollection();
-        $this->endpointProperties = new ArrayCollection();
-	}
-	
-	//Getters
-	public function getId() {
-		return $this->id;
-	}
-	
-	public function getName(){
-		return $this->name;
-	}
-	
-	public function getDowntimes() {
-    	return $this->downtimes;
-    }
-	
-	public function getUrl() {
-		return $this->url;
-	}
-	
-	public function getService(){
-        return $this->service;
-    }
-	
-	public function getInterfaceName(){
-        return $this->interfaceName;
+	$this->downtimes = new ArrayCollection();
+	$this->endpointProperties = new ArrayCollection();
     }
 
-    public function getEndpointProperties(){
-        return $this->endpointProperties; 
+    //Getters
+
+    /**
+     * @return int The PK of this entity or null if not persisted
+     */
+    public function getId() {
+	return $this->id;
     }
 
-    public function getDescription(){
-        return $this->description; 
+    /**
+     * The human readable name of this endpoint location, e.g. 'Production GOCDB REST endpoint'. 
+     * @return string or null 
+     */
+    public function getName() {
+	return $this->name;
     }
-	
-	//Setters
-	public function setName($name) {
-		$this->name = $name;
-	}
-	
-	public function setUrl($url) {
-		$this->url = $url;
-	}
 
-	public function setInterfaceName($interfaceName) {
-		$this->interfaceName = $interfaceName;
-	}	
+    /**
+     * Get a list of the {@see Downtime}s linked to this EL. 
+     * @return ArrayCollection
+     */
+    public function getDowntimes() {
+	return $this->downtimes;
+    }
+
+    /**
+     * Network location of an endpoint, which enables a specific component of 
+     * the Service to be contacted. Corresponds directly with the OGF GLUE2 Endpoint. 
+     * @return string or null 
+     */
+    public function getUrl() {
+	return $this->url;
+    }
+
+    /**
+     * The Service instance that owns this EL. 
+     * @return \Service
+     */
+    public function getService() {
+	return $this->service;
+    }
+
+    /**
+     * The identification name of the primary protocol supported by the endpoint interface.
+     * This corresponds directly with the OGF GLUE2 interfaceName.
+     * @return string or null 
+     */
+    public function getInterfaceName() {
+	return $this->interfaceName;
+    }
+
+    /**
+     * Custom Key=Value pairs (extension properties) used to augment the 
+     * ELs attributes. 
+     * @return ArrayCollection
+     */
+    public function getEndpointProperties() {
+	return $this->endpointProperties;
+    }
+
+    /**
+     * A human readable description for the EL, max 2000 chars. 
+     * @return string or null
+     */
+    public function getDescription() {
+	return $this->description;
+    }
+
+    //Setters
+
+    /**
+     * The human readable name of this endpoint location, e.g. 'Production GOCDB REST endpoint'. 
+     * @param string $name
+     */
+    public function setName($name) {
+	$this->name = $name;
+    }
+
+    /**
+     * Set the network location of an endpoint, which enables a specific component of 
+     * the Service to be contacted. Corresponds directly with the OGF GLUE2 Endpoint.
+     * @param string $url
+     */
+    public function setUrl($url) {
+	$this->url = $url;
+    }
+
+    /**
+     * Set the identification name of the primary protocol supported by the endpoint interface.
+     * This corresponds directly with the OGF GLUE2 interfaceName.
+     * @param string $interfaceName
+     */
+    public function setInterfaceName($interfaceName) {
+	$this->interfaceName = $interfaceName;
+    }
+
     /**
      * Do not call in client code, always use the opposite
      * <code>$service->addEndpointLocationDoJoin($endpointLocation)</code>
@@ -110,22 +189,21 @@ class EndpointLocation {
      * 
      * @param Service $service
      */
-    public function setServiceDoJoin($service){
-        $this->service = $service;
+    public function setServiceDoJoin($service) {
+	$this->service = $service;
     }
-
 
     /**
      * Add a endpointProperty entity to this Endpoint's collection of properties. 
      * This method also sets the EndpointProperty's parentEndpoint.  
      * @param \EndpointProperty $endpointProperty
      */
-	public function addEndpointPropertyDoJoin($endpointProperty) {
-        $this->endpointProperties[] = $endpointProperty;
-        $endpointProperty->_setParentEndpoint($this);
-        //$endpointProperty->getParentEndpoint() = $this; 
+    public function addEndpointPropertyDoJoin($endpointProperty) {
+	$this->endpointProperties[] = $endpointProperty;
+	$endpointProperty->_setParentEndpoint($this);
+	//$endpointProperty->getParentEndpoint() = $this; 
     }
-    
+
     /**
      * Do not call in client code, always use the opposite 
      * <code>$downtime->addEndpointLocation($thisEl)</code> instead which internally 
@@ -138,7 +216,7 @@ class EndpointLocation {
 //    public function _addDowntime(Downtime $downtime) {
 //    	$this->downtimes[] = $downtime;
 //    }
-    
+
     /**
      * Do not call in client code, always use the opposite 
      * <code>$downtime->removeEndpointLocation($thisEl)</code> instead which internally 
@@ -151,9 +229,13 @@ class EndpointLocation {
 //    public function _removeDowntime(Downtime $downtime) {
 //    	$this->downtimes->removeElement($downtime);
 //    }
-	
-     public function setDescription($description){
-         $this->description = $description; 
-     }
-	
-}	
+
+    /**
+     * Set the human readable description for this EL, max 2000 chars. 
+     * @param string $description
+     */
+    public function setDescription($description) {
+	$this->description = $description;
+    }
+
+}

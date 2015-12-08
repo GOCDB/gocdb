@@ -116,7 +116,7 @@ $siteScopes = $site->getScopes();
         
         <!-- Description -->
         <span class="input_name">
-            Description
+            Description *
             <span class="input_syntax" >
                 (Alphanumeric and basic punctuation)
             </span>
@@ -186,10 +186,23 @@ $siteScopes = $site->getScopes();
         </span>
         <input class="input_input_text" type="text" name="HELPDESKEMAIL" value="<?php xecho($site->getHelpdeskEmail()) ?>" />
 
-        <span class="input_name">Scope(s)
-            <span class="input_syntax">(Select at least <?php xecho($params['numberOfScopesRequired'])?>)</span>
+	<span class="input_name">
+	    Action to Take For All Child Service Scopes
         </span>
+	<select class="add_edit_form" name="childServiceScopeAction">
+	    <option value="noModify" selected="true">Do not modify child Service scopes</option>
+	    <option value="inherit">Inherit all Site scopes (leaves additional Service scopes that are not used by the Site intact)</option>
+	    <option value="override">Override Service Scopes with Site scopes (removes Service scopes that are not used/checked by Site)</option>
+	</select>
+	
+        <span class="input_name">
+	    Scope(s) 
+	    <span class="input_syntax">(Select at least <?php xecho($params['numberOfScopesRequired'])?>)</span>
+        </span>
+	<?php /*
+	 // comment out - this is a pain if you have many scopes  
         <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirmScope.js"></script>
+	 */ ?>
         <div style="margin-left: 2em">    
             <?php foreach ($params['scopes'] as $scopeArray){ ?>
                 <?php
@@ -199,16 +212,23 @@ $siteScopes = $site->getScopes();
                 if($scopeArray['applied']){
                     $checkedParamater = ' checked="checked"';
                 }
-                $onClick = '';
-                if (!in_array($scopeId, $params["parentScopeIds"])){
-                    $onClick = " onclick=\"return confirmScopeSelect('$scopeName', '$ngiName', '$siteName', this.checked)\"";
-                } 
+		// Comment out - this is a pain if you have many scopes !
+                //$onClick = '';
+                //if (!in_array($scopeId, $params["parentScopeIds"])){
+                //    $onClick = " onclick=\"return confirmScopeSelect('$scopeName', '$ngiName', '$siteName', this.checked)\"";
+                //} 
            ?>
-                <br />
-                <input type="checkbox" name="Scope_ids[]" value="<?php echo $scopeId;?>"<?php echo $checkedParamater;?> <?php echo $onClick;?>>
+	        <?php
+                /* // comment out- this is a pain if you have many scopes
+		 * <input type="checkbox" name="Scope_ids[]" value="<?php echo $scopeId;?>"<?php echo $checkedParamater;?> <?php echo $onClick;?>>
+		 */
+		?>
+		 <input type="checkbox" name="Scope_ids[]" value="<?php echo $scopeId;?>"<?php echo $checkedParamater;?>>
                 <?php xecho($scopeName);?>      
             <?php } ?>
         </div>  	
+
+	
         
         <input class="input_input_hidden" type="hidden" name="ID" value="<?php xecho($site->getId()) ?>" />
         

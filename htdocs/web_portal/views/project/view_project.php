@@ -49,37 +49,37 @@
         <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         
         <?php if ($ngiCount != 0): ?>
-            <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
-                    <th class="site_table">Name</th>
-                    <th class="site_table">Description</th>
-                </tr>
-
+            <table id="ngisTable" class="table table-striped table-condensed tablesorter">
+		<thead>
+		    <tr>
+			<th></th>
+			<th>Name</th>
+			<th>Description</th>
+		    </tr>
+                </thead>
+		<tbody>
                 <?php
-                $num = 2;
-
+                //$num = 2;
                 foreach($params['NGIs'] as $ngi) {
                 ?>
-
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table">
-                        <div style="background-color: inherit;">
-                            <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
-                                    <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg">                            
-                                    <span>&nbsp;&nbsp;</span><?php xecho($ngi->getName()); ?>
-                                </a>
-                            </span>
-                        </div>
+                <tr>
+		    <td>
+			<img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg">                            
+		    </td>
+                    <td>
+			<a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
+			    <?php xecho($ngi->getName()); ?>
+			</a>
                     </td>
-                    <td class="site_table"><?php xecho($ngi->getDescription()) ?></td>
-
+                    <td><?php xecho($ngi->getDescription()) ?></td>
                 </tr>
                 <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
+                    //if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
                 ?>
+		</tbody>
             </table>
+	
         <?php else: echo "<br><br>&nbsp &nbsp"; endif; ?>
         <!-- Don't show link in read only mode -->
         <?php if(!$params['portalIsReadOnly']):?>
@@ -115,44 +115,40 @@
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <?php if (sizeof($params['Roles'])>0): ?>
-            <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
-                    <th class="site_table">Name</th>
-                    <th class="site_table">Role</th>
-                    <!-- don't show revoke in read only mode -->
-                    <!-- Note, COMMENTED OUT below -->
-                    <!--<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']):?>
-                        <th class="site_table">Revoke</th>
-                    <?php endif; ?>-->
-                </tr>
+	
+            <table id="usersTable" class="table table-striped table-condensed tablesorter">
+		<thead>
+		    <tr>
+			<th></th>
+			<th>Name</th>
+			<th>Role</th>
+		    </tr>
+		</thead>
+		<tbody>
                 <?php
                     $num = 2;
                     foreach($params['Roles'] as $role) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table">
-                        <div style="background-color: inherit;">
-                            <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
-                            <?php if($params['authenticated']){ ?>
-                            <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
-                                <?php echo $role->getUser()->getFullName()?>
-                            </a>
-                            <?php } else {echo 'PROTECTED'; } ?>
-                        </div>
+                <tr>
+                    <td>
+			<img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+		    </td>
+		    <td>
+			<?php if($params['authenticated']){ ?>
+			<a  href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
+			    <?php echo $role->getUser()->getFullName()?>
+			</a>
+			<?php } else {echo 'PROTECTED'; } ?>
                     </td>
-                    <td class="site_table">
+                    <td>
                         <?php if($params['authenticated']) { xecho($role->getRoleType()->getName()); } else {echo('PROTECTED'); } ?>
                     </td>
-                    <!-- don't show revoke in read only mode -->
-                    <!-- Note, COMMENTED OUT below -->
-                    <!--<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']):?>    
-                        <td class="site_table"><a href="index.php?Page_Type=Revoke_Role&id=<?php echo $role->getId()?>" onclick="return confirmSubmit()">Revoke</a></td>
-                    <?php endif; ?>-->
                 </tr>
                 <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
+                    //if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over user roles
                 ?>
+		</tbody>
             </table>
         <?php else: echo "<br><br>&nbsp &nbsp There are currently no users with roles over this project<br>"; endif; ?>
         <!-- don't allow role requests in read only mode -->
@@ -174,44 +170,44 @@
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="decoration" />
         <?php if(sizeof($params['Sites']) > 0): ?>
-            <table class="vSiteResults" id="selectedSETable">
-                <tr class="site_table_row_1">
-                    <th class="site_table">Name</th>
-                    <th class="site_table">Certification Status</th>
-                    <th class="site_table">NGI</th>
-                    <th class="site_table">Production Status</th>
-                </tr>
+
+            <table id="sitesTable" class="table table-striped table-condensed tablesorter">
+		<thead>
+		    <tr>
+			<th>Name</th>
+			<th>Certification Status</th>
+			<th>NGI</th>
+			<th>Production Status</th>
+		    </tr>
+		</thead>
                 <?php
                 $num = 2;
-
                 foreach($params['Sites'] as $site) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table" style="width: 30%">
-                        <div style="background-color: inherit;">
-                            <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-                                    <span>&nbsp;&nbsp;</span><?php xecho($site->getShortName()); ?>
-                                </a>
-                            </span>
-                        </div>
+                <tr>
+                    <td>
+			<a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+			    <?php xecho($site->getShortName()); ?>
+			</a>
                     </td>
 
-                    <td class="site_table">
+                    <td>
                         <?php xecho($site->getCertificationStatus()->getName()) ?>
                     </td>
                     
-                    <td class="site_table">
+                    <td>
                         <a href="index.php?Page_Type=NGI&id=<?php echo $site->getNGI()->getId() ?>">
                             <?php xecho($site->getNGI()->getName()) ?>
                         </a>
                     </td>
 
-                    <td class="site_table">
+                    <td>
                         <?php xecho($site->getInfrastructure()->getName()) ?>
                     </td>
                 </tr>
-                <?php if($num == 1) { $num = 2; } else { $num = 1; }}?>
+                <?php 
+		//if($num == 1) { $num = 2; } else { $num = 1; }
+		}?>
             </table>
         <?php endif; // End of the foreach loop iterating over sites?>
 
@@ -221,3 +217,36 @@
     } ?>
             
     </div>
+
+<script>
+    $(document).ready(function() 
+    {
+
+	$("#sitesTable").tablesorter(); 
+
+	// sort on first and second table cols only 
+	$("#ngisTable").tablesorter({ 
+	    // pass the headers argument and assing a object 
+	    headers: { 
+		// assign the third column (we start counting zero) 
+		0: { 
+		    sorter: false 
+		}, 
+		2: { 
+		    sorter: false 
+		}
+	    } 
+	}); 
+
+	$("#usersTable").tablesorter({ 
+	    // pass the headers argument and assing a object 
+	    headers: { 
+		// assign the third column (we start counting zero) 
+		0: { 
+		    sorter: false 
+		}
+	    } 
+	}); 
+	
+    }); 
+</script>

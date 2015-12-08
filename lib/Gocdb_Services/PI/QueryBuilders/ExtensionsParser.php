@@ -1,6 +1,7 @@
 <?php
 
 namespace org\gocdb\services;
+require_once __DIR__ . '/IExtensionsParser.php';
 /*
  * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
 */
@@ -13,18 +14,21 @@ namespace org\gocdb\services;
  *                   wildcards:(keyname=*)
  *          
  * A limit on the number of key value pairs is defined in local_info.xml and enforced in this class
- * 
+ * @deprecated since version 5.5 Use {@see ExtensionsParser2} instead 
  * @author James McCarthy
  */
-class ExtensionsParser{
+class ExtensionsParser implements IExtensionsParser{
 
     /**
-     * This function can take an LDAP style query from the URL
-	 * and parses it to check its a valid format before splitting
-	 * the parts of the query into an array and returning.
-     * 
-     * @param String $rawQuery
-     * @return array $normalizedQuery
+     * {@inheritDoc}
+     * The rules for allowed chars in the 'key' and 'value' parts depend on the 
+     * implementation. This implementation defines the following rules:  
+     * <ul>
+     *    <li>The key conforms to the regex: <code>/^([a-zA-Z0-9\s@_\-\[\]\+\.]{1,255})$/</code>
+     *   (1 to 255 alpha numeric chars and selected chars)</li>
+     *   <li>The value conforms to the followign regex, i.e. any char except those negated 
+     *    including <code>'";)(`</code> <code>/^[^'\";\(\)`]{0,255}$/</code></li>
+     * </ul>
      */
 	public function parseQuery($rawQuery) {
 
