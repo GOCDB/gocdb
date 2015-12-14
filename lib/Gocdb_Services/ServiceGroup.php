@@ -585,43 +585,6 @@ class ServiceGroup extends AbstractEntityService{
     private function checkNotReserved(\User $user, \ServiceGroup $serviceGroup, $keyname){
         //TODO Function: This function is called but not yet filled out with an action
     }
-    
-    /**
-     * Adds a key value pair to a service group
-     * @param $values
-     * @param \User $user
-     * @throws Exception
-     * @return \ServiceGroupProperty
-     */
-    public function addProperty($values,\User $user = null) {
-        // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        $this->validate($values['SERVICEGROUPPROPERTIES'], 'servicegroupproperty');
-        
-        $keyname = $values ['SERVICEGROUPPROPERTIES'] ['NAME'];
-        $keyvalue = $values ['SERVICEGROUPPROPERTIES'] ['VALUE'];
-        $serviceGroupID = $values ['SERVICEGROUPPROPERTIES'] ['SERVICEGROUP'];
-        $serviceGroup = $this->getServiceGroup($serviceGroupID);
-        $this->checkNotReserved($user, $serviceGroup, $keyname);
-        
-        $this->em->getConnection ()->beginTransaction ();    
-        try {
-            $serviceGroupProperty = new \ServiceGroupProperty ();
-            $serviceGroupProperty->setKeyName ( $keyname );
-            $serviceGroupProperty->setKeyValue ( $keyvalue );
-            $serviceGroup = $this->em->find ( "ServiceGroup", $serviceGroupID );
-            $serviceGroup->addServiceGroupPropertyDoJoin ( $serviceGroupProperty );
-            $this->em->persist ( $serviceGroupProperty );
-    
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
-        }
-        return $serviceGroupProperty;
-    }
 
     /**
      * Adds a key value pair to a serviceGroup
@@ -680,47 +643,12 @@ class ServiceGroup extends AbstractEntityService{
         }
     }
 
-    /**
-     * Deletes a service group property
-     *
-     * @param \ServiceGroup $serviceGroup
-     * @param \User $user
-     * @param \SiteProperty $prop
-     */
-    public function deleteServiceGroupProperty(\ServiceGroup $serviceGroup,\User $user = null,\ServiceGroupProperty $prop) {
-        // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-    
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            // Site is the owning side so remove elements from site.
-            $serviceGroup->getServiceGroupProperties ()->removeElement ( $prop );
-            $this->em->remove ( $prop );
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
-        }
-    }
-
 	public function deleteServiceGroupProperties(\ServiceGroup $serviceGroup,\User $user = null, array $propArr) {
 		// Check the portal is not in read only mode, throws exception if it is
 		$this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
 		$this->validatePropertyActions($user, $serviceGroup);
 
 		$this->em->getConnection ()->beginTransaction ();
-//		try {
-//			// Site is the owning side so remove elements from site.
-//			$this->em->remove ( $prop );
-//			$this->em->flush ();
-//			$this->em->getConnection ()->commit ();
-//		} catch ( \Exception $e ) {
-//			$this->em->getConnection ()->rollback ();
-//			$this->em->close ();
-//			throw $e;
-//		}
 		try {
 			foreach ($propArr as $prop) {
 

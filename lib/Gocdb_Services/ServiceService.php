@@ -821,7 +821,7 @@ class ServiceService extends AbstractEntityService {
     }
 
 	/**
-	 * Adds a key value pair to a service
+	 * Adds key value pairs to a service
 	 * @param \Service $service
 	 * @param \User $user
 	 * @param array $propArr
@@ -878,83 +878,6 @@ class ServiceService extends AbstractEntityService {
             $this->em->close();
             throw $e;
         }
-//		return $serviceProperty;
-    }
-
-    /**
-     * Adds a key value pair to a service
-     * @param $values
-     * @param \User $user
-     * @throws Exception
-     * @return \ServiceProperty
-     */
-    public function addProperty($values, \User $user = null) {
-	//Check the portal is not in read only mode, throws exception if it is
-		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$this->validate($values['SERVICEPROPERTIES'], 'serviceproperty');
-
-	$keyname = $values['SERVICEPROPERTIES']['NAME'];
-	$keyvalue = $values['SERVICEPROPERTIES']['VALUE'];
-	$serviceID = $values['SERVICEPROPERTIES']['SERVICE'];
-	$service = $this->getService($serviceID);
-	$this->validateAddEditDeleteActions($user, $service);
-	$this->checkNotReserved($user, $service, $keyname);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    $serviceProperty = new \ServiceProperty();
-	    $serviceProperty->setKeyName($keyname);
-	    $serviceProperty->setKeyValue($keyvalue);
-	    //$service = $this->em->find("Service", $serviceID);
-	    $service->addServicePropertyDoJoin($serviceProperty);
-	    $this->em->persist($serviceProperty);
-
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-	return $serviceProperty;
-    }
-
-    /**
-     * Adds a key value pair to an EndpointLocation.  
-     * @param $values
-     * @param \User $user
-     * @throws Exception
-     * @return \EndpoingLocation 
-     */
-    public function addEndpointProperty($values, \User $user) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$this->validate($values['ENDPOINTPROPERTIES'], 'endpointproperty');
-
-	$keyname = $values['ENDPOINTPROPERTIES']['NAME'];
-	$keyvalue = $values['ENDPOINTPROPERTIES']['VALUE'];
-	$endpointID = $values['ENDPOINTPROPERTIES']['ENDPOINTID'];
-	$endpoint = $this->getEndpoint($endpointID);
-	$service = $endpoint->getService();
-	$this->validateAddEditDeleteActions($user, $service);
-	$this->checkNotReserved($user, $service, $keyname);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    $property = new \EndpointProperty();
-	    $property->setKeyName($keyname);
-	    $property->setKeyValue($keyvalue);
-	    $endpoint->addEndpointPropertyDoJoin($property);
-	    $this->em->persist($property);
-
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-	return $property;
     }
 
     /**
@@ -1016,35 +939,7 @@ class ServiceService extends AbstractEntityService {
             $this->em->close();
             throw $e;
         }
-//		return $serviceProperty;
     }
-
-    /**
-	 * DEPRECATED
-     * Deletes a service property
-     * @param \Service $service
-     * @param \User $user
-     * @param \SiteProperty $prop
-     */
-//    public function deleteServiceProperty(\Service $service, \User $user, \ServiceProperty $prop) {
-//	//Check the portal is not in read only mode, throws exception if it is
-//	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-//	$this->validateAddEditDeleteActions($user, $service);
-//
-//	$this->em->getConnection()->beginTransaction();
-//	try {
-//	    // Service is the owning side so remove elements from service.
-//	    $service->getServiceProperties()->removeElement($prop);
-//	    // Once relationship is removed delete the actual element
-//	    $this->em->remove($prop);
-//	    $this->em->flush();
-//	    $this->em->getConnection()->commit();
-//	} catch (\Exception $e) {
-//	    $this->em->getConnection()->rollback();
-//	    $this->em->close();
-//	    throw $e;
-//	}
-//    }
 
 	/**
 	 * Deletes service properties
@@ -1080,41 +975,6 @@ class ServiceService extends AbstractEntityService {
 			throw $e;
 		}
 	}
-
-    /**
-	 * DEPRECATED
-     * Deletes the given EndpointProperty from its parent Endpoint (if set).
-     * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null) 
-     * then the function simply returns because the user permissions to delete 
-     * the EP can't be determined on a null Endpoint.      
-     * @param \User $user
-     * @param \EndpointProperty $prop
-     */
-//    public function deleteEndpointProperty(\User $user, \EndpointProperty $prop) {
-//	//Check the portal is not in read only mode, throws exception if it is
-//	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-//	$endpoint = $prop->getParentEndpoint();
-//	if ($endpoint == null) {
-//	    // property endpoint hasn't been set, so just return.
-//	    return;
-//	}
-//	$service = $endpoint->getService();
-//	$this->validateAddEditDeleteActions($user, $service);
-//
-//	$this->em->getConnection()->beginTransaction();
-//	try {
-//	    // EndointLocation is the owning side so remove elements from endpoint.
-//	    $endpoint->getEndpointProperties()->removeElement($prop);
-//	    // Once relationship is removed delete the actual element
-//	    $this->em->remove($prop);
-//	    $this->em->flush();
-//	    $this->em->getConnection()->commit();
-//	} catch (\Exception $e) {
-//	    $this->em->getConnection()->rollback();
-//	    $this->em->close();
-//	    throw $e;
-//	}
-//    }
 
 	/**
 	 * Deletes the given EndpointProperties in the array from their parent Endpoints (if set).

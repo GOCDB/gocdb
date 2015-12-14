@@ -990,52 +990,6 @@ class Site extends AbstractEntityService{
 	}
 
     /**
-	 * Adds a key value pair to a site
-	 * @param $values
-	 * @param \User $user
-	 * @throws Exception
-	 * @return \SiteProperty
-	 */
-	public function addProperty($values,\User $user = null) {
-	    // Check the portal is not in read only mode, throws exception if it is
-	    $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        
-	    $this->validate($values['SITEPROPERTIES'], 'siteproperty');
-	    
-	    $keyname = $values ['SITEPROPERTIES'] ['NAME'];
-	    $keyvalue = $values ['SITEPROPERTIES'] ['VALUE'];
-	    $siteID = $values ['SITEPROPERTIES'] ['SITE'];
-	    $site = $this->getSite($siteID);
-        
-	    //Validate User to perform this action
-	    $this->validatePropertyActions($user, $site);
-
-	    //TODO: Future development possibility to check keyname not reserved
-	    //$this->checkNotReserved($user, $site, $keyname);
-   	    
-	    $this->em->getConnection ()->beginTransaction ();
-	
-	    try {
-		/* @var $siteProperty \SiteProperty */
-	        $siteProperty = new \SiteProperty ();
-	        $siteProperty->setKeyName ( $keyname );
-	        $siteProperty->setKeyValue ( $keyvalue );
-                /* @var $site \Site */
-	        $site = $this->em->find ( "Site", $siteID );
-	        $site->addSitePropertyDoJoin ( $siteProperty );
-	        $this->em->persist ( $siteProperty );
-	        	
-	        $this->em->flush ();
-	        $this->em->getConnection ()->commit ();
-	    } catch ( \Exception $e ) {
-	        $this->em->getConnection ()->rollback ();
-	        $this->em->close ();
-	        throw $e;
-	    }
-	    return $siteProperty;
-	}
-
-    /**
      * Adds a key value pair to a site
      * @param \Site $site
      * @param \User $user
