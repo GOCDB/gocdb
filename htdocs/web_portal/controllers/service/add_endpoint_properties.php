@@ -30,7 +30,7 @@ require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
  * @global array $_POST only set if the browser has POSTed data
  * @return null
  */
-function add_service_properties() {
+function add_endpoint_properties() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
@@ -39,7 +39,7 @@ function add_service_properties() {
 
 
 
-    
+
     if($_POST) {     	// If we receive a POST request it's for new properties
 
         //COMMENT
@@ -47,8 +47,7 @@ function add_service_properties() {
 
         //Get the parent service we want to add properties to.
         //I'm trying to use "parent" rather than "service" wherever possible to make this code more generic.
-        $service = \Factory::getServiceService()->getService($_REQUEST['PARENT']);
-
+        $endpoint = \Factory::getServiceService()->getEndpoint($_REQUEST['PARENT']);
         //this is a little awkward, as we have to handle 3 cases here. Submitting a single property,
         //submitting a .property text file/block, or submitting the parsed and confirmed properties.
 
@@ -99,14 +98,27 @@ function add_service_properties() {
 
         //Now we have our $propertyArray, either send it to the confirmation page or actually submit the props
         if(isset($_REQUEST['UserConfirmed'])) {
-            submit($service, $user, $propertyArray, $preventOverwrite);
+            submit($endpoint, $user, $propertyArray, $preventOverwrite);
         }
         else {
-            confirm($propertyArray, $service, $user);
+            confirm($propertyArray, $endpoint, $user);
         }
     } else { 			// If there is no post data, draw the new properties form
         draw($user);
     }
+}
+
+/**
+ * Draws the confirmation page.
+ * @param array $propArr
+ * @param Service $service
+ * @param User|null $user
+ */
+function confirm(array $propArr, \EndpointLocation $endpoint, \User $user = null){
+
+    $params['proparr'] = $propArr;
+    $params['endpoint'] = $endpoint;
+    show_view("service/add_endpoint_properties_confirmation.php", $params);
 }
 
 /**
@@ -116,7 +128,7 @@ function add_service_properties() {
  * @param User|null $user
  * @throws Exception
  */
-function submit( \Service $service, \User $user = null, array $propArr, $preventOverwrite) {
+function submit( \EndpointLocation $endpoint, \User $user, array $propArr, $preventOverwrite) {
 //    $newValues = getSerPropDataFromWeb();
 //    $serviceID = $newValues['SERVICEPROPERTIES']['SERVICE'];
 //    if($newValues['SERVICEPROPERTIES']['NAME'] == null || $newValues['SERVICEPROPERTIES']['VALUE'] == null){
@@ -124,49 +136,36 @@ function submit( \Service $service, \User $user = null, array $propArr, $prevent
 //        die();
 //    }
     $serv = \Factory::getServiceService();
-    $sp = $serv->addProperties($service, $user, $propArr, $preventOverwrite);
+    $sp = $serv->addEndpointProperties($endpoint, $user, $propArr, $preventOverwrite);
 
     $params['propArr'] = $propArr;
-    $params['service'] = $service;
+    $params['endpoint'] = $endpoint;
 
-    show_view("service/added_service_properties.php", $params);
+    show_view("service/added_endpoint_properties.php", $params);
 }
-
-/**
- * Draws the confirmation page.
- * @param array $propArr
- * @param Service $service
- * @param User|null $user
- */
-function confirm(array $propArr, \Service $service, \User $user = null){
-
-    $params['proparr'] = $propArr;
-    $params['service'] = $service;
-    show_view("service/add_service_properties_confirmation.php", $params);
-}
-
 
 /**
  *  Draws a form to add a new service property
- * @param \User $user current user 
+ * @param \User $user current user
  * @return null
  */
 function draw(\User $user = null) {
 
-	if(is_null($user)) {
-        throw new Exception("Unregistered users can't add a service property.");
+    if(is_null($user)) {
+        throw new Exception("Unregistered users can't add an endpoint property.");
     }
     if (!isset($_REQUEST['parentid']) || !is_numeric($_REQUEST['parentid']) ){
         throw new Exception("An id must be specified");
     }
     $serv = \Factory::getServiceService();
-    $service = $serv->getService($_REQUEST['parentid']); //get service by id
+    $endpoint = $serv->getEndpoint($_REQUEST['parentid']); //get service by id
     //Check user has permissions to add service property
-    $serv->validateAddEditDeleteActions($user, $service);
-        
+    $serv->validateAddEditDeleteActions($user, $endpoint->getService());
+
     $params['parentid'] = $_REQUEST['parentid'];
-	show_view("service/add_service_properties.php", $params);
+    show_view("service/add_endpoint_properties.php", $params);
 
 }
+
 
 ?>

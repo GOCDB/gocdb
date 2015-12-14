@@ -1,5 +1,8 @@
 <?php
 $se = $params['se'];
+//throw new \Exception(var_dump(get_class($se)));
+
+//throw new \Exception(var_dump($se));
 $parentSiteName = $se->getParentSite()->getName();
 $extensionProperties = $se->getServiceProperties();
 $seId = $se->getId();

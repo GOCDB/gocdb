@@ -13,13 +13,19 @@
         <tbody>
 
         <?php
-        foreach($propertyArray as $key => $value) {
+        foreach($propertyArray as $i=>$prop) {
             ?>
 
             <tr>
-                <td style="width: 35%;"><?php xecho($key); ?></td>
-                <td style="width: 35%;"><?php xecho($value); ?></td>
-                <td style="width: 10%;"><input type='checkbox' class="propCheckBox" form="addPropertiesForm" name='selectedProps[<?php echo $key; ?>]' value="<?php echo $value;?>" checked/></td>
+                <td style="width: 35%;"><?php xecho($prop[0]); ?></td>
+                <td style="width: 35%;"><?php xecho($prop[1]); ?></td>
+                <td style="width: 10%;">
+                    <!--This is a bit messy, but as we can't make the value of the selectedProp checkbox an array, I've created a hidden field with the values in an array.
+                        Since both arrays have the same index, we can reconstruct the array afterwards.
+                     -->
+                    <input type='checkbox' class="propCheckBox" form="addPropertiesForm" name='selectedProps[<?php echo $i; ?>]' value='<?php echo $prop[0];?>' checked/>
+                    <input type='hidden' form="addPropertiesForm" name='selectedPropsVal[<?php echo $i; ?>]' value='<?php echo $prop[1];?>' checked/>
+                </td>
             </tr>
             <?php
         }
@@ -31,13 +37,13 @@
     <form class="inputForm" method="post" action="index.php?Page_Type=<?php echo $addPropertiesPage;?>" name="addProperties" id="addPropertiesForm">
         <input class="input_input_hidden" type="hidden" name="UserConfirmed" value="true" />
         <input class="input_input_text" type="hidden" name ="PARENT" value="<?php echo $parent->getId();?>" />
-        <input type="checkbox" id="preventOverwriteCheckbox" name="PREVENTOVERWRITE"/>
+        <input type="checkbox" id="preventOverwriteCheckbox" name="PREVENTOVERWRITE" style="padding-top: 50px"/>
         Fail on duplicate property
         <br/>
         <br/>
 
 
-        <input type="submit" value="Add properties" class="input_button">
+        <input type="submit" class="btn btn-default" value="Add properties" class="input_button">
     </form>
 
     <script>

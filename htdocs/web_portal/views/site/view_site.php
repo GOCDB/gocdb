@@ -312,7 +312,7 @@ $extensionProperties = $site->getSiteProperties();
 	<?php
 	$parent = $site;
 	$propertiesController = "Site_Properties_Controller";
-	$addPropertyURL = "index.php?Page_Type=Add_Site_Property&site=";
+	$addPropertiesPage = "Add_Site_Properties";
 	$editPropertyPage = "Edit_Site_Property";
 
 

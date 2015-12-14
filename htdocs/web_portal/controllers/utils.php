@@ -44,7 +44,10 @@ function parse_properties($txtProperties) {
                 throw new \Exception("Property value on line {$line} is null");
             }
 
-            $result[$key] = $value;
+            //we can't use the prop key as the key due to key duplicates being allowed
+            //we are using an indexed array of indexed arrays
+            $result[] = [$key, $value];
+
             unset($lines[$i]);
         }
 

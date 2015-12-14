@@ -826,8 +826,7 @@ class ServiceService extends AbstractEntityService {
 	 * @param \User $user
 	 * @param array $propArr
 	 * @param bool $preventOverwrite
-	 * @throws Exception
-	 * @return \ServiceProperty
+	 * @throws \Exception
 	 */
     public function addProperties(\Service $service, \User $user, array $propArr, $preventOverwrite = false) {
         //Check the portal is not in read only mode, throws exception if it is
@@ -840,12 +839,13 @@ class ServiceService extends AbstractEntityService {
 
         $this->em->getConnection()->beginTransaction();
         try {
-            foreach ($propArr as $key => $value) {
-
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
                 //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
-				foreach ($existingProperties as $prop) {
-					if ($prop->getKeyName() == $key && $prop->getKeyValue() == $value) {
+				foreach ($existingProperties as $existProp) {
+					if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
 						if ($preventOverwrite == false) {
 							continue 2;
 						} else {
@@ -955,6 +955,68 @@ class ServiceService extends AbstractEntityService {
 	    throw $e;
 	}
 	return $property;
+    }
+
+    /**
+     * Adds a key value pair to a service endpoint
+     * @param \EndpointLocation $endpoint
+     * @param \User $user
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @throws \Exception
+     */
+    public function addEndpointProperties(\EndpointLocation $endpoint, \User $user, array $propArr, $preventOverwrite = false) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        //throw new \Exception(var_dump($propArr));
+
+        $this->validateAddEditDeleteActions($user, $endpoint->getService());
+
+        $existingProperties = $endpoint->getEndpointProperties();
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+
+                foreach ($existingProperties as $existProp) {
+                    if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+                        if ($preventOverwrite == false) {
+                            continue 2;
+                        } else {
+                            throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+                        }
+                    }
+                }
+
+                $this->checkNotReserved($user, $endpoint->getService(), $key);
+
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $validateArray['ENDPOINTID'] = $endpoint->getId();
+                $this->validate($validateArray, 'endpointproperty');
+
+
+                $property = new \EndpointProperty();
+                $property->setKeyName($key);
+                $property->setKeyValue($value);
+                $endpoint->addEndpointPropertyDoJoin($property);
+                $this->em->persist($property);
+
+            }
+
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+//		return $serviceProperty;
     }
 
     /**

@@ -510,26 +510,41 @@ function Draw_Page($Page_Type) {
             require_once __DIR__ . '/controllers/user/retrieve_account_user_validate.php';
             validate_dn_change ();
             break;
-        case "Add_Site_Property" :
-            rejectIfNotAuthenticated(); 
-            require_once __DIR__ . '/controllers/site/add_site_property.php';
-            add_site_property ();
+//        case "Add_Site_Property" :
+//            rejectIfNotAuthenticated();
+//            require_once __DIR__ . '/controllers/site/add_site_property.php';
+//            add_site_property ();
+//            break;
+        case "Add_Site_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/add_site_properties.php';
+            add_site_properties ();
             break;
-        case "Add_Service_Property" :
-            rejectIfNotAuthenticated(); 
-            require_once __DIR__ . '/controllers/service/add_service_property.php';
-            add_service_property ();
+        case "Export_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/export_properties.php';
+            export ();
             break;
+//        case "Add_Service_Property" :
+//            rejectIfNotAuthenticated();
+//            require_once __DIR__ . '/controllers/service/add_service_property.php';
+//            add_service_property ();
+//            break;
         case "Add_Service_Properties" :
             rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/service/add_service_properties.php';
             add_service_properties ();
             break;
-        case "Add_Endpoint_Property" :
-            rejectIfNotAuthenticated(); 
-            require_once __DIR__ . '/controllers/service/add_endpoint_property.php';
-            add_endpoint_property ();
+        case "Add_Endpoint_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service/add_endpoint_properties.php';
+            add_endpoint_properties ();
             break;
+//        case "Add_Endpoint_Property" :
+//            rejectIfNotAuthenticated();
+//            require_once __DIR__ . '/controllers/service/add_endpoint_property.php';
+//            add_endpoint_property ();
+//            break;
         case "Delete_Service_Properties" :
             rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/service/delete_service_properties.php';
@@ -574,10 +589,15 @@ function Draw_Page($Page_Type) {
             require_once __DIR__ . '/controllers/service/edit_endpoint_property.php';
             edit_property ();
             break;      
-        case "Add_Service_Group_Property" :
-            rejectIfNotAuthenticated(); 
-            require_once __DIR__ . '/controllers/service_group/add_service_group_property.php';
-            add_service_group_property ();
+//        case "Add_Service_Group_Property" :
+//            rejectIfNotAuthenticated();
+//            require_once __DIR__ . '/controllers/service_group/add_service_group_property.php';
+//            add_service_group_property ();
+//            break;
+        case "Add_Service_Group_Properties" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service_group/add_service_group_properties.php';
+            add_service_group_properties ();
             break;
         case "Edit_Service_Group_Property" :
             rejectIfNotAuthenticated(); 

@@ -2,7 +2,7 @@
 /*______________________________________________________
  *======================================================
  * File: add_service_properties.php
- * Author: John Casson, George Ryall, David Meredith, James McCarthy
+ * Author: Tom Byrne, John Casson, George Ryall, David Meredith, James McCarthy
  * Description: Processes a new property request. If the user
  *              hasn't POSTed any data we draw the add property
  *              form. If they post data we assume they've posted it from
@@ -42,7 +42,6 @@ function add_service_properties() {
     
     if($_POST) {     	// If we receive a POST request it's for new properties
 
-        //COMMENT
         $preventOverwrite = false;
 
         //Get the parent service we want to add properties to.
@@ -59,29 +58,25 @@ function add_service_properties() {
         //this will go to confirm()
         if(isset($_REQUEST['PROPERTIES'])) {
             $propertyArray = parse_properties($_REQUEST['PROPERTIES']);
-            //throw new \Exception(var_dump($propertyArray));
         }
         //if the request is from the multi property confirmation page
-        //reconstruct the indexed array of kvps
+        //reassign the selected properties to the property array.
         //this will go to submit()
         elseif (isset($_REQUEST['selectedProps'])){
-            $propertyArray = array();
-            foreach ($_REQUEST['selectedProps'] as $i=>$propKey){
-                $propertyArray[] = [$propKey, $_REQUEST['selectedPropsVal'][$i]];
-            }
+            $propertyArray = $_REQUEST['selectedProps'];
         }
         //if the request is for a single property, skip the confirmation view and submit the request directly
         //this will go to submit()
         elseif (isset($_REQUEST['KEYPAIRNAME']) && isset($_REQUEST['KEYPAIRVALUE'])) {
             $propertyArray = array(
-                array(
-                    $_REQUEST['KEYPAIRNAME'], $_REQUEST['KEYPAIRVALUE']
-                )
+                $_REQUEST['KEYPAIRNAME'] => $_REQUEST['KEYPAIRVALUE'],
             );
+
             //will go straight to submit()
             $_REQUEST['UserConfirmed'] = "true";
             //since the user is only adding a single property, warn them if it already exists
             $preventOverwrite = true;
+
         } else {
             //you really shouldn't end up here unless you are mangling your post requests
             throw new Exception("Properties could not be parsed");
@@ -90,12 +85,14 @@ function add_service_properties() {
         if(isset($_REQUEST['PREVENTOVERWRITE'])){
             $preventOverwrite = true;
         }
+        //throw new \Exception(var_dump($preventOverwrite));
 
         //quick sanity check, are we actually adding any properties?
         if(empty($propertyArray)){
             show_view('error.php', "At least one property name and value must be provided.");
             die();
         }
+
 
         //Now we have our $propertyArray, either send it to the confirmation page or actually submit the props
         if(isset($_REQUEST['UserConfirmed'])) {

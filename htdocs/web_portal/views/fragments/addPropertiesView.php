@@ -1,34 +1,35 @@
-    <form name="Add_Property" action="index.php?Page_Type=<?php echo $addPropertiesURL;?>" method="post" class="inputForm" id="Property_Form">
+    <form name="Add_Property" action="index.php?Page_Type=<?php echo $addPropertiesURL;?>" method="post" class="inputForm" id="Property_Form"">
 
         <br />
 
-        <span class="input_name">
-            Property Name            
-        </span>
-        <input class="input_input_text" type="text" name="KEYPAIRNAME" />
-        <span class="input_name">
-            Property Value            
-        </span>
-        <input class="input_input_text" type="text" name="KEYPAIRVALUE" />
-        <input class="input_input_text" type="hidden" name ="PARENT" value="<?php echo $parentID;?>" />
+        <input class="form-control singleProp" type="text" placeholder="Property Name" name="KEYPAIRNAME" />
+        <br />
 
-    	<input class="input_button" type="submit" value="Add Property" />
-        <br/>
-        <br/>
+        <input class="form-control singleProp" type="text" placeholder="Property Value" name="KEYPAIRVALUE" />
+        <br />
+
+        <input class="input_input_text " type="hidden" name ="PARENT" value="<?php echo $parentID;?>" />
+
+    	<input class="btn btn-default singleProp" type="submit" value="Add Property" style="display: inline;"/>
+
+
 
     </form>
-    <p class="expandMulti" style="cursor: pointer;">Adding multiple properties?</p>
+    <input class="btn btn-default expandMulti" value="Add multiple properties" style="float: right;" />
+
+    <br/>
+    <br/>
     <div class="multiInput">
     <form name="Add_Properties" action="index.php?Page_Type=<?php echo $addPropertiesURL;?>" method="post" class="inputForm" id="Properties_Form">
 
-        <textarea name="PROPERTIES" id="propertiesTextArea" rows="10" style="width: 100%" placeholder="Input your properties in 'name = value' form, separated by newlines. You can also browse and upload a text file below"></textarea>
+        <textarea name="PROPERTIES" id="propertiesTextArea" class="form-control" rows="10" style="width: 100%" placeholder="Input your properties in 'name = value' form, separated by newlines. You can also browse and upload a text file below"></textarea>
 
         <input class="input_input_text" type="hidden" name="PARENT" value="<?php echo $parentID;?>" />
-
-        <input class="input_button" type=file id=files style="display: inline;" />
-        <input type="button" class="input_button" id="upload" value="Upload"/>
         <br/>
-        <input class="input_button" type="submit" value="Add Properties" />
+
+        <input class="btn btn-default" type=file id=files style="display: inline;" />
+        <input type="button" class="btn btn-default" id="upload" value="Upload"/>
+        <input class="btn btn-default" type="submit" value="Add Properties" style="float: right;"/>
 
     </form>
     </div>
@@ -70,10 +71,10 @@
         $(document).ready(function() {
 
                 $('.multiInput').hide();
-//                $('#upload').hide();
 
                 $('.expandMulti').click(function(){
                     $('.multiInput').slideToggle('fast');
+                    $('#Property_Form :input').prop("disabled", function(i,v){return !v;});
                 });
             }
         );

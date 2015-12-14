@@ -96,7 +96,7 @@ $seId = $se->getId();
 	<?php
 	$parent = $params['endpoint'];
 	$propertiesController = "Endpoint_Properties_Controller";
-	$addPropertyURL = "index.php?Page_Type=Add_Endpoint_Property&endpointid=";
+    $addPropertiesPage = "Add_Endpoint_Properties";
     $editPropertyPage = "Edit_Endpoint_Property";
 
 
