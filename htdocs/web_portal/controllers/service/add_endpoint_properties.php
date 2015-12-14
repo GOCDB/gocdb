@@ -111,8 +111,8 @@ function add_endpoint_properties() {
 /**
  * Draws the confirmation page.
  * @param array $propArr
- * @param Service $service
- * @param User|null $user
+ * @param \EndpointLocation $endpoint
+ * @param \User|null $user
  */
 function confirm(array $propArr, \EndpointLocation $endpoint, \User $user = null){
 
@@ -124,9 +124,9 @@ function confirm(array $propArr, \EndpointLocation $endpoint, \User $user = null
 /**
  * Submits the property array to the services layer's property functions.
  * @param array $propArr
- * @param Service $service
- * @param User|null $user
- * @throws Exception
+ * @param \EndpointLocation $endpoint
+ * @param \User|null $user
+ * @throws \Exception
  */
 function submit( \EndpointLocation $endpoint, \User $user, array $propArr, $preventOverwrite) {
 //    $newValues = getSerPropDataFromWeb();

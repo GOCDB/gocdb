@@ -622,7 +622,64 @@ class ServiceGroup extends AbstractEntityService{
         }
         return $serviceGroupProperty;
     }
-    
+
+    /**
+     * Adds a key value pair to a serviceGroup
+     * @param \ServiceGroup $serviceGroup
+     * @param \User $user
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @throws \Exception
+     */
+    public function addProperties(\ServiceGroup $serviceGroup, \User $user, array $propArr, $preventOverwrite = false) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        $this->validatePropertyActions($user, $serviceGroup);
+
+        $existingProperties = $serviceGroup->getServiceGroupProperties();
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+
+                foreach ($existingProperties as $existProp) {
+                    if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+                        if ($preventOverwrite == false) {
+                            continue 2;
+                        } else {
+                            throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+                        }
+                    }
+                }
+
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $validateArray['SERVICEGROUP'] = $serviceGroup->getId();
+                $this->validate($validateArray, 'servicegroupproperty');
+
+                $property = new \ServiceGroupProperty();
+                $property->setKeyName($key);
+                $property->setKeyValue($value);
+                $serviceGroup->addServiceGroupPropertyDoJoin($property);
+                $this->em->persist($property);
+
+            }
+
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
     /**
      * Deletes a service group property
      *

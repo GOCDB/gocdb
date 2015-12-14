@@ -2,7 +2,7 @@
 /*______________________________________________________
  *======================================================
  * File: add_service_properties.php
- * Author: John Casson, George Ryall, David Meredith, James McCarthy
+ * Author: Tom Byrne, John Casson, George Ryall, David Meredith, James McCarthy
  * Description: Processes a new property request. If the user
  *              hasn't POSTed any data we draw the add property
  *              form. If they post data we assume they've posted it from
