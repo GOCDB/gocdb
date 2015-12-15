@@ -58,7 +58,7 @@
                     <option value="delete">Delete</option>
                 </select>
                                 <span class="input-group-btn">
-                    <input class="btn btn-default" type="button" onclick="return confirmPropAction()" value="Modify "/>
+                    <input class="btn btn-default" type="button" onclick="return confirmPropAction()" value="Submit"/>
                 </span>
 
             </div>

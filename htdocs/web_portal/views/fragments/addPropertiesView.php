@@ -65,7 +65,7 @@
         }, 'Invalid Key Name.');
 
         $.validator.addMethod("validateKeyValue", function(value) {
-            var regEx = /^[^`'\"&lt;&gt;]+$/;
+            var regEx = /^[^`'\"><]+$/;
             return regEx.test(value);
         }, 'Invalid Key Value.');
 

@@ -46,7 +46,7 @@ function parse_properties($txtProperties) {
 
             //we can't use the prop key as the key due to key duplicates being allowed
             //we are using an indexed array of indexed arrays
-            $result[] = [$key, $value];
+            $result[] = array($key, $value);
 
             unset($lines[$i]);
         }

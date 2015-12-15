@@ -66,8 +66,7 @@ function add_service_group_properties() {
         elseif (isset($_REQUEST['selectedProps'])){
             $propertyArray = array();
             foreach ($_REQUEST['selectedProps'] as $i=>$propKey){
-                $propertyArray[] = [$propKey, $_REQUEST['selectedPropsVal'][$i]];
-            }
+                $propertyArray[] = array($propKey, $_REQUEST['selectedPropsVal'][$i]);            }
         }
         //if the request is for a single property, skip the confirmation view and submit the request directly
         //this will go to submit()
