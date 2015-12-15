@@ -896,23 +896,33 @@ class ServiceService extends AbstractEntityService {
 	return $property;
     }
 
+
     /**
-     * Deletes a service property
+     * Deletes service properties
      * @param \Service $service
      * @param \User $user
-     * @param \SiteProperty $prop
+     * @param array $propArr
      */
-    public function deleteServiceProperty(\Service $service, \User $user, \ServiceProperty $prop) {
+    public function deleteServiceProperties(\Service $service, \User $user, array $propArr) {
 	//Check the portal is not in read only mode, throws exception if it is
 	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 	$this->validateAddEditDeleteActions($user, $service);
 
 	$this->em->getConnection()->beginTransaction();
 	try {
-	    // Service is the owning side so remove elements from service.
-	    $service->getServiceProperties()->removeElement($prop);
-	    // Once relationship is removed delete the actual element
-	    $this->em->remove($prop);
+	    foreach ($propArr as $prop) {
+		//throw new \Exception(var_dump($prop));
+		//check property is in service
+		if ($prop->getParentService() != $service) {
+		    $id = $prop->getId();
+		    throw new \Exception("Property {$id} does not belong to the specified service");
+		}
+
+		// Service is the owning side so remove elements from service.
+		$service->getServiceProperties()->removeElement($prop);
+		// Once relationship is removed delete the actual element
+		$this->em->remove($prop);
+	    }
 	    $this->em->flush();
 	    $this->em->getConnection()->commit();
 	} catch (\Exception $e) {
@@ -922,46 +932,58 @@ class ServiceService extends AbstractEntityService {
 	}
     }
 
+    
     /**
-     * Deletes the given EndpointProperty from its parent Endpoint (if set).
-     * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null) 
-     * then the function simply returns because the user permissions to delete 
-     * the EP can't be determined on a null Endpoint.      
+     * Deletes the given EndpointProperties in the array from their parent Endpoints (if set).
+     * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null
+     * then the function throws an exception because the user permissions to delete
+     * the EP can't be determined on a null Endpoint.
      * @param \User $user
-     * @param \EndpointProperty $prop
+     * @param array $propArr
      */
-    public function deleteEndpointProperty(\User $user, \EndpointProperty $prop) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$endpoint = $prop->getParentEndpoint();
-	if ($endpoint == null) {
-	    // property endpoint hasn't been set, so just return. 
-	    return;
-	}
-	$service = $endpoint->getService();
-	$this->validateAddEditDeleteActions($user, $service);
+    public function deleteEndpointProperties(\User $user, array $propArr) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    // EndointLocation is the owning side so remove elements from endpoint.
-	    $endpoint->getEndpointProperties()->removeElement($prop);
-	    // Once relationship is removed delete the actual element
-	    $this->em->remove($prop);
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
+        $this->em->getConnection()->beginTransaction();
+
+        try {
+            foreach ($propArr as $prop) {
+
+                //check endpoint property has an parent endpoint
+                $endpoint = $prop->getParentEndpoint();
+                if ($endpoint == null) {
+                    $id = $prop->getId();
+                    throw new \Exception("Property {$id} does not have a parent endpoint");
+                }
+
+                //check user has permissions over the service associated with the endpoint
+                $service = $endpoint->getService();
+                $this->validateAddEditDeleteActions($user, $service);
+
+                // EndointLocation is the owning side so remove elements from endpoint.
+                $endpoint->getEndpointProperties()->removeElement($prop);
+                // Once relationship is removed delete the actual element
+                $this->em->remove($prop);
+            }
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
     }
 
     /**
-     * Edits a service property
+     * Edits an existing service property that already belongs to the service. 
+     * A check is performed to confirm the given property is from the parent 
+     * service, and an exception is thrown if not.   
+     * 
      * @param \Service $service
      * @param \User $user
      * @param \ServiceProperty $prop
-     * @param $newValues
+     * @param array $newValues
      */
     public function editServiceProperty(\Service $service, \User $user, \ServiceProperty $prop, $newValues) {
 	//Check the portal is not in read only mode, throws exception if it is
@@ -974,6 +996,11 @@ class ServiceService extends AbstractEntityService {
 
 	$this->em->getConnection()->beginTransaction();
 	try {
+	    //Check that the prop is from the service  
+	    if ($prop->getParentService() != $service){
+		$id = $prop->getId();
+		throw new \Exception("Property {$id} does not belong to the specified service");
+	    }
 	    // Set the service propertys new member variables
 	    $prop->setKeyName($keyname);
 	    $prop->setKeyValue($keyvalue);
@@ -988,6 +1015,17 @@ class ServiceService extends AbstractEntityService {
 	}
     }
 
+    /**
+     * Edits an existing endpoint property that already belongs to the endpoint. 
+     * A check is performed to confirm the given property is from the endpoint's 
+     * parent service, and an exception is thrown if not.  
+     *   
+     * @param \Service $service
+     * @param \User $user
+     * @param \EndpointProperty $prop
+     * @param array $newValues
+     * @throws \Exception
+     */
     public function editEndpointProperty(\Service $service, \User $user, \EndpointProperty $prop, $newValues) {
 	//Check the portal is not in read only mode, throws exception if it is
 	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
@@ -999,6 +1037,12 @@ class ServiceService extends AbstractEntityService {
 
 	$this->em->getConnection()->beginTransaction();
 	try {
+	    //Check that the prop is from the endpoint 
+	    if ($prop->getParentEndpoint()->getService() != $service){
+		$id = $prop->getId();
+		throw new \Exception("Property {$id} does not belong to the specified service endpoint");
+	    }
+	    
 	    // Set the service propertys new member variables
 	    $prop->setKeyName($keyname);
 	    $prop->setKeyValue($keyvalue);
@@ -1027,10 +1071,8 @@ class ServiceService extends AbstractEntityService {
 	//Check the portal is not in read only mode, throws exception if it is
 	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $s, $user)) == 0){
-//          throw new \Exception("You do not have permission to remove" . $s->getHostName());
-//        }
-	if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $s->getParentSite(), $user)->getGrantAction() == FALSE) {
+	if ($this->roleActionAuthorisationService->authoriseAction(
+                \Action::EDIT_OBJECT, $s->getParentSite(), $user)->getGrantAction() == FALSE) {
 	    throw new \Exception("You don't have permission to delete service.");
 	}
 
@@ -1058,41 +1100,39 @@ class ServiceService extends AbstractEntityService {
 	}
     }
 
-    /*
-     * Moves a site to a new NGI. Site to NGI is a many to one
-     * relationship, so moving the site from one NGI removes it
-     * from the other.
+    /**
+     * Move the service to the given site. 
+     * If the service is already a child of the site, no move is attempted. 
      * 
-     * @param \site $site site to be moved
-     * @param \NGI $NGI NGI to which $site is to be moved
-     */
-
+     * @param \Service $Service Service to move. 
+     * @param \Site $Site Target site to move the service to. 
+     * @param \User $user 
+     * @throws \Exception
+     * @throws \LogicException
+     */ 
     public function moveService(\Service $Service, \Site $Site, \User $user = null) {
 	//Throws exception if user is not an administrator
 	$this->checkUserIsAdmin($user);
-
 	$this->em->getConnection()->beginTransaction(); //suspend auto-commit
-
 	try {
 	    //If the site or service have no ID - throw logic exception
 	    $site_id = $Site->getId();
 	    if (empty($site_id)) {
-		throw new LogicException('Site has no ID');
+		throw new \LogicException('Site has no ID');
 	    }
 	    $Service_id = $Service->getId();
 	    if (empty($Service_id)) {
-		throw new LogicException('Service has no ID');
+		throw new \LogicException('Service has no ID');
 	    }
 
 	    //find old site
 	    $old_Site = $Service->getParentSite();
 
-	    //If the Site has changed, then we move the site.
+	    //If the Site has changed, then we move the service.
 	    if ($old_Site != $Site) {
 
 		//Remove the service from the old site if it has an old site
 		if (!empty($old_Site)) {
-
 		    $old_Site->getServices()->removeElement($Service);
 		}
 
@@ -1105,7 +1145,7 @@ class ServiceService extends AbstractEntityService {
 	    }//close if
 	    $this->em->flush();
 	    $this->em->getConnection()->commit();
-	} catch (Exception $e) {
+	} catch (\Exception $e) {
 	    $this->em->getConnection()->rollback();
 	    $this->em->close();
 	    throw $e;

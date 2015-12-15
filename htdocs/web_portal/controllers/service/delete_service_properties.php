@@ -1,9 +1,11 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: delete_site_property.php
- * Author: George Ryall, John Casson, David Meredith, James McCarthy
- * Description: Answers a site delete request
+ * File: delete_service_properties.php
+ * Author: Tom Byrne, George Ryall, John Casson, David Meredith, James McCarthy
+ * Description: accepts an array of service property id's and then either
+ * deletes them or prompts the user for confirmation
+ *
  *
  * License information
  *
@@ -25,58 +27,40 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 function delete() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    if (!isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid']) ){
-        throw new Exception("A propertyid must be specified");
-    }   
-    if (!isset($_REQUEST['serviceid']) || !is_numeric($_REQUEST['serviceid']) ){
+    if (empty($_REQUEST['selectedPropIDs'])) {
+        throw new Exception("At least one property must be selected for deletion");
+    }
+    if (!isset($_REQUEST['parentID']) || !is_numeric($_REQUEST['parentID']) ){
         throw new Exception("A service id must be specified");
     }
-    //get the service and property
-    $property = \Factory::getServiceService()->getProperty($_REQUEST['propertyid']);
-    $service = \Factory::getServiceService()->getService($_REQUEST['serviceid']);
+    //get the service and properties, with the properties stored in an array
+    $service = \Factory::getServiceService()->getService($_REQUEST['parentID']);
+    foreach ($_REQUEST['selectedPropIDs'] as $i => $propID){
+        $propertyArray[$i] = \Factory::getServiceService()->getProperty($propID);
 
-    if($_POST) {
-        submit($property, $service, $user);
     }
-    else {
-        draw($property, $service, $user);
-    }
-    
+
+    submit($propertyArray, $service, $user);
 }
 
-function draw(\ServiceProperty $property, \Service $service, \User $user=null) {
-    if(is_null($user)) {
-        throw new Exception("Unregistered users can't delete a service property.");
-    }
-    
-    //Check user has permissions to add site property
-    $serv = \Factory::getServiceService();    
-    $serv->validateAddEditDeleteActions($user, $service);   
-          
-    $params['prop'] = $property;
-    $params['service'] = $service;
-     
-    show_view('/service/delete_service_property.php', $params);     
-}
-
-function submit(\ServiceProperty $property, \Service $service, \User $user = null) {
+function submit(array $propertyArray, \Service $service, \User $user = null) {
     if(is_null($user)) {
         throw new Exception("Unregistered users can't delete a service property.");
     }
 
-    $params['prop'] = $property;
+    $params['propArr'] = $propertyArray;
     $params['service'] = $service;
-     
+
     //remove site property
     try {
      	$serv = \Factory::getServiceService();
-       	$serv->deleteServiceProperty($service, $user, $property);
+       	$serv->deleteServiceProperties($service, $user, $propertyArray);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
     }   
     
     
-    show_view('/service/deleted_service_property.php', $params);
+    show_view('/service/deleted_service_properties.php', $params);
 
 }

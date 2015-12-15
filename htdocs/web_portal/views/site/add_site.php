@@ -113,7 +113,7 @@
         <input class="input_input_text" type="text" name="LONGITUDE" />
         
         <span class="input_name">
-            Description 
+            Description *
             <span class="input_syntax" >(Alphanumeric and basic punctuation)</span>
         </span>
         <input class="input_input_text" type="text" name="DESCRIPTION" />

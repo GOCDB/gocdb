@@ -84,11 +84,11 @@
                 </select>
 	    </div> 
 
-    	    <div class="topMargin leftFloat siteFilter">
+	    <div class="topMargin leftFloat siteFilter">
     		<span class="middle" style="margin-right: 0.4em">Extension Value: </span>
     		<input class="middle" type="text" name="selectedSiteKeyValue" 
 		    <?php if (isset($params['selectedSiteKeyValue'])) echo "value=\"{$params['selectedSiteKeyValue']}\""; ?>/>
-    	    </div>        	
+    	    </div>  
 	    
 	    
 	    <div class="topMargin leftFloat siteFilter clearLeft">
@@ -191,5 +191,5 @@
 	    filter: true,
             placeholder: "Site Scopes"
         });
-    }); 
+    });
 </script>

@@ -200,83 +200,80 @@ class ServiceGroup extends AbstractEntityService{
 	    return $property;
 	}
 	
-	/**
-	 * Edits a service group
-	 * Returns the updated service group
-	 *
-	 * Accepts an array $newValues as a parameter. $newVales' format is as follows:
-	 * <pre>
-	 *  Array
-	 *  (
-	 *      [MONITORED] => Y
-	 *      [NAME] => NGI_AEGIS_SERVICES
-	 *      [DESCRIPTION] => NGI_AEGIS Core Services
-	 *      [EMAIL] => grid-admin@ipb.ac.rs
-	 *
+    /**
+     * Edits a service group
+     * Returns the updated service group
+     *
+     * Accepts an array $newValues as a parameter. $newVales' format is as follows:
+     * <pre>
+     *  Array
+     *  (
+     *      [MONITORED] => Y
+     *      [NAME] => NGI_AEGIS_SERVICES
+     *      [DESCRIPTION] => NGI_AEGIS Core Services
+     *      [EMAIL] => grid-admin@ipb.ac.rs
+     *
      *  )
-	 * </pre>
-	 * @param ServiceGroup The service group to update
-	 * @param array $newValues Array of updated data, specified above.
-	 * @param User The current user
-	 * return ServiceGroup The updated service group
-	 */
-	public function editServiceGroup(\ServiceGroup $sg, $newValues, \User $user = null) {
+     * </pre>
+     * @param ServiceGroup The service group to update
+     * @param array $newValues Array of updated data, specified above.
+     * @param User The current user
+     * return ServiceGroup The updated service group
+     */
+    public function editServiceGroup(\ServiceGroup $sg, $newValues, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-        
-//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
-//            throw new \Exception("You don't have permission over $sg");  
-//        }
-        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
-           throw new \Exception("You don't have permission over this service group.");  
+
+        if ($this->roleActionAuthorisationService->authoriseAction(
+                        \Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE) {
+            throw new \Exception("You don't have permission over this service group.");
         }
-		$this->validate($newValues['SERVICEGROUP']);
-        
+        $this->validate($newValues['SERVICEGROUP']);
+
         //check there are the required number of scopes specified
         $this->checkNumberOfScopes($newValues['Scope_ids']);
-        
-		//Explicity demarcate our tx boundary
-		$this->em->getConnection()->beginTransaction();
 
-		try {
-			if($newValues['MONITORED'] == "Y") {
-				$monitored = true;
-			} else {
-				$monitored = false;
-			}
-			$sg->setMonitored($monitored);
+        //Explicity demarcate our tx boundary
+        $this->em->getConnection()->beginTransaction();
 
-			$sg->setName($newValues['SERVICEGROUP']['NAME']);
-			$sg->setDescription($newValues['SERVICEGROUP']['DESCRIPTION']);
-			$sg->setEmail($newValues['SERVICEGROUP']['EMAIL']);
+        try {
+            if ($newValues['MONITORED'] == "Y") {
+                $monitored = true;
+            } else {
+                $monitored = false;
+            }
+            $sg->setMonitored($monitored);
 
-			// Update the service group's scope
+            $sg->setName($newValues['SERVICEGROUP']['NAME']);
+            $sg->setDescription($newValues['SERVICEGROUP']['DESCRIPTION']);
+            $sg->setEmail($newValues['SERVICEGROUP']['EMAIL']);
+
+            // Update the service group's scope
             // firstly remove all existing scope links
             $scopes = $sg->getScopes();
-            foreach($scopes as $s) {
+            foreach ($scopes as $s) {
                 $sg->removeScope($s);
             }
-          
+
             //find then link each scope specified to the site
-            foreach($newValues['Scope_ids'] as $scopeId){
+            foreach ($newValues['Scope_ids'] as $scopeId) {
                 $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
                 $scope = $this->em->createQuery($dql)
-                             ->setParameter(1, $scopeId)
-                             ->getSingleResult();
+                        ->setParameter(1, $scopeId)
+                        ->getSingleResult();
                 $sg->addScope($scope);
             }
 
-			$this->em->merge($sg);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $ex) {
-			$this->em->getConnection()->rollback();
-			$this->em->close();
-			throw $ex;
-		}
-		return $sg;
-	}
-
+            $this->em->merge($sg);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $ex;
+        }
+        return $sg;
+    }
 
     /**
      * Get an array of Role names granted to the user that permit the requested 
@@ -327,106 +324,99 @@ class ServiceGroup extends AbstractEntityService{
     }*/
     
 
-	/**
-	 * Validates the user inputted service group data against the
-	 * checks in the gocdb_schema.xml.
-	 * @param array $sgData containing all the fields for a GOCDB_USER
-	 *                       object
-	 * @throws \Exception If the site data can't be
-	 *                    validated. The \Exception message will contain a human
-	 *                    readable description of which field failed validation.
-	 * @return null */
-	private function validate($sgData, $type=NULL) {
-	    if($type==NULL){
-	        $type='service_group';
-	    }
-		require_once __DIR__.'/Validate.php';
-		$serv = new \org\gocdb\services\Validate();
-		foreach($sgData as $field => $value) {
-			$valid = $serv->validate($type, $field, $value);
-			if(!$valid) {
-				$error = "$field contains an invalid value: $value";
-				throw new \Exception($error);
-			}
-		}
-	}
+    /**
+     * Validates the user inputted service group data against the
+     * checks in the gocdb_schema.xml.
+     * @param array $sgData containing all the fields for a GOCDB_USER
+     *                       object
+     * @throws \Exception If the site data can't be
+     *                    validated. The \Exception message will contain a human
+     *                    readable description of which field failed validation.
+     * @return null */
+    private function validate($sgData, $type = NULL) {
+        if ($type == NULL) {
+            $type = 'service_group';
+        }
+        require_once __DIR__ . '/Validate.php';
+        $serv = new \org\gocdb\services\Validate();
+        foreach ($sgData as $field => $value) {
+            $valid = $serv->validate($type, $field, $value);
+            if (!$valid) {
+                $error = "$field contains an invalid value: $value";
+                throw new \Exception($error);
+            }
+        }
+    }
 
-	/**
-	 * Attaches services to a service group
-	 * @param ServiceGroup $sg The service group
-	 * @param array $ses An array of Service s
-	 * @param User $user The user making the request
-	 */
-	public function addServices(\ServiceGroup $sg, $ses, \User $user = null) {
+    /**
+     * Attaches services to a service group
+     * @param ServiceGroup $sg The service group
+     * @param array $ses An array of Service s
+     * @param User $user The user making the request
+     */
+    public function addServices(\ServiceGroup $sg, $ses, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-
-//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
-//            throw new \Exception("You don't have permission over $sg");  
-//        }
-        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction()==FALSE){
-           throw new \Exception("You don't have permission over this service group.");  
+        if ($this->roleActionAuthorisationService->authoriseAction(
+                \Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE) {
+            throw new \Exception("You don't have permission over this service group.");
         }
-		$this->em->getConnection()->beginTransaction();
-		try {
-			foreach($ses as $se) {
-				$sg->addService($se);
-			}
-			$this->em->merge($sg);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $ex) {
-			$this->em->getConnection()->rollback();
-			$this->em->close();
-			throw $ex;
-		}
-	}
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($ses as $se) {
+                $sg->addService($se);
+            }
+            $this->em->merge($sg);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $ex;
+        }
+    }
 
-	/**
-	 * Removes a service from a service group
-	 * @param \ServiceGroup $sg The service group
-	 * @param \Service $se The service 
-	 */
-	public function removeService(\ServiceGroup $sg, \Service $se, \User $user = null) {
+    /**
+     * Removes a service from a service group
+     * @param \ServiceGroup $sg The service group
+     * @param \Service $se The service 
+     */
+    public function removeService(\ServiceGroup $sg, \Service $se, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-        
-		//$this->editAuthorization($sg, $user);
-//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
-//            throw new \Exception("You don't have permission over $sg");  
-//        }
-        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
-           throw new \Exception("You don't have permission over this service group");  
+        if ($this->roleActionAuthorisationService->authoriseAction(
+                \Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE) {
+            throw new \Exception("You don't have permission over this service group");
         }
-		$this->em->getConnection()->beginTransaction();
-		try {
-			$sg->removeService($se);
-			$this->em->merge($sg);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $ex) {
-			$this->em->getConnection()->rollback();
-			$this->em->close();
-			throw $ex;
-		}
-	}
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $sg->removeService($se);
+            $this->em->merge($sg);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $ex;
+        }
+    }
 
-	/**
-	 * Array
-	 * (
-	 *     [Scope] => 2
-	 *     [SERVICEGROUP] => Array
-	 *     (
-	 *         [MONITORED] => Y
-	 *         [NAME] => TEST
-	 *         [DESCRIPTION] => This is a test
-	 *         [EMAIL] => JCasson@hithere.com
-	 *     )
-	 * )
-	 * @param array $values Service group values, defined above
-	 * @param \User $user User making the request
-	 */
-	public function addServiceGroup($values, \User $user = null) {
+    /**
+     * Array
+     * (
+     *     [Scope] => 2
+     *     [SERVICEGROUP] => Array
+     *     (
+     *         [MONITORED] => Y
+     *         [NAME] => TEST
+     *         [DESCRIPTION] => This is a test
+     *         [EMAIL] => JCasson@hithere.com
+     *     )
+     * )
+     * @param array $values Service group values, defined above
+     * @param \User $user User making the request
+     */
+    public function addServiceGroup($values, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
                 
@@ -438,8 +428,8 @@ class ServiceGroup extends AbstractEntityService{
 	        throw new \Exception("Unregistered users can't create service groups.");
 	    }
         
-	    $this->em->getConnection()->beginTransaction();
-	    $this->validate($values['SERVICEGROUP']);
+	$this->em->getConnection()->beginTransaction();
+	$this->validate($values['SERVICEGROUP']);
         $this->uniqueCheck($values['SERVICEGROUP']['NAME']);
         
         //check there are the required number of scopes specified
@@ -484,33 +474,33 @@ class ServiceGroup extends AbstractEntityService{
         }
 
         return $sg;
+    }
+
+    /**
+     * Is the passed service group name unique?
+     * @param unknown_type $name
+     */
+    public function uniqueCheck($name) {
+	$dql = "SELECT sg FROM ServiceGroup sg
+		WHERE sg.name = :name";
+	$sgs = $this->em->createQuery($dql)
+	   ->setParameter('name', $name)
+	   ->getResult();
+
+	if(count($sgs) > 0) {
+	    throw new \Exception("A service group named $name already exists");
 	}
+    }
 
-	/**
-	 * Is the passed service group name unique?
-	 * @param unknown_type $name
-	 */
-	public function uniqueCheck($name) {
-	    $dql = "SELECT sg FROM ServiceGroup sg
-	            WHERE sg.name = :name";
-	    $sgs = $this->em->createQuery($dql)
-	       ->setParameter('name', $name)
-	       ->getResult();
-
-	    if(count($sgs) > 0) {
-	        throw new \Exception("A service group named $name already exists");
-	    }
-	}
-
-	/**
-	 * Deletes a service group
-	 * @param \ServiceGroup $sg
-	 * @param \User $user
-	 * @param $isTest when unit testing this allows for true to be supplied and this method
+    /**
+     * Deletes a service group
+     * @param \ServiceGroup $sg
+     * @param \User $user
+     * @param $isTest when unit testing this allows for true to be supplied and this method
      * will not attempt to archive the sg which can easily cause errors for sg objects without
      * a full set of information  
-	 */
-	public function deleteServiceGroup(\ServiceGroup $sg, \User $user = null, $isTest=false) {
+     */
+    public function deleteServiceGroup(\ServiceGroup $sg, \User $user = null, $isTest=false) {
         require_once __DIR__ . '/../DAOs/ServiceGroupDAO.php';
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
@@ -543,7 +533,7 @@ class ServiceGroup extends AbstractEntityService{
             $this->em->close();
             throw $e;
         }
-	}
+    }
     
     private function checkNumberOfScopes($scopeIds){
         require_once __DIR__ . '/Config.php';
@@ -560,8 +550,8 @@ class ServiceGroup extends AbstractEntityService{
     }
     
     /**
-     * This method will check that a user has edit permissions over a service group before allowing a user to add, edit or delete
-     * a site property.
+     * This method will check that a user has edit permissions over a service 
+     * group before allowing a user to add, edit or delete a site property.
      *
      * @param \User $user
      * @param \ServiceGroup $sg
@@ -569,9 +559,6 @@ class ServiceGroup extends AbstractEntityService{
      */
     public function validatePropertyActions(\User $user, \ServiceGroup $sg){
         // Check to see whether the user has a role that covers this site
-//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
-//            throw new \Exception("You don't have permission over $sg");  
-//        }
         if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction()==FALSE){
             throw new \Exception("You don't have permission over ". $sg->getName());
         }
@@ -585,7 +572,7 @@ class ServiceGroup extends AbstractEntityService{
     private function checkNotReserved(\User $user, \ServiceGroup $serviceGroup, $keyname){
         //TODO Function: This function is called but not yet filled out with an action
     }
-    
+
     /**
      * Adds a key value pair to a service group
      * @param $values
@@ -624,40 +611,53 @@ class ServiceGroup extends AbstractEntityService{
     }
     
     /**
-     * Deletes a service group property
-     *
+     * Deletes an existing serviceGroup property that already belongs to the sg. 
+     * A check is performed to confirm the given property is from the serviceGroup,  
+     * an exception is thrown if not.  
+     * 
      * @param \ServiceGroup $serviceGroup
      * @param \User $user
-     * @param \SiteProperty $prop
+     * @param array $propArr {@see \ServiceGroupProperty} objects to delete 
+     * @throws \Exception
      */
-    public function deleteServiceGroupProperty(\ServiceGroup $serviceGroup,\User $user = null,\ServiceGroupProperty $prop) {
+    public function deleteServiceGroupProperties(\ServiceGroup $serviceGroup, \User $user, array $propArr) {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-    
-        $this->em->getConnection ()->beginTransaction ();
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        $this->validatePropertyActions($user, $serviceGroup);
+        $this->em->getConnection()->beginTransaction();
         try {
-            // Site is the owning side so remove elements from site.
-            $serviceGroup->getServiceGroupProperties ()->removeElement ( $prop );
-            $this->em->remove ( $prop );
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            foreach ($propArr as $prop) {
+                //check property is in service
+                if ($prop->getParentServiceGroup() != $serviceGroup) {
+                    $id = $prop->getId();
+                    throw new \Exception("Property {$id} does not belong to the specified service");
+                }
+                // Service is the owning side so remove elements from service.
+                $serviceGroup->getServiceGroupProperties()->removeElement($prop);
+                // Once relationship is removed delete the actual element
+                $this->em->remove($prop);
+            }
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
-    
+
     /**
-     * Edits a service group property
+     * Edits a service group property. 
+     * A check is performed to confirm the given property is from the parent 
+     * serviceGroup, and an exception is thrown if not.
      *
      * @param \ServiceGroup $serviceGroup
      * @param \User $user
      * @param \ServiceGroupProperty $prop
-     * @param $newValues
+     * @param array $newValues
      *        	
      */
-    public function editServiceGroupProperty(\ServiceGroup $serviceGroup,\User $user = null,\ServiceGroupProperty $prop, $newValues) {
+    public function editServiceGroupProperty(\ServiceGroup $serviceGroup,\User $user,\ServiceGroupProperty $prop, $newValues) {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
     
@@ -670,7 +670,12 @@ class ServiceGroup extends AbstractEntityService{
          
         $this->em->getConnection ()->beginTransaction ();
     
-        try {    
+        try {
+            //Check that the prop is from the sg 
+            if ($prop->getParentServiceGroup() != $serviceGroup) {
+                $id = $prop->getId();
+                throw new \Exception("Property {$id} does not belong to the specified ServiceGroup");
+            }
             // Set the site propertys new member variables
             $prop->setKeyName ($keyname);
             $prop->setKeyValue ($keyvalue);

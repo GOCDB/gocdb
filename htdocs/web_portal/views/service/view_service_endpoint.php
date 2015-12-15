@@ -1,9 +1,10 @@
 <?php
 $endpoint = $params['endpoint'];
 $se = $endpoint->getService();
-$properties = $endpoint->getEndpointProperties();
+$extensionProperties = $endpoint->getEndpointProperties();
 $epId = $endpoint->getId();
 $seId = $se->getId();
+
 ?>
 
 <div class="rightPageContainer rounded">
@@ -92,60 +93,22 @@ $seId = $se->getId();
 
 
     <!-- Extension Properties -->
-    <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Endpoint Extension Properties</span>        
-        <img src="<?php echo \GocContextPath::getPath() ?>img/keypair.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-        <table id="endpointExtensionPropsTable" class="table table-striped table-condensed tablesorter">
-	    <thead>
-		<tr>
-		    <th>Name</th>
-		    <th>Value</th>  
-		    <?php if (!$params['portalIsReadOnly']): ?>
-    		    <th>Edit</th>  
-    		    <th>Remove</th>  
-		    <?php endif; ?>              
-		</tr>
-	    </thead>
-	    <tbody>
-		<?php
-		//$num = 2;
-		foreach ($properties as $prop) {
-		    ?>
+	<?php
+	$parent = $params['endpoint'];
+	$propertiesController = "Endpoint_Properties_Controller";
+	$addPropertyURL = "index.php?Page_Type=Add_Endpoint_Property&endpointid=";
+    $editPropertyPage = "Edit_Endpoint_Property";
 
-    		<tr>
-    		    <td style="width: 35%;"class="site_table"><?php xecho($prop->getKeyName()); ?></td>
-    		    <td style="width: 35%;"class="site_table"><?php xecho($prop->getKeyValue()); ?></td>
-			<?php if (!$params['portalIsReadOnly']): ?>	                
-			    <!--<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId(); ?>&endpointid=<?php echo $epId; ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/pencil.png"/></a></td>-->
-			    <td style="width: 10%;"><a href="index.php?Page_Type=Edit_Endpoint_Property&propertyid=<?php echo $prop->getId(); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/pencil.png"/></a></td>
-			    <!--<td style="width: 10%;"align = "center"class="site_table"><a href="index.php?Page_Type=Delete_Endpoint_Property&propertyid=<?php echo $prop->getId(); ?>&endpointid=<?php echo $epId; ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/cross.png"/></a></td>-->
-			    <td style="width: 10%;"><a href="index.php?Page_Type=Delete_Endpoint_Property&propertyid=<?php echo $prop->getId(); ?>"><img height="25px" src="<?php echo \GocContextPath::getPath() ?>img/cross.png"/></a></td>
-			<?php endif; ?>
-    		</tr>
-		    <?php
-		    //if($num == 1) { $num = 2; } else { $num = 1; }
-		}
-		?>
-	    </tbody>
-        </table>
-        <!--  only show this link if we're in read / write mode -->
-	<?php if (!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
-    	<!-- Add new Service Property -->
-    	<a href="index.php?Page_Type=Add_Endpoint_Property&endpointid=<?php echo $endpoint->getId(); ?>">
-    	    <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-    	    <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-    		Add Property
-    	    </span>
-    	</a>
-	<?php endif; ?>
-    </div>
+
+    require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
+	?>
 
     <script type="text/javascript">
 	$(document).ready(function () {
 
 	    // sort on first and second table cols only 
 	    $("#endpointExtensionPropsTable").tablesorter({
-		// pass the headers argument and assing a object 
+		// pass the headers argument and passing a object
 		headers: {
 		    // assign the third column (we start counting zero) 
 		    2: {
