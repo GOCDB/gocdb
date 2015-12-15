@@ -123,7 +123,7 @@ function submit( \Site $site, \User $user = null, array $propArr, $preventOverwr
     $params['propArr'] = $propArr;
     $params['site'] = $site;
 
-    show_view("service/added_site_properties.php", $params);
+    show_view("site/added_site_properties.php", $params);
 }
 
 /**
@@ -136,7 +136,7 @@ function confirm(array $propArr, \Site $site, \User $user = null){
 
     $params['proparr'] = $propArr;
     $params['site'] = $site;
-    show_view("service/add_site_properties_confirmation.php", $params);
+    show_view("site/add_site_properties_confirmation.php", $params);
 }
 
 
@@ -159,7 +159,7 @@ function draw(\User $user = null) {
     $serv->validatePropertyActions($user, $site);
 
     $params['parentid'] = $_REQUEST['parentid'];
-    show_view("service/add_service_properties.php", $params);
+    show_view("site/add_site_properties.php", $params);
 
 }
 
