@@ -443,7 +443,7 @@
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated -->
-	    <regex>/^[^`'\"=()&lt;&gt;]+$/</regex>
+	    <regex>/^[^`'\"&lt;&gt;]+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
@@ -471,7 +471,7 @@
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-	    <regex>/^[^`'\"=()&lt;&gt;]+$/</regex>
+	    <regex>/^[^`'\"&lt;&gt;]+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
@@ -498,7 +498,7 @@
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-	    <regex>/^[^`'\"=()&lt;&gt;]+$/</regex>
+	    <regex>/^[^`'\"&lt;&gt;]+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
@@ -525,7 +525,7 @@
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-	    <regex>/^[^`'\"=()&lt;&gt;]+$/</regex>
+	    <regex>/^[^`'\"&lt;&gt;]+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>

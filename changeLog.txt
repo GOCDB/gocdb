@@ -1,4 +1,4 @@
-GOCDB-5.5 Release (TBC). No DB schema changes.  
+GOCDB-5.5 Release (02/12/2015 ). No DB schema changes.  
   - Added 'Action to take For all child service scopes' field when editing a 
     site so that the site's scopes can be easily inherited or used to override 
     all child service scopes. 

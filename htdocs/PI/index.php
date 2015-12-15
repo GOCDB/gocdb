@@ -146,7 +146,8 @@ class PIRequest {
 		    break;
 		case "get_site_security_info":
 		    require_once($directory . 'GetSiteSecurityInfo.php');
-		    $this->authAcl();
+		    //$this->authAcl();
+                    $this->authAnyCert();
 		    $getSiteSecurityInfo = new GetSiteSecurityInfo($em);
 		    $getSiteSecurityInfo->validateParameters($this->params);
 		    $getSiteSecurityInfo->createQuery();

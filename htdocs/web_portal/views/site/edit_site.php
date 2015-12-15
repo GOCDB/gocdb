@@ -116,7 +116,7 @@ $siteScopes = $site->getScopes();
         
         <!-- Description -->
         <span class="input_name">
-            Description
+            Description *
             <span class="input_syntax" >
                 (Alphanumeric and basic punctuation)
             </span>

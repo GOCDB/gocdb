@@ -14,9 +14,10 @@ namespace org\gocdb\services;
 
 
 /**
- * GOCDB Stateless service for GOCDB and GOCDB-PROM object configuration.
+ * GOCDB Stateless service for GOCDB configuration settings in config files:  
+ * <code>config/local_info.xml</code> and <code>config/gocdb_schema.xml</code>.
  *
- * @author David Meredith
+ * @author David Meredith <david.meredith@stfc.ac.uk> 
  * @author John Casson
  */
 class Config {
@@ -116,7 +117,7 @@ class Config {
 
         return strval($scopeMatch);
     }
-    
+
     public function  getMinimumScopesRequired($entityType){
         $supportedEntities = array('ngi', 'site', 'service', 'service_group');
         

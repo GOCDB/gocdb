@@ -3,7 +3,8 @@
 * Add a unique constraint on the Doctrine annotation for the ServiceGroup name attribute. 
 * Refactor page view/template logic and remove NASTY menu/header/footer php 
   rendering logic (an inherited legacy). A real MVC framework for the view 
-  would also be far preferable than the current home-cooked MVC layer.   
+  would be far preferable than the current home-cooked MVC layer which incurs
+  a large overhead to develop.   
 * Improve the forms to add/edit NGIs/Sites/Services to use the jquery form 
   validation plugin (see Edit_Service_Endpoint and Add_Service_Endpoint pages 
   which already use this plugin). 
@@ -46,11 +47,14 @@
   and better rendering of extension properties in a sortable table with selectAll, 
   deselectAll, and actions such as delete, duplicate. 
 * Add a new view to display the list of service types and their descriptions. 
+* Allow multiple serviceTypes to be specified when filtering services (GUI+PI). 
+* Introduce 'Reserved' scope-tags that can only be assigned to resources (sites/services/endpoints/ngis/sgs)
+  by the gocdb-admins or by selected Roles. Needed to prevent self-assigned scope-tags. 
 * When filtering sites/services/SGs via the GUI, add a new GUI component to
   select zero or more custom properties and allow a value to be optionally 
-  specified for the property with a select for AND or NOT. Perhaps a multi-select 
-  pull-down so when a custom prop is selected, a new row is entered into a table
-  which allows the user to specify a value for the prop and provides the AND/NOT option. 
+  specified for the property with an AND/NOT selection pull-down.  
+  Using the multi-select pull-down, when a custom prop is selected, a new row is entered into a table
+  which allows the user to specify a value for the prop and selects the AND/NOT option. 
   The user should be able to edit/delete the added rows. The values entered into 
   the table can then be used to build an extensions expression as is used in the PI.  
 * More comprehensive change logging: https://rt.egi.eu/rt/Ticket/Display.html?id=9431 
