@@ -1,11 +1,15 @@
     <form name="Add_Property" action="index.php?Page_Type=<?php echo $addPropertiesURL;?>" method="post" class="inputForm" id="Property_Form"">
 
         <br />
+        <div class="form-group">
+            <input class="form-control singleProp" type="text" placeholder="Property Name" name="KEYPAIRNAME" id="KEYPAIRNAME" />
+        </div>
 
-        <input class="form-control singleProp" type="text" placeholder="Property Name" name="KEYPAIRNAME" />
         <br />
+        <div class="form-group">
+            <input class="form-control singleProp" type="text" placeholder="Property Value" name="KEYPAIRVALUE" id="KEYPAIRVALUE" />
+        </div>
 
-        <input class="form-control singleProp" type="text" placeholder="Property Value" name="KEYPAIRVALUE" />
         <br />
 
         <input class="input_input_text " type="hidden" name ="PARENT" value="<?php echo $parentID;?>" />
@@ -35,6 +39,58 @@
     </div>
 
     <script type="text/javascript">
+
+        //This chunk helps the jquery validator integrate with the bootstrap ui bits
+        $.validator.setDefaults({
+            highlight: function(element) {
+                $(element).closest('.form-group').addClass('has-error');
+            },
+            unhighlight: function(element) {
+                $(element).closest('.form-group').removeClass('has-error');
+            },
+            errorElement: 'span',
+            errorClass: 'help-block',
+            errorPlacement: function(error, element) {
+                if(element.parent('.input-group').length) {
+                    error.insertAfter(element.parent());
+                } else {
+                    error.insertAfter(element);
+                }
+            }
+        });
+
+        $.validator.addMethod("validateKeyName", function(value) {
+            var regEx = /^[a-zA-Z0-9\s@_\-\[\]\+\.]+$/;
+            return regEx.test(value);
+        }, 'Invalid Key Name.');
+
+        $.validator.addMethod("validateKeyValue", function(value) {
+            var regEx = /^[^`'\"&lt;&gt;]+$/;
+            return regEx.test(value);
+        }, 'Invalid Key Value.');
+
+        $("#Property_Form").validate({
+            rules: {
+                KEYPAIRNAME: {
+                    required: true,
+                    validateKeyName: "",
+                    maxlength: 255
+                },
+                KEYPAIRVALUE: {
+                    required: true,
+                    validateKeyValue: "",
+                    maxlength: 255
+                }
+            }
+        });
+
+        $("#Properties_Form").validate({
+            rules: {
+                PROPERTIES: {
+                    required: true
+                }
+            }
+        });
 
         var fileInput = $('#files');
         var uploadButton = $('#upload');
