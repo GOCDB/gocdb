@@ -1,14 +1,15 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: my_sites.php
- * Author: John Casson, David Meredith (modifications)
- * Description: Controller for showing the user's sites, NGIs and service
- *              groups
+ * File: export_properties.php
+ * Author: Tom Byrne
+ * Description: Outputs an objects properties in a .prop style
+ *              Accepts object type, and id
+ *
  *
  * License information
  *
- * Copyright 2011 STFC
+ * Copyright 2015 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -44,6 +45,8 @@ function export() {
             $params['properties'] = $serviceGroup->getServiceGroupProperties();
             break;
     }
+
+    //The "true" as the 4th arg tells show_view not to draw the header and sidebar
     show_view('exportProperties.php', $params, null, true);
 
 }

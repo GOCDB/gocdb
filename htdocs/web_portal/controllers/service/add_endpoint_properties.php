@@ -1,8 +1,8 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: add_service_properties.php
- * Author: John Casson, George Ryall, David Meredith, James McCarthy
+ * File: add_endpoint_properties.php
+ * Author: John Casson, George Ryall, David Meredith, James McCarthy, Tom Byrne
  * Description: Processes a new property request. If the user
  *              hasn't POSTed any data we draw the add property
  *              form. If they post data we assume they've posted it from

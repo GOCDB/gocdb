@@ -222,7 +222,6 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
     </div>
 
     <!--  Service Group Properties -->
-
     <?php
     $parent = $params['sGroup'];
     $propertiesController = "Service_Group_Properties_Controller";

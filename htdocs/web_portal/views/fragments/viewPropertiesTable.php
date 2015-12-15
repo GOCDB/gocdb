@@ -2,15 +2,10 @@
 <!--  Custom Properties -->
 <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
     <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Extension Properties</span>
-    <!--    <a id="exportPropLink">-->
-    <!--        <span class="header" style="float: right; padding-right: 1em; padding-top: 0.9em; padding-bottom: 0.5em; cursor: pointer;">-->
-    <!--            Export Properties-->
-    <!--        </span>-->
-    <!--    </a>-->
     <a href="index.php?Page_Type=Export_Properties&parent_type=<?php echo get_class($parent)?>&id=<?php echo $parent->getId();?>">
-                <span class="header" style="vertical-align:middle; float: right; padding-top: 0.9em; padding-left: 1em;">
-                        Export Properties
-                </span>
+        <span class="header" style="vertical-align:middle; float: right; padding-top: 0.9em; padding-left: 1em;">
+            Export Properties
+        </span>
     </a>
     <table id="extensionPropsTable" class="table table-striped table-condensed tablesorter">
         <thead>

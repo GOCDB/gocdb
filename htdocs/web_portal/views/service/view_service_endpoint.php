@@ -91,11 +91,10 @@ $seId = $se->getId();
 	More (GLUE2) attributes can be added on request - please contact gocdb developers.  
     </div>                 
 
-
     <!-- Extension Properties -->
-	<?php
-	$parent = $params['endpoint'];
-	$propertiesController = "Endpoint_Properties_Controller";
+    <?php
+    $parent = $params['endpoint'];
+    $propertiesController = "Endpoint_Properties_Controller";
     $addPropertiesPage = "Add_Endpoint_Properties";
     $editPropertyPage = "Edit_Endpoint_Property";
 

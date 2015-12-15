@@ -316,7 +316,6 @@ $configService = \Factory::getConfigService();
    
     
     <!--  Service Properties -->
-
     <?php
     $parent = $params['se'];
     $propertiesController = "Service_Properties_Controller";
