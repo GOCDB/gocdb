@@ -74,7 +74,7 @@ function add_endpoint_properties() {
         elseif (isset($_REQUEST['KEYPAIRNAME']) && isset($_REQUEST['KEYPAIRVALUE'])) {
             $propertyArray = array(
                 array(
-                    $_REQUEST['KEYPAIRNAME'], $_REQUEST['KEYPAIRVALUE']
+                    trim($_REQUEST['KEYPAIRNAME']), trim($_REQUEST['KEYPAIRVALUE'])
                 )
             );
             //will go straight to submit()
