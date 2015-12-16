@@ -120,6 +120,7 @@ class Factory {
             self::$siteService = new org\gocdb\services\Site();
             self::$siteService->setEntityManager(self::getEntityManager()); 
             self::$siteService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
+            self::$siteService->setScopeService(self::getScopeService()); 
         }
         return self::$siteService;
     }
@@ -135,6 +136,7 @@ class Factory {
             self::$serviceGroupService = new org\gocdb\services\ServiceGroup();
             self::$serviceGroupService->setEntityManager(self::getEntityManager());
             self::$serviceGroupService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService()); 
+            self::$serviceGroupService->setScopeService(self::getScopeService());
         }
         return self::$serviceGroupService;
     }
@@ -163,6 +165,7 @@ class Factory {
             self::$seService = new org\gocdb\services\ServiceService();
             self::$seService->setEntityManager(self::getEntityManager()); 
             self::$seService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService());
+            self::$seService->setScopeService(self::getScopeService()); 
         }
         return self::$seService;
     }

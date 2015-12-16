@@ -215,6 +215,32 @@
         </RoleMapping> 
         -->
 
+
+         
+	<!--
+        TODO - Only Project level users can assign reserved scope tags to resources in their project.  
+        Useless until a dedicated interface is added which allows project-level users 
+        to edit reserved scopes on resources (Edit Site/Service/NGI Reserved Scopes), especially 
+        since rule-mappings may prevent proj-level users from adding/editing sites/services.  
+        -->
+<!--        <RoleMapping> 
+           <Roles>
+               <RoleRef idRef="COD_STAFF"/>
+               <RoleRef idRef="COD_ADMIN"/>
+               <RoleRef idRef="EGI_CSIRT_OFFICER"/>
+               <RoleRef idRef="COO"/>
+           </Roles>  
+           <EnabledActions> 
+                <Actions>
+                    <Action>ACTION_APPLY_RESERVED_SCOPE_TAG</Action>
+                </Actions> 
+             <Target>Ngi</Target>   
+             <Target>Site</Target>   
+             <Target>Project</Target>   
+           </EnabledActions> 
+        </RoleMapping> -->
+       
+
     </RoleActionMapping> 
 
 </RoleActionMappingRules>

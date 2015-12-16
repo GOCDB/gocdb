@@ -52,7 +52,7 @@ function draw() {
     checkUserIsAdmin();
     
     //Get the list of scopes to chose from and the minimum number that need to be selected
-    $params['Scopes']  = \Factory::getScopeService()->getDefaultScopesSelectedArray();
+    $params['Scopes']  = \Factory::getScopeService()->getAllScopesMarkDefault();
     $params['NumberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
     
     //show the add NGI view

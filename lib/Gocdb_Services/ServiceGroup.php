@@ -15,6 +15,8 @@ require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/RoleConstants.php';
 require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
+require_once __DIR__.  '/Scope.php';
+require_once __DIR__.  '/Config.php';
 
 /**
  * GOCDB Stateless service facade (business routnes) for Service Group objects.
@@ -42,13 +44,29 @@ class ServiceGroup extends AbstractEntityService{
      */
 
     private $roleActionAuthorisationService;
+    private $scopeService; 
+    private $configService; 
 
     function __construct(/*$roleActionAuthorisationService*/) {
         parent::__construct();
         //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+         $this->configService = new Config(); 
     }
 
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\Scope $scopeService
+     */
+    public function setScopeService(Scope $scopeService){
+        $this->scopeService = $scopeService; 
+    }
 
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\RoleActionAuthorisationService $roleActionAuthService
+     */
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
         $this->roleActionAuthorisationService = $roleActionAuthService; 
     }
@@ -200,83 +218,121 @@ class ServiceGroup extends AbstractEntityService{
 	    return $property;
 	}
 	
-	/**
-	 * Edits a service group
-	 * Returns the updated service group
-	 *
-	 * Accepts an array $newValues as a parameter. $newVales' format is as follows:
-	 * <pre>
-	 *  Array
-	 *  (
-	 *      [MONITORED] => Y
-	 *      [NAME] => NGI_AEGIS_SERVICES
-	 *      [DESCRIPTION] => NGI_AEGIS Core Services
-	 *      [EMAIL] => grid-admin@ipb.ac.rs
-	 *
+    /**
+     * Edits a service group
+     * Returns the updated service group
+     *
+     * Accepts an array $newValues as a parameter. $newVales' format is as follows:
+     * <pre>
+     *  Array
+     *  (
+     *      [MONITORED] => Y
+     *      [NAME] => NGI_AEGIS_SERVICES
+     *      [DESCRIPTION] => NGI_AEGIS Core Services
+     *      [EMAIL] => grid-admin@ipb.ac.rs
+     *
      *  )
-	 * </pre>
-	 * @param ServiceGroup The service group to update
-	 * @param array $newValues Array of updated data, specified above.
-	 * @param User The current user
-	 * return ServiceGroup The updated service group
-	 */
-	public function editServiceGroup(\ServiceGroup $sg, $newValues, \User $user = null) {
+     * </pre>
+     * @param ServiceGroup The service group to update
+     * @param array $newValues Array of updated data, specified above.
+     * @param User The current user
+     * return ServiceGroup The updated service group
+     */
+    public function editServiceGroup(\ServiceGroup $sg, $newValues, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-        
-//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
-//            throw new \Exception("You don't have permission over $sg");  
-//        }
-        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
-           throw new \Exception("You don't have permission over this service group.");  
+
+        if ($this->roleActionAuthorisationService->authoriseAction(
+                        \Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE) {
+            throw new \Exception("You don't have permission over this service group.");
         }
-		$this->validate($newValues['SERVICEGROUP']);
+        $this->validate($newValues['SERVICEGROUP']);
+
+        // EDIT SCOPE TAGS: 
+        // collate selected scopeIds (reserved and non-reserved)
+        $scopeIdsToApply = array(); 
+        foreach($newValues['Scope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        foreach($newValues['ReservedScope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
+        // Check Reserved scopes
+        // When normal users EDIT the site, the selected scopeIds should 
+        // be checked to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        // 
+        // Note, on edit we also don't want to enforce cascading of parent NGI scopes to the site,  
+        // as we need to allow an admin to de-select a site's reserved scopes 
+        // (which is a perfectly valid requirement) and prevent re-cascading 
+        // when the user next edits the site! 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $sg->getScopes()->toArray()); 
+            
+            if(count($selectedReservedScopes) != count($existingReservedScopes)) {
+                throw new \Exception("The reserved Scope count does not match the ServiceGroups existing scope count "); 
+            }
+            foreach($selectedReservedScopes as $sc){
+                if(!in_array($sc, $existingReservedScopes)){
+                    throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the ServiceGroup"); 
+                }
+            }
+        }
+        //check there are the required number of optional scopes specified
+        $this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
+               array('excludeReserved' => true), $selectedScopesToApply));
         
         //check there are the required number of scopes specified
-        $this->checkNumberOfScopes($newValues['Scope_ids']);
-        
-		//Explicity demarcate our tx boundary
-		$this->em->getConnection()->beginTransaction();
+        //$this->checkNumberOfScopes($newValues['Scope_ids']);
 
-		try {
-			if($newValues['MONITORED'] == "Y") {
-				$monitored = true;
-			} else {
-				$monitored = false;
-			}
-			$sg->setMonitored($monitored);
+        //Explicity demarcate our tx boundary
+        $this->em->getConnection()->beginTransaction();
+        try {
+            if ($newValues['MONITORED'] == "Y") {
+                $monitored = true;
+            } else {
+                $monitored = false;
+            }
+            $sg->setMonitored($monitored);
 
-			$sg->setName($newValues['SERVICEGROUP']['NAME']);
-			$sg->setDescription($newValues['SERVICEGROUP']['DESCRIPTION']);
-			$sg->setEmail($newValues['SERVICEGROUP']['EMAIL']);
+            $sg->setName($newValues['SERVICEGROUP']['NAME']);
+            $sg->setDescription($newValues['SERVICEGROUP']['DESCRIPTION']);
+            $sg->setEmail($newValues['SERVICEGROUP']['EMAIL']);
 
-			// Update the service group's scope
+            // Update the service group's scope
             // firstly remove all existing scope links
             $scopes = $sg->getScopes();
-            foreach($scopes as $s) {
+            foreach ($scopes as $s) {
                 $sg->removeScope($s);
             }
-          
+
             //find then link each scope specified to the site
-            foreach($newValues['Scope_ids'] as $scopeId){
-                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-                $scope = $this->em->createQuery($dql)
-                             ->setParameter(1, $scopeId)
-                             ->getSingleResult();
-                $sg->addScope($scope);
+//            foreach ($newValues['Scope_ids'] as $scopeId) {
+//                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
+//                $scope = $this->em->createQuery($dql)
+//                        ->setParameter(1, $scopeId)
+//                        ->getSingleResult();
+//                $sg->addScope($scope);
+//            }
+            foreach($selectedScopesToApply as $scope){
+                $sg->addScope($scope); 
             }
 
-			$this->em->merge($sg);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $ex) {
-			$this->em->getConnection()->rollback();
-			$this->em->close();
-			throw $ex;
-		}
-		return $sg;
-	}
-
+            $this->em->merge($sg);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $ex;
+        }
+        return $sg;
+    }
 
     /**
      * Get an array of Role names granted to the user that permit the requested 
@@ -411,40 +467,55 @@ class ServiceGroup extends AbstractEntityService{
 		}
 	}
 
-	/**
-	 * Array
-	 * (
-	 *     [Scope] => 2
-	 *     [SERVICEGROUP] => Array
-	 *     (
-	 *         [MONITORED] => Y
-	 *         [NAME] => TEST
-	 *         [DESCRIPTION] => This is a test
-	 *         [EMAIL] => JCasson@hithere.com
-	 *     )
-	 * )
-	 * @param array $values Service group values, defined above
-	 * @param \User $user User making the request
-	 */
-	public function addServiceGroup($values, \User $user = null) {
+    /**
+     * Array
+     * (
+     *     [Scope] => 2
+     *     [SERVICEGROUP] => Array
+     *     (
+     *         [MONITORED] => Y
+     *         [NAME] => TEST
+     *         [DESCRIPTION] => This is a test
+     *         [EMAIL] => JCasson@hithere.com
+     *     )
+     * )
+     * @param array $values Service group values, defined above
+     * @param \User $user User making the request
+     */
+    public function addServiceGroup($values, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-                
+
         // Any registered user can create a service group. 
-        if(is_null($user)) {
-	        throw new \Exception("Unregistered users can't create service groups.");
-	    }
-        if(is_null($user->getId())) {
-	        throw new \Exception("Unregistered users can't create service groups.");
-	    }
-        
-	    $this->em->getConnection()->beginTransaction();
-	    $this->validate($values['SERVICEGROUP']);
+        if (is_null($user)) {
+            throw new \Exception("Unregistered users can't create service groups.");
+        }
+        if (is_null($user->getId())) {
+            throw new \Exception("Unregistered users can't create service groups.");
+        }
+
+        $this->validate($values['SERVICEGROUP']);
         $this->uniqueCheck($values['SERVICEGROUP']['NAME']);
-        
-        //check there are the required number of scopes specified
+
+        // ADD SCOPE TAGS: 
+        // collate selected reserved and non-reserved scopeIds
+        $allSelectedScopeIds = array(); 
+        foreach($values['Scope_ids'] as $sid){
+            $allSelectedScopeIds[] = $sid; 
+        }
+        // only admin can add reserved scopes as unlike sites/serivces,
+        // the reserved scopes can't be inherited from a parent. 
+        if($user->isAdmin()){
+            // if user is admin, allow them to add any reserved scope tag 
+            foreach($values['ReservedScope_ids'] as $sid){
+                $allSelectedScopeIds[] = $sid; 
+            }
+        }
+
+        //check there are the required number of Optional scopes specified
         $this->checkNumberOfScopes($values['Scope_ids']);
-        
+
+        $this->em->getConnection()->beginTransaction();
         try {
             $sg = new \ServiceGroup();
             $sg->setName($values['SERVICEGROUP']['NAME']);
@@ -457,24 +528,24 @@ class ServiceGroup extends AbstractEntityService{
             } else {
                 $sg->setMonitored(false);
             }
-            
+
             // Set the scopes
-            foreach($values['Scope_ids'] as $scopeId){
+            foreach($allSelectedScopeIds as $scopeId){
                 $dql = "SELECT s FROM Scope s WHERE s.id = :id";
                 $scope = $this->em->createQuery($dql)
-                    ->setParameter('id', $scopeId)
-                    ->getSingleResult();
+                        ->setParameter('id', $scopeId)
+                        ->getSingleResult();
                 $sg->addScope($scope);
             }
 
             $this->em->persist($sg);
-            
+
             $sgAdminroleType = $this->em->createQuery("SELECT rt FROM RoleType rt WHERE rt.name = ?1")
-                ->setParameter(1, 'Service Group Administrator')
-                ->getSingleResult();
+                    ->setParameter(1, 'Service Group Administrator')
+                    ->getSingleResult();
             $newRole = new \Role($sgAdminroleType, $user, $sg, \RoleStatus::GRANTED);
             $this->em->persist($newRole);
-                
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -484,9 +555,9 @@ class ServiceGroup extends AbstractEntityService{
         }
 
         return $sg;
-	}
+    }
 
-	/**
+    /**
 	 * Is the passed service group name unique?
 	 * @param unknown_type $name
 	 */
@@ -549,13 +620,8 @@ class ServiceGroup extends AbstractEntityService{
         require_once __DIR__ . '/Config.php';
         $configService = new \org\gocdb\services\Config();
         $minumNumberOfScopes = $configService->getMinimumScopesRequired('service_group');
-        
         if(sizeof($scopeIds)<$minumNumberOfScopes){
-            $s = "s";
-            if($minumNumberOfScopes==1){
-                $s="";
-            }
-            throw new \Exception("A service group must have at least " . $minumNumberOfScopes . " scope".$s." assigned to it.");
+            throw new \Exception("A service group must have at least " . $minumNumberOfScopes . " scope(s) assigned to it.");
         }
     }
     

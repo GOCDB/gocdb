@@ -55,13 +55,13 @@ function draw(\User $user = null) {
     if($user == null){
        throw new Exception('You do not have permission to edit this NGI, null user'); 
     }
-    //if(count($serv->authorize Action(Action::EDIT_OBJECT, $ngi, $user)) == 0){ 
-    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(Action::EDIT_OBJECT, $ngi, $user)->getGrantAction() == FALSE){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
+            Action::EDIT_OBJECT, $ngi, $user)->getGrantAction() == FALSE){
         throw new Exception('You do not have permission to edit this NGI');
     }
      
     $params = array('ngi' => $ngi);
-    $params['scopes'] = \Factory::getScopeService()->getScopesSelectedArray($ngi->getScopes());
+    $params['scopes'] = \Factory::getScopeService()->getAllScopesMarkProvided($ngi->getScopes());
     $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
     
     show_view('ngi/edit_ngi.php', $params);

@@ -14,15 +14,20 @@ namespace org\gocdb\services;
 
 
 /**
- * GOCDB Stateless service for GOCDB configuration settings in config files:  
+ * GOCDB service for GOCDB configuration settings in config files:  
  * <code>config/local_info.xml</code> and <code>config/gocdb_schema.xml</code>.
  *
  * @author David Meredith <david.meredith@stfc.ac.uk> 
  * @author John Casson
  */
 class Config {
+    private $gocdb_schemaFile;   
+    private $local_infoFile; 
+    
 
     public function __construct() {
+        $this->gocdb_schemaFile = __DIR__."/../../config/gocdb_schema.xml";
+        $this->local_infoFile =  __DIR__."/../../config/local_info.xml"; 
     }
 
     /**
@@ -30,7 +35,23 @@ class Config {
      * @return string
      */
     public function getSchemaFileLocation(){
-       return  __DIR__."/../../config/gocdb_schema.xml";
+       return $this->gocdb_schemaFile;
+    }
+
+    /**
+     * Set the full path to the 'gocdb_schema.xml' config file. 
+     * <p>
+     * Useful for testing when creating a sample seed configuration. If not 
+     * set, then defaults to <src>__DIR__."/../../config/gocdb_schema.xml</src> 
+     * 
+     * @param string $filePath
+     * @throws \LogicException If not a string
+     */
+    public function setSchemaFileLocation($filePath){
+        if(!is_string($filePath)){
+            throw new \LogicException("Invalid filePath given for gocdb_schema.xml file"); 
+        }
+        $this->gocdb_schemaFile = $filePath; 
     }
 
     /**
@@ -38,7 +59,23 @@ class Config {
      * @return string
      */
     public function getLocalInfoFileLocation(){
-      return __DIR__."/../../config/local_info.xml";
+        return $this->local_infoFile;
+    }
+
+    /**
+     * Set the full path to the 'local_info.xml' config file. 
+     * <p>
+     * Useful for testing when creating a sample seed configuration. If not 
+     * set, then defaults to <src>__DIR__."/../../config/local_info.xml</src> 
+     * 
+     * @param string $filePath
+     * @throws \LogicException If not a string
+     */
+    public function setLocalInfoFileLocation($filePath){
+        if(!is_string($filePath)){
+            throw new \LogicException("Invalid filePath given for local_info.xml file"); 
+        }
+        $this->local_infoFile = $filePath;  
     }
 
     /**
@@ -132,6 +169,27 @@ class Config {
         }
         
         return intval($numScopesRequired);
+    }
+
+
+    /**
+     * Get an array of 'reserved' scope strings or an empty array if non are configured. 
+     * <p>
+     * Reserved scopes can only be assiged by gocdb admin (and in future by selected roles);  
+     * they can't be freely assigned to resources by their users/owners. 
+     * @return array Reserved scopes as Strings
+     */ 
+    public function getReservedScopeList(){
+	$reservedScopes = array(); 
+	/* @var $reserved_scopes \SimpleXMLElement */ 
+	$reserved_scopes = $this->GetLocalInfoXML()->local_info->reserved_scopes; 	
+	if($reserved_scopes != null){
+	    /* @var $scope \SimpleXMLElement */ 
+	    foreach($reserved_scopes->children() as $scope){
+		$reservedScopes[] = (string)$scope; 
+	    }
+	}
+	return $reservedScopes; 
     }
      
     public function getShowMapOnStartPage(){
