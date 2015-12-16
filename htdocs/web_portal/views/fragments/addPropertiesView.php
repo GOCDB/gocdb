@@ -108,7 +108,7 @@
                 reader.readAsText(textFile);
                 $(reader).on('load', processFile);
             } else {
-                alert('Please upload a file before continuing')
+                alert('Please select a file to upload')
             }
         });
 
@@ -130,7 +130,7 @@
 
                 $('.expandMulti').click(function(){
                     $('.multiInput').slideToggle('fast');
-                    $('#Property_Form :input').prop("disabled", function(i,v){return !v;});
+                    $('#Property_Form').find(':input').prop("disabled", function(i,v){return !v;});
                 });
             }
         );
