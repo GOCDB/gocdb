@@ -61,15 +61,15 @@ class ServiceGroup extends AbstractEntityService{
      * @return ServiceGroup a service group object
      */
     public function getServiceGroup($id) {
-    	$dql = "SELECT s FROM ServiceGroup s
-				WHERE s.id = :sGroupId";
+        $dql = "SELECT s FROM ServiceGroup s
+                WHERE s.id = :sGroupId";
 
-    	$serviceGroup = $this->em
-        	->createQuery($dql)
-        	->setParameter('sGroupId', $id)
-        	->getSingleResult();
+        $serviceGroup = $this->em
+            ->createQuery($dql)
+            ->setParameter('sGroupId', $id)
+            ->getSingleResult();
 
-    	return $serviceGroup;
+        return $serviceGroup;
     }
 
     /**
@@ -88,12 +88,12 @@ class ServiceGroup extends AbstractEntityService{
      * @return array ServiceGroup array
      */
     public function getServiceGroupsFilterByParams($filterParams){
-	require_once __DIR__.'/PI/GetServiceGroup.php'; 
-	$getSg = new GetServiceGroup($this->em); 
-	$getSg->validateParameters($filterParams); 
-	$getSg->createQuery(); 
-	$sgs = $getSg->executeQuery(); 
-	return $sgs; 
+    require_once __DIR__.'/PI/GetServiceGroup.php';
+    $getSg = new GetServiceGroup($this->em);
+    $getSg->validateParameters($filterParams);
+    $getSg->createQuery();
+    $sgs = $getSg->executeQuery();
+    return $sgs;
     }
 
     /**
@@ -104,102 +104,102 @@ class ServiceGroup extends AbstractEntityService{
      * @return array An array of ServiceGroup objects
      */
     public function getServiceGroups($scope = NULL, $keyname = NULL, $keyvalue = NULL) {
-	$qb = $this->em->createQueryBuilder();
-	$qb->select('s', 'sc')->from('ServiceGroup', 's')
-		->leftJoin('s.scopes', 'sc');
+    $qb = $this->em->createQueryBuilder();
+    $qb->select('s', 'sc')->from('ServiceGroup', 's')
+        ->leftJoin('s.scopes', 'sc');
 
-	if ($scope != null && $scope != '%%') {
-	    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
-		    ->setParameter(':scope', $scope);
-	}
+    if ($scope != null && $scope != '%%') {
+        $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
+            ->setParameter(':scope', $scope);
+    }
 
-	if ($keyname != null && $keyname != '%%') {
-	    if ($keyvalue == null || $keyvalue == '') {
-		$keyvalue = '%%';
-	    }
+    if ($keyname != null && $keyname != '%%') {
+        if ($keyvalue == null || $keyvalue == '') {
+        $keyvalue = '%%';
+        }
 
-	    $sQ = $this->em->createQueryBuilder();
-	    $sQ->select('s1' . '.id')
-		    ->from('ServiceGroup', 's1')
-		    ->join('s1.serviceGroupProperties', 'sp')
-		    ->andWhere($sQ->expr()->andX(
-				    $sQ->expr()->eq('sp.keyName', ':keyname'), $sQ->expr()->like('sp.keyValue', ':keyvalue')));
+        $sQ = $this->em->createQueryBuilder();
+        $sQ->select('s1' . '.id')
+            ->from('ServiceGroup', 's1')
+            ->join('s1.serviceGroupProperties', 'sp')
+            ->andWhere($sQ->expr()->andX(
+                    $sQ->expr()->eq('sp.keyName', ':keyname'), $sQ->expr()->like('sp.keyValue', ':keyvalue')));
 
-	    $qb->andWhere($qb->expr()->in('s', $sQ->getDQL()));
-	    $qb->setParameter(':keyname', $keyname)
-		    ->setParameter(':keyvalue', $keyvalue);
-	}
+        $qb->andWhere($qb->expr()->in('s', $sQ->getDQL()));
+        $qb->setParameter(':keyname', $keyname)
+            ->setParameter(':keyvalue', $keyvalue);
+    }
 
-	$query = $qb->getQuery();
-	$serviceGroups = $query->execute();
-	return $serviceGroups;
+    $query = $qb->getQuery();
+    $serviceGroups = $query->execute();
+    return $serviceGroups;
     }
 
     /**
-	 * Returns the downtimes linked to a service group.
-	 * @param integer $id Service Group ID
-	 * @param integer $dayLimit Limit to downtimes that are only $dayLimit old (can be null) */
-	public function getDowntimes($id, $dayLimit) {
-		if($dayLimit != null) {
-			$di = \DateInterval::createFromDateString($dayLimit . 'days');
-			$dayLimit = new \DateTime();
-			$dayLimit->sub($di);
-		}
+     * Returns the downtimes linked to a service group.
+     * @param integer $id Service Group ID
+     * @param integer $dayLimit Limit to downtimes that are only $dayLimit old (can be null) */
+    public function getDowntimes($id, $dayLimit) {
+        if($dayLimit != null) {
+            $di = \DateInterval::createFromDateString($dayLimit . 'days');
+            $dayLimit = new \DateTime();
+            $dayLimit->sub($di);
+        }
 
-		/*$dql = "SELECT d FROM Downtime d
-				WHERE d.id IN (
-					SELECT d2.id FROM ServiceGroup s
-					JOIN s.services ses
-					JOIN ses.downtimes d2
-					WHERE s.id = :sGroupId
-				)
-				AND (
-					:dayLimit IS NULL
-					OR d.startDate > :dayLimit
-				)";*/
+        /*$dql = "SELECT d FROM Downtime d
+                WHERE d.id IN (
+                    SELECT d2.id FROM ServiceGroup s
+                    JOIN s.services ses
+                    JOIN ses.downtimes d2
+                    WHERE s.id = :sGroupId
+                )
+                AND (
+                    :dayLimit IS NULL
+                    OR d.startDate > :dayLimit
+                )";*/
         $dql = "SELECT d FROM Downtime d
-				WHERE d.id IN (
-					SELECT d2.id FROM ServiceGroup s
-					JOIN s.services ses
+                WHERE d.id IN (
+                    SELECT d2.id FROM ServiceGroup s
+                    JOIN s.services ses
                     JOIN ses.endpointLocations els
-					JOIN els.downtimes d2
-					WHERE s.id = :sGroupId
-				)
-				AND (
-					:dayLimit IS NULL
-					OR d.startDate > :dayLimit
-				)";
+                    JOIN els.downtimes d2
+                    WHERE s.id = :sGroupId
+                )
+                AND (
+                    :dayLimit IS NULL
+                    OR d.startDate > :dayLimit
+                )";
 
-		$downtimes = $this->em
-			->createQuery($dql)
-			->setParameter('sGroupId', $id)
-			->setParameter('dayLimit', $dayLimit)
-			->getResult();
+        $downtimes = $this->em
+            ->createQuery($dql)
+            ->setParameter('sGroupId', $id)
+            ->setParameter('dayLimit', $dayLimit)
+            ->getResult();
 
-		return $downtimes;
-	}
+        return $downtimes;
+    }
 
-	/**
-	 *
-	 * @return array of all properties for a service group
-	 */
-	public function getProperties($id) {
-	    $dql = "SELECT p FROM ServiceGroupProperty p WHERE p.parentServiceGroup_id = :ID";
-	    $properties = $this->em->createQuery ( $dql )->setParameter ( 'ID', $id )->getOneOrNullResult ();
-	    return $properties;
-	}
-	
-	/**
-	 *
-	 * @return a single service group property
-	 */
-	public function getProperty($id) {
-	    $dql = "SELECT p FROM ServiceGroupProperty p WHERE p.id = :ID";
-	    $property = $this->em->createQuery ( $dql )->setParameter ( 'ID', $id )->getOneOrNullResult ();
+    /**
+     *
+     * @return array of all properties for a service group
+     */
+    public function getProperties($id) {
+        $dql = "SELECT p FROM ServiceGroupProperty p WHERE p.parentServiceGroup_id = :ID";
+        $properties = $this->em->createQuery ( $dql )->setParameter ( 'ID', $id )->getOneOrNullResult ();
+        return $properties;
+    }
 
-	    return $property;
-	}
-	
+    /**
+     *
+     * @return a single service group property
+     */
+    public function getProperty($id) {
+        $dql = "SELECT p FROM ServiceGroupProperty p WHERE p.id = :ID";
+        $property = $this->em->createQuery ( $dql )->setParameter ( 'ID', $id )->getOneOrNullResult ();
+
+        return $property;
+    }
+
     /**
      * Edits a service group
      * Returns the updated service group
@@ -232,6 +232,9 @@ class ServiceGroup extends AbstractEntityService{
 
         //check there are the required number of scopes specified
         $this->checkNumberOfScopes($newValues['Scope_ids']);
+        
+        //Explicity demarcate our tx boundary
+        $this->em->getConnection()->beginTransaction();
 
         //Explicity demarcate our tx boundary
         $this->em->getConnection()->beginTransaction();
@@ -422,14 +425,14 @@ class ServiceGroup extends AbstractEntityService{
                 
         // Any registered user can create a service group. 
         if(is_null($user)) {
-	        throw new \Exception("Unregistered users can't create service groups.");
-	    }
+            throw new \Exception("Unregistered users can't create service groups.");
+        }
         if(is_null($user->getId())) {
-	        throw new \Exception("Unregistered users can't create service groups.");
-	    }
+            throw new \Exception("Unregistered users can't create service groups.");
+        }
         
-	$this->em->getConnection()->beginTransaction();
-	$this->validate($values['SERVICEGROUP']);
+    $this->em->getConnection()->beginTransaction();
+    $this->validate($values['SERVICEGROUP']);
         $this->uniqueCheck($values['SERVICEGROUP']['NAME']);
         
         //check there are the required number of scopes specified
@@ -481,15 +484,15 @@ class ServiceGroup extends AbstractEntityService{
      * @param unknown_type $name
      */
     public function uniqueCheck($name) {
-	$dql = "SELECT sg FROM ServiceGroup sg
-		WHERE sg.name = :name";
-	$sgs = $this->em->createQuery($dql)
-	   ->setParameter('name', $name)
-	   ->getResult();
+    $dql = "SELECT sg FROM ServiceGroup sg
+        WHERE sg.name = :name";
+    $sgs = $this->em->createQuery($dql)
+       ->setParameter('name', $name)
+       ->getResult();
 
-	if(count($sgs) > 0) {
-	    throw new \Exception("A service group named $name already exists");
-	}
+    if(count($sgs) > 0) {
+        throw new \Exception("A service group named $name already exists");
+    }
     }
 
     /**
@@ -559,6 +562,9 @@ class ServiceGroup extends AbstractEntityService{
      */
     public function validatePropertyActions(\User $user, \ServiceGroup $sg){
         // Check to see whether the user has a role that covers this site
+//        if(count($this->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
+//            throw new \Exception("You don't have permission over $sg");  
+//        }
         if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction()==FALSE){
             throw new \Exception("You don't have permission over ". $sg->getName());
         }
@@ -574,66 +580,85 @@ class ServiceGroup extends AbstractEntityService{
     }
 
     /**
-     * Adds a key value pair to a service group
-     * @param $values
-     * @param \User $user
-     * @throws Exception
-     * @return \ServiceGroupProperty
-     */
-    public function addProperty($values,\User $user = null) {
-        // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        $this->validate($values['SERVICEGROUPPROPERTIES'], 'servicegroupproperty');
-        
-        $keyname = $values ['SERVICEGROUPPROPERTIES'] ['NAME'];
-        $keyvalue = $values ['SERVICEGROUPPROPERTIES'] ['VALUE'];
-        $serviceGroupID = $values ['SERVICEGROUPPROPERTIES'] ['SERVICEGROUP'];
-        $serviceGroup = $this->getServiceGroup($serviceGroupID);
-        $this->checkNotReserved($user, $serviceGroup, $keyname);
-        
-        $this->em->getConnection ()->beginTransaction ();    
-        try {
-            $serviceGroupProperty = new \ServiceGroupProperty ();
-            $serviceGroupProperty->setKeyName ( $keyname );
-            $serviceGroupProperty->setKeyValue ( $keyvalue );
-            $serviceGroup = $this->em->find ( "ServiceGroup", $serviceGroupID );
-            $serviceGroup->addServiceGroupPropertyDoJoin ( $serviceGroupProperty );
-            $this->em->persist ( $serviceGroupProperty );
-    
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
-        }
-        return $serviceGroupProperty;
-    }
-    
-    /**
-     * Deletes an existing serviceGroup property that already belongs to the sg. 
-     * A check is performed to confirm the given property is from the serviceGroup,  
-     * an exception is thrown if not.  
-     * 
      * @param \ServiceGroup $serviceGroup
      * @param \User $user
-     * @param array $propArr {@see \ServiceGroupProperty} objects to delete 
+     * @param array $propArr
+     * @param bool $preventOverwrite
      * @throws \Exception
      */
-    public function deleteServiceGroupProperties(\ServiceGroup $serviceGroup, \User $user, array $propArr) {
-        // Check the portal is not in read only mode, throws exception if it is
+    public function addProperties(\ServiceGroup $serviceGroup, \User $user, array $propArr, $preventOverwrite = false) {
+        //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
         $this->validatePropertyActions($user, $serviceGroup);
+
+        $existingProperties = $serviceGroup->getServiceGroupProperties();
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
+
         $this->em->getConnection()->beginTransaction();
         try {
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+
+                foreach ($existingProperties as $existProp) {
+                    if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+                        if ($preventOverwrite == false) {
+                            continue 2;
+                        } else {
+                            throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+                        }
+                    }
+                }
+
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $validateArray['SERVICEGROUP'] = $serviceGroup->getId();
+                $this->validate($validateArray, 'servicegroupproperty');
+
+                $property = new \ServiceGroupProperty();
+                $property->setKeyName($key);
+                $property->setKeyValue($value);
+                $serviceGroup->addServiceGroupPropertyDoJoin($property);
+                $this->em->persist($property);
+
+            }
+
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+    public function deleteServiceGroupProperties(\ServiceGroup $serviceGroup,\User $user = null, array $propArr) {
+        // Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+        $this->validatePropertyActions($user, $serviceGroup);
+
+        $this->em->getConnection ()->beginTransaction ();
+        try {
             foreach ($propArr as $prop) {
+
                 //check property is in service
-                if ($prop->getParentServiceGroup() != $serviceGroup) {
+                if ($prop->getParentServiceGroup() != $serviceGroup){
                     $id = $prop->getId();
                     throw new \Exception("Property {$id} does not belong to the specified service");
                 }
+
                 // Service is the owning side so remove elements from service.
-                $serviceGroup->getServiceGroupProperties()->removeElement($prop);
+                $serviceGroup->getServiceGroupProperties ()->removeElement ( $prop );
+
                 // Once relationship is removed delete the actual element
                 $this->em->remove($prop);
             }
@@ -645,7 +670,7 @@ class ServiceGroup extends AbstractEntityService{
             throw $e;
         }
     }
-
+    
     /**
      * Edits a service group property. 
      * A check is performed to confirm the given property is from the parent 

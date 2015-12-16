@@ -54,3 +54,8 @@ dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
+
+#PhpStorm
+#================
+*.iml
+.idea/

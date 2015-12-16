@@ -990,79 +990,69 @@ class Site extends AbstractEntityService{
 	}
 
     /**
-	 * Adds a key value pair to a site
-	 * @param $values
-	 * @param \User $user
-	 * @throws Exception
-	 * @return \SiteProperty
-	 */
-	public function addProperty($values,\User $user = null) {
-	    // Check the portal is not in read only mode, throws exception if it is
-	    $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        
-	    $this->validate($values['SITEPROPERTIES'], 'siteproperty');
-	    
-	    $keyname = $values ['SITEPROPERTIES'] ['NAME'];
-	    $keyvalue = $values ['SITEPROPERTIES'] ['VALUE'];
-	    $siteID = $values ['SITEPROPERTIES'] ['SITE'];
-	    $site = $this->getSite($siteID);
-        
-	    //Validate User to perform this action
-	    $this->validatePropertyActions($user, $site);
+     * Adds a key value pair to a site
+     * @param \Site $site
+     * @param \User $user
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @throws \Exception
+     */
+    public function addProperties(\Site $site, \User $user, array $propArr, $preventOverwrite = false) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        //throw new \Exception(var_dump($propArr));
 
-	    //TODO: Future development possibility to check keyname not reserved
-	    //$this->checkNotReserved($user, $site, $keyname);
-   	    
-	    $this->em->getConnection ()->beginTransaction ();
-	
-	    try {
-		/* @var $siteProperty \SiteProperty */
-	        $siteProperty = new \SiteProperty ();
-	        $siteProperty->setKeyName ( $keyname );
-	        $siteProperty->setKeyValue ( $keyvalue );
-                /* @var $site \Site */
-	        $site = $this->em->find ( "Site", $siteID );
-	        $site->addSitePropertyDoJoin ( $siteProperty );
-	        $this->em->persist ( $siteProperty );
-	        	
-	        $this->em->flush ();
-	        $this->em->getConnection ()->commit ();
-	    } catch ( \Exception $e ) {
-	        $this->em->getConnection ()->rollback ();
-	        $this->em->close ();
-	        throw $e;
-	    }
-	    return $siteProperty;
-	}
-	
-	/**
-     * DEPRECATED
-	 * Deletes a site property
-	 *
-	 * @param \Site $site
-	 * @param \User $user
-	 * @param \SiteProperty $prop
-	 */
-//	public function deleteSiteProperty(\Site $site,\User $user = null,\SiteProperty $prop) {
-//	    // Check the portal is not in read only mode, throws exception if it is
-//	    $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-//
-//	    // Validate the user has permission to delete a property
-//	    $this->validatePropertyActions($user, $site);
-//
-//	    $this->em->getConnection ()->beginTransaction ();
-//	    try {
-//	        // Site is the owning side so remove elements from site.
-//	        $site->getSiteProperties ()->removeElement ( $prop );
-//	        $this->em->remove ( $prop );
-//	        $this->em->flush ();
-//	        $this->em->getConnection ()->commit ();
-//	    } catch ( \Exception $e ) {
-//	        $this->em->getConnection ()->rollback ();
-//	        $this->em->close ();
-//	        throw $e;
-//	    }
-//	}
+        $this->validatePropertyActions($user, $site);
+
+        $existingProperties = $site->getSiteProperties();
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+
+                foreach ($existingProperties as $existProp) {
+                    if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+                        if ($preventOverwrite == false) {
+                            continue 2;
+                        } else {
+                            throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+                        }
+                    }
+                }
+
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $validateArray['SITE'] = $site->getId();
+                $this->validate($validateArray, 'siteproperty');
+
+                $property = new \SiteProperty();
+                $property->setKeyName($key);
+                $property->setKeyValue($value);
+                //$service = $this->em->find("Service", $serviceID);
+                $site->addSitePropertyDoJoin($property);
+                $this->em->persist($property);
+
+            }
+
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
 
     /**
      * Deletes site properties, before deletion a check is done to confirm the property

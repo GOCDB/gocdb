@@ -11,7 +11,7 @@ $service = $params['service'];
         The following properties have been successfully removed from service <?php xecho($service->getHostName());?>:<br/>
     </p>
 
-    <?php require_once __DIR__ . '/../fragments/deletedPropertiesTable.php';?>
+    <?php require_once __DIR__ . '/../fragments/propertiesTable.php';?>
 
     <p>
         <a href="index.php?Page_Type=Service&id=<?php echo $service->getId();?>">View service</a>

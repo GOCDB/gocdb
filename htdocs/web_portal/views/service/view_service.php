@@ -1,5 +1,8 @@
 <?php
 $se = $params['se'];
+//throw new \Exception(var_dump(get_class($se)));
+
+//throw new \Exception(var_dump($se));
 $parentSiteName = $se->getParentSite()->getName();
 $extensionProperties = $se->getServiceProperties();
 $seId = $se->getId();
@@ -313,13 +316,11 @@ $configService = \Factory::getConfigService();
    
     
     <!--  Service Properties -->
-
     <?php
     $parent = $params['se'];
     $propertiesController = "Service_Properties_Controller";
-    $addPropertyURL = "index.php?Page_Type=Add_Service_Property&se=";
+    $addPropertiesPage = "Add_Service_Properties";
     $editPropertyPage = "Edit_Service_Property";
-
 
     require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
     ?>

@@ -307,13 +307,11 @@ $extensionProperties = $site->getSiteProperties();
     </div>
 
     <!--  Site Properties -->
-
-
-	<?php
-	$parent = $site;
-	$propertiesController = "Site_Properties_Controller";
-	$addPropertyURL = "index.php?Page_Type=Add_Site_Property&site=";
-	$editPropertyPage = "Edit_Site_Property";
+    <?php
+    $parent = $site;
+    $propertiesController = "Site_Properties_Controller";
+    $addPropertiesPage = "Add_Site_Properties";
+    $editPropertyPage = "Edit_Site_Property";
 
 
 	require_once __DIR__ . '/../fragments/viewPropertiesTable.php';

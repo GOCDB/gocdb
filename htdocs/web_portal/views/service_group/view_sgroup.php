@@ -222,11 +222,10 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
     </div>
 
     <!--  Service Group Properties -->
-
     <?php
     $parent = $params['sGroup'];
     $propertiesController = "Service_Group_Properties_Controller";
-    $addPropertyURL = "index.php?Page_Type=Add_Service_Group_Property&serviceGroup=";
+    $addPropertiesPage = "Add_Service_Group_Properties";
     $editPropertyPage = "Edit_Service_Group_Property";
 
     require_once __DIR__ . '/../fragments/viewPropertiesTable.php';

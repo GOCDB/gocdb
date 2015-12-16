@@ -820,152 +820,63 @@ class ServiceService extends AbstractEntityService {
 	//TODO Function: This function is called but not yet filled out with an action
     }
 
-    /**
-     * Adds a key value pair to a service
-     * @param $values
-     * @param \User $user
-     * @throws Exception
-     * @return \ServiceProperty
-     */
-    public function addProperty($values, \User $user = null) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$this->validate($values['SERVICEPROPERTIES'], 'serviceproperty');
-
-	$keyname = $values['SERVICEPROPERTIES']['NAME'];
-	$keyvalue = $values['SERVICEPROPERTIES']['VALUE'];
-	$serviceID = $values['SERVICEPROPERTIES']['SERVICE'];
-	$service = $this->getService($serviceID);
-	$this->validateAddEditDeleteActions($user, $service);
-	$this->checkNotReserved($user, $service, $keyname);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    $serviceProperty = new \ServiceProperty();
-	    $serviceProperty->setKeyName($keyname);
-	    $serviceProperty->setKeyValue($keyvalue);
-	    //$service = $this->em->find("Service", $serviceID);
-	    $service->addServicePropertyDoJoin($serviceProperty);
-	    $this->em->persist($serviceProperty);
-
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-	return $serviceProperty;
-    }
-
-    /**
-     * Adds a key value pair to an EndpointLocation.  
-     * @param $values
-     * @param \User $user
-     * @throws Exception
-     * @return \EndpoingLocation 
-     */
-    public function addEndpointProperty($values, \User $user) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$this->validate($values['ENDPOINTPROPERTIES'], 'endpointproperty');
-
-	$keyname = $values['ENDPOINTPROPERTIES']['NAME'];
-	$keyvalue = $values['ENDPOINTPROPERTIES']['VALUE'];
-	$endpointID = $values['ENDPOINTPROPERTIES']['ENDPOINTID'];
-	$endpoint = $this->getEndpoint($endpointID);
-	$service = $endpoint->getService();
-	$this->validateAddEditDeleteActions($user, $service);
-	$this->checkNotReserved($user, $service, $keyname);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    $property = new \EndpointProperty();
-	    $property->setKeyName($keyname);
-	    $property->setKeyValue($keyvalue);
-	    $endpoint->addEndpointPropertyDoJoin($property);
-	    $this->em->persist($property);
-
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-	return $property;
-    }
-
-
-    /**
-     * Deletes service properties
-     * @param \Service $service
-     * @param \User $user
-     * @param array $propArr
-     */
-    public function deleteServiceProperties(\Service $service, \User $user, array $propArr) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$this->validateAddEditDeleteActions($user, $service);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    foreach ($propArr as $prop) {
-		//throw new \Exception(var_dump($prop));
-		//check property is in service
-		if ($prop->getParentService() != $service) {
-		    $id = $prop->getId();
-		    throw new \Exception("Property {$id} does not belong to the specified service");
-		}
-
-		// Service is the owning side so remove elements from service.
-		$service->getServiceProperties()->removeElement($prop);
-		// Once relationship is removed delete the actual element
-		$this->em->remove($prop);
-	    }
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-    }
-
-    
-    /**
-     * Deletes the given EndpointProperties in the array from their parent Endpoints (if set).
-     * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null
-     * then the function throws an exception because the user permissions to delete
-     * the EP can't be determined on a null Endpoint.
-     * @param \User $user
-     * @param array $propArr
-     */
-    public function deleteEndpointProperties(\User $user, array $propArr) {
+	/**
+	 * Adds key value pairs to a service
+	 * @param \Service $service
+	 * @param \User $user
+	 * @param array $propArr
+	 * @param bool $preventOverwrite
+	 * @throws \Exception
+	 */
+    public function addProperties(\Service $service, \User $user, array $propArr, $preventOverwrite = false) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        //throw new \Exception(var_dump($propArr));
+
+        $this->validateAddEditDeleteActions($user, $service);
+
+        $existingProperties = $service->getServiceProperties();
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
 
         $this->em->getConnection()->beginTransaction();
-
         try {
-            foreach ($propArr as $prop) {
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
-                //check endpoint property has an parent endpoint
-                $endpoint = $prop->getParentEndpoint();
-                if ($endpoint == null) {
-                    $id = $prop->getId();
-                    throw new \Exception("Property {$id} does not have a parent endpoint");
-                }
+				foreach ($existingProperties as $existProp) {
+					if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+						if ($preventOverwrite == false) {
+							continue 2;
+						} else {
+							throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+						}
+					}
+				}
 
-                //check user has permissions over the service associated with the endpoint
-                $service = $endpoint->getService();
-                $this->validateAddEditDeleteActions($user, $service);
+                $this->checkNotReserved($user, $service, $key);
 
-                // EndointLocation is the owning side so remove elements from endpoint.
-                $endpoint->getEndpointProperties()->removeElement($prop);
-                // Once relationship is removed delete the actual element
-                $this->em->remove($prop);
-            }
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $this->validate($validateArray, 'serviceproperty');
+
+                $serviceProperty = new \ServiceProperty();
+                $serviceProperty->setKeyName($key);
+                $serviceProperty->setKeyValue($value);
+                //$service = $this->em->find("Service", $serviceID);
+                $service->addServicePropertyDoJoin($serviceProperty);
+				$this->em->persist($serviceProperty);
+
+			}
+
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -974,6 +885,150 @@ class ServiceService extends AbstractEntityService {
             throw $e;
         }
     }
+
+    /**
+     * Adds a key value pair to a service endpoint
+     * @param \EndpointLocation $endpoint
+     * @param \User $user
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @throws \Exception
+     */
+    public function addEndpointProperties(\EndpointLocation $endpoint, \User $user, array $propArr, $preventOverwrite = false) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        //throw new \Exception(var_dump($propArr));
+
+        $this->validateAddEditDeleteActions($user, $endpoint->getService());
+
+        $existingProperties = $endpoint->getEndpointProperties();
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+
+                foreach ($existingProperties as $existProp) {
+                    if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+                        if ($preventOverwrite == false) {
+                            continue 2;
+                        } else {
+                            throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+                        }
+                    }
+                }
+
+                $this->checkNotReserved($user, $endpoint->getService(), $key);
+
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $validateArray['ENDPOINTID'] = $endpoint->getId();
+                $this->validate($validateArray, 'endpointproperty');
+
+
+                $property = new \EndpointProperty();
+                $property->setKeyName($key);
+                $property->setKeyValue($value);
+                $endpoint->addEndpointPropertyDoJoin($property);
+                $this->em->persist($property);
+
+            }
+
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+	/**
+	 * Deletes service properties
+	 * @param \Service $service
+	 * @param \User $user
+	 * @param array $propArr
+	 */
+	public function deleteServiceProperties(\Service $service, \User $user, array $propArr) {
+		//Check the portal is not in read only mode, throws exception if it is
+		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+		$this->validateAddEditDeleteActions($user, $service);
+
+		$this->em->getConnection()->beginTransaction();
+		try {
+			foreach ($propArr as $prop) {
+				//throw new \Exception(var_dump($prop));
+				//check property is in service
+				if ($prop->getParentService() != $service){
+					$id = $prop->getId();
+					throw new \Exception("Property {$id} does not belong to the specified service");
+				}
+
+				// Service is the owning side so remove elements from service.
+				$service->getServiceProperties()->removeElement($prop);
+				// Once relationship is removed delete the actual element
+				$this->em->remove($prop);
+			}
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $e;
+		}
+	}
+
+	/**
+	 * Deletes the given EndpointProperties in the array from their parent Endpoints (if set).
+	 * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null
+	 * then the function throws an exception because the user permissions to delete
+	 * the EP can't be determined on a null Endpoint.
+	 * @param \User $user
+	 * @param array $propArr
+	 */
+	public function deleteEndpointProperties(\User $user, array $propArr) {
+		//Check the portal is not in read only mode, throws exception if it is
+		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			foreach ($propArr as $prop) {
+
+				//check endpoint property has an parent endpoint
+				$endpoint = $prop->getParentEndpoint();
+				if ($endpoint == null){
+					$id = $prop->getId();
+					throw new \Exception("Property {$id} does not have a parent endpoint");
+				}
+
+				//check user has permissions over the service associated with the endpoint
+				$service = $endpoint->getService();
+				$this->validateAddEditDeleteActions($user, $service);
+
+				// EndointLocation is the owning side so remove elements from endpoint.
+				$endpoint->getEndpointProperties()->removeElement($prop);
+				// Once relationship is removed delete the actual element
+				$this->em->remove($prop);
+			}
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $e;
+		}
+	}
 
     /**
      * Edits an existing service property that already belongs to the service. 
@@ -1113,7 +1168,9 @@ class ServiceService extends AbstractEntityService {
     public function moveService(\Service $Service, \Site $Site, \User $user = null) {
 	//Throws exception if user is not an administrator
 	$this->checkUserIsAdmin($user);
+
 	$this->em->getConnection()->beginTransaction(); //suspend auto-commit
+
 	try {
 	    //If the site or service have no ID - throw logic exception
 	    $site_id = $Site->getId();
@@ -1133,6 +1190,7 @@ class ServiceService extends AbstractEntityService {
 
 		//Remove the service from the old site if it has an old site
 		if (!empty($old_Site)) {
+
 		    $old_Site->getServices()->removeElement($Service);
 		}
 
