@@ -837,6 +837,12 @@ class ServiceService extends AbstractEntityService {
 
 		$existingProperties = $service->getServiceProperties();
 
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
+
         $this->em->getConnection()->beginTransaction();
         try {
             foreach ($propArr as $i => $prop) {
@@ -896,6 +902,12 @@ class ServiceService extends AbstractEntityService {
         $this->validateAddEditDeleteActions($user, $endpoint->getService());
 
         $existingProperties = $endpoint->getEndpointProperties();
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
 
         $this->em->getConnection()->beginTransaction();
         try {

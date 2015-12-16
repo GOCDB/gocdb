@@ -594,6 +594,12 @@ class ServiceGroup extends AbstractEntityService{
 
         $existingProperties = $serviceGroup->getServiceGroupProperties();
 
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
+
         $this->em->getConnection()->beginTransaction();
         try {
             foreach ($propArr as $i => $prop) {
