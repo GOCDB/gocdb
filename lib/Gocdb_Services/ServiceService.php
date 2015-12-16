@@ -835,7 +835,7 @@ class ServiceService extends AbstractEntityService {
 
         $this->validateAddEditDeleteActions($user, $service);
 
-		$existingProperties = $service->getServiceProperties();
+        $existingProperties = $service->getServiceProperties();
 
         //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
         $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
