@@ -237,6 +237,7 @@ class Factory {
             self::$ngiService = new org\gocdb\services\NGI();
             self::$ngiService->setEntityManager(self::getEntityManager());
             self::$ngiService->setRoleActionAuthorisationService(self::getRoleActionAuthorisationService());  
+            self::$ngiService->setScopeService(self::getScopeService()); 
         }
         return self::$ngiService;
     }

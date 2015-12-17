@@ -350,9 +350,23 @@ function getNGIDataFromWeb() {
         $NGIValues ['NAME'] = $_REQUEST ['NAME'];
     }
     
-    $scopes = array ();
-    if (isset($_REQUEST ['SCOPE_IDS'])){
-        $scopes = $_REQUEST ['SCOPE_IDS'];
+//    $scopes = array ();
+//    if (isset($_REQUEST ['SCOPE_IDS'])){
+//        $scopes = $_REQUEST ['SCOPE_IDS'];
+//    }
+
+    // get scopes if any are selected, if not set as null
+    $optionalScopes = array(); 
+    if (isset($_REQUEST ['Scope_ids'])){
+        $optionalScopes['Scope_ids'] = $_REQUEST ['Scope_ids'];
+    }else{
+        $optionalScopes['Scope_ids'] = array ();
+    }
+    $reservedScopes = array(); 
+    if (isset($_REQUEST ['ReservedScope_ids'])){
+        $reservedScopes['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    }else{
+        $reservedScopes['ReservedScope_ids'] = array ();
     }
     
     $id = null;
@@ -362,7 +376,9 @@ function getNGIDataFromWeb() {
     
     $values = array (
             'NGI' => $NGIValues,
-            'SCOPES' => $scopes,
+            //'SCOPES' => $scopes,
+            'Scope_ids' => $optionalScopes['Scope_ids'], 
+            'ReservedScope_ids' => $reservedScopes['ReservedScope_ids'], 
             'ID' => $id 
     );
     

@@ -42,7 +42,8 @@
             </span>
         </span>
         <input class="input_input_text" type="text" name="GGUS_SU" value="<?php xecho($params['ngi']->getGgus_Su()); ?>">
-        
+
+        <?php /*
         <span class="input_name">Scope(s)
             <span class="input_syntax">(Select at least <?php xecho($params['numberOfScopesRequired'])?>)</span>
         </span>
@@ -54,9 +55,35 @@
 
         <?php } ?>
         </div>
+         */?>
+
+        <br/>
+        <br/>
+        <!-- Scope Tags-->
+        <div class="h4">Scope Tags
+            <span class="input_syntax">(At least <?php echo $params['numberOfScopesRequired'] ?> Optional tag must be selected)</span>
+        </div>
+        <br/>
+        <div id="allscopeCheckBoxDIV">
+            <h4>Optional Scope Tags</h4>
+            <div id="optionalScopeCheckBoxDIV"></div> 
+            <br/>
+            <h4>Reserved Scope Tags</h4>
+            <div id="reservedScopeCheckBoxDIV"></div> 
+        </div>
             
         <input class="input_input_hidden" type="hidden" name="ID" value="<?php echo $params['ngi']->getId(); ?>">
         <br />
         <input class="input_button" type="submit" value="Update NGI">
     </form>
 </div>
+
+
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/buildScopeCheckBoxes.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
+        addScopeCheckBoxes(scopeJSON, '#reservedScopeCheckBoxDIV', '#optionalScopeCheckBoxDIV', true);
+    });
+</script> 
