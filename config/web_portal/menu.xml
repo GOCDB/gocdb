@@ -8,7 +8,7 @@
     
     <MySites>
         <show_on_instance>all</show_on_instance>
-        <name>My Sites</name>
+        <name>My Resources</name>
         <link>index.php?Page_Type=My_Sites</link>
     </MySites>
     

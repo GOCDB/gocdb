@@ -37,7 +37,7 @@
         'get_site' would return all sites in all scopes. 
         -->
         <default_scope>
-            <name>EGI</name>
+            <name>Scope0</name>
         </default_scope>
         
         <!-- Behaviour related to google API tools -->
@@ -56,9 +56,9 @@
         -->
         <default_scope_match>all</default_scope_match>   
         
-        <!-- Define the minimum number of OPTIONAL scopes required for each IScopedEntity, 
-        Optional scopes are NOT in the reserved_scopes list. 
-        (Should be positive integer or zero). --> 
+        <!-- Define the minimum number of scopes required for each 'scopable' entity
+        (i.e. those entities which implement IScopedEntity.php)
+        Should be positive integer or zero. --> 
         <minimum_scopes>
             <ngi>1</ngi>
             <site>1</site>
@@ -67,17 +67,13 @@
         </minimum_scopes>
 
         <!-- 
-	Specify a list of RESERVED scope tag names that only gocdb-admins can assign to resources.
+	Specify a list of scope tag names that only gocdb-admins can assign to resources.
 	-->
 	<reserved_scopes>
-	    <scope>wlcg</scope>
-	    <scope>tier1</scope>
-	    <scope>tier2</scope>
-	    <scope>alice</scope>
-	    <scope>atlas</scope>
-	    <scope>cms</scope>
-	    <scope>lhcb</scope>
-	    <scope>elixir</scope>
+	    <scope>Scope0</scope>
+	    <scope>Scope1</scope>
+	    <scope>Scope2</scope>
+	    <scope>Scope3</scope>
 	</reserved_scopes>
 		
 	<!-- Define the max amount of extensions a user can define when using the extensions feature -->

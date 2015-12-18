@@ -27,17 +27,32 @@
         </span>
         <input class="add_edit_form" style="width: auto; display: inline;" type="checkbox" name="monitored" value="" checked="checked"/>
 
-        <span class="input_name">Scope(s)
-            <span class="input_syntax">(Select at least <?php echo $params['numberOfScopesRequired']?>)</span>
-        </span>
-        <div style="margin-left: 2em">    
-        <?php foreach ($params['scopes'] as $scopeArray){ ?>
-            <br />
-            <input type="checkbox" name="Scope_ids[]" value="<?php echo $scopeArray['scope']->getId();?>"<?php if($scopeArray['applied']){echo ' checked="checked"';}?>>
-            <?php echo $scopeArray['scope']->getName();?>
 
-        <?php } ?>
+        <br>
+        <br>
+        <div class="h4">Scope Tags
+            <span class="input_syntax">(At least <?php echo $params['numberOfScopesRequired'] ?> Optional tag must be selected)</span>
         </div>
+        <br>
+
+        <div id="allscopeCheckBoxDIV">
+            <h4>Optional Scope Tags</h4>
+            <div id="optionalScopeCheckBoxDIV"></div> 
+            <br/>
+            <h4>Reserved Scope Tags</h4>
+            <div id="reservedScopeCheckBoxDIV"></div> 
+        </div>
+          
+
     	<input class="input_button" type="submit" value="Add Service Group" />
     </form>
 </div>
+
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/buildScopeCheckBoxes.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
+        addScopeCheckBoxes(scopeJSON, '#reservedScopeCheckBoxDIV', '#optionalScopeCheckBoxDIV', true);
+    });
+</script>  

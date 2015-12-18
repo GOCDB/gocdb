@@ -7,19 +7,19 @@ $siteName = $service->getParentSite()->getName();
 <div class="rightPageContainer">
     <form name="Edit_Service" action="index.php?Page_Type=Edit_Service" method="post" class="inputForm">
         <h1>Edit Service</h1>
-    	<br />
+        <br />
 
         <!-- Service Type -->
         <span class="input_name">Service Type</span>
         <select class="add_edit_form" name="serviceType">
-            <?php foreach($serviceTypes as $type) { ?>
-                <option value="<?php echo $type->getId() ?>"<?php if($service->getServiceType() == $type) echo " selected=\"selected\""; ?>><?php echo $type->getName() ?></option>
+            <?php foreach ($serviceTypes as $type) { ?>
+                <option value="<?php echo $type->getId() ?>"<?php if ($service->getServiceType() == $type) echo " selected=\"selected\""; ?>><?php echo $type->getName() ?></option>
             <?php } ?>
         </select>
 
         <!-- URL -->
         <span class="input_name">Service URL
-        	<span class="input_syntax" >
+            <span class="input_syntax" >
                 (RFC 3986 chars)
             </span>
         </span>
@@ -27,7 +27,7 @@ $siteName = $service->getParentSite()->getName();
 
         <!--  Host Name -->
         <span class="input_name">Host name *
-        	<span class="input_syntax" >
+            <span class="input_syntax" >
                 (valid FQDN format)
             </span>
         </span>
@@ -50,7 +50,7 @@ $siteName = $service->getParentSite()->getName();
             </span>
         </span>
         <input class="input_input_text" type="text" name="HOST_IP" value="<?php xecho($service->getIpAddress()) ?>" />
-        
+
         <span class="input_name">
             Host IPv6
             <span class="input_syntax" >
@@ -58,8 +58,8 @@ $siteName = $service->getParentSite()->getName();
             </span>
         </span>
         <input class="input_input_text" type="text" name="HOST_IP_V6" value="<?php xecho($service->getIpV6Address()) ?>" />
-        
-		
+
+
         <!-- Host DN -->
         <span class="input_name">
             Host DN
@@ -101,61 +101,61 @@ $siteName = $service->getParentSite()->getName();
             Is this a beta service (formerly PPS service)?
         </span>
         <select class="add_edit_form" name="HOST_BETA">
-			<option value="N"<?php if($service->getBeta() == false) echo " selected=\"selected\""?>>N</option>
-			<option value="Y"<?php if($service->getBeta() == true) echo " selected=\"selected\""?>>Y</option>
-		</select>
+            <option value="N"<?php if ($service->getBeta() == false) echo " selected=\"selected\"" ?>>N</option>
+            <option value="Y"<?php if ($service->getBeta() == true) echo " selected=\"selected\"" ?>>Y</option>
+        </select>
 
-		<!-- Production -->
+        <!-- Production -->
         <span class="input_name">
             Is this service in production?
         </span>
         <select class="add_edit_form" name="PRODUCTION_LEVEL">
-			<option value="N"<?php if($service->getProduction() == false) echo " selected=\"selected\""?>>N</option>
-			<option value="Y"<?php if($service->getProduction() == true) echo " selected=\"selected\""?>>Y</option>
-		</select>
+            <option value="N"<?php if ($service->getProduction() == false) echo " selected=\"selected\"" ?>>N</option>
+            <option value="Y"<?php if ($service->getProduction() == true) echo " selected=\"selected\"" ?>>Y</option>
+        </select>
 
-		<!-- Production -->
+        <!-- Production -->
         <span class="input_name">
             Is this service monitored?
         </span>
         <select class="add_edit_form" name="IS_MONITORED">
-			<option value="N"<?php if($service->getMonitored() == false) echo " selected=\"selected\""?>>N</option>
-			<option value="Y"<?php if($service->getMonitored() == true) echo " selected=\"selected\""?>>Y</option>
-		</select>
+            <option value="N"<?php if ($service->getMonitored() == false) echo " selected=\"selected\"" ?>>N</option>
+            <option value="Y"<?php if ($service->getMonitored() == true) echo " selected=\"selected\"" ?>>Y</option>
+        </select>
 
-        <!-- Scope -->
-        <span class="input_name">Scope(s)
-            <span class="input_syntax">(Select at least <?php echo $params['numberOfScopesRequired']?>)</span>
-        </span>
-	   <div class="alert alert-warning" role="alert">
-	    Note, rather than setting service-scopes individually below, you can update
-	    the scopes of all child services on-mass when editing the parent Site 
-	    (options such as 'Inherit Site scopes' and 'Override Service scopes with Site scopes' 
-	    are provided for your convenience) 
-	    </div>
-        <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirmScope.js"></script>
-        <div style="margin-left: 2em">    
-        <?php foreach ($params['scopes'] as $scopeArray){ ?>
-            <?php
-            $scopeName = $scopeArray['scope']->getName();
-            $scopeId = $scopeArray['scope']->getId();
-            $checkedParamater = '';
-            if($scopeArray['applied']){
-                    $checkedParamater = ' checked="checked"';
-            }
-            $onClick = '';
-            if (!in_array($scopeId, $params["parentScopeIds"])){
-                $onClick = " onclick=\"return confirmScopeSelect('$scopeName', '$siteName', '$serviceName', this.checked)\"";
-            }
-            ?>
-            <input type="checkbox" name="Scope_ids[]" value="<?php echo $scopeId;?>"<?php echo $checkedParamater;?> <?php echo $onClick;?>>
-            <?php echo $scopeName;?>   
-	    <br/>
-        <?php } ?>
-        </div> 
 
-	<input class="input_input_hidden" type="hidden" value="<?php echo $service->getId() ?>" name="ID">
+
+
+        <!-- Scope Tags-->
+        <div class="h4">Scope Tags
+            <span class="input_syntax">(At least <?php echo $params['numberOfScopesRequired'] ?> Optional tag must be selected)</span>
+        </div>
+        <div class="alert alert-warning" role="alert">
+            Note, rather than setting service-scopes individually below, you can update
+            the scopes of all child services on-mass when editing the parent Site 
+            (options such as 'Inherit Site scopes' and 'Override Service scopes with Site scopes' 
+            are provided for your convenience) 
+        </div>
+
+        <div id="allscopeCheckBoxDIV">
+            <h4>Optional Scope Tags</h4>
+            <div id="optionalScopeCheckBoxDIV"></div> 
+            <br/>
+            <h4>Reserved Scope Tags</h4>
+            <div id="reservedScopeCheckBoxDIV"></div> 
+        </div>
+
+        <input class="input_input_hidden" type="hidden" value="<?php echo $service->getId() ?>" name="ID">
 
         <input class="input_button" type="submit" value="Edit Service">
     </form>
 </div>
+
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/buildScopeCheckBoxes.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
+        addScopeCheckBoxes(scopeJSON, '#reservedScopeCheckBoxDIV', '#optionalScopeCheckBoxDIV', true);
+    });
+</script>  

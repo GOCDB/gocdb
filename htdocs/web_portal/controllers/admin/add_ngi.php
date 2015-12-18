@@ -51,9 +51,9 @@ function draw() {
     //if correct permissions are lacking
     checkUserIsAdmin();
     
-    //Get the list of scopes to chose from and the minimum number that need to be selected
-    $params['Scopes']  = \Factory::getScopeService()->getDefaultScopesSelectedArray();
-    $params['NumberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
+    $scopejsonStr = getAllScopesAsJSON(false); 
+    $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
+    $params['scopejson'] = $scopejsonStr; 
     
     //show the add NGI view
     show_view("admin/add_ngi.php", $params, "Add NGI");

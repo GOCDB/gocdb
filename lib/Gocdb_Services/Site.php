@@ -16,9 +16,11 @@ require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/RoleConstants.php'; 
 require_once __DIR__ . '/NGI.php'; 
 require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
+require_once __DIR__.  '/Scope.php';
+require_once __DIR__.  '/Config.php';
 
 /**
- * GOCDB Stateless service facade (business routines) for Site objects.
+ * GOCDB service for Site object business routines.
  * The public API methods are transactional.
  * @todo Implement the ISiteService interface when ready.
  *
@@ -30,15 +32,32 @@ require_once __DIR__ . '/RoleActionAuthorisationService.php';
 class Site extends AbstractEntityService{
    
     private $roleActionAuthorisationService;
+    private $scopeService; 
+    private $configService; 
      
-    function __construct(/*$roleActionAuthorisationService*/) {
+    function __construct(/*$roleActionAuthorisationService, $scopeService*/) {
         parent::__construct();
         //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+        //$this->scopeService = $scopeService; 
+        $this->configService = new Config(); 
     }
 
-
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\RoleActionAuthorisationService $roleActionAuthService
+     */
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
         $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
+
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\Scope $scopeService
+     */
+    public function setScopeService(Scope $scopeService){
+        $this->scopeService = $scopeService; 
     }
     
     /*
@@ -119,15 +138,53 @@ class Site extends AbstractEntityService{
         // Check to see whether the user has a role that covers this site
         //$this->edit Authorization($site, $user);
         //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
-        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction()==FALSE){
+        if($this->roleActionAuthorisationService->authoriseAction(
+                \Action::EDIT_OBJECT, $site, $user)->getGrantAction()==FALSE){
             throw new \Exception("You don't have permission over ". $site->getShortName());
         }
         
         $this->validate($newValues['Site'], 'site');
         // TODO: Check the sitename is unique (reusable code in addSite())
+       
+        // EDIT SCOPE TAGS: 
+        // collate selected scopeIds (reserved and non-reserved)
+        $scopeIdsToApply = array(); 
+        foreach($newValues['Scope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        foreach($newValues['ReservedScope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
         
-        //check there are the required number of scopes specified
-        $this->checkNumberOfScopes($newValues['Scope_ids']);
+        // Check Reserved scopes
+        // When normal users EDIT the site, the selected scopeIds should 
+        // be checked to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        // 
+        // Note, on edit we also don't want to enforce cascading of parent NGI scopes to the site,  
+        // as we need to allow an admin to de-select a site's reserved scopes 
+        // (which is a perfectly valid requirement) and prevent re-cascading 
+        // when the user next edits the site! 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $site->getScopes()->toArray()); 
+            
+            if(count($selectedReservedScopes) != count($existingReservedScopes)) {
+                    throw new \Exception("The reserved Scope count does not match the Site's existing scope count "); 
+            }
+            foreach($selectedReservedScopes as $sc){
+                if(!in_array($sc, $existingReservedScopes)){
+                    throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the Site"); 
+                }
+            }
+        }
+        //check there are the required number of optional scopes specified
+        $this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
+               array('excludeReserved' => true), $selectedScopesToApply));
 
 	// check childServiceScopeAction is a known value
 	if($newValues['childServiceScopeAction'] != 'noModify' &&
@@ -137,9 +194,7 @@ class Site extends AbstractEntityService{
 	}
         
         $this->em->getConnection()->beginTransaction();
-
         try {
-
             // Set the site's member variables
             $site->setOfficialName($newValues['Site']['OFFICIAL_NAME']);
             $site->setShortName($newValues['Site']['SHORT_NAME']);
@@ -173,17 +228,19 @@ class Site extends AbstractEntityService{
             foreach($scopes as $s) {
                 $site->removeScope($s);
             }
-          
             //find then link each scope specified to the site
-            foreach($newValues['Scope_ids'] as $scopeId){
-                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-                $scope = $this->em->createQuery($dql)
-                             ->setParameter(1, $scopeId)
-                             ->getSingleResult();
-                $site->addScope($scope);
+//            foreach($scopeIdsToApply as $scopeId){
+//                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
+//                $scope = $this->em->createQuery($dql)
+//                             ->setParameter(1, $scopeId)
+//                             ->getSingleResult();
+//                $site->addScope($scope);
+//            }
+            foreach($selectedScopesToApply as $scope){
+                $site->addScope($scope); 
             }
 
-	    // Update the child service scopes 
+	    // Optionally update the child service scopes 
 	    if($newValues['childServiceScopeAction'] == 'noModify'){
 	        // do nothing to child service scopes, leave intact 	
 	    } else if($newValues['childServiceScopeAction'] == 'inherit'){
@@ -701,33 +758,49 @@ class Site extends AbstractEntityService{
         }
 
 	// get the parent NGI entity
+        /* @var $parentNgi \NGI */
 	$parentNgi = $this->em->createQuery("SELECT n FROM NGI n WHERE n.id = :id")
 		->setParameter('id', $values['NGI'])
 		->getSingleResult(); // throws NonUniqueResultException throws, NoResultException
         
         if(!$user->isAdmin()){
 	    // Check that user has permission to add site to the chosen NGI 
-	    if(!$this->roleActionAuthorisationService->authoriseAction(\Action::NGI_ADD_SITE, $parentNgi, $user)->getGrantAction()){
+	    if(!$this->roleActionAuthorisationService->authoriseAction(
+                    \Action::NGI_ADD_SITE, $parentNgi, $user)->getGrantAction()){
 		throw new \Exception("You do not have permission to add a new site to the selected NGI"
 			. " To add a new site you require a managing role over an NGI"); 
 	    }
         }
-         
 
+        
     	// do as much validation before starting a new db tx
     	// check the site object data is valid
     	$this->validate($values['Site'], 'site');
-        
-        //check there are the required number of scopes specified
-        $this->checkNumberOfScopes($values['Scope_ids']);
-
-	// TODO
-        // check for selected 'reserved' scopes. Iterate the selected scopes, 
-	// determine if any are reserved, if true check user has required roles, 
-	// throw if user don't have required role. 
-
-
 	$this->uniqueCheck($values['Site']['SHORT_NAME']);
+
+        // ADD SCOPE TAGS: 
+        // collate selected reserved and non-reserved scopeIds
+        $allSelectedScopeIds = array(); 
+        foreach($values['Scope_ids'] as $sid){
+            $allSelectedScopeIds[] = $sid; 
+        }
+        foreach($values['ReservedScope_ids'] as $sid){
+            $allSelectedScopeIds[] = $sid; 
+        }
+        // On add Site, enforce cascading of reserved parentNGI scopes 
+        // down to the site (and allow free-selection of normal scopes). 
+        $reservedScopeNames = $this->configService->getReservedScopeList();
+        /* @var $ngiScope \Scope */
+        foreach ($parentNgi->getScopes() as $ngiScope) {
+            // if the ngiScope is reserved, and it is not in the selected scopeIds, add it. 
+            if (in_array($ngiScope->getName(), $reservedScopeNames) &&
+                    !in_array($ngiScope->getId(), $allSelectedScopeIds)) {
+                $allSelectedScopeIds[] = $ngiScope->getId();
+            }
+        }
+
+        //check there are the required number of OPTIONAL scopes specified
+        $this->checkNumberOfScopes($values['Scope_ids']);
 
     	// Populate the entity
     	try {
@@ -802,7 +875,7 @@ class Site extends AbstractEntityService{
             
 
 	    // Set the scopes
-            foreach($values['Scope_ids'] as $scopeId){
+            foreach($allSelectedScopeIds as $scopeId){
                 $dql = "SELECT s FROM Scope s WHERE s.id = :id";
                 $scope = $this->em->createQuery($dql)
                     ->setParameter('id', $scopeId)
@@ -825,6 +898,8 @@ class Site extends AbstractEntityService{
 //	    	$site->setTimezone($timezone);
 	    	
 	    $this->em->persist($site);
+	    // flush synchronizes the in-memory state of managed objects with the database
+            // but we can still rollback 
 	    $this->em->flush();
 	    $this->em->getConnection()->commit();
     	} catch(\Exception $ex){
@@ -853,16 +928,16 @@ class Site extends AbstractEntityService{
         }
     }
     
-	/*
-	 * Moves a site to a new NGI. Site to NGI is a many to one
-	 * relationship, so moving the site from one NGI removes it
-	 * from the other.
-	 * 
-	 * @param \site $site site to be moved
-	 * @param \NGI $NGI NGI to which $site is to be moved
-	 * @return null
-	 */
-	 public function moveSite(\Site $Site, \NGI $NGI, \User $user = null) {
+    /*
+     * Moves a site to a new NGI. Site to NGI is a many to one
+     * relationship, so moving the site from one NGI removes it
+     * from the other.
+     * 
+     * @param \site $site site to be moved
+     * @param \NGI $NGI NGI to which $site is to be moved
+     * @return null
+     */
+     public function moveSite(\Site $Site, \NGI $NGI, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
@@ -908,20 +983,15 @@ class Site extends AbstractEntityService{
         }
     }
     
-    private function checkNumberOfScopes($scopeIds){
+    private function checkNumberOfScopes(array $myArray){
         require_once __DIR__ . '/Config.php';
         $configService = new \org\gocdb\services\Config();
         $minumNumberOfScopes = $configService->getMinimumScopesRequired('site');
-        
-        if(sizeof($scopeIds)<$minumNumberOfScopes){
-            $s = "s";
-            if($minumNumberOfScopes==1){
-                $s="";
-            }
-            throw new \Exception("A site must have at least " . $minumNumberOfScopes . " scope".$s." assigned to it.");
+        if(sizeof($myArray)<$minumNumberOfScopes){
+            throw new \Exception("A site must have at least " . $minumNumberOfScopes . " optional scope(s) assigned to it.");
         }
     }   
-    
+
     /**
      * Delete a site. Only available to admins.
      * @param \Site $s site for deletion
@@ -1214,7 +1284,7 @@ class Site extends AbstractEntityService{
      */
     public function getGoogleMapXMLString(){
         $sites = $this->getSitesWithGeoInfo();
-        $portalUrl = \Factory::getConfigService()->GetPortalURL();
+        $portalUrl = $this->configService->GetPortalURL();
         
         $xml = new \SimpleXMLElement("<map></map>");
 		foreach($sites as $site) {

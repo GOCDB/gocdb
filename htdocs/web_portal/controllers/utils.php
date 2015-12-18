@@ -1,4 +1,5 @@
 <?php
+require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
 /**
  * Parse properties file
@@ -52,6 +53,55 @@ function parse_properties($txtProperties) {
         }
 
         return $result;
+}
+                        
+function getAllScopesAsJSON($disableReservedScopes){
+    $reservedScopeNames = \Factory::getConfigService()->getReservedScopeList();
+    $allScopes = \Factory::getScopeService()->getScopes(); 
+    $ngiReservedScopeIds = array(); 
+    $ngiOptionalScopeIds = array(); 
+    /* @var $scope \Scope */
+    foreach($allScopes as $scope){
+        $checked = false;
+        if(in_array($scope->getName(), $reservedScopeNames)){ 
+            $ngiReservedScopeIds[] = array($scope->getId(), $scope->getName(), $checked);  
+        } else {
+            $ngiOptionalScopeIds[] = array($scope->getId(), $scope->getName(), $checked); 
+        }
+    }
+    // build the response 
+    $scopesReservedAndOptional = array(); 
+    $scopesReservedAndOptional['reserved'] = $ngiReservedScopeIds; 
+    $scopesReservedAndOptional['optional'] = $ngiOptionalScopeIds; 
+    $scopesReservedAndOptional['disableReserved'] = $disableReservedScopes; 
+    return json_encode($scopesReservedAndOptional);  
+}
+
+
+function getEntityScopesAsJSON(\IScopedEntity $scopedEntity, $disableReservedScopes){
+    $reservedScopeNames = \Factory::getConfigService()->getReservedScopeList();
+    $allScopes = \Factory::getScopeService()->getScopes(); 
+    $entityScopes = $scopedEntity->getScopes(); 
+    $ngiReservedScopeIds = array(); 
+    $ngiOptionalScopeIds = array(); 
+    /* @var $scope \Scope */
+    foreach($allScopes as $scope){
+        $checked = false;
+        if(in_array($scope, $entityScopes->toArray())){
+            $checked = true; 
+        } 
+        if(in_array($scope->getName(), $reservedScopeNames)){ 
+            $ngiReservedScopeIds[] = array($scope->getId(), $scope->getName(), $checked);  
+        } else {
+            $ngiOptionalScopeIds[] = array($scope->getId(), $scope->getName(), $checked); 
+        }
+    }
+    // build the response 
+    $scopesReservedAndOptional = array(); 
+    $scopesReservedAndOptional['reserved'] = $ngiReservedScopeIds; 
+    $scopesReservedAndOptional['optional'] = $ngiOptionalScopeIds; 
+    $scopesReservedAndOptional['disableReserved'] = $disableReservedScopes; 
+    return json_encode($scopesReservedAndOptional); 
 }
 
 /**
@@ -147,11 +197,17 @@ function getSiteDataFromWeb() {
 	$site_data['childServiceScopeAction'] = 'noModify'; 
     }
     
-    // get scopes if any are selected, if not set as null
+    // get non-reserved scopes if any are selected, if not set as empty array 
     if (isset($_REQUEST ['Scope_ids'])){
         $site_data ['Scope_ids'] = $_REQUEST ['Scope_ids'];
     }else{
         $site_data ['Scope_ids'] = array ();
+    }
+    // get reserved scopes if any are selected, if not set as empty array 
+    if (isset($_REQUEST ['ReservedScope_ids'])){
+        $site_data ['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    }else{
+        $site_data ['ReservedScope_ids'] = array ();
     }
     
     /*
@@ -240,6 +296,11 @@ function getSGroupDataFromWeb() {
     }else{
         $sg ['Scope_ids'] = array ();
     }
+    if (isset($_REQUEST ['ReservedScope_ids'])){
+        $sg['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    }else{
+        $sg['ReservedScope_ids'] = array ();
+    }
     
     return $sg;
 }
@@ -295,6 +356,12 @@ function getSeDataFromWeb() {
         $se_data ['Scope_ids'] = array ();
     }
     
+    if (isset($_REQUEST ['ReservedScope_ids'])){
+        $se_data ['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    }else{
+        $se_data ['ReservedScope_ids'] = array ();
+    }
+    
     return $se_data;
 }
 
@@ -337,9 +404,23 @@ function getNGIDataFromWeb() {
         $NGIValues ['NAME'] = $_REQUEST ['NAME'];
     }
     
-    $scopes = array ();
-    if (isset($_REQUEST ['SCOPE_IDS'])){
-        $scopes = $_REQUEST ['SCOPE_IDS'];
+//    $scopes = array ();
+//    if (isset($_REQUEST ['SCOPE_IDS'])){
+//        $scopes = $_REQUEST ['SCOPE_IDS'];
+//    }
+
+    // get scopes if any are selected, if not set as null
+    $optionalScopes = array(); 
+    if (isset($_REQUEST ['Scope_ids'])){
+        $optionalScopes['Scope_ids'] = $_REQUEST ['Scope_ids'];
+    }else{
+        $optionalScopes['Scope_ids'] = array ();
+    }
+    $reservedScopes = array(); 
+    if (isset($_REQUEST ['ReservedScope_ids'])){
+        $reservedScopes['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    }else{
+        $reservedScopes['ReservedScope_ids'] = array ();
     }
     
     $id = null;
@@ -349,7 +430,9 @@ function getNGIDataFromWeb() {
     
     $values = array (
             'NGI' => $NGIValues,
-            'SCOPES' => $scopes,
+            //'SCOPES' => $scopes,
+            'Scope_ids' => $optionalScopes['Scope_ids'], 
+            'ReservedScope_ids' => $reservedScopes['ReservedScope_ids'], 
             'ID' => $id 
     );
     

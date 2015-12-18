@@ -16,6 +16,7 @@ namespace org\gocdb\services;
 require_once __DIR__ . '/Site.php';
 require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/RoleActionAuthorisationService.php';
+require_once __DIR__.  '/Config.php';
 
 /**
  * GOCDB Stateless service facade (business routines) for Service objects.
@@ -30,14 +31,31 @@ require_once __DIR__ . '/RoleActionAuthorisationService.php';
 class ServiceService extends AbstractEntityService {
 
     private $roleActionAuthorisationService;
+    private $configService; 
+    private $scopeService; 
 
     function __construct(/* $roleActionAuthorisationService */) {
 	parent::__construct();
 	//$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+        $this->configService = new Config(); 
     }
 
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\RoleActionAuthorisationService $roleActionAuthService
+     */
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService) {
 	$this->roleActionAuthorisationService = $roleActionAuthService;
+    }
+
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\Scope $scopeService
+     */
+    public function setScopeService(Scope $scopeService){
+        $this->scopeService = $scopeService; 
     }
 
     /**
@@ -374,31 +392,66 @@ class ServiceService extends AbstractEntityService {
 	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
 	//Authorise the change
-	//if(count($this->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
-	if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() == FALSE) {
-	    throw new \Exception("You do not have permission over $se.");
+	if ($this->roleActionAuthorisationService->authoriseAction(
+                \Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() == FALSE) {
+	    throw new \Exception("You do not have permission over this service.");
 	}
 
-	// Explicity demarcate our tx boundary
-	$this->em->getConnection()->beginTransaction();
-
 	$st = $this->getServiceType($newValues['serviceType']);
-
 
 	$this->validate($newValues['SE'], 'service');
 	$this->validateEndpointUrl($newValues['endpointUrl']);
 	$this->uniqueCheck($newValues['SE']['HOSTNAME'], $st, $se->getParentSite());
-
-	//check there are the required number of scopes specified
-	$this->checkNumberOfScopes($newValues['Scope_ids']);
-
-	// validate production/monitored combination 
+        // validate production/monitored combination 
 	if ($st != 'VOMS' && $st != 'emi.ARGUS') {
 	    if ($newValues['PRODUCTION_LEVEL'] == "Y" && $newValues['IS_MONITORED'] != "Y") {
 		throw new \Exception("If Production flat is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)");
 	    }
 	}
+	
+        // EDIT SCOPE TAGS: 
+        // collate selected scopeIds (reserved and non-reserved)
+        $scopeIdsToApply = array(); 
+        foreach($newValues['Scope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        foreach($newValues['ReservedScope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
+        
+        // Check Reserved scopes
+        // When normal users EDIT the service, the selected scopeIds should 
+        // be checked to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        // 
+        // Note, on edit we also don't want to enforce cascading of parent Site scopes to the service,  
+        // as we need to allow an admin to de-select a service's reserved scopes 
+        // (which is a perfectly valid requirement) and prevent re-cascading 
+        // when the user next edits the service! 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $se->getScopes()->toArray()); 
+            
+            if(count($selectedReservedScopes) != count($existingReservedScopes)) {
+                    throw new \Exception("The reserved Scope count does not match the Services's existing scope count "); 
+            }
+            foreach($selectedReservedScopes as $sc){
+                if(!in_array($sc, $existingReservedScopes)){
+                    throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the Service"); 
+                }
+            }
+        }
+        
+        //check there are the required number of optional scopes specified
+	$this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
+               array('excludeReserved' => true), $selectedScopesToApply));
 
+        // Explicity demarcate our tx boundary
+	$this->em->getConnection()->beginTransaction();
 	try {
 	    // Set the service's member variables
 	    $se->setHostName($newValues['SE']['HOSTNAME']);
@@ -446,13 +499,16 @@ class ServiceService extends AbstractEntityService {
 	    }
 
 	    //find then link each scope specified to the site
-	    foreach ($newValues['Scope_ids'] as $scopeId) {
-		$dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-		$scope = $this->em->createQuery($dql)
-			->setParameter(1, $scopeId)
-			->getSingleResult();
-		$se->addScope($scope);
-	    }
+//	    foreach ($scopeIdsToApply as $scopeId) {
+//		$dql = "SELECT s FROM Scope s WHERE s.id = ?1";
+//		$scope = $this->em->createQuery($dql)
+//			->setParameter(1, $scopeId)
+//			->getSingleResult();
+//		$se->addScope($scope);
+//	    }
+            foreach($selectedScopesToApply as $scope){
+                $se->addScope($scope); 
+            }
 
 	    $this->em->merge($se);
 	    //$this->em->merge($el);
@@ -603,23 +659,18 @@ class ServiceService extends AbstractEntityService {
      * @param org\gocdb\services\User $user The user adding the SE
      */
     public function addService($values, \User $user = null) {
-	$this->em->getConnection()->beginTransaction();
 
 	// get the parent site
 	$dql = "SELECT s from Site s WHERE s.id = :id";
+        /* @var $site \Site */
 	$site = $this->em->createQuery($dql)
 		->setParameter('id', $values['hostingSite'])
 		->getSingleResult();
 	// get the service type
 	$st = $this->getServiceType($values['serviceType']);
 
-	/* $siteService = new \org\gocdb\services\Site(); 
-	  $siteService->setEntityManager($this->em);
-	  if(count($siteService->authorize Action(\Action::SITE_ADD_SERVICE, $site, $user))==0){
-	  throw new \Exception("You don't hold a role over $site.");
-	  } */
-	//if(count($this->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
-	if ($this->roleActionAuthorisationService->authoriseAction(\Action::SITE_ADD_SERVICE, $site, $user)->getGrantAction() == FALSE) {
+	if ($this->roleActionAuthorisationService->authoriseAction(
+                \Action::SITE_ADD_SERVICE, $site, $user)->getGrantAction() == FALSE) {
 	    throw new \Exception("You don't have permission to add a service to this site.");
 	}
 
@@ -627,18 +678,41 @@ class ServiceService extends AbstractEntityService {
 	$this->validateEndpointUrl($values['endpointUrl']);
 	$this->uniqueCheck($values['SE']['HOSTNAME'], $st, $site);
 
-	//check there are the required number of scopes specified
-	$this->checkNumberOfScopes($values['Scope_ids']);
-
-	// validate production/monitored combination 
+        // validate production/monitored combination 
 	if ($st != 'VOMS' && $st != 'emi.ARGUS') {
 	    if ($values['PRODUCTION_LEVEL'] == "Y" && $values['IS_MONITORED'] != "Y") {
-		throw new \Exception("If Production flat is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)");
+		throw new \Exception("If Production flag is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)");
 	    }
 	}
 
-	$se = new \Service();
+        // ADD SCOPE TAGS: 
+        // collate selected reserved and non-reserved scopeIds. 
+        // Note, Reserved scopes can be inherited from the parent Site. 
+        $allSelectedScopeIds = array(); 
+        foreach($values['Scope_ids'] as $sid){
+            $allSelectedScopeIds[] = $sid; 
+        }
+        foreach($values['ReservedScope_ids'] as $sid){
+            $allSelectedScopeIds[] = $sid; 
+        }
+        // On add service, enforce cascading of reserved parentSite scopes  
+        // down to the service (and allow free selection of normal scopes) 
+        $reservedScopeNames = $this->configService->getReservedScopeList();
+        /* @var $ngiScope \Scope */
+        foreach ($site->getScopes() as $siteScope) {
+            // if the siteScope is reserved, and it is not in the selected scopeIds, add it.  
+            if (in_array($siteScope->getName(), $reservedScopeNames) &&
+                    !in_array($siteScope->getId(), $allSelectedScopeIds)) {
+                $allSelectedScopeIds[] = $siteScope->getId();
+            }
+        }
+        
+        //check there are the required number of OPTIONAL scopes specified
+	$this->checkNumberOfScopes($values['Scope_ids']);
+
+	$this->em->getConnection()->beginTransaction();
 	try {
+            $se = new \Service();
 	    $se->setParentSiteDoJoin($site);
 	    $se->setServiceType($st);
 
@@ -664,7 +738,7 @@ class ServiceService extends AbstractEntityService {
 	    }
 
 	    // Set the scopes
-	    foreach ($values['Scope_ids'] as $scopeId) {
+	    foreach ($allSelectedScopeIds as $scopeId) {
 		$dql = "SELECT s FROM Scope s WHERE s.id = :id";
 		$scope = $this->em->createQuery($dql)
 			->setParameter('id', $scopeId)
@@ -681,12 +755,6 @@ class ServiceService extends AbstractEntityService {
 	    $se->setEmail($values['SE']['EMAIL']);
 	    $se->setUrl($values['endpointUrl']);
 
-	    /* With version 5.3 a service does not have to have an endpoint. 
-	      $el = new \EndpointLocation();
-	      $el->setUrl($values['endpointUrl']);
-	      $se->addEndpointLocationDoJoin($el);
-	      $this->em->persist($el);
-	     */
 	    $this->em->persist($se);
 	    $this->em->flush();
 	    $this->em->getConnection()->commit();
@@ -1341,13 +1409,8 @@ class ServiceService extends AbstractEntityService {
 	require_once __DIR__ . '/Config.php';
 	$configService = new \org\gocdb\services\Config();
 	$minumNumberOfScopes = $configService->getMinimumScopesRequired('service');
-
 	if (sizeof($scopeIds) < $minumNumberOfScopes) {
-	    $s = "s";
-	    if ($minumNumberOfScopes == 1) {
-		$s = "";
-	    }
-	    throw new \Exception("A service must have at least " . $minumNumberOfScopes . " scope" . $s . " assigned to it.");
+	    throw new \Exception("A service must have at least " . $minumNumberOfScopes . " optional scope(s)  assigned to it.");
 	}
     }
 
