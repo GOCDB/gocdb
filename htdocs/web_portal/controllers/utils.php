@@ -16,8 +16,8 @@ function parse_properties($txtProperties) {
 
         $isWaitingOtherLine = false;
         foreach($lines as $i=>$line) {
-
-            if(empty(trim($line)) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
+            $line = trim($line);
+            if(empty($line) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
 
             if(!$isWaitingOtherLine) {
                 $key = trim(substr($line,0,strpos($line,'=')));
@@ -54,7 +54,7 @@ function parse_properties($txtProperties) {
 
         return $result;
 }
-                        
+
 function getAllScopesAsJSON($disableReservedScopes){
     $reservedScopeNames = \Factory::getConfigService()->getReservedScopeList();
     $allScopes = \Factory::getScopeService()->getScopes(); 
