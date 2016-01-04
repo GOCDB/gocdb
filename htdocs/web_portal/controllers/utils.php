@@ -17,7 +17,7 @@ function parse_properties($txtProperties) {
         $isWaitingOtherLine = false;
         foreach($lines as $i=>$line) {
 
-            if(empty($line) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
+            if(empty(trim($line)) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
 
             if(!$isWaitingOtherLine) {
                 $key = trim(substr($line,0,strpos($line,'=')));
