@@ -161,11 +161,18 @@ function view() {
         $classification = $_GET['class'];
     }
 
-    $date = date("Y-m");
+    $date = date("Y-m-d");
 
     if(!empty($_GET['date'])) {
 
-        $date = date( "Y-m", strtotime($_GET['date']));
+        $date = date( "Y-m-d", strtotime($_GET['date']));
+    }
+
+    $view = "month";
+
+    if(!empty($_GET['view'])) {
+
+        $view = $_GET['view'];
     }
 
     $params['selectedScopes'] = $selectedScopes; //$scope;
@@ -173,6 +180,7 @@ function view() {
     $params['severity'] = $severity;
     $params['classification'] = $classification;
     $params['date'] = $date;
+    $params['view'] = $view;
     $params['ngis'] = \Factory::getNgiService()->getNGIs();
     $params['selectedNGI'] = $selectedNGI;
     $params['selectedSites'] = $selectedSites;
@@ -183,6 +191,6 @@ function view() {
     $serv = \Factory::getSiteService();
     $params['sites'] = $serv->getSitesFilterByParams($filterParams);
     //////////////////////////////////////////////////////
-
+    //throw new \Exception($date);
     show_view("downtime/downtimes_calendar.php", $params);
 }

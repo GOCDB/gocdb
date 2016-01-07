@@ -23,8 +23,6 @@ javascript to show and hide these tables.
         <div class="row">
 
 
-
-
             <div class="col-sm-3">
                 <span><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
                 <br/>
@@ -60,7 +58,7 @@ javascript to show and hide these tables.
                 <div class="col-sm-4">
                     NGI:
                     <br/>
-                    <select id="ngi_selector"  class="selectpicker" >
+                    <select id="ngi_selector" class="selectpicker">
                         <option value="ALL">All</option>
                         <?php foreach ($params['ngis'] as $ngi) { ?>
                             <option value="<?php xecho($ngi->getName()); ?>"
@@ -111,18 +109,22 @@ javascript to show and hide these tables.
         <div class="row">
 
 
-
-    </div>
+        </div>
         <br/>
-        <div class="row" >
 
-            <div class="col-sm-7">
-                <h2 id="dateTitle">Test</h2>
+        <div class="row">
+
+            <div class="col-sm-4">
+                <h2 style="display:none; font-size: 28px;" id="dateMonthTitle"></h2>
+                <h2 style="display:none; font-size: 28px;" id="dateWeekTitle"></h2>
             </div>
 
 
-
-            <div class='col-sm-5'>
+            <div class='col-sm-8'>
+                <div class="btn-group">
+                    <button id="weekView" type="button" class="viewButton btn btn-secondary-outline">Week</button>
+                    <button id="monthView" type="button" class="viewButton btn btn-secondary-outline">Month</button>
+                </div>
                 <div class="btn-group">
                     <button id="prevMonth" type="button" class=" btn btn-secondary-outline">
                         <span class="glyphicon glyphicon-chevron-left"></span>
@@ -132,7 +134,7 @@ javascript to show and hide these tables.
                             class="glyphicon glyphicon-chevron-right"></span>
                     </button>
                 </div>
-                <div class="form-group col-sm-6">
+                <div class="form-group col-sm-5">
                     <div class='input-group date' id='monthpicker'>
                         <input type='text' class="form-control" value=""/>
                         <span class="input-group-addon">
@@ -144,164 +146,187 @@ javascript to show and hide these tables.
 
         </div>
 
-    <div id='calendar'></div>
+        <div id='calendar'></div>
 
 
-    <script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>
-<!--<script type="text/javascript" src="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>-->
-<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.css" />-->
+        <script type="text/javascript"
+                src="<?php GocContextPath::getPath() ?>javascript/jquery.multiple.select.js"></script>
+        <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>-->
+        <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.css" />-->
 
 
-<script type="text/javascript">
+        <script type="text/javascript">
 
-    //Main downtime filter is run once for each of the events, and if of the subfilters
-    //returns false it will to, causing the downtime event to not be rendered
-    function filterEvent ( event ){
+            //Main downtime filter is run once for each of the events, and if of the subfilters
+            //returns false it will to, causing the downtime event to not be rendered
+            function filterEvent(event) {
 
-        if (
-            !filterEventByScope(event) ||
-            !filterEventBySeverity(event) ||
-            !filterEventByClass(event) ||
-            !filterEventByNGI(event) ||
-            !filterEventBySite(event)
-        ){
-            return false;
-        }
-    }
-
-    //checks if the severity of the downtime matches the selected severity in the filter panel
-    function filterEventBySeverity (event){
-        return ['ALL', event.severity].indexOf($('#severity_selector').val()) >= 0
-    }
-
-    //checks if the affected NGI of the downtime matches the selected NGI in the filter panel
-    function filterEventByNGI (event){
-        return ['ALL', event.ngi].indexOf($('#ngi_selector').val()) >= 0
-    }
-
-    //checks if the clasification of the downtime matches the selected class in the filter panel
-    function filterEventByClass (event){
-        return ['ALL', event.class].indexOf($('#class_selector').val()) >= 0
-    }
-
-    //checks if any affected sites of the downtime matches any of the selected sites in the filter panel
-    function filterEventBySite (event){
-        siteSelect = $('#siteSelect');
-        if (siteSelect.val() == null){
-            return false;
-        }
-        return siteSelect.val().indexOf(event.site) >=0;
-    }
-
-    //checks if any affected scopes of the downtime matches any of the selected scopes in the filter panel
-    function filterEventByScope (event){
-        var index;
-        var scopeFilterArray = $('#scopeSelect').val();
-        if (scopeFilterArray == null){
-            return false;
-        }
-        var scopeArray = event.scopes;
-        for (index = 0; index < scopeArray.length; ++index) {
-            if (scopeFilterArray.indexOf(scopeArray[index]) >=0){
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-
-
-    //this function is used to update the  url bar, allowing filter settings to be bookmarked by users
-    //mostly grabbed from a forum post, had to add the ability to delete queries from the string
-    //and make in do nothing if the value is null
-    function updateQueryStringParam(key, value) {
-        baseUrl = [location.protocol, '//', location.host, location.pathname].join('');
-        urlQueryString = document.location.search;
-
-        var newParam = key + '=' + value,
-            params = '?' + newParam;
-
-        // If the "search" string exists, then build params from it
-        if (urlQueryString) {
-            keyRegex = new RegExp('([\?&])' + key + '[^&]*');
-
-
-            params = urlQueryString;
-            // If param exists already, update it
-            if (urlQueryString.match(keyRegex) !== null) {
-                //this is needed to stop it adding a 'null' when it's a null array
-                if (value == null){
-                    params = params.replace(keyRegex, "");
-                } else {
-                    params = params.replace(keyRegex, "$1" + newParam);
+                if (
+                    !filterEventByScope(event) || !filterEventBySeverity(event) || !filterEventByClass(event) || !filterEventByNGI(event) || !filterEventBySite(event)
+                ) {
+                    return false;
                 }
-            } else if(value != null){ // Otherwise, add it to end of query string, unless it's null, then do nothing
-                params = params + '&' + newParam;
             }
-        }
-        window.history.replaceState({}, "", baseUrl + params);
-    }
 
-
-    $(document).ready(function () {
-
-
-        var scopeSelector = $('#scopeSelect');
-        var siteSelector = $('#siteSelect');
-        var calendar = $('#calendar');
-
-        //initilaise the scope selector
-        scopeSelector.multipleSelect({
-            filter: true,
-            placeholder: "Service Scopes"
-        });
-
-        //initilaise the site selector
-        siteSelector.multipleSelect({
-            filter: true,
-            placeholder: "Sites"
-        });
-
-        //get the time from the page controller, and turn it into a moment
-        var time = moment(<?php if($params['date'] != null){ echo( "\"". $params['date'] . "\", \"YYYY-MM\"");}?>);
-        //set the date header
-        $('#dateTitle').text(moment(time).format("MMMM YYYY"));
-
-
-        //initalise the monthpicker, with it starting on the month we just grabbed
-        $('#monthpicker').datetimepicker({
-            viewMode: 'months',
-            format: 'YYYY-MM',
-            defaultDate: time
-        });
-
-
-
-        //register a change listener to change the calender date if the user selects a new date
-        //in the monthpicker
-        $('#monthpicker').on("dp.change", function(e) {
-            calendar.fullCalendar( 'gotoDate', e.date);
-            $('#dateTitle').text(moment(e.date).format("MMMM YYYY"));
-            //we also have to update the url query string, but I don't want someone press the current date button and then
-            // bookmark the page, assuming it will update as the month changes
-            if (moment(e.date).format("YYYY-MM") == moment().format("YYYY-MM")){
-                //this will delete the query
-                updateQueryStringParam("date", null);
-            } else {
-                updateQueryStringParam("date", moment(e.date).format("YYYY-MM"));
-
+            //checks if the severity of the downtime matches the selected severity in the filter panel
+            function filterEventBySeverity(event) {
+                return ['ALL', event.severity].indexOf($('#severity_selector').val()) >= 0
             }
-        });
 
-        //initalise the calendar
-        calendar.fullCalendar({
+            //checks if the affected NGI of the downtime matches the selected NGI in the filter panel
+            function filterEventByNGI(event) {
+                return ['ALL', event.ngi].indexOf($('#ngi_selector').val()) >= 0
+            }
 
-            defaultDate: time,
-            header:false,
-            events: '/portal/index.php?Page_Type=Downtimes_Calendar&getDowntimesAsJSON',
-            eventRender: function eventRender( event, element, view ) {
-                //var dtID = event.id;
+            //checks if the clasification of the downtime matches the selected class in the filter panel
+            function filterEventByClass(event) {
+                return ['ALL', event.class].indexOf($('#class_selector').val()) >= 0
+            }
+
+            //checks if any affected sites of the downtime matches any of the selected sites in the filter panel
+            function filterEventBySite(event) {
+                siteSelect = $('#siteSelect');
+                if (siteSelect.val() == null) {
+                    return false;
+                }
+                return siteSelect.val().indexOf(event.site) >= 0;
+            }
+
+            //checks if any affected scopes of the downtime matches any of the selected scopes in the filter panel
+            function filterEventByScope(event) {
+                var index;
+                var scopeFilterArray = $('#scopeSelect').val();
+                if (scopeFilterArray == null) {
+                    return false;
+                }
+                var scopeArray = event.scopes;
+                for (index = 0; index < scopeArray.length; ++index) {
+                    if (scopeFilterArray.indexOf(scopeArray[index]) >= 0) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+
+
+            //this function is used to update the  url bar, allowing filter settings to be bookmarked by users
+            //mostly grabbed from a forum post, had to add the ability to delete queries from the string
+            //and make in do nothing if the value is null
+            function updateQueryStringParam(key, value) {
+                baseUrl = [location.protocol, '//', location.host, location.pathname].join('');
+                urlQueryString = document.location.search;
+
+                var newParam = key + '=' + value,
+                    params = '?' + newParam;
+
+                // If the "search" string exists, then build params from it
+                if (urlQueryString) {
+                    keyRegex = new RegExp('([\?&])' + key + '[^&]*');
+
+
+                    params = urlQueryString;
+                    // If param exists already, update it
+                    if (urlQueryString.match(keyRegex) !== null) {
+                        //this is needed to stop it adding a 'null' when it's a null array
+                        if (value == null) {
+                            params = params.replace(keyRegex, "");
+                        } else {
+                            params = params.replace(keyRegex, "$1" + newParam);
+                        }
+                    } else if (value != null) { // Otherwise, add it to end of query string, unless it's null, then do nothing
+                        params = params + '&' + newParam;
+                    }
+                }
+                window.history.replaceState({}, "", baseUrl + params);
+            }
+
+            function changeViewMode(){
+                if($('#calendar').fullCalendar('getView').name == "month"){
+                    $('#monthpicker').data("DateTimePicker").format("YYYY-MM");
+                    $('#dateWeekTitle').hide();
+                    $('#dateMonthTitle').show();
+                    updateQueryStringParam("view", "month");
+                } else {
+                    $('#monthpicker').data("DateTimePicker").format("YYYY-MM-DD");
+                    $('#dateMonthTitle').hide();
+                    $('#dateWeekTitle').show();
+                    updateQueryStringParam("view", "basicWeek");
+                }
+            }
+
+
+            $(document).ready(function () {
+
+
+                var scopeSelector = $('#scopeSelect');
+                var siteSelector = $('#siteSelect');
+                var calendar = $('#calendar');
+
+                //initilaise the scope selector
+                scopeSelector.multipleSelect({
+                    filter: true,
+                    placeholder: "Service Scopes"
+                });
+
+                //initilaise the site selector
+                siteSelector.multipleSelect({
+                    filter: true,
+                    placeholder: "Sites"
+                });
+
+                //get the time from the page controller, and turn it into a moment
+                var time = moment(<?php if($params['date'] != null){ echo( "\"". $params['date'] . "\", \"YYYY-MM-DD\"");}?>);
+                var view = "<?php if($params['view'] != null){ echo($params['view']);}?>";
+
+
+                //console.log("yfkabh");
+                //set the date header
+
+
+                //initalise the monthpicker, with it starting on the month we just grabbed
+                $('#monthpicker').datetimepicker({
+                    viewMode: 'months',
+                    format: 'YYYY-MM',
+                    defaultDate: time
+                });
+
+                $('#dateMonthTitle').text(moment(time).format("MMMM YYYY"));
+                $('#dateWeekTitle').text(moment(time).format("Do MMMM YYYY"));
+
+                if(view == "month"){
+                    $('#monthpicker').data("DateTimePicker").format("YYYY-MM")
+                } else {
+                    $('#monthpicker').data("DateTimePicker").format("YYYY-MM-DD")
+                }
+
+
+                //register a change listener to change the calender date if the user selects a new date
+                //in the monthpicker
+                $('#monthpicker').on("dp.change", function (e) {
+                    calendar.fullCalendar('gotoDate', e.date);
+                    $('#dateMonthTitle').text(moment(e.date).format("MMMM YYYY"));
+                    $('#dateWeekTitle').text(moment(e.date).format("Do MMMM YYYY"));
+                    //we also have to update the url query string, but I don't want someone press the current date button and then
+                    // bookmark the page, assuming it will update as the month changes
+                    if (moment(e.date).format("YYYY-MM") == moment().format("YYYY-MM")  && $('#calendar').fullCalendar('getView').name == "month" ) {
+                        //this will delete the query
+                        updateQueryStringParam("date", null);
+                    } else {
+                        updateQueryStringParam("date", moment(e.date).format("YYYY-MM-DD"));
+
+                    }
+                });
+
+                //initalise the calendar
+                calendar.fullCalendar({
+
+                    defaultDate: time,
+                    defaultView: view,
+                    header: false,
+                    events: '/portal/index.php?Page_Type=Downtimes_Calendar&getDowntimesAsJSON',
+                    eventRender: function eventRender(event, element, view) {
+                        //var dtID = event.id;
 //                element.qtip({
 //                    content: {
 //                        text: function(event, api) {
@@ -324,65 +349,98 @@ javascript to show and hide these tables.
 //                        }
 //                    }
 //                });
-                return filterEvent(event);
-            }
-        });
+                        return filterEvent(event);
+                    }
+                });
 
-        //event handlers for our custom navigation buttons
-        //they only need to affect the month picker, and then the month pickers change handler will do the rest
+                //event handlers for our custom navigation buttons
+                //they only need to affect the month picker, and then the month pickers change handler will do the rest
 
-        $('#prevMonth').click(function() {
-            date = $('#monthpicker').data("DateTimePicker").date();
-            date.add(-1, 'months');
-            $('#monthpicker').data("DateTimePicker").date(date);
-        });
+                $('#prevMonth').click(function () {
+                    date = $('#monthpicker').data("DateTimePicker").date();
+                    if ($('#calendar').fullCalendar('getView').name == "month") {
+                        date.add(-1, "month");
+                    } else {
+                        date.add(-1, "week");
+                    }
+                    $('#monthpicker').data("DateTimePicker").date(date);
+                });
 
-        $('#currentMonth').click(function() {
-            $('#monthpicker').data("DateTimePicker").date(moment());
-            calendar.fullCalendar('today');
-        });
+                $('#currentMonth').click(function () {
+                    $('#monthpicker').data("DateTimePicker").date(moment());
+                    calendar.fullCalendar('today');
+                });
 
-        $('#nextMonth').click(function() {
-            date = $('#monthpicker').data("DateTimePicker").date();
-            date.add(1, 'months');
-            $('#monthpicker').data("DateTimePicker").date(date);
-        });
+                $('#nextMonth').click(function () {
+                    date = $('#monthpicker').data("DateTimePicker").date();
+                    if ($('#calendar').fullCalendar('getView').name == "month") {
+                        date.add(1, "month");
+                    } else {
+                        date.add(1, "week");
+                    }
+                    $('#monthpicker').data("DateTimePicker").date(date);
+                });
 
-        //change listeners for the various filters:
+                $('#weekView').click(function () {
+                    $('#calendar').fullCalendar('changeView', 'basicWeek');
+                    changeViewMode();
+                });
 
-        scopeSelector.on('change',function(){
-            $('#calendar').fullCalendar('rerenderEvents');
+                $('#monthView').click(function () {
+                    $('#calendar').fullCalendar('changeView', 'month');
+                    changeViewMode();
+                });
 
-            scopeSelect = $('#scopeSelect');
-            if (scopeSelect.val() == null || scopeSelect.find('option').length == scopeSelect.val().length)
-                updateQueryStringParam("scope", null);
-            else
-                updateQueryStringParam("scope", scopeSelect.val());
-        });
 
-        siteSelector.on('change',function(){
-            $('#calendar').fullCalendar('rerenderEvents');
-            siteSelect = $('#siteSelect');
-            if (siteSelect.val() == null || siteSelect.find('option').length == siteSelect.val().length)
-                updateQueryStringParam("site", null);
-            else
-                updateQueryStringParam("site", siteSelect.val());
-        });
 
-        $('#severity_selector').on('change',function(){
-            $('#calendar').fullCalendar('rerenderEvents');
-            updateQueryStringParam("severity", $('#severity_selector').val());
-        });
+                //change listeners for the various filters:
 
-        $('#class_selector').on('change',function(){
-            $('#calendar').fullCalendar('rerenderEvents');
-            updateQueryStringParam("class", $('#class_selector').val());
-        });
+                scopeSelector.on('change', function () {
+                    $('#calendar').fullCalendar('rerenderEvents');
 
-        $('#ngi_selector').on('change',function(){
-            $('#calendar').fullCalendar('rerenderEvents');
-            updateQueryStringParam("ngi", $('#ngi_selector').val());
-        })
+                    scopeSelect = $('#scopeSelect');
+                    if (scopeSelect.val() == null || scopeSelect.find('option').length == scopeSelect.val().length)
+                        updateQueryStringParam("scope", null);
+                    else
+                        updateQueryStringParam("scope", scopeSelect.val());
+                });
 
-    })
-</script>
+                siteSelector.on('change', function () {
+                    $('#calendar').fullCalendar('rerenderEvents');
+                    siteSelect = $('#siteSelect');
+                    if (siteSelect.val() == null || siteSelect.find('option').length == siteSelect.val().length)
+                        updateQueryStringParam("site", null);
+                    else
+                        updateQueryStringParam("site", siteSelect.val());
+                });
+
+                $('#severity_selector').on('change', function () {
+                    severity = $('#severity_selector').val();
+                    $('#calendar').fullCalendar('rerenderEvents');
+                    if (severity == "ALL")
+                        severity = null;
+                    updateQueryStringParam("severity", severity);
+                });
+
+                $('#class_selector').on('change', function () {
+//                    $('#calendar').fullCalendar('rerenderEvents');
+//                    updateQueryStringParam("class", $('#class_selector').val());
+                    classification = $('#class_selector').val();
+                    $('#calendar').fullCalendar('rerenderEvents');
+                    if (classification == "ALL")
+                        classification = null;
+                    updateQueryStringParam("class", classification);
+                });
+
+                $('#ngi_selector').on('change', function () {
+                    ngi = $('#ngi_selector').val();
+                    $('#calendar').fullCalendar('rerenderEvents');
+                    if (ngi == "ALL")
+                        ngi = null;
+                    updateQueryStringParam("ngi", ngi);
+                });
+
+                changeViewMode();
+
+            })
+        </script>
