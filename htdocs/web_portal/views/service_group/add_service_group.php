@@ -30,18 +30,11 @@
 
         <br>
         <br>
-        <div class="h4">Scope Tags
-            <span class="input_syntax">(At least <?php echo $params['numberOfScopesRequired'] ?> Optional tag must be selected)</span>
-        </div>
-        <br>
-
-        <div id="allscopeCheckBoxDIV">
-            <h4>Optional Scope Tags</h4>
-            <div id="optionalScopeCheckBoxDIV"></div> 
-            <br/>
-            <h4>Reserved Scope Tags</h4>
-            <div id="reservedScopeCheckBoxDIV"></div> 
-        </div>
+        <!-- Scope Tags-->
+        <?php 
+        $parentObjectTypeLabel = ''; 
+        require_once __DIR__ . '/../fragments/editScopesFragment.php';
+        ?>
           
 
     	<input class="input_button" type="submit" value="Add Service Group" />
@@ -53,6 +46,11 @@
 
     $(document).ready(function () {
         var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
-        addScopeCheckBoxes(scopeJSON, '#reservedScopeCheckBoxDIV', '#optionalScopeCheckBoxDIV', true);
+        addScopeCheckBoxes(scopeJSON, 
+          '#reservedScopeCheckBoxDIV', 
+          '#reservedOptionalScopeCheckBoxDIV', 
+          '#reservedOptionalInhertiableScopeCheckBoxDIV',
+          '#optionalScopeCheckBoxDIV', 
+          true);
     });
 </script>  

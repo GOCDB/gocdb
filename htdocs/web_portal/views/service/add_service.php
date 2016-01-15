@@ -58,7 +58,7 @@ $serviceTypes = $params['serviceTypes'];
         </span>
         <input class="input_input_text" type="text" name="HOST_DN" />
 
-        <span class="input_name">Description
+        <span class="input_name">Description *
             <span class="input_syntax" >(Alphanumeric and basic punctuation)</span>
         </span>
         <input class="input_input_text" type="text" name="DESCRIPTION" />
@@ -96,20 +96,12 @@ $serviceTypes = $params['serviceTypes'];
         </span>
         <input class="input_input_text" type="text" name="EMAIL" />
 
+
         <!-- Scope Tags-->
-        <div class="h4">Scope Tags
-            <span class="input_syntax">(At least <?php echo $params['numberOfScopesRequired'] ?> Optional tag must be selected)</span>
-        </div>
-        <br>
-
-
-        <div id="allscopeCheckBoxDIV">
-            <h4>Optional Scope Tags</h4>
-            <div id="optionalScopeCheckBoxDIV"></div> 
-            <br/>
-            <h4>Reserved Scope Tags</h4>
-            <div id="reservedScopeCheckBoxDIV"></div> 
-        </div>
+        <?php 
+        $parentObjectTypeLabel = 'Site'; 
+        require_once __DIR__ . '/../fragments/editScopesFragment.php';
+        ?>
 
         <br>
 
@@ -124,12 +116,22 @@ $serviceTypes = $params['serviceTypes'];
 
         //console.log('defalutVal: '+$('#ngiSelectPullDown').val());  
         var entityId = $('#siteSelectPullDown').val();
-        buildScopeCheckBoxes('Add_Service', entityId, '#reservedScopeCheckBoxDIV', '#optionalScopeCheckBoxDIV', true);
+        buildScopeCheckBoxes('Add_Service', entityId, 
+          '#reservedScopeCheckBoxDIV', 
+          '#reservedOptionalScopeCheckBoxDIV', 
+          '#reservedOptionalInhertiableScopeCheckBoxDIV',
+          '#optionalScopeCheckBoxDIV', 
+          true);
 
         $('#siteSelectPullDown').change(function () {
             //console.log($('#ngiSelectPullDown').val());  
             var entityId = $('#siteSelectPullDown').val();
-            buildScopeCheckBoxes('Add_Service', entityId, '#reservedScopeCheckBoxDIV', '#optionalScopeCheckBoxDIV', true);
+            buildScopeCheckBoxes('Add_Service', entityId, 
+              '#reservedScopeCheckBoxDIV',
+              '#reservedOptionalScopeCheckBoxDIV', 
+              '#reservedOptionalInhertiableScopeCheckBoxDIV',
+              '#optionalScopeCheckBoxDIV', 
+              true);
         });
 
     });

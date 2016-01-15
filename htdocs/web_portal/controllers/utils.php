@@ -55,53 +55,118 @@ function parse_properties($txtProperties) {
         return $result;
 }
 
-function getAllScopesAsJSON($disableReservedScopes){
-    $reservedScopeNames = \Factory::getConfigService()->getReservedScopeList();
-    $allScopes = \Factory::getScopeService()->getScopes(); 
-    $ngiReservedScopeIds = array(); 
-    $ngiOptionalScopeIds = array(); 
-    /* @var $scope \Scope */
-    foreach($allScopes as $scope){
-        $checked = false;
-        if(in_array($scope->getName(), $reservedScopeNames)){ 
-            $ngiReservedScopeIds[] = array($scope->getId(), $scope->getName(), $checked);  
-        } else {
-            $ngiOptionalScopeIds[] = array($scope->getId(), $scope->getName(), $checked); 
+
+/**
+ * Builds a JSON string that lists scope tags in different categories based 
+ * on the provided arguments - used when editing or adding a IScopedEntity. 
+ * <p>
+ * Different JSON keys are used to define the scope tag categories: 
+ * <ul>
+ *   <li>'optional' - Lists optional tags that are freely assignable.</li>
+ *   <li>'reserved_optional' - Lists reserved tags that have already been directly 
+ *      assigned to the $targetScopedEntity, but CAN'T be inherited from the $parentScopedEntity.</li>
+ *   <li>'reserved_optional_inheritable' - Lists reserved tags that CAN be inherited 
+ *      from the $parentScopedEntity (the tag may/may-not be already assigned to the target).</li>
+ *   <li>'reserved' - The remaining Reserved tags.</li>
+ *   <li>'disableReserved' - Defines a boolean rather than a tag list - true to disable the 'reserved' tags or false to enable.</li>
+ * </ul>  
+ * <p>
+ * For each scope value, the attributes are ["PK/ID", "tagValue", "boolCheckedOrNot"].
+ * <p>
+ * If both target and parent scopedEntities are null, then 'reserved_optional' and 
+ * 'reserved_optional_inheritable' lists will be empty.  
+ * <p>
+ * Sample output: 
+ * <code>
+ * {
+ * "optional":[[2,"EGI",true],[1,"Local",false]],
+ * "reserved_optional":[[24,"atlas",true],[27,"wlcg",true]],
+ * "reserved_optional_inheritable":[[25,"lhcb",true]],
+ * "reserved":[[26,"alice",false],[23,"cms",false],[22,"tier1",false],[21,"tier2",false]],
+ * "disableReserved":true
+ * }
+ * </code>  
+ * @param \IScopedEntity $targetScopedEntity Optional, use Null if creating a new IScopedEntity 
+ * @param \IScopedEntity $parentScopedEntity Optional, the parent to inherit tags from 
+ * @param bool $disableReservedScopes True to disable 'reserved' tags 
+ * @param bool $inheritParentScopeChecked True to set the checked status of each scope value 
+ *   according to whether the parent has the same scope checked (every scope will always be 
+ *   false if the $parentScopedEntity is null) 
+ * @return string  
+ * @throws \LogicException
+ */
+function getEntityScopesAsJSON2($targetScopedEntity = null, $parentScopedEntity = null, 
+        $disableReservedScopes = true, $inheritParentScopeChecked = false){
+
+    $targetScopes = array(); 
+    if($targetScopedEntity != null){
+        if(!($targetScopedEntity instanceof \IScopedEntity)){
+            throw new \LogicException('Invalid $scopedEntityChild, does not implement IScopedEntity'); 
         }
+       $targetScopes =  $targetScopedEntity->getScopes()->toArray();
     }
-    // build the response 
-    $scopesReservedAndOptional = array(); 
-    $scopesReservedAndOptional['reserved'] = $ngiReservedScopeIds; 
-    $scopesReservedAndOptional['optional'] = $ngiOptionalScopeIds; 
-    $scopesReservedAndOptional['disableReserved'] = $disableReservedScopes; 
-    return json_encode($scopesReservedAndOptional);  
-}
+    $parentScopes = array(); 
+    if($parentScopedEntity != null) {
+        if(!($parentScopedEntity instanceof \IScopedEntity)){
+            throw new \LogicException('Invalid scopedEntityParent, does not implement IScopedEntity'); 
+        }
+        $parentScopes = $parentScopedEntity->getScopes()->toArray(); 
+    }
 
-
-function getEntityScopesAsJSON(\IScopedEntity $scopedEntity, $disableReservedScopes){
     $reservedScopeNames = \Factory::getConfigService()->getReservedScopeList();
     $allScopes = \Factory::getScopeService()->getScopes(); 
-    $entityScopes = $scopedEntity->getScopes(); 
-    $ngiReservedScopeIds = array(); 
-    $ngiOptionalScopeIds = array(); 
+    $optionalScopeIds = array(); 
+    $reservedOptionalScopeIds = array(); 
+    $reservedOptionalInheritableScopeIds = array(); 
+    $reservedScopeIds = array(); 
+
     /* @var $scope \Scope */
     foreach($allScopes as $scope){
-        $checked = false;
-        if(in_array($scope, $entityScopes->toArray())){
-            $checked = true; 
+        $targetChecked = false;
+        $parentChecked = false;
+        // is scope already joined to target 
+        if(in_array($scope, $targetScopes)){
+            $targetChecked = true; 
         } 
+        // is scope already joined to parent 
+        if(in_array($scope, $parentScopes)){
+            $parentChecked = true; 
+        } 
+        // Determine if this tag should be checked = t/f
+        $isChecked = $targetChecked; 
+        if($inheritParentScopeChecked){
+            $isChecked = $parentChecked; 
+        }
+
+        // Is scope tag in the reserved list ?
         if(in_array($scope->getName(), $reservedScopeNames)){ 
-            $ngiReservedScopeIds[] = array($scope->getId(), $scope->getName(), $checked);  
+            // A reserved scope tag:
+            if($parentChecked || $targetChecked){
+                if($parentChecked){
+                    // tag CAN be inherited from parent, so put in relevant array 
+                    $reservedOptionalInheritableScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);
+                } else {
+                    // tag CAN'T be inherited from parent, but it has already been directly assigned, so put in relevant array  
+                    $reservedOptionalScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);  
+                }
+            } else {
+                // tag is not inheritable and has not been directly assigned, so its reserved/protected
+                $reservedScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked); 
+            }
         } else {
-            $ngiOptionalScopeIds[] = array($scope->getId(), $scope->getName(), $checked); 
+            // An optional scope tag: 
+            $optionalScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked); 
         }
     }
     // build the response 
-    $scopesReservedAndOptional = array(); 
-    $scopesReservedAndOptional['reserved'] = $ngiReservedScopeIds; 
-    $scopesReservedAndOptional['optional'] = $ngiOptionalScopeIds; 
-    $scopesReservedAndOptional['disableReserved'] = $disableReservedScopes; 
-    return json_encode($scopesReservedAndOptional); 
+    $scopeCategories = array(); 
+    $scopeCategories['optional'] = $optionalScopeIds; 
+    $scopeCategories['reserved_optional'] = $reservedOptionalScopeIds; 
+    $scopeCategories['reserved_optional_inheritable'] = $reservedOptionalInheritableScopeIds;  
+    $scopeCategories['reserved'] = $reservedScopeIds; 
+    $scopeCategories['disableReserved'] = $disableReservedScopes ? true : false;  
+    
+    return json_encode($scopeCategories); 
 }
 
 /**
@@ -192,9 +257,9 @@ function getSiteDataFromWeb() {
     }
    
     if(isset($_REQUEST['childServiceScopeAction'])){
-	$site_data['childServiceScopeAction'] = $_REQUEST['childServiceScopeAction']; 
+        $site_data['childServiceScopeAction'] = $_REQUEST['childServiceScopeAction']; 
     } else {
-	$site_data['childServiceScopeAction'] = 'noModify'; 
+        $site_data['childServiceScopeAction'] = 'noModify'; 
     }
     
     // get non-reserved scopes if any are selected, if not set as empty array 
@@ -501,13 +566,13 @@ function getSpDataFromWeb() {
     if (isset($_REQUEST ['PROP'])){
         $sp ['SITEPROPERTIES'] ['PROP'] = $_REQUEST ['PROP'];
     }
-	
-	if(isset($sp['SITEPROPERTIES']['NAME'])){
+        
+        if(isset($sp['SITEPROPERTIES']['NAME'])){
         $sp['SITEPROPERTIES']['NAME'] = trim($sp['SITEPROPERTIES']['NAME']); 
     }
     if(isset($sp['SITEPROPERTIES']['VALUE'])){
         $sp['SITEPROPERTIES']['VALUE'] = trim($sp['SITEPROPERTIES']['VALUE']); 
-    }	
+    }        
     return $sp;
 }
 
@@ -526,7 +591,7 @@ function getSerPropDataFromWeb() {
     }
     if(isset($sp['SERVICEPROPERTIES']['VALUE'])){
          $sp['SERVICEPROPERTIES']['VALUE'] = trim($sp['SERVICEPROPERTIES']['VALUE']); 
-    }	
+    }        
     return $sp;
 }
 
@@ -546,7 +611,7 @@ function getEndpointPropDataFromWeb() {
     }
     if(isset($_REQUEST ['KEYPAIRVALUE'])){
          $sp['ENDPOINTPROPERTIES']['VALUE'] = trim($_REQUEST ['KEYPAIRVALUE']); 
-    }	
+    }        
     return $sp;
 }
 

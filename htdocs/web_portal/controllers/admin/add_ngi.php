@@ -50,8 +50,10 @@ function draw() {
     //Check the user has permission to see the page, will throw exception 
     //if correct permissions are lacking
     checkUserIsAdmin();
-    
-    $scopejsonStr = getAllScopesAsJSON(false); 
+   
+    // pass 2 nulls because we haven't created the ngi yet and we don't yet 
+    // support cascading of project scopes (not sure this is needed) 
+    $scopejsonStr = getEntityScopesAsJSON2(null, null, false); 
     $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
     $params['scopejson'] = $scopejsonStr; 
     

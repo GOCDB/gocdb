@@ -190,12 +190,16 @@ $siteScopes = $site->getScopes();
 
         <br>
         <br>
+        
         <!-- Scope Tags-->
-        <div class="h4">Scope Tags
-            <span class="input_syntax">(At least <?php echo $params['numberOfScopesRequired'] ?> Optional tag must be selected)</span>
-        </div>
+        <?php 
+        $parentObjectTypeLabel = 'NGI'; 
+        require_once __DIR__ . '/../fragments/editScopesFragment.php';
+        ?>
+        
 
         <br>
+        
         <span class="input_name">
             Action to Take For All Child Service Scopes
         </span>
@@ -206,15 +210,6 @@ $siteScopes = $site->getScopes();
         </select>
 
         <br>
-
-        <div id="allscopeCheckBoxDIV">
-            <h4>Optional Scope Tags</h4>
-            <div id="optionalScopeCheckBoxDIV"></div> 
-            <br/>
-            <h4>Reserved Scope Tags</h4>
-            <div id="reservedScopeCheckBoxDIV"></div> 
-        </div>
-
 
         <input class="input_input_hidden" type="hidden" name="ID" value="<?php xecho($site->getId()) ?>" />
 
@@ -228,6 +223,11 @@ $siteScopes = $site->getScopes();
 
     $(document).ready(function () {
         var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
-        addScopeCheckBoxes(scopeJSON, '#reservedScopeCheckBoxDIV', '#optionalScopeCheckBoxDIV', true);
+        addScopeCheckBoxes(scopeJSON, 
+        '#reservedScopeCheckBoxDIV', 
+        '#reservedOptionalScopeCheckBoxDIV', 
+        '#reservedOptionalInhertiableScopeCheckBoxDIV', 
+        '#optionalScopeCheckBoxDIV', 
+        true);
     });
 </script>    

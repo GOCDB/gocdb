@@ -82,14 +82,10 @@ function draw(\User $user = null) {
        die(); 
     }
     
-    // can user assign reserved scopes ?
-    $disableReservedScopes = true; 
-    if($user->isAdmin()){
-	$disableReservedScopes = false; 
-    }
     $scopes = \Factory::getScopeService()->getAllScopesMarkProvided($sg->getScopes());
     $numberScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('service_group');
-    $scopejsonStr = getEntityScopesAsJSON($sg, $disableReservedScopes); 
+    // a ServiceGroup has no parent hence pass null
+    $scopejsonStr = getEntityScopesAsJSON2($sg, null, $user->isAdmin() ? false : true); 
 
     $params = array('serviceGroup' => $sg, 'scopes' => $scopes, 
             'numberOfScopesRequired'=>$numberScopesRequired, 

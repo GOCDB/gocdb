@@ -71,7 +71,7 @@ $siteName = $service->getParentSite()->getName();
 
         <!-- Description  -->
         <span class="input_name">
-            Description
+            Description *
             <span class="input_syntax" >
                 (Alphanumeric and basic punctuation)
             </span>
@@ -123,26 +123,22 @@ $siteName = $service->getParentSite()->getName();
             <option value="Y"<?php if ($service->getMonitored() == true) echo " selected=\"selected\"" ?>>Y</option>
         </select>
 
-
-
+        <br>
+        <br>
 
         <!-- Scope Tags-->
-        <div class="h4">Scope Tags
-            <span class="input_syntax">(At least <?php echo $params['numberOfScopesRequired'] ?> Optional tag must be selected)</span>
-        </div>
+        <?php 
+        $parentObjectTypeLabel = 'Site'; 
+        require_once __DIR__ . '/../fragments/editScopesFragment.php';
+        ?>
+
+        <br>
+        
         <div class="alert alert-warning" role="alert">
-            Note, rather than setting service-scopes individually below, you can update
-            the scopes of all child services on-mass when editing the parent Site 
+            Note, rather than setting scope tags individually for each service, you can update
+            the scopes of every service when editing the parent Site 
             (options such as 'Inherit Site scopes' and 'Override Service scopes with Site scopes' 
             are provided for your convenience) 
-        </div>
-
-        <div id="allscopeCheckBoxDIV">
-            <h4>Optional Scope Tags</h4>
-            <div id="optionalScopeCheckBoxDIV"></div> 
-            <br/>
-            <h4>Reserved Scope Tags</h4>
-            <div id="reservedScopeCheckBoxDIV"></div> 
         </div>
 
         <input class="input_input_hidden" type="hidden" value="<?php echo $service->getId() ?>" name="ID">
@@ -156,6 +152,11 @@ $siteName = $service->getParentSite()->getName();
 
     $(document).ready(function () {
         var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
-        addScopeCheckBoxes(scopeJSON, '#reservedScopeCheckBoxDIV', '#optionalScopeCheckBoxDIV', true);
+        addScopeCheckBoxes(scopeJSON, 
+        '#reservedScopeCheckBoxDIV',
+        '#reservedOptionalScopeCheckBoxDIV', 
+        '#reservedOptionalInhertiableScopeCheckBoxDIV',
+        '#optionalScopeCheckBoxDIV', 
+        true);
     });
 </script>  

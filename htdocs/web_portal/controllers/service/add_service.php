@@ -111,8 +111,11 @@ function draw($user) {
         // AJAX is needed here because the parent Site is not known until the user selects 
         // which parent Site in the pull-down which then fires the AJAX request. 
         $scopedEntityId = $_GET['getAllScopesForScopedEntity']; 
-        $scopedEntity =  \Factory::getSiteService()->getSite($scopedEntityId); 
-        die(getEntityScopesAsJSON($scopedEntity, $disableReservedScopes));  
+        $siteScopedEntity =  \Factory::getSiteService()->getSite($scopedEntityId); 
+        $scopeJson = getEntityScopesAsJSON2(null, $siteScopedEntity, $disableReservedScopes, true);  
+        //$scopeJson = getEntityScopesAsJSON($siteScopedEntity, $disableReservedScopes);  
+        header('Content-type: application/json');
+        die($scopeJson);  
     } 
     
     $serviceTypes = \Factory::getServiceService()->getServiceTypes();
