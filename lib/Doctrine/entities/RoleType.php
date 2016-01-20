@@ -37,15 +37,15 @@ class RoleType {
      * @throws RuntimeException if the given args are not strings 
      */
     public function __construct($name/* , $classification */) {
-	$this->setName($name);
-	//$this->setClassification($classification);  
+        $this->setName($name);
+        //$this->setClassification($classification);  
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -53,7 +53,7 @@ class RoleType {
      * @return string
      */
     public function getName() {
-	return $this->name;
+        return $this->name;
     }
 
 
@@ -63,10 +63,10 @@ class RoleType {
      * @throws RuntimeException if the given param is not a string 
      */
     public function setName($name) {
-	if (!is_string($name)) {
-	    throw new RuntimeException('Required string for $name');
-	}
-	$this->name = $name;
+        if (!is_string($name)) {
+            throw new RuntimeException('Required string for $name');
+        }
+        $this->name = $name;
     }
 
 

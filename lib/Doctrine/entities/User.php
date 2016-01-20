@@ -80,52 +80,52 @@ class User {
     
 
     public function __construct() {
-	// Set cretion date
-	$this->creationDate = new \DateTime("now");
-	//$this->sites = new ArrayCollection();
-	$this->roles = new ArrayCollection();
+        // Set cretion date
+        $this->creationDate = new \DateTime("now");
+        //$this->sites = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
      * @return string The user's first name.
      */
     public function getForename() {
-	return $this->forename;
+        return $this->forename;
     }
 
     /**
      * @return string The user's second name.  
      */
     public function getSurname() {
-	return $this->surname;
+        return $this->surname;
     }
 
     /**
      * @return string User's optional title or null. 
      */
     public function getTitle() {
-	return $this->title;
+        return $this->title;
     }
 
     /**
      * @return string User's contact email address or null. 
      */
     public function getEmail() {
-	return $this->email;
+        return $this->email;
     }
 
     /**
      * @return string User's contact tel or null.  
      */
     public function getTelephone() {
-	return $this->telephone;
+        return $this->telephone;
     }
 
     /**
@@ -134,7 +134,7 @@ class User {
      * @return string
      */ 
     public function getWorkingHoursStart() {
-	return $this->workingHoursStart;
+        return $this->workingHoursStart;
     }
 
     /**
@@ -143,7 +143,7 @@ class User {
      * @return string
      */
     public function getWorkingHoursEnd() {
-	return $this->workingHoursEnd;
+        return $this->workingHoursEnd;
     }
 
     /**
@@ -152,7 +152,7 @@ class User {
      * @return string
      */
     public function getCertificateDn() {
-	return $this->certificateDn;
+        return $this->certificateDn;
     }
 
     /**
@@ -162,7 +162,7 @@ class User {
      * @return string or null
      */
     public function getUsername1() {
-	return $this->username1;
+        return $this->username1;
     }
 
     /**
@@ -171,7 +171,7 @@ class User {
      * @return \Site or null
      */
     public function getHomeSite() {
-	return $this->homeSite;
+        return $this->homeSite;
     }
 
     /**
@@ -179,7 +179,7 @@ class User {
      * @return \DateTime
      */
     public function getCreationDate() {
-	return $this->creationDate;
+        return $this->creationDate;
     }
 
     /**
@@ -187,7 +187,7 @@ class User {
      * @return boolean
      */
     public function isAdmin() {
-	return $this->isAdmin;
+        return $this->isAdmin;
     }
 
     /**
@@ -195,7 +195,7 @@ class User {
      * @param string $forename
      */
     public function setForename($forename) {
-	$this->forename = $forename;
+        $this->forename = $forename;
     }
 
     /**
@@ -203,7 +203,7 @@ class User {
      * @param string $surname
      */
     public function setSurname($surname) {
-	$this->surname = $surname;
+        $this->surname = $surname;
     }
 
     /**
@@ -211,7 +211,7 @@ class User {
      * @param string $title
      */
     public function setTitle($title) {
-	$this->title = $title;
+        $this->title = $title;
     }
 
     /**
@@ -219,7 +219,7 @@ class User {
      * @param string $email
      */
     public function setEmail($email) {
-	$this->email = $email;
+        $this->email = $email;
     }
 
     /**
@@ -227,7 +227,7 @@ class User {
      * @param string $telephone
      */
     public function setTelephone($telephone) {
-	$this->telephone = $telephone;
+        $this->telephone = $telephone;
     }
 
     /**
@@ -235,7 +235,7 @@ class User {
      * @param string $workingHoursStart
      */
     public function setWorkingHoursStart($workingHoursStart) {
-	$this->workingHoursStart = $workingHoursStart;
+        $this->workingHoursStart = $workingHoursStart;
     }
 
     /**
@@ -243,7 +243,7 @@ class User {
      * @param string $workingHoursEnd
      */
     public function setWorkingHoursEnd($workingHoursEnd) {
-	$this->workingHoursEnd = $workingHoursEnd;
+        $this->workingHoursEnd = $workingHoursEnd;
     }
 
     /**
@@ -252,7 +252,7 @@ class User {
      * @param string $certificateDn
      */
     public function setCertificateDn($certificateDn) {
-	$this->certificateDn = $certificateDn;
+        $this->certificateDn = $certificateDn;
     }
 
     /**
@@ -262,7 +262,7 @@ class User {
      * @param string $username1
      */
     public function setUsername1($username1) {
-	$this->username1 = $username1;
+        $this->username1 = $username1;
     }
 
     /**
@@ -271,7 +271,7 @@ class User {
      * @param Site $homeSite
      */
     public function setHomeSiteDoJoin(Site $homeSite) {
-	$this->homeSite = $homeSite;
+        $this->homeSite = $homeSite;
     }
 
     /**
@@ -279,7 +279,7 @@ class User {
      * @param boolean $isAdmin
      */
     public function setAdmin($isAdmin) {
-	$this->isAdmin = $isAdmin;
+        $this->isAdmin = $isAdmin;
     }
 
     /**
@@ -287,14 +287,14 @@ class User {
      * @param \DateTime $creationDate
      */
     public function setCreationDate($creationDate) {
-	$this->creationDate = $creationDate;
+        $this->creationDate = $creationDate;
     }
 
     /**
      * @return string Concat of 'forename surname' 
      */
     public function getFullName() {
-	return $this->forename . " " . $this->surname;
+        return $this->forename . " " . $this->surname;
     }
 
     /**
@@ -304,8 +304,8 @@ class User {
      * @param \Role $role
      */
     public function addRoleDoJoin(\Role $role) {
-	$this->roles[] = $role;
-	$role->setUser($this);
+        $this->roles[] = $role;
+        $role->setUser($this);
     }
 
     /**
@@ -313,7 +313,7 @@ class User {
      * @return ArrayCollection 
      */
     public function getRoles() {
-	return $this->roles;
+        return $this->roles;
     }
 
 }

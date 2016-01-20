@@ -118,7 +118,7 @@ class ServiceProperty {
     public function setKeyValue($keyValue){
         $this->keyValue = $keyValue; 
     }
-	
+    
 }
 
 ?>

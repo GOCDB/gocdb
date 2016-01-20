@@ -51,7 +51,7 @@ class EndpointProperty {
     protected $keyValue = null;
 
     public function __construct() {
-	
+        
     }
 
     /**
@@ -60,7 +60,7 @@ class EndpointProperty {
      * @return \EndpointLocation
      */
     public function getParentEndpoint() {
-	return $this->parentEndpoint;
+        return $this->parentEndpoint;
     }
 
     /**
@@ -69,7 +69,7 @@ class EndpointProperty {
      * @return string
      */
     public function getKeyName() {
-	return $this->keyName;
+        return $this->keyName;
     }
 
     /**
@@ -77,14 +77,14 @@ class EndpointProperty {
      * @return String
      */
     public function getKeyValue() {
-	return $this->keyValue;
+        return $this->keyValue;
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -99,7 +99,7 @@ class EndpointProperty {
      * @param \EndpointLocation $endpoint
      */
     public function _setParentEndpoint(\EndpointLocation $endpoint) {
-	$this->parentEndpoint = $endpoint;
+        $this->parentEndpoint = $endpoint;
     }
 
     /**
@@ -109,7 +109,7 @@ class EndpointProperty {
      * @param string $keyName
      */
     public function setKeyName($keyName) {
-	$this->keyName = $keyName;
+        $this->keyName = $keyName;
     }
 
     /**
@@ -118,7 +118,7 @@ class EndpointProperty {
      * @param string $keyValue
      */
     public function setKeyValue($keyValue) {
-	$this->keyValue = $keyValue;
+        $this->keyValue = $keyValue;
     }
 
 }

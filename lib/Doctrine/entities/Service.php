@@ -52,10 +52,10 @@ class Service implements IScopedEntity {
 
     /** @Column(type="string", nullable=true) */
     protected $ipAddress;
-	
+        
     /** @Column(type="string", nullable=true) */
     protected $ipV6Address;
-	
+        
     /** @Column(type="string", nullable=true) */
     protected $operatingSystem;
 
@@ -88,7 +88,7 @@ class Service implements IScopedEntity {
      * @ManyToMany(targetEntity="Downtime", mappedBy="services" )
      */
     protected $downtimes;
-	
+        
     /**
      * @OneToMany(targetEntity="EndpointLocation", mappedBy="service" )
      */
@@ -99,7 +99,7 @@ class Service implements IScopedEntity {
      * @OneToMany(targetEntity="ServiceProperty", mappedBy="parentService", cascade={"remove"})
      */
     protected $serviceProperties = null;
-	
+        
     /**
      * Unidirectional - Scope tags associated with the service
      *
@@ -127,7 +127,7 @@ class Service implements IScopedEntity {
         $this->creationDate =  new \DateTime("now");
         $this->scopes = new ArrayCollection();
         $this->endpointLocations = new ArrayCollection();
-	$this->serviceProperties = new ArrayCollection();
+        $this->serviceProperties = new ArrayCollection();
         $this->downtimes = new ArrayCollection();
         $this->serviceGroups = new ArrayCollection();
     }
@@ -148,7 +148,7 @@ class Service implements IScopedEntity {
      * @return string or null
      */
     public function getUrl(){
-	return $this->url;
+        return $this->url;
     }
 
     /**
@@ -247,7 +247,7 @@ class Service implements IScopedEntity {
     }
 
     public function getServiceProperties(){
-	return $this->serviceProperties;
+        return $this->serviceProperties;
     }
 
     public function getEndpointLocations() {
@@ -259,7 +259,7 @@ class Service implements IScopedEntity {
     }
 
     public function getServiceGroups() {
-    	return $this->serviceGroups;
+        return $this->serviceGroups;
     }
     
     /**
@@ -296,9 +296,9 @@ class Service implements IScopedEntity {
     }
     
     public function setUrl($url){
-	$this->url = $url;
+        $this->url = $url;
     }
-	
+        
     public function setHostName($hostName) {
         $this->hostName = $hostName;
     }
@@ -310,7 +310,7 @@ class Service implements IScopedEntity {
     public function setIpV6Address($ipAddress) {
         $this->ipV6Address = $ipAddress;
     }
-	
+        
     public function setProduction($production) {
         $this->production = $production;
     }
@@ -371,16 +371,16 @@ class Service implements IScopedEntity {
      * both sides of the bi-directional relationship consitent.  
      * @param Downtime $downtime
      */
-//    public function _addDowntime(Downtime $downtime) {		
-//		$this->downtimes[] = $downtime;
+//    public function _addDowntime(Downtime $downtime) {                
+//        $this->downtimes[] = $downtime;
 //        // adding below would cause a race condition 
-//		//$downtime->addService($this); 
+//        //$downtime->addService($this); 
 //    }
-	
-//	public function removeDowntime(Downtime $downtime) {
-//    	$this->downtimes->removeElement($downtime);
+        
+//    public function removeDowntime(Downtime $downtime) {
+//        $this->downtimes->removeElement($downtime);
 //    }
-	
+        
     /**
      * Add the given EL to the list. This method internally calls 
      * <code>$endpointLocation->setServiceDoJoin($this)</code> to keep both  
@@ -413,7 +413,7 @@ class Service implements IScopedEntity {
      * @param ServiceGroup $sg
      */
     public function addServiceGroup(ServiceGroup $sg) {
-    	$this->serviceGroups[] = $sg;
+        $this->serviceGroups[] = $sg;
     }
 
     /**
@@ -431,7 +431,7 @@ class Service implements IScopedEntity {
      * @return string
      */
     public function __toString() {
-        return $this->getServiceType()->getName() . " " . $this->getHostName();		
+        return $this->getServiceType()->getName() . " " . $this->getHostName();                
     }
 
 }

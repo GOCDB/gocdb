@@ -34,14 +34,14 @@ class Infrastructure {
     protected $sites = null;
 
     public function __construct() {
-	$this->sites = new ArrayCollection();
+        $this->sites = new ArrayCollection();
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -49,7 +49,7 @@ class Infrastructure {
      * @return string 
      */
     public function getName() {
-	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -57,7 +57,7 @@ class Infrastructure {
      * @param string $name
      */
     public function setName($name) {
-	$this->name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -65,7 +65,7 @@ class Infrastructure {
      * @return ArrayCollection
      */
     public function getSites() {
-	return $this->sites;
+        return $this->sites;
     }
 
     /**
@@ -75,8 +75,8 @@ class Infrastructure {
      * @param \Site $site
      */
     public function addSiteDoJoin($site) {
-	$this->sites[] = $site;
-	$site->setInfrastructure($this);
+        $this->sites[] = $site;
+        $site->setInfrastructure($this);
     }
 
 

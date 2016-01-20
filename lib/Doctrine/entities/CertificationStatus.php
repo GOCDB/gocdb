@@ -40,14 +40,14 @@ class CertificationStatus {
     protected $sites = null;
 
     public function __construct() {
-	$this->sites = new ArrayCollection();
+        $this->sites = new ArrayCollection();
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -55,7 +55,7 @@ class CertificationStatus {
      * @return string
      */
     public function getName() {
-	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -63,7 +63,7 @@ class CertificationStatus {
      * @param string $name
      */
     public function setName($name) {
-	$this->name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -71,7 +71,7 @@ class CertificationStatus {
      * @return Doctrine\Common\Collections\ArrayCollection
      */
     public function getSites() {
-	return $this->sites;
+        return $this->sites;
     }
 
     /**
@@ -81,8 +81,8 @@ class CertificationStatus {
      * @param \Site $site
      */
     public function addSiteDoJoin($site) {
-	$this->sites[] = $site;
-	$site->setCertificationStatus($this);
+        $this->sites[] = $site;
+        $site->setCertificationStatus($this);
     }
 
     /**
@@ -91,6 +91,6 @@ class CertificationStatus {
      * @return string
      */
     public function __toString() {
-	return $this->getName();
+        return $this->getName();
     }
 }
