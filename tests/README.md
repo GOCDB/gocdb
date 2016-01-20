@@ -56,11 +56,13 @@ Database schema created successfully!
 Running the Test Suite
 ----------------------
 A test suite is provided that will test many core functions of GocDB and Doctrine. 
-This suite itself executes a number of individual tests and can be ran using the command:
+This suite itself executes a number of individual tests and can be ran using the 
+following command. Coverage reporting is configured in the phpunit.xml file and 
+coverage reports are placed in the coverageReports dir (this dir is added to .gitignore) 
 
 ```bash 
 $ cd tests
-$ phpunit DoctrineTestSuite1.php 
+$ phpunit DoctrineTestSuite1.php --coverage-html coverageReports
 ```
 
 Running Individual Tests

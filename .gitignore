@@ -15,6 +15,7 @@ composer.phar
 composer.bat
 composer
 gocdb.log
+tests/coverageReports/
 
 # Eclipse: https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
 # =====================
