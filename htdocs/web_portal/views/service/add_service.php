@@ -116,7 +116,7 @@ $serviceTypes = $params['serviceTypes'];
 
         //console.log('defalutVal: '+$('#ngiSelectPullDown').val());  
         var entityId = $('#siteSelectPullDown').val();
-        buildScopeCheckBoxes('Add_Service', entityId, 
+        ScopeUtil.queryForJsonScopesAddScopeCheckBoxes('Add_Service', entityId, 
           '#reservedScopeCheckBoxDIV', 
           '#reservedOptionalScopeCheckBoxDIV', 
           '#reservedOptionalInhertiableScopeCheckBoxDIV',
@@ -126,7 +126,7 @@ $serviceTypes = $params['serviceTypes'];
         $('#siteSelectPullDown').change(function () {
             //console.log($('#ngiSelectPullDown').val());  
             var entityId = $('#siteSelectPullDown').val();
-            buildScopeCheckBoxes('Add_Service', entityId, 
+            ScopeUtil.queryForJsonScopesAddScopeCheckBoxes('Add_Service', entityId, 
               '#reservedScopeCheckBoxDIV',
               '#reservedOptionalScopeCheckBoxDIV', 
               '#reservedOptionalInhertiableScopeCheckBoxDIV',

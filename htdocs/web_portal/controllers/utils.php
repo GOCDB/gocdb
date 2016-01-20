@@ -390,7 +390,8 @@ function getSeDataFromWeb() {
     }
     
     /*
-     * If the user is adding a new service the optional HOSTING_SITE parameter will be set. If it is set we return it as part of the array
+     * If the user is adding a new service the optional HOSTING_SITE parameter will be set. 
+     * If it is set we return it as part of the array
      */
     if (! empty($_REQUEST ['hostingSite'])){
         $se_data ['hostingSite'] = $_REQUEST ['hostingSite'];

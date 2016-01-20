@@ -60,7 +60,7 @@
 
     $(document).ready(function () {
         var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
-        addScopeCheckBoxes(scopeJSON, 
+        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
             '#reservedScopeCheckBoxDIV',
             '#reservedOptionalScopeCheckBoxDIV', 
             '#reservedOptionalInhertiableScopeCheckBoxDIV',

@@ -13,9 +13,14 @@
  * @author David Meredith <david.meredith@stfc.ac.uk> 
  */
 
+/**
+ * Define the global ScopeUtil object 
+ * @type Object
+ */
+ScopeUtil = {}; 
 
 /**
- * Call the 'index.php' page with the Page_Type url param value to fetch a
+ * Call the 'index.php' page with the Page_Type URL param value to fetch a
  * JSON doc that encodes all the scope tag values for the entity 
  * identified by scopedEntityId, then build the scope check boxes.
  * @see {@link addScopeCheckBoxes}  
@@ -33,7 +38,7 @@
  * @param {boolean} emptyContainers - If true, empty() is called on both container elements
  *   before the checkboxes are appended (normally true). 
  */
-function buildScopeCheckBoxes(page_type, scopedEntityId, 
+ScopeUtil.queryForJsonScopesAddScopeCheckBoxes = function(page_type, scopedEntityId, 
   appendToReservedContainer, 
   appendToReservedOptionalContainer, 
   appendToReservedInheritableOptionalContainer,
@@ -41,7 +46,11 @@ function buildScopeCheckBoxes(page_type, scopedEntityId,
   emptyContainers) {
       
     if (!scopedEntityId) {
-        return;
+        console.log('Error - scopedEntityId was invalid ['+scopedEntityId+']');
+        var errorDivElem = $('<span style="color: red"><b>An error occurred ' +
+                'and the scope tags could not be rendered because the scopedEntityId was invalid. Please contact gocdb-admins.</b></span>');
+        $(appendToReservedContainer).append(errorDivElem);
+        return; 
     }
     console.log('requesting JSON for scope tags');
     // use ajax to get the selected ngi's scopes and update display+vars
@@ -100,7 +109,7 @@ function buildScopeCheckBoxes(page_type, scopedEntityId,
  * @param {boolean} emptyContainers - If true, empty() is called on both container elements
  *   before the checkboxes are appended (normally true). 
  */
-function addScopeCheckBoxes(jsonScopes, 
+ScopeUtil.addScopeCheckBoxes = function(jsonScopes, 
     appendToReservedContainer, 
     appendToReservedOptionalContainer, 
     appendToReservedInheritableOptionalContainer, 

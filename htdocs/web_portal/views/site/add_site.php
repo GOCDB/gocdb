@@ -178,7 +178,7 @@
     $(document).ready(function () {
         var entityId = $('#ngiSelectPullDown').val();
         //console.log(ajaxText); 
-        buildScopeCheckBoxes('Add_Site', entityId, 
+        ScopeUtil.queryForJsonScopesAddScopeCheckBoxes('Add_Site', entityId, 
           '#reservedScopeCheckBoxDIV',
           '#reservedOptionalScopeCheckBoxDIV', 
           '#reservedOptionalInhertiableScopeCheckBoxDIV',
@@ -187,7 +187,7 @@
 
         $('#ngiSelectPullDown').change(function () {
             var entityId = $('#ngiSelectPullDown').val();
-            buildScopeCheckBoxes('Add_Site', entityId, 
+            ScopeUtil.queryForJsonScopesAddScopeCheckBoxes('Add_Site', entityId, 
               '#reservedScopeCheckBoxDIV', 
               '#reservedOptionalScopeCheckBoxDIV', 
               '#reservedOptionalInhertiableScopeCheckBoxDIV',
