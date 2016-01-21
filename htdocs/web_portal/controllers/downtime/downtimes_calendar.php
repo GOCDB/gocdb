@@ -79,17 +79,22 @@ function getTooltip(){
     } else {
         throw new \Exception("downtime" . $_GET['downtimeID'] . "does not exist.");
     }
-
+    $start = $downtime->getStartDate();
+    $end = $downtime->getEndDate();
+    $params['duration'] = date_diff($start, $end)->days . " days " . date_diff($start, $end)->h . " hours";
     $params['start'] = $downtime->getStartDate()->format('d-m-Y H:i');
     $params['end'] = $downtime->getEndDate()->format('d-m-Y H:i');
+    $params['description'] = $downtime->getDescription();
     $params['services'] = array();
     $params['scopes'] = array();
-    $params['sites'] = array();
+
+
+    $params['site'] = $downtime->getServices()->first()->getParentSite()->getName();
 
     //throw new \Exception(var_dump($dt->getServices()->first()->getScopes());
     foreach($downtime->getServices() as $service){
         array_push($params['services'], $service->getHostName());
-        array_push($params['sites'], $service->getParentSite()->getName());
+        //array_push($params['sites'], $service->getParentSite()->getName());
         foreach($service->getScopes() as $scope){
             array_push($params['scopes'], $scope->getName());
         };
@@ -97,7 +102,11 @@ function getTooltip(){
 
     $params['services'] = array_unique($params['services']);
     $params['scopes'] = array_unique($params['scopes']);
-    $params['sites'] = array_unique($params['sites']);
+
+    $params['affected'] = count($params['services']) . " of " .
+
+
+    //$params['sites'] = array_unique($params['sites']);
 
     show_view("downtime/downtimes_calendar_tooltip.php", $params, null, true);
 }

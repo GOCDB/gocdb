@@ -151,8 +151,8 @@ javascript to show and hide these tables.
 
         <script type="text/javascript"
                 src="<?php GocContextPath::getPath() ?>javascript/jquery.multiple.select.js"></script>
-        <!--<script type="text/javascript" src="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>-->
-        <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.css" />-->
+        <script type="text/javascript" src="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.css" />
 
 
         <script type="text/javascript">
@@ -326,37 +326,34 @@ javascript to show and hide these tables.
                     header: false,
                     events: '/portal/index.php?Page_Type=Downtimes_Calendar&getDowntimesAsJSON',
                     eventRender: function eventRender(event, element, view) {
-                        //var dtID = event.id;
-//                element.qtip({
-//                    content: {
-//                        text: function(event, api) {
-//                            console.log(event);
-//                            $.ajax({
-//                                //url: element.data('/portal/index.php?Page_Type=Downtimes_Calendar'), // Use data-url attribute for the URL &getTooltip&downtimeID=' + event.id
-//                                data: {downtimeID: this.downtimeID, getTooltip: true}
-//                            })
-//                                .then(function(content) {
-//                                    // Set the tooltip content upon successful retrieval
-//                                    console.log(dtID);
-//
-//                                    api.set('content.text', content);
-//                                }, function(xhr, status, error) {
-//                                    // Upon failure... set the tooltip content to the status and error value
-//                                    api.set('content.text', status + ': ' + error);
-//                                });
-//
-//                            return 'Loading...'; // Set some initial text
-//                        }
-//                    }
-//                });
+                        element.attr('data-tooltipURL', '/portal/index.php?Page_Type=Downtimes_Calendar&getTooltip&downtimeID=' + event.id);
+                        element.qtip({
+                            content: {
+                                text: function (event, api) {
+                                    console.log(element);
+                                    $.ajax({
+                                        url: element.attr('data-tooltipURL') // Use data-url attribute for the URL
+                                    })
+                                        .then(function (content) {
+                                            // Set the tooltip content upon successful retrieval
+                                            api.set('content.text', content);
+                                        }, function (xhr, status, error) {
+                                            // Upon failure... set the tooltip content to the status and error value
+                                            api.set('content.text', status + ': ' + error);
+                                        });
+
+                                    return 'Loading...'; // Set some initial text
+                                }
+                            }
+                        });
                         return filterEvent(event);
                     }
                 });
 
                 //event handlers for our custom navigation buttons
-                //they only need to affect the month picker, and then the month pickers change handler will do the rest
 
                 $('#prevMonth').click(function () {
+                    //grab the current date from the picker
                     date = $('#monthpicker').data("DateTimePicker").date();
                     if ($('#calendar').fullCalendar('getView').name == "month") {
                         date.add(-1, "month");
