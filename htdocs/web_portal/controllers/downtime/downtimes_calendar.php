@@ -22,11 +22,12 @@
 
 
 function getDowntimesAsJSON(){
-    $downtimesArray = array();
 
+    $filterParams = array();
 
     $windowStart = date("Y-m-d");
-    $windowEnd = date_add(date_create(date("Y-m-d")), date_interval_create_from_date_string(30 .' days'));
+    $windowEnd = date_add(date_create(date("Y-m-d")), date_interval_create_from_date_string(30 .' days'))->format('Y-m-d');
+
 
     if(isset($_GET["start"])){
         $windowStart = date("Y-m-d", strtotime($_GET["start"]));
@@ -36,46 +37,101 @@ function getDowntimesAsJSON(){
         $windowEnd = date("Y-m-d", strtotime($_GET["end"]));
     }
 
-    $downtimes = \Factory::getDowntimeService()->getActiveAndImminentDowntimes($windowStart,$windowEnd);
 
+    if(!empty($_GET["classification"]))
+        $filterParams['classification'] = $_GET["classification"];
+
+    if(!empty($_GET["severity"]))
+        $filterParams['severity'] = $_GET["severity"];
+
+    if(!empty($_GET["production"]))
+        $filterParams['production'] = $_GET["production"];
+
+    if(!empty($_GET["monitored"]))
+        $filterParams['monitored'] = $_GET["monitored"];
+
+    if(!empty($_GET["certStatus"]))
+        $filterParams['certification_status'] = $_GET["certStatus"];
+
+    $selectedScopes = "";
+    if(!empty($_GET['scope'])){
+        $selectedScopes = $_GET['scope'];
+    }
+
+    $selectedServiceTypes = "";
+    if(!empty($_GET['service_type'])){
+        $selectedServiceTypes = $_GET['service_type'];
+    }
+
+    $selectedSites = "";
+    if(!empty($_GET['site'])) {
+        $selectedSites = $_GET['site'];
+    }
+
+    $selectedNGIs = "";
+    if(!empty($_GET['ngi'])) {
+        $selectedNGIs = $_GET['ngi'];
+    }
+
+    $filterParams['windowstart'] = $windowStart;
+    $filterParams['windowend'] = $windowEnd;
+
+    if($selectedScopes != "null" && $selectedScopes != "") {
+        $filterParams['scope'] = $selectedScopes;
+        $filterParams['scope_match'] = 'any';
+    }
+
+    if($selectedServiceTypes != "null" && $selectedServiceTypes != "" ) {
+        $filterParams['service_type_list'] = $selectedServiceTypes;
+    }
+
+    if($selectedSites != "null" && $selectedSites != "" ) {
+        $filterParams['sitelist'] = $selectedSites;
+    }
+
+    if($selectedNGIs != "null" && $selectedNGIs != "" ) {
+        $filterParams['ngilist'] = $selectedNGIs;
+    }
+
+    $dtServ = \Factory::getDowntimeService();
+    $downtimes = $dtServ->getDowntimesFilterByParams($filterParams);
+    //$downtimes = $dt->getActiveAndImminentDowntimes($windowStart, $windowEnd);
+
+//    print_r(var_dump($downtimes));
+//    die("force die");
+
+    $downtimesArray = array();
 
     foreach($downtimes as $dt){
+        //print_r(var_dump($dt['id']));
+        //continue;
         $tempDowntime = array();
-        $tempDowntime['id'] = $dt->getId();
-        $tempDowntime['site'] = $dt->getServices()->first()->getParentSite()->getName();
-        $tempDowntime['title'] = $tempDowntime['site'] . ": " . $dt->getDescription();
-        $tempDowntime['start'] = $dt->getStartDate()->format('c');
-        $tempDowntime['end'] = $dt->getEndDate()->format('c');
-        $tempDowntime['url'] = "index.php?Page_Type=Downtime&id=" . $dt->getId();
-        $tempDowntime['ngi'] = $dt->getServices()->first()->getParentSite()->getNgi()->getName();
-        $tempDowntime['scopes'] = array();
-        $tempDowntime['services'] = array();
+        $tempDowntime['id'] = $dt['id'];
+        $tempDowntime['site'] = $dtServ->getDowntime($tempDowntime['id'])->getServices()->first()->getParentSite()->getName();
+        $tempDowntime['title'] = "<b>"  . $tempDowntime['site'] . "</b>" . ": " . utf8_encode($dt['description']);
+        //$tempDowntime['title'] = utf8_encode($dt['description']);
+        $tempDowntime['start'] = $dt['startDate']->format('c');
+        $tempDowntime['end'] = $dt['endDate']->format('c');
+        $tempDowntime['severity'] = $dt['severity'];
+        $tempDowntime['class'] = $dt['classification'];
+        //$tempDowntime['end'] = $dt->getEndDate()->format('c');
+        $tempDowntime['url'] = "index.php?Page_Type=Downtime&id=" . $tempDowntime['id'];
 
-        //throw new \Exception(var_dump($dt->getServices()->first()->getScopes());
-        foreach($dt->getServices() as $service){
-            array_push($tempDowntime['services'], $service->getHostName());
-            foreach($service->getScopes() as $scope){
-                array_push($tempDowntime['scopes'], $scope->getName());
-            };
-        };
-        $tempDowntime['scopes'] = array_unique($tempDowntime['scopes']);
-
-        $tempDowntime['severity'] = $dt->getSeverity();
-        $tempDowntime['class'] = $dt->getClassification();
-
-        if ($dt->getSeverity() === "OUTAGE"){
-            $tempDowntime['color'] = "#BB4444";
-        }
 
         $downtimesArray[] = $tempDowntime;
     }
+    header("Content-type:text/json");
+    //print_r(var_dump(json_encode($downtimesArray)));
+    //print_r(var_dump($downtimesArray));
+    //die("force die");
 
+    //throw here if false
     return json_encode($downtimesArray);
 }
 
 function getTooltip(){
     if(isset($_GET['downtimeID'])){
-        $downtime = \Factory::getDowntimeService()->getDowntime($_REQUEST['downtimeID']);
+        $downtime = \Factory::getDowntimeService()->getDowntime($_GET['downtimeID']);
     } else {
         throw new \Exception("downtime" . $_GET['downtimeID'] . "does not exist.");
     }
@@ -103,10 +159,11 @@ function getTooltip(){
     $params['services'] = array_unique($params['services']);
     $params['scopes'] = array_unique($params['scopes']);
 
-    $params['affected'] = count($params['services']) . " of " .
+    $params['affected'] = "<b>" . count($params['services']) . "</b> of <b>" . count($downtime->getServices()->first()->getParentSite()->getServices()) . "</b>";
 
 
     //$params['sites'] = array_unique($params['sites']);
+    //throw new \Exception(var_dump($params));
 
     show_view("downtime/downtimes_calendar_tooltip.php", $params, null, true);
 }
@@ -115,7 +172,12 @@ function getTooltip(){
 function view() {
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
-    
+
+//    $dt = \Factory::getDowntimeService();
+//
+//    $downtimeArray = $dt->getDowntimesFilterByParams(null);
+//    print_r($downtimeArray);
+//    die("force die");
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
@@ -153,6 +215,16 @@ function view() {
         $selectedSites = explode(',', $_GET['site']);
     }
 
+    $selectedServiceTypes = array();
+    if(!empty($_GET['serviceType'])) {
+        $selectedServiceTypes = explode(',', $_GET['service_type']);
+    }
+
+    $selectedNGIs = array();
+    if(!empty($_GET['ngi'])) {
+        $selectedNGIs = explode(',', $_GET['ngi']);
+    }
+
 
 
     $severity = "ALL";
@@ -160,14 +232,26 @@ function view() {
         $severity = $_GET['severity'];
     }
 
-    $selectedNGI = "ALL";
-    if(!empty($_GET['ngi'])) {
-        $selectedNGI = $_GET['ngi'];
-    }
+
 
     $classification = "ALL";
-    if(!empty($_GET['class'])) {
-        $classification = $_GET['class'];
+    if(!empty($_GET['classification'])) {
+        $classification = $_GET['classification'];
+    }
+
+    $certStatus = "ALL";
+    if(!empty($_GET['certStatus'])) {
+        $certStatus = $_GET['certStatus'];
+    }
+
+    $production = "ALL";
+    if(!empty($_GET['production'])) {
+        $production = $_GET['production'];
+    }
+
+    $monitored = "ALL";
+    if(!empty($_GET['monitored'])) {
+        $monitored = $_GET['monitored'];
     }
 
     $date = date("Y-m-d");
@@ -184,22 +268,29 @@ function view() {
         $view = $_GET['view'];
     }
 
-    $params['selectedScopes'] = $selectedScopes; //$scope;
-
+    $params['selectedScopes'] = $selectedScopes;
     $params['severity'] = $severity;
     $params['classification'] = $classification;
+    $params['production'] = $production;
+    $params['monitored'] = $monitored;
+    $params['certStatus'] = $certStatus;
     $params['date'] = $date;
     $params['view'] = $view;
     $params['ngis'] = \Factory::getNgiService()->getNGIs();
-    $params['selectedNGI'] = $selectedNGI;
+    $params['serviceTypes'] = \Factory::getServiceService()->getServiceTypes();
+    $params['selectedNGIs'] = $selectedNGIs;
     $params['selectedSites'] = $selectedSites;
+    $params['selectedServiceTypes'] = $selectedServiceTypes;
 
-    ///////////////////////////////////////////////////////
-    $filterParams = array();
-    $filterParams['scope'] = '';
     $serv = \Factory::getSiteService();
-    $params['sites'] = $serv->getSitesFilterByParams($filterParams);
-    //////////////////////////////////////////////////////
-    //throw new \Exception($date);
-    show_view("downtime/downtimes_calendar.php", $params);
+    $params['certStatuses'] = $serv->getCertStatuses();
+
+    //Need a list of the sites for the site multi select
+    //so an array of filter params is needed to pass to getSitesFilterByParams()
+    //so it doesn't complain
+    $siteFilterParams = array();
+    $siteFilterParams['scope'] = '';
+    $params['sites'] = $serv->getSitesFilterByParams($siteFilterParams);
+    //throw new \Exception(var_dump($params));
+    show_view("downtime/downtimes_calendar.php", $params, "Downtimes Calendar");
 }

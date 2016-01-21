@@ -11,12 +11,13 @@ can select the time period for planned downtimes to show. Extra information is s
 from the main downtimes table. This table is shown and hidden by creating dynamically named tables and using 
 javascript to show and hide these tables. 
 --->
-<div class="rightPageContainer">
+
+<div class="rightPageContainer" style="position: relative">
 
     <div style="float: left;">
         <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" class="pageLogo"/>
     </div>
-    <h1>Downtime Calendar</h1>
+    <a href="index.php?Page_Type=Downtimes_Calendar" style="text-decoration: none"><h1>Downtimes Calendar</h1></a>
 
     <div class="siteContainer container-fluid">
 
@@ -27,7 +28,7 @@ javascript to show and hide these tables.
                 <span><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
                 <br/>
 
-                <select id="scopeSelect" class="" style="width: 150px" multiple="multiple" name="mscope[]">
+                <select id="scopeSelect" name="scope" class="" style="width: 150px" multiple="multiple" name="mscope[]">
                     <?php foreach ($params['scopes'] as $scope) { ?>
                         <option value="<?php xecho($scope->getName()); ?>"
                             <?php if (in_array($scope->getName(), $params['selectedScopes']) || count($params['selectedScopes']) == 0) {
@@ -40,9 +41,24 @@ javascript to show and hide these tables.
             </div>
 
             <div class="col-sm-3">
+                Service types:
+                <br/>
+                <select id="servTypeSelect" name="service_type" class="" style="width: 150px" multiple="multiple">
+                    <?php foreach ($params['serviceTypes'] as $servType) { ?>
+                        <option value="<?php xecho($servType->getName()); ?>"
+                            <?php if (in_array($servType->getName(), $params['selectedServiceTypes']) || count($params['selectedServiceTypes']) == 0) {
+                                echo ' selected';
+                            } ?> >
+                            <?php xecho($servType->getName()); ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+
+            <div class="col-sm-3">
                 Sites:
                 <br/>
-                <select id="siteSelect" class="" style="width: 150px" multiple="multiple" name="site[]">
+                <select id="siteSelect" name="site" class="" style="width: 150px" multiple="multiple" name="site[]">
                     <?php foreach ($params['sites'] as $site) { ?>
                         <option value="<?php xecho($site->getName()); ?>"
                             <?php if (in_array($site->getName(), $params['selectedSites']) || count($params['selectedSites']) == 0) {
@@ -54,27 +70,27 @@ javascript to show and hide these tables.
                 </select>
             </div>
 
-            <div class="col-sm-6">
-                <div class="col-sm-4">
-                    NGI:
-                    <br/>
-                    <select id="ngi_selector" class="selectpicker">
-                        <option value="ALL">All</option>
-                        <?php foreach ($params['ngis'] as $ngi) { ?>
-                            <option value="<?php xecho($ngi->getName()); ?>"
-                                <?php if ($ngi->getName() == $params['selectedNGI']) {
-                                    echo ' selected';
-                                } ?> >
-                                <?php xecho($ngi->getName()); ?>
-                            </option>
-                        <?php } ?>
-                    </select>
-                </div>
+            <div class="col-sm-3">
+                NGIs:
+                <br/>
+                <select id="ngiSelect" name="ngi" class="" style="width: 150px" multiple="multiple" name="ngi[]">
+                    <?php foreach ($params['ngis'] as $ngi) { ?>
+                        <option value="<?php xecho($ngi->getName()); ?>"
+                            <?php if (in_array($ngi->getName(), $params['selectedNGIs']) || count($params['selectedNGIs']) == 0) {
+                                echo ' selected';
+                            } ?> >
+                            <?php xecho($ngi->getName()); ?>
+                        </option>
+                    <?php } ?>
+                </select>
+            </div>
+            </div>
+        <div class="row">
 
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     Severity:
-
-                    <select class="selectpicker" id="severity_selector">
+                    <br/>
+                    <select name="severity" class="selectpicker" id="severity_selector">
                         <option value="ALL">All</option>
                         <option value="OUTAGE" <?php if ($params['severity'] == "OUTAGE") {
                             echo ' selected';
@@ -87,9 +103,10 @@ javascript to show and hide these tables.
                     </select>
                 </div>
 
-                <div class="col-sm-4">
+                <div class="col-sm-2">
                     Classification:
-                    <select class="selectpicker" id="class_selector">
+                    <br/>
+                    <select class="selectpicker" name="classification" id="class_selector">
                         <option value="ALL">All</option>
                         <option value="SCHEDULED" <?php if ($params['classification'] == "SCHEDULED") {
                             echo ' selected';
@@ -102,21 +119,67 @@ javascript to show and hide these tables.
                     </select>
                 </div>
 
+            <div class="col-sm-2">
+                Certification:
+                <br/>
+                <select class="selectpicker" name="certStatus" id="certStatus_selector" >
+                    <option value="ALL">All</option>
+                    <?php foreach ($params['certStatuses'] as $certStatus) { ?>
+                        <option value="<?php xecho($certStatus->getName()); ?>"
+                            <?php if ($params['certStatus'] == $certStatus->getName()){ echo " selected";} ?> >
+                            <?php xecho($certStatus->getName()); ?>
+                        </option>
+                    <?php } ?>
+                </select>
             </div>
 
-        </div>
+            <div class="col-sm-2">
+                Production:
+                <br/>
+                <select class="selectpicker" name="production" id="prod_selector">
+                    <option value="ALL">All</option>
+                    <option value="1" <?php if ($params['production'] == "1") {
+                        echo ' selected';
+                    } ?>>Yes
+                    </option>
+                    <option value="0" <?php if ($params['production'] == "0") {
+                        echo ' selected';
+                    } ?>>No
+                    </option>
+                </select>
+            </div>
 
-        <div class="row">
+            <div class="col-sm-2">
+                Monitored:
+                <br/>
+                <select class="selectpicker" name="monitored" id="monitored_selector">
+                    <option value="ALL">All</option>
+                    <option value="1" <?php if ($params['monitored'] == "1") {
+                        echo ' selected';
+                    } ?>>Yes
+                    </option>
+                    <option value="0" <?php if ($params['monitored'] == "0") {
+                        echo ' selected';
+                    } ?>>No
+                    </option>
+                </select>
+            </div>
 
+            <div class="col-sm-2">
+                <br/>
 
-        </div>
-        <br/>
+                <button id="applyFilters" type="button" class="btn btn-primary">Apply Filters</button>
+            </div>
+
+            </div>
+        <div class="row"><br/></div>
+
 
         <div class="row">
 
             <div class="col-sm-4">
-                <h2 style="display:none; font-size: 28px;" id="dateMonthTitle"></h2>
-                <h2 style="display:none; font-size: 28px;" id="dateWeekTitle"></h2>
+                <h2 style="display:none; font-size: 26px;" id="dateMonthTitle"></h2>
+                <h2 style="display:none; font-size: 26px;" id="dateWeekTitle"></h2>
             </div>
 
 
@@ -147,72 +210,27 @@ javascript to show and hide these tables.
         </div>
 
         <div id='calendar'></div>
+        <div id='loading' class="grayed-out">
+            <div class="loader" style="vertical-align: middle;">Loading...</div>
+
+        </div>
+        </div>
 
 
-        <script type="text/javascript"
-                src="<?php GocContextPath::getPath() ?>javascript/jquery.multiple.select.js"></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.js"></script>
-        <link rel="stylesheet" href="https://cdn.jsdelivr.net/qtip2/2.2.1/jquery.qtip.min.css" />
+        <script type="text/javascript" src="<?php GocContextPath::getPath() ?>javascript/fullcalendar/fullcalendar.min.js"></script>
+        <script type="text/javascript" src="<?php GocContextPath::getPath() ?>javascript/jquery.multiple.select.js"></script>
+        <script type="text/javascript" src="<?php GocContextPath::getPath() ?>javascript/qtip/jquery.qtip.min.js"></script>
+        <link rel="stylesheet" href="<?php GocContextPath::getPath() ?>javascript/qtip/jquery.qtip.min.css" />
+        <link rel="stylesheet" href="<?php GocContextPath::getPath() ?>javascript/fullcalendar/fullcalendar.min.css" />
+        <link rel="stylesheet" href="<?php GocContextPath::getPath() ?>css/downtime-calendar.css" />
+
 
 
         <script type="text/javascript">
 
-            //Main downtime filter is run once for each of the events, and if of the subfilters
-            //returns false it will to, causing the downtime event to not be rendered
-            function filterEvent(event) {
-
-                if (
-                    !filterEventByScope(event) || !filterEventBySeverity(event) || !filterEventByClass(event) || !filterEventByNGI(event) || !filterEventBySite(event)
-                ) {
-                    return false;
-                }
-            }
-
-            //checks if the severity of the downtime matches the selected severity in the filter panel
-            function filterEventBySeverity(event) {
-                return ['ALL', event.severity].indexOf($('#severity_selector').val()) >= 0
-            }
-
-            //checks if the affected NGI of the downtime matches the selected NGI in the filter panel
-            function filterEventByNGI(event) {
-                return ['ALL', event.ngi].indexOf($('#ngi_selector').val()) >= 0
-            }
-
-            //checks if the clasification of the downtime matches the selected class in the filter panel
-            function filterEventByClass(event) {
-                return ['ALL', event.class].indexOf($('#class_selector').val()) >= 0
-            }
-
-            //checks if any affected sites of the downtime matches any of the selected sites in the filter panel
-            function filterEventBySite(event) {
-                siteSelect = $('#siteSelect');
-                if (siteSelect.val() == null) {
-                    return false;
-                }
-                return siteSelect.val().indexOf(event.site) >= 0;
-            }
-
-            //checks if any affected scopes of the downtime matches any of the selected scopes in the filter panel
-            function filterEventByScope(event) {
-                var index;
-                var scopeFilterArray = $('#scopeSelect').val();
-                if (scopeFilterArray == null) {
-                    return false;
-                }
-                var scopeArray = event.scopes;
-                for (index = 0; index < scopeArray.length; ++index) {
-                    if (scopeFilterArray.indexOf(scopeArray[index]) >= 0) {
-                        return true;
-                    }
-                }
-
-                return false;
-            }
-
-
             //this function is used to update the  url bar, allowing filter settings to be bookmarked by users
             //mostly grabbed from a forum post, had to add the ability to delete queries from the string
-            //and make in do nothing if the value is null
+            //and make in do nothing if the value is null, or "ALL"
             function updateQueryStringParam(key, value) {
                 baseUrl = [location.protocol, '//', location.host, location.pathname].join('');
                 urlQueryString = document.location.search;
@@ -228,19 +246,87 @@ javascript to show and hide these tables.
                     params = urlQueryString;
                     // If param exists already, update it
                     if (urlQueryString.match(keyRegex) !== null) {
-                        //this is needed to stop it adding a 'null' when it's a null array
-                        if (value == null) {
+                        //this is needed to stop it adding a 'null' when it's a null array, or 'ALL' when that's selected
+                        if (value == null || value == "ALL") {
                             params = params.replace(keyRegex, "");
                         } else {
                             params = params.replace(keyRegex, "$1" + newParam);
                         }
-                    } else if (value != null) { // Otherwise, add it to end of query string, unless it's null, then do nothing
+                    } else if (value != null && value != "ALL") { // Otherwise, add it to end of query string, unless it's null or "ALL", then do nothing
                         params = params + '&' + newParam;
                     }
                 }
+
                 window.history.replaceState({}, "", baseUrl + params);
             }
 
+
+            //when updating the query string parameter from a multi select box, check if all of the options are selected
+            //and if so, remove the QSP
+            function multiSelectUpdateQuery ( name , id ){
+                var multiSelect = $(id);
+                if (multiSelect.val() == null || multiSelect.find('option').length == multiSelect.val().length)
+                    updateQueryStringParam(name, null);
+                else
+                    updateQueryStringParam(name, multiSelect.val());
+
+            }
+
+            //update all the QSPs
+//            function updateURL (){
+//
+//                multiSelectUpdateQuery("scope", "#scopeSelect");
+//                multiSelectUpdateQuery("site", "#siteSelect");
+//                multiSelectUpdateQuery("service_type", "#servTypeSelect");
+//                multiSelectUpdateQuery("ngi", "#ngiSelect");
+//
+//                updateQueryStringParam("severity", $('#severity_selector').val());
+//                updateQueryStringParam("classification", $('#class_selector').val());
+//                updateQueryStringParam("monitored", $('#monitored_selector').val());
+//                updateQueryStringParam("certStatus", $('#certStatus_selector').val());
+//                updateQueryStringParam("production", $('#prod_selector').val());
+//
+//            }
+
+            //these two
+            function multiSelectToURLParam ( id ) {
+                var select = $(id);
+                multiSelectUpdateQuery(select.attr('name'), id);
+                if ( select.val() === null || select.find('option').length == select.val().length)
+                    return null;
+                else
+                    return select.val().toString();
+            }
+
+            function singleSelectToURLParam ( id ) {
+                var select = $(id);
+                updateQueryStringParam(select.attr('name'), select.val());
+                if (select.val() == "ALL")
+                    return null;
+                else
+                    return select.val();
+            }
+
+            function updateJSONParams () {
+                return{
+
+                    scope: multiSelectToURLParam('#scopeSelect'),
+                    service_type: multiSelectToURLParam('#servTypeSelect'),
+                    site: multiSelectToURLParam('#siteSelect'),
+                    ngi: multiSelectToURLParam('#ngiSelect'),
+                    severity: singleSelectToURLParam('#severity_selector'),
+                    classification: singleSelectToURLParam('#class_selector'),
+                    monitored: singleSelectToURLParam('#monitored_selector'),
+                    production: singleSelectToURLParam('#prod_selector'),
+                    certStatus: singleSelectToURLParam('#certStatus_selector')
+                };
+            }
+
+
+
+            //This toggles the calendar view between month and week
+            //this is needed because fullcalendar doesn't have a date picker
+            //and so if you want to use a datepicker, you need to handle a few bits manually
             function changeViewMode(){
                 if($('#calendar').fullCalendar('getView').name == "month"){
                     $('#monthpicker').data("DateTimePicker").format("YYYY-MM");
@@ -255,12 +341,13 @@ javascript to show and hide these tables.
                 }
             }
 
-
             $(document).ready(function () {
 
 
                 var scopeSelector = $('#scopeSelect');
                 var siteSelector = $('#siteSelect');
+                var ngiSelector = $('#ngiSelect');
+                var servTypeSelect = $('#servTypeSelect');
                 var calendar = $('#calendar');
 
                 //initilaise the scope selector
@@ -275,14 +362,21 @@ javascript to show and hide these tables.
                     placeholder: "Sites"
                 });
 
+                //initilaise the ngi selector
+                ngiSelector.multipleSelect({
+                    filter: true,
+                    placeholder: "NGIs"
+                });
+
+                //initilaise the service type selector
+                servTypeSelect.multipleSelect({
+                    filter: true,
+                    placeholder: "Service types"
+                });
+
                 //get the time from the page controller, and turn it into a moment
                 var time = moment(<?php if($params['date'] != null){ echo( "\"". $params['date'] . "\", \"YYYY-MM-DD\"");}?>);
                 var view = "<?php if($params['view'] != null){ echo($params['view']);}?>";
-
-
-                //console.log("yfkabh");
-                //set the date header
-
 
                 //initalise the monthpicker, with it starting on the month we just grabbed
                 $('#monthpicker').datetimepicker({
@@ -310,43 +404,11 @@ javascript to show and hide these tables.
                     //we also have to update the url query string, but I don't want someone press the current date button and then
                     // bookmark the page, assuming it will update as the month changes
                     if (moment(e.date).format("YYYY-MM") == moment().format("YYYY-MM")  && $('#calendar').fullCalendar('getView').name == "month" ) {
-                        //this will delete the query
+                        //this will delete the query string
                         updateQueryStringParam("date", null);
                     } else {
                         updateQueryStringParam("date", moment(e.date).format("YYYY-MM-DD"));
 
-                    }
-                });
-
-                //initalise the calendar
-                calendar.fullCalendar({
-
-                    defaultDate: time,
-                    defaultView: view,
-                    header: false,
-                    events: '/portal/index.php?Page_Type=Downtimes_Calendar&getDowntimesAsJSON',
-                    eventRender: function eventRender(event, element, view) {
-                        element.attr('data-tooltipURL', '/portal/index.php?Page_Type=Downtimes_Calendar&getTooltip&downtimeID=' + event.id);
-                        element.qtip({
-                            content: {
-                                text: function (event, api) {
-                                    console.log(element);
-                                    $.ajax({
-                                        url: element.attr('data-tooltipURL') // Use data-url attribute for the URL
-                                    })
-                                        .then(function (content) {
-                                            // Set the tooltip content upon successful retrieval
-                                            api.set('content.text', content);
-                                        }, function (xhr, status, error) {
-                                            // Upon failure... set the tooltip content to the status and error value
-                                            api.set('content.text', status + ': ' + error);
-                                        });
-
-                                    return 'Loading...'; // Set some initial text
-                                }
-                            }
-                        });
-                        return filterEvent(event);
                     }
                 });
 
@@ -389,54 +451,71 @@ javascript to show and hide these tables.
                 });
 
 
-
-                //change listeners for the various filters:
-
-                scopeSelector.on('change', function () {
-                    $('#calendar').fullCalendar('rerenderEvents');
-
-                    scopeSelect = $('#scopeSelect');
-                    if (scopeSelect.val() == null || scopeSelect.find('option').length == scopeSelect.val().length)
-                        updateQueryStringParam("scope", null);
-                    else
-                        updateQueryStringParam("scope", scopeSelect.val());
+                //apply filter event handler
+                $('#applyFilters').click(function () {
+                    //update the url
+                    //updateURL();
+                    //call the calendar to refetch the events
+                    $('#calendar').fullCalendar('refetchEvents');
                 });
 
-                siteSelector.on('change', function () {
-                    $('#calendar').fullCalendar('rerenderEvents');
-                    siteSelect = $('#siteSelect');
-                    if (siteSelect.val() == null || siteSelect.find('option').length == siteSelect.val().length)
-                        updateQueryStringParam("site", null);
-                    else
-                        updateQueryStringParam("site", siteSelect.val());
+                //initalise the calendar
+                calendar.fullCalendar({
+
+                    defaultDate: time,
+                    defaultView: view,
+                    header: false,
+                    events: {
+                        url: '/portal/index.php?Page_Type=Downtimes_Calendar&getDowntimesAsJSON',
+                        data: function(){
+                            return updateJSONParams();
+                        }
+                    },
+                    loading: function( isLoading, view ) {
+                        if(isLoading) {
+                            $('#loading').show()
+                        } else {
+                            $('#loading').hide()
+                        }
+                    },
+                    eventRender: function eventRender(event, element, view) {
+
+                        //colour events by severity
+                        element.find('span.fc-title').html(element.find('span.fc-title').text());
+                        if (event.severity == "OUTAGE"){
+                            //event.eventColor = "#BB4444";
+                            element.css('background-color', '#B44');
+                            element.css('border-color', '#922');
+                        } else {
+                            element.css('background-color', '#3A87AD');
+                            element.css('border-color', '#279');
+                        }
+
+                        //tooltip setup
+                        element.attr('data-tooltipURL', '/portal/index.php?Page_Type=Downtimes_Calendar&getTooltip&downtimeID=' + event.id);
+                        element.qtip({
+                            content: {
+                                text: function (event, api) {
+                                    $.ajax({
+                                        url: element.attr('data-tooltipURL') // Use data-url attribute for the URL
+                                    })
+                                        .then(function (content) {
+                                            // Set the tooltip content upon successful retrieval
+                                            api.set('content.text', content);
+                                        }, function (xhr, status, error) {
+                                            // Upon failure... set the tooltip content to the status and error value
+                                            api.set('content.text', status + ': ' + error);
+                                        });
+
+                                    return 'Loading...'; // Set some initial text
+                                }
+                            }
+                        });
+                    }
                 });
 
-                $('#severity_selector').on('change', function () {
-                    severity = $('#severity_selector').val();
-                    $('#calendar').fullCalendar('rerenderEvents');
-                    if (severity == "ALL")
-                        severity = null;
-                    updateQueryStringParam("severity", severity);
-                });
-
-                $('#class_selector').on('change', function () {
-//                    $('#calendar').fullCalendar('rerenderEvents');
-//                    updateQueryStringParam("class", $('#class_selector').val());
-                    classification = $('#class_selector').val();
-                    $('#calendar').fullCalendar('rerenderEvents');
-                    if (classification == "ALL")
-                        classification = null;
-                    updateQueryStringParam("class", classification);
-                });
-
-                $('#ngi_selector').on('change', function () {
-                    ngi = $('#ngi_selector').val();
-                    $('#calendar').fullCalendar('rerenderEvents');
-                    if (ngi == "ALL")
-                        ngi = null;
-                    updateQueryStringParam("ngi", ngi);
-                });
-
+                //check if the view parameter was passed in from the url, and make sure the ui bits are all in sync
+                //might not be needed, but I encountered some issues with everything going a little weird without it
                 changeViewMode();
 
             })
