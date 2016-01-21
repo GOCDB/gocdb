@@ -38,6 +38,7 @@ javascript to show and hide these tables.
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <th class="site_table">Downtime Id</th>
+                    <th class="site_table">Site</th>
                     <th class="site_table">Description</th>
                     <th class="site_table">Severity</th>
                     <th class="site_table">Classification</th>
