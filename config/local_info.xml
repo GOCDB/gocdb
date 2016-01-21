@@ -72,15 +72,14 @@
          (resources include NGIs, Sites, Services, SGs but not Projects - don't currently need to tag projects) 
         - When creating a new child resource (e.g. a child Site or child Service), 
           the scopes that are assigned to the parent are automatically inherited and assigned to the child.  
-        - Reserved tags assigned to a resource can be freely unchecked by users.   
+        - Reserved tags assigned to a resource are optional.   
         - Users can reapply Reserved tags to a resource ONLY if the tag can be 
           inherited from the parent ScopedEntity (parents include NGIs/Sites).
-        - If a Reserved tag is removed from a Site, then the same tag is also removed
-          from all the child services (a Service can't have a reserved tag that 
-          is not supported by its parent Site). 
-        - If a Reserved tag is removed from an NGI, then the same tag is NOT 
-          removed from all the child Sites 
-          (this is intentionally different from the Site->Service relationship). 
+        - For Sites: If a Reserved tag is removed from a Site, then the same tag is also removed
+          from all the child services - a Service can't have a reserved tag that 
+          is not supported by its parent Site. 
+        - For NGIs: If a Reserved tag is removed from an NGI, then the same tag is NOT 
+          removed from all the child Sites - this is intentionally different from the Site->Service relationship. 
         -->
         <reserved_scopes>
             <scope>wlcg</scope>

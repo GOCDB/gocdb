@@ -7,7 +7,10 @@
             Results for &#8220;<?php xecho( $params['searchTerm'])?>&#8221;
         </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-            Searching sites, services and users
+            <ul>
+                <li>Searching sites, services and users</li>
+                <li>Please note, these search results are case-insensitive unlike the API parameters which must be case-sensitive</li>
+            </ul>    
         </span>
     </div>
     
