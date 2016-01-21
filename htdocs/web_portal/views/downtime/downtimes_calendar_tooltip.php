@@ -1,44 +1,49 @@
 <?php
 define('DATE_FORMAT', 'd-m-Y H:i');
+$duration = $params['duration'];
 $start = $params['start'];
 $end = $params['end'];
-
 $services = $params['services'];
 $scopes = $params['scopes'];
-$sites = $params['sites'];
-
-$td1 = '<td>';
-$td2 = '</td>';
+$site = $params['site'];
+$description = $params['description'];
+$affected = $params['affected'];
 ?>
 
-<!---
-This page will show two tables, one of active downtimes and one of downtimes coming between 1-4 weeks. The user
-can select the time period for planned downtimes to show. Extra information is shown by expanding a sub table 
-from the main downtimes table. This table is shown and hidden by creating dynamically named tables and using 
-javascript to show and hide these tables. 
---->
+<!--This page is the html for the downtime calendar tooltips-->
+<!--the tooltip-* css classes are found in css/downtime-calendar.css-->
 <html>
 <div>
 
-    <h1>Start:</h1>
-    <p>
-        <?php echo $start;?>
+    <h2 class="tooltip-title"><?php echo $site;?></h2>
+    <h3 class="tooltip-title"><?php echo $description;?></h3>
+
+    <hr class="tooltip-hr"/>
+
+    <p class="tooltip-p">
+        <b>Duration:</b>
+        <?php echo $duration;?>
     </p>
-    <h1>End:</h1>
-    <p>
-        <?php echo $end;?>
+
+    <hr class="tooltip-hr"/>
+
+    <p class="tooltip-p">
+        <b>Services:</b>
+        <br/>
+        <?php foreach($services as $service){?>
+            <?php echo $service;?><br/>
+        <?php };?>
+        <i><?php echo $affected;?> services affected</i>
     </p>
-    <h1>Sites:</h1>
-    <?php foreach($sites as $site){?>
-        <?php echo $site;?><br/>
-    <?php };?>
-    <h1>Services:</h1>
-    <?php foreach($services as $service){?>
-        <?php echo $service;?><br/>
-    <?php };?>
-    <h1>Scopes:</h1>
-    <?php foreach($scopes as $scope){?>
-        <?php echo $scope;?><br/>
-    <?php };?>
+    <hr class="tooltip-hr"/>
+
+    <p class="tooltip-p">
+        <b>Service Scopes:</b>
+        <br/>
+
+        <?php foreach($scopes as $scope){?>
+            <?php echo $scope;?><br/>
+        <?php };?>
+    </p>
 </div>
 </html>
