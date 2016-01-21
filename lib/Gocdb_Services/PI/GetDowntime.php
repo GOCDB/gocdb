@@ -64,7 +64,9 @@ class GetDowntime implements IPIQuery {
 	$supportedQueryParams = array(
 	    'topentity', 'ongoing_only', 'startdate', 'enddate', 'windowstart',
 	    'windowend', 'scope', 'scope_match', 'page', 'all_lastmonth',
-	    'site_extensions', 'service_extensions', 'id'
+	    'site_extensions', 'service_extensions', 'id', 'sitelist',
+        'servicelist', 'ngilist', 'severity', 'classification', 'production',
+        'monitored', 'certification_status', 'service_type_list'
 	);
 
 	$this->helpers->validateParams($supportedQueryParams, $parameters);
@@ -84,7 +86,7 @@ class GetDowntime implements IPIQuery {
 
 	$qb = $this->em->createQueryBuilder();
 
-	$qb->select('DISTINCT d', 'els', 'se', 's', 'sc', 'st', 'seels'/* , 'elp' */)
+	$qb->select('DISTINCT d', 'els', 'se', 's', 'sc', 'i', 'cs', 'st', 'seels'/* , 'elp' */)
 		->from('Downtime', 'd')
 		->leftJoin('d.endpointLocations', 'els')
 		//->leftjoin('els.endpointProperties', 'elp') // to add if rendering endpoint in full (and in select clause)  
@@ -92,7 +94,9 @@ class GetDowntime implements IPIQuery {
 		->leftjoin('se.endpointLocations', 'seels')
 		->join('se.parentSite', 's')
 		->leftJoin('se.scopes', 'sc')
-		->join('s.ngi', 'n')
+        ->leftJoin('s.certificationStatus', 'cs')
+        ->leftJoin('s.infrastructure', 'i')
+        ->join('s.ngi', 'n')
 		->join('s.country', 'c')
 		->join('se.serviceType', 'st')
 		->orderBy('d.startDate', 'DESC');
@@ -111,12 +115,115 @@ class GetDowntime implements IPIQuery {
 	    }
 	}
 
+/*        $parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
+        //Get the result of the scope builder
+        $qb = $parameterBuilder->getQB();
+        $bc = $parameterBuilder->getBindCount();
+        //Get the binds and store them in the local bind array - only runs if the returned value is an array
+        foreach ((array) $parameterBuilder->getBinds() as $bind) {
+            $binds[] = $bind;
+        }*/
+
+
+
+        if (isset($parameters ['certification_status'])) {
+            $qb->andWhere($qb->expr()->like('cs.name', '?' . ++$bc));
+            $binds[] = array($bc, $parameters['certification_status']);
+        }
+
+        if (isset($parameters['severity'])) {
+            $qb->andWhere($qb->expr()->eq('d.severity', '?' . ++$bc));
+            $binds[] = array($bc, $parameters['severity']);
+        }
+
+        if (isset($parameters['classification'])) {
+            $qb->andWhere($qb->expr()->eq('d.classification', '?' . ++$bc));
+            $binds[] = array($bc, $parameters['classification']);
+        }
+
+        if (isset($parameters['production'])) {
+            $qb->andWhere($qb->expr()->eq('se.production', '?' . ++$bc));
+            $binds[] = array($bc, $parameters['production']);
+        }
+
+        if (isset($parameters ['monitored'])) {
+            $qb->andWhere($qb->expr()->eq('se.monitored', '?' . ++$bc));
+            $binds[] = array($bc, $parameters['monitored']);
+        }
+
+//        if (isset($parameters['monitored'])) {
+//            $qb->andWhere($qb->expr()->eq('se.monitored', '?' . ++$bc));
+//            $binds[] = array($bc, $parameters['monitored']);
+//        }
+
+//        if (isset($parameters['certificationstatus'])) {
+//            $qb->andWhere($qb->expr()->eq('s.certificationStatus', '?' . ++$bc));
+//            $binds[] = array($bc, $parameters['certificationstatus']);
+//        }
+
+
 	if (isset($parameters['topentity'])) {
+        ++$bc;
 	    $qb->andWhere($qb->expr()->orX(
-			    $qb->expr()->like('se.hostName', '?' . ++$bc), $qb->expr()->like('s.shortName', '?' . $bc), $qb->expr()->like('n.name', '?' . $bc), $qb->expr()->like('c.name', '?' . $bc)
+			    $qb->expr()->like('se.hostName', '?' . $bc), $qb->expr()->like('s.shortName', '?' . $bc), $qb->expr()->like('n.name', '?' . $bc), $qb->expr()->like('c.name', '?' . $bc)
 	    ));
 	    $binds[] = array($bc, $parameters['topentity']);
 	}
+
+        if (isset($parameters ['service_type_list'])) {
+            $serviceTypeArray = explode(",", $parameters['service_type_list']);
+
+            $orX = $qb->expr()->orX();
+
+            foreach($serviceTypeArray as $serviceType){
+                ++$bc;
+                $orX->add($qb->expr()->like('st.name', '?' . $bc));
+                $binds[] = array($bc, $serviceType);
+            }
+            $qb->andWhere($orX);
+
+        }
+
+        if (isset($parameters['sitelist'])) {
+            $siteArray = explode(",", $parameters['sitelist']);
+
+            $orX = $qb->expr()->orX();
+
+            foreach($siteArray as $site){
+                ++$bc;
+                $orX->add($qb->expr()->like('s.shortName', '?' . $bc));
+                $binds[] = array($bc, $site);
+            }
+            $qb->andWhere($orX);
+
+        }
+
+        if (isset($parameters['servicelist'])) {
+            $serviceArray = explode(",", $parameters['servicelist']);
+
+            $orX = $qb->expr()->orX();
+
+            foreach ($serviceArray as $service) {
+                ++$bc;
+                $orX->add($qb->expr()->like('se.hostName', '?' . $bc));
+                $binds[] = array($bc, $service);
+            }
+            $qb->andWhere($orX);
+        }
+
+        if (isset($parameters['ngilist'])) {
+            $ngiArray = explode(",", $parameters['ngilist']);
+
+            $orX = $qb->expr()->orX();
+
+            foreach ($ngiArray as $ngi) {
+                ++$bc;
+                $orX->add($qb->expr()->like('n.name', '?' . $bc));
+                $binds[] = array($bc, $ngi);
+            }
+            $qb->andWhere($orX);
+
+        }
 
 	if (isset($parameters['ongoing_only'])) {
 	    $onGoingOnly = $parameters['ongoing_only'];
@@ -169,6 +276,7 @@ class GetDowntime implements IPIQuery {
 	    $qb->andWhere($qb->expr()->eq('d.id', '?' . ++$bc));
 	    $binds[] = array($bc, $parameters['id']);
 	}
+
 
 	// Special parameter added for ATP who require all downtimes starting
 	// from one month ago (including current and future DTs) to be generated

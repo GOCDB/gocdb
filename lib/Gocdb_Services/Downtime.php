@@ -12,7 +12,7 @@ namespace org\gocdb\services;
  * limitations under the License.
  */
 require_once __DIR__ . '/AbstractEntityService.php';
-require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
+require_once __DIR__ . '/RoleActionAuthorisationService.php';
 
 /**
  * GOCDB Stateless service facade (business routnes) for downtime objects.
@@ -32,9 +32,9 @@ class Downtime extends AbstractEntityService{
     }
 
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
-        $this->roleActionAuthorisationService = $roleActionAuthService; 
+        $this->roleActionAuthorisationService = $roleActionAuthService;
     }
-    
+
     // Date format used by the Javascript calendar
     const FORMAT = 'd/m/Y H:i';
 
@@ -83,22 +83,22 @@ class Downtime extends AbstractEntityService{
      *     (
      *         [0] => 54
      *         [1] => 15
-     *         [2] => 26     
+     *         [2] => 26
      *      )
      * Adds a downtime
      * @param Array $values Downtime values, shown above
      * @param \User $user User making the request
      * @return \Downtime $dt The new downtime
      */
-    public function addDowntime($values, \User $user = null) { 
+    public function addDowntime($values, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-        require_once __DIR__.'/ServiceService.php'; 
-        $serviceService = new \org\gocdb\services\ServiceService(); 
-        $serviceService->setEntityManager($this->em); 
+        require_once __DIR__.'/ServiceService.php';
+        $serviceService = new \org\gocdb\services\ServiceService();
+        $serviceService->setEntityManager($this->em);
 
         // Get the affected services
-        $services = array(); 
+        $services = array();
         foreach($values['Impacted_Services'] as $service) {
             $services[] = $serviceService->getService($service);
         }
@@ -115,36 +115,36 @@ class Downtime extends AbstractEntityService{
 
         // Check that each endpoint belongs to one of the services. 
         // It is an error if an endpoint does not belong to one of the services. 
-        foreach($endpoints as $checkEndpoint){ 
-            $endpointBelongsToService = false; 
-            foreach($services as $checkService){ 
+        foreach($endpoints as $checkEndpoint){
+            $endpointBelongsToService = false;
+            foreach($services as $checkService){
                if(in_array($checkEndpoint, $checkService->getEndpointLocations()->toArray()) ){
-                  $endpointBelongsToService = true; 
+                  $endpointBelongsToService = true;
                }
             }
-            if(!$endpointBelongsToService){ 
-               throw new \Exception('Error, affected endpoint is not owned by an affected service');  
+            if(!$endpointBelongsToService){
+               throw new \Exception('Error, affected endpoint is not owned by an affected service');
             }
         }
 
         // get the affected sites 
-        $sites = array(); 
+        $sites = array();
         foreach($services as $se){
-            $site = $se->getParentSite(); 
+            $site = $se->getParentSite();
             if(!in_array($site, $sites)){
-               $sites[] = $site;               
+               $sites[] = $site;
             }
         }
-       
+
         if(count($sites) != 1){
             // if there are multiple affected services from multiple sites, 
             // the gui must either enforce single site selection 
             // or prevent selecting 'define DT in site timezone' if selecting 
             // multiple sites (i.e. utc only when selecting services from multiple sites). 
-            throw new \Exception("Downtime creation for multiple sites not supported yet");  
+            throw new \Exception("Downtime creation for multiple sites not supported yet");
         }
-        
-        
+
+
         // Check the user has a role covering the passed SEs
         $this->authorisation($services, $user);
         $this->validate($values['DOWNTIME']);
@@ -191,7 +191,7 @@ class Downtime extends AbstractEntityService{
         }*/
 
         $start = \DateTime::createFromFormat($this::FORMAT, $startStr, new \DateTimeZone("UTC"));
-        $end = \DateTime::createFromFormat($this::FORMAT, $endStr, new \DateTimeZone("UTC"));  
+        $end = \DateTime::createFromFormat($this::FORMAT, $endStr, new \DateTimeZone("UTC"));
 
         $this->validateDates($start, $end);
 
@@ -219,15 +219,15 @@ class Downtime extends AbstractEntityService{
             // returns a value (we can still rollback no probs if an issue occurs
             // to remove the Downtime) 
             $v4DowntimePk = new \PrimaryKey();
-            $this->em->persist($v4DowntimePk); 
+            $this->em->persist($v4DowntimePk);
             $this->em->flush();
-            $dt->setPrimaryKey($v4DowntimePk->getId().'G0'); 
-            
+            $dt->setPrimaryKey($v4DowntimePk->getId().'G0');
+
             //Create a link to the services
             foreach($services as $service) {
                 $dt->addService($service);
             }
-            
+
             //Create a link to the affected endpoints (if any endpoints were selected)
             foreach($endpoints as $endpoint) {
                 $dt->addEndpointLocation($endpoint);
@@ -274,8 +274,8 @@ class Downtime extends AbstractEntityService{
      * @return null
      */
     public function validate($dtData) {
-        require_once __DIR__ . '/Validate.php'; 
-        $serv = new \org\gocdb\services\Validate(); 
+        require_once __DIR__ . '/Validate.php';
+        $serv = new \org\gocdb\services\Validate();
         foreach($dtData as $field => $value) {
             $valid = $serv->validate('downtime', $field, $value);
             if(!$valid) {
@@ -293,8 +293,8 @@ class Downtime extends AbstractEntityService{
      */
     private function validateDates(\DateTime $start, \DateTime $end) {
         $now = new \DateTime(null, new \DateTimeZone('UTC'));
-        $start->setTimezone(new \DateTimeZone('UTC')); 
-        $end->setTimezone(new \DateTimeZone('UTC')); 
+        $start->setTimezone(new \DateTimeZone('UTC'));
+        $end->setTimezone(new \DateTimeZone('UTC'));
         if ($start >= $end) {
             throw new \Exception ("A downtime cannot start after it's ended.");
         }
@@ -311,16 +311,16 @@ class Downtime extends AbstractEntityService{
 
     /**
      * This is the format of newValues that is passed to this edit downtime. JM - 20/06/2014
-     * Array ( 
-     *       [DOWNTIME] => Array ( 
-     *          [SEVERITY] => WARNING 
-     *          [DESCRIPTION] => Edit Test 
-     *          [START_TIMESTAMP] => 20/06/2014 17:46 
-     *          [END_TIMESTAMP] => 22/06/2014 17:46 ) 
-     *          [Impacted_Endpoints] => Array ( [0] => 5746 ) 
-     *          [Impacted_Services] => Array ( [0] => 4588 [1] => 4455 [2] => 4495 ) 
-     *          ) 
-     * @param \Downtime $dt Existing downtime to edit 
+     * Array (
+     *       [DOWNTIME] => Array (
+     *          [SEVERITY] => WARNING
+     *          [DESCRIPTION] => Edit Test
+     *          [START_TIMESTAMP] => 20/06/2014 17:46
+     *          [END_TIMESTAMP] => 22/06/2014 17:46 )
+     *          [Impacted_Endpoints] => Array ( [0] => 5746 )
+     *          [Impacted_Services] => Array ( [0] => 4588 [1] => 4455 [2] => 4495 )
+     *          )
+     * @param \Downtime $dt Existing downtime to edit
      * @param array New Values defined above
      * @param \User $user
      */
@@ -331,48 +331,48 @@ class Downtime extends AbstractEntityService{
         // contained in the newValues variable and the $dt variable is the existing downtime we want to edit. <br>
         //<br>The id of the downtime we are editting:'.$dt->getId().'<br>'.var_dump($newValues));
         //-----------------------------------------------------------------------------//                  
-        
-        
+
+
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        require_once __DIR__.'/ServiceService.php'; 
-        $serviceService = new \org\gocdb\services\ServiceService(); 
-        $serviceService->setEntityManager($this->em); 
-        
+        require_once __DIR__.'/ServiceService.php';
+        $serviceService = new \org\gocdb\services\ServiceService();
+        $serviceService->setEntityManager($this->em);
+
         // Get the services that are **ALREADY LINKED** to this downtime
         // 
         // Check that the user has adequate permissions over these services. This 
         // is necessary if the user wants to either edit or *remove* the existing 
         // service(s) associated with this downtime. 
-        $downtimesExistingSEs = array(); 
+        $downtimesExistingSEs = array();
         foreach($dt->getEndpointLocations() as $els){
-            $downtimesExistingSEs[] = $els->getService(); 
+            $downtimesExistingSEs[] = $els->getService();
         }
         $this->authorisation($downtimesExistingSEs, $user);
 
 
-        
+
         // Get the **NEWLY SELECTED** services and endpoints to be linked to this dt
         // 
         // Check that at least one Service was actually selected to be associated 
         // with the downtime - these can be the same as the exising services and/or
         // new services entirley.  
         if(!isset($newValues['Impacted_Services'])){
-           throw new \Exception('Error, this downtime affects no service - 
-               at least one service must be selected');  
+           throw new \Exception('Error, this downtime affects no service -
+               at least one service must be selected');
         }
-        $newServices = array(); 
+        $newServices = array();
         foreach($newValues['Impacted_Services'] as $id) {
             $newServices[] = $serviceService->getService($id);
         }
-        $newEndpoints = array(); 
+        $newEndpoints = array();
         foreach($newValues['Impacted_Endpoints'] as $id) {
             $newEndpoints[] = $serviceService->getEndpoint($id);
         }
         if(count($newServices) == 0){
-           throw new \Exception('Error, this downtime affects no service - 
-               at least one service must be selected');  
+           throw new \Exception('Error, this downtime affects no service -
+               at least one service must be selected');
         }
         // Check that the user has permissions over the list of (potentially different) 
         // services affected by this downtime. 
@@ -381,15 +381,15 @@ class Downtime extends AbstractEntityService{
         // Check that each newEndpoint belongs to one of the newServices. 
         // It is an error if a newEndpoint does not belong to one
         // of the newServices. 
-        foreach($newEndpoints as $checkNewEndpoint){ 
-            $newEndpointBelongsToNewService = false; 
-            foreach($newServices as $newService){ 
+        foreach($newEndpoints as $checkNewEndpoint){
+            $newEndpointBelongsToNewService = false;
+            foreach($newServices as $newService){
                if(in_array($checkNewEndpoint, $newService->getEndpointLocations()->toArray()) ){
-                  $newEndpointBelongsToNewService = true; 
+                  $newEndpointBelongsToNewService = true;
                }
             }
-            if(!$newEndpointBelongsToNewService){ 
-               throw new \Exception('Error, affected endpoint is not owned by an affected service');  
+            if(!$newEndpointBelongsToNewService){
+               throw new \Exception('Error, affected endpoint is not owned by an affected service');
             }
         }
 
@@ -399,11 +399,11 @@ class Downtime extends AbstractEntityService{
 
         // Check only one site is affected (don't support multiple site selection yet) 
         // get the affected sites 
-        $newSites = array(); 
+        $newSites = array();
         foreach($newServices as $se){
-            $site = $se->getParentSite(); 
+            $site = $se->getParentSite();
             if(!in_array($site, $newSites)){
-               $newSites[] = $site;               
+               $newSites[] = $site;
             }
         }
         if(count($newSites) != 1){
@@ -411,9 +411,9 @@ class Downtime extends AbstractEntityService{
             // the gui must either enforce single site selection 
             // or prevent selecting 'define DT in site timezone' if selecting 
             // multiple sites (i.e. utc only when selecting services from multiple sites). 
-            throw new \Exception("Downtime editing for multiple sites not supported yet");  
+            throw new \Exception("Downtime editing for multiple sites not supported yet");
         }
-        
+
         $newStartStr = $newValues['DOWNTIME']['START_TIMESTAMP'];
         $newEndStr = $newValues['DOWNTIME']['END_TIMESTAMP'];
         //echo($newStartStr. ' '.$newEndStr); // 14/05/2015 16:16      14/05/2015 16:17   d/m/Y H:i
@@ -458,9 +458,9 @@ class Downtime extends AbstractEntityService{
 
         // Make sure all dates are treated as UTC!
         //date_default_timezone_set("UTC");
-        
+
         $newStart = \DateTime::createFromFormat($this::FORMAT, $newStartStr, new \DateTimeZone("UTC"));
-        $newEnd = \DateTime::createFromFormat($this::FORMAT, $newEndStr, new \DateTimeZone("UTC")); 
+        $newEnd = \DateTime::createFromFormat($this::FORMAT, $newEndStr, new \DateTimeZone("UTC"));
 
 
         // check the new start/end times of the downtime are valid according 
@@ -488,28 +488,28 @@ class Downtime extends AbstractEntityService{
 
             // First unlink all the previous els from the downtime  
             foreach ($dt->getEndpointLocations() as $linkedEl) {
-                $dt->getEndpointLocations()->removeElement($linkedEl); 
-                $linkedEl->getDowntimes()->removeElement($dt); 
+                $dt->getEndpointLocations()->removeElement($linkedEl);
+                $linkedEl->getDowntimes()->removeElement($dt);
             }
-            
+
             // Second unlink all the previous services from the downtime
             foreach ($dt->getServices() as $linkedServ) {
                 //echo $linkedServ->getHostName();
                 $dt->getServices()->removeElement($linkedServ);
                 $linkedServ->getDowntimes()->removeElement($dt);
             }
-            
+
             //Now relink all services and endpoints selected in the edit
             //Create a link to the service
             foreach($newServices as $service) {
                 $dt->addService($service);
             }
-            
+
             //Create a link to the effected endpoints
             foreach($newEndpoints as $endpoint) {
                 $dt->addEndpointLocation($endpoint);
             }
-            
+
             $this->em->merge($dt);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -523,11 +523,11 @@ class Downtime extends AbstractEntityService{
     }
 
     /**
-     * Check with the business rules that the existing downtime's dates 
-     * allow editing of the downtime.   
+     * Check with the business rules that the existing downtime's dates
+     * allow editing of the downtime.
      * @link https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Downtime_shortening_and_extension downtime shortening and extension
      * @param \Downtime $dt
-     * @throws \Exception if the downtime is not eligible for editing. 
+     * @throws \Exception if the downtime is not eligible for editing.
      */
     public function editValidationDatePreConditions(\Downtime $dt){
         // Make sure all dates are treated as UTC!
@@ -536,8 +536,8 @@ class Downtime extends AbstractEntityService{
         /* @var $oldStart \DateTime */
         $oldStart = $dt->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
         /* @var $oldEnd \DateTime */
-        $oldEnd = $dt->getEndDate()->setTimezone(new \DateTimeZone('UTC')); 
-        
+        $oldEnd = $dt->getEndDate()->setTimezone(new \DateTimeZone('UTC'));
+
         // Can't change a downtime if it's already ended
         if($oldEnd < $nowUtc) {
             throw new \Exception("Can't edit a downtime that has already finished.");
@@ -553,18 +553,18 @@ class Downtime extends AbstractEntityService{
             }
         }
     }
-    
+
     /**
      * Checks the proposed edit against the business rules at
      * @link https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Downtime_shortening_and_extension downtime shortening and extension
      * @param \Downtime $dt Downtime before modification
      * @param \DateTime $newStart New start date
      * @param \DateTime $newEnd New end date
-     * @throws \Exception if the downtime is not eligible for editing. 
+     * @throws \Exception if the downtime is not eligible for editing.
      */
     private function editValidation(\Downtime $dt, \DateTime $newStart, \DateTime $newEnd) {
-        $this->editValidationDatePreConditions($dt); 
-        
+        $this->editValidationDatePreConditions($dt);
+
         $oldStart = $dt->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
         $oldEnd = $dt->getEndDate()->setTimezone(new \DateTimeZone('UTC'));
         $now = new \DateTime(null, new \DateTimeZone('UTC'));
@@ -606,13 +606,13 @@ class Downtime extends AbstractEntityService{
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        $ses = $dt->getServices(); 
-        
-        $this->authorisation($ses, $user); 
+        $ses = $dt->getServices();
+
+        $this->authorisation($ses, $user);
 
         // Make sure all dates are treated as UTC!
         //date_default_timezone_set("UTC");
-        
+
         if(!$dt->isOnGoing()) {
             throw new \Exception("Downtime isn't on-going.");
         }
@@ -628,7 +628,7 @@ class Downtime extends AbstractEntityService{
         }
         // dt has already ended 
         if($dt->getEndDate()->setTimezone(new \DateTimeZone('UTC')) < $now){
-            throw new \Exception ("Logic error - Downtime has already ended or will within the next 60 secs"); 
+            throw new \Exception ("Logic error - Downtime has already ended or will within the next 60 secs");
         }
         // ok. dt endDate is in the future and dt is ongoing/has started. 
 
@@ -654,41 +654,41 @@ class Downtime extends AbstractEntityService{
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        
-        $ses = $dt->getServices(); 
-        $this->authorisation($ses, $user); 
+
+        $ses = $dt->getServices();
+        $this->authorisation($ses, $user);
 
         // Make sure all dates are treated as UTC!
         //date_default_timezone_set("UTC");
-        
+
         if($dt->hasStarted()) {
             throw new \Exception("This downtime has already started.");
         }
 
         $this->em->getConnection()->beginTransaction();
         try {
-            
+
             //For MEPS we need to delete from both service and enpoints
             foreach($dt->getServices() as $se){
                 // Downtime is the owning side so remove elements from downtime.
                 $dt->removeService($se);  // unlinks on both sides 
                 //$dt->getServices()->removeElement($se); //unlinking
                 //$se->getDowntimes()->removeElement($dt); 
-                
+
             }
-            
-            foreach($dt->getEndpointLocations() as $ep){ 
-              // Downtime is the owning side so remove elements from downtime. 
-              $dt->getEndpointLocations()->removeElement($ep); //unlinking 
-              // Since Doctrine always only looks at the owning side of a 
-              // bidirectional association for updates, it is not necessary for 
-              // write operations that an inverse collection of a bidirectional 
-              // one-to-many or many-to-many association is updated. This 
-              // knowledge can often be used to improve performance by avoiding 
-              // the loading of the inverse collection. 
-              //$ep->getDowntimes()->removeElement($dt); 
+
+            foreach($dt->getEndpointLocations() as $ep){
+              // Downtime is the owning side so remove elements from downtime.
+              $dt->getEndpointLocations()->removeElement($ep); //unlinking
+              // Since Doctrine always only looks at the owning side of a
+              // bidirectional association for updates, it is not necessary for
+              // write operations that an inverse collection of a bidirectional
+              // one-to-many or many-to-many association is updated. This
+              // knowledge can often be used to improve performance by avoiding
+              // the loading of the inverse collection.
+              //$ep->getDowntimes()->removeElement($dt);
             }
-            
+
             $this->em->remove($dt);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -698,9 +698,49 @@ class Downtime extends AbstractEntityService{
             throw $e;
         }
     }
-    
+
+
     /**
-     * 
+     * Return all {@see \Site}s that satisfy the specfied filter parameters.
+     * <p>
+     * $filterParams defines an associative array of optional parameters for
+     * filtering the sites. The supported Key => Value pairs include:
+     * <ul>
+     *   <li>'sitename' => String site name</li>
+     *   <li>'roc' => String name of parent NGI/ROC</li>
+     *   <li>'country' => String country name</li>
+     *   <li>'certification_status' => String certification status value e.g. 'Certified'</li>
+     *   <li>'exclude_certification_status' => String exclude sites with this certification status</li>
+     *   <li>'production_status' => String site production status value</li>
+     *   <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
+     *   <li>'scope_match' => String 'any' or 'all' </li>
+     *   <li>'extensions' => String extensions expression to filter custom key=value pairs</li>
+     * <ul>
+     *
+     * @param array $filterParams
+     * @return array Site array
+     */
+    public function getDowntimesFilterByParams($filterParams){
+        require_once __DIR__.'/PI/GetDowntime.php';
+        $getDowntime = new GetDowntime($this->em);
+        //$params = array('windowstart' => '2015-12-01', 'windowend' => '2015-12-28', 'severity' => 'WARNING');
+        //$params = array('scope' => 'Local,EGI', 'scope_match' => 'any', 'site' => 'test,GRIDOPS-GOCDB', 'startdate' => '2015-01-21');
+//        $params[] = array('scope_match' => 'all');
+//        $params[] = array('topentity' => 'GRIDOPS-GOCDB');
+//        $params = array('scope' => 'EGI,DAVE', 'sitename' => 'GRIDOPS-GOCDB');
+        //$params = array('scope' => 'EGI,Local', 'scope_match' => 'any', 'exclude_certification_status' => 'Closed');
+        //$params = array('scope' => 'EGI,Local', 'scope_match' => 'all');
+        //$params = array('scope' => 'EGI,DAVE', 'scope_match' => 'all');
+        //$params = array('extensions' => '(aaa=123)(dave=\(someVal with parethesis\))(test=test)');
+        $getDowntime->validateParameters($filterParams);
+        //$getDowntime->validateParameters($params);
+        $getDowntime->createQuery();
+        $downtimes = $getDowntime->executeQuery();
+        return $downtimes;
+    }
+
+    /**
+     *
      * @param \Date $windowStart
      * @param \Date $windowEnd
      */
@@ -737,7 +777,7 @@ class Downtime extends AbstractEntityService{
     }
 
     /**
-     * 
+     *
      */
     public function getActiveDowntimes() {
 	$dql = "SELECT DISTINCT d, se, s, st
@@ -762,8 +802,8 @@ class Downtime extends AbstractEntityService{
     }
 
     /**
-     * Get downtimes where the downtime endDate is after windowStart, and 
-     * downtime start date is before windowEnd. 
+     * Get downtimes where the downtime endDate is after windowStart, and
+     * downtime start date is before windowEnd.
      * @param \Date $windowStart
      * @param \Date $windowEnd
      */
