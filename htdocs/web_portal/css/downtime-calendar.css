@@ -14,6 +14,10 @@
     margin: 3px;
 }
 
+.btn {
+    border: 1px solid rgba(0, 0, 0, 0.18) !important;
+}
+
 .grayed-out {
     background-color: white;
     filter:alpha(opacity=50); /* IE */
@@ -29,9 +33,10 @@
     left: 0px;
 }
 
+/* loader from http://projects.lukehaas.me/css-loaders/ */
 .loader {
     font-size: 10px;
-    margin: 50% auto;
+    margin: 40% auto;
     text-indent: -9999em;
     width: 11em;
     height: 11em;

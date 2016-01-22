@@ -12,14 +12,14 @@ from the main downtimes table. This table is shown and hidden by creating dynami
 javascript to show and hide these tables. 
 --->
 
-<div class="rightPageContainer" style="position: relative">
+<div class="rightPageContainer" >
 
     <div style="float: left;">
         <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" class="pageLogo"/>
     </div>
     <a href="index.php?Page_Type=Downtimes_Calendar" style="text-decoration: none"><h1>Downtimes Calendar</h1></a>
 
-    <div class="siteContainer container-fluid">
+    <div class="siteContainer container-fluid" style="position: relative">
 
         <div class="row">
 

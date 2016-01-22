@@ -28,22 +28,23 @@ $affected = $params['affected'];
     <hr class="tooltip-hr"/>
 
     <p class="tooltip-p">
-        <b>Services:</b>
+        <b>Service Scopes: </b>
+        <?php echo $scopes;?>
+
+
+    </p>
+
+    <hr class="tooltip-hr"/>
+
+    <p class="tooltip-p">
+        <b>Services</b>
+        <br/>
+        <i><?php echo $affected;?> affected</i>
         <br/>
         <?php foreach($services as $service){?>
             <?php echo $service;?><br/>
         <?php };?>
-        <i><?php echo $affected;?> services affected</i>
     </p>
-    <hr class="tooltip-hr"/>
 
-    <p class="tooltip-p">
-        <b>Service Scopes:</b>
-        <br/>
-
-        <?php foreach($scopes as $scope){?>
-            <?php echo $scope;?><br/>
-        <?php };?>
-    </p>
 </div>
 </html>

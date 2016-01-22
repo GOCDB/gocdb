@@ -135,9 +135,15 @@ function getTooltip(){
     } else {
         throw new \Exception("downtime" . $_GET['downtimeID'] . "does not exist.");
     }
+    $params = array();
     $start = $downtime->getStartDate();
     $end = $downtime->getEndDate();
+
     $params['duration'] = date_diff($start, $end)->days . " days " . date_diff($start, $end)->h . " hours";
+    //$params['endsIn'] = date_diff(date_create(), $end)->days . " days " . date_diff($start, $end)->h . " hours";
+
+
+
     $params['start'] = $downtime->getStartDate()->format('d-m-Y H:i');
     $params['end'] = $downtime->getEndDate()->format('d-m-Y H:i');
     $params['description'] = $downtime->getDescription();
@@ -157,9 +163,15 @@ function getTooltip(){
     };
 
     $params['services'] = array_unique($params['services']);
-    $params['scopes'] = array_unique($params['scopes']);
+    $params['scopes'] = implode( ", " ,array_unique($params['scopes']));
 
     $params['affected'] = "<b>" . count($params['services']) . "</b> of <b>" . count($downtime->getServices()->first()->getParentSite()->getServices()) . "</b>";
+
+    //shorten the services array to a sensible length so the tooltip fits on screen
+    if (count($params['services']) > 10){
+        $params['services'] = array_slice($params['services'], 0, 10);
+        array_push($params['services'], "...");
+    }
 
 
     //$params['sites'] = array_unique($params['sites']);
