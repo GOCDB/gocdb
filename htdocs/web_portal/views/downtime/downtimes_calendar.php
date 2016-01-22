@@ -168,7 +168,7 @@ javascript to show and hide these tables.
             <div class="col-sm-2">
                 <br/>
 
-                <button id="applyFilters" type="button" class="btn btn-primary">Apply Filters</button>
+                <button id="applyFilters" type="button" class="btn btn-primary">Fetch Downtimes</button>
             </div>
 
             </div>
