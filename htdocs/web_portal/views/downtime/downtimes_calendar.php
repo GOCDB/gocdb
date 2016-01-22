@@ -25,7 +25,7 @@ javascript to show and hide these tables.
 
 
             <div class="col-sm-3">
-                <span><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
+                <span><a href="index.php?Page_Type=Scope_Help">Service scopes:</a> </span>
                 <br/>
 
                 <select id="scopeSelect" name="scope" class="" style="width: 150px" multiple="multiple" name="mscope[]">
@@ -149,7 +149,7 @@ javascript to show and hide these tables.
                 </select>
             </div>
 
-            <div class="col-sm-2">
+            <div class="col-sm-1">
                 Monitored:
                 <br/>
                 <select class="selectpicker" name="monitored" id="monitored_selector">
@@ -168,7 +168,7 @@ javascript to show and hide these tables.
             <div class="col-sm-2">
                 <br/>
 
-                <button id="applyFilters" type="button" class="btn btn-primary">Fetch Downtimes</button>
+                <button id="applyFilters" style="width: 150px;" type="button" class="btn btn-primary">Fetch Downtimes</button>
             </div>
 
             </div>
