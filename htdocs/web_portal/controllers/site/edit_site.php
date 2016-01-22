@@ -67,6 +67,7 @@ function draw(\User $user = null) {
         throw new Exception("An id must be specified");
     }
 
+    /* @var $site \Site */
     $site = \Factory::getSiteService()->getSite($_GET['id']);
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
             \Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE){
@@ -89,12 +90,14 @@ function draw(\User $user = null) {
     $prodStatuses = $hackprodStatuses;
 
     $numberOfScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('site');
+    $scopeJson = getEntityScopesAsJSON2($site, $site->getNgi(), $disableReservedScopes);
+    //die($scopeJson); 
 
     $params = array("site" => $site, "timezones" => $timezones,
         "countries" => $countries, "prodStatuses" => $prodStatuses,
         "numberOfScopesRequired" =>$numberOfScopesRequired,
         "disableReservedScopes"=>$disableReservedScopes, 
-        "scopejson"=>getEntityScopesAsJSON($site, $disableReservedScopes));
+        "scopejson"=> $scopeJson);
 
     show_view('site/edit_site.php', $params);
 }

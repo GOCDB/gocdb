@@ -42,6 +42,18 @@
       <link>index.php?Page_Type=Services</link>
     </Services>
 
+    <Scopes>
+      <show_on_instance>all</show_on_instance>
+      <name>Scopes</name>
+      <link>index.php?Page_Type=Scope_Help</link>
+    </Scopes>
+
+    <RoleActionMappings>
+      <show_on_instance>all</show_on_instance>
+      <name>Role Action Map</name>
+      <link>index.php?Page_Type=View_Role_Action_Mappings</link>
+    </RoleActionMappings>
+
     <spacer>
       <spacer>Add</spacer>
 	  <show_on_instance>write_enabled</show_on_instance>
@@ -94,11 +106,7 @@
       <show_on_instance>all</show_on_instance>
     </spacer>
 
-    <RoleActionMappings>
-      <show_on_instance>all</show_on_instance>
-      <name>Role Action Map</name>
-      <link>index.php?Page_Type=View_Role_Action_Mappings</link>
-    </RoleActionMappings>
+
 	
     <Help_And_Contact>
       <show_on_instance>all</show_on_instance>

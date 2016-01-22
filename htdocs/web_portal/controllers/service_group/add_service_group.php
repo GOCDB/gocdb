@@ -83,7 +83,7 @@ function draw($user) {
         $configService = \Factory::getConfigService();
         //$scopes = \Factory::getScopeService()->getAllScopesMarkDefault();
         $numberScopesRequired = $configService->getMinimumScopesRequired('service_group');
-        $scopejsonStr = getAllScopesAsJSON($disableReservedScopes); 
+        $scopejsonStr = getEntityScopesAsJSON2(null, null, $disableReservedScopes); 
 
         $params = array(
             //'scopes' => $scopes, 

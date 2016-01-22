@@ -64,7 +64,7 @@ class Project extends OwnedEntity {
         // Set cretion date
         $this->creationDate =  new \DateTime(null, new \DateTimeZone('UTC')); 
         
-    	$this->setName($name);
+        $this->setName($name);
         $this->ngis = new ArrayCollection();
     }
 

@@ -78,6 +78,7 @@ function draw(\User $user = null) {
     }
     
     $id = $_REQUEST['id'];
+    /* @var $se \Service */
     $se = \Factory::getServiceService()->getService($id);
 
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
@@ -90,7 +91,7 @@ function draw(\User $user = null) {
     $params['serviceTypes'] = \Factory::getServiceService()->getServiceTypes();
     $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('service');
     $params["disableReservedScopes"]=$disableReservedScopes;
-    $params['scopejson'] = getEntityScopesAsJSON($se, $disableReservedScopes); 
+    $params['scopejson'] = getEntityScopesAsJSON2($se, $se->getParentSite(), $disableReservedScopes); 
     show_view('service/edit_service.php', $params);
 }
 

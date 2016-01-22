@@ -115,17 +115,14 @@
        
         <!-- Scopes (bottom right) -->
         <div class="tableContainer" style="width: 42%; float: right; margin-top: 1.6em" >
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em; word-wrap: normal">Scope(s)</span>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em; word-wrap: normal">
+                <a href="index.php?Page_Type=Scope_Help">Scope Tags</a>
+            </span>
             <table style="clear: both; width: 100%; table-layout: fixed;">
 
                         <tr class="site_table_row_1">
                             <td class="site_table" >
-                                <span style="float: left;">
-				    <textarea readonly="true" style="height: 25px;"><?php xecho($params['ngi']->getScopeNamesAsString()); ?></textarea>
-                                </span>
-                                <span style="float: right">
-                                    <a href="index.php?Page_Type=Scope_Help">?</a>&nbsp
-                                </span>
+                                <textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($params['ngi']->getScopeNamesAsString()); ?></textarea>
                             </td>
                             
                         </tr>

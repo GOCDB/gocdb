@@ -257,18 +257,6 @@ class Factory {
 
 
     /**
-     * Singleton GocdbAuthContext service
-     * @return org\gocdb\services\GocdbAuthContext
-     */
-    public static function getAuthContextService(){
-        if(self::$authContextService == null) {
-            require_once __DIR__ . '/GocdbAuthContext.php';
-            self::$authContextService = new org\gocdb\services\GocdbAuthContext();
-        }
-        return self::$authContextService;
-    }
-
-    /**
      * Singleton Scope service
      * @return org\gocdb\services\Scope
      */

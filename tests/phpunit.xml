@@ -1,0 +1,75 @@
+<!--/*
+ * Copyright (C) 2015 STFC
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ * 
+ * @author David Meredith <david.meredith@stfc.ac.uk> 
+ */-->
+
+<!-- 
+PHPUnit configuration file for tests. 
+-->
+<phpunit
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+         backupGlobals="true"
+         backupStaticAttributes="false"
+         cacheTokens="false"
+         colors="false"
+         convertErrorsToExceptions="true"
+         convertNoticesToExceptions="true"
+         convertWarningsToExceptions="true"
+         forceCoversAnnotation="false"
+         mapTestClassNameToCoveredClassName="false"
+         printerClass="PHPUnit_TextUI_ResultPrinter"
+         processIsolation="false"
+         stopOnError="false"
+         stopOnFailure="false"
+         stopOnIncomplete="false"
+         stopOnSkipped="false"
+         stopOnRisky="false"
+         testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
+         timeoutForSmallTests="1"
+         timeoutForMediumTests="10"
+         timeoutForLargeTests="60"
+         verbose="false">
+         <!--printerFile="/path/to/ResultPrinter.php"-->
+         <!--testSuiteLoaderFile="/path/to/StandardTestSuiteLoader.php"-->
+         <!--bootstrap="/path/to/bootstrap.php" -->
+  
+<filter>
+  <!--<blacklist>
+    <directory suffix=".php">/path/to/files</directory>
+    <file>/path/to/file</file>
+    <exclude>
+      <directory suffix=".php">/path/to/files</directory>
+      <file>/path/to/file</file>
+    </exclude>
+  </blacklist>-->
+  
+  <!-- 
+  Name the core packages to be included in coverage reports. 
+  It is not desirable to produce coverage for every package, it is not useful
+  to do so. We have to be selective on which tests to write for which packages.  
+  --> 
+  <whitelist processUncoveredFilesFromWhitelist="true">
+    <directory suffix=".php">../lib/Doctrine/entities/</directory>
+    <directory suffix=".php">../lib/DAOs/</directory>
+    <directory suffix=".php">../lib/Gocdb_Services/</directory>
+    <!--<file>/path/to/file</file>-->
+    <exclude>
+      <!-- TODO - We need to include PI dir in future -->
+      <directory suffix=".php">../lib/Gocdb_Services/PI/</directory>
+      <!--<file>/path/to/file</file>-->
+    </exclude>
+  </whitelist>
+</filter>
+  
+</phpunit>

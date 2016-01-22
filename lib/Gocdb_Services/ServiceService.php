@@ -419,8 +419,30 @@ class ServiceService extends AbstractEntityService {
             $scopeIdsToApply[] = $sid; 
         }
         $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
+
+        // If not admin, Check user edits to the service's Reserved scopes: 
+        // Required to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $se->getScopes()->toArray()); 
+            
+            $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $se->getParentSite()->getScopes()->toArray()); 
+            
+            foreach($selectedReservedScopes as $sc){
+                // Reserved scopes must already be assigned to se or parent 
+                if(!in_array($sc, $existingReservedScopes) && !in_array($sc, $existingReservedScopesParent)){
+                    throw new \Exception("A reserved Scope Tag was selected that "
+                            . "is not assigned to the Service or to the Parent Site");  
+                }
+            }
+        }
         
-        // Check Reserved scopes
+        // Check no changes to Reserved scopes (if not admin): 
         // When normal users EDIT the service, the selected scopeIds should 
         // be checked to prevent users manually crafting a POST request in an attempt
         // to select reserved scopes, this is unlikely but it is a possible hack. 
@@ -429,7 +451,7 @@ class ServiceService extends AbstractEntityService {
         // as we need to allow an admin to de-select a service's reserved scopes 
         // (which is a perfectly valid requirement) and prevent re-cascading 
         // when the user next edits the service! 
-        if (!$user->isAdmin()) {
+        /*if (!$user->isAdmin()) {
             $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
                     array('excludeNonReserved' => true), $selectedScopesToApply);  
             
@@ -444,7 +466,7 @@ class ServiceService extends AbstractEntityService {
                     throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the Service"); 
                 }
             }
-        }
+        }*/
         
         //check there are the required number of optional scopes specified
 	$this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
@@ -695,15 +717,24 @@ class ServiceService extends AbstractEntityService {
         foreach($values['ReservedScope_ids'] as $sid){
             $allSelectedScopeIds[] = $sid; 
         }
-        // On add service, enforce cascading of reserved parentSite scopes  
-        // down to the service (and allow free selection of normal scopes) 
-        $reservedScopeNames = $this->configService->getReservedScopeList();
-        /* @var $ngiScope \Scope */
-        foreach ($site->getScopes() as $siteScope) {
-            // if the siteScope is reserved, and it is not in the selected scopeIds, add it.  
-            if (in_array($siteScope->getName(), $reservedScopeNames) &&
-                    !in_array($siteScope->getId(), $allSelectedScopeIds)) {
-                $allSelectedScopeIds[] = $siteScope->getId();
+
+        $selectedScopesToApply = $this->scopeService->getScopes($allSelectedScopeIds); 
+        
+        // If not admin, check that requested reserved scopes are already implemented by the parent Site. 
+        // Required to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $site->getScopes()->toArray()); 
+            
+            foreach($selectedReservedScopes as $sc){
+                // Reserved scopes must already be assigned to parent 
+                if(!in_array($sc, $existingReservedScopesParent)){
+                    throw new \Exception("A reserved Scope Tag was selected that is not assigned to the Parent Site");  
+                }
             }
         }
         
@@ -738,13 +769,16 @@ class ServiceService extends AbstractEntityService {
 	    }
 
 	    // Set the scopes
-	    foreach ($allSelectedScopeIds as $scopeId) {
-		$dql = "SELECT s FROM Scope s WHERE s.id = :id";
-		$scope = $this->em->createQuery($dql)
-			->setParameter('id', $scopeId)
-			->getSingleResult();
-		$se->addScope($scope);
-	    }
+//	    foreach ($allSelectedScopeIds as $scopeId) {
+//		$dql = "SELECT s FROM Scope s WHERE s.id = :id";
+//		$scope = $this->em->createQuery($dql)
+//			->setParameter('id', $scopeId)
+//			->getSingleResult();
+//		$se->addScope($scope);
+//	    }
+            foreach($selectedScopesToApply as $scope){
+                $se->addScope($scope); 
+            }
 
 	    $se->setDn($values['SE']['HOST_DN']);
 	    $se->setIpAddress($values['SE']['HOST_IP']);

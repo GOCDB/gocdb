@@ -42,16 +42,16 @@ class RetrieveAccountRequest {
     protected $confirmCode;
 
     public function __construct(\User $user, $code, $newDn) {
-	$this->setUser($user);
-	$this->setConfirmCode($code);
-	$this->setNewDn($newDn);
+        $this->setUser($user);
+        $this->setConfirmCode($code);
+        $this->setNewDn($newDn);
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -59,7 +59,7 @@ class RetrieveAccountRequest {
      * @return \User
      */
     public function getUser() {
-	return $this->user;
+        return $this->user;
     }
 
     /**
@@ -69,7 +69,7 @@ class RetrieveAccountRequest {
      * @return string
      */
     public function getConfirmCode() {
-	return $this->confirmCode;
+        return $this->confirmCode;
     }
 
     /**
@@ -77,7 +77,7 @@ class RetrieveAccountRequest {
      * @return string
      */
     public function getNewDn() {
-	return $this->newDn;
+        return $this->newDn;
     }
 
     /**
@@ -85,7 +85,7 @@ class RetrieveAccountRequest {
      * @param \User $user
      */
     public function setUser($user) {
-	$this->user = $user;
+        $this->user = $user;
     }
 
     /**
@@ -95,7 +95,7 @@ class RetrieveAccountRequest {
      * @param string $code
      */
     public function setConfirmCode($code) {
-	$this->confirmCode = $code;
+        $this->confirmCode = $code;
     }
 
     /**
@@ -103,7 +103,7 @@ class RetrieveAccountRequest {
      * @param string $dn
      */
     public function setNewDn($dn) {
-	$this->newDn = $dn;
+        $this->newDn = $dn;
     }
 
 }

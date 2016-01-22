@@ -39,7 +39,7 @@ class SiteProperty {
      * one Site (OWNING ORM SIDE). 
      *   
      * @ManyToOne(targetEntity="Site", inversedBy="siteProperties") 
-     * @JoinColumn(name="parentSite_id", referencedColumnName="id", onDelete="CASCADE")	 
+     * @JoinColumn(name="parentSite_id", referencedColumnName="id", onDelete="CASCADE") 
      */
     protected $parentSite = null; 
     
@@ -118,7 +118,7 @@ class SiteProperty {
     public function setKeyValue($keyValue){
         $this->keyValue = $keyValue; 
     }
-	
+
 }
 
 ?>

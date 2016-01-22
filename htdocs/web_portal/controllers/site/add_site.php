@@ -55,10 +55,10 @@ function submit(\User $user = null) {
     
     $serv = \Factory::getSiteService();
     try {
-    	$site = $serv->addSite($newValues, $user);
+        $site = $serv->addSite($newValues, $user);
     } catch(Exception $e) {
-    	show_view('error.php', $e->getMessage());
-    	die();
+        show_view('error.php', $e->getMessage());
+        die();
     }
     $params['site'] = $site;
     show_view("site/submit_new_site.php", $params);
@@ -93,14 +93,14 @@ function draw(\User $user = null) {
            die(); 
         }
     }
-//	// todo - site will be created under one of the user's ngis, so we can 
-//      // create a temporary site and add it to those ngis in order to apply role model. 
-//	$site = new \Site(); 
-//	foreach($userNGIs as $ngis){ $ngis->addSiteDoJoin($site); } 
-//	if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
-//		"ACTION_APPLY_RESERVED_SCOPE_TAG", $site , $user)->getGrantAction()){
-//	   $disableReservedScopes = false;  
-//	} 
+//   // todo - site will be created under one of the user's ngis, so we can 
+//   // create a temporary site and add it to those ngis in order to apply role model. 
+//    $site = new \Site(); 
+//    foreach($userNGIs as $ngis){ $ngis->addSiteDoJoin($site); } 
+//    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
+//        "ACTION_APPLY_RESERVED_SCOPE_TAG", $site , $user)->getGrantAction()){
+//       $disableReservedScopes = false;  
+//    } 
 
     // URL mapping
     if(isset($_GET['getAllScopesForScopedEntity']) && is_numeric($_GET['getAllScopesForScopedEntity'])){
@@ -109,8 +109,10 @@ function draw(\User $user = null) {
         // AJAX is needed here because the parent NGI is not known until the user selects 
         // which parent NGI in the pull-down which then fires the AJAX request. 
         $scopedEntityId = $_GET['getAllScopesForScopedEntity']; 
-        $scopedEntity =  \Factory::getNgiService()->getNgi($scopedEntityId); 
-        die(getEntityScopesAsJSON($scopedEntity, $disableReservedScopes));  
+        $ngiScopedEntity =  \Factory::getNgiService()->getNgi($scopedEntityId); 
+        $jsonScopes = getEntityScopesAsJSON2(null, $ngiScopedEntity, $disableReservedScopes, true); 
+        header('Content-type: application/json');
+        die($jsonScopes);  
     } 
    
     $countries = $siteService->getCountries();
@@ -131,7 +133,7 @@ function draw(\User $user = null) {
     $numberOfScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('site');
 
     $params = array('ngis' => $userNGIs, 'countries' => $countries, 'timezones' => $timezones, 
-	'prodStatuses' => $prodStatuses, 'certStatuses' => $certStatuses, 
+        'prodStatuses' => $prodStatuses, 'certStatuses' => $certStatuses, 
         'numberOfScopesRequired' => $numberOfScopesRequired, 
         'disableReservedScopes' => $disableReservedScopes);
 
@@ -143,30 +145,5 @@ function draw(\User $user = null) {
     show_view("site/add_site.php", $params);
     die(); 
 }
-
-    /*
-    $allScopes_PreSelected = \Factory::getScopeService()->getAllScopesMarkDefault();
-    // Split $allScopes_PreSelected into $scopes + $reservedScopes to pass to UI
-    // Each element is an associative array indicating if scope is selected or not 
-    $reservedScopes = array(); 
-    $scopes = array(); 
-    foreach($allScopes_PreSelected as $scArray){
-	$isReserved = false; 
-	foreach($reservedScopeNames as $reservedScopeName){
-	    if( $scArray['scope']->getName() == $reservedScopeName){
-	        $isReserved = true; 	
-		break; 
-	    } 
-	}
-	if($isReserved){
-            // each element is an associative array indicating if scope is default or not 
-            // (default 'reserved' scopes are pre-selected in the UI, user can't change (de)selection) 
-	    $reservedScopes[] = $scArray;  
-	} else {
-            // each element is an associative array indicating if scope is default or not 
-            // (default 'normal' scopes are pre-selected in the UI, but user can change (de)selection) 
-	    $scopes[] = $scArray; 
-	}
-    }*/
 
 ?>

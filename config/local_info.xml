@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema>
-	<local_info>
+        <local_info>
         <!-- If read-only is set as true, the portal will prevent changes to the
              data by all users. This can be used for a read-only failover instance. -->
         <read_only>false</read_only>
-        		
-	<!-- Specify the URLs used to access your GOCDB web portal and PI. 
+                        
+        <!-- Specify the URLs used to access your GOCDB web portal and PI. 
         - It is important to update these values to match your deployment. 
         - These values substitute placeholder variables and is used in both the 
           PI XML output and in constructing web portal links. 
@@ -15,11 +15,11 @@
           in your apache httpd config (see sample 'gocdbssl.conf' file).   
         - Do not terminate these values with a '/' char.   
         -->
-	<web_portal_url>https://localhost/portal</web_portal_url>
-	<pi_url>https://localhost/gocdbpi</pi_url>
-	<server_base_url>https://localhost</server_base_url>
-		
-	<optional_features>
+        <web_portal_url>https://localhost/portal</web_portal_url>
+        <pi_url>https://localhost/gocdbpi</pi_url>
+        <server_base_url>https://localhost</server_base_url>
+                
+        <optional_features>
             <!-- If false then a service must belong to a physical 
                  site. If true an option will be available to add a brand new  
                  SE to a service group and the new SE won't belong to a 
@@ -67,23 +67,35 @@
         </minimum_scopes>
 
         <!-- 
-	Specify a list of RESERVED scope tag names that only gocdb-admins can assign to resources.
-	-->
-	<reserved_scopes>
-	    <scope>wlcg</scope>
-	    <scope>tier1</scope>
-	    <scope>tier2</scope>
-	    <scope>alice</scope>
-	    <scope>atlas</scope>
-	    <scope>cms</scope>
-	    <scope>lhcb</scope>
-	    <scope>elixir</scope>
-	</reserved_scopes>
-		
-	<!-- Define the max amount of extensions a user can define when using the extensions feature -->
-	<extensions>
-	    <max>20</max>
-	</extensions>
+        Specify a list of RESERVED scope tag names: 
+        - New Reserved tags can only be directly assigned to resources by the gocdb-admins 
+         (resources include NGIs, Sites, Services, SGs but not Projects - don't currently need to tag projects) 
+        - When creating a new child resource (e.g. a child Site or child Service), 
+          the scopes that are assigned to the parent are automatically inherited and assigned to the child.  
+        - Reserved tags assigned to a resource are optional.   
+        - Users can reapply Reserved tags to a resource ONLY if the tag can be 
+          inherited from the parent ScopedEntity (parents include NGIs/Sites).
+        - For Sites: If a Reserved tag is removed from a Site, then the same tag is also removed
+          from all the child services - a Service can't have a reserved tag that 
+          is not supported by its parent Site. 
+        - For NGIs: If a Reserved tag is removed from an NGI, then the same tag is NOT 
+          removed from all the child Sites - this is intentionally different from the Site->Service relationship. 
+        -->
+        <reserved_scopes>
+            <scope>wlcg</scope>
+            <scope>tier1</scope>
+            <scope>tier2</scope>
+            <scope>alice</scope>
+            <scope>atlas</scope>
+            <scope>cms</scope>
+            <scope>lhcb</scope>
+            <scope>elixir</scope>
+        </reserved_scopes>
+                
+        <!-- Define the max amount of extensions a user can define when using the extensions feature -->
+        <extensions>
+            <max>20</max>
+        </extensions>
 
 
         <!-- 
@@ -93,7 +105,7 @@
         -->
         <send_email>false</send_email>
 
-		
-	</local_info>
+                
+        </local_info>
 </schema>
 

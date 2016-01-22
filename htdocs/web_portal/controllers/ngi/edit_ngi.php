@@ -64,7 +64,8 @@ function draw(\User $user = null) {
     if($user->isAdmin()){
 	$disableReservedScopes = false; 
     }
-    $scopejsonStr = getEntityScopesAsJSON($ngi, $disableReservedScopes); 
+    // pass null for the parent as we don't consider project scopes (yet) 
+    $scopejsonStr = getEntityScopesAsJSON2($ngi, null, $disableReservedScopes); 
      
     $params = array('ngi' => $ngi);
     $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');

@@ -35,7 +35,7 @@ class PrimaryKey {
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -43,7 +43,7 @@ class PrimaryKey {
      * @return string
      */
     public function __toString() {
-	return $this->id;
+        return $this->id;
     }
 
 }

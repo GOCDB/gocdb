@@ -327,9 +327,9 @@ class NGI extends AbstractEntityService{
             $scopeIdsToApply[] = $sid; 
         }
         $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
-        // Check Reserved scopes
-        // When normal users EDIT the ngi, the selected scopeIds should 
-        // be checked to prevent users manually crafting a POST request in an attempt
+        
+        // If not admin, Check user edits to the ngi's Reserved scopes: 
+        // Required to prevent users manually crafting a POST request in an attempt
         // to select reserved scopes, this is unlikely but it is a possible hack. 
         if (!$user->isAdmin()) {
             $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
@@ -338,21 +338,18 @@ class NGI extends AbstractEntityService{
             $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
                     array('excludeNonReserved' => true), $ngi->getScopes()->toArray()); 
             
-            if(count($selectedReservedScopes) != count($existingReservedScopes)) {
-                throw new \Exception("The reserved Scope count does not match the ServiceGroups existing scope count "); 
-            }
             foreach($selectedReservedScopes as $sc){
-                if(!in_array($sc, $existingReservedScopes)){
-                    throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the ServiceGroup"); 
+                // Reserved scopes must already be assigned to site or parent 
+                if(in_array($sc, $existingReservedScopes)){
+                    continue; 
                 }
+                throw new \Exception("A reserved Scope Tag was selected that is not assigned to the NGI");  
             }
         }
+        
         //check there are the required number of optional scopes specified
         $this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
                array('excludeReserved' => true), $selectedScopesToApply));
-        
-        //check the required number of scopes have been specified
-        //$this->checkNumberOfScopes($newValues['Scope_ids']);
         
     	//Explicity demarcate our tx boundary
     	$this->em->getConnection()->beginTransaction();

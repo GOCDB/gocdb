@@ -98,15 +98,15 @@ class Downtime {
     const DATE_FORMAT = 'd-M-y H:i:s';
 
     public function __construct() {
-	$this->services = new ArrayCollection();
-	$this->endpointLocations = new ArrayCollection();
+        $this->services = new ArrayCollection();
+        $this->endpointLocations = new ArrayCollection();
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -114,7 +114,7 @@ class Downtime {
      * @return string
      */
     public function getDescription() {
-	return $this->description;
+        return $this->description;
     }
 
     /**
@@ -122,7 +122,7 @@ class Downtime {
      * @return string 
      */
     public function getSeverity() {
-	return $this->severity;
+        return $this->severity;
     }
 
     /**
@@ -132,7 +132,7 @@ class Downtime {
      * @return string
      */
     public function getClassification() {
-	return $this->classification;
+        return $this->classification;
     }
 
     /**
@@ -146,11 +146,11 @@ class Downtime {
      * @return \DateTime or null
      */
     public function getInsertDate() {
-	// Adds overhead when processing large result-sets. 
+        // Adds overhead when processing large result-sets. 
 //        if($this->insertDate != NULL){
-//     	  $this->insertDate->setTimezone(new \DateTimeZone('UTC'));
+//               $this->insertDate->setTimezone(new \DateTimeZone('UTC'));
 //        }
-	return $this->insertDate;
+        return $this->insertDate;
     }
 
     /**
@@ -164,11 +164,11 @@ class Downtime {
      * @return \DateTime or null
      */
     public function getStartDate() {
-	// Adds overhead when processing large result-sets. 
+        // Adds overhead when processing large result-sets. 
 //        if($this->startDate != NULL){
-//		   $this->startDate->setTimezone(new \DateTimeZone('UTC'));
+//                   $this->startDate->setTimezone(new \DateTimeZone('UTC'));
 //        }
-	return $this->startDate;
+        return $this->startDate;
     }
 
     /**
@@ -182,11 +182,11 @@ class Downtime {
      * @return \DateTime or null
      */
     public function getEndDate() {
-	// Adds overhead when processing large result-sets. 
+        // Adds overhead when processing large result-sets. 
 //        if($this->endDate != NULL){
-//		   $this->endDate->setTimezone(new \DateTimeZone('UTC'));
+//                   $this->endDate->setTimezone(new \DateTimeZone('UTC'));
 //        }
-	return $this->endDate;
+        return $this->endDate;
     }
 
     /**
@@ -196,13 +196,13 @@ class Downtime {
      * @return \DateTime or null
      */ 
     public function getAnnounceDate() {
-	if ($this->getClassification() == "UNSCHEDULED") {
-	    return $this->insertDate;
-	}
-	$di = DateInterval::createFromDateString('1 days');
-	$announceDate = clone $this->startDate;
-	$announceDate->sub($di);
-	return $announceDate;
+        if ($this->getClassification() == "UNSCHEDULED") {
+            return $this->insertDate;
+        }
+        $di = DateInterval::createFromDateString('1 days');
+        $announceDate = clone $this->startDate;
+        $announceDate->sub($di);
+        return $announceDate;
     }
 
     /**
@@ -210,7 +210,7 @@ class Downtime {
      * @return Doctrine\Common\Collections\ArrayCollection Of {@see Service}s
      */
     public function getServices() {
-	return $this->services;
+        return $this->services;
     }
 
     /**
@@ -218,7 +218,7 @@ class Downtime {
      * @return Doctrine\Common\Collections\ArrayCollection Of {@see EndpointLocation}s 
      */
     public function getEndpointLocations() {
-	return $this->endpointLocations;
+        return $this->endpointLocations;
     }
 
     /**
@@ -228,7 +228,7 @@ class Downtime {
      * @return string 
      */
     public function getPrimaryKey() {
-	return $this->primaryKey;
+        return $this->primaryKey;
     }
 
     /**
@@ -236,7 +236,7 @@ class Downtime {
      * @param string $description
      */
     public function setDescription($description) {
-	$this->description = $description;
+        $this->description = $description;
     }
 
     /**
@@ -244,12 +244,12 @@ class Downtime {
      * @param string $severity
      */
     public function setSeverity($severity) {
-	$this->severity = $severity;
+        $this->severity = $severity;
     }
 
     public function setCode($code) {
-	// DM: I don't know why this is needed, to remove?
-	$this->code = $code;
+        // DM: I don't know why this is needed, to remove?
+        $this->code = $code;
     }
 
     /**
@@ -259,7 +259,7 @@ class Downtime {
      * @param string $classification
      */
     public function setClassification($classification) {
-	$this->classification = $classification;
+        $this->classification = $classification;
     }
 
     /**
@@ -267,7 +267,7 @@ class Downtime {
      * @param \DateTime $insertDate
      */
     public function setInsertDate($insertDate) {
-	$this->insertDate = $insertDate;
+        $this->insertDate = $insertDate;
     }
 
     /**
@@ -275,7 +275,7 @@ class Downtime {
      * @param \DateTime $startDate
      */
     public function setStartDate($startDate) {
-	$this->startDate = $startDate;
+        $this->startDate = $startDate;
     }
 
     /**
@@ -283,7 +283,7 @@ class Downtime {
      * @param \DateTime $endDate
      */
     public function setEndDate($endDate) {
-	$this->endDate = $endDate;
+        $this->endDate = $endDate;
     }
 
     /**
@@ -295,7 +295,7 @@ class Downtime {
      * @param string $primaryKey
      */
     public function setPrimaryKey($primaryKey) {
-	$this->primaryKey = $primaryKey;
+        $this->primaryKey = $primaryKey;
     }
 
     /**
@@ -309,18 +309,18 @@ class Downtime {
      * @throws \AlreadyLinkedException If this downtime is already linked to the service. 
      */
     public function addService($service) {
-	require_once __DIR__ . '/AlreadyLinkedException.php';
-	// Check this SE isn't already registered (not sure we strictly need this) 
-	foreach ($this->services as $existingSe) {
-	    if ($existingSe == $service) {
-		throw new AlreadyLinkedException("Downtime {$this->getId()} is already "
-		. "linked to service {$existingSe->getHostName()}");
-	    }
-	}
-	$this->services[] = $service;
-	//$service->_add Downtime($this); 
-	$dts = $service->getDowntimes();
-	$dts[] = $this;
+        require_once __DIR__ . '/AlreadyLinkedException.php';
+        // Check this SE isn't already registered (not sure we strictly need this) 
+        foreach ($this->services as $existingSe) {
+            if ($existingSe == $service) {
+                throw new AlreadyLinkedException("Downtime {$this->getId()} is already "
+                . "linked to service {$existingSe->getHostName()}");
+            }
+        }
+        $this->services[] = $service;
+        //$service->_add Downtime($this); 
+        $dts = $service->getDowntimes();
+        $dts[] = $this;
     }
 
     /**
@@ -332,9 +332,9 @@ class Downtime {
      * @param Service $service service for removal
      */
     public function removeService(Service $service) {
-	//$service->remove Downtime($this); 
-	$service->getDowntimes()->removeElement($this);
-	$this->services->removeElement($service);
+        //$service->remove Downtime($this); 
+        $service->getDowntimes()->removeElement($this);
+        $this->services->removeElement($service);
     }
 
     /**
@@ -347,10 +347,10 @@ class Downtime {
      * @param EndpointLocation $endpointLocation
      */
     public function addEndpointLocation(EndpointLocation $endpointLocation) {
-	$this->endpointLocations[] = $endpointLocation;
-	//$endpointLocation->_add Downtime($this); 
-	$dts = $endpointLocation->getDowntimes();
-	$dts[] = $this;
+        $this->endpointLocations[] = $endpointLocation;
+        //$endpointLocation->_add Downtime($this); 
+        $dts = $endpointLocation->getDowntimes();
+        $dts[] = $this;
     }
 
     /**
@@ -366,9 +366,9 @@ class Downtime {
      * @param EndpointLocation $endpointLocation endpoint location for removal
      */
     public function removeEndpointLocation(EndpointLocation $endpointLocation) {
-	$endpointLocation->getDowntimes()->removeElement($this);
-	//$endpointLocation->_remove Downtime($this); 
-	$this->endpointLocations->removeElement($endpointLocation);
+        $endpointLocation->getDowntimes()->removeElement($this);
+        //$endpointLocation->_remove Downtime($this); 
+        $this->endpointLocations->removeElement($endpointLocation);
     }
 
     /**
@@ -376,14 +376,14 @@ class Downtime {
      * @return boolean
      */
     public function isOngoing() {
-	$nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
-	$endDateUtc = $this->getEndDate()->setTimezone(new \DateTimeZone('UTC'));
-	$startDateUtc = $this->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
-	if ($startDateUtc < $nowUtc && $endDateUtc > $nowUtc) {
-	    return true;
-	} else {
-	    return false;
-	}
+        $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
+        $endDateUtc = $this->getEndDate()->setTimezone(new \DateTimeZone('UTC'));
+        $startDateUtc = $this->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
+        if ($startDateUtc < $nowUtc && $endDateUtc > $nowUtc) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**
@@ -391,13 +391,13 @@ class Downtime {
      * @return boolean
      */
     public function hasStarted() {
-	$nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
-	$startDateUtc = $this->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
-	if ($startDateUtc < $nowUtc) {
-	    return true;
-	} else {
-	    return false;
-	}
+        $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
+        $startDateUtc = $this->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
+        if ($startDateUtc < $nowUtc) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
 }

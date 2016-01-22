@@ -2,7 +2,7 @@
 /*______________________________________________________
  *======================================================
  * File: view_user.php
- * Author: George Ryall
+ * Author: George Ryall, David Meredith
  * Description: Retrieves and draws the data for a user
  *
  * License information
@@ -19,7 +19,17 @@
  * limitations under the License.
  *
  /*====================================================== */
+require_once __DIR__.'/utils.php';
 function show_help() {
-    $params['Scopes'] = \Factory::getScopeService()->getScopes();
+    //$params['Scopes'] = \Factory::getScopeService()->getScopes();
+
+    $optionalScopes = \Factory::getScopeService()->getScopesFilterByParams(
+                    array('excludeReserved' => true), null);  
+    $reservedScopes = \Factory::getScopeService()->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), null); 
+
+    $params['optionalScopes'] = $optionalScopes; 
+    $params['reservedScopes'] = $reservedScopes; 
+    
     show_view("scope_help.php", $params, "Scopes");
 }
