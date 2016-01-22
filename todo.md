@@ -27,7 +27,7 @@
 * Change `<CERTDN>` element in PI output to `<PRINCIPAL>` and consider adding the 
   `<AuthenticationRealm>` element and DB column. 
 * Add instructions for deployment to MySQL/Mariadb 
-* Update the datetime picker to latest version 
+* Update the datetime picker to latest version (DONE) now datetimepicker v4.17.37
 * Allow downtime to affect services across multiple sites (currently DT 
   can only affect services from a single site). Check this is actually needed.  
 * Improve the downtime service selection GUI by showing some extra tags/info 
