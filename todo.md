@@ -8,12 +8,6 @@
 * Improve the forms to add/edit NGIs/Sites/Services to use the jquery form 
   validation plugin (see Edit_Service_Endpoint and Add_Service_Endpoint pages 
   which already use this plugin). 
-* Add a Downtime-Calendar view to show downtimes on a time-line, e.g. using the 
-  Google calendar API - also check with Ops portal because they may have already done this.  
-* Record user last login date in new datetime field (note, if user authenticates
-  with x509 there is no HTTP session started which may mean this field would need to be 
-  updated in DB on each/every page request - is this desirable?, or we could 
-  start a new GOC session if required). Needed to delete inactive accounts. 
 * Add UserProperty entity and join with User, for persisting various un-determined 
   attributes such as AAA/SAML attributes provided by IdP on account registration. 
 * Introduce reserved keyNames for custom properties so that a user can't add/edit  
@@ -27,7 +21,6 @@
 * Change `<CERTDN>` element in PI output to `<PRINCIPAL>` and consider adding the 
   `<AuthenticationRealm>` element and DB column. 
 * Add instructions for deployment to MySQL/Mariadb 
-* Update the datetime picker to latest version 
 * Allow downtime to affect services across multiple sites (currently DT 
   can only affect services from a single site). Check this is actually needed.  
 * Improve the downtime service selection GUI by showing some extra tags/info 
@@ -43,13 +36,8 @@
   violates the single-responsibility principle by combining methods such as 'getXML()' 
   and 'getJSON()' with the other methods for creating/issuing a query. 
   This interface should probably be segregated into two.  
-* Add bulk upload of custom extension properties (key=value) pairs as a .properties file, 
-  and better rendering of extension properties in a sortable table with selectAll, 
-  deselectAll, and actions such as delete, duplicate. 
 * Add a new view to display the list of service types and their descriptions. 
 * Allow multiple serviceTypes to be specified when filtering services (GUI+PI). 
-* Introduce 'Reserved' scope-tags that can only be assigned to resources (sites/services/endpoints/ngis/sgs)
-  by the gocdb-admins or by selected Roles. Needed to prevent self-assigned scope-tags. 
 * When filtering sites/services/SGs via the GUI, add a new GUI component to
   select zero or more custom properties and allow a value to be optionally 
   specified for the property with an AND/NOT selection pull-down.  

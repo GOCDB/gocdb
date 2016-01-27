@@ -33,6 +33,9 @@ require_once __DIR__ . '/../lib/Gocdb_Services/Site.php';
 // Specify a list of Site Names to add the scopes
 //$requestedSiteNames = array('100IT', 'AEGIS01-IPB-SCL');
 
+
+// Examples below for WLCG scopes
+// ===============================
 //$requestedScopeNames = array('wlcg', 'alice');
 //$requestedSiteNames = array(
 //'AM-04-YERPHI', 'BUDAPEST', 'CETA-GRID', 'CYFRONET-LCG2', 'FMPhI-UNIBA', 'FZK-LCG2', 'GRIF', 'GSI-LCG2', 'HG-03-AUTH', 'ICN-UNAM', 'IEPSAS-Kosice',
@@ -50,7 +53,6 @@ require_once __DIR__ . '/../lib/Gocdb_Services/Site.php';
 //'UKI-NORTHGRID-LANCS-HEP', 'UKI-NORTHGRID-LIV-HEP', 'UKI-NORTHGRID-MAN-HEP', 'UKI-NORTHGRID-SHEF-HEP', 'UKI-SCOTGRID-DURHAM', 'UKI-SCOTGRID-ECDF', 'UKI-SCOTGRID-GLASGOW',
 //'UKI-SOUTHGRID-BHAM-HEP', 'UKI-SOUTHGRID-BRIS-HEP', 'UKI-SOUTHGRID-CAM-HEP', 'UKI-SOUTHGRID-OX-HEP', 'UKI-SOUTHGRID-RALPP', 'USC-LCG2', 'WEIZMANN-LCG2', 'pic', 'ru-PNPI',
 //); 
-
 
 //$requestedScopeNames = array('wlcg', 'cms'); 
 //$requestedSiteNames = array(
