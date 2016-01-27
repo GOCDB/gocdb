@@ -68,6 +68,9 @@ class User {
     /** @Column(type="datetime", nullable=false)  */
     protected $creationDate;
 
+    /** @Column(type="datetime", nullable=true)  */
+    protected $lastLoginDate;
+    
     /*
      * TODO: 
      * This entity will need to own a property bag (akin to custom props) 
@@ -181,6 +184,14 @@ class User {
     public function getCreationDate() {
         return $this->creationDate;
     }
+    
+    /**
+     * The DateTime of the user's last authentication/login. 
+     * @return \DateTime
+     */
+    public function getLastLoginDate(){
+    	return $this->lastLoginDate; 
+    }
 
     /**
      * Is the user a GOCDB admin user. Defaults to false.  
@@ -288,6 +299,14 @@ class User {
      */
     public function setCreationDate($creationDate) {
         $this->creationDate = $creationDate;
+    }
+    
+    /**
+     * Set the date time of the user's last authentication/login
+     * @param \DateTime $lastLoginDate
+     */
+    public function setLastLoginDate($lastLoginDate){
+    	$this->lastLoginDate = $lastLoginDate; 
     }
 
     /**

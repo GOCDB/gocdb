@@ -63,6 +63,27 @@ class User extends AbstractEntityService{
     			  ->getOneOrNullResult();
        return $user;
     }
+    
+    /**
+     * Updates the users last login time to the current time in UTC. 
+     * @param \User $user
+     */
+    public function updateLastLoginTime(\User $user){
+    	$nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
+    	$this->em->getConnection()->beginTransaction();
+    	try {
+    		// Set the user's member variables
+    		$user->setLastLoginDate($nowUtc);
+    		$this->em->merge($user);
+    		$this->em->flush();
+    		$this->em->getConnection()->commit();
+    	} catch (\Exception $ex) {
+    		$this->em->getConnection()->rollback();
+    		$this->em->close();
+    		throw $ex;
+    	}
+    	return $user;
+    }
 
     /**
      * Find sites a user has a role over with the specified role status. 
@@ -432,7 +453,7 @@ class User extends AbstractEntityService{
      * @param \User $currentUser    The user making the change, who themselvess must be an admin
      * @param boolean $isAdmin      The new property. This must be boolean true or false.
      */
-    public function setUserIsAdmin(\User $user, \User $currentUser = null, $isAdmin= false){
+    /*public function setUserIsAdmin(\User $user, \User $currentUser = null, $isAdmin= false){
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
 
@@ -462,5 +483,5 @@ class User extends AbstractEntityService{
             throw $e;
         }
         
-    }
+    }*/
 }
