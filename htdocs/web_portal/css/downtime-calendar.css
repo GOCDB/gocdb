@@ -1,6 +1,8 @@
 .tooltip-title {
     color: #000;
-    margin:2px;
+    /*margin:2px;*/
+    margin:0;
+    padding:0;
 }
 
 .tooltip-hr {
@@ -14,8 +16,38 @@
     margin: 3px;
 }
 
+.filter-hr {
+    border: 0;
+    height: 1px;
+    background: #b3b3b3;
+    margin: 5px 13px;
+    box-shadow: 0px 0px 2px #ccc;
+}
+
+.filter-title {
+    /*color: #000;*/
+    /*margin:2px;*/
+    margin:0;
+    padding:0;
+}
+
+.legend-box {
+    float: left;
+    width: 11px;
+    height: 11px;
+    margin: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0,0,0,.2);
+}
+
 .btn {
-    border: 1px solid rgba(0, 0, 0, 0.18) !important;
+     border: 1px solid rgba(0, 0, 0, 0.3) !important;
+ }
+
+.calendar-imput-group-addon {
+    background-color: #fdfdff !important;
+    border: 1px solid rgba(0, 0, 0, 0.3) !important;
 }
 
 .grayed-out {

@@ -15,8 +15,8 @@ $affected = $params['affected'];
 <html>
 <div>
 
-    <h2 class="tooltip-title"><?php echo $site;?></h2>
-    <h3 class="tooltip-title"><?php echo $description;?></h3>
+    <h3 class="tooltip-title"><b><?php echo $site;?></b></h3>
+    <h3 class="tooltip-title"><i><?php echo $description;?></i></h3>
 
     <hr class="tooltip-hr"/>
 

@@ -273,7 +273,7 @@ function view() {
         $date = date( "Y-m-d", strtotime($_GET['date']));
     }
 
-    $view = "month";
+    $view = "basicWeek";
 
     if(!empty($_GET['view'])) {
 
