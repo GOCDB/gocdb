@@ -139,7 +139,7 @@
             
             <div style="margin-right: 0.4em">
                 <br>
-                &nbsp Click on a user's name to view more details, or to edit or
+                &nbsp; Click on a user's name to view more details, or to edit or
                 delete them. Click on their DN to update it.
                 <!-- Click on the tick or cross to promote them to or demote them from GOCDB admin status-->
             </div>

@@ -11,17 +11,14 @@
                 objects that define the required set of tags. 
             </li>
             <li>
-                The available tags are controlled by the GOCDB admins allowing 
-                users can to select relevant tags from the list. New tags can 
+                The available tags are controlled by the GOCDB admins, allowing 
+                users to select relevant tags from the list. New tags can 
                 be requested if required.  
             </li>
-            <li>No special meaning are placed on scope tags within GOCDB itself
-                - they are simply tags. </li>
             <li>
-                In EGI, scope tags are used to name different 
-                Grids/Projects/Groupings. For example, a Site could be tagged with both
-                the 'EGI' and 'ProjX' tags. 
-                Conversely, a single 'Local' tag can be used to declare that
+                In EGI, scope tags are used to categorise resources, 
+                e.g. a Site could be tagged with the 'EGI' and 'ProjX' tags 
+                while a single 'Local' tag can be used to declare that
                 this site does not provide any resources to EGI or ProjX. 
             </li>
             <li>
