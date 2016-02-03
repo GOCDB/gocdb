@@ -212,6 +212,7 @@ class PIRequest {
 		    $xml = $getDTTBroadcast->getXML();
 		    break;
 		case "get_downtime":
+		    //require_once($directory . 'GetDowntimeFallback.php');
 		    require_once($directory . 'GetDowntime.php');
 		    $getDowntime = new GetDowntime($em);
 		    $getDowntime->validateParameters($this->params);
@@ -220,7 +221,8 @@ class PIRequest {
 		    $xml = $getDowntime->getXML();
 		    break;
 		case "get_downtime_nested_services":
-		    require_once($directory . 'GetDowntime.php');
+            //require_once($directory . 'GetDowntimeFallback.php');
+            require_once($directory . 'GetDowntime.php');
 		    $getDowntime = new GetDowntime($em, true);
 		    $getDowntime->validateParameters($this->params);
 		    $getDowntime->createQuery();

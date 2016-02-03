@@ -723,7 +723,7 @@ class Downtime extends AbstractEntityService{
     public function getDowntimesFilterByParams($filterParams){
         require_once __DIR__.'/PI/GetDowntime.php';
         $getDowntime = new GetDowntime($this->em);
-        //$params = array('windowstart' => '2015-12-01', 'windowend' => '2015-12-28', 'severity' => 'WARNING');
+        //$params = array('service_type_list' => 'APEL', 'scope' => 'tier1');
         //$params = array('scope' => 'Local,EGI', 'scope_match' => 'any', 'site' => 'test,GRIDOPS-GOCDB', 'startdate' => '2015-01-21');
 //        $params[] = array('scope_match' => 'all');
 //        $params[] = array('topentity' => 'GRIDOPS-GOCDB');

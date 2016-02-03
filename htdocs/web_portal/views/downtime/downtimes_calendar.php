@@ -7,7 +7,7 @@
     <div style="float: left;">
         <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" class="pageLogo"/>
     </div>
-    <a href="index.php?Page_Type=Downtimes_Calendar" style="text-decoration: none"><h1>Downtimes Calendar</h1></a>
+    <h1>Downtimes Calendar</h1>
     <a id="helpLink" style="float: right; cursor: pointer;"><span >help</span> <span  style="font-size:1.5em;" class="glyphicon glyphicon-question-sign"></span> </a>
 
 

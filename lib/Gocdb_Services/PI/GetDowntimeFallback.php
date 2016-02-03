@@ -3,7 +3,7 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2016 STFC Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
 require_once __DIR__ . '/QueryBuilders/ExtensionsParser.php';
@@ -22,21 +22,12 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * <pre>
  * 'topentity', 'ongoing_only' , 'startdate', 'enddate', 'windowstart', 'windowend',
  * 'scope', 'scope_match', 'page', 'all_lastmonth', 'id' (where scope refers to Service scope)
- *
- * Note: the following parameters are for the downtime calendar, and are not documented for PI use.
- * (they will work fine though)
- *
- * 'sitelist', 'servicelist', 'ngilist', 'severity', 'classification', 'production' (service production status),
- * 'monitored' (service monitored?), 'certification_status' (site cert status), 'service_type_list'
- *
  * </pre>
  *
  * @author James McCarthy
  * @author David Meredith
- * @author Tom Byrne
  */
-class GetDowntime implements IPIQuery
-{
+class GetDowntime implements IPIQuery {
 
     protected $query;
     protected $validParams;
@@ -54,8 +45,7 @@ class GetDowntime implements IPIQuery
      * @param Boolean $nested when true this method will return the
      * nested rendering of the downtime data
      */
-    public function __construct($em, $nested = false)
-    {
+    public function __construct($em, $nested = false) {
         $this->nested = $nested;
         $this->em = $em;
         $this->helpers = new Helpers();
@@ -68,16 +58,13 @@ class GetDowntime implements IPIQuery
      *
      * @param array $parameters
      */
-    public function validateParameters($parameters)
-    {
+    public function validateParameters($parameters) {
 
         // Define supported parameters and validate given params (die if an unsupported param is given)
         $supportedQueryParams = array(
             'topentity', 'ongoing_only', 'startdate', 'enddate', 'windowstart',
             'windowend', 'scope', 'scope_match', 'page', 'all_lastmonth',
-            'site_extensions', 'service_extensions', 'id', 'sitelist',
-            'servicelist', 'ngilist', 'severity', 'classification', 'production',
-            'monitored', 'certification_status', 'service_type_list'
+            'site_extensions', 'service_extensions', 'id'
         );
 
         $this->helpers->validateParams($supportedQueryParams, $parameters);
@@ -87,8 +74,7 @@ class GetDowntime implements IPIQuery
     /** Creates the query by building on a queryBuilder object as
      *  required by the supplied parameters
      */
-    public function createQuery()
-    {
+    public function createQuery() {
         $parameters = $this->validParams;
         $binds = array();
         $bc = -1;
@@ -98,7 +84,7 @@ class GetDowntime implements IPIQuery
 
         $qb = $this->em->createQueryBuilder();
 
-        $qb->select('DISTINCT d', 'els', 'se', 's', 'sc', /*'i',*/ 'cs', 'st', 'seels'/* , 'elp' */)
+        $qb->select('DISTINCT d', 'els', 'se', 's', 'sc', 'st', 'seels'/* , 'elp' */)
             ->from('Downtime', 'd')
             ->leftJoin('d.endpointLocations', 'els')
             //->leftjoin('els.endpointProperties', 'elp') // to add if rendering endpoint in full (and in select clause)
@@ -106,14 +92,10 @@ class GetDowntime implements IPIQuery
             ->leftjoin('se.endpointLocations', 'seels')
             ->join('se.parentSite', 's')
             ->leftJoin('se.scopes', 'sc')
-            ->leftJoin('s.certificationStatus', 'cs')
-            //->leftJoin('s.infrastructure', 'i') Not needed?
             ->join('s.ngi', 'n')
             ->join('s.country', 'c')
             ->join('se.serviceType', 'st')
             ->orderBy('d.startDate', 'DESC');
-
-        //try just joins!
 
 
         /** Due to the unique parameters used by getdowntimes we don't use the ParameterBuilder
@@ -121,101 +103,17 @@ class GetDowntime implements IPIQuery
         // Validate page parameter
         if (isset($parameters['page'])) {
 
-            if (is_int(intval($parameters['page'])) && (int)$parameters['page'] > 0) {
-                $this->page = (int)$parameters['page'];
+            if (is_int(intval($parameters['page'])) && (int) $parameters['page'] > 0) {
+                $this->page = (int) $parameters['page'];
             } else {
                 echo "<error>Invalid 'page' parameter - must be a whole number greater than zero</error>";
                 die();
             }
         }
 
-        //These following parameters are for the downtime calendar and are not documented for use in PI.
-        if (isset($parameters ['certification_status'])) {
-            $qb->andWhere($qb->expr()->like('cs.name', '?' . ++$bc));
-            $binds[] = array($bc, $parameters['certification_status']);
-        }
-
-        if (isset($parameters['severity'])) {
-            $qb->andWhere($qb->expr()->eq('d.severity', '?' . ++$bc));
-            $binds[] = array($bc, $parameters['severity']);
-        }
-
-        if (isset($parameters['classification'])) {
-            $qb->andWhere($qb->expr()->eq('d.classification', '?' . ++$bc));
-            $binds[] = array($bc, $parameters['classification']);
-        }
-
-        if (isset($parameters['production'])) {
-            $qb->andWhere($qb->expr()->eq('se.production', '?' . ++$bc));
-            $binds[] = array($bc, $parameters['production']);
-        }
-
-        if (isset($parameters ['monitored'])) {
-            $qb->andWhere($qb->expr()->eq('se.monitored', '?' . ++$bc));
-            $binds[] = array($bc, $parameters['monitored']);
-        }
-
-        if (isset($parameters ['service_type_list'])) {
-            $serviceTypeArray = explode(",", $parameters['service_type_list']);
-
-            $orX = $qb->expr()->orX();
-
-            foreach ($serviceTypeArray as $serviceType) {
-                ++$bc;
-                $orX->add($qb->expr()->eq('st.name', '?' . $bc));
-                $binds[] = array($bc, $serviceType);
-            }
-            $qb->andWhere($orX);
-
-        }
-
-        if (isset($parameters['sitelist'])) {
-            $siteArray = explode(",", $parameters['sitelist']);
-
-            $orX = $qb->expr()->orX();
-
-            foreach ($siteArray as $site) {
-                ++$bc;
-                $orX->add($qb->expr()->eq('s.shortName', '?' . $bc));
-                $binds[] = array($bc, $site);
-            }
-            $qb->andWhere($orX);
-
-        }
-
-        //not used by downtime calendar, but could be useful?
-//        if (isset($parameters['servicelist'])) {
-//            $serviceArray = explode(",", $parameters['servicelist']);
-//
-//            $orX = $qb->expr()->orX();
-//
-//            foreach ($serviceArray as $service) {
-//                ++$bc;
-//                $orX->add($qb->expr()->like('se.hostName', '?' . $bc));
-//                $binds[] = array($bc, $service);
-//            }
-//            $qb->andWhere($orX);
-//        }
-
-        if (isset($parameters['ngilist'])) {
-            $ngiArray = explode(",", $parameters['ngilist']);
-
-            $orX = $qb->expr()->orX();
-
-            foreach ($ngiArray as $ngi) {
-                ++$bc;
-                $orX->add($qb->expr()->eq('n.name', '?' . $bc));
-                $binds[] = array($bc, $ngi);
-            }
-            $qb->andWhere($orX);
-        }
-
-        //end of parameters for the downtime calendar
-
         if (isset($parameters['topentity'])) {
-            ++$bc;
             $qb->andWhere($qb->expr()->orX(
-                $qb->expr()->like('se.hostName', '?' . $bc), $qb->expr()->like('s.shortName', '?' . $bc), $qb->expr()->like('n.name', '?' . $bc), $qb->expr()->like('c.name', '?' . $bc)
+                $qb->expr()->like('se.hostName', '?' . ++$bc), $qb->expr()->like('s.shortName', '?' . $bc), $qb->expr()->like('n.name', '?' . $bc), $qb->expr()->like('c.name', '?' . $bc)
             ));
             $binds[] = array($bc, $parameters['topentity']);
         }
@@ -272,7 +170,6 @@ class GetDowntime implements IPIQuery
             $binds[] = array($bc, $parameters['id']);
         }
 
-
         // Special parameter added for ATP who require all downtimes starting
         // from one month ago (including current and future DTs) to be generated
         // in one page result. We don't want to allow the disabling of paging (using $page=-1)
@@ -285,8 +182,7 @@ class GetDowntime implements IPIQuery
                 isset($parameters['startdate']) ||
                 isset($parameters['enddate']) ||
                 isset($parameters['windowstart']) ||
-                isset($parameters['windowend'])
-            ) {
+                isset($parameters['windowend'])) {
                 echo "<error>Invalid parameters - only scope, scope_match,
                    topentity params allowed when specifying all_lastmonth</error>";
                 die();
@@ -312,7 +208,7 @@ class GetDowntime implements IPIQuery
         $bc = $scopeQueryBuilder->getBindCount();
 
         //Get the binds and store them in the local bind array only if any binds are fetched from scopeQueryBuilder
-        foreach ((array)$scopeQueryBuilder->getBinds() as $bind) {
+        foreach ((array) $scopeQueryBuilder->getBinds() as $bind) {
             $binds[] = $bind;
         }
         $uID = 0; //If uID is not set a single service_extensions query won't set the uID as it will be null
@@ -384,8 +280,7 @@ class GetDowntime implements IPIQuery
      * Executes the query that has been built and stores the returned data
      * so it can later be used to create XML, Glue2 XML or JSON.
      */
-    public function executeQuery()
-    {
+    public function executeQuery() {
         //Not yet implemented
         $query = $this->query;
 
@@ -413,8 +308,7 @@ class GetDowntime implements IPIQuery
      *
      * @return String
      */
-    public function getXML()
-    {
+    public function getXML() {
         $helpers = $this->helpers;
         $downtimes = $this->downtimes;
 
@@ -445,8 +339,7 @@ class GetDowntime implements IPIQuery
     /** Not yet implemented, in future will return the downtime data in Glue2 XML string.
      * @return String
      */
-    public function getGlue2XML()
-    {
+    public function getGlue2XML() {
         throw new \LogicException("Not implemented yet");
     }
 
@@ -454,8 +347,7 @@ class GetDowntime implements IPIQuery
      *  data in JSON format
      * @throws \LogicException
      */
-    public function getJSON()
-    {
+    public function getJSON() {
         throw new \LogicException("Not implemented yet");
     }
 
@@ -465,8 +357,7 @@ class GetDowntime implements IPIQuery
      * @param $downtimes
      * @return \SimpleXMLElement
      */
-    private function getXMLNestedPage($downtimes)
-    {
+    private function getXMLNestedPage($downtimes) {
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results />");
 
@@ -522,8 +413,7 @@ class GetDowntime implements IPIQuery
      * @param array $downtimes Array of downtime entities
      * @return \SimpleXMLElement
      */
-    private function getXMLNotNestedPage($downtimes)
-    {
+    private function getXMLNotNestedPage($downtimes) {
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results />");
 
@@ -578,8 +468,7 @@ class GetDowntime implements IPIQuery
      * @param array $downtimes A mixted array graph (a nested array)
      * @return \SimpleXMLElement
      */
-    private function getXMLNestedNoPage($downtimes)
-    {
+    private function getXMLNestedNoPage($downtimes) {
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results/>");
         foreach ($downtimes as $downtimeArray) {
@@ -593,7 +482,7 @@ class GetDowntime implements IPIQuery
             // <DOWNTIME> element and attributes end
 
             $helpers->addIfNotEmpty($xmlDowntime, 'SEVERITY', $downtimeArray ['severity']);
-            $helpers->addIfNotEmpty($xmlDowntime, 'DESCRIPTION', xssafe(($downtimeArray ['description'])));
+            $helpers->addIfNotEmpty($xmlDowntime, 'DESCRIPTION', xssafe(( $downtimeArray ['description'])));
             $helpers->addIfNotEmpty($xmlDowntime, 'INSERT_DATE', strtotime($downtimeArray ['insertDate']->format('Y-m-d H:i:s')));
             $helpers->addIfNotEmpty($xmlDowntime, 'START_DATE', strtotime($downtimeArray ['startDate']->format('Y-m-d H:i:s')));
             $helpers->addIfNotEmpty($xmlDowntime, 'END_DATE', strtotime($downtimeArray ['endDate']->format('Y-m-d H:i:s')));
@@ -651,8 +540,7 @@ class GetDowntime implements IPIQuery
      * @param array $downtimes A mixted array graph (a nested array)
      * @return \SimpleXMLElement
      */
-    private function getXMLNotNestedNoPage($downtimes)
-    {
+    private function getXMLNotNestedNoPage($downtimes) {
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results/>");
         foreach ($downtimes as $downtimeArray) {
@@ -719,8 +607,7 @@ class GetDowntime implements IPIQuery
      * Choose to render the multiple endpoints of a service (or not)
      * @param boolean $renderMultipleEndpoints
      */
-    public function setRenderMultipleEndpoints($renderMultipleEndpoints)
-    {
+    public function setRenderMultipleEndpoints($renderMultipleEndpoints) {
         $this->renderMultipleEndpoints = $renderMultipleEndpoints;
     }
 
