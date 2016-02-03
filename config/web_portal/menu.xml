@@ -103,7 +103,7 @@
 
       <Calendar>
           <show_on_instance>all</show_on_instance>
-          <name>DowntimeCalendar</name>
+          <name>Downtime Calendar</name>
           <link>index.php?Page_Type=Downtimes_Calendar</link>
       </Calendar>
 	
