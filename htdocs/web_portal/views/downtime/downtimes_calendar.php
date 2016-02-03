@@ -1,16 +1,6 @@
 <?php
-define('DATE_FORMAT', 'd-m-Y H:i');
-$td1 = '<td>';
-$td2 = '</td>';
-//throw new \Exception(var_dump($params))
+//define('DATE_FORMAT', 'd-m-Y H:i');
 ?>
-
-<!---
-This page will show two tables, one of active downtimes and one of downtimes coming between 1-4 weeks. The user
-can select the time period for planned downtimes to show. Extra information is shown by expanding a sub table 
-from the main downtimes table. This table is shown and hidden by creating dynamically named tables and using 
-javascript to show and hide these tables. 
---->
 
 <div class="rightPageContainer">
 
@@ -24,7 +14,6 @@ javascript to show and hide these tables.
 
     <div id="helpContainer" class="siteContainer container-fluid">
         <h3>Help</h3>
-<!--        <hr class="filter-hr"/>-->
 
         <h4 class="filter-title">What is it?</h4>
         <p>
@@ -331,10 +320,8 @@ javascript to show and hide these tables.
 </div>
 
 
-<script type="text/javascript"
-        src="<?php GocContextPath::getPath() ?>javascript/fullcalendar/fullcalendar.min.js"></script>
-<script type="text/javascript"
-        src="<?php GocContextPath::getPath() ?>javascript/jquery.multiple.select.js"></script>
+<script type="text/javascript" src="<?php GocContextPath::getPath() ?>javascript/fullcalendar/fullcalendar.min.js"></script>
+<script type="text/javascript" src="<?php GocContextPath::getPath() ?>javascript/jquery.multiple.select.js"></script>
 <script type="text/javascript" src="<?php GocContextPath::getPath() ?>javascript/qtip/jquery.qtip.min.js"></script>
 <link rel="stylesheet" href="<?php GocContextPath::getPath() ?>javascript/qtip/jquery.qtip.min.css"/>
 <link rel="stylesheet" href="<?php GocContextPath::getPath() ?>javascript/fullcalendar/fullcalendar.min.css"/>
@@ -387,6 +374,8 @@ javascript to show and hide these tables.
 
     }
 
+    //given an multi select element id, return the selected items as a comma separated string,
+    // unless they are all selected, when null is returned
     function multiSelectToURLParam(id) {
         var select = $(id);
         multiSelectUpdateQuery(select.attr('name'), id);
@@ -396,6 +385,7 @@ javascript to show and hide these tables.
             return select.val().toString();
     }
 
+    //given an single select element id, return the value, unless the value is "ALL", when null is returned
     function singleSelectToURLParam(id) {
         var select = $(id);
         updateQueryStringParam(select.attr('name'), select.val());
@@ -405,6 +395,8 @@ javascript to show and hide these tables.
             return select.val();
     }
 
+    //this returns the array of parameters for the getDonwtimesAsJSON function, extracted from the various multiselect
+    //boxes and select boxes in the filter panel
     function updateJSONParams() {
         return {
 
@@ -440,6 +432,7 @@ javascript to show and hide these tables.
 
     $(document).ready(function () {
 
+        //hide the help div
         $('#helpContainer').hide();
 
 
@@ -486,11 +479,15 @@ javascript to show and hide these tables.
         $('#monthpicker').datetimepicker({
             viewMode: 'months',
             format: 'YYYY-MM-DD',
-            defaultDate: time
+            defaultDate: time,
+            widgetPositioning: {
+                vertical: 'auto',
+                horizontal: 'right'
+            }
         });
 
         $('#dateMonthTitle').text(moment(time).format("MMM YYYY"));
-        $('#dateWeekTitle').text("Week " + moment(time).format("w\,  YYYY"));
+        $('#dateWeekTitle').text("Week " + moment(time).format("W\,  YYYY"));
 
         if (view == "month") {
             $('#monthpicker').data("DateTimePicker").format("YYYY-MM")
@@ -504,7 +501,7 @@ javascript to show and hide these tables.
         $('#monthpicker').on("dp.change", function (e) {
             calendar.fullCalendar('gotoDate', e.date);
             $('#dateMonthTitle').text(moment(e.date).format("MMM YYYY"));
-            $('#dateWeekTitle').text("Week " + moment(e.date).format("w\,  YYYY"));
+            $('#dateWeekTitle').text("Week " + moment(e.date).format("W\,  YYYY"));
             //we also have to update the url query string, but I don't want someone press the current date button and then
             // bookmark the page, assuming it will update as the month changes
             if (moment(e.date).format("YYYY-MM") == moment().format("YYYY-MM") && $('#calendar').fullCalendar('getView').name == "month") {
@@ -560,8 +557,6 @@ javascript to show and hide these tables.
 
         //apply filter event handler
         $('#applyFilters').click(function () {
-            //update the url
-            //updateURL();
             //call the calendar to refetch the events
             $('#calendar').fullCalendar('refetchEvents');
         });
