@@ -262,7 +262,7 @@
         <div class="row">
             <div class="col-sm-3 pull-right">
 
-                <a href="index.php?Page_Type=Downtimes_Calendar" id="clearFilters" style="width: 100%; float: right; text-align: right">Clear filters
+                <a href="index.php?Page_Type=Downtimes_Calendar" id="clearFilters" style="float: right; text-align: right">Clear filters
                 </a>
             </div>
         </div>        <div class="row" style="padding: 3px;">
