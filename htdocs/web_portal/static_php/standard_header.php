@@ -14,7 +14,7 @@ function get_standard_header($title = null) {
     $header .= '
         <link rel="SHORTCUT ICON" href="'.GocContextPath::getPath().'img/Logo-1.4-FavIcon-32x32.regional.ico" />
         <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/jquery/jquery-1.10.min.js"></script>
-        <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/moment/moment.min.js"></script>
+        <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/moment/moment-with-locales.min.js"></script>
         <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/bootstrap/js/bootstrap-3.1.min.js"></script>
         <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/bootstrap/js/bootstrap-select.min.js"></script>
         <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/datetimepicker/js/bootstrap-datetimepicker.min.js"></script>

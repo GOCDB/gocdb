@@ -38,6 +38,7 @@ javascript to show and hide these tables.
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <th class="site_table">Downtime Id</th>
+                    <th class="site_table">Site</th>
                     <th class="site_table">Description</th>
                     <th class="site_table">Severity</th>
                     <th class="site_table">Classification</th>
@@ -56,6 +57,23 @@ javascript to show and hide these tables.
 					$parentSite = $affectedServices->first()->getParentSite();
 					$siteTotalEPs = count($parentSite->getServices());
 					echo $td1 . '<a href="index.php?Page_Type=Downtime&id='.$dt->getId().'"/>'.$dt->getId().'</a>'.$td2;
+
+                    //find affected sites for the site column
+                    echo $td1;
+                    $siteIDArray = array();
+                    foreach($dt->getServices() as $i=>$se){
+                        $siteIDArray[$i] = array($se->getParentSite()->getId(), $se->getParentSite()->getName());
+                    }
+                    //sort into a unique array
+                    $siteIDArrayUnique = array_unique($siteIDArray, SORT_REGULAR);
+                    //print the array
+                    foreach($siteIDArrayUnique as $i=>$site){
+                        echo '<a href="index.php?Page_Type=Site&id='.$site[0].'"/>'.$site[1].'</a>';
+                        if ($i+1 < count($siteIDArrayUnique))
+                            echo ', ';
+                    }
+                    echo $td2;
+
 					echo $td1 . xssafe($dt->getDescription()) .  $td2;
 					echo $td1 . xssafe($dt->getSeverity()) .  $td2;
 					echo $td1 . xssafe($dt->getClassification()) .  $td2;
@@ -65,7 +83,7 @@ javascript to show and hide these tables.
                     //There is dynamic creation of table ids here which are used to show and hide the extra services info
                     //when clicked. This sub table by default is hidden
 	                echo '</tr>';
-	                echo '<tr class="site_table_row_1"><td colspan="7" style="padding-left:2em">';
+	                echo '<tr class="site_table_row_1"><td colspan="8" style="padding-left:2em">';
         			echo '<a href="#a'.$count.'" onclick="showHide(\'tablea_'.$count.'\');toggleMessage(\'diva_'.$count.'\');"/><div id="diva_'.$count.'">+Show Affected Services</div></a>';
         			echo '<table name="a'.$count.'" id="tablea_'.$count.'" style="clear: both; width: 100%; display:none;">';
 	                echo '<tr class="site_table_row_1">';
@@ -133,6 +151,23 @@ javascript to show and hide these tables.
 					$parentSite = $affectedServices->first()->getParentSite();
 					$siteTotalEPs = count($parentSite->getServices());
 					echo $td1 . '<a href="index.php?Page_Type=Downtime&id='.$dt->getId().'"/>'.$dt->getId().'</a>'.$td2;
+
+                    //find affected sites for the site column
+                    echo $td1;
+                    $siteIDArray = array();
+                    foreach($dt->getServices() as $i=>$se){
+                        $siteIDArray[$i] = array($se->getParentSite()->getId(), $se->getParentSite()->getName());
+                    }
+                    //sort into a unique array
+                    $siteIDArrayUnique = array_unique($siteIDArray, SORT_REGULAR);
+                    //print the array
+                    foreach($siteIDArrayUnique as $i=>$site){
+                        echo '<a href="index.php?Page_Type=Site&id='.$site[0].'"/>'.$site[1].'</a>';
+                        if ($i+1 < count($siteIDArrayUnique))
+                            echo ', ';
+                    }
+                    echo $td2;
+
 					echo $td1 . xssafe($dt->getDescription()) .  $td2;
 					echo $td1 . xssafe($dt->getSeverity()) .  $td2;
 					echo $td1 . xssafe($dt->getClassification()) .  $td2;
@@ -142,7 +177,7 @@ javascript to show and hide these tables.
 					//There is dynamic creation of table ids here which are used to show and hide the extra services info
 					//when clicked. This sub table by default is hidden
 	                echo '</tr>';
-	                echo '<tr class="site_table_row_1"><td colspan="7" style="padding-left:2em">';
+	                echo '<tr class="site_table_row_1"><td colspan="8" style="padding-left:2em">';
         			echo '<a href="#b'.$count.'" onclick="showHide(\'tablei_'.$count.'\');toggleMessage(\'divi_'.$count.'\');"/><div id="divi_'.$count.'">+Show Affected Services</div></a>';
         			echo '<table name="b'.$count.'" id="tablei_'.$count.'" style="clear: both; width: 100%; display:none;">';
 	                echo '<tr class="site_table_row_1">';

@@ -21,7 +21,7 @@
 * Change `<CERTDN>` element in PI output to `<PRINCIPAL>` and consider adding the 
   `<AuthenticationRealm>` element and DB column. 
 * Add instructions for deployment to MySQL/Mariadb 
-* Allow downtime to affect services across multiple sites (currently DT 
+* Allow downtime to affect services across multiple sites (currently DT
   can only affect services from a single site). Check this is actually needed.  
 * Improve the downtime service selection GUI by showing some extra tags/info 
   to better distinguish the services (show id or first ~10 chars of description). 

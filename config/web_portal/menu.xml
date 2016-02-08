@@ -100,6 +100,12 @@
       <name>Active &amp; Imminent</name>
 	  <link>index.php?Page_Type=Downtimes_Overview</link>
 	</current_downtimes>
+
+      <Calendar>
+          <show_on_instance>all</show_on_instance>
+          <name>Downtime Calendar</name>
+          <link>index.php?Page_Type=Downtimes_Calendar</link>
+      </Calendar>
 	
    <spacer>
       <spacer>About GOCDB5</spacer>

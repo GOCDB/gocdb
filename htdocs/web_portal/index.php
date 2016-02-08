@@ -369,7 +369,12 @@ function Draw_Page($Page_Type) {
             rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/downtime/downtimes_overview.php';
             view();
-            break;            
+            break;
+        case "Downtimes_Calendar":
+            rejectIfNotAuthenticated();
+            require_once __DIR__.'/controllers/downtime/downtimes_calendar.php';
+            view();
+            break;
         case "Delete_Service_Group":
             rejectIfNotAuthenticated(); 
             require_once __DIR__.'/controllers/service_group/delete_service_group.php';

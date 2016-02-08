@@ -32,7 +32,7 @@
 		$HTML .= "<div class=\"page_container\">";
 
 		// menu bar
-		$HTML .= "<div class=\"left_box_menu\"\">";
+		$HTML .= "<div class=\"left_box_menu\">";
     	$HTML .= Get_File_Contents(__DIR__."/../../static_html/goc5_logo.html");
 		//Insert a portal is in read only warning message, if it is
         if(\Factory::getConfigService()->IsPortalReadOnly()){
