@@ -1,5 +1,14 @@
 <?php
-//define('DATE_FORMAT', 'd-m-Y H:i');
+// IMPORTANT
+// for the filtering ui, the html name attribute is used to specify the name of the url query string
+// e.g.
+//  <select id="scopeMatchSelect" name="scopeMatch">
+//      <option value="any" selected>any</option>
+//      <option value="all">all</option>
+//  </select>
+//
+// will result in:
+//  index.php?Page_Type=Downtimes_Calendar&scopeMatch=any
 ?>
 
 <div class="rightPageContainer">
@@ -84,9 +93,20 @@
 
             <div class="col-sm-3">
                 <span><a href="index.php?Page_Type=Scope_Help">Service scopes:</a> </span>
+<!--                <input type="checkbox" id="scopeMatch" value="and"-->
+<!--                <span style="float:right">Match:</span>-->
+                <select style="float: right;" id="scopeMatchSelect" name="scopeMatch">
+                    <option value="" disabled selected>match</option>
+                    <option value="any"<?php if ($params['scopeMatch'] == "any") {
+                        echo ' selected';
+                    } ?>>any</option>
+                    <option value="all"<?php if ($params['scopeMatch'] == "all") {
+                        echo ' selected';
+                    } ?>>all</option>
+                </select>
                 <br/>
 
-                <select id="scopeSelect" name="scope" class="" style="width: 100%" multiple="multiple" name="mscope[]">
+                <select id="scopeSelect" name="scope" class="" style="width: 100%" multiple="multiple">
                     <?php foreach ($params['scopes'] as $scope) { ?>
                         <option value="<?php xecho($scope->getName()); ?>"
                             <?php if (in_array($scope->getName(), $params['selectedScopes'])) {
@@ -401,6 +421,20 @@
         return {
 
             scope: multiSelectToURLParam('#scopeSelect'),
+            //scopeMatch is a little different, as you don't want it returning a value if there's no scopes selected
+            scopeMatch: function () {
+                //get the value of the multiselect and update the url
+                var param =  singleSelectToURLParam('#scopeMatchSelect');
+                var scopeSelect = $('#scopeSelect');
+                //if no/all scopes are selected
+                if (scopeSelect.val() === null || scopeSelect.find('option').length == scopeSelect.val().length) {
+                    //remove the url param
+                    updateQueryStringParam("scopeMatch", null);
+                } else {
+                    //return all/any
+                    return param;
+                }
+            },
             service_type: multiSelectToURLParam('#servTypeSelect'),
             site: multiSelectToURLParam('#siteSelect'),
             ngi: multiSelectToURLParam('#ngiSelect'),

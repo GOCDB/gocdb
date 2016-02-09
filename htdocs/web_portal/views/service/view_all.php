@@ -31,6 +31,9 @@
                     <?php  } ?>   
 <!--		</datalist>	-->
                 </select>
+
+
+
 		<!--<button id="uncheckAllSeTypeBtn" onclick="return false;">&laquo;Any</button>-->
             </div>
             
@@ -85,6 +88,8 @@
 		    <?php } ?>
 		</select>
 	    </div>
+
+
         	
         	
 	    <div class="topMargin leftFloat siteFilter">
