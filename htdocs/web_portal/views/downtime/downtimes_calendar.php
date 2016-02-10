@@ -91,21 +91,12 @@
         <div class="row">
 
 
-            <div class="col-sm-3">
+            <div class="col-sm-2">
                 <span><a href="index.php?Page_Type=Scope_Help">Service scopes:</a> </span>
 <!--                <input type="checkbox" id="scopeMatch" value="and"-->
 <!--                <span style="float:right">Match:</span>-->
-                <select style="float: right;" id="scopeMatchSelect" name="scopeMatch">
-                    <option value="" disabled selected>match</option>
-                    <option value="any"<?php if ($params['scopeMatch'] == "any") {
-                        echo ' selected';
-                    } ?>>any</option>
-                    <option value="all"<?php if ($params['scopeMatch'] == "all") {
-                        echo ' selected';
-                    } ?>>all</option>
-                </select>
-                <br/>
 
+                <br/>
                 <select id="scopeSelect" name="scope" class="" style="width: 100%" multiple="multiple">
                     <?php foreach ($params['scopes'] as $scope) { ?>
                         <option value="<?php xecho($scope->getName()); ?>"
@@ -117,6 +108,23 @@
                     <?php } ?>
                 </select>
             </div>
+
+
+            <div class="col-sm-1" style="padding: 0">
+
+                <span><small>Scope Match:</small></span>
+                <br/>
+                <select style="width: 45px;" id="scopeMatchSelect" name="scopeMatch">
+                    <option value="any"<?php if ($params['scopeMatch'] == "any") {
+                        echo ' selected';
+                    } ?>>any (selected tags are OR'd)</option>
+                    <option value="all"<?php if ($params['scopeMatch'] == "all") {
+                        echo ' selected';
+                    } ?>>all (selected tags are AND'd)</option>
+                </select>
+
+            </div>
+
 
             <div class="col-sm-3">
                 Service types:
@@ -484,7 +492,7 @@
         //initilaise the scope selector
         scopeSelector.multipleSelect({
             filter: true,
-            placeholder: "Service Scopes"
+            placeholder: "Scopes"
         });
 
         //initilaise the site selector

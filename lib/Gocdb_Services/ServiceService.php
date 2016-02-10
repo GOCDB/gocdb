@@ -164,7 +164,11 @@ class ServiceService extends AbstractEntityService {
 	}
 	if(isset($filterParams['scope'])){
 	    $scope = $filterParams['scope'];
+        $scopeMatch = 'all';
 	}
+        if(isset($filterParams['scopeMatch'])){
+            $scopeMatch = $filterParams['scopeMatch'];
+        }
 	if(isset($filterParams['ngi'])){
 	    $ngi = $filterParams['ngi']; 
 	}
@@ -238,7 +242,7 @@ class ServiceService extends AbstractEntityService {
 	// Create WHERE clauses for multiple scopes using positional bind params 
 	if ($scope != null) {
 	    require_once __DIR__ . '/PI/QueryBuilders/ScopeQueryBuilder.php';
-	    $scopeQueryBuilder = new ScopeQueryBuilder($scope, 'all', $qb, $this->em, $bc, 'Service', 'se');
+	    $scopeQueryBuilder = new ScopeQueryBuilder($scope, $scopeMatch, $qb, $this->em, $bc, 'Service', 'se');
 	    //Get the result of the scope builder
 	    /* @var $qb \Doctrine\ORM\QueryBuilder */ 
 	    $qb = $scopeQueryBuilder->getQB();

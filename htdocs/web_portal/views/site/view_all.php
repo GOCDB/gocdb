@@ -70,13 +70,14 @@
             <span class="">Scope match: </span>
 
             <select id="scopeMatchSelect" name="scopeMatch">
-                <option value="" disabled selected>match</option>
-                <option value="any"<?php if ($params['scopeMatch'] == "any") {
-                    echo ' selected';
-                } ?>>any</option>
+<!--                <option value="" disabled selected>match</option>-->
                 <option value="all"<?php if ($params['scopeMatch'] == "all") {
                     echo ' selected';
-                } ?>>all</option>
+                } ?>>all (selected tags are AND'd)</option>
+                <option value="any"<?php if ($params['scopeMatch'] == "any") {
+                    echo ' selected';
+                } ?>>any (selected tags are OR'd)</option>
+
             </select>
 	    </div>
 
