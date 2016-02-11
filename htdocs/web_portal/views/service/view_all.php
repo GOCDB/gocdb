@@ -75,6 +75,19 @@
                     <option value="FALSE"<?php if($params['selectedMonitored'] == "FALSE") echo " selected" ?>>N</option>
                 </select>
 	    </div>
+
+            <div class="topMargin leftFloat siteFilter">
+                <span class="">Certification:</span>
+                <select name="certStatus">
+                    <option value="">(all)</option>
+                    <?php foreach($params['certStatuses'] as $certStatus) { ?>
+                        <option value="<?php xecho($certStatus->getName()); ?>"
+                            <?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>>
+                            <?php xecho($certStatus->getName()); ?>
+                        </option>
+                    <?php  } ?>
+                </select>
+            </div>
         
 	    
 	    <div class="topMargin leftFloat siteFilter">
@@ -104,18 +117,7 @@
 
         	
         	
-	    <div class="topMargin leftFloat siteFilter">
-            	<span class="">Certification:</span>
-                <select name="certStatus">
-		    <option value="">(all)</option>
-                    <?php foreach($params['certStatuses'] as $certStatus) { ?>
-                        <option value="<?php xecho($certStatus->getName()); ?>"
-			    <?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>>
-				<?php xecho($certStatus->getName()); ?>
-			</option> 
-                    <?php  } ?>                  
-                </select>
-	    </div>
+
 
         	
 

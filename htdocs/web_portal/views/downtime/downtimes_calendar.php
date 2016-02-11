@@ -120,7 +120,7 @@
                     } ?>>any (selected tags are OR'd)</option>
                     <option value="all"<?php if ($params['scopeMatch'] == "all") {
                         echo ' selected';
-                    } ?>>all (selected tags are AND'd)</option>
+                    } ?>>all&nbsp;&nbsp;&nbsp;(selected tags are AND'd)</option>
                 </select>
 
             </div>
