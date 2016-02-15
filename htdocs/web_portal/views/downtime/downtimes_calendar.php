@@ -521,6 +521,10 @@
         //get the time from the page controller, and turn it into a moment
         var time = moment(<?php if($params['date'] != null){ echo( "\"". $params['date'] . "\", \"YYYY-MM-DD\"");}?>);
         var view = "<?php if($params['view'] != null){ echo($params['view']);}?>";
+        
+        moment.locale('en', {
+            week: { dow: 1 } // Monday is the first day of the week in the datetimepicker
+        });
 
         //initalise the monthpicker, with it starting on the month we just grabbed
         $('#monthpicker').datetimepicker({
