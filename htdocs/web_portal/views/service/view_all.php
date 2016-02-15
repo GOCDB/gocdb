@@ -31,6 +31,9 @@
                     <?php  } ?>   
 <!--		</datalist>	-->
                 </select>
+
+
+
 		<!--<button id="uncheckAllSeTypeBtn" onclick="return false;">&laquo;Any</button>-->
             </div>
             
@@ -72,6 +75,19 @@
                     <option value="FALSE"<?php if($params['selectedMonitored'] == "FALSE") echo " selected" ?>>N</option>
                 </select>
 	    </div>
+
+            <div class="topMargin leftFloat siteFilter">
+                <span class="">Certification:</span>
+                <select name="certStatus">
+                    <option value="">(all)</option>
+                    <?php foreach($params['certStatuses'] as $certStatus) { ?>
+                        <option value="<?php xecho($certStatus->getName()); ?>"
+                            <?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>>
+                            <?php xecho($certStatus->getName()); ?>
+                        </option>
+                    <?php  } ?>
+                </select>
+            </div>
         
 	    
 	    <div class="topMargin leftFloat siteFilter">
@@ -84,21 +100,24 @@
 			</option>
 		    <?php } ?>
 		</select>
+            <span class="">Scope match: </span>
+
+            <select id="scopeMatchSelect" name="scopeMatch">
+                <!--                <option value="" disabled selected>match</option>-->
+                <option value="all"<?php if ($params['scopeMatch'] == "all") {
+                    echo ' selected';
+                } ?>>all (selected tags are AND'd)</option>
+                <option value="any"<?php if ($params['scopeMatch'] == "any") {
+                    echo ' selected';
+                } ?>>any (selected tags are OR'd)</option>
+
+            </select>
 	    </div>
+
+
         	
         	
-	    <div class="topMargin leftFloat siteFilter">
-            	<span class="">Certification:</span>
-                <select name="certStatus">
-		    <option value="">(all)</option>
-                    <?php foreach($params['certStatuses'] as $certStatus) { ?>
-                        <option value="<?php xecho($certStatus->getName()); ?>"
-			    <?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>>
-				<?php xecho($certStatus->getName()); ?>
-			</option> 
-                    <?php  } ?>                  
-                </select>
-	    </div>
+
 
         	
 

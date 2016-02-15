@@ -86,3 +86,8 @@ nb-configuration.xml
 #================
 *.iml
 .idea/
+
+#wamp
+#==============
+error.log
+transfer.log

@@ -52,6 +52,9 @@ function getDowntimesAsJSON()
     if (!empty($_GET["certStatus"]))
         $filterParams['certification_status'] = $_GET["certStatus"];
 
+//    if (!empty($_GET["scopeMatch"]))
+//        $filterParams['scope_match'] = $_GET["scopeMatch"];
+
     $selectedScopes = "";
     if (!empty($_GET['scope'])) {
         $selectedScopes = $_GET['scope'];
@@ -77,7 +80,12 @@ function getDowntimesAsJSON()
 
     if ($selectedScopes != "null" && $selectedScopes != "") {
         $filterParams['scope'] = $selectedScopes;
-        $filterParams['scope_match'] = 'any';
+
+        if (!empty($_GET["scopeMatch"])){
+            $filterParams['scope_match'] = $_GET["scopeMatch"];
+        } else {
+            $filterParams['scope_match'] = 'any';
+        }
     }
 
     if ($selectedServiceTypes != "null" && $selectedServiceTypes != "") {
@@ -213,6 +221,11 @@ function view()
         $selectedScopes = explode(',', $_GET['scope']);
     }
 
+    $scopeMatch = "any";
+    if (!empty($_GET['scopeMatch'])) {
+        $scopeMatch = $_GET['scopeMatch'];
+    }
+
     $selectedSites = array();
     if (!empty($_GET['site'])) {
         $selectedSites = explode(',', $_GET['site']);
@@ -267,6 +280,7 @@ function view()
 
     //construct the params to pass to the view
     $params['selectedScopes'] = $selectedScopes;
+    $params['scopeMatch'] = $scopeMatch;
     $params['severity'] = $severity;
     $params['classification'] = $classification;
     $params['production'] = $production;

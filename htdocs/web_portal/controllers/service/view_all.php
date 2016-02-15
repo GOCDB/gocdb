@@ -44,6 +44,10 @@ function drawSEs(){
     if(isset($_GET['monitored'])) {
     	$monitored = $_GET['monitored'];
     }
+    $scopeMatch = "";
+    if(isset($_GET['scopeMatch'])) {
+        $scopeMatch = $_GET['scopeMatch'];
+    }
     // By default, use an empty value to return all scopes, i.e. in the PI '&scope=' 
     // which is same as the PI. We don't want to fall back on default scope if scope param is not set.
     $selectedScopes = array();
@@ -101,6 +105,9 @@ function drawSEs(){
     if($scope != "") {
 	$filterParams['scope'] = $scope; 
     }
+    if($scopeMatch != "") {
+        $filterParams['scopeMatch'] = $scopeMatch;
+    }
     if($ngi != "") {
 	$filterParams['ngi'] = $ngi; 
     }
@@ -140,6 +147,7 @@ function drawSEs(){
     foreach($selectedScopes as $sc){
         $thisPage .= '&mscope[]='.$sc;	    
     }
+    $thisPage .= '&scopeMatch=' . $scopeMatch;
     $thisPage .= '&ngi=' . $ngi;
     $thisPage .= '&certStatus=' . $certStatus;
     $thisPage .= '&servKeyNames=' . $servKeyNames;
@@ -226,6 +234,7 @@ function drawSEs(){
     
         
     $params['scopes'] = \Factory::getScopeService()->getScopes();
+    $params['scopeMatch'] = $scopeMatch;
     $params['serviceTypes'] = $seServ->getServiceTypes();
     $params['servKeyNames'] = $keynames;    
     $params['selectedServiceType'] = $serviceType;        
