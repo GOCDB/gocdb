@@ -472,6 +472,11 @@
         }
     }
 
+    function updateDate(time) {
+        $('#dateMonthTitle').text(moment(time).format("MMM YYYY"));
+        $('#dateWeekTitle').text("Week " + moment(time).format("W\,  GGGG"));
+    }
+
     $(document).ready(function () {
 
         //hide the help div
@@ -528,8 +533,7 @@
             }
         });
 
-        $('#dateMonthTitle').text(moment(time).format("MMM YYYY"));
-        $('#dateWeekTitle').text("Week " + moment(time).format("W\,  YYYY"));
+        updateDate(time);
 
         if (view == "month") {
             $('#monthpicker').data("DateTimePicker").format("YYYY-MM")
@@ -537,13 +541,11 @@
             $('#monthpicker').data("DateTimePicker").format("YYYY-MM-DD")
         }
 
-
         //register a change listener to change the calender date if the user selects a new date
         //in the monthpicker
         $('#monthpicker').on("dp.change", function (e) {
             calendar.fullCalendar('gotoDate', e.date);
-            $('#dateMonthTitle').text(moment(e.date).format("MMM YYYY"));
-            $('#dateWeekTitle').text("Week " + moment(e.date).format("W\,  YYYY"));
+            updateDate(e.date);
             //we also have to update the url query string, but I don't want someone press the current date button and then
             // bookmark the page, assuming it will update as the month changes
             if (moment(e.date).format("YYYY-MM") == moment().format("YYYY-MM") && $('#calendar').fullCalendar('getView').name == "month") {
