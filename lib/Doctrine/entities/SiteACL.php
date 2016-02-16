@@ -15,42 +15,40 @@
 
 /**
  *
- * User defined access control entities that defines authentication tokens that can be used
- * to access the
+ * User defined access control entities that defines credentials that can be used to access the write API.
  * <p>
- * When the owning parent Site is deleted, its SiteProperties 
- * are also cascade-deleted.  
+ * When the owning parent Site is deleted, its SiteACLs are also cascade-deleted.
  * 
  * @author Tom Byrne
  * @author David Meredith
- * @Entity @Table(name="Site_ACLs",uniqueConstraints={@UniqueConstraint(name="site_keypairs", columns={"parentSite_id", "keyName", "keyValue"})})
+ * @Entity @Table(name="Site_ACLs",uniqueConstraints={@UniqueConstraint(name="site_unique_acl", columns={"parentSite_id", "credentialID", "credentialType"})})
  */
-class SiteACE {
+class SiteACL {
    
     /** @Id @Column(type="integer") @GeneratedValue */
     protected $id;
 
     /**
-     * Bidirectional - Many SiteProperties (SIDE OWNING FK) can be linked to 
+     * Bidirectional - Many SiteACLs (SIDE OWNING FK) can be linked to
      * one Site (OWNING ORM SIDE). 
      *   
-     * @ManyToOne(targetEntity="Site", inversedBy="siteProperties") 
+     * @ManyToOne(targetEntity="Site", inversedBy="siteACLs")
      * @JoinColumn(name="parentSite_id", referencedColumnName="id", onDelete="CASCADE") 
      */
     protected $parentSite = null; 
     
     /** @Column(type="string", nullable=false) */
-    protected $keyName = null; 
+    protected $credentialID = null;
     
-    /** @Column(type="string", nullable=true) */
-    protected $keyValue = null; 
+    /** @Column(type="string", nullable=false) */
+    protected $credentialType = null;
    
     public function __construct() {
     }
 
     /**
      * Get the owning parent {@see Site}. When the Site is deleted, 
-     * these properties are also cascade deleted.  
+     * these ACLs are also cascade deleted.
      * @return \Site
      */
     public function getParentSite(){
@@ -62,16 +60,16 @@ class SiteACE {
      * enforced by the entity. 
      * @return string
      */
-    public function getKeyName(){
-        return $this->keyName; 
+    public function getCredentialID(){
+        return $this->credentialID;
     }
 
     /**
      * Get the key value, can contain any char. 
      * @return String
      */
-    public function getKeyValue(){
-        return $this->keyValue; 
+    public function getCredentialType(){
+        return $this->credentialType;
     }
 
     /**
@@ -83,7 +81,7 @@ class SiteACE {
     
     /**
      * Do not call in client code, always use the opposite
-     * <code>$site->addSiteProperties($siteProperties)</code>
+     * <code>$site->addSiteACLs($siteACLs)</code>
      * instead which internally calls this method to keep the bidirectional 
      * relationship consistent.  
      * <p>
@@ -97,22 +95,21 @@ class SiteACE {
     }
 
     /**
-     * The custom keyname of this key=value pair. 
-     * This value should be a simple alphanumeric name without special chars, but 
-     * this is not enforced here by the entity.   
-     * @param string $keyName
+     * The credentialID, can be a DN, Username/pw hash or other.
+     * This value can contain any chars.
+     * @param string $credentialID
      */
-    public function setKeyName($keyName){
-        $this->keyName = $keyName; 
+    public function setCredentialID($credentialID){
+        $this->credentialID = $credentialID;
     }
 
     /**
-     * The custom value of this key=value pair. 
+     * The type of the credential (DN, UnPw).
      * This value can contain any chars. 
-     * @param string $keyValue
+     * @param string $credentialType
      */
-    public function setKeyValue($keyValue){
-        $this->keyValue = $keyValue; 
+    public function setCredentialType($credentialType){
+        $this->credentialType = $credentialType;
     }
 
 }
