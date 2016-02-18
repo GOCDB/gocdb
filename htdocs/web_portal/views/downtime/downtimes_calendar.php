@@ -217,7 +217,7 @@
 
             <div class="col-sm-3">
                 <div class="input-group" style="width: 100%">
-                    <span class="input-group-addon calendar-imput-group-addon" style="width: 100%">Certification</span>
+                    <span class="input-group-addon calendar-imput-group-addon" style="width: 100%">Site Certification</span>
 
                     <select class="selectpicker" data-container="body" name="certStatus" id="certStatus_selector">
                         <option value="ALL">All</option>

@@ -58,7 +58,7 @@
 	    </div>
 
 	    <div class="topMargin leftFloat siteFilter">
-		<span class=""><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
+		<span class=""><a href="index.php?Page_Type=Scope_Help">Site Scopes:</a> </span>
 		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
 		    <?php foreach ($params['scopes'] as $scope) { ?>
 			<option value="<?php xecho($scope->getName()); ?>" 
@@ -84,7 +84,7 @@
 
 
 	    <div class="topMargin leftFloat siteFilter">
-		<span class="">Extension Name:</span>
+		<span class="">Site Extension Name:</span>
                 <select name="siteKeyNames">
 		    <option value="">(none)</option>
 		    <?php foreach ($params['siteKeyNames'] as $siteExtensions) { ?>
