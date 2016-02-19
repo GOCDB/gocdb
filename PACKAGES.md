@@ -1,4 +1,5 @@
 # GOCDB Src and Packages
+A description of the main dir structure and packages is given below:
 
 ```
 config/                    # Main config dir
