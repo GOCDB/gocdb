@@ -25,7 +25,7 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/../utils.php';
     
 /**
- * Controller for an add NGI request
+ * Controller for an add NGI request. Is only used by gocdb admin. 
  * @global array $_POST only set if the browser has POSTed data
  * @return null
  */
