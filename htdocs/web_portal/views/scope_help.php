@@ -31,9 +31,10 @@
         </ul>
         <h2>What are Reserved tags?</h2>
         <ul>
-            <li>Some tags may be 'Reserved' which means they are protected.</li>
-            <li>New Reserved tags can only be directly assigned to resources by the gocdb-admins 
-            (includes NGIs, Sites, Services and ServiceGroups).</li>
+            <li>Some tags may be 'Reserved' which means they are protected - they are used to restrict tag usage 
+            and prevent non-authorised sites/services from using tags not intended for them.</li>
+            <li>Reserved tags are initially assigned to resources by the gocdb-admins, and can then be optionially 
+              inherited by child resources (tags can be initially assigned to NGIs, Sites, Services and ServiceGroups).</li>
             <li>When creating a new child resource (e.g. a child Site or child Service), 
               the scopes that are assigned to the parent are automatically inherited and assigned to the child.</li>
             <li>Reserved tags assigned to a resource are optional and can be de-selected if required.</li>
