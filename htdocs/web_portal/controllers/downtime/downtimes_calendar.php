@@ -166,7 +166,6 @@ function getTooltip()
     };
 
     //which we then remove duplicates from
-    $params['services'] = array_unique($params['services']);
     $params['scopes'] = implode(", ", array_unique($params['scopes']));
 
     //this gives us out "x of y services affected" line

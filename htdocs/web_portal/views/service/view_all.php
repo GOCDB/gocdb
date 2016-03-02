@@ -59,7 +59,7 @@
             </div>
             
             <div class="topMargin leftFloat clearLeft siteFilter">
-            	<span>Production: </span>
+            <span>Production Service: </span>
                 <select name="production">
                     <option value="">(all)</option>
                     <option value="TRUE"<?php if($params['selectedProduction'] == "TRUE") echo " selected" ?>>Y</option>
@@ -68,7 +68,7 @@
         	</div>
         	
 	    <div class="topMargin leftFloat siteFilter">
-            	<span class="">Monitored: </span>
+            	<span class="">Monitored Service: </span>
                 <select name="monitored">
                     <option value="">(all)</option>
                     <option value="TRUE"<?php if($params['selectedMonitored'] == "TRUE") echo " selected" ?>>Y</option>
@@ -77,7 +77,7 @@
 	    </div>
 
             <div class="topMargin leftFloat siteFilter">
-                <span class="">Certification:</span>
+                <span class="">Site Certification:</span>
                 <select name="certStatus">
                     <option value="">(all)</option>
                     <?php foreach($params['certStatuses'] as $certStatus) { ?>
@@ -91,7 +91,7 @@
         
 	    
 	    <div class="topMargin leftFloat siteFilter">
-		<span class=""><a href="index.php?Page_Type=Scope_Help">With Scopes:</a> </span>
+		<span class=""><a href="index.php?Page_Type=Scope_Help">Service Scopes:</a> </span>
 		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
 		    <?php foreach ($params['scopes'] as $scope) { ?>
 			<option value="<?php xecho($scope->getName()); ?>" 
@@ -122,7 +122,7 @@
         	
 
 	    <div class="topMargin leftFloat clearLeft siteFilter">
-		<span class="">Extension Name:</span>
+		<span class="">Service Extension Name:</span>
                 <select name="servKeyNames">
 		    <option value="">(none)</option>
 		    <?php foreach ($params['servKeyNames'] as $servExtensions) { ?>

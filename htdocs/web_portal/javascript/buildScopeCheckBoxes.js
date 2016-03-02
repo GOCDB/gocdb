@@ -61,7 +61,7 @@ ScopeUtil.queryForJsonScopesAddScopeCheckBoxes = function(page_type, scopedEntit
             //console.log(jsonRsp);  
             if(status === 'success'){
                 console.log('success on json response');
-                addScopeCheckBoxes(jsonRsp, 
+                ScopeUtil.addScopeCheckBoxes(jsonRsp, 
                   appendToReservedContainer, 
                   appendToReservedOptionalContainer, 
                   appendToReservedInheritableOptionalContainer,

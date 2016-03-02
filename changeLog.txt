@@ -1,8 +1,8 @@
 GOCDB-5.6 Release (Release TBD). Includes DB schema changes.  
   - Reserved/Protected scope tags used to control the tagging of resources using 
     cascading/inheritance rules that limit which tags NGIs->Sites->Services->Downtimes 
-    can declare. Allows certain sites (e.g. WLCG/Elixir sites) to apply tags 
-    only to their resources and prevent other sites from using the same tags. 
+    can declare. Allows certain sites (e.g. sites supporting WLCG-VOs and Elixir sites) 
+    to apply tags only to their resources and prevent other sites from using the same tags. 
     Allows controlled resource filtering in API and GUI. 
   - Bulk Add/Upload of multiple custom properties.  Allows the data models of 
     Sites, ServiceGroups, Services and Endpoints to be easily extended and customised. 

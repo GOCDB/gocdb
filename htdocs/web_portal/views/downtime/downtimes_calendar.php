@@ -217,7 +217,7 @@
 
             <div class="col-sm-3">
                 <div class="input-group" style="width: 100%">
-                    <span class="input-group-addon calendar-imput-group-addon" style="width: 100%">Certification</span>
+                    <span class="input-group-addon calendar-imput-group-addon" style="width: 100%">Site Certification</span>
 
                     <select class="selectpicker" data-container="body" name="certStatus" id="certStatus_selector">
                         <option value="ALL">All</option>
@@ -521,6 +521,10 @@
         //get the time from the page controller, and turn it into a moment
         var time = moment(<?php if($params['date'] != null){ echo( "\"". $params['date'] . "\", \"YYYY-MM-DD\"");}?>);
         var view = "<?php if($params['view'] != null){ echo($params['view']);}?>";
+        
+        moment.locale('en', {
+            week: { dow: 1 } // Monday is the first day of the week in the datetimepicker
+        });
 
         //initalise the monthpicker, with it starting on the month we just grabbed
         $('#monthpicker').datetimepicker({

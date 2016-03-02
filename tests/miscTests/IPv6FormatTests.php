@@ -3,7 +3,7 @@
 require_once __DIR__.'/../../lib/Gocdb_Services/validation/IPv6Validator.php';
 
 /**
- * Test the parsing and validation of IP addresses.
+ * Test the parsing and validation of IP addresses .
  * 
  * Usage: $phpunit UnitTest ../../tests/miscTests/IPv6FormatTests.php
  * 
