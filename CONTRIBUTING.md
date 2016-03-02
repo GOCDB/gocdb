@@ -10,10 +10,13 @@ implementing features, refactoring code, porting to a different language),
 otherwise you risk spending a lot of time working on something that the
 project's developers might not want to merge into the project.
 
-* Please feel free to contact EGI.eu and/or the gocdb-admins  at  mailman.eu maillist. 
+* Please feel free to contact EGI.eu and/or the gocdb-admins  at  mailman.eu maillist to discuss. 
+* We request that developers fork the main repository into their own personal repository to work on features using Topic branches. 
+* When ready, a pull request can be opened against the ‘dev’ branch in the main repository for review by other team members. 
+* After review, the pull request may be merged into the ‘dev’ branch. 
 
+### To open a pull request:
 
-To open a pull request
 1. [Fork](https://help.github.com/articles/fork-a-repo/) the project, clone your
    fork, and configure the remotes:
 
@@ -49,7 +52,7 @@ To open a pull request
    [interactive rebase](https://help.github.com/articles/about-git-rebase/)
    feature to tidy up your commits before making them public.
 
-5. Locally merge (or rebase) the upstream development branch into your topic branch:
+5. Locally merge (or rebase) the upstream development branch into your current topic branch (ie you have checked out the topic branch in step 3):
 
    ```bash
    git pull [--rebase] upstream dev
@@ -58,7 +61,13 @@ To open a pull request
 6. Push your topic branch up to your fork:
 
    ```bash
+   # note, below does not setup <topic-branch-name> as a remote tracking branch 
+   # so for future pushes you'll always need to name the remote
    git push origin <topic-branch-name>
+   
+   # to setup topic branch as remote tracking branch, use -u (or --set-upstream) 
+   # which means you won't need to name the remote on future pushes 
+   git push -u origin <topic-branch-name>
    ```
 
 7. [Open a Pull Request](https://help.github.com/articles/using-pull-requests/)
