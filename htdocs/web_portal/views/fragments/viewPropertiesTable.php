@@ -4,7 +4,7 @@
     <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Extension Properties</span>
     <a href="index.php?Page_Type=Export_Properties&parent_type=<?php echo get_class($parent)?>&id=<?php echo $parent->getId();?>">
         <span class="header" style="vertical-align:middle; float: right; padding-top: 0.9em; padding-left: 1em;">
-            Export Properties
+            Export all properties
         </span>
     </a>
     <table id="extensionPropsTable" class="table table-striped table-condensed tablesorter">
