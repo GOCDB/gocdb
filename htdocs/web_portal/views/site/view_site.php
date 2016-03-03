@@ -350,7 +350,7 @@ $extensionProperties = $site->getSiteProperties();
 			    <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
 		    </a>
     		</td>
-    		<td><?php xecho((string) $se->getUrl()) ?></td>
+    		<td><textarea readonly="true" style="height: 25px;"><?php xecho((string) $se->getUrl()) ?></textarea></td>
 
     		<td>
 		    <?php
