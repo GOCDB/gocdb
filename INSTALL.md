@@ -11,8 +11,8 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 ##Prerequisites <a id="prerequisites"></a>
 * [PHP](#php) 
   * v5.3.3 (newer versions should be fine, but are untested)
-  * If using Oracle: PHP oci8 extension (installed with Oracle Instant client v10 or higher 
-    downloadable from Oracle website). 
+  * If using Oracle: PHP oci8 extension (needs to be compiled using the Oracle Instant client v10 or higher 
+    downloadable from Oracle website, see "Compiling OCI8" section below). 
   * libxml2 and DOM support for PHP (Note: On RHEL, PHP requires the PHP XML RPM to be installed for this component to function).
   * OpenSSL Extension for PHP 
 
@@ -84,9 +84,29 @@ need to periodically install/update `timezonedb.so|dll` as described at:
 To do this, download the timezonedb lib to your extensions directory and 
 update your php.ini by adding `extension=[php_]timezonedb.so|dll` (note, Win prefix `php_`). 
 * All dates are stored as UTC in the DB and converted from local timezones. 
-* If you are planning to use Oracle, you need the php oci8 extension, which is included 
-since php 5.3+, see: [php oci8](http://php.net/manual/en/book.oci8.php)  
+* If you are planning to use Oracle, you need the php oci8 extension, which must be compiled. ([php oci8](http://php.net/manual/en/book.oci8.php))  
 * Do not forget to configure your timezone settings correctly. 
+ 
+###Compiling OCI8
+
+Install the basic and devel instantclient rpms from Oracle (http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html) and install GCC, PHP dev and pear packages:
+
+```bash
+rpm -i oracle-instanclient*
+yum install gcc php-pear php-devel
+```
+
+Set the pear http proxy if necessary, and the install the oci8 module using pecl:
+
+```bash
+pear config-set http_proxy http://pro.xy:port
+pecl install oci8-2.0.10
+```
+
+This will download and compile the module, and place it in your php extension dir.
+
+Add the ```extension=oci8.so``` line to your php.ini. Confirm it is working with ```php -i | grep -i oci8```
+
 
 
 ###Apache and x509 Host cert <a id="apache"></a> 
