@@ -12,6 +12,8 @@ require_once __DIR__ . '/QueryBuilders/ParameterBuilder.php';
 require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
 
+use Doctrine\ORM\Tools\Pagination\Paginator;
+
 /**
  * Return an XML document that encodes the services.
  * Optionally provide an associative array of query parameters with values to restrict the results.
@@ -106,6 +108,10 @@ class GetService implements IPIQuery {
 		die();
 	    }
 	}
+    //uncomment below to enable paging by default
+    //else {
+    //    $this->page = 1;
+    //};
 
 	//Add closed parameter to binds
 	$binds[] = array($bc, 'Closed');
@@ -170,7 +176,8 @@ class GetService implements IPIQuery {
 	//Get the dql query from the Query Builder object
 	$query = $qb->getQuery();
 
-	
+    //change if conditional to below to enable paging by default
+    //if (isset($this->page)) {
 	if (isset($parameters['page'])) {
 	    $maxResults = 30; //1000;
 	    $page = $parameters['page'];
@@ -201,8 +208,19 @@ class GetService implements IPIQuery {
      * so it can later be used to create XML, Glue2 XML or JSON.
      */
     public function executeQuery() {
-	$this->serviceEndpoints = $this->query->execute();
-	return $this->serviceEndpoints;
+	    $this->serviceEndpoints = $this->query->execute();
+	    return $this->serviceEndpoints;
+
+        //uncomment below this and comment out above to enable paging
+
+        //$query = $this->query;
+        //if ($this->page != null) {
+        //    $this->serviceEndpoints = new Paginator($query, $fetchJoinCollection = true);
+        //} else {
+        //    $this->serviceEndpoints = $query->execute();
+        //}
+
+        //return $this->serviceEndpoints;
     }
 
     /** Returns proprietary GocDB rendering of the service endpoint data 
