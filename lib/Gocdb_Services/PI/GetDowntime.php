@@ -137,9 +137,9 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
                 die();
             }
         } else {
-            // uncomment below to enforce default paging so that the result set
-            // will be paged even if the URL page param is not specified
-            //$this->page = 1;
+            if($this->defaultPaging){
+                $this->page = 1;
+            }
         }
 
         //These following parameters are for the downtime calendar and are not documented for use in PI.
