@@ -39,6 +39,7 @@ class GetService implements IPIQuery, IPIQueryPageable {
     private $helpers;
     private $serviceEndpoints;
     private $renderMultipleEndpoints;
+    private $baseUrl; 
     
     private $page;  // specifies the requested page number - must be null if not paging
     private $maxResults = 500; //1000;
@@ -47,15 +48,17 @@ class GetService implements IPIQuery, IPIQueryPageable {
     private $query2;
     private $defaultPaging = false; 
 
-    /** Constructor takes entity manager which is then used by the
-     *  query builder
+    /** 
+     * Constructor takes entity manager which is then used by the query builder. 
      *
      * @param EntityManager $em
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
      */
-    public function __construct($em) {
+    public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal') {
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
+        $this->baseUrl = $baseUrl; 
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -265,7 +268,7 @@ class GetService implements IPIQuery, IPIQueryPageable {
             $xmlSe->addAttribute("PRIMARY_KEY", $se->getId() . "G0");
             $helpers->addIfNotEmpty($xmlSe, 'PRIMARY_KEY', $se->getId() . "G0");
             $helpers->addIfNotEmpty($xmlSe, 'HOSTNAME', $se->getHostName());
-            $portalUrl = htmlspecialchars('#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=Service&id=' . $se->getId());
+            $portalUrl = htmlspecialchars($this->baseUrl.'/index.php?Page_Type=Service&id=' . $se->getId());
             $helpers->addIfNotEmpty($xmlSe, 'GOCDB_PORTAL_URL', $portalUrl);
             $helpers->addIfNotEmpty($xmlSe, 'HOSTDN', $se->getDn());
             $helpers->addIfNotEmpty($xmlSe, 'HOST_OS', $se->getOperatingSystem());

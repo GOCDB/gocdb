@@ -33,15 +33,18 @@ class GetServiceGroupRole implements IPIQuery{
     protected $em;
     private $helpers;
     private $sgs;
+    private $baseUrl;
     
     /** Constructor takes entity manager which is then used by the
      *  query builder
      *
      * @param EntityManager $em
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
      */
-    public function __construct($em){
+    public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal'){
         $this->em = $em;
         $this->helpers=new Helpers();
+        $this->baseUrl = $baseUrl; 
     }
     
     /** Validates parameters against array of pre-defined valid terms
@@ -153,7 +156,7 @@ class GetServiceGroupRole implements IPIQuery{
 			$mon = ($sg->getMonitored ()) ? 'Y' : 'N';
 			$xmlSg->addChild ( 'MONITORED', $mon );
 			$xmlSg->addChild ( 'CONTACT_EMAIL', $sg->getEmail () );
-			$url = '#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=Service_Group&id=' . $sg->getId ();
+			$url = $this->baseUrl.'/index.php?Page_Type=Service_Group&id=' . $sg->getId ();
 			$url = htmlspecialchars ( $url );
 			$xmlSg->addChild ( 'GOCDB_PORTAL_URL', $url );
 			foreach ( $sg->getRoles () as $role ) {
@@ -162,7 +165,7 @@ class GetServiceGroupRole implements IPIQuery{
 				$xmlUser->addChild ( 'FORENAME', $user->getForename () );
 				$xmlUser->addChild ( 'SURNAME', $user->getSurname () );
 				$xmlUser->addChild ( 'CERTDN', $user->getCertificateDn () );
-				$url = '#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=User&id=' . $user->getId ();
+				$url = $this->baseUrl.'/index.php?Page_Type=User&id=' . $user->getId ();
 				$url = htmlspecialchars ( $url );
 				$xmlUser->addChild ( 'GOCDB_PORTAL_URL', $url );
 				$xmlUser->addChild ( 'ROLE', $role->getRoleType ()->getName () );

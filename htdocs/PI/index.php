@@ -34,7 +34,7 @@ require_once __DIR__ . '/../web_portal/components/Get_User_Principle.php';
 // The default is 30secs, but some queries can take longer so we may need to 
 // up the limit. This should only be necessary for certain PI queries such as 
 // get_downtime and should not be used in the GUI/portal scripts. 
-//set_time_limit(500); 
+set_time_limit(60); 
 // Set the timezone to UTC for rendering all times/dates in PI.  
 // The date-times stored in the DB are in UTC, however, we still need to 
 // set the TZ to utc when re-readig those date-times for subsequent 
@@ -73,21 +73,28 @@ class PIRequest {
     private $output = null;
     private $params = array();
     private $dn = null;
+    private $baseUrl; 
     
     // params used to set the default behaviour of all paging queries, 
     // these vals can be overidden per query if needed. 
-    private $defaultPageSize = 500;
-    private $defaultPaging = FALSE; 
+    // defaultPaging = true means that even if the 'page' URL param is 
+    // not specified, then the query will be paged by default (true is 
+    // the preference for large/production datasets). 
+    private $defaultPageSize = 500; 
+    private $defaultPaging = FALSE;
+    
+    public function __construct(){
+        // returns the base portal URL as defined in conf file 
+        $this->baseUrl = \Factory::getConfigService()->GetPortalURL();
+    }
 
     function process() {
         header('Content-Type: application/xml');
         //Type is GET request for XML info
         $this->parseGET();
         $xml = $this->getXml();
-        // returns the portal URL as defined in conf file 
-        $portal_url = \Factory::getConfigService()->GetPortalURL();
-        //$portal_url = "https://URL/";
-        $xml = str_replace("#GOCDB_BASE_PORTAL_URL#", $portal_url, $xml);
+        // don't do search/replace on large XML docs => mem-hungry/expensive!
+        //$xml = str_replace("#GOCDB_BASE_PORTAL_URL#", $this->portal_url, $xml); 
         echo($xml);
         //echo('<test>val</test>');
     }
@@ -126,7 +133,7 @@ class PIRequest {
                 case "get_site":
                     require_once($directory . 'GetSite.php');
                     $this->authAnyCert();
-                    $getSite = new GetSite($em);
+                    $getSite = new GetSite($em, $this->baseUrl);
                     $getSite->validateParameters($this->params);
                     $getSite->createQuery();
                     $getSite->executeQuery();
@@ -178,7 +185,7 @@ class PIRequest {
                 case "get_roc_contacts":
                     require_once($directory . 'GetNGIContacts.php');
                     $this->authAnyCert();
-                    $getNGIContacts = new GetNGIContacts($em);
+                    $getNGIContacts = new GetNGIContacts($em, $this->baseUrl);
                     $getNGIContacts->validateParameters($this->params);
                     $getNGIContacts->createQuery();
                     $getNGIContacts->executeQuery();
@@ -186,7 +193,7 @@ class PIRequest {
                     break;
                 case "get_service":
                     require_once($directory . 'GetService.php');
-                    $getSE = new GetService($em);
+                    $getSE = new GetService($em, $this->baseUrl);
                     if($getSE instanceof IPIQueryPageable){
                         $getSE->setDefaultPaging($this->defaultPaging); 
                         $getSE->setPageSize($this->defaultPageSize); 
@@ -198,7 +205,7 @@ class PIRequest {
                     break;
                 case "get_service_endpoint":
                     require_once($directory . 'GetService.php');
-                    $getSE = new GetService($em);
+                    $getSE = new GetService($em, $this->baseUrl);
                     if($getSE instanceof IPIQueryPageable){
                         $getSE->setDefaultPaging($this->defaultPaging);
                         $getSE->setPageSize($this->defaultPageSize);
@@ -218,7 +225,7 @@ class PIRequest {
                     break;
                 case "get_downtime_to_broadcast":
                     require_once($directory . 'GetDowntimesToBroadcast.php');
-                    $getDTTBroadcast = new GetDowntimeToBroadcast($em);
+                    $getDTTBroadcast = new GetDowntimeToBroadcast($em, $this->baseUrl);
                     $getDTTBroadcast->validateParameters($this->params);
                     $getDTTBroadcast->createQuery();
                     $getDTTBroadcast->executeQuery();
@@ -227,7 +234,7 @@ class PIRequest {
                 case "get_downtime":
                     //require_once($directory . 'GetDowntimeFallback.php');
                     require_once($directory . 'GetDowntime.php');
-                    $getDowntime = new GetDowntime($em);
+                    $getDowntime = new GetDowntime($em, false, $this->baseUrl);
                     if($getDowntime instanceof IPIQueryPageable){
                         $getDowntime->setDefaultPaging($this->defaultPaging);
                         $getDowntime->setPageSize($this->defaultPageSize);
@@ -238,9 +245,9 @@ class PIRequest {
                     $xml = $getDowntime->getXML();
                     break;
                 case "get_downtime_nested_services":
-            //require_once($directory . 'GetDowntimeFallback.php');
-            require_once($directory . 'GetDowntime.php');
-                    $getDowntime = new GetDowntime($em, true);
+                    //require_once($directory . 'GetDowntimeFallback.php');
+                    require_once($directory . 'GetDowntime.php');
+                    $getDowntime = new GetDowntime($em, true, $this->baseUrl);
                     if($getDowntime instanceof IPIQueryPageable){
                         $getDowntime->setDefaultPaging($this->defaultPaging);
                         $getDowntime->setPageSize($this->defaultPageSize);
@@ -253,7 +260,7 @@ class PIRequest {
                 case "get_user":
                     require_once($directory . 'GetUser.php');
                     $this->authAnyCert();
-                    $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService());
+                    $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService(), $this->baseUrl);
                     $getUser->validateParameters($this->params);
                     $getUser->createQuery();
                     $getUser->executeQuery();
@@ -280,7 +287,7 @@ class PIRequest {
                 case "get_service_group" :
                     require_once($directory . 'GetServiceGroup.php');
                     $this->authAnyCert();
-                    $getServiceGroup = new GetServiceGroup($em);
+                    $getServiceGroup = new GetServiceGroup($em, $this->baseUrl);
                     $getServiceGroup->validateParameters($this->params);
                     $getServiceGroup->createQuery();
                     $getServiceGroup->executeQuery();
@@ -289,7 +296,7 @@ class PIRequest {
                 case "get_service_group_role" :
                     require_once($directory . 'GetServiceGroupRole.php');
                     $this->authAnyCert();
-                    $getServiceGroupRole = new GetServiceGroupRole($em);
+                    $getServiceGroupRole = new GetServiceGroupRole($em, $this->baseUrl);
                     $getServiceGroupRole->validateParameters($this->params);
                     $getServiceGroupRole->createQuery();
                     $getServiceGroupRole->executeQuery();

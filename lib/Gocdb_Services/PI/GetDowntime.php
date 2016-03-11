@@ -43,6 +43,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
     protected $query;
     protected $validParams;
     protected $em;
+    private $baseUrl; 
     private $helpers;
     private $nested;
     private $downtimes;
@@ -56,19 +57,21 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
     private $defaultPaging = false;
 
 
-    /** Constructor takes entity manager which is then used by the
-     *  query builder
+    /** 
+     * Constructor takes entity manager which is then used by the query builder
      *
      * @param EntityManager $em
-     * @param Boolean $nested when true this method will return the
-     * nested rendering of the downtime data
+     * @param Boolean $nested When true the affected service endpoints are nested within each downtime element, 
+     *   when false the dowmtime element is repeated for each affected service endpoint (legacy) 
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output.  
      */
-    public function __construct($em, $nested = false)
+    public function __construct($em, $nested = false, $baseUrl = 'https://goc.egi.eu/portal')
     {
         $this->nested = $nested;
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
+        $this->baseUrl = $baseUrl; 
     }
 
     /**
@@ -531,7 +534,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
             $helpers->addIfNotEmpty($xmlDowntime, 'END_DATE', $downtime->getEndDate()->getTimestamp());
             $helpers->addIfNotEmpty($xmlDowntime, 'FORMATED_START_DATE', $downtime->getStartDate()->format(DATE_FORMAT));
             $helpers->addIfNotEmpty($xmlDowntime, 'FORMATED_END_DATE', $downtime->getEndDate()->format(DATE_FORMAT));
-            $portalUrl = htmlspecialchars('#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=Downtime&id=' . $downtime->getId());
+            $portalUrl = htmlspecialchars($this->baseUrl.'/index.php?Page_Type=Downtime&id=' . $downtime->getId());
             $helpers->addIfNotEmpty($xmlDowntime, 'GOCDB_PORTAL_URL', $portalUrl);
 
             $xmlImpactedSE = $xmlDowntime->addChild('SERVICES');
@@ -595,7 +598,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
                 // maybe rename ENDPOINT to SE_ENDPOINT (for rendering mep)
                 $helpers->addIfNotEmpty($xmlDowntime, 'ENDPOINT', $service->getHostName() . $service->getServiceType()->getName());
                 $helpers->addIfNotEmpty($xmlDowntime, 'HOSTED_BY', $service->getParentSite()->getShortName());
-                $portalUrl = htmlspecialchars('#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=Downtime&id=' . $downtime->getId());
+                $portalUrl = htmlspecialchars($this->baseUrl.'/index.php?Page_Type=Downtime&id=' . $downtime->getId());
                 $helpers->addIfNotEmpty($xmlDowntime, 'GOCDB_PORTAL_URL', $portalUrl);
 
                 if ($this->renderMultipleEndpoints) {
@@ -654,7 +657,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
             $helpers->addIfNotEmpty($xmlDowntime, 'END_DATE', strtotime($downtimeArray ['endDate']->format('Y-m-d H:i:s')));
             $helpers->addIfNotEmpty($xmlDowntime, 'FORMATED_START_DATE', $downtimeArray ['startDate']->format('Y-m-d H:i'));
             $helpers->addIfNotEmpty($xmlDowntime, 'FORMATED_END_DATE', $downtimeArray ['endDate']->format('Y-m-d H:i'));
-            $portalUrl = htmlspecialchars('#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=Downtime&id=' . $downtimeArray ['id']);
+            $portalUrl = htmlspecialchars($this->baseUrl.'/index.php?Page_Type=Downtime&id=' . $downtimeArray ['id']);
             $helpers->addIfNotEmpty($xmlDowntime, 'GOCDB_PORTAL_URL', $portalUrl);
 
             //Iterate through the downtime's affected services
@@ -725,7 +728,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
                 // maybe rename ENDPOINT to SE_ENDPOINT (for rendering mep)
                 $helpers->addIfNotEmpty($xmlDowntime, 'ENDPOINT', $service ['hostName'] . $service ['serviceType']['name']);
                 $helpers->addIfNotEmpty($xmlDowntime, 'HOSTED_BY', $service ['parentSite'] ['shortName']);
-                $portalUrl = htmlspecialchars('#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=Downtime&id=' . $downtimeArray ['id']);
+                $portalUrl = htmlspecialchars($this->baseUrl.'/index.php?Page_Type=Downtime&id=' . $downtimeArray ['id']);
                 $helpers->addIfNotEmpty($xmlDowntime, 'GOCDB_PORTAL_URL', $portalUrl);
 
                 // debugging
