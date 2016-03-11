@@ -11,6 +11,7 @@ require_once __DIR__ . '/QueryBuilders/ScopeQueryBuilder.php';
 require_once __DIR__ . '/QueryBuilders/ParameterBuilder.php';
 require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
+require_once __DIR__ . '/IPIQueryPageable.php';
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -22,13 +23,14 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * Parmeter array keys include:
  * <pre>
  * 'hostname', 'sitename', 'roc', 'country', 'service_type', 'monitored', 
- * 'scope', 'scope_match', 'properties' (where scope refers to Service scope) 
+ * 'scope', 'scope_match', 'properties', page (where scope refers to Service scope) 
  * </pre>
  * 
  * @author James McCarthy
  * @author David Meredith 
+ * @author Tom Byrne 
  */
-class GetService implements IPIQuery {
+class GetService implements IPIQuery, IPIQueryPageable {
 
     protected $query;
     protected $validParams;
@@ -38,11 +40,12 @@ class GetService implements IPIQuery {
     private $serviceEndpoints;
     private $renderMultipleEndpoints;
     
-    private $page; 
-    private $maxResults = 100; //1000;
+    private $page;  // specifies the requested page number - must be null if not paging
+    private $maxResults = 500; //1000;
     private $seCountTotal;
     private $queryBuilder2;
     private $query2;
+    private $defaultPaging = false; 
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
@@ -114,9 +117,9 @@ class GetService implements IPIQuery {
                 die();
             }
         } else {
-            // uncomment below to enforce default paging so that the result set
-            // will be paged even if the URL page param is not specified
-            //$this->page = 1;
+            if($this->defaultPaging){
+                $this->page = 1;
+            }
         }
 
         //Add closed parameter to binds
@@ -189,11 +192,11 @@ class GetService implements IPIQuery {
 
             //start by cloning the query
             $this->queryBuilder2 = clone $qb;
-            //alter the clone so it only returns the SE objects
+            //alter the clone so it only returns the count of SE objects
             $this->queryBuilder2->select('count(DISTINCT se)');
             $this->query2 = $this->queryBuilder2->getQuery();
             //then we don't use setFirst/MaxResult on this query
-            //so all SE's will be returned, but without all the additional info
+            //so all SE's will be returned and counted, but without all the additional info
             
             // offset is zero offset (starts from zero) 
             $offset = (($this->page - 1) * $this->maxResults);
@@ -369,4 +372,47 @@ class GetService implements IPIQuery {
         $this->renderMultipleEndpoints = $renderMultipleEndpoints;
     }
 
+    
+    
+    /**
+     * This query does not page by default.   
+     * If set to true, the query will return the first page of results even if the
+     * the <pre>page</page> URL param is not provided.
+     *
+     * @return bool
+     */
+    public function getDefaultPaging(){
+        return $this->defaultPaging; 
+    }
+    
+    /**
+     * @param boolean $pageTrueOrFalse Set if this query pages by default
+     */
+    public function setDefaultPaging($pageTrueOrFalse){
+        if(!is_bool($pageTrueOrFalse)){
+            throw new \InvalidArgumentException('Invalid pageTrueOrFalse, requried bool');
+        }
+        $this->defaultPaging = $pageTrueOrFalse;  
+    }
+     
+    /**
+     * Set the default page size (100 by default if not set) 
+     * @return int The page size (number of results per page)
+     */
+    public function getPageSize(){
+        return $this->maxResults; 
+    }
+    
+    /**
+     * Set the size of a single page.
+     * @param int $pageSize
+     */
+    public function setPageSize($pageSize){
+        if(!is_int($pageSize)){
+            throw new \InvalidArgumentException('Invalid pageSize, required int'); 
+        }
+        $this->maxResults = $pageSize; 
+    }
+    
+    
 }
