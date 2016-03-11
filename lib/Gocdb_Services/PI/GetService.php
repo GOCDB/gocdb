@@ -39,10 +39,10 @@ class GetService implements IPIQuery {
     private $renderMultipleEndpoints;
     
     private $page; 
-    private $maxResults = 500; //1000;
-    //private $seCountTotal;
-    //private $queryBuilder2;
-    //private $query2; 
+    private $maxResults = 100; //1000;
+    private $seCountTotal;
+    private $queryBuilder2;
+    private $query2;
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
@@ -114,9 +114,9 @@ class GetService implements IPIQuery {
                 die();
             }
         } else {
-            // uncomment below to enforce default paging so that the result set 
+            // uncomment below to enforce default paging so that the result set
             // will be paged even if the URL page param is not specified
-            //$this->page = 1; 
+            //$this->page = 1;
         }
 
         //Add closed parameter to binds
@@ -183,14 +183,17 @@ class GetService implements IPIQuery {
         $query = $qb->getQuery();
 
         if($this->page != null){
-            // todo - duplicate the query and re-set the select clause to
-            // count the total number of results that will be returned
-            // across all pages. Either use function to abstract the query or
-            // clone the query builder,
-            // see: http://stackoverflow.com/questions/24015239/doctrine-querybuilder-re-use-parts
-            //$this->queryBuilder2 = clone $qb;
-            //$this->queryBuilder2->select('select count(DISTINCT se)');
-            //$this->query2 = $queryBuilder2->getQuery(); 
+
+            // In order to properly support paging, we need to count the
+            // total number of results that can be returned:
+
+            //start by cloning the query
+            $this->queryBuilder2 = clone $qb;
+            //alter the clone so it only returns the SE objects
+            $this->queryBuilder2->select('count(DISTINCT se)');
+            $this->query2 = $this->queryBuilder2->getQuery();
+            //then we don't use setFirst/MaxResult on this query
+            //so all SE's will be returned, but without all the additional info
             
             // offset is zero offset (starts from zero) 
             $offset = (($this->page - 1) * $this->maxResults);
@@ -220,7 +223,8 @@ class GetService implements IPIQuery {
 
         if ($this->page != null) {
             $this->serviceEndpoints = new Paginator($this->query, $fetchJoinCollection = true);
-            //$this->seCountTotal = $this->query2->getSingleScalarResult(); 
+            //put the total number of SE's into $this->seCountTotal
+            $this->seCountTotal = $this->query2->getSingleScalarResult();
             
         } else {
             $this->serviceEndpoints = $this->query->execute();
@@ -236,6 +240,20 @@ class GetService implements IPIQuery {
     public function getXML() {
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results />");
+
+        //calculate and add paging info attributes
+        if ($this->page != null) {
+            $last = ceil($this->seCountTotal / $this->maxResults);
+            $next = $this->page + 1;
+
+            $xml->addAttribute("page", $this->page);
+            if ($next <= $last) {
+                $xml->addAttribute("next", $next);
+            }
+            $xml->addAttribute("last", $last);
+        }
+
+
         $serviceEndpoints = $this->serviceEndpoints;
 
         foreach ($serviceEndpoints as $se) {
