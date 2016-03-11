@@ -76,7 +76,7 @@ class PIRequest {
     
     // params used to set the default behaviour of all paging queries, 
     // these vals can be overidden per query if needed. 
-    private $defaultPageSize = 500; 
+    private $defaultPageSize = 500;
     private $defaultPaging = FALSE; 
 
     function process() {
@@ -228,6 +228,10 @@ class PIRequest {
                     //require_once($directory . 'GetDowntimeFallback.php');
                     require_once($directory . 'GetDowntime.php');
                     $getDowntime = new GetDowntime($em);
+                    if($getDowntime instanceof IPIQueryPageable){
+                        $getDowntime->setDefaultPaging($this->defaultPaging);
+                        $getDowntime->setPageSize($this->defaultPageSize);
+                    }
                     $getDowntime->validateParameters($this->params);
                     $getDowntime->createQuery();
                     $getDowntime->executeQuery();
@@ -237,6 +241,10 @@ class PIRequest {
             //require_once($directory . 'GetDowntimeFallback.php');
             require_once($directory . 'GetDowntime.php');
                     $getDowntime = new GetDowntime($em, true);
+                    if($getDowntime instanceof IPIQueryPageable){
+                        $getDowntime->setDefaultPaging($this->defaultPaging);
+                        $getDowntime->setPageSize($this->defaultPageSize);
+                    }
                     $getDowntime->validateParameters($this->params);
                     $getDowntime->createQuery();
                     $getDowntime->executeQuery();
