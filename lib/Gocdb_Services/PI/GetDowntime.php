@@ -11,6 +11,8 @@ require_once __DIR__ . '/QueryBuilders/ScopeQueryBuilder.php';
 require_once __DIR__ . '/QueryBuilders/ParameterBuilder.php';
 require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
+require_once __DIR__ . '/IPIQueryPageable.php';
+
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
@@ -35,17 +37,24 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * @author David Meredith
  * @author Tom Byrne
  */
-class GetDowntime implements IPIQuery
+class GetDowntime implements IPIQuery, IPIQueryPageable
 {
 
     protected $query;
     protected $validParams;
     protected $em;
     private $helpers;
-    private $page;
     private $nested;
     private $downtimes;
     private $renderMultipleEndpoints;
+
+    private $page;
+    private $maxResults = 500; //1000;
+    private $dtCountTotal;
+    private $queryBuilder2;
+    private $query2;
+    private $defaultPaging = false;
+
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
@@ -121,11 +130,15 @@ class GetDowntime implements IPIQuery
         // Validate page parameter
         if (isset($parameters['page'])) {
 
-            if (is_int(intval($parameters['page'])) && (int)$parameters['page'] > 0) {
+            if( ((string)(int)$parameters['page'] == $parameters['page']) && (int)$parameters['page'] > 0) {
                 $this->page = (int)$parameters['page'];
             } else {
                 echo "<error>Invalid 'page' parameter - must be a whole number greater than zero</error>";
                 die();
+            }
+        } else {
+            if($this->defaultPaging){
+                $this->page = 1;
             }
         }
 
@@ -350,18 +363,40 @@ class GetDowntime implements IPIQuery
 
         $query = $qb->getQuery();
 
-        if (isset($parameters['page'])) {
-            $maxResults = 1000;
-            $page = $parameters['page'];
-            if ($page == 1) {
-                $offset = 0; // offset is zero-offset (starts from 0 not 1)
-            } elseif ($page > 1) {
-                $offset = (($page - 1) * $maxResults);
-            } else {
-                throw new \LogicException('Coding error - invalid page parameter, must be positive int.');
-            }
-            //See note 2 at bottom of class
-            $query->setFirstResult($offset)->setMaxResults($maxResults);
+//        if (isset($parameters['page'])) {
+//            $maxResults = 1000;
+//            $page = $parameters['page'];
+//            if ($page == 1) {
+//                $offset = 0; // offset is zero-offset (starts from 0 not 1)
+//            } elseif ($page > 1) {
+//                $offset = (($page - 1) * $maxResults);
+//            } else {
+//                throw new \LogicException('Coding error - invalid page parameter, must be positive int.');
+//            }
+//            //See note 2 at bottom of class
+//            $query->setFirstResult($offset)->setMaxResults($maxResults);
+//        }
+
+        if($this->page != null){
+
+            // In order to properly support paging, we need to count the
+            // total number of results that can be returned:
+
+            //start by cloning the query
+            $this->queryBuilder2 = clone $qb;
+            //alter the clone so it only returns the downtime objects
+            $this->queryBuilder2->select('count(DISTINCT d)');
+            $this->query2 = $this->queryBuilder2->getQuery();
+            //then we don't use setFirst/MaxResult on this query
+            //so all downtimes will be returned, but without all the additional info
+
+            // offset is zero offset (starts from zero)
+            $offset = (($this->page - 1) * $this->maxResults);
+            // sets the position of the first result to retrieve (the "offset")
+            $query->setFirstResult($offset);
+            // Sets the maximum number of results to retrieve (the "limit")
+            $query->setMaxResults($this->maxResults);
+
         }
 
         $this->query = $query;
@@ -393,12 +428,14 @@ class GetDowntime implements IPIQuery
             //get short formats
             if ($this->page != null) {
                 $this->downtimes = new Paginator($query, $fetchJoinCollection = true);
+                $this->dtCountTotal = $this->query2->getSingleScalarResult();
             } else {
                 $this->downtimes = $query->getArrayResult();
             }
         } else {
             if ($this->page != null) {
                 $this->downtimes = new Paginator($query, $fetchJoinCollection = true);
+                $this->dtCountTotal = $this->query2->getSingleScalarResult();
             } else {
                 $this->downtimes = $query->getArrayResult();
             }
@@ -470,6 +507,15 @@ class GetDowntime implements IPIQuery
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results />");
 
+        $last = ceil($this->dtCountTotal / $this->maxResults);
+        $next = $this->page + 1;
+
+        $xml->addAttribute("page", $this->page);
+        if ($next <= $last) {
+            $xml->addAttribute("next", $next);
+        }
+        $xml->addAttribute("last", $last);
+
         foreach ($downtimes as $downtime) {
             $xmlDowntime = $xml->addChild('DOWNTIME');
             // ID is the internal object id/sequence
@@ -526,6 +572,15 @@ class GetDowntime implements IPIQuery
     {
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results />");
+
+        $last = ceil($this->dtCountTotal / $this->maxResults);
+        $next = $this->page + 1;
+
+        $xml->addAttribute("page", $this->page);
+        if ($next <= $last) {
+            $xml->addAttribute("next", $next);
+        }
+        $xml->addAttribute("last", $last);
 
         foreach ($downtimes as $downtime) {
             foreach ($downtime->getServices() as $service) {
@@ -722,6 +777,46 @@ class GetDowntime implements IPIQuery
     public function setRenderMultipleEndpoints($renderMultipleEndpoints)
     {
         $this->renderMultipleEndpoints = $renderMultipleEndpoints;
+    }
+
+    /**
+     * This query does not page by default.
+     * If set to true, the query will return the first page of results even if the
+     * the <pre>page</page> URL param is not provided.
+     *
+     * @return bool
+     */
+    public function getDefaultPaging(){
+        return $this->defaultPaging;
+    }
+
+    /**
+     * @param boolean $pageTrueOrFalse Set if this query pages by default
+     */
+    public function setDefaultPaging($pageTrueOrFalse){
+        if(!is_bool($pageTrueOrFalse)){
+            throw new \InvalidArgumentException('Invalid pageTrueOrFalse, requried bool');
+        }
+        $this->defaultPaging = $pageTrueOrFalse;
+    }
+
+    /**
+     * Set the default page size (100 by default if not set)
+     * @return int The page size (number of results per page)
+     */
+    public function getPageSize(){
+        return $this->maxResults;
+    }
+
+    /**
+     * Set the size of a single page.
+     * @param int $pageSize
+     */
+    public function setPageSize($pageSize){
+        if(!is_int($pageSize)){
+            throw new \InvalidArgumentException('Invalid pageSize, required int');
+        }
+        $this->maxResults = $pageSize;
     }
 
 }
