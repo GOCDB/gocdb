@@ -25,6 +25,7 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 * [Doctrine](#doctrine) 
   * 2.3.3 (newer versions should be fine but are untested)
+  * There is a bug in the 2.3.3 Doctrine paging code, which affects the GetDowntime API result. The fix is detailed [below](#doctrineFix)
 
 * PhpUnit and PDO driver for selected DB (optional, required for running DBUnit tests only, see `tests/INSTALL.md` for more info) 
 
@@ -176,6 +177,13 @@ $ pear channel-discover pear.doctrine-project.org
 $ pear channel-discover pear.symfony.com
 $ pear install --alldeps doctrine/DoctrineORM
 ``` 
+####Paginator fix <a id="doctrineFix"></a>
+
+When using doctrine 2.3.3 on an oracle database, returning an ordered list of results using the Paginator will not honour the specified ordering. e.g. instead of returning the 100 most recent downtimes when using `orderby START_TIME descending`, it will return the first hundred downtimes in the table, which have then been ordered by start_time descending. See https://github.com/doctrine/doctrine2/issues/2456 for more details.
+
+The fix involves editing the file `/vendor/doctrine/orm/lib/Doctrine/ORM/Tools/Pagination/LimitSubqueryOutputWalker.php`. The fix is detailed in this pull request: https://github.com/doctrine/doctrine2/pull/645/files
+
+However only the two changes at line 17 (adding  `use Doctrine\DBAL\Platforms\OraclePlatform;`) and 144 (adding `|| $this->platform instanceof OraclePlatform` to the if conditonal) are needed.
 
 ---
 
