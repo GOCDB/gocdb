@@ -621,7 +621,7 @@
                 week: 'ddd D/M' //also tried 'D' but a number displayed instead
             },
             events: {
-                url: '/portal/index.php?Page_Type=Downtimes_Calendar&getDowntimesAsJSON',
+                url: 'index.php?Page_Type=Downtimes_Calendar&getDowntimesAsJSON',
                 data: function () {
                     return updateJSONParams();
                 }
@@ -647,7 +647,7 @@
                 }
 
                 //tooltip setup
-                element.attr('data-tooltipURL', '/portal/index.php?Page_Type=Downtimes_Calendar&getTooltip&downtimeID=' + event.id);
+                element.attr('data-tooltipURL', 'index.php?Page_Type=Downtimes_Calendar&getTooltip&downtimeID=' + event.id);
                 element.qtip({
                     content: {
                         text: function (event, api) {
