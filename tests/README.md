@@ -7,8 +7,9 @@ your chosen database operate as expected. If the test suite fails against your
 chosen DB, then GocDB will not work as expected. It is therefore recommended 
 that you run the DBUnit tests to ensure GocDB works as expected against your chosen DB.  
 
-Install PhpUnit
-The tests require PHPUnit and its DBUnit extensions. 
+Install PhpUnit and DBUnit
+---------------------------
+The tests require PHPUnit ***AND*** its DBUnit extensions. 
 See [PhpUnit install](https://phpunit.de) and ensure phpunit is on your PATH. 
 For Win users, you may need to create a .bat file with the following contents 
 `php "%~dp0phpunit.phar" %*` 
@@ -17,6 +18,14 @@ For Win users, you may need to create a .bat file with the following contents
 $phpunit --version
 PHPUnit 4.6.6 by Sebastian Bergmann and contributors.
 ```
+
+If you see an error like the following, it is likely that you haven't installed the 
+DBUnit extensions or the phpunit on the path does not have the DBUnit extensions. 
+
+```bash
+Fatal error: Class 'PHPUnit_Extensions_Database_TestCase' not found in ...<a test class file>...
+```
+
 
 Deploy A Database For Testing
 --------------------------
