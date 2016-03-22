@@ -11,8 +11,8 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 ##Prerequisites <a id="prerequisites"></a>
 * [PHP](#php) 
   * v5.3.3 (newer versions should be fine, but are untested)
-  * If using Oracle: PHP oci8 extension (installed with Oracle Instant client v10 or higher 
-    downloadable from Oracle website). 
+  * If using Oracle: PHP oci8 extension (needs to be compiled using the Oracle Instant client v10 or higher 
+    downloadable from Oracle website, see "Compiling OCI8" section below). 
   * libxml2 and DOM support for PHP (Note: On RHEL, PHP requires the PHP XML RPM to be installed for this component to function).
   * OpenSSL Extension for PHP 
 
@@ -25,6 +25,7 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 * [Doctrine](#doctrine) 
   * 2.3.3 (newer versions should be fine but are untested)
+  * There is a bug in the 2.3.3 Doctrine paging code, which affects the GetDowntime API result. The fix is detailed [below](#doctrineFix)
 
 * PhpUnit and PDO driver for selected DB (optional, required for running DBUnit tests only, see `tests/INSTALL.md` for more info) 
 
@@ -84,9 +85,29 @@ need to periodically install/update `timezonedb.so|dll` as described at:
 To do this, download the timezonedb lib to your extensions directory and 
 update your php.ini by adding `extension=[php_]timezonedb.so|dll` (note, Win prefix `php_`). 
 * All dates are stored as UTC in the DB and converted from local timezones. 
-* If you are planning to use Oracle, you need the php oci8 extension, which is included 
-since php 5.3+, see: [php oci8](http://php.net/manual/en/book.oci8.php)  
+* If you are planning to use Oracle, you need the php oci8 extension, which must be compiled. ([php oci8](http://php.net/manual/en/book.oci8.php))  
 * Do not forget to configure your timezone settings correctly. 
+ 
+###Compiling OCI8
+
+Install the basic and devel instantclient rpms from Oracle (http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html) and install GCC, PHP dev and pear packages:
+
+```bash
+rpm -i oracle-instanclient*
+yum install gcc php-pear php-devel
+```
+
+Set the pear http proxy if necessary, and the install the oci8 module using pecl:
+
+```bash
+pear config-set http_proxy http://pro.xy:port
+pecl install oci8-2.0.10
+```
+
+This will download and compile the module, and place it in your php extension dir.
+
+Add the ```extension=oci8.so``` line to your php.ini. Confirm it is working with ```php -i | grep -i oci8```
+
 
 
 ###Apache and x509 Host cert <a id="apache"></a> 
@@ -156,6 +177,13 @@ $ pear channel-discover pear.doctrine-project.org
 $ pear channel-discover pear.symfony.com
 $ pear install --alldeps doctrine/DoctrineORM
 ``` 
+####Paginator fix <a id="doctrineFix"></a>
+
+When using doctrine 2.3.3 on an oracle database, returning an ordered list of results using the Paginator will not honour the specified ordering. e.g. instead of returning the 100 most recent downtimes when using `orderby START_TIME descending`, it will return the first hundred downtimes in the table, which have then been ordered by start_time descending. See https://github.com/doctrine/doctrine2/issues/2456 for more details.
+
+The fix involves editing the file `/vendor/doctrine/orm/lib/Doctrine/ORM/Tools/Pagination/LimitSubqueryOutputWalker.php`. The fix is detailed in this pull request: https://github.com/doctrine/doctrine2/pull/645/files
+
+However only the two changes at line 17 (adding  `use Doctrine\DBAL\Platforms\OraclePlatform;`) and 144 (adding `|| $this->platform instanceof OraclePlatform` to the if conditonal) are needed.
 
 ---
 
