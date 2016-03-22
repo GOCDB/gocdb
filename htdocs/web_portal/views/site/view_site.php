@@ -148,14 +148,7 @@ $extensionProperties = $site->getSiteProperties();
                 </tr>
 
                 <tr class="site_table_row_2">
-                    <td class="site_table">
-                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal" 
-                           title="Note, Scope(x) indicates the parent NGI does not share this scope">
-                            Scope(s)
-                        </a>
-                    </td>
-                    <td class="site_table">
-			<?php
+                    <?php
 			$count = 0;
 			$numScopes = sizeof($params['Scopes']);
 			$scopeString = '';
@@ -169,8 +162,15 @@ $extensionProperties = $site->getSiteProperties();
 				$scopeString .= ", ";
 			    }
 			}
-			?>   
-			<textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
+			?> 
+                    <td class="site_table">
+                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal" 
+                           title="Note, Scope(x) indicates the parent NGI does not share this scope">
+                            Scope Tags
+                        </a>
+                    </td>
+                    <td class="site_table">
+			<textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($scopeString); ?></textarea>
                     </td>
                 </tr>
 
@@ -307,13 +307,11 @@ $extensionProperties = $site->getSiteProperties();
     </div>
 
     <!--  Site Properties -->
-
-
-	<?php
-	$parent = $site;
-	$propertiesController = "Site_Properties_Controller";
-	$addPropertyURL = "index.php?Page_Type=Add_Site_Property&site=";
-	$editPropertyPage = "Edit_Site_Property";
+    <?php
+    $parent = $site;
+    $propertiesController = "Site_Properties_Controller";
+    $addPropertiesPage = "Add_Site_Properties";
+    $editPropertyPage = "Edit_Site_Property";
 
 
 	require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
@@ -334,7 +332,7 @@ $extensionProperties = $site->getSiteProperties();
                 <th>Production</th>
                 <th>Monitored</th>
                 <th>
-                    Scope(s)
+                    Scope Tags
                 </th>
             </tr>
 	    </thead>
@@ -352,7 +350,7 @@ $extensionProperties = $site->getSiteProperties();
 			    <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
 		    </a>
     		</td>
-    		<td><?php xecho((string) $se->getUrl()) ?></td>
+    		<td><textarea readonly="true" style="height: 25px;"><?php xecho((string) $se->getUrl()) ?></textarea></td>
 
     		<td>
 		    <?php

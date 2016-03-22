@@ -15,12 +15,11 @@ composer.phar
 composer.bat
 composer
 gocdb.log
+tests/coverageReports/
 
 # Eclipse: https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
 # =====================
-*.pydevproject
 .metadata
-.gradle
 bin/
 tmp/
 *.tmp
@@ -30,18 +29,46 @@ tmp/
 local.properties
 .settings/
 .loadpath
+
+# Eclipse Core
+.project
+
 # External tool builders
 .externalToolBuilders/
+
 # Locally stored "Eclipse launch configurations"
 *.launch
-# CDT-specific
+
+# PyDev specific (Python IDE for Eclipse)
+*.pydevproject
+
+# CDT-specific (C/C++ Development Tooling)
 .cproject
-# PDT-specific
+
+# JDT-specific (Eclipse Java Development Tools)
+.classpath
+
+# Java annotation processor (APT)
+.factorypath
+
+# PDT-specific (PHP Development Tools)
 .buildpath
+
 # sbteclipse plugin
 .target
+
+# Tern plugin
+.tern-project
+
 # TeXlipse plugin
 .texlipse
+
+# STS (Spring Tool Suite)
+.springBeans
+
+# Code Recommenders
+.recommenders/
+
 
 
 # Netbeans: https://github.com/github/gitignore/blob/master/Global/NetBeans.gitignore 
@@ -54,3 +81,13 @@ dist/
 nbdist/
 nbactions.xml
 nb-configuration.xml
+
+#PhpStorm
+#================
+*.iml
+.idea/
+
+#wamp
+#==============
+error.log
+transfer.log

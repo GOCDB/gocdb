@@ -1,0 +1,131 @@
+.tooltip-title {
+    color: #555;
+    /*margin:2px;*/
+    margin:0;
+    padding:0;
+}
+
+.tooltip-hr {
+    border: 0;
+    height: 1px;
+    background: #777;
+    margin: 0px;
+}
+
+.tooltip-p {
+    margin: 3px;
+}
+
+.filter-hr {
+    border: 0;
+    height: 1px;
+    background: #b3b3b3;
+    margin: 5px 13px;
+    box-shadow: 0px 0px 2px #ccc;
+}
+
+.filter-title {
+    /*color: #000;*/
+    /*margin:2px;*/
+    margin:0;
+    padding:0;
+}
+
+.legend-box {
+    float: left;
+    width: 11px;
+    height: 11px;
+    margin: 5px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(0,0,0,.2);
+}
+
+.btn {
+     border: 1px solid rgba(0, 0, 0, 0.3) !important;
+ }
+
+.calendar-imput-group-addon {
+    background-color: #fdfdff !important;
+    border: 1px solid rgba(0, 0, 0, 0.3) !important;
+}
+
+.grayed-out {
+    background-color: white;
+    filter:alpha(opacity=50); /* IE */
+    opacity: 0.5; /* Safari, Opera */
+    -moz-opacity:0.50; /* FireFox */
+    z-index: 20;
+    height: 100%;
+    width: 100%;
+    background-repeat:no-repeat;
+    background-position:center;
+    position:absolute;
+    top: 0px;
+    left: 0px;
+}
+
+/* loader from http://projects.lukehaas.me/css-loaders/ */
+.loader {
+    font-size: 10px;
+    margin: 40% auto;
+    text-indent: -9999em;
+    width: 11em;
+    height: 11em;
+    border-radius: 50%;
+    background: #272822;
+    background: -moz-linear-gradient(left, #272822 10%, rgba(255, 255, 255, 0) 42%);
+    background: -webkit-linear-gradient(left, #272822 10%, rgba(255, 255, 255, 0) 42%);
+    background: -o-linear-gradient(left, #272822 10%, rgba(255, 255, 255, 0) 42%);
+    background: -ms-linear-gradient(left, #272822 10%, rgba(255, 255, 255, 0) 42%);
+    background: linear-gradient(to right, #272822 10%, rgba(255, 255, 255, 0) 42%);
+    position: relative;
+    -webkit-animation: load3 1.4s infinite linear;
+    animation: load3 1.4s infinite linear;
+    -webkit-transform: translateZ(0);
+    -ms-transform: translateZ(0);
+    transform: translateZ(0);
+}
+.loader:before {
+    width: 50%;
+    height: 50%;
+    background: #272822;
+    border-radius: 100% 0 0 0;
+    position: absolute;
+    top: 0;
+    left: 0;
+    content: '';
+}
+.loader:after {
+    background: #fcfcfd;
+    width: 75%;
+    height: 75%;
+    border-radius: 50%;
+    content: '';
+    margin: auto;
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+}
+@-webkit-keyframes load3 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}
+@keyframes load3 {
+    0% {
+        -webkit-transform: rotate(0deg);
+        transform: rotate(0deg);
+    }
+    100% {
+        -webkit-transform: rotate(360deg);
+        transform: rotate(360deg);
+    }
+}

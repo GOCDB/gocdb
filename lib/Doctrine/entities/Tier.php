@@ -30,28 +30,28 @@ class Tier {
     protected $sites = null;
 
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     public function getName() {
-	return $this->name;
+        return $this->name;
     }
 
     public function setName($name) {
-	$this->name = $name;
+        $this->name = $name;
     }
 
     public function getSites() {
-	return $this->sites;
+        return $this->sites;
     }
 
     public function addSiteDoJoin($site) {
-	$this->sites[] = $site;
-	$site->setTier($this);
+        $this->sites[] = $site;
+        $site->setTier($this);
     }
 
     public function __construct() {
-	$this->sites = new ArrayCollection();
+        $this->sites = new ArrayCollection();
     }
 
 }

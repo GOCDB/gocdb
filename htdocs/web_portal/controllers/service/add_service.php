@@ -58,7 +58,7 @@ function submit(\User $user = null) {
 }
 
 /**
- *  Draw the add service form
+ * Draw the add service form
  * @param \User $user current user 
  * @return null
  */
@@ -75,45 +75,50 @@ function draw($user) {
         if ($site == null) {
             throw new Exception('Invalid site');
         }
-        //if (count(\Factory::getSiteService()->authorize Action(\Action::SITE_ADD_SERVICE, $site, $user)) == 0) {
-        if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::SITE_ADD_SERVICE, $site, $user)->getGrantAction() == FALSE){
+        if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
+                \Action::SITE_ADD_SERVICE, $site, $user)->getGrantAction() == FALSE){
             throw new Exception('You do not have permission to add a service to this site');
         }
     }
 
-    // Add sites which user has required action permission to array. 
-    $allUserSites = \Factory::getUserService()->getSitesFromRoles($user);
     $sites = array();
-    if (!$user->isAdmin()) {
+    if ($user->isAdmin()) {
+        $disableReservedScopes = false; 
+        //For admin users, return all sites instead.
+        $sites = \Factory::getSiteService()->getSitesBy();
+    } else {
+        $disableReservedScopes = true; 
+        // Collate sites which user has required action permission to array. 
+        $allUserSites = \Factory::getUserService()->getSitesFromRoles($user);
         foreach ($allUserSites as $s) {
-            //if (count(\Factory::getSiteService()->authorize Action(\Action::SITE_ADD_SERVICE, $s, $user)) != 0) {
-            if (\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::SITE_ADD_SERVICE, $s, $user)->getGrantAction()) {
+            if (\Factory::getRoleActionAuthorisationService()->authoriseAction(
+                    \Action::SITE_ADD_SERVICE, $s, $user)->getGrantAction()) {
                 $sites[] = $s;
             }
         }
-    }
-    //For admin users, return all sites instead.
-    else {
-        $sites = \Factory::getSiteService()->getSitesBy();
     }
 
     if(count($sites)==0 and !$user->isAdmin()){
       throw new Exception("You need at least one NGI or Site level role to add a new service.");  
     }
 
+    // URL mapping
+    // Return all scopes for the parent Site with the specified Id as a JSON object 
+    // Used in ajax requests for display purposes
+    if(isset($_GET['getAllScopesForScopedEntity']) && is_numeric($_GET['getAllScopesForScopedEntity'])){
+        // Return all scopes for the parent Site with the specified Id as a JSON object.  
+        // Used in ajax requests for generating UI checkboxes. 
+        // AJAX is needed here because the parent Site is not known until the user selects 
+        // which parent Site in the pull-down which then fires the AJAX request. 
+        $scopedEntityId = $_GET['getAllScopesForScopedEntity']; 
+        $siteScopedEntity =  \Factory::getSiteService()->getSite($scopedEntityId); 
+        $scopeJson = getEntityScopesAsJSON2(null, $siteScopedEntity, $disableReservedScopes, true);  
+        //$scopeJson = getEntityScopesAsJSON($siteScopedEntity, $disableReservedScopes);  
+        header('Content-type: application/json');
+        die($scopeJson);  
+    } 
+    
     $serviceTypes = \Factory::getServiceService()->getServiceTypes();
-    
-    //If a site has been specified get scopes wit that sites scopes selected, otherwise get the default
-    if(!is_null($serviceTypes) && $site instanceof \Site){
-        $scopes = \Factory::getScopeService()->getScopesSelectedArray($site->getScopes());
-    }
-    else{
-        $scopes = \Factory::getScopeService()->getDefaultScopesSelectedArray();
-    }
-    //get the number of scopes that we require
-    $numberScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('service');
-    
-
     // remove the deprecated CE type (temp hack)
     foreach($serviceTypes as $key => $st) {
         if($st->getName() == "CE") {
@@ -121,14 +126,17 @@ function draw($user) {
         }
     }
 
+    //get the number of scopes that we require
+    $numberScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('service');
+    
     $params = array('sites' => $sites, 'serviceTypes' => $serviceTypes,
-                    'scopes' => $scopes, 'site' => $site, 
+                    "disableReservedScopes"=> $disableReservedScopes,
+                    'site' => $site, 
                     'numberOfScopesRequired' => $numberScopesRequired);
     
     //Check that there is at least one Site available before allowing a user to add a service.
     if($params['sites'] == null){
         show_view('error.php', "GocDB requires one or more Sites to be able to add a service.");
-    
     }
     
     show_view("service/add_service.php", $params);

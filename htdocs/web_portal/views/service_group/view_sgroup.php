@@ -72,10 +72,10 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                 ?>
                 <tr class="site_table_row_2" <?php echo $style ?>>
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal">Scope(s)</a>
+                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal">Scope Tags</a>
                     </td>
                     <td class="site_table">
-			<textarea readonly="true" style="height: 25px;"><?php xecho($params['sGroup']->getScopeNamesAsString())?></textarea>
+			<textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($params['sGroup']->getScopeNamesAsString())?></textarea>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
@@ -222,11 +222,10 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
     </div>
 
     <!--  Service Group Properties -->
-
     <?php
     $parent = $params['sGroup'];
     $propertiesController = "Service_Group_Properties_Controller";
-    $addPropertyURL = "index.php?Page_Type=Add_Service_Group_Property&serviceGroup=";
+    $addPropertiesPage = "Add_Service_Group_Properties";
     $editPropertyPage = "Edit_Service_Group_Property";
 
     require_once __DIR__ . '/../fragments/viewPropertiesTable.php';

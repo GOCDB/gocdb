@@ -1,0 +1,48 @@
+# This file sets the default file normalisation behavior, 
+# and is useful in case people don't have 'core.autocrlf' config variable set.
+# (When a text file is normalized, its line endings are converted to LF in the repo).
+# https://help.github.com/articles/dealing-with-line-endings/#platform-all
+
+# The 'core.autocrlf = true' is a config variable: set to true on Windows, input on *nix. 
+# Note, this does not force normalization of all text files, but does ensure that NEW 
+# text files that you introduce to the repo have their line endings normalized to LF 
+# when they are added, and that files that are already normalized in the repo stay normalized as LF. 
+# It will NOT normalise files existing in the repo that have CLRF endings !
+
+# To automatically normalize line endings to LF for all text-based files
+# and convert to NATIVE endings on checkout, use '* text=auto' 
+# https://git-scm.com/docs/gitattributes#_end_of_line_conversion
+
+* text=auto
+
+# Refreshing a repo to re-normalise: 
+# When text=auto normalization is enabled in an already EXISTING repository, any text 
+# files containing CRLFs in the repo need to be newly normalized! If they are not they will 
+# be normalized the next time someone tries to change them, causing unfortunate misattribution. 
+# To force a normalisation of all text files, see recipes at: 
+# https://git-scm.com/docs/gitattributes#_end_of_line_conversion
+# https://help.github.com/articles/dealing-with-line-endings/#platform-all
+# Or use a tool like eclipse to change all CRLFs to LFs and commit the file. 
+
+# To explicitly declare text files you want to always be normalized and converted
+# to NATIVE line endings on checkout: 
+*.c text
+*.h text
+*.php text
+*.xml text
+*.txt text
+*.xsd text
+*.md text
+
+# The eol attribute sets a specific line-ending style to be used in the WORKING DIRECTORY:
+
+# To normalize line endings to LF on checkin but prevent conversion to CRLF on checkout: 
+#*.css text eol=lf
+
+# To normalize line endings for this file on checkin and convert them to CRLF on checkout: 
+#*.sln text eol=crlf
+
+# Denote all files that are truly binary and should not be modified.
+*.png binary
+*.jpg binary
+*.gif binary

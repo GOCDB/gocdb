@@ -148,7 +148,14 @@ function Get_User_Principle(){
         // update the static holder so we can quickly return the principle 
         // for the current request on repeat callouts to Get_User_Principle (is quicker than authenticating again). 
         MyStaticPrincipleHolder::getInstance()->setPrincipleString($principleString); 
-        MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth); 
+        MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth);
+        
+        // Is user registered/known in the DB? if true, update their last login time
+        // once for the current request. 
+        $user = \Factory::getUserService()->getUserByPrinciple($principleString);
+        if($user != null){
+            \Factory::getUserService()->updateLastLoginTime($user); 
+        } 
         return $principleString;
     } 
     return null; 

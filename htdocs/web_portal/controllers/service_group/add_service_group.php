@@ -1,6 +1,7 @@
 <?php
-/*______________________________________________________
- *======================================================
+
+/* ______________________________________________________
+ * ======================================================
  * File: new_vsite.php
  * Author: John Casson, George Ryall, David Meredith
  * Description: Processes a new service group request. If the user
@@ -20,7 +21,7 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
-/*======================================================*/
+  /*====================================================== */
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/../../components/Get_User_Principle.php';
 require_once __DIR__ . '/../utils.php';
@@ -36,8 +37,8 @@ function add_service_group() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
-    if($_POST) {     // If we receive a POST request it's for a new service group
+
+    if ($_POST) {     // If we receive a POST request it's for a new service group
         submit($user);
     } else {     // If there is no post data, draw the new service group  form
         draw($user);
@@ -53,9 +54,9 @@ function submit($user) {
     $serv = \Factory::getServiceGroupService();
     try {
         //$serv->addAuthorization($user);
-        if(is_null($user)) {
-	        throw new \Exception("Unregistered users can't create service groups.");
-	    }
+        if (is_null($user)) {
+            throw new \Exception("Unregistered users can't create service groups.");
+        }
         $newValues = getSGroupDataFromWeb();
         $sg = $serv->addServiceGroup($newValues, $user);
         $params = array('sg' => $sg);
@@ -68,20 +69,27 @@ function submit($user) {
 
 function draw($user) {
     try {
-        //\Factory::getServiceGroupService()->addAuthorization($user);
-        if(is_null($user)) {
-	        throw new \Exception("Unregistered users can't create service groups.");
-	    }
         // If the user is registered they're allowed to add a service group
+        if (is_null($user)) {
+            throw new \Exception("Unregistered users can't create service groups.");
+        }
         
-        $configService= \Factory::getConfigService();
-        
-        $scopes = \Factory::getScopeService()->getDefaultScopesSelectedArray();
+        // can user assign reserved scopes ?
+        $disableReservedScopes = true;
+        if ($user->isAdmin()) {
+            $disableReservedScopes = false;
+        }
+
+        $configService = \Factory::getConfigService();
+        //$scopes = \Factory::getScopeService()->getAllScopesMarkDefault();
         $numberScopesRequired = $configService->getMinimumScopesRequired('service_group');
-        
-        $params = array('scopes' => $scopes
-                , 'numberOfScopesRequired'=>$numberScopesRequired);
-        
+        $scopejsonStr = getEntityScopesAsJSON2(null, null, $disableReservedScopes); 
+
+        $params = array(
+            //'scopes' => $scopes, 
+            'numberOfScopesRequired' => $numberScopesRequired,
+            'scopejson' => $scopejsonStr);
+
         show_view("service_group/add_service_group.php", $params);
     } catch (Exception $e) {
         show_view("error.php", $e->getMessage());

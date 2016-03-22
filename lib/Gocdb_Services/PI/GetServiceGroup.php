@@ -18,9 +18,9 @@ require_once __DIR__ . '/IPIQuery.php';
  * Only known parameters are honoured while unknown params produce error doc. 
  * Parmeter array keys include:
  * <pre>
- * 	'service_group_name',
- * 	'scope',
- * 	'scope_match', 
+ *         'service_group_name',
+ *         'scope',
+ *         'scope_match', 
  *      'extensions' 
  * </pre>
  * 
@@ -35,112 +35,116 @@ class GetServiceGroup implements IPIQuery {
     private $helpers;
     private $sgs;
     private $renderMultipleEndpoints;
+    private $baseUrl; 
 
-    /** Constructor takes entity manager which is then used by the
-     *  query builder
+    /** 
+     * Constructor takes entity manager which is then used by the query builder
      *
      * @param EntityManager $em
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
      */
-    public function __construct($em) {
-	$this->em = $em;
-	$this->helpers = new Helpers();
-	$this->renderMultipleEndpoints = true;
+    public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal') {
+        $this->em = $em;
+        $this->helpers = new Helpers();
+        $this->renderMultipleEndpoints = true;
+        $this->baseUrl = $baseUrl; 
     }
 
-    /** Validates parameters against array of pre-defined valid terms
-     *  for this PI type
+    /** 
+     * Validates parameters against array of pre-defined valid terms for this PI type
      * @param array $parameters
      */
     public function validateParameters($parameters) {
 
-	// Define supported parameters and validate given params (die if an unsupported param is given)
-	$supportedQueryParams = array(
-	    'service_group_name',
-	    'scope',
-	    'scope_match',
-	    'extensions'
-	);
+        // Define supported parameters and validate given params (die if an unsupported param is given)
+        $supportedQueryParams = array(
+            'service_group_name',
+            'scope',
+            'scope_match',
+            'extensions'
+        );
 
-	$this->helpers->validateParams($supportedQueryParams, $parameters);
-	$this->validParams = $parameters;
+        $this->helpers->validateParams($supportedQueryParams, $parameters);
+        $this->validParams = $parameters;
     }
 
-    /** Creates the query by building on a queryBuilder object as
-     *  required by the supplied parameters
+    /** 
+     * Creates the query by building on a queryBuilder object as
+     * required by the supplied parameters
      */
     public function createQuery() {
-	$parameters = $this->validParams;
-	$binds = array();
-	$bc = -1;
+        $parameters = $this->validParams;
+        $binds = array();
+        $bc = -1;
 
-	$qb = $this->em->createQueryBuilder();
+        $qb = $this->em->createQueryBuilder();
 
-	//Initialize base query
-	$qb->select('DISTINCT sg', 's', 'st', 'sp', 'sc', 'els', 'elp', 'servp', 'sgscopes')
-		->from('ServiceGroup', 'sg')
-		->leftJoin('sg.serviceGroupProperties', 'sp')
-		->leftJoin('sg.services', 's')
-		->leftJoin('sg.scopes', 'sgscopes')
-		->leftJoin('s.serviceProperties', 'servp')
-		->leftJoin('s.serviceType', 'st')
-		->leftJoin('s.scopes', 'sc')
-		->leftJoin('s.endpointLocations', 'els')
-		->leftjoin('els.endpointProperties', 'elp')
-		->orderBy('sg.id', 'ASC');
-
-
-
-	/* Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
-	 * based on set parameters.
-	 */
-	$parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
-	//Get the result of the scope builder
-	$qb = $parameterBuilder->getQB();
-	$bc = $parameterBuilder->getBindCount();
-	//Get the binds and store them in the local bind array - only runs if the returned value is an array
-	foreach ((array) $parameterBuilder->getBinds() as $bind) {
-	    $binds[] = $bind;
-	}
+        //Initialize base query
+        $qb->select('DISTINCT sg', 's', 'st', 'sp', 'sc', 'els', 'elp', 'servp', 'sgscopes')
+                ->from('ServiceGroup', 'sg')
+                ->leftJoin('sg.serviceGroupProperties', 'sp')
+                ->leftJoin('sg.services', 's')
+                ->leftJoin('sg.scopes', 'sgscopes')
+                ->leftJoin('s.serviceProperties', 'servp')
+                ->leftJoin('s.serviceType', 'st')
+                ->leftJoin('s.scopes', 'sc')
+                ->leftJoin('s.endpointLocations', 'els')
+                ->leftjoin('els.endpointProperties', 'elp')
+                ->orderBy('sg.id', 'ASC');
 
 
-	//Run ScopeQueryBuilder regardless of if scope is set.
-	$scopeQueryBuilder = new ScopeQueryBuilder(
-		(isset($parameters['scope'])) ? $parameters['scope'] : null, 
-		(isset($parameters['scope_match'])) ? $parameters['scope_match'] : null, 
-		$qb, $this->em, $bc, 'ServiceGroup', 'sg'
-	);
 
-	//Get the result of the scope builder
-	$qb = $scopeQueryBuilder->getQB();
-	$bc = $scopeQueryBuilder->getBindCount();
+        /* Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
+         * based on set parameters.
+         */
+        $parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
+        //Get the result of the scope builder
+        $qb = $parameterBuilder->getQB();
+        $bc = $parameterBuilder->getBindCount();
+        //Get the binds and store them in the local bind array - only runs if the returned value is an array
+        foreach ((array) $parameterBuilder->getBinds() as $bind) {
+            $binds[] = $bind;
+        }
 
-	//Get the binds and store them in the local bind array only if any binds are fetched from scopeQueryBuilder
-	foreach ((array) $scopeQueryBuilder->getBinds() as $bind) {
-	    $binds[] = $bind;
-	}
 
-	/* Pass the properties to the extensions class.
-	 * It will return a query with a clause based on the provided LDAP style query
-	 */
-	if (isset($parameters ['extensions'])) {
-	    $ExtensionsQueryBuilder = new ExtensionsQueryBuilder($parameters ['extensions'], $qb, $this->em, $bc, 'ServiceGroup');
-	    //Get the modified query
-	    $qb = $ExtensionsQueryBuilder->getQB();
-	    $bc = $ExtensionsQueryBuilder->getParameterBindCounter();
-	    //Get the binds and store them in the local bind array
-	    foreach ($ExtensionsQueryBuilder->getValuesToBind() as $value) {
-		$binds[] = $value;
-	    }
-	}
+        //Run ScopeQueryBuilder regardless of if scope is set.
+        $scopeQueryBuilder = new ScopeQueryBuilder(
+                (isset($parameters['scope'])) ? $parameters['scope'] : null, 
+                (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null, 
+                $qb, $this->em, $bc, 'ServiceGroup', 'sg'
+        );
 
-	//Bind all variables
-	$qb = $this->helpers->bindValuesToQuery($binds, $qb);
+        //Get the result of the scope builder
+        $qb = $scopeQueryBuilder->getQB();
+        $bc = $scopeQueryBuilder->getBindCount();
 
-	//Get the dql query from the Query Builder object
-	$query = $qb->getQuery();
+        //Get the binds and store them in the local bind array only if any binds are fetched from scopeQueryBuilder
+        foreach ((array) $scopeQueryBuilder->getBinds() as $bind) {
+            $binds[] = $bind;
+        }
 
-	$this->query = $query;
-	return $this->query;
+        /* Pass the properties to the extensions class.
+         * It will return a query with a clause based on the provided LDAP style query
+         */
+        if (isset($parameters ['extensions'])) {
+            $ExtensionsQueryBuilder = new ExtensionsQueryBuilder($parameters ['extensions'], $qb, $this->em, $bc, 'ServiceGroup');
+            //Get the modified query
+            $qb = $ExtensionsQueryBuilder->getQB();
+            $bc = $ExtensionsQueryBuilder->getParameterBindCounter();
+            //Get the binds and store them in the local bind array
+            foreach ($ExtensionsQueryBuilder->getValuesToBind() as $value) {
+                $binds[] = $value;
+            }
+        }
+
+        //Bind all variables
+        $qb = $this->helpers->bindValuesToQuery($binds, $qb);
+
+        //Get the dql query from the Query Builder object
+        $query = $qb->getQuery();
+
+        $this->query = $query;
+        return $this->query;
     }
 
     /**
@@ -148,8 +152,8 @@ class GetServiceGroup implements IPIQuery {
      * so it can later be used to create XML, Glue2 XML or JSON.
      */
     public function executeQuery() {
-	$this->sgs = $this->query->execute();
-	return $this->sgs;
+        $this->sgs = $this->query->execute();
+        return $this->sgs;
     }
 
     /** Returns proprietary GocDB rendering of the service group data 
@@ -157,98 +161,98 @@ class GetServiceGroup implements IPIQuery {
      * @return String
      */
     public function getXML() {
-	$helpers = $this->helpers;
+        $helpers = $this->helpers;
 
-	$xml = new \SimpleXMLElement("<results />");
+        $xml = new \SimpleXMLElement("<results />");
 
-	$sgs = $this->sgs;
-	foreach ($sgs as $sg) {
-	    $xmlSg = $xml->addChild('SERVICE_GROUP');
-	    $xmlSg->addAttribute("PRIMARY_KEY", $sg->getId() . "G0");
-	    $xmlSg->addChild('NAME', $sg->getName());
-	    $xmlSg->addChild('DESCRIPTION', htmlspecialchars($sg->getDescription()));
-	    $mon = ($sg->getMonitored()) ? 'Y' : 'N';
-	    $xmlSg->addChild('MONITORED', $mon);
-	    $xmlSg->addChild('CONTACT_EMAIL', $sg->getEmail());
-	    $url = '#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=Service_Group&id=' . $sg->getId();
-	    $url = htmlspecialchars($url);
-	    $xmlSg->addChild('GOCDB_PORTAL_URL', $url);
+        $sgs = $this->sgs;
+        foreach ($sgs as $sg) {
+            $xmlSg = $xml->addChild('SERVICE_GROUP');
+            $xmlSg->addAttribute("PRIMARY_KEY", $sg->getId() . "G0");
+            $xmlSg->addChild('NAME', $sg->getName());
+            $xmlSg->addChild('DESCRIPTION', htmlspecialchars($sg->getDescription()));
+            $mon = ($sg->getMonitored()) ? 'Y' : 'N';
+            $xmlSg->addChild('MONITORED', $mon);
+            $xmlSg->addChild('CONTACT_EMAIL', $sg->getEmail());
+            $url = $this->baseUrl.'/index.php?Page_Type=Service_Group&id=' . $sg->getId();
+            $url = htmlspecialchars($url);
+            $xmlSg->addChild('GOCDB_PORTAL_URL', $url);
 
-	    foreach ($sg->getServices() as $service) {
-		// maybe Rename SERVICE_ENDPOINT to SERVICE
-		$xmlService = $xmlSg->addChild('SERVICE_ENDPOINT');
-		$xmlService->addAttribute("PRIMARY_KEY", $service->getId() . "G0");
-		$xmlService->addChild('HOSTNAME', $service->getHostName());
-		$url = '#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=Service&id=' . $service->getId();
-		$xmlService->addChild('GOCDB_PORTAL_URL', htmlspecialchars($url));
-		$xmlService->addChild('SERVICE_TYPE', $service->getServiceType()->getName());
-		$xmlService->addChild('HOST_IP', $service->getIpAddress());
-		$xmlService->addChild('HOST_IPV6', $service->getIpV6Address());
-		$xmlService->addChild('HOSTDN', $service->getDN());
-		$prod = ($service->getProduction()) ? 'Y' : 'N';
-		$xmlService->addChild('IN_PRODUCTION', $prod);
-		$mon = ($service->getMonitored()) ? 'Y' : 'N';
-		$xmlService->addChild('NODE_MONITORED', $mon);
+            foreach ($sg->getServices() as $service) {
+                // maybe Rename SERVICE_ENDPOINT to SERVICE
+                $xmlService = $xmlSg->addChild('SERVICE_ENDPOINT');
+                $xmlService->addAttribute("PRIMARY_KEY", $service->getId() . "G0");
+                $xmlService->addChild('HOSTNAME', $service->getHostName());
+                $url = $this->baseUrl.'/index.php?Page_Type=Service&id=' . $service->getId();
+                $xmlService->addChild('GOCDB_PORTAL_URL', htmlspecialchars($url));
+                $xmlService->addChild('SERVICE_TYPE', $service->getServiceType()->getName());
+                $xmlService->addChild('HOST_IP', $service->getIpAddress());
+                $xmlService->addChild('HOST_IPV6', $service->getIpV6Address());
+                $xmlService->addChild('HOSTDN', $service->getDN());
+                $prod = ($service->getProduction()) ? 'Y' : 'N';
+                $xmlService->addChild('IN_PRODUCTION', $prod);
+                $mon = ($service->getMonitored()) ? 'Y' : 'N';
+                $xmlService->addChild('NODE_MONITORED', $mon);
 
-		if ($this->renderMultipleEndpoints) {
-		    $xmlEndpoints = $xmlService->addChild('ENDPOINTS');
-		    foreach ($service->getEndpointLocations() as $endpoint) {
-			$xmlEndpoint = $xmlEndpoints->addChild('ENDPOINT');
-			$xmlEndpoint->addChild('ID', $endpoint->getId());
-			$xmlEndpoint->addChild('NAME', htmlspecialchars($endpoint->getName()));
-			// Endpoint Extensions 
-			$xmlEndpointExtensions = $xmlEndpoint->addChild('EXTENSIONS');
-			foreach ($endpoint->getEndpointProperties() as $prop) {
-			    $xmlProperty = $xmlEndpointExtensions->addChild('EXTENSION');
-			    $xmlProperty->addChild('LOCAL_ID', $prop->getId());
-			    $xmlProperty->addChild('KEY', xssafe($prop->getKeyName()));
-			    $xmlProperty->addChild('VALUE', xssafe($prop->getKeyValue()));
-			}
-			$xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
-			$xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
-		    }
-		}
+                if ($this->renderMultipleEndpoints) {
+                    $xmlEndpoints = $xmlService->addChild('ENDPOINTS');
+                    foreach ($service->getEndpointLocations() as $endpoint) {
+                        $xmlEndpoint = $xmlEndpoints->addChild('ENDPOINT');
+                        $xmlEndpoint->addChild('ID', $endpoint->getId());
+                        $xmlEndpoint->addChild('NAME', htmlspecialchars($endpoint->getName()));
+                        // Endpoint Extensions 
+                        $xmlEndpointExtensions = $xmlEndpoint->addChild('EXTENSIONS');
+                        foreach ($endpoint->getEndpointProperties() as $prop) {
+                            $xmlProperty = $xmlEndpointExtensions->addChild('EXTENSION');
+                            $xmlProperty->addChild('LOCAL_ID', $prop->getId());
+                            $xmlProperty->addChild('KEY', xssafe($prop->getKeyName()));
+                            $xmlProperty->addChild('VALUE', xssafe($prop->getKeyValue()));
+                        }
+                        $xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
+                        $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                    }
+                }
 
-		// Service scopes  
-		$xmlScopes = $xmlService->addChild('SCOPES');
-		foreach ($service->getScopes() as $scope) {
-		    $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
-		}
+                // Service scopes  
+                $xmlScopes = $xmlService->addChild('SCOPES');
+                foreach ($service->getScopes() as $scope) {
+                    $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
+                }
 
-		// Service Extensions 
-		$xmlServiceExtensions = $xmlService->addChild('EXTENSIONS');
-		foreach ($service->getServiceProperties() as $prop) {
-		    $xmlProperty = $xmlServiceExtensions->addChild('EXTENSION');
-		    $xmlProperty->addChild('LOCAL_ID', $prop->getId());
-		    $xmlProperty->addChild('KEY', xssafe($prop->getKeyName()));
-		    $xmlProperty->addChild('VALUE', xssafe($prop->getKeyValue()));
-		}
-	    }
+                // Service Extensions 
+                $xmlServiceExtensions = $xmlService->addChild('EXTENSIONS');
+                foreach ($service->getServiceProperties() as $prop) {
+                    $xmlProperty = $xmlServiceExtensions->addChild('EXTENSION');
+                    $xmlProperty->addChild('LOCAL_ID', $prop->getId());
+                    $xmlProperty->addChild('KEY', xssafe($prop->getKeyName()));
+                    $xmlProperty->addChild('VALUE', xssafe($prop->getKeyValue()));
+                }
+            }
 
-	    // SG scopes  
-	    $xmlScopes = $xmlSg->addChild('SCOPES');
-	    foreach ($sg->getScopes() as $scope) {
-		$xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
-	    }
+            // SG scopes  
+            $xmlScopes = $xmlSg->addChild('SCOPES');
+            foreach ($sg->getScopes() as $scope) {
+                $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
+            }
 
-	    // SG extensions 
-	    $xmlSGExtensions = $xmlSg->addChild('EXTENSIONS');
-	    foreach ($sg->getServiceGroupProperties() as $sgProp) {
-		$xmlSgProperty = $xmlSGExtensions->addChild('EXTENSION');
-		$xmlSgProperty->addChild('LOCAL_ID', $sgProp->getId());
-		$xmlSgProperty->addChild('KEY', xssafe($sgProp->getKeyName()));
-		$xmlSgProperty->addChild('VALUE', xssafe($sgProp->getKeyValue()));
-	    }
-	}
+            // SG extensions 
+            $xmlSGExtensions = $xmlSg->addChild('EXTENSIONS');
+            foreach ($sg->getServiceGroupProperties() as $sgProp) {
+                $xmlSgProperty = $xmlSGExtensions->addChild('EXTENSION');
+                $xmlSgProperty->addChild('LOCAL_ID', $sgProp->getId());
+                $xmlSgProperty->addChild('KEY', xssafe($sgProp->getKeyName()));
+                $xmlSgProperty->addChild('VALUE', xssafe($sgProp->getKeyValue()));
+            }
+        }
 
-	$dom_sxe = dom_import_simplexml($xml);
-	$dom = new \DOMDocument('1.0');
-	$dom->encoding = 'UTF-8';
-	$dom_sxe = $dom->importNode($dom_sxe, true);
-	$dom_sxe = $dom->appendChild($dom_sxe);
-	$dom->formatOutput = true;
-	$xmlString = $dom->saveXML();
-	return $xmlString;
+        $dom_sxe = dom_import_simplexml($xml);
+        $dom = new \DOMDocument('1.0');
+        $dom->encoding = 'UTF-8';
+        $dom_sxe = $dom->importNode($dom_sxe, true);
+        $dom_sxe = $dom->appendChild($dom_sxe);
+        $dom->formatOutput = true;
+        $xmlString = $dom->saveXML();
+        return $xmlString;
     }
 
     /** Returns the service group data in Glue2 XML string.
@@ -256,8 +260,8 @@ class GetServiceGroup implements IPIQuery {
      * @return String
      */
     public function getGlue2XML() {
-	$query = $this->query;
-	throw new LogicException("Not implemented yet");
+        $query = $this->query;
+        throw new LogicException("Not implemented yet");
     }
 
     /** Not yet implemented, in future will return the service group 
@@ -265,8 +269,8 @@ class GetServiceGroup implements IPIQuery {
      * @throws LogicException
      */
     public function getJSON() {
-	$query = $this->query;
-	throw new LogicException("Not implemented yet");
+        $query = $this->query;
+        throw new LogicException("Not implemented yet");
     }
 
     /**
@@ -274,7 +278,7 @@ class GetServiceGroup implements IPIQuery {
      * @param boolean $renderMultipleEndpoints
      */
     public function setRenderMultipleEndpoints($renderMultipleEndpoints) {
-	$this->renderMultipleEndpoints = $renderMultipleEndpoints;
+        $this->renderMultipleEndpoints = $renderMultipleEndpoints;
     }
 
 }

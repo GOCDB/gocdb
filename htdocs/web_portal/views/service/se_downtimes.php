@@ -17,7 +17,7 @@
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">All Downtimes (Year-Month-Day Time in UTC)</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table id="allServiceDowntimesTable" class="table table-striped table-condensed tablesorter">
-		<thead
+		<thead>
 		    <tr>
 			<th>Description</th>
 			<th>From</th>

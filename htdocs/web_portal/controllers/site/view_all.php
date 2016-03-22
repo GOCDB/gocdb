@@ -79,7 +79,8 @@ function showAllSites(){
     // By default, use an empty value to return all scopes, i.e. in the PI '&scope=' 
     // which is same as the PI. If the 'scope' param is not set, then it would fall 
     // back to the default scope (if set), but this is not what we want in this interface.  
-    $filterParams['scope'] = ''; 	
+    $filterParams['scope'] = '';
+    $filterParams['scope_match'] = '';
     $selectedScopes = array();
     if(!empty($_GET['mscope'])) { 
 	$scopeStringParam = ''; 
@@ -87,14 +88,19 @@ function showAllSites(){
 	    $scopeStringParam .= $scopeVal.','; 
 	    $selectedScopes[] = $scopeVal; 
 	}
-	$filterParams['scope'] = $scopeStringParam; 
-	$filterParams['scope_match'] = 'all';
+	$filterParams['scope'] = $scopeStringParam;
+        $scopeMatch = 'all';
+    if(isset($_GET['scopeMatch'])) {
+        $scopeMatch = $_GET['scopeMatch'];
+    }
+	$filterParams['scope_match'] = $scopeMatch;
     } 
 	
     $serv = \Factory::getSiteService();
 
     $params['scopes']=  \Factory::getScopeService()->getScopes(); 
-    //$params['sites'] = $serv->getSitesBy($ngi, $prodStatus, $certStatus, $scope, $showClosed, null, $siteKeyNames, $siteKeyValues); 
+    $params['scopeMatch']= $filterParams['scope_match'];
+    //$params['sites'] = $serv->getSitesBy($ngi, $prodStatus, $certStatus, $scope, $showClosed, null, $siteKeyNames, $siteKeyValues);
     $params['sites'] = $serv->getSitesFilterByParams($filterParams); 
     $params['NGIs'] = $serv->getNGIs();
     $params['prodStatuses'] = $serv->getProdStatuses();

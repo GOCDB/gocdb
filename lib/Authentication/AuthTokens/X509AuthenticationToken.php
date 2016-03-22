@@ -91,6 +91,19 @@ class X509AuthenticationToken implements IAuthentication {
                 $Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
                 $User_DN = $Plain_Client_Cerfificate['name'];
                 if (isset($User_DN)) {
+                    // Check that the dn does not contain a backslash - utf8 chars
+                    // can exist in DN strings but this is not allowed in the 
+                    // Grid world. The openssl_x509_parse method will replace 
+                    // utf-8 chars with a backslashed hex code, thus we must 
+                    // reject here. 
+                    $pos = strpos($User_DN, "\\"); 
+                    if($pos !== FALSE){
+                        die('Your certificate DN appears to contain an invalid '
+                            . 'character which is not allowed in the Grid World, '
+                                . 'please contact your Certification Authority / Cert Issuer and report this: '. 
+                                $User_DN); 
+                    }
+                   
                     // harmonise "email" field that can be different depending on version of SSL
                     $dn = str_replace("emailAddress=", "Email=", $User_DN);
                     if ($dn != null && $dn != '') {

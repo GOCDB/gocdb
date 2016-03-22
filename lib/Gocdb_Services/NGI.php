@@ -26,17 +26,36 @@ require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/Validate.php';
 require_once __DIR__ . '/RoleConstants.php';
 require_once __DIR__ . '/RoleActionAuthorisationService.php';
+require_once __DIR__.  '/Scope.php';
+require_once __DIR__.  '/Config.php';
 use Doctrine\ORM\QueryBuilder; 
 
 class NGI extends AbstractEntityService{
 
     private $roleActionAuthorisationService;
+    private $scopeService; 
+    private $configService; 
 
     function __construct(/*$roleActionAuthorisationService*/) {
         parent::__construct();
         //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+        $this->configService = new Config(); 
     }
 
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\Scope $scopeService
+     */
+    public function setScopeService(Scope $scopeService){
+        $this->scopeService = $scopeService; 
+    }
+
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\RoleActionAuthorisationService $roleActionAuthService
+     */
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
         $this->roleActionAuthorisationService = $roleActionAuthService; 
     }
@@ -292,24 +311,54 @@ class NGI extends AbstractEntityService{
         if ($user == null) {
            throw new \Exception("You don't have permission to edit this NGI (null user).");
         }
-        //if(count($this->authorize Action(\Action::EDIT_OBJECT, $ngi, $user)) == 0){
-        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $ngi, $user)->getGrantAction() == FALSE) {
+        if ($this->roleActionAuthorisationService->authoriseAction(
+                \Action::EDIT_OBJECT, $ngi, $user)->getGrantAction() == FALSE) {
             throw new \Exception("You don't have permission to edit this NGI.");
         }
         $this->validate($newValues['NGI']);
+
+        // EDIT SCOPE TAGS: 
+        // collate selected scopeIds (reserved and non-reserved)
+        $scopeIdsToApply = array(); 
+        foreach($newValues['Scope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        foreach($newValues['ReservedScope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
         
-        //check the required number of scopes have been specified
-        $this->checkNumberOfScopes($newValues['SCOPES']);
+        // If not admin, Check user edits to the ngi's Reserved scopes: 
+        // Required to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $ngi->getScopes()->toArray()); 
+            
+            foreach($selectedReservedScopes as $sc){
+                // Reserved scopes must already be assigned to site or parent 
+                if(in_array($sc, $existingReservedScopes)){
+                    continue; 
+                }
+                throw new \Exception("A reserved Scope Tag was selected that is not assigned to the NGI");  
+            }
+        }
+        
+        //check there are the required number of optional scopes specified
+        $this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
+               array('excludeReserved' => true), $selectedScopesToApply));
         
     	//Explicity demarcate our tx boundary
     	$this->em->getConnection()->beginTransaction();
-
     	try {
             //Update the NGI
-    		$ngi->setEmail($newValues['NGI']['EMAIL']);
-    		$ngi->setHelpdeskEmail($newValues['NGI']['HELPDESK_EMAIL']);
-    		$ngi->setRodEmail($newValues['NGI']['ROD_EMAIL']);
-    		$ngi->setSecurityEmail($newValues['NGI']['SECURITY_EMAIL']);
+            $ngi->setEmail($newValues['NGI']['EMAIL']);
+            $ngi->setHelpdeskEmail($newValues['NGI']['HELPDESK_EMAIL']);
+            $ngi->setRodEmail($newValues['NGI']['ROD_EMAIL']);
+            $ngi->setSecurityEmail($newValues['NGI']['SECURITY_EMAIL']);
             $ngi->setGgus_Su($newValues['NGI']['GGUS_SU']); 
             
             
@@ -321,21 +370,24 @@ class NGI extends AbstractEntityService{
             }
 
             //find then link each scope specified to the NGI
-            foreach ($newValues['SCOPES'] as $scopeId){
-                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-                $scope = $this->em->createQuery($dql)
-                             ->setParameter(1, $scopeId)
-                             ->getSingleResult();
-                $ngi->addScope($scope);
+//            foreach ($newValues['SCOPES'] as $scopeId){
+//                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
+//                $scope = $this->em->createQuery($dql)
+//                             ->setParameter(1, $scopeId)
+//                             ->getSingleResult();
+//                $ngi->addScope($scope);
+//            }
+            foreach($selectedScopesToApply as $scope){
+                $ngi->addScope($scope); 
             }
             
-    		$this->em->merge($ngi);
-    		$this->em->flush();
-    		$this->em->getConnection()->commit();
+            $this->em->merge($ngi);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
     	} catch (\Exception $e) {
-    		$this->em->getConnection()->rollback();
-    		$this->em->close();
-    		throw $e;
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
     	}
     	return $ngi;
     }
@@ -362,7 +414,7 @@ class NGI extends AbstractEntityService{
     	}
     }
     
-    public function AddNgi($valuesarray, \User $user = null) {
+    public function addNgi($valuesarray, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
@@ -370,74 +422,87 @@ class NGI extends AbstractEntityService{
         if (is_null($user)) {
             throw new \Exception("Unregistered users may not make changes");
         }
-        
+
         //Only admins should be able to add an NGI
         if (!$user->isAdmin()) {
             throw new \Exception("You must be a global administrator to move a site between NGIs");
         }
-        
+
         //seperate values and scope arrays
         $values = $valuesarray['NGI'];
-        $scopeIds = $valuesarray['SCOPES'];
         
-        //check values are there
-        if(!((array_key_exists('NAME',$values)) 
-              and (array_key_exists('EMAIL',$values))
-              and (array_key_exists('HELPDESK_EMAIL',$values))
-              and (array_key_exists('SECURITY_EMAIL',$values))
-              and (array_key_exists('ROD_EMAIL',$values)))){
-            throw new \Exception("A name and email adresses must be fed to the function, even if they are empty strings");
-        }    
+        // Add SCOPE TAGS: 
+        // collate selected scopeIds (reserved and non-reserved)
+        $scopeIdsToApply = array(); 
+        foreach($valuesarray['Scope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        foreach($valuesarray['ReservedScope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
 
-          
+        //check values are there
+        if (!((array_key_exists('NAME', $values))
+                and ( array_key_exists('EMAIL', $values))
+                and ( array_key_exists('HELPDESK_EMAIL', $values))
+                and ( array_key_exists('SECURITY_EMAIL', $values))
+                and ( array_key_exists('ROD_EMAIL', $values)))) {
+            throw new \Exception("A name and email adresses must be fed to the function, even if they are empty strings");
+        }
+
+
         //Check that the name is not null
-        if(empty($values['NAME'])){
+        if (empty($values['NAME'])) {
             throw new \Exception("A name must be specified for the NGI");
         }
-        
+
         //Validate
         $this->validate($values);
-        
-        //check there are the required number of scopes specified
-        $this->checkNumberOfScopes($scopeIds);
-        
-        //check the name is unique
-        if(!$this->NGINameIsUnique($values['NAME'])){
-            throw new \Exception("NGI names must be unique, '".$values['NAME']."' is already in use");
-        }
-        
-    	//Explicity demarcate our tx boundary
-    	$this->em->getConnection()->beginTransaction();
 
-    	try {
-    		//create the new NGI
+        //check there are the required number of scopes specified
+        $this->checkNumberOfScopes($valuesarray['Scope_ids'] );
+
+        //check the name is unique
+        if (!$this->NGINameIsUnique($values['NAME'])) {
+            throw new \Exception("NGI names must be unique, '" . $values['NAME'] . "' is already in use");
+        }
+
+        //Explicity demarcate our tx boundary
+        $this->em->getConnection()->beginTransaction();
+
+        try {
+            //create the new NGI
             $ngi = new \NGI();
             $ngi->setName($values['NAME']);
             $ngi->setEmail($values['EMAIL']);
-    		$ngi->setHelpdeskEmail($values['HELPDESK_EMAIL']);
-    		$ngi->setRodEmail($values['ROD_EMAIL']);
-    		$ngi->setSecurityEmail($values['SECURITY_EMAIL']);
-            
+            $ngi->setHelpdeskEmail($values['HELPDESK_EMAIL']);
+            $ngi->setRodEmail($values['ROD_EMAIL']);
+            $ngi->setSecurityEmail($values['SECURITY_EMAIL']);
+
             //find then link each scope specified to the NGI
-            foreach ($scopeIds as $scopeId){
-                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-                $scope = $this->em->createQuery($dql)
-                             ->setParameter(1, $scopeId)
-                             ->getSingleResult();
-                $ngi->addScope($scope);
+//            foreach ($scopeIds as $scopeId) {
+//                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
+//                $scope = $this->em->createQuery($dql)
+//                        ->setParameter(1, $scopeId)
+//                        ->getSingleResult();
+//                $ngi->addScope($scope);
+//            }
+            foreach($selectedScopesToApply as $scope){
+                $ngi->addScope($scope); 
             }
-            
-    		$this->em->persist($ngi);
-    		$this->em->flush();
-    		$this->em->getConnection()->commit();
-    	} catch (\Exception $e) {
-    		$this->em->getConnection()->rollback();
-    		$this->em->close();
-    		throw $e;
-    	}
-    	return $ngi;
+
+            $this->em->persist($ngi);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+        return $ngi;
     }
-    
+
     /**
      * Returns true if the name given is not currently in use for a NGI
      * @param type $name potential service type name
@@ -461,13 +526,8 @@ class NGI extends AbstractEntityService{
         require_once __DIR__ . '/Config.php';
         $configService = new \org\gocdb\services\Config();
         $minumNumberOfScopes = $configService->getMinimumScopesRequired('ngi');
-        
         if(sizeof($scopeIds)<$minumNumberOfScopes){
-            $s = "s";
-            if($minumNumberOfScopes==1){
-                $s="";
-            }
-            throw new \Exception("A NGI must have at least " . $minumNumberOfScopes . " scope".$s." assigned to it.");
+            throw new \Exception("A NGI must have at least " . $minumNumberOfScopes . " scope(s) assigned to it.");
         }
     }
     

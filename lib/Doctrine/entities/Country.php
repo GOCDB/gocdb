@@ -39,14 +39,14 @@ class Country {
     protected $sites = null;
 
     public function __construct() {
-       $this->sites = new ArrayCollection();	
+       $this->sites = new ArrayCollection();        
     }
 
     /**
      * @return int The PK of this entity or null if not persisted. 
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -54,7 +54,7 @@ class Country {
      * @return string
      */
     public function getName() {
-	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -62,7 +62,7 @@ class Country {
      * @return string
      */
     public function getCode() {
-	return $this->code;
+        return $this->code;
     }
 
     /**
@@ -70,7 +70,7 @@ class Country {
      * @param string $name
      */
     public function setName($name) {
-	$this->name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -78,7 +78,7 @@ class Country {
      * @param string $code
      */
     public function setCode($code) {
-	$this->code = $code;
+        $this->code = $code;
     }
 
     /**
@@ -86,7 +86,7 @@ class Country {
      * @return ArrayCollection of {@see Site}s
      */
     public function getSites() {
-	return $this->sites;
+        return $this->sites;
     }
 
     /**
@@ -96,8 +96,8 @@ class Country {
      * @param Site $site
      */
     public function addSiteDoJoin($site) {
-	$this->sites[] = $site;
-	$site->setCountry($this);
+        $this->sites[] = $site;
+        $site->setCountry($this);
     }
 
 }

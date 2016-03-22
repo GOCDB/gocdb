@@ -125,13 +125,13 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
     }
 
     public function getServices() {
-    	return $this->services;
+        return $this->services;
     }
 
     public function getServiceGroupProperties(){
-	return $this->serviceGroupProperties;
+        return $this->serviceGroupProperties;
     }
-	
+        
     /**
      * A string containg a list of the names of scopes with which the 
      * object has been tagged.
@@ -186,10 +186,10 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
     }
 
     public function addService(Service $se) {
-    	$this->services[] = $se;		
-    	$se->addServiceGroup($this);
+        $this->services[] = $se;                
+        $se->addServiceGroup($this);
     }
-	
+        
     /**
      * Add a ServiceGroupProperty entity to this Service's collection of properties. 
      * This method also sets the ServiceGroupProperty's parentService.  
@@ -199,9 +199,9 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
         $this->serviceGroupProperties[] = $serviceGroupProperty;
         $serviceGroupProperty->_setParentServiceGroup($this);
     }
-	
+        
     public function removeService(Service $se) {
-    	$this->services->removeElement($se);
+        $this->services->removeElement($se);
     }
 
     /**

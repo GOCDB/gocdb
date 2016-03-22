@@ -25,7 +25,7 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/../utils.php';
     
 /**
- * Controller for an add NGI request
+ * Controller for an add NGI request. Is only used by gocdb admin. 
  * @global array $_POST only set if the browser has POSTed data
  * @return null
  */
@@ -50,10 +50,12 @@ function draw() {
     //Check the user has permission to see the page, will throw exception 
     //if correct permissions are lacking
     checkUserIsAdmin();
-    
-    //Get the list of scopes to chose from and the minimum number that need to be selected
-    $params['Scopes']  = \Factory::getScopeService()->getDefaultScopesSelectedArray();
-    $params['NumberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
+   
+    // pass 2 nulls because we haven't created the ngi yet and we don't yet 
+    // support cascading of project scopes (not sure this is needed) 
+    $scopejsonStr = getEntityScopesAsJSON2(null, null, false); 
+    $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
+    $params['scopejson'] = $scopejsonStr; 
     
     //show the add NGI view
     show_view("admin/add_ngi.php", $params, "Add NGI");

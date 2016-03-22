@@ -48,52 +48,56 @@ function edit_site() {
  * @return null
  */
 function draw(\User $user = null) {
+    // can user assign reserved scopes to this site, even though site has not been created yet?
+    $disableReservedScopes = true; 
+    if($user->isAdmin()){
+	$disableReservedScopes = false; 
+    } 
+    
+    // URL mapping
+    /*if(isset($_GET['getAllScopesForScopedEntity']) && is_numeric($_GET['getAllScopesForScopedEntity'])){
+        // Return all scopes for the Site with the specified Id as a JSON object 
+        // Used in ajax requests for generating UI checkboxes 
+        $site = \Factory::getSiteService()->getSite($_GET['getAllScopesForScopedEntity']); 
+        die(getEntityScopesAsJSON($site, $disableReservedScopes));  
+        
+    } else */
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
+        // Else to render the page, an id must be specified 
         throw new Exception("An id must be specified");
     }
-    $serv = \Factory::getSiteService(); 
-    $site = $serv->getSite($_GET['id']);
 
-    /*Old way: try { \Factory::getSiteService()->edit Authorization($site, $user);
-    } catch(Exception $e) { show_view('error.php', $e->getMessage()); die(); }*/
-    
-    //if(count($serv->authorize Action(Action::EDIT_OBJECT, $site, $user)) == 0){ 
-    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE){
+    /* @var $site \Site */
+    $site = \Factory::getSiteService()->getSite($_GET['id']);
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
+            \Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE){
         throw new Exception('You do not have permission to edit this Site');
     } 
 
-    
-    $countries = $serv->getCountries();
-    //$timezones = $serv->getTimezones(); // Deprecated - don't use the lookup values in the GocDB
+
+    $countries = \Factory::getSiteService()->getCountries();
     $timezones =  DateTimeZone::listIdentifiers(); // get the standard values 
-    $prodStatuses = $serv->getProdStatuses();
     
     //Remove SC and PPS infrastructures from drop down list (unless site has one of them). TODO: Delete this block once they no longer exist
-    $SCInfrastructure = $serv->getProdStatusByName('SC');
-    $PPSInfrastructure = $serv->getProdStatusByName('PPS'); 
+    $SCInfrastructure = \Factory::getSiteService()->getProdStatusByName('SC');
+    $PPSInfrastructure = \Factory::getSiteService()->getProdStatusByName('PPS'); 
     $hackprodStatuses=array();
-    foreach($prodStatuses as $ps){
+    foreach(\Factory::getSiteService()->getProdStatuses() as $ps){
         if(($ps != $SCInfrastructure and $ps != $PPSInfrastructure) or $ps == $site->getInfrastructure()){
             $hackprodStatuses[]=$ps;
         }
     }
     $prodStatuses = $hackprodStatuses;
-    //delete up to here once pps and sc infrastructures have been removed from database
-    
-    $scopes = \Factory::getScopeService()->getScopesSelectedArray($site->getScopes());
-    //get parent scope ids to generate warning message in view
-    $parentScopeIds = array();
-    foreach ($site->getNgi()->getScopes() as $scope){
-        $parentScopeIds[]=$scope->getId();
-    }
-    $configServ = \Factory::getConfigService();
-    $numberScopesRequired = $configServ->getMinimumScopesRequired('site');
 
-    $params = array("site" => $site, "timezones" => $timezones
-        , "countries" => $countries, "prodStatuses" => $prodStatuses
-        , "scopes"=>$scopes
-        , "numberOfScopesRequired" =>$numberScopesRequired
-        , "parentScopeIds" => $parentScopeIds);
+    $numberOfScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('site');
+    $scopeJson = getEntityScopesAsJSON2($site, $site->getNgi(), $disableReservedScopes);
+    //die($scopeJson); 
+
+    $params = array("site" => $site, "timezones" => $timezones,
+        "countries" => $countries, "prodStatuses" => $prodStatuses,
+        "numberOfScopesRequired" =>$numberOfScopesRequired,
+        "disableReservedScopes"=>$disableReservedScopes, 
+        "scopejson"=> $scopeJson);
 
     show_view('site/edit_site.php', $params);
 }
@@ -105,7 +109,9 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     try {
+        //print_r($_POST);
         $newValues = getSiteDataFromWeb();
+        //print_r($newValues); 
         $siteId = \Factory::getSiteService()->getSite($newValues['ID']);
         $site = \Factory::getSiteService()->editSite($siteId, $newValues, $user);
         $params = array('site' => $site);

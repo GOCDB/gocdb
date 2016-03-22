@@ -78,10 +78,10 @@ class Site extends OwnedEntity implements IScopedEntity{
 
     /** @Column(type="string", nullable=true) */
     protected $ipRange;
-	
+        
     /** @Column(type="string", nullable=true) */
     protected $ipV6Range;
-	
+        
     /** @Column(type="string", nullable=true) */
     protected $domain;
 
@@ -108,7 +108,7 @@ class Site extends OwnedEntity implements IScopedEntity{
      * @OneToMany(targetEntity="Service", mappedBy="parentSite")
      */
     protected $services = null;
-		
+                
     /**
      * Bidirectional - A Site (INVERSE ORM SIDE) can have many properties
      * @OneToMany(targetEntity="SiteProperty", mappedBy="parentSite", cascade={"remove"})
@@ -185,7 +185,7 @@ class Site extends OwnedEntity implements IScopedEntity{
         parent::__construct();
         $this->creationDate =  new \DateTime("now");        
         $this->services = new ArrayCollection();
-	$this->siteProperties = new ArrayCollection();
+        $this->siteProperties = new ArrayCollection();
         $this->scopes = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->certificationStatusLog = new ArrayCollection();
@@ -276,11 +276,11 @@ class Site extends OwnedEntity implements IScopedEntity{
     public function getIpRange() {
         return $this->ipRange;
     }
-	
-	public function getIpV6Range() {
+        
+    public function getIpV6Range() {
         return $this->ipV6Range;
     }
-	
+        
     public function getDomain() {
         return $this->domain;
     }
@@ -316,14 +316,14 @@ class Site extends OwnedEntity implements IScopedEntity{
     public function getServices() {
         return $this->services;
     }
-	
+        
     /**
      * The Site's list of {@see SiteProperty} extension objects. When the 
      * Site is deleted, the SiteProperties are also cascade deleted. 
      * @return ArrayCollection
      */
     public function getSiteProperties(){
-	return $this->siteProperties;
+        return $this->siteProperties;
     }
 
     /**
@@ -509,11 +509,11 @@ class Site extends OwnedEntity implements IScopedEntity{
     public function setIpRange($ipRange) {
         $this->ipRange = $ipRange;
     }
-	
-	public function setIpV6Range($ipRange) {
+        
+    public function setIpV6Range($ipRange) {
         $this->ipV6Range = $ipRange;
     }
-	
+        
     public function setDomain($domain) {
         $this->domain = $domain;
     }
@@ -674,7 +674,7 @@ class Site extends OwnedEntity implements IScopedEntity{
      * @return string
      */
     public function __toString () {
-    	return $this->getShortName();
+        return $this->getShortName();
     }
 
     /**

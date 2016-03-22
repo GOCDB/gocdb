@@ -33,16 +33,19 @@ class GetDowntimeToBroadcast implements IPIQuery{
 	private $helpers;
 	private $downtimes;
     private $renderMultipleEndpoints; 
+    private $baseUrl; 
 	
 	/** Constructor takes entity manager which is then used by the
 	 *  query builder
 	 * 
 	 * @param EntityManager $em
+	 * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
 	 */
-	public function __construct($em){
+	public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal'){
 		$this->em = $em;
 		$this->helpers=new Helpers();		
-        $this->renderMultipleEndpoints = true; 
+        $this->renderMultipleEndpoints = true;
+        $this->baseUrl = $baseUrl; 
 	}
     
     /**
@@ -201,7 +204,7 @@ class GetDowntimeToBroadcast implements IPIQuery{
                 $xmlDowntime->addChild("HOSTNAME", $se->getHostName());
                 $xmlDowntime->addChild("SERVICE_TYPE", $se->getServiceType()->getName());
                 $xmlDowntime->addChild("HOSTED_BY", $se->getParentSite()->getShortName());
-                $portalUrl = htmlspecialchars('#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=Downtime&id=' . $downtime->getId());
+                $portalUrl = htmlspecialchars($this->baseUrl.'/index.php?Page_Type=Downtime&id=' . $downtime->getId());
                 $xmlDowntime->addChild('GOCDB_PORTAL_URL', $portalUrl);
                 $xmlEndpoints = $xmlDowntime->addChild ( 'AFFECTED_ENDPOINTS' );
                 if($this->renderMultipleEndpoints){

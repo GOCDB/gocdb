@@ -86,7 +86,7 @@ function submit() {
     } 
     //Check the user has permission, will throw exception 
     //if correct permissions are lacking
-    checkUserIsAdmin();
+    /*checkUserIsAdmin();
     
     //Get a user service
     $serv = \Factory::getUserService();
@@ -119,7 +119,7 @@ function submit() {
     } catch (Exception $e) {
          show_view('error.php', $e->getMessage());
          die();
-    }
+    }*/
 }
 
 ?>

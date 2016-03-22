@@ -29,8 +29,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @Entity  @Table(name="OwnedEntities")
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
- * @DiscriminatorMap({"site" = "Site", "ngi" = "NGI", "project" = "Project",
- * 						"serviceGroup" = "ServiceGroup"})
+ * @DiscriminatorMap({"site" = "Site", "ngi" = "NGI", "project" = "Project", 
+ *                      "serviceGroup" = "ServiceGroup"})
  */
 abstract class OwnedEntity {
 
@@ -41,7 +41,7 @@ abstract class OwnedEntity {
     const TYPE_SITE = 'site'; 
     const TYPE_SERVICEGROUP = 'servicegroup'; 
     const TYPE_PROJECT = 'project'; 
-	
+        
     /** 
      * @OneToMany(targetEntity="Role", mappedBy="ownedEntity") 
      * @OrderBy({"id" = "ASC"})
@@ -49,7 +49,7 @@ abstract class OwnedEntity {
     protected $roles = null;
 
     public function __construct() {
-	$this->roles = new ArrayCollection();
+        $this->roles = new ArrayCollection();
     }
 
     /**
@@ -57,16 +57,16 @@ abstract class OwnedEntity {
      * @return Doctrine\Common\Collections\ArrayCollection 
      */
     public function getRoles() {
-	return $this->roles;
+        return $this->roles;
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
-	
+        
     /**
      * Join the given Role to this OwnedEntity. 
      * <p>
@@ -76,10 +76,10 @@ abstract class OwnedEntity {
      * @param \Role $role
      */
     public function addRoleDoJoin(\Role $role) {
-	$this->roles[] = $role;
-	$role->setOwnedEntity($this);
+        $this->roles[] = $role;
+        $role->setOwnedEntity($this);
     }
-	
+        
 
     /**
      * Get the entity type as a string.  

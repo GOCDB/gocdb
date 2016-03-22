@@ -13,6 +13,7 @@ namespace org\gocdb\services;
  */
 
 require_once __DIR__ . '/AbstractEntityService.php';
+require_once __DIR__ . '/Config.php';
 
 /**
  * GOCDB Stateless service facade (business routnes) for scope objects.
@@ -23,6 +24,24 @@ require_once __DIR__ . '/AbstractEntityService.php';
  * @author George Ryall
  */
 class Scope extends AbstractEntityService{
+    protected $configService; 
+
+    function __construct() {
+        parent::__construct();
+        $this->configService = new Config(); 
+    }
+
+
+    /**
+     * Set the Conifg service used by this class. 
+     * <p>
+     * Used to override the default Conf service created on class construction.
+     *  
+     * @param \org\gocdb\services\Config $configService
+     */    
+    public function setConfigService(Config $configService){
+        $this->configService = $configService;
+    }
 
     /*
      * All the public service methods in a service facade are typically atomic -
@@ -40,14 +59,117 @@ class Scope extends AbstractEntityService{
      */
 
     /**
-     * Gets all scopes in the database
+     * Get either all scopes in the database or the scopes with the specified ids. 
+     * @param mixed $scopeIdArray Array of scope IDs as ints or null 
      * @return array An array of Scope objects
      */
-    public function getScopes() {
-    	$dql = "SELECT s from Scope s
-    			ORDER BY s.name";
-    	$query = $this->em->createQuery($dql);
-    	return $query->getResult();
+    public function getScopes($scopeIdArray = NULL) {
+        // Note: empty array is converted to null by non-strict equal '==' comparison. 
+        // Use is_null() or '===' if there is possible of getting empty array.
+        if($scopeIdArray === NULL){
+            // get all scopes in the DB by default 
+    	    $dql = "SELECT s from Scope s ORDER BY s.name";
+    	    $query = $this->em->createQuery($dql);
+            return $query->getResult();
+            
+        } else if(count($scopeIdArray) > 0){
+            $dql = "SELECT s from Scope s WHERE s.id IN(:scopeIdArray) ORDER BY s.name"; 
+            $query = $this->em->createQuery($dql)->setParameter('scopeIdArray', $scopeIdArray);
+            return $query->getResult();
+        } else {
+            return array(); 
+        }
+    }
+
+
+    /**
+     * Return a new filtered array by filtering the given $scopeArray or all of the
+     * {@see \Scope}s in the DB according to the associative $filterParams. 
+     * <p>
+     * Supported parameters in $filterParams include:
+     * <ul>
+     *   <li>'excludeDefault' => boolean (if true, exclude scopes that have a 
+     *       default value listed in the 'local_info.xml' config file</li>
+     *   <li>'excludeNonDefault' => boolean (if true exclude scopes that are not default)</li>
+     *   <li>'excludeReserved' => boolean (if true, exclude 'reserved' scopes, 
+     *      i.e. those that are listed as reserved in the the 'local_info.xml' config file</li>
+     *   <li>'excludeNonReserved' => boolean (if true, exclude 'normal' scopes, 
+     *     i.e. those that are not listed as reserved in the the 'local_info.xml' config file</li>
+     * </ul>
+     * 
+     * @param array $filterParams Associative array 
+     * @param mixed $scopeArray Array of {@see \Scope} entities or null to filter 
+     *   all scopes in the DB.   
+     * @return array New array of \Scope instances 
+     */
+    public function getScopesFilterByParams(array $filterParams, $scopeArray) {
+        // The filterParams array can be extended with new key/val pairs. E.g.  
+        // 'excludeProvided' => array(of Scope instances to filter/exclude) from results 
+
+        if (!is_null($scopeArray)) {
+            //Check that each entity scope is a scope
+            foreach ($scopeArray as $scope) {
+                if (!($scope instanceof \Scope)) {
+                    throw new \InvalidArgumentException("object is not an instance of Scope.");
+                }
+            }
+            $allScopes = $scopeArray; 
+        } else {
+            $allScopes = $this->getScopes(); 
+        }
+        
+        // Check the parameter keys are supoported
+        $supportedParams = array('excludeNonDefault', 'excludeDefault', 'excludeReserved', 'excludeNonReserved'); 
+	$testParamKeys = array_keys($filterParams);
+	foreach ($testParamKeys as $key) {
+	    // if givenkey is not defined in supportedkeys it is unsupported
+	    if (!in_array($key, $supportedParams)) {
+		throw new \InvalidArgumentException('Unsupported parameter key');
+	    }
+	}
+        
+        $defaultScopeName = $this->configService->getDefaultScopeName();
+
+        if (isset($filterParams['excludeNonDefault']) && $filterParams['excludeNonDefault'] == TRUE) {
+            foreach ($allScopes as $scope) {
+                if ($scope->getName() != $defaultScopeName) {
+                    unset($allScopes[array_search($scope, $allScopes)]); 
+                }
+            }
+        }
+        if (isset($filterParams['excludeDefault']) && $filterParams['excludeDefault'] == TRUE) {
+            foreach ($allScopes as $scope) {
+                if ($scope->getName() == $defaultScopeName) {
+                    unset($allScopes[array_search($scope, $allScopes)]); 
+                }
+            }
+        }
+        if(isset($filterParams['excludeReserved']) && $filterParams['excludeReserved'] == TRUE){
+            $reservedScopes = $this->configService->getReservedScopeList(); 
+            foreach ($allScopes as $scope) {
+                foreach($reservedScopes as $rs){
+                   if($scope->getName() == $rs){
+                       unset($allScopes[array_search($scope, $allScopes)]); 
+                   }
+                }
+            }
+        }
+        if(isset($filterParams['excludeNonReserved']) && $filterParams['excludeNonReserved'] == TRUE){
+            $reservedScopes = $this->configService->getReservedScopeList(); 
+            foreach ($allScopes as $scope) {
+                $isReserved = false; 
+                foreach($reservedScopes as $rs){
+                   if($scope->getName() == $rs){
+                       $isReserved = true; 
+                       break; 
+                   }
+                }
+                if(!$isReserved){
+                   unset($allScopes[array_search($scope, $allScopes)]);  
+                }
+            }
+        }
+        return $allScopes;  
     }
 
     /**
@@ -273,31 +395,37 @@ class Scope extends AbstractEntityService{
 
         return $scope;
     }
+
+    
     
     /**
-     * Creates a multidimensional array containing all those scopes currently 
-     * available and details of whether or not each scope appears in the array 
-     * input. Used to provide checkboxes for scope selection when editing 
+     * Returns a 2D array - each element wraps an associative array for every 
+     * Scope in the DB; each child array nests a Scope and a boolean to indicate if 
+     * the Scope appears in the given array.  
+     * <p>
+     * Used to provide checkboxes for scope selection when editing 
      * exisiting entities in the web portal
+     * <p>
+     * Each element nests a child associative array; 
+     * array( 'scope' => {@see \Scope}, 'applied' => boolean )
      * 
-     * @param \Doctrine\Common\Collections\Collection $entityScopes scopes belonging to the entity 
-     * @return array array contains a seriese of arrays, each of which contains
-     *               a scope and a boolean.
-     * @throws Exception if a array collection of scopes is not the input
+     * @param array $entityScopes \Scope objects 
+     * @return array 2D Array - elements are associative arrays containing the \Scope and a boolean   
+     * @throws \LogicException if given collection does not contain {@see \Scope} instances.  
      */
-    public function getScopesSelectedArray(\Doctrine\Common\Collections\Collection $entityScopes){
+    public function getAllScopesMarkProvided($entityScopes){
         //Check that each entity scope is a scope
         foreach ($entityScopes as $scope){
             if (!($scope instanceof \Scope)){
-                throw new Exception("object is not a scope.");
+                throw new \LogicException("object is not a scope.");
             }
         }
         
         //create an array containing scopes that can be applied to an entity
         // and wheter or not they appear in the $entityScopes list
         $scopeArray=array();
-        $scopes = $this->getScopes();
-        foreach ($scopes as $scope) {
+        $allScopes = $this->getScopes();
+        foreach ($allScopes as $scope) {
             $innerArray = array('scope'=>$scope, 'applied' => false);
             foreach ($entityScopes as $entityScope){
                 if ($entityScope == $scope){
@@ -310,26 +438,25 @@ class Scope extends AbstractEntityService{
         return $scopeArray;
     }
     
-     /**
-     * Creates a multidimensional array containing all those scopes currently 
-     * available in the same format as getScopesSelectedArray, but witht the 
-     * default scopes selected. Used to provide checkboxes for scope selection 
-     * when adding new entities in the web portal
+    /**
+     * Returns a 2D array - each element wraps an associative array for every 
+     * Scope in the DB; each child array nests a Scope and a boolean to indicate if 
+     * the Scope is a default scope.  
+     * <p>
+     * Used to provide checkboxes for scope selection when adding new entities in the web portal. 
+     * <p>
+     * Each element nests a 2D child associative array; 
+     * array( 'scope' => {@see \Scope}, 'applied' => boolean )
      * 
-     * @return array array contains a seriese of arrays, each of which contains
-     *               a scope and a boolean.
-     * @throws Exception if a array collection of scopes is not the input
+     * @return array 2D Array - elements are associative arrays containing the \Scope and a boolean  
      */
-    public function getDefaultScopesSelectedArray(){
-        
+    public function getAllScopesMarkDefault(){
         //create an array containing scopes that can be applied to an entity
         // and wheter or not they appear in the $entityScopes list
         $scopeArray=array();
         $scopes = $this->getScopes();
         
-        require_once __DIR__ . '/Config.php';
-        $configService = new \org\gocdb\services\Config();
-        $defaultScopeName = $configService->getDefaultScopeName();
+        $defaultScopeName = $this->configService->getDefaultScopeName();
         
         foreach ($scopes as $scope) {
             $innerArray = array('scope'=>$scope, 'applied' => false);
@@ -338,7 +465,6 @@ class Scope extends AbstractEntityService{
             }
             $scopeArray[]=$innerArray;
         }
-        
         return $scopeArray;
     }
 
@@ -363,53 +489,54 @@ class Scope extends AbstractEntityService{
     }
     
     /**
-	 * Performs some basic checks on the values aray and then validates the user
+     * Performs some basic checks on the values aray and then validates the user
      * inputted scope type data against the data in the gocdb_schema.xml.
-	 * @param array $scopeData containing all the fields for a GOCDB scope object
+     * @param array $scopeData containing all the fields for a GOCDB scope object
      * @param boolean $scopeIsNew true if the values are for a new scope
      * @param string $oldScopeName name of the sope before this cvhange. Only 
      *                             relevant if scopeIsNew = false
-	 * @throws \Exception If the project's data can't be
-	 *                    validated. The \Exception message will contain a human
-	 *                    readable description of which field failed validation.
-	 * @return null */
-	private function validate($scopeData, $scopeIsNew, $oldScopeName='') {
-		require_once __DIR__.'/Validate.php';
-		
+     * @throws \Exception If the project's data can't be
+     *                    validated. The \Exception message will contain a human
+     *                    readable description of which field failed validation.
+     * @return null */
+    private function validate($scopeData, $scopeIsNew, $oldScopeName = '') {
+        require_once __DIR__ . '/Validate.php';
+
         //check values are there
-        if(!((array_key_exists('Name',$scopeData)) and (array_key_exists('Description',$scopeData)))){
+        if (!((array_key_exists('Name', $scopeData)) and ( array_key_exists('Description', $scopeData)))) {
             throw new \Exception("A name scope must be specified");
-        }    
-        
+        }
+
         //check values are strings
-        if(!((is_string($scopeData['Name'])) and (is_string($scopeData['Description'])))){
+        if (!((is_string($scopeData['Name'])) and ( is_string($scopeData['Description'])))) {
             throw new \Exception("The new scope name must be a valid string");
         }
-                     
+
         //check that the name is not null
-        if(empty($scopeData['Name'])){
+        if (empty($scopeData['Name'])) {
             throw new \Exception("A name must be specified for the Scope");
         }
-        
+
         //check the name is unique
-        if(($scopeIsNew) or ($scopeData['Name']!=$oldScopeName)){
-            if(!$this->scopeNameIsUnique($scopeData['Name'])){
-                throw new \Exception("Scope names must be unique, '".$scopeData['Name']."' is already in use");
+        if (($scopeIsNew) or ( $scopeData['Name'] != $oldScopeName)) {
+            if (!$this->scopeNameIsUnique($scopeData['Name'])) {
+                throw new \Exception("Scope names must be unique, '" . $scopeData['Name'] . "' is already in use");
             }
         }
-        
+
         //remove the ID fromt the values file if present (which it may be for an edit)
-        if(array_key_exists("Id",$scopeData)){
+        if (array_key_exists("Id", $scopeData)) {
             unset($scopeData["Id"]);
         }
-               
+
         $serv = new \org\gocdb\services\Validate();
-		foreach ($scopeData as $field => $value) {
-			$valid = $serv->validate('scope', strtoupper($field), $value);
-			if(!$valid) {
-				$error = "$field contains an invalid value: $value";
-				throw new \Exception($error);
-			}
-		}
-	}
+        foreach ($scopeData as $field => $value) {
+            $valid = $serv->validate('scope', strtoupper($field), $value);
+            if (!$valid) {
+                $error = "$field contains an invalid value: $value";
+                throw new \Exception($error);
+            }
+        }
+    }
+
 }      

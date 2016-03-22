@@ -71,27 +71,25 @@ function submit(\User $user = null) {
  * @return null
  */
 function draw(\User $user = null) {
-    $serv = \Factory::getServiceGroupService();
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
     // Get the service group
-    $sg = $serv->getServiceGroup($_REQUEST['id']);
-    //try { $serv->editAuthorization($sg, $user); } catch(Exception $e) {
-    //	show_view('error.php', $e->getMessage()); die(); }
-    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
+    $sg = \Factory::getServiceGroupService()->getServiceGroup($_REQUEST['id']);
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
+            \Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
        show_view('error.php', 'You do not have permission to edit this ServiceGroup'); 
        die(); 
     }
-    // If the user is registered they're allowed to add a service group
     
-    $configService= \Factory::getConfigService();
-    
-    $scopes = \Factory::getScopeService()->getScopesSelectedArray($sg->getScopes());
-    $numberScopesRequired = $configService->getMinimumScopesRequired('service_group');
+    $scopes = \Factory::getScopeService()->getAllScopesMarkProvided($sg->getScopes());
+    $numberScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('service_group');
+    // a ServiceGroup has no parent hence pass null
+    $scopejsonStr = getEntityScopesAsJSON2($sg, null, $user->isAdmin() ? false : true); 
 
-    $params = array('serviceGroup' => $sg, 'scopes' => $scopes
-            , 'numberOfScopesRequired'=>$numberScopesRequired);
+    $params = array('serviceGroup' => $sg, 'scopes' => $scopes, 
+            'numberOfScopesRequired'=>$numberScopesRequired, 
+            'scopejson'=>$scopejsonStr);
 
     show_view("service_group/edit_service_group.php", $params, "Edit " . $sg->getName());
 }

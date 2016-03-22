@@ -16,6 +16,7 @@ namespace org\gocdb\services;
 require_once __DIR__ . '/Site.php';
 require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/RoleActionAuthorisationService.php';
+require_once __DIR__.  '/Config.php';
 
 /**
  * GOCDB Stateless service facade (business routines) for Service objects.
@@ -30,14 +31,31 @@ require_once __DIR__ . '/RoleActionAuthorisationService.php';
 class ServiceService extends AbstractEntityService {
 
     private $roleActionAuthorisationService;
+    private $configService; 
+    private $scopeService; 
 
     function __construct(/* $roleActionAuthorisationService */) {
 	parent::__construct();
 	//$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+        $this->configService = new Config(); 
     }
 
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\RoleActionAuthorisationService $roleActionAuthService
+     */
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService) {
 	$this->roleActionAuthorisationService = $roleActionAuthService;
+    }
+
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\Scope $scopeService
+     */
+    public function setScopeService(Scope $scopeService){
+        $this->scopeService = $scopeService; 
     }
 
     /**
@@ -146,7 +164,11 @@ class ServiceService extends AbstractEntityService {
 	}
 	if(isset($filterParams['scope'])){
 	    $scope = $filterParams['scope'];
+        $scopeMatch = 'all';
 	}
+        if(isset($filterParams['scopeMatch'])){
+            $scopeMatch = $filterParams['scopeMatch'];
+        }
 	if(isset($filterParams['ngi'])){
 	    $ngi = $filterParams['ngi']; 
 	}
@@ -220,7 +242,7 @@ class ServiceService extends AbstractEntityService {
 	// Create WHERE clauses for multiple scopes using positional bind params 
 	if ($scope != null) {
 	    require_once __DIR__ . '/PI/QueryBuilders/ScopeQueryBuilder.php';
-	    $scopeQueryBuilder = new ScopeQueryBuilder($scope, 'all', $qb, $this->em, $bc, 'Service', 'se');
+	    $scopeQueryBuilder = new ScopeQueryBuilder($scope, $scopeMatch, $qb, $this->em, $bc, 'Service', 'se');
 	    //Get the result of the scope builder
 	    /* @var $qb \Doctrine\ORM\QueryBuilder */ 
 	    $qb = $scopeQueryBuilder->getQB();
@@ -374,31 +396,88 @@ class ServiceService extends AbstractEntityService {
 	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
 	//Authorise the change
-	//if(count($this->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
-	if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() == FALSE) {
-	    throw new \Exception("You do not have permission over $se.");
+	if ($this->roleActionAuthorisationService->authoriseAction(
+                \Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() == FALSE) {
+	    throw new \Exception("You do not have permission over this service.");
 	}
 
-	// Explicity demarcate our tx boundary
-	$this->em->getConnection()->beginTransaction();
-
 	$st = $this->getServiceType($newValues['serviceType']);
-
 
 	$this->validate($newValues['SE'], 'service');
 	$this->validateEndpointUrl($newValues['endpointUrl']);
 	$this->uniqueCheck($newValues['SE']['HOSTNAME'], $st, $se->getParentSite());
-
-	//check there are the required number of scopes specified
-	$this->checkNumberOfScopes($newValues['Scope_ids']);
-
-	// validate production/monitored combination 
+        // validate production/monitored combination 
 	if ($st != 'VOMS' && $st != 'emi.ARGUS') {
 	    if ($newValues['PRODUCTION_LEVEL'] == "Y" && $newValues['IS_MONITORED'] != "Y") {
 		throw new \Exception("If Production flat is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)");
 	    }
 	}
+	
+        // EDIT SCOPE TAGS: 
+        // collate selected scopeIds (reserved and non-reserved)
+        $scopeIdsToApply = array(); 
+        foreach($newValues['Scope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        foreach($newValues['ReservedScope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
 
+        // If not admin, Check user edits to the service's Reserved scopes: 
+        // Required to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $se->getScopes()->toArray()); 
+            
+            $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $se->getParentSite()->getScopes()->toArray()); 
+            
+            foreach($selectedReservedScopes as $sc){
+                // Reserved scopes must already be assigned to se or parent 
+                if(!in_array($sc, $existingReservedScopes) && !in_array($sc, $existingReservedScopesParent)){
+                    throw new \Exception("A reserved Scope Tag was selected that "
+                            . "is not assigned to the Service or to the Parent Site");  
+                }
+            }
+        }
+        
+        // Check no changes to Reserved scopes (if not admin): 
+        // When normal users EDIT the service, the selected scopeIds should 
+        // be checked to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        // 
+        // Note, on edit we also don't want to enforce cascading of parent Site scopes to the service,  
+        // as we need to allow an admin to de-select a service's reserved scopes 
+        // (which is a perfectly valid requirement) and prevent re-cascading 
+        // when the user next edits the service! 
+        /*if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $se->getScopes()->toArray()); 
+            
+            if(count($selectedReservedScopes) != count($existingReservedScopes)) {
+                    throw new \Exception("The reserved Scope count does not match the Services's existing scope count "); 
+            }
+            foreach($selectedReservedScopes as $sc){
+                if(!in_array($sc, $existingReservedScopes)){
+                    throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the Service"); 
+                }
+            }
+        }*/
+        
+        //check there are the required number of optional scopes specified
+	$this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
+               array('excludeReserved' => true), $selectedScopesToApply));
+
+        // Explicity demarcate our tx boundary
+	$this->em->getConnection()->beginTransaction();
 	try {
 	    // Set the service's member variables
 	    $se->setHostName($newValues['SE']['HOSTNAME']);
@@ -446,13 +525,16 @@ class ServiceService extends AbstractEntityService {
 	    }
 
 	    //find then link each scope specified to the site
-	    foreach ($newValues['Scope_ids'] as $scopeId) {
-		$dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-		$scope = $this->em->createQuery($dql)
-			->setParameter(1, $scopeId)
-			->getSingleResult();
-		$se->addScope($scope);
-	    }
+//	    foreach ($scopeIdsToApply as $scopeId) {
+//		$dql = "SELECT s FROM Scope s WHERE s.id = ?1";
+//		$scope = $this->em->createQuery($dql)
+//			->setParameter(1, $scopeId)
+//			->getSingleResult();
+//		$se->addScope($scope);
+//	    }
+            foreach($selectedScopesToApply as $scope){
+                $se->addScope($scope); 
+            }
 
 	    $this->em->merge($se);
 	    //$this->em->merge($el);
@@ -603,23 +685,18 @@ class ServiceService extends AbstractEntityService {
      * @param org\gocdb\services\User $user The user adding the SE
      */
     public function addService($values, \User $user = null) {
-	$this->em->getConnection()->beginTransaction();
 
 	// get the parent site
 	$dql = "SELECT s from Site s WHERE s.id = :id";
+        /* @var $site \Site */
 	$site = $this->em->createQuery($dql)
 		->setParameter('id', $values['hostingSite'])
 		->getSingleResult();
 	// get the service type
 	$st = $this->getServiceType($values['serviceType']);
 
-	/* $siteService = new \org\gocdb\services\Site(); 
-	  $siteService->setEntityManager($this->em);
-	  if(count($siteService->authorize Action(\Action::SITE_ADD_SERVICE, $site, $user))==0){
-	  throw new \Exception("You don't hold a role over $site.");
-	  } */
-	//if(count($this->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
-	if ($this->roleActionAuthorisationService->authoriseAction(\Action::SITE_ADD_SERVICE, $site, $user)->getGrantAction() == FALSE) {
+	if ($this->roleActionAuthorisationService->authoriseAction(
+                \Action::SITE_ADD_SERVICE, $site, $user)->getGrantAction() == FALSE) {
 	    throw new \Exception("You don't have permission to add a service to this site.");
 	}
 
@@ -627,18 +704,50 @@ class ServiceService extends AbstractEntityService {
 	$this->validateEndpointUrl($values['endpointUrl']);
 	$this->uniqueCheck($values['SE']['HOSTNAME'], $st, $site);
 
-	//check there are the required number of scopes specified
-	$this->checkNumberOfScopes($values['Scope_ids']);
-
-	// validate production/monitored combination 
+        // validate production/monitored combination 
 	if ($st != 'VOMS' && $st != 'emi.ARGUS') {
 	    if ($values['PRODUCTION_LEVEL'] == "Y" && $values['IS_MONITORED'] != "Y") {
-		throw new \Exception("If Production flat is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)");
+		throw new \Exception("If Production flag is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)");
 	    }
 	}
 
-	$se = new \Service();
+        // ADD SCOPE TAGS: 
+        // collate selected reserved and non-reserved scopeIds. 
+        // Note, Reserved scopes can be inherited from the parent Site. 
+        $allSelectedScopeIds = array(); 
+        foreach($values['Scope_ids'] as $sid){
+            $allSelectedScopeIds[] = $sid; 
+        }
+        foreach($values['ReservedScope_ids'] as $sid){
+            $allSelectedScopeIds[] = $sid; 
+        }
+
+        $selectedScopesToApply = $this->scopeService->getScopes($allSelectedScopeIds); 
+        
+        // If not admin, check that requested reserved scopes are already implemented by the parent Site. 
+        // Required to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $site->getScopes()->toArray()); 
+            
+            foreach($selectedReservedScopes as $sc){
+                // Reserved scopes must already be assigned to parent 
+                if(!in_array($sc, $existingReservedScopesParent)){
+                    throw new \Exception("A reserved Scope Tag was selected that is not assigned to the Parent Site");  
+                }
+            }
+        }
+        
+        //check there are the required number of OPTIONAL scopes specified
+	$this->checkNumberOfScopes($values['Scope_ids']);
+
+	$this->em->getConnection()->beginTransaction();
 	try {
+            $se = new \Service();
 	    $se->setParentSiteDoJoin($site);
 	    $se->setServiceType($st);
 
@@ -664,13 +773,16 @@ class ServiceService extends AbstractEntityService {
 	    }
 
 	    // Set the scopes
-	    foreach ($values['Scope_ids'] as $scopeId) {
-		$dql = "SELECT s FROM Scope s WHERE s.id = :id";
-		$scope = $this->em->createQuery($dql)
-			->setParameter('id', $scopeId)
-			->getSingleResult();
-		$se->addScope($scope);
-	    }
+//	    foreach ($allSelectedScopeIds as $scopeId) {
+//		$dql = "SELECT s FROM Scope s WHERE s.id = :id";
+//		$scope = $this->em->createQuery($dql)
+//			->setParameter('id', $scopeId)
+//			->getSingleResult();
+//		$se->addScope($scope);
+//	    }
+            foreach($selectedScopesToApply as $scope){
+                $se->addScope($scope); 
+            }
 
 	    $se->setDn($values['SE']['HOST_DN']);
 	    $se->setIpAddress($values['SE']['HOST_IP']);
@@ -681,12 +793,6 @@ class ServiceService extends AbstractEntityService {
 	    $se->setEmail($values['SE']['EMAIL']);
 	    $se->setUrl($values['endpointUrl']);
 
-	    /* With version 5.3 a service does not have to have an endpoint. 
-	      $el = new \EndpointLocation();
-	      $el->setUrl($values['endpointUrl']);
-	      $se->addEndpointLocationDoJoin($el);
-	      $this->em->persist($el);
-	     */
 	    $this->em->persist($se);
 	    $this->em->flush();
 	    $this->em->getConnection()->commit();
@@ -820,152 +926,63 @@ class ServiceService extends AbstractEntityService {
 	//TODO Function: This function is called but not yet filled out with an action
     }
 
-    /**
-     * Adds a key value pair to a service
-     * @param $values
-     * @param \User $user
-     * @throws Exception
-     * @return \ServiceProperty
-     */
-    public function addProperty($values, \User $user = null) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$this->validate($values['SERVICEPROPERTIES'], 'serviceproperty');
-
-	$keyname = $values['SERVICEPROPERTIES']['NAME'];
-	$keyvalue = $values['SERVICEPROPERTIES']['VALUE'];
-	$serviceID = $values['SERVICEPROPERTIES']['SERVICE'];
-	$service = $this->getService($serviceID);
-	$this->validateAddEditDeleteActions($user, $service);
-	$this->checkNotReserved($user, $service, $keyname);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    $serviceProperty = new \ServiceProperty();
-	    $serviceProperty->setKeyName($keyname);
-	    $serviceProperty->setKeyValue($keyvalue);
-	    //$service = $this->em->find("Service", $serviceID);
-	    $service->addServicePropertyDoJoin($serviceProperty);
-	    $this->em->persist($serviceProperty);
-
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-	return $serviceProperty;
-    }
-
-    /**
-     * Adds a key value pair to an EndpointLocation.  
-     * @param $values
-     * @param \User $user
-     * @throws Exception
-     * @return \EndpoingLocation 
-     */
-    public function addEndpointProperty($values, \User $user) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$this->validate($values['ENDPOINTPROPERTIES'], 'endpointproperty');
-
-	$keyname = $values['ENDPOINTPROPERTIES']['NAME'];
-	$keyvalue = $values['ENDPOINTPROPERTIES']['VALUE'];
-	$endpointID = $values['ENDPOINTPROPERTIES']['ENDPOINTID'];
-	$endpoint = $this->getEndpoint($endpointID);
-	$service = $endpoint->getService();
-	$this->validateAddEditDeleteActions($user, $service);
-	$this->checkNotReserved($user, $service, $keyname);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    $property = new \EndpointProperty();
-	    $property->setKeyName($keyname);
-	    $property->setKeyValue($keyvalue);
-	    $endpoint->addEndpointPropertyDoJoin($property);
-	    $this->em->persist($property);
-
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-	return $property;
-    }
-
-
-    /**
-     * Deletes service properties
-     * @param \Service $service
-     * @param \User $user
-     * @param array $propArr
-     */
-    public function deleteServiceProperties(\Service $service, \User $user, array $propArr) {
-	//Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-	$this->validateAddEditDeleteActions($user, $service);
-
-	$this->em->getConnection()->beginTransaction();
-	try {
-	    foreach ($propArr as $prop) {
-		//throw new \Exception(var_dump($prop));
-		//check property is in service
-		if ($prop->getParentService() != $service) {
-		    $id = $prop->getId();
-		    throw new \Exception("Property {$id} does not belong to the specified service");
-		}
-
-		// Service is the owning side so remove elements from service.
-		$service->getServiceProperties()->removeElement($prop);
-		// Once relationship is removed delete the actual element
-		$this->em->remove($prop);
-	    }
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-	} catch (\Exception $e) {
-	    $this->em->getConnection()->rollback();
-	    $this->em->close();
-	    throw $e;
-	}
-    }
-
-    
-    /**
-     * Deletes the given EndpointProperties in the array from their parent Endpoints (if set).
-     * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null
-     * then the function throws an exception because the user permissions to delete
-     * the EP can't be determined on a null Endpoint.
-     * @param \User $user
-     * @param array $propArr
-     */
-    public function deleteEndpointProperties(\User $user, array $propArr) {
+	/**
+	 * Adds key value pairs to a service
+	 * @param \Service $service
+	 * @param \User $user
+	 * @param array $propArr
+	 * @param bool $preventOverwrite
+	 * @throws \Exception
+	 */
+    public function addProperties(\Service $service, \User $user, array $propArr, $preventOverwrite = false) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        //throw new \Exception(var_dump($propArr));
+
+        $this->validateAddEditDeleteActions($user, $service);
+
+        $existingProperties = $service->getServiceProperties();
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
 
         $this->em->getConnection()->beginTransaction();
-
         try {
-            foreach ($propArr as $prop) {
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
-                //check endpoint property has an parent endpoint
-                $endpoint = $prop->getParentEndpoint();
-                if ($endpoint == null) {
-                    $id = $prop->getId();
-                    throw new \Exception("Property {$id} does not have a parent endpoint");
-                }
+				foreach ($existingProperties as $existProp) {
+					if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+						if ($preventOverwrite == false) {
+							continue 2;
+						} else {
+							throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+						}
+					}
+				}
 
-                //check user has permissions over the service associated with the endpoint
-                $service = $endpoint->getService();
-                $this->validateAddEditDeleteActions($user, $service);
+                $this->checkNotReserved($user, $service, $key);
 
-                // EndointLocation is the owning side so remove elements from endpoint.
-                $endpoint->getEndpointProperties()->removeElement($prop);
-                // Once relationship is removed delete the actual element
-                $this->em->remove($prop);
-            }
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $this->validate($validateArray, 'serviceproperty');
+
+                $serviceProperty = new \ServiceProperty();
+                $serviceProperty->setKeyName($key);
+                $serviceProperty->setKeyValue($value);
+                //$service = $this->em->find("Service", $serviceID);
+                $service->addServicePropertyDoJoin($serviceProperty);
+				$this->em->persist($serviceProperty);
+
+			}
+
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -974,6 +991,150 @@ class ServiceService extends AbstractEntityService {
             throw $e;
         }
     }
+
+    /**
+     * Adds a key value pair to a service endpoint
+     * @param \EndpointLocation $endpoint
+     * @param \User $user
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @throws \Exception
+     */
+    public function addEndpointProperties(\EndpointLocation $endpoint, \User $user, array $propArr, $preventOverwrite = false) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        //throw new \Exception(var_dump($propArr));
+
+        $this->validateAddEditDeleteActions($user, $endpoint->getService());
+
+        $existingProperties = $endpoint->getEndpointProperties();
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+
+                foreach ($existingProperties as $existProp) {
+                    if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+                        if ($preventOverwrite == false) {
+                            continue 2;
+                        } else {
+                            throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+                        }
+                    }
+                }
+
+                $this->checkNotReserved($user, $endpoint->getService(), $key);
+
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $validateArray['ENDPOINTID'] = $endpoint->getId();
+                $this->validate($validateArray, 'endpointproperty');
+
+
+                $property = new \EndpointProperty();
+                $property->setKeyName($key);
+                $property->setKeyValue($value);
+                $endpoint->addEndpointPropertyDoJoin($property);
+                $this->em->persist($property);
+
+            }
+
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+	/**
+	 * Deletes service properties
+	 * @param \Service $service
+	 * @param \User $user
+	 * @param array $propArr
+	 */
+	public function deleteServiceProperties(\Service $service, \User $user, array $propArr) {
+		//Check the portal is not in read only mode, throws exception if it is
+		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+		$this->validateAddEditDeleteActions($user, $service);
+
+		$this->em->getConnection()->beginTransaction();
+		try {
+			foreach ($propArr as $prop) {
+				//throw new \Exception(var_dump($prop));
+				//check property is in service
+				if ($prop->getParentService() != $service){
+					$id = $prop->getId();
+					throw new \Exception("Property {$id} does not belong to the specified service");
+				}
+
+				// Service is the owning side so remove elements from service.
+				$service->getServiceProperties()->removeElement($prop);
+				// Once relationship is removed delete the actual element
+				$this->em->remove($prop);
+			}
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $e;
+		}
+	}
+
+	/**
+	 * Deletes the given EndpointProperties in the array from their parent Endpoints (if set).
+	 * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null
+	 * then the function throws an exception because the user permissions to delete
+	 * the EP can't be determined on a null Endpoint.
+	 * @param \User $user
+	 * @param array $propArr
+	 */
+	public function deleteEndpointProperties(\User $user, array $propArr) {
+		//Check the portal is not in read only mode, throws exception if it is
+		$this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+		$this->em->getConnection()->beginTransaction();
+
+		try {
+			foreach ($propArr as $prop) {
+
+				//check endpoint property has an parent endpoint
+				$endpoint = $prop->getParentEndpoint();
+				if ($endpoint == null){
+					$id = $prop->getId();
+					throw new \Exception("Property {$id} does not have a parent endpoint");
+				}
+
+				//check user has permissions over the service associated with the endpoint
+				$service = $endpoint->getService();
+				$this->validateAddEditDeleteActions($user, $service);
+
+				// EndointLocation is the owning side so remove elements from endpoint.
+				$endpoint->getEndpointProperties()->removeElement($prop);
+				// Once relationship is removed delete the actual element
+				$this->em->remove($prop);
+			}
+			$this->em->flush();
+			$this->em->getConnection()->commit();
+		} catch (\Exception $e) {
+			$this->em->getConnection()->rollback();
+			$this->em->close();
+			throw $e;
+		}
+	}
 
     /**
      * Edits an existing service property that already belongs to the service. 
@@ -1113,7 +1274,9 @@ class ServiceService extends AbstractEntityService {
     public function moveService(\Service $Service, \Site $Site, \User $user = null) {
 	//Throws exception if user is not an administrator
 	$this->checkUserIsAdmin($user);
+
 	$this->em->getConnection()->beginTransaction(); //suspend auto-commit
+
 	try {
 	    //If the site or service have no ID - throw logic exception
 	    $site_id = $Site->getId();
@@ -1133,6 +1296,7 @@ class ServiceService extends AbstractEntityService {
 
 		//Remove the service from the old site if it has an old site
 		if (!empty($old_Site)) {
+
 		    $old_Site->getServices()->removeElement($Service);
 		}
 
@@ -1283,13 +1447,8 @@ class ServiceService extends AbstractEntityService {
 	require_once __DIR__ . '/Config.php';
 	$configService = new \org\gocdb\services\Config();
 	$minumNumberOfScopes = $configService->getMinimumScopesRequired('service');
-
 	if (sizeof($scopeIds) < $minumNumberOfScopes) {
-	    $s = "s";
-	    if ($minumNumberOfScopes == 1) {
-		$s = "";
-	    }
-	    throw new \Exception("A service must have at least " . $minumNumberOfScopes . " scope" . $s . " assigned to it.");
+	    throw new \Exception("A service must have at least " . $minumNumberOfScopes . " optional scope(s)  assigned to it.");
 	}
     }
 

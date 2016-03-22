@@ -1,5 +1,8 @@
 <?php
 $se = $params['se'];
+//throw new \Exception(var_dump(get_class($se)));
+
+//throw new \Exception(var_dump($se));
 $parentSiteName = $se->getParentSite()->getName();
 $extensionProperties = $se->getServiceProperties();
 $seId = $se->getId();
@@ -122,14 +125,7 @@ $configService = \Factory::getConfigService();
                 </tr>
 				<!-- scope: remove this for a non-scoping version of view_service -->
                 <tr class="site_table_row_2">
-                    <td class="site_table">
-                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal"
-                            title="Note, Scope(x) indicates the parent Site does not share this scope">
-                            Scope(s)
-                        </a>
-                    </td>
-                    <td class="site_table">
-                        <?php
+                    <?php
                         $count = 0;
                         $numScopes = sizeof($params['Scopes']);
                         $scopeString = '';
@@ -143,8 +139,15 @@ $configService = \Factory::getConfigService();
                                 $scopeString .= ", ";
                             }
                         }
-                        ?>   
-			<textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
+                        ?>  
+                    <td class="site_table">
+                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal"
+                            title="Note, Scope(x) indicates the parent Site does not share this scope">
+                            Scope Tags 
+                        </a>
+                    </td>
+                    <td class="site_table">
+			<textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($scopeString); ?></textarea>
                     </td>
                 </tr>
 
@@ -313,13 +316,11 @@ $configService = \Factory::getConfigService();
    
     
     <!--  Service Properties -->
-
     <?php
     $parent = $params['se'];
     $propertiesController = "Service_Properties_Controller";
-    $addPropertyURL = "index.php?Page_Type=Add_Service_Property&se=";
+    $addPropertiesPage = "Add_Service_Properties";
     $editPropertyPage = "Edit_Service_Property";
-
 
     require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
     ?>

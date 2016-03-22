@@ -157,22 +157,22 @@ class RoleActionRecord {
      *               key and is for display purposes only.
      */
     function __construct($updatedByUserId, $updatedByUserPrinciple, $roleId, 
-	    $rolePreStatus, $roleNewStatus, $roleTypeId, $roleTypeName, 
-	    $roleTargetOwnedEntityId, $roleTargetOwnedEntityType, $roleUserId, $roleUserPrinciple) {
-	
-	$this->actionDate =  new \DateTime(null, new \DateTimeZone('UTC')); 
+            $rolePreStatus, $roleNewStatus, $roleTypeId, $roleTypeName, 
+            $roleTargetOwnedEntityId, $roleTargetOwnedEntityType, $roleUserId, $roleUserPrinciple) {
+        
+        $this->actionDate =  new \DateTime(null, new \DateTimeZone('UTC')); 
 
-	$this->updatedByUserId = $updatedByUserId;
-	$this->updatedByUserPrinciple = $updatedByUserPrinciple;
-	$this->roleId = $roleId;
-	$this->rolePreStatus = $rolePreStatus;
-	$this->roleNewStatus = $roleNewStatus;
-	$this->roleTypeId = $roleTypeId;
-	$this->roleTypeName = $roleTypeName;
-	$this->roleTargetOwnedEntityId = $roleTargetOwnedEntityId;
-	$this->roleTargetOwnedEntityType = $roleTargetOwnedEntityType;
-	$this->roleUserId = $roleUserId;
-	$this->roleUserPrinciple = $roleUserPrinciple;
+        $this->updatedByUserId = $updatedByUserId;
+        $this->updatedByUserPrinciple = $updatedByUserPrinciple;
+        $this->roleId = $roleId;
+        $this->rolePreStatus = $rolePreStatus;
+        $this->roleNewStatus = $roleNewStatus;
+        $this->roleTypeId = $roleTypeId;
+        $this->roleTypeName = $roleTypeName;
+        $this->roleTargetOwnedEntityId = $roleTargetOwnedEntityId;
+        $this->roleTargetOwnedEntityType = $roleTargetOwnedEntityType;
+        $this->roleUserId = $roleUserId;
+        $this->roleUserPrinciple = $roleUserPrinciple;
     }
 
     /**
@@ -184,27 +184,27 @@ class RoleActionRecord {
      * @return \self
      */
     public static function construct(\User $callingUser, \Role $role, $newStatus) {
-	$rar = new self(
-		$callingUser->getId(), 
-		/* $callingUser->getCertificateDn(), */ 
-		$callingUser->getFullName(), 
-		$role->getId(), 
-		$role->getStatus(), 
-		$newStatus, 
-		$role->getRoleType()->getId(), 
-		$role->getRoleType()->getName(), 
-		$role->getOwnedEntity()->getId(), 
-		$role->getOwnedEntity()->getType(), 
-		$role->getUser()->getId(), 
-		$role->getUser()->getFullName());
-	return $rar;
+        $rar = new self(
+                $callingUser->getId(), 
+                /* $callingUser->getCertificateDn(), */ 
+                $callingUser->getFullName(), 
+                $role->getId(), 
+                $role->getStatus(), 
+                $newStatus, 
+                $role->getRoleType()->getId(), 
+                $role->getRoleType()->getName(), 
+                $role->getOwnedEntity()->getId(), 
+                $role->getOwnedEntity()->getType(), 
+                $role->getUser()->getId(), 
+                $role->getUser()->getFullName());
+        return $rar;
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
     function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -212,7 +212,7 @@ class RoleActionRecord {
      * @return \DateTime
      */
     function getActionDate() {
-	return $this->actionDate;
+        return $this->actionDate;
     }
 
     /**
@@ -220,7 +220,7 @@ class RoleActionRecord {
      * @return string
      */
     function getUpdatedByUserId() {
-	return $this->updatedByUserId;
+        return $this->updatedByUserId;
     }
 
     /**
@@ -230,7 +230,7 @@ class RoleActionRecord {
      * @return string
      */
     function getUpdatedByUserPrinciple() {
-	return $this->updatedByUserPrinciple;
+        return $this->updatedByUserPrinciple;
     }
 
     /**
@@ -238,7 +238,7 @@ class RoleActionRecord {
      * @return int
      */
     function getRoleId() {
-	return $this->roleId;
+        return $this->roleId;
     }
 
     /**
@@ -246,7 +246,7 @@ class RoleActionRecord {
      * @return string
      */
     function getRolePreStatus() {
-	return $this->rolePreStatus;
+        return $this->rolePreStatus;
     }
 
     /**
@@ -254,7 +254,7 @@ class RoleActionRecord {
      * @return string
      */
     function getRoleNewStatus() {
-	return $this->roleNewStatus;
+        return $this->roleNewStatus;
     }
 
     /**
@@ -262,7 +262,7 @@ class RoleActionRecord {
      * @return int 
      */
     function getRoleTypeId() {
-	return $this->roleTypeId;
+        return $this->roleTypeId;
     }
 
     /**
@@ -270,7 +270,7 @@ class RoleActionRecord {
      * @return string
      */
     function getRoleTypeName() {
-	return $this->roleTypeName;
+        return $this->roleTypeName;
     }
 
     /**
@@ -278,7 +278,7 @@ class RoleActionRecord {
      * @return int
      */
     function getRoleTargetOwnedEntityId() {
-	return $this->roleTargetOwnedEntityId;
+        return $this->roleTargetOwnedEntityId;
     }
 
     /**
@@ -287,7 +287,7 @@ class RoleActionRecord {
      * @return string 
      */
     function getRoleTargetOwnedEntityType() {
-	return $this->roleTargetOwnedEntityType;
+        return $this->roleTargetOwnedEntityType;
     }
 
     /**
@@ -295,7 +295,7 @@ class RoleActionRecord {
      * @return int
      */
     function getRoleUserId() {
-	return $this->roleUserId;
+        return $this->roleUserId;
     }
 
     /**
@@ -306,7 +306,7 @@ class RoleActionRecord {
      * @return string
      */
     function getRoleUserPrinciple() {
-	return $this->roleUserPrinciple;
+        return $this->roleUserPrinciple;
     }
 
 }

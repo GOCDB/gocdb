@@ -46,10 +46,9 @@ function edit_service() {
  * @return null
  */
 function submit(\User $user = null) {
-    $serv = \Factory::getServiceService();
     $newValues = getSeDataFromWeb();
-    $se = $serv->getService($newValues['ID']);
-    $se = $serv->editService($se, $newValues, $user);
+    $se = \Factory::getServiceService()->getService($newValues['ID']);
+    $se = \Factory::getServiceService()->editService($se, $newValues, $user);
     $params = array('se' => $se);
     show_view('service/service_updated.php', $params);
 }
@@ -60,31 +59,40 @@ function submit(\User $user = null) {
  * @throws \Exception
  */
 function draw(\User $user = null) {
+    // can user assign reserved scopes to this site?
+    $disableReservedScopes = true; 
+    if($user->isAdmin()){
+	$disableReservedScopes = false; 
+    }
+    
+    // URL mapping
+    // Return all scopes for the Site with the specified Id as a JSON object 
+    // Used in ajax requests for display purposes
+    /*if(isset($_GET['getAllScopesForScopedEntity']) && is_numeric($_GET['getAllScopesForScopedEntity'])){
+        $service = \Factory::getServiceService()->getService($_GET['getAllScopesForScopedEntity']); 
+        die(getEntityScopesAsJSON($service, $disableReservedScopes));  
+        
+    } else*/ 
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
-	$id = $_REQUEST['id'];
-	$serv = \Factory::getServiceService();
-	$se = $serv->getService($id);
+    
+    $id = $_REQUEST['id'];
+    /* @var $se \Service */
+    $se = \Factory::getServiceService()->getService($id);
 
-	//if(count(Factory::getServiceService()->authorize Action(\Action::EDIT_OBJECT, $se, $user)) == 0){
-    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction()==FALSE){
-       throw new \Exception("You do not have permission over $se.");  
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
+            \Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction()==FALSE){
+       throw new \Exception("You do not have permission over this service.");  
     }
     
-    $configservice = \Factory::getConfigService();
-    
-    //get parent scope ids to generate warning message in view
-    $params["parentScopeIds"] = array();
-    foreach ($se->getParentSite()->getScopes() as $scope){
-        $params["parentScopeIds"][]=$scope->getId();
-    }
-	$params['se'] = $se;
-	$params['serviceTypes'] = $serv->getServiceTypes();
-	$params['scopes'] = \Factory::getScopeService()->getScopesSelectedArray($se->getScopes());
-    $params['numberOfScopesRequired'] = $configservice->getMinimumScopesRequired('service');
-    
-	show_view('service/edit_service.php', $params);
+
+    $params['se'] = $se;
+    $params['serviceTypes'] = \Factory::getServiceService()->getServiceTypes();
+    $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('service');
+    $params["disableReservedScopes"]=$disableReservedScopes;
+    $params['scopejson'] = getEntityScopesAsJSON2($se, $se->getParentSite(), $disableReservedScopes); 
+    show_view('service/edit_service.php', $params);
 }
 
 

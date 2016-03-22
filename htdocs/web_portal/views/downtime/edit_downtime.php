@@ -202,25 +202,27 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         $('#siteTimezoneText').val(TARGETTIMEZONEID); 
         
         //Setup datetimepicker
-        $('#startDate, #endDate').datetimepicker({
-    		pickTime:false,
-    		startDate:getDate()     //Only show dates 48hrs in the past
-    	});
+       $('#startDate, #endDate').datetimepicker({
+           format: 'DD/MM/YYYY',
 
-        $('#startTime, #endTime').datetimepicker({
-        	format: 'HH:mm',
-            pickDate: false,
-            pickSeconds: false,
-            pick12HourFormat: false
-        });
+           //pickTime:false,
+           //startDate:getDate()     //Only show dates 48 in the past
+       });
+       // configure time pickers
+       $('#startTime, #endTime').datetimepicker({
+           format: 'HH:mm',
+           //pickDate: false,
+           //pickSeconds: false,
+           //pick12HourFormat: false
+       });
 
         //echo out the start and end date into the Jquery setters for the datetime picker
-        $('#startDate').data("DateTimePicker").setDate("<?php echo date_format($startDate,"m/d/Y"); ?>");
-        $('#endDate').data("DateTimePicker").setDate("<?php echo date_format($endDate,"m/d/Y"); ?>");
+        $('#startDate').data("DateTimePicker").date("<?php echo date_format($startDate,"d/m/Y H:i"); ?>");
+        $('#endDate').data("DateTimePicker").date("<?php echo date_format($endDate,"d/m/Y H:i"); ?>");
 
         //Set the start and finish times - we echo in the full date but DateTimePicker will only render the time values
-        $('#startTime').data("DateTimePicker").setDate("<?php echo date_format($startDate,"m/d/Y H:i"); ?>");
-        $('#endTime').data("DateTimePicker").setDate("<?php echo date_format($endDate,"m/d/Y H:i"); ?>");
+        $('#startTime').data("DateTimePicker").date("<?php echo date_format($startDate,"m/d/Y H:i"); ?>");
+        $('#endTime').data("DateTimePicker").date("<?php echo date_format($endDate,"m/d/Y H:i"); ?>");
 
         // By default select the original affected services and endpoints  
         loadSitesServicesAndEndpoints();

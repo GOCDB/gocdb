@@ -99,7 +99,7 @@ class Role {
      * @return int The PK of this entity or null if not persisted. 
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -120,7 +120,7 @@ class Role {
      * @return \OwnedEntity The object that this Role is over. 
      */
     public function getOwnedEntity() {
-    	return $this->ownedEntity;
+        return $this->ownedEntity;
     }
 
     /**
@@ -144,7 +144,7 @@ class Role {
      * @param \OwnedEntity $owned The associated entity
      */
     public function setOwnedEntity(\OwnedEntity $owned) {
-    	$this->ownedEntity = $owned;
+        $this->ownedEntity = $owned;
     }
 
     public function getStatus(){

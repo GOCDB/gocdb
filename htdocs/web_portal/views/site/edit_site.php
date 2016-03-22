@@ -7,40 +7,41 @@ $siteScopes = $site->getScopes();
 <div class="rightPageContainer">
     <form name="Edit_Site" action="index.php?Page_Type=Edit_Site" method="post" class="inputForm">
         <h1>Edit Site</h1>
-    	<br />
+        <br />
 
         <!-- Countries -->    	
         <span class="input_name">Country</span>
         <select class="add_edit_form" name="Country">
-            <?php foreach($params['countries'] as $country) { ?>
-                <option value="<?php xecho($country->getName()) ?>"<?php if($site->getCountry() == $country) echo " selected=\"selected\""; ?>><?php xecho($country->getName()) ?></option>
+            <?php foreach ($params['countries'] as $country) { ?>
+                <option value="<?php xecho($country->getName()) ?>"<?php if ($site->getCountry() == $country) echo " selected=\"selected\""; ?>><?php xecho($country->getName()) ?></option>
             <?php } ?>
         </select>
-        
+
         <!-- Timezones -->
         <span class="input_name">Timezone</span>
         <select class="add_edit_form" name="TIMEZONE">
-            <?php 
-            foreach($params['timezones']  as $key => $tz) { ?>
-                <?php /*<!--<option value="<?php xecho($tz->getName()) ?>"<?php if($site->getTimezone() == $tz) echo " selected=\"selected\""; ?>><?php xecho($tz->getName()) ?></option>*/?>
-                <option value="<?php xecho($tz) ?>" <?php if($site->getTimezoneId() == $tz){ echo " selected=\"selected\""; } ?>>
-                    <?php xecho($tz); ?>
+            <?php foreach ($params['timezones'] as $key => $tz) { ?>
+                <?php /* <!--<option value="<?php xecho($tz->getName()) ?>"<?php if($site->getTimezone() == $tz) echo " selected=\"selected\""; ?>><?php xecho($tz->getName()) ?></option> */ ?>
+                <option value="<?php xecho($tz) ?>" <?php if ($site->getTimezoneId() == $tz) {
+                echo " selected=\"selected\"";
+            } ?>>
+                <?php xecho($tz); ?>
                 </option>
-            <?php } ?>
+<?php } ?>
         </select>
-        
+
         <!-- Production Statuses -->
         <span class="input_name">Infrastructure</span>
         <select class="add_edit_form" name="ProductionStatus">
-            <?php foreach($params['prodStatuses'] as $status) { ?>
-                <option value="<?php xecho($status->getName()) ?>"<?php if($site->getInfrastructure() == $status) echo " selected=\"selected\""; ?>><?php xecho($status->getName()) ?></option>
-            <?php } ?>
+            <?php foreach ($params['prodStatuses'] as $status) { ?>
+                <option value="<?php xecho($status->getName()) ?>"<?php if ($site->getInfrastructure() == $status) echo " selected=\"selected\""; ?>><?php xecho($status->getName()) ?></option>
+<?php } ?>
         </select>
-        
+
         <!-- Domain -->
         <span class="input_name">Domain *</span>
         <input class="input_input_text" type="text" name="DOMAIN" value="<?php xecho($site->getDomain()) ?>" />
-        
+
         <!-- Short Name -->
         <span class="input_name">Short Name * 
             <span class="input_syntax" >
@@ -48,7 +49,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="SHORT_NAME" value="<?php xecho($site->getShortName()) ?>" />
-        
+
         <!--  Official Name -->
         <span class="input_name">Official Name 
             <span class="input_syntax" >
@@ -56,7 +57,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="OFFICIAL_NAME" value="<?php xecho($site->getOfficialName()) ?>" />
-        
+
         <!-- URL -->
         <span class="input_name">
             Home URL 
@@ -65,7 +66,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="HOME_URL" value="<?php xecho($site->getHomeUrl()) ?>" />
-        
+
         <!-- GIIS URL -->
         <span class="input_name">
             GIIS URL
@@ -74,7 +75,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="GIIS_URL" value="<?php xecho($site->getGiisUrl()) ?>" />
-        
+
         <!-- IP Range -->
         <span class="input_name">
             IP Range
@@ -83,14 +84,14 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="IP_RANGE" value="<?php xecho($site->getIpRange()) ?>" />
-        
+
         <!-- IP v6 Range -->        
         <span class="input_name">
             IPv6 Range
             <span class="input_syntax" >(0000:0000:0000:0000:0000:0000:0000:0000[/int]) (optional [/int] range)</span>
         </span>        
         <input class="input_input_text" type="text" name="IP_V6_RANGE" value="<?php xecho($site->getIpV6Range()) ?>" />
-        
+
         <!-- Location -->
         <span class="input_name">
             Location
@@ -99,21 +100,21 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="LOCATION" value="<?php xecho($site->getLocation()) ?>" />
-        
+
         <!-- Latitude -->
         <span class="input_name">
             Latitude    
             <span class="input_syntax" >(-90 <= number <= 90)</span>
         </span>
         <input class="input_input_text" type="text" name="LATITUDE" value="<?php xecho($site->getLatitude()) ?>" />
-        
+
         <!-- Longitude -->
         <span class="input_name">
             Longitude
             <span class="input_syntax" >(-180 <= number <= 180)</span>
         </span>
         <input class="input_input_text" type="text" name="LONGITUDE" value="<?php xecho($site->getLongitude()) ?>" />
-        
+
         <!-- Description -->
         <span class="input_name">
             Description *
@@ -122,7 +123,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="DESCRIPTION" value="<?php xecho($site->getDescription()) ?>" />
-        
+
         <!-- E-Mail -->
         <span class="input_name">
             E-Mail * 
@@ -131,7 +132,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="EMAIL" value="<?php xecho($site->getEmail()) ?>" />
-        
+
         <!-- Contact Telephone Number -->
         <span class="input_name">
             Contact Telephone Number *
@@ -140,7 +141,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="CONTACTTEL" value="<?php xecho($site->getTelephone()) ?>" />
-            
+
         <!-- Emergency Telephone Number -->    
         <span class="input_name">
             Emergency Telephone Number
@@ -149,7 +150,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="EMERGENCYTEL" value="<?php xecho($site->getEmergencyTel()) ?>" />
-        
+
         <!-- Security e-mail -->
         <span class="input_name">
             Security Contact E-mail (CSIRT E-Mail)
@@ -158,7 +159,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="CSIRTEMAIL" value="<?php xecho($site->getCsirtEmail()) ?>" />
-        
+
         <!--  Security telephone number -->
         <span class="input_name">
             Security Contact Telephone Number (CSIRT Telephone Number)
@@ -167,7 +168,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="CSIRTTEL" value="<?php xecho($site->getCsirtTel()) ?>" />
-        
+
         <!--  Alarm e-mail -->
         <span class="input_name">
             Alarm E-Mail (for LCG Tiers 1)
@@ -176,7 +177,7 @@ $siteScopes = $site->getScopes();
             </span>
         </span>
         <input class="input_input_text" type="text" name="EMERGENCYEMAIL" value="<?php xecho($site->getAlarmEmail()) ?>" />
-        
+
         <!-- Helpdesk email -->        
         <span class="input_name">
             Helpdesk E-Mail
@@ -186,53 +187,47 @@ $siteScopes = $site->getScopes();
         </span>
         <input class="input_input_text" type="text" name="HELPDESKEMAIL" value="<?php xecho($site->getHelpdeskEmail()) ?>" />
 
-	<span class="input_name">
-	    Action to Take For All Child Service Scopes
-        </span>
-	<select class="add_edit_form" name="childServiceScopeAction">
-	    <option value="noModify" selected="true">Do not modify child Service scopes</option>
-	    <option value="inherit">Inherit all Site scopes (leaves additional Service scopes that are not used by the Site intact)</option>
-	    <option value="override">Override Service Scopes with Site scopes (removes Service scopes that are not used/checked by Site)</option>
-	</select>
-	
-        <span class="input_name">
-	    Scope(s) 
-	    <span class="input_syntax">(Select at least <?php xecho($params['numberOfScopesRequired'])?>)</span>
-        </span>
-	<?php /*
-	 // comment out - this is a pain if you have many scopes  
-        <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirmScope.js"></script>
-	 */ ?>
-        <div style="margin-left: 2em">    
-            <?php foreach ($params['scopes'] as $scopeArray){ ?>
-                <?php
-                $scopeName = $scopeArray['scope']->getName();
-                $scopeId = $scopeArray['scope']->getId();
-                $checkedParamater = '';
-                if($scopeArray['applied']){
-                    $checkedParamater = ' checked="checked"';
-                }
-		// Comment out - this is a pain if you have many scopes !
-                //$onClick = '';
-                //if (!in_array($scopeId, $params["parentScopeIds"])){
-                //    $onClick = " onclick=\"return confirmScopeSelect('$scopeName', '$ngiName', '$siteName', this.checked)\"";
-                //} 
-           ?>
-	        <?php
-                /* // comment out- this is a pain if you have many scopes
-		 * <input type="checkbox" name="Scope_ids[]" value="<?php echo $scopeId;?>"<?php echo $checkedParamater;?> <?php echo $onClick;?>>
-		 */
-		?>
-		 <input type="checkbox" name="Scope_ids[]" value="<?php echo $scopeId;?>"<?php echo $checkedParamater;?>>
-                <?php xecho($scopeName);?>      
-            <?php } ?>
-        </div>  	
 
-	
+        <br>
+        <br>
         
+        <!-- Scope Tags-->
+        <?php 
+        $parentObjectTypeLabel = 'NGI'; 
+        require_once __DIR__ . '/../fragments/editScopesFragment.php';
+        ?>
+        
+
+        <br>
+        
+        <span class="input_name">
+            Action to Take For All Child Service Scopes
+        </span>
+        <select class="add_edit_form" name="childServiceScopeAction">
+            <option value="noModify" selected="true">Do not modify child Service scopes</option>
+            <option value="inherit">Inherit all Site scopes (leaves additional Service scopes that are not used by the Site intact)</option>
+            <option value="override">Override Service Scopes with Site scopes (removes Service scopes that are not used/checked by Site)</option>
+        </select>
+
+        <br>
+
         <input class="input_input_hidden" type="hidden" name="ID" value="<?php xecho($site->getId()) ?>" />
-        
+
         <input class="input_button" type="submit" value="Edit Site" />
-           
+
     </form>
 </div>
+
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/buildScopeCheckBoxes.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
+        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
+        '#reservedScopeCheckBoxDIV', 
+        '#reservedOptionalScopeCheckBoxDIV', 
+        '#reservedOptionalInhertiableScopeCheckBoxDIV', 
+        '#optionalScopeCheckBoxDIV', 
+        true);
+    });
+</script>    

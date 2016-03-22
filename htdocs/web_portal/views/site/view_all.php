@@ -58,7 +58,7 @@
 	    </div>
 
 	    <div class="topMargin leftFloat siteFilter">
-		<span class=""><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
+		<span class=""><a href="index.php?Page_Type=Scope_Help">Site Scopes:</a> </span>
 		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
 		    <?php foreach ($params['scopes'] as $scope) { ?>
 			<option value="<?php xecho($scope->getName()); ?>" 
@@ -67,12 +67,24 @@
 			</option>
 		    <?php } ?>
 		</select>
+            <span class="">Scope match: </span>
+
+            <select id="scopeMatchSelect" name="scopeMatch">
+<!--                <option value="" disabled selected>match</option>-->
+                <option value="all"<?php if ($params['scopeMatch'] == "all") {
+                    echo ' selected';
+                } ?>>all (selected tags are AND'd)</option>
+                <option value="any"<?php if ($params['scopeMatch'] == "any") {
+                    echo ' selected';
+                } ?>>any (selected tags are OR'd)</option>
+
+            </select>
 	    </div>
 
 
 
 	    <div class="topMargin leftFloat siteFilter">
-		<span class="">Extension Name:</span>
+		<span class="">Site Extension Name:</span>
                 <select name="siteKeyNames">
 		    <option value="">(none)</option>
 		    <?php foreach ($params['siteKeyNames'] as $siteExtensions) { ?>
@@ -166,6 +178,14 @@
 	    </tbody>	    
         </table>
     </div>
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
 </div>
 
 

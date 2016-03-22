@@ -24,22 +24,26 @@ require_once __DIR__ . '/IPIQuery.php';
  * @author James McCarthy
  * @author David Meredith 
  */
-class GetNGIContacts implements IPIQuery{
+class GetNGIContacts implements IPIQuery {
+    
     protected $query;
     protected $validParams;
     protected $em;
     private $helpers;
     private $roleT;
     private $ngis;
+    private $baseUrl; 
     
     /** Constructor takes entity manager to be passed to method using the
      *  query builder
      *
      * @param EntityManager $em
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
      */
-    public function __construct($em){
+    public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal'){
         $this->em = $em;
         $this->helpers=new Helpers();
+        $this->baseUrl = $baseUrl; 
     }
     
     /** Validates parameters against array of pre-defined valid terms
@@ -131,7 +135,7 @@ class GetNGIContacts implements IPIQuery{
 			$xmlNgi->addAttribute('ROC_NAME', $ngi->getName());
 			$xmlNgi->addChild('ROCNAME', $ngi->getName());
 			$xmlNgi->addChild('MAIL_CONTACT', $ngi->getEmail());
-			$portalUrl = '#GOCDB_BASE_PORTAL_URL#/index.php?Page_Type=NGI&id=' . $ngi->getId ();
+			$portalUrl = $this->baseUrl.'/index.php?Page_Type=NGI&id=' . $ngi->getId ();
 			$portalUrl = htmlspecialchars ( $portalUrl );
 			$helpers->addIfNotEmpty ( $xmlNgi, 'GOCDB_PORTAL_URL', $portalUrl );
 			foreach($ngi->getRoles() as $role) {

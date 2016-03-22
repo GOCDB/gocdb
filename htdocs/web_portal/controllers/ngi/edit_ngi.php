@@ -55,14 +55,21 @@ function draw(\User $user = null) {
     if($user == null){
        throw new Exception('You do not have permission to edit this NGI, null user'); 
     }
-    //if(count($serv->authorize Action(Action::EDIT_OBJECT, $ngi, $user)) == 0){ 
-    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(Action::EDIT_OBJECT, $ngi, $user)->getGrantAction() == FALSE){
+    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
+            Action::EDIT_OBJECT, $ngi, $user)->getGrantAction() == FALSE){
         throw new Exception('You do not have permission to edit this NGI');
     }
+    // can user assign reserved scopes ?
+    $disableReservedScopes = true; 
+    if($user->isAdmin()){
+	$disableReservedScopes = false; 
+    }
+    // pass null for the parent as we don't consider project scopes (yet) 
+    $scopejsonStr = getEntityScopesAsJSON2($ngi, null, $disableReservedScopes); 
      
     $params = array('ngi' => $ngi);
-    $params['scopes'] = \Factory::getScopeService()->getScopesSelectedArray($ngi->getScopes());
     $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
+    $params['scopejson'] = $scopejsonStr; 
     
     show_view('ngi/edit_ngi.php', $params);
 }
@@ -75,6 +82,9 @@ function draw(\User $user = null) {
 function submit(\User $user = null) {
 	$serv = \Factory::getNgiService();
 	$newValues = getNgiDataFromWeb();
+//        print_r($newValues); 
+//        die(); 
+        
 	$ngi = $serv->getNgi($newValues['ID']);
 	$ngi = $serv->editNgi($ngi, $newValues, $user);
 	$params = array('ngi' => $ngi);

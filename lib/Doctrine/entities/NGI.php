@@ -132,7 +132,7 @@ class NGI extends OwnedEntity implements IScopedEntity {
     }
     
     public function getDescription() {
-    	return $this->description;
+        return $this->description;
     }
 
     public function getGgus_Su(){
@@ -224,11 +224,11 @@ class NGI extends OwnedEntity implements IScopedEntity {
     }
     
     public function setName($name) {
-    	$this->name = $name;
+        $this->name = $name;
     }
     
     public function setDescription($description) {
-    	$this->description = $description;
+        $this->description = $description;
     }
 
     public function setGgus_Su($ggus_su){

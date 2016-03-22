@@ -104,6 +104,14 @@
 	    </tbody>
         </table>
     </div>
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
 </div>
 
 <script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>

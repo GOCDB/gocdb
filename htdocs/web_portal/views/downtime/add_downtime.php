@@ -196,15 +196,17 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
    $(document).ready(function() {
         // configure date pickers 
         $('#startDate, #endDate').datetimepicker({
-    		pickTime:false,
-    		startDate:getDate()     //Only show dates 48 in the past
+            format: 'DD/MM/YYYY',
+
+            //pickTime:false,
+    		//startDate:getDate()     //Only show dates 48 in the past
     	});
         // configure time pickers 
         $('#startTime, #endTime').datetimepicker({
         	format: 'HH:mm',
-            pickDate: false,
-            pickSeconds: false,
-            pick12HourFormat: false
+            //pickDate: false,
+            //pickSeconds: false,
+            //pick12HourFormat: false
         });
    
         // invoke ajax call to get selected sites timezoneId and offset (if 
@@ -223,7 +225,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
        // The bootstrap datetimepickers don't fire the change event
        // but they trigger a change.dp event instead so a separate 
        // jQuery handler is needed.
-       $('.date').on("change.dp", function(e) {
+       $('.date').on("dp.change", function(e) {
            updateStartEndTimesInUtc();
            validate();
        });

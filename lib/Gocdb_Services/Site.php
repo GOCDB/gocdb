@@ -16,9 +16,11 @@ require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/RoleConstants.php'; 
 require_once __DIR__ . '/NGI.php'; 
 require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
+require_once __DIR__.  '/Scope.php';
+require_once __DIR__.  '/Config.php';
 
 /**
- * GOCDB Stateless service facade (business routines) for Site objects.
+ * GOCDB service for Site object business routines.
  * The public API methods are transactional.
  * @todo Implement the ISiteService interface when ready.
  *
@@ -30,15 +32,32 @@ require_once __DIR__ . '/RoleActionAuthorisationService.php';
 class Site extends AbstractEntityService{
    
     private $roleActionAuthorisationService;
+    private $scopeService; 
+    private $configService; 
      
-    function __construct(/*$roleActionAuthorisationService*/) {
+    function __construct(/*$roleActionAuthorisationService, $scopeService*/) {
         parent::__construct();
         //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
+        //$this->scopeService = $scopeService; 
+        $this->configService = new Config(); 
     }
 
-
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\RoleActionAuthorisationService $roleActionAuthService
+     */
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
         $this->roleActionAuthorisationService = $roleActionAuthService; 
+    }
+
+    /**
+     * Set class dependency (REQUIRED). 
+     * @todo Mandatory objects should be injected via constructor. 
+     * @param \org\gocdb\services\Scope $scopeService
+     */
+    public function setScopeService(Scope $scopeService){
+        $this->scopeService = $scopeService; 
     }
     
     /*
@@ -55,15 +74,12 @@ class Site extends AbstractEntityService{
      * @return Site a site object
      */
     public function getSite($id) {
-    	$dql = "SELECT s FROM Site s
-				WHERE s.id = :id";
-
-    	$site = $this->em
-	    	->createQuery($dql)
-	    	->setParameter('id', $id)
-	    	->getSingleResult();
-
-    	return $site;
+        $dql = "SELECT s FROM Site s WHERE s.id = :id";
+        $site = $this->em
+                ->createQuery($dql)
+                ->setParameter('id', $id)
+                ->getSingleResult();
+        return $site;
     }
 
     /**
@@ -119,27 +135,61 @@ class Site extends AbstractEntityService{
         // Check to see whether the user has a role that covers this site
         //$this->edit Authorization($site, $user);
         //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
-        if($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction()==FALSE){
+        if($this->roleActionAuthorisationService->authoriseAction(
+                \Action::EDIT_OBJECT, $site, $user)->getGrantAction()==FALSE){
             throw new \Exception("You don't have permission over ". $site->getShortName());
         }
         
         $this->validate($newValues['Site'], 'site');
         // TODO: Check the sitename is unique (reusable code in addSite())
+       
+        // EDIT SCOPE TAGS: 
+        // collate selected scopeIds (reserved and non-reserved)
+        $scopeIdsToApply = array(); 
+        foreach($newValues['Scope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        foreach($newValues['ReservedScope_ids'] as $sid){
+            $scopeIdsToApply[] = $sid; 
+        }
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
         
-        //check there are the required number of scopes specified
-        $this->checkNumberOfScopes($newValues['Scope_ids']);
+        // If not admin, Check user edits to the site's Reserved scopes: 
+        // Required to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        // Site can only have reserved tags that are already assigned or assigned to the parent. 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $site->getScopes()->toArray()); 
+            
+            $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $site->getNgi()->getScopes()->toArray()); 
+            
+            foreach($selectedReservedScopes as $sc){
+                // Reserved scopes must already be assigned to site or parent 
+                if(!in_array($sc, $existingReservedScopes) && !in_array($sc, $existingReservedScopesParent)){
+                    throw new \Exception("A reserved Scope Tag was selected that is "
+                            . "not assigned to the Site or to the Parent NGI");  
+                }
+            }
+        }
+        
+        //check there are the required number of optional scopes specified
+        $this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
+               array('excludeReserved' => true), $selectedScopesToApply));
 
-	// check childServiceScopeAction is a known value
-	if($newValues['childServiceScopeAction'] != 'noModify' &&
-		$newValues['childServiceScopeAction'] != 'inherit' && 
-		$newValues['childServiceScopeAction'] != 'override' ){
-	    throw new \Exception("Invalid scope update action"); 
-	}
+        // check childServiceScopeAction is a known value
+        if($newValues['childServiceScopeAction'] != 'noModify' &&
+                $newValues['childServiceScopeAction'] != 'inherit' && 
+                $newValues['childServiceScopeAction'] != 'override' ){
+            throw new \Exception("Invalid scope update action"); 
+        }
         
         $this->em->getConnection()->beginTransaction();
-
         try {
-
             // Set the site's member variables
             $site->setOfficialName($newValues['Site']['OFFICIAL_NAME']);
             $site->setShortName($newValues['Site']['SHORT_NAME']);
@@ -173,56 +223,74 @@ class Site extends AbstractEntityService{
             foreach($scopes as $s) {
                 $site->removeScope($s);
             }
-          
-            //find then link each scope specified to the site
-            foreach($newValues['Scope_ids'] as $scopeId){
-                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-                $scope = $this->em->createQuery($dql)
-                             ->setParameter(1, $scopeId)
-                             ->getSingleResult();
-                $site->addScope($scope);
+//            foreach($scopeIdsToApply as $scopeId){
+//                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
+//                $scope = $this->em->createQuery($dql)
+//                             ->setParameter(1, $scopeId)
+//                             ->getSingleResult();
+//                $site->addScope($scope);
+//            }
+
+            // Link the requested scopes to the site
+            foreach($selectedScopesToApply as $scope){
+                $site->addScope($scope); 
             }
 
-	    // Update the child service scopes 
-	    if($newValues['childServiceScopeAction'] == 'noModify'){
-	        // do nothing to child service scopes, leave intact 	
-	    } else if($newValues['childServiceScopeAction'] == 'inherit'){
-		// iterate each child service and ensure it has all the site scopes 
-		$services = $site->getServices();
-		/* @var $service \Service */
-		foreach($services as $service){
-		    // for this service, see if it has each siteScope, if not add it  
-		    foreach($site->getScopes() as $siteScope){
-			$addScope = true; 
-			foreach($service->getScopes() as $servScope){
-			    if($siteScope == $servScope){
-				$addScope = false; 
-				break; 
-			    }
-			}
-			if($addScope){
-			   $service->addScope($siteScope);  
-			}
-		    }
-		}
-		
-	    } else if($newValues['childServiceScopeAction'] == 'override'){
-		$services = $site->getServices();
-		/* @var $service \Service */
-		foreach($services as $service){
-		    // remove all service's existing scopes
-		    foreach($service->getScopes() as $servScope){
-			$service->removeScope($servScope); 
-		    }
-		    // add all site scopes 
-		    foreach($site->getScopes() as $siteScope){
-			$service->addScope($siteScope); 
-		    }
-		}
-	        	
-	    } else {
-		throw new \Exception("Invalid scope update action"); 	
-	    }
+            // Remove reserved scopes from child services that are not applied on site 
+            $siteReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $site->getScopes()->toArray());
+            foreach ($site->getServices() as $service) {
+                $serviceReservedScopes = $this->scopeService->getScopesFilterByParams(
+                        array('excludeNonReserved' => true), $service->getScopes()->toArray());
+                foreach ($serviceReservedScopes as $seReservedScope) {
+                    if (!in_array($seReservedScope, $siteReservedScopes)) {
+                        $service->removeScope($seReservedScope);
+                    }
+                }
+            }
+
+
+            // Optionally update the child service scopes 
+            if($newValues['childServiceScopeAction'] == 'noModify'){
+                // do nothing to child service scopes, leave intact         
+            } else if($newValues['childServiceScopeAction'] == 'inherit'){
+                // iterate each child service and ensure it has all the site scopes 
+                $services = $site->getServices();
+                /* @var $service \Service */
+                foreach($services as $service){
+                    // for this service, see if it has each siteScope, if not add it  
+                    foreach($site->getScopes() as $siteScope){
+                        $addScope = true; 
+                        foreach($service->getScopes() as $servScope){
+                            if($siteScope == $servScope){
+                                $addScope = false; 
+                                break; 
+                            }
+                        }
+                        if($addScope){
+                           $service->addScope($siteScope);  
+                        }
+                    }
+                }
+                
+            } else if($newValues['childServiceScopeAction'] == 'override'){
+                // force child service scopes to be same as site 
+                $services = $site->getServices();
+                /* @var $service \Service */
+                foreach($services as $service){
+                    // remove all service's existing scopes
+                    foreach($service->getScopes() as $servScope){
+                        $service->removeScope($servScope); 
+                    }
+                    // add all site scopes 
+                    foreach($site->getScopes() as $siteScope){
+                        $service->addScope($siteScope); 
+                    }
+                }
+                        
+            } else {
+                throw new \Exception("Invalid scope update action");         
+            }
             
             // get / set the country
             $dql = "SELECT c FROM Country c WHERE c.name = ?1";
@@ -249,127 +317,6 @@ class Site extends AbstractEntityService{
         return $site;
     }
 
-    /**
-     * Get an array of Role names granted to the user that permit the requested 
-     * action on the given Site. If the user has no roles that 
-     * permit the requested action, then return an empty array. 
-     * <p>
-     * Suppored actions: EDIT_OBJECT, SITE_EDIT_CERT_STATUS, 
-     * SITE_ADD_SERVICE, SITE_DELETE_SERVICE, 
-     * GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE
-     * 
-     * @param string $action @see \Action 
-     * @param \Site $site
-     * @param \User $user
-     * @return array of RoleName strings that grant the requested action  
-     * @throws \LogicException if action is not supported or is unknown 
-     */
-    /*public function authorize Action($action, \Site $site, \User $user = null ) {
-        if(is_null($user)){
-            return array(); // empty array if null user 
-        }
-        if (!in_array($action, \Action::getAsArray())) {
-            throw new \LogicException('Coding Error - Invalid action');
-        }
-        $roleService = new \org\gocdb\services\Role(); // to inject
-        $roleService->setEntityManager($this->em);
-        
-        if ($action == \Action::EDIT_OBJECT || $action == \Action::SITE_ADD_SERVICE 
-                || $action == \Action::SITE_DELETE_SERVICE) {
-            // Site leve roles and parent NGI level roles can edit the site 
-            $requiredRoles = array(
-                // C
-                \RoleTypeName::SITE_ADMIN,
-                // C' 
-                \RoleTypeName::SITE_SECOFFICER,
-                \RoleTypeName::SITE_OPS_DEP_MAN,
-                \RoleTypeName::SITE_OPS_MAN,
-                // D
-                \RoleTypeName::REG_FIRST_LINE_SUPPORT,
-                \RoleTypeName::REG_STAFF_ROD,
-                // D' 
-                \RoleTypeName::NGI_SEC_OFFICER,
-                \RoleTypeName::NGI_OPS_DEP_MAN,
-                \RoleTypeName::NGI_OPS_MAN
-            );
-            // get the user's actual roles 
-            $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($site, $user);  
-            if($site->getNgi() != null){
-                // A Site should always have a parent NGI, but this is not enforced
-                // by the DB constraints as this may? be needed in future - also 
-                // unit tests use orphan sites. Thus this method is defensive. 
-                $usersActualRoleNames = array_merge($usersActualRoleNames, 
-                         $roleService->getUserRoleNamesOverEntity($site->getNgi(), $user));
-            }
-            // return intersection between between required roles and user's actual roles
-            $enablingRoles = array_intersect($requiredRoles, array_unique($usersActualRoleNames));
-            
-        } else if($action == \Action::GRANT_ROLE || 
-                $action == \Action::REJECT_ROLE || $action == \Action::REVOKE_ROLE){
-            // Site managers and NGI managers can manage roles 
-            $requiredRoles = array(
-                // C' (note, SITE_ADMIN can't manage role requests)
-                \RoleTypeName::SITE_SECOFFICER,
-                \RoleTypeName::SITE_OPS_DEP_MAN,
-                \RoleTypeName::SITE_OPS_MAN, 
-                // D' (note, D can't manage a role requests)
-                \RoleTypeName::NGI_SEC_OFFICER,
-                \RoleTypeName::NGI_OPS_DEP_MAN,
-                \RoleTypeName::NGI_OPS_MAN); 
-            // get the user's actual roles 
-            $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($site, $user); 
-            if ($site->getNgi() != null) {
-                // A Site should always have a parent NGI, but this is not enforced
-                // by the DB constraints as this may? be needed in future - also 
-                // unit tests use orphan sites. Thus this method is defensive. 
-                $usersActualRoleNames = array_merge($usersActualRoleNames, 
-                        $roleService->getUserRoleNamesOverEntity($site->getNgi(), $user));
-            }
-            // return intersection between between required roles and user's actual roles
-            $enablingRoles = array_intersect($requiredRoles, $usersActualRoleNames); 
-            
-        } else if ($action == \Action::SITE_EDIT_CERT_STATUS){
-            // only NGI manager and Project level roles can edit cert status 
-            $requiredRoles = array(
-                // D' 
-                \RoleTypeName::NGI_SEC_OFFICER,
-                \RoleTypeName::NGI_OPS_DEP_MAN,
-                \RoleTypeName::NGI_OPS_MAN, 
-                // E  
-                //\RoleTypeName::CIC_STAFF, 
-                \RoleTypeName::COD_STAFF,
-                \RoleTypeName::COD_ADMIN,
-                \RoleTypeName::EGI_CSIRT_OFFICER,
-                \RoleTypeName::COO);
-            
-            $usersActualRoleNames = array(); 
-            if($site->getNgi() != null){
-                // A Site should always have a parent NGI, but this is not enforced
-                // by the DB constraints as this may? be needed in future - also 
-                // unit tests use orphan sites. Thus this method is defensive. 
-                $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($site->getNgi(), $user);
-                // Get all project level roles for all the projects that group the site's ngi
-                if(count($site->getNgi()->getProjects()) > 0){
-                    foreach ($site->getNgi()->getProjects() as $parentProject) {
-                       $usersActualRoleNames = array_merge($usersActualRoleNames, 
-                               $roleService->getUserRoleNamesOverEntity($parentProject, $user)); 
-                    }
-                }
-            }
-            // return intersection between required roles and user's actual roles 
-            $enablingRoles = array_intersect($requiredRoles, array_unique($usersActualRoleNames));
-        } else {
-            throw new \LogicException('Unsupported Action');  
-        }
-       
-        if($user->isAdmin()){
-           $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;  
-        }
-        return array_unique($enablingRoles);
-    }*/
-
-    
-  
 
     /**
      * Validates the user inputted site data against the
@@ -428,17 +375,17 @@ class Site extends AbstractEntityService{
      */
     public function getSitesFilterByParams($filterParams){
         require_once __DIR__.'/PI/GetSite.php'; 
-	$getSite = new GetSite($this->em); 
-	//$params = array('sitename' => 'GRIDOPS-GOCDB');  
-        //$params = array('scope' => 'EGI,DAVE', 'sitename' => 'GRIDOPS-GOCDB');  	
-	//$params = array('scope' => 'EGI,Local', 'scope_match' => 'any', 'exclude_certification_status' => 'Closed');  
-	//$params = array('scope' => 'EGI,Local', 'scope_match' => 'all');  
-	//$params = array('scope' => 'EGI,DAVE', 'scope_match' => 'all');  
-	//$params = array('extensions' => '(aaa=123)(dave=\(someVal with parethesis\))(test=test)'); 
-	$getSite->validateParameters($filterParams); 
-	$getSite->createQuery(); 
-	$sites = $getSite->executeQuery(); 
-	return $sites; 
+        $getSite = new GetSite($this->em); 
+        //$params = array('sitename' => 'GRIDOPS-GOCDB');  
+        //$params = array('scope' => 'EGI,DAVE', 'sitename' => 'GRIDOPS-GOCDB');          
+        //$params = array('scope' => 'EGI,Local', 'scope_match' => 'any', 'exclude_certification_status' => 'Closed');  
+        //$params = array('scope' => 'EGI,Local', 'scope_match' => 'all');  
+        //$params = array('scope' => 'EGI,DAVE', 'scope_match' => 'all');  
+        //$params = array('extensions' => '(aaa=123)(dave=\(someVal with parethesis\))(test=test)'); 
+        $getSite->validateParameters($filterParams); 
+        $getSite->createQuery(); 
+        $sites = $getSite->executeQuery(); 
+        return $sites; 
     }
 
     
@@ -530,7 +477,6 @@ class Site extends AbstractEntityService{
     }
     
     /**
-     *
      * @return array of all properties for a site
      */
     public function getProperties($id) {
@@ -540,7 +486,6 @@ class Site extends AbstractEntityService{
     }
     
     /**
-     *
      * @return a single site property
      */
     public function getProperty($id) {
@@ -602,12 +547,12 @@ class Site extends AbstractEntityService{
      *  @return Array an array of Country objects
      */
     public function getCountries() {
-    	$dql = "SELECT c from Country c
-    			ORDER BY c.name";
-    	$countries = $this->em 
-    		->createQuery($dql)
-    		->getResult();
-    	return $countries;
+            $dql = "SELECT c from Country c
+                            ORDER BY c.name";
+            $countries = $this->em 
+                    ->createQuery($dql)
+                    ->getResult();
+            return $countries;
     }
 
     /**
@@ -615,12 +560,12 @@ class Site extends AbstractEntityService{
      *  @return Array an array of Timezone objects
      */
 //    public function getTimezones() {
-//    	$dql = "SELECT t from Timezone t
-//    			ORDER BY t.name";
-//    	$timezones = $this->em
-//    		->createQuery($dql)
-//    		->getResult();
-//    	return $timezones;
+//            $dql = "SELECT t from Timezone t
+//                            ORDER BY t.name";
+//            $timezones = $this->em
+//                    ->createQuery($dql)
+//                    ->getResult();
+//            return $timezones;
 //    }
 
 
@@ -629,32 +574,32 @@ class Site extends AbstractEntityService{
      * @param integer $id Site ID
      * @param integer $dayLimit Limit to downtimes that are only $dayLimit old (can be null) */
     public function getDowntimes($id, $dayLimit) {
-    	if($dayLimit != null) {
-    		$di = \DateInterval::createFromDateString($dayLimit . 'days');
-    		$dayLimit = new \DateTime();
-    		$dayLimit->sub($di);
-    	}
+            if($dayLimit != null) {
+                    $di = \DateInterval::createFromDateString($dayLimit . 'days');
+                    $dayLimit = new \DateTime();
+                    $dayLimit->sub($di);
+            }
 
         $dql = "SELECT d FROM Downtime d
-				WHERE d.id IN (
-					SELECT d2.id FROM Site s
-					JOIN s.services ses
-					JOIN ses.downtimes d2
-					WHERE s.id = :siteId
-				)
-				AND (
-					:dayLimit IS NULL
-					OR d.startDate > :dayLimit
-				)
-    	        ORDER BY d.startDate DESC";
+                                WHERE d.id IN (
+                                        SELECT d2.id FROM Site s
+                                        JOIN s.services ses
+                                        JOIN ses.downtimes d2
+                                        WHERE s.id = :siteId
+                                )
+                                AND (
+                                        :dayLimit IS NULL
+                                        OR d.startDate > :dayLimit
+                                )
+                    ORDER BY d.startDate DESC";
 
-    	$downtimes = $this->em
-	    	->createQuery($dql)
-	    	->setParameter('siteId', $id)
-	    	->setParameter('dayLimit', $dayLimit)
-	    	->getResult();
+            $downtimes = $this->em
+                    ->createQuery($dql)
+                    ->setParameter('siteId', $id)
+                    ->setParameter('dayLimit', $dayLimit)
+                    ->getResult();
 
-    	return $downtimes;
+            return $downtimes;
     }
 
     /**
@@ -700,93 +645,118 @@ class Site extends AbstractEntityService{
             throw new Exception("Unregistered users may not add new sites");
         }
 
-	// get the parent NGI entity
-	$parentNgi = $this->em->createQuery("SELECT n FROM NGI n WHERE n.id = :id")
-		->setParameter('id', $values['NGI'])
-		->getSingleResult(); // throws NonUniqueResultException throws, NoResultException
+        // get the parent NGI entity
+        /* @var $parentNgi \NGI */
+        $parentNgi = $this->em->createQuery("SELECT n FROM NGI n WHERE n.id = :id")
+                ->setParameter('id', $values['NGI'])
+                ->getSingleResult(); // throws NonUniqueResultException throws, NoResultException
         
         if(!$user->isAdmin()){
-	    // Check that user has permission to add site to the chosen NGI 
-	    if(!$this->roleActionAuthorisationService->authoriseAction(\Action::NGI_ADD_SITE, $parentNgi, $user)->getGrantAction()){
-		throw new \Exception("You do not have permission to add a new site to the selected NGI"
-			. " To add a new site you require a managing role over an NGI"); 
-	    }
+            // Check that user has permission to add site to the chosen NGI 
+            if(!$this->roleActionAuthorisationService->authoriseAction(
+                    \Action::NGI_ADD_SITE, $parentNgi, $user)->getGrantAction()){
+                throw new \Exception("You do not have permission to add a new site to the selected NGI"
+                        . " To add a new site you require a managing role over an NGI"); 
+            }
         }
-         
 
-    	// do as much validation before starting a new db tx
-    	// check the site object data is valid
-    	$this->validate($values['Site'], 'site');
         
-        //check there are the required number of scopes specified
+        // do as much validation before starting a new db tx
+        // check the site object data is valid
+        $this->validate($values['Site'], 'site');
+        $this->uniqueCheck($values['Site']['SHORT_NAME']);
+
+        // ADD SCOPE TAGS: 
+        // collate selected reserved and non-reserved scopeIds
+        $allSelectedScopeIds = array(); 
+        foreach($values['Scope_ids'] as $sid){
+            $allSelectedScopeIds[] = $sid; 
+        }
+        foreach($values['ReservedScope_ids'] as $sid){
+            $allSelectedScopeIds[] = $sid; 
+        }
+       
+        $selectedScopesToApply = $this->scopeService->getScopes($allSelectedScopeIds); 
+        
+        // If not admin, check that requested reserved scopes are already implemented by the parent NGI. 
+        // Required to prevent users manually crafting a POST request in an attempt
+        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        if (!$user->isAdmin()) {
+            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $selectedScopesToApply);  
+            
+            $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams(
+                    array('excludeNonReserved' => true), $parentNgi->getScopes()->toArray()); 
+            
+            foreach($selectedReservedScopes as $sc){
+                // Reserved scopes must already be assigned to parent 
+                if(in_array($sc, $existingReservedScopesParent)){
+                    throw new \Exception("A reserved Scope Tag was selected that is not assigned to the Parent NGI");  
+                }
+            }
+        }
+
+        //check there are the required number of OPTIONAL scopes specified
         $this->checkNumberOfScopes($values['Scope_ids']);
 
-	// TODO
-        // check for selected 'reserved' scopes. Iterate the selected scopes, 
-	// determine if any are reserved, if true check user has required roles, 
-	// throw if user don't have required role. 
-
-
-	$this->uniqueCheck($values['Site']['SHORT_NAME']);
-
-    	// Populate the entity
-    	try {
-    	    /* Create a PK for this site
-    	     * This is persisted/flushed (but not committed) before the site 
-    	     * so the PK is set by the database.
-    	     * If the site insertion fails the PK can still be rolled back.  
-    	     */
-    	    $this->em->getConnection()->beginTransaction();
-    	    $pk = new \PrimaryKey();
-    	    $this->em->persist($pk);
+        // Populate the entity
+        try {
+            /* Create a PK for this site
+             * This is persisted/flushed (but not committed) before the site 
+             * so the PK is set by the database.
+             * If the site insertion fails the PK can still be rolled back.  
+             */
+            $this->em->getConnection()->beginTransaction();
+            $pk = new \PrimaryKey();
+            $this->em->persist($pk);
             // flush synchronizes the in-memory state of managed objects with the database
             // but we can still rollback 
-    	    $this->em->flush();
-    	    //$this->em->getConnection()->commit();
-    	    //$this->em->getConnection()->beginTransaction();
-	    $site = new \Site();
-	    $site->setPrimaryKey($pk->getId() . "G0");
-	    $site->setOfficialName($values['Site']['OFFICIAL_NAME']);
-	    $site->setShortName($values['Site']['SHORT_NAME']);
-	    $site->setDescription($values['Site']['DESCRIPTION']);
-	    $site->setHomeUrl($values['Site']['HOME_URL']);
-	    $site->setEmail($values['Site']['EMAIL']);
-	    $site->setTelephone($values['Site']['CONTACTTEL']);
-	    $site->setGiisUrl($values['Site']['GIIS_URL']);
-	    $site->setLatitude($values['Site']['LATITUDE']);
-	    $site->setLongitude($values['Site']['LONGITUDE']);
-	    $site->setCsirtEmail($values['Site']['CSIRTEMAIL']);
-	    $site->setIpRange($values['Site']['IP_RANGE']);	    	
-	    $site->setIpV6Range($values['Site']['IP_V6_RANGE']);
-	    $site->setDomain($values['Site']['DOMAIN']);
-	    $site->setLocation($values['Site']['LOCATION']);
-	    $site->setCsirtTel($values['Site']['CSIRTTEL']);
-	    $site->setEmergencyTel($values['Site']['EMERGENCYTEL']);
-	    $site->setEmergencyEmail($values['Site']['EMERGENCYEMAIL']);
-	    $site->setHelpdeskEmail($values['Site']['HELPDESKEMAIL']);
+            $this->em->flush();
+            //$this->em->getConnection()->commit();
+            //$this->em->getConnection()->beginTransaction();
+            $site = new \Site();
+            $site->setPrimaryKey($pk->getId() . "G0");
+            $site->setOfficialName($values['Site']['OFFICIAL_NAME']);
+            $site->setShortName($values['Site']['SHORT_NAME']);
+            $site->setDescription($values['Site']['DESCRIPTION']);
+            $site->setHomeUrl($values['Site']['HOME_URL']);
+            $site->setEmail($values['Site']['EMAIL']);
+            $site->setTelephone($values['Site']['CONTACTTEL']);
+            $site->setGiisUrl($values['Site']['GIIS_URL']);
+            $site->setLatitude($values['Site']['LATITUDE']);
+            $site->setLongitude($values['Site']['LONGITUDE']);
+            $site->setCsirtEmail($values['Site']['CSIRTEMAIL']);
+            $site->setIpRange($values['Site']['IP_RANGE']);                    
+            $site->setIpV6Range($values['Site']['IP_V6_RANGE']);
+            $site->setDomain($values['Site']['DOMAIN']);
+            $site->setLocation($values['Site']['LOCATION']);
+            $site->setCsirtTel($values['Site']['CSIRTTEL']);
+            $site->setEmergencyTel($values['Site']['EMERGENCYTEL']);
+            $site->setEmergencyEmail($values['Site']['EMERGENCYEMAIL']);
+            $site->setHelpdeskEmail($values['Site']['HELPDESKEMAIL']);
             $site->setTimezoneId($values['Site']['TIMEZONE']);
-	    	
+                    
             // join the site to the parent NGI 
-	    $site->setNgiDoJoin($parentNgi);
+            $site->setNgiDoJoin($parentNgi);
 
-	    // get the target infrastructure
-	    $dql = "SELECT i FROM Infrastructure i WHERE i.id = :id";
-	    $inf = $this->em->createQuery($dql)
-		    ->setParameter('id', $values['ProductionStatus'])
-		    ->getSingleResult();
-	    $site->setInfrastructure($inf);
+            // get the target infrastructure
+            $dql = "SELECT i FROM Infrastructure i WHERE i.id = :id";
+            $inf = $this->em->createQuery($dql)
+                    ->setParameter('id', $values['ProductionStatus'])
+                    ->getSingleResult();
+            $site->setInfrastructure($inf);
 
-	    // get the cert status
+            // get the cert status
             if(!isset($values['Certification_Status']) || 
                     $values['Certification_Status'] == null || $values['Certification_Status'] == ''){
                 throw new \LogicException(
                         "Missing seed data - No certification status values in the DB (required data)"); 
             }
-	    $dql = "SELECT c FROM CertificationStatus c WHERE c.id = :id";
-	    $certStatus = $this->em->createQuery($dql)
-		    ->setParameter('id', $values['Certification_Status'])
-		    ->getSingleResult();
-	    $site->setCertificationStatus($certStatus);
+            $dql = "SELECT c FROM CertificationStatus c WHERE c.id = :id";
+            $certStatus = $this->em->createQuery($dql)
+                    ->setParameter('id', $values['Certification_Status'])
+                    ->getSingleResult();
+            $site->setCertificationStatus($certStatus);
             $now = new \DateTime('now',  new \DateTimeZone('UTC')); 
             $site->setCertificationStatusChangeDate($now); 
 
@@ -801,40 +771,45 @@ class Site extends AbstractEntityService{
             $site->addCertificationStatusLog($certLog); 
             
 
-	    // Set the scopes
-            foreach($values['Scope_ids'] as $scopeId){
-                $dql = "SELECT s FROM Scope s WHERE s.id = :id";
-                $scope = $this->em->createQuery($dql)
-                    ->setParameter('id', $scopeId)
-                    ->getSingleResult();
-                $site->addScope($scope);
+            // Set the scopes
+//            foreach($allSelectedScopeIds as $scopeId){
+//                $dql = "SELECT s FROM Scope s WHERE s.id = :id";
+//                $scope = $this->em->createQuery($dql)
+//                    ->setParameter('id', $scopeId)
+//                    ->getSingleResult();
+//                $site->addScope($scope);
+//            }
+            foreach($selectedScopesToApply as $scope){
+                $site->addScope($scope); 
             }
             
-	    // get the country
-	    $dql = "SELECT c FROM Country c WHERE c.id = :id";
-	    $country = $this->em->createQuery($dql)
-		    ->setParameter('id', $values['Country'])
-		    ->getSingleResult();
-	    $site->setCountry($country);
+            // get the country
+            $dql = "SELECT c FROM Country c WHERE c.id = :id";
+            $country = $this->em->createQuery($dql)
+                    ->setParameter('id', $values['Country'])
+                    ->getSingleResult();
+            $site->setCountry($country);
 
-	    	// deprecated - don't use the lookup DB entity  
-//	    	$dql = "SELECT t FROM Timezone t WHERE t.id = :id";
-//	    	$timezone = $this->em->createQuery($dql)
-//	    		->setParameter('id', $values['Timezone'])
-//	    		->getSingleResult();
-//	    	$site->setTimezone($timezone);
-	    	
-	    $this->em->persist($site);
-	    $this->em->flush();
-	    $this->em->getConnection()->commit();
-    	} catch(\Exception $ex){
-	    $this->em->getConnection()->rollback();
-	    //$this->em->remove($pk);
-	    //$this->em->flush();
-	    $this->em->close();
-	    throw $ex;
-    	}
-    	return $site;
+                    // deprecated - don't use the lookup DB entity  
+//                    $dql = "SELECT t FROM Timezone t WHERE t.id = :id";
+//                    $timezone = $this->em->createQuery($dql)
+//                            ->setParameter('id', $values['Timezone'])
+//                            ->getSingleResult();
+//                    $site->setTimezone($timezone);
+                    
+            $this->em->persist($site);
+            // flush synchronizes the in-memory state of managed objects with the database
+            // but we can still rollback 
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch(\Exception $ex){
+            $this->em->getConnection()->rollback();
+            //$this->em->remove($pk);
+            //$this->em->flush();
+            $this->em->close();
+            throw $ex;
+        }
+        return $site;
 
     }
 
@@ -845,7 +820,7 @@ class Site extends AbstractEntityService{
      */
     private function uniqueCheck($shortName) {
         $dql = "SELECT s from Site s
-    			WHERE s.shortName = :name";
+                            WHERE s.shortName = :name";
         $query = $this->em->createQuery($dql)
             ->setParameter('name', $shortName);
         if(count($query->getResult()) > 0) {
@@ -853,16 +828,16 @@ class Site extends AbstractEntityService{
         }
     }
     
-	/*
-	 * Moves a site to a new NGI. Site to NGI is a many to one
-	 * relationship, so moving the site from one NGI removes it
-	 * from the other.
-	 * 
-	 * @param \site $site site to be moved
-	 * @param \NGI $NGI NGI to which $site is to be moved
-	 * @return null
-	 */
-	 public function moveSite(\Site $Site, \NGI $NGI, \User $user = null) {
+    /*
+     * Moves a site to a new NGI. Site to NGI is a many to one
+     * relationship, so moving the site from one NGI removes it
+     * from the other.
+     * 
+     * @param \site $site site to be moved
+     * @param \NGI $NGI NGI to which $site is to be moved
+     * @return null
+     */
+     public function moveSite(\Site $Site, \NGI $NGI, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
@@ -908,20 +883,15 @@ class Site extends AbstractEntityService{
         }
     }
     
-    private function checkNumberOfScopes($scopeIds){
+    private function checkNumberOfScopes(array $myArray){
         require_once __DIR__ . '/Config.php';
         $configService = new \org\gocdb\services\Config();
         $minumNumberOfScopes = $configService->getMinimumScopesRequired('site');
-        
-        if(sizeof($scopeIds)<$minumNumberOfScopes){
-            $s = "s";
-            if($minumNumberOfScopes==1){
-                $s="";
-            }
-            throw new \Exception("A site must have at least " . $minumNumberOfScopes . " scope".$s." assigned to it.");
+        if(sizeof($myArray)<$minumNumberOfScopes){
+            throw new \Exception("A site must have at least " . $minumNumberOfScopes . " optional scope(s) assigned to it.");
         }
     }   
-    
+
     /**
      * Delete a site. Only available to admins.
      * @param \Site $s site for deletion
@@ -971,98 +941,88 @@ class Site extends AbstractEntityService{
             $this->em->close();
             throw $e;
         }
-	}
+    }
     
-	/**
-	 * This method will check that a user has edit permissions over a site before allowing a user to add, edit or delete 
-	 * a site property. 
-	 * 
-	 * @param \User $user
-	 * @param \Site $site	 
-	 * @throws \Exception
-	 */
-	public function validatePropertyActions(\User $user, \Site $site) {
-	    // Check to see whether the user has a role that covers this site
-	    //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
-	    if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE) {
-		throw new \Exception("You don't have permission over " . $site->getShortName());
-	    }
-	}
+    /**
+     * This method will check that a user has edit permissions over a site before allowing a user to add, edit or delete 
+     * a site property. 
+     * 
+     * @param \User $user
+     * @param \Site $site         
+     * @throws \Exception
+     */
+    public function validatePropertyActions(\User $user, \Site $site) {
+        // Check to see whether the user has a role that covers this site
+        //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE) {
+            throw new \Exception("You don't have permission over " . $site->getShortName());
+        }
+    }
 
     /**
-	 * Adds a key value pair to a site
-	 * @param $values
-	 * @param \User $user
-	 * @throws Exception
-	 * @return \SiteProperty
-	 */
-	public function addProperty($values,\User $user = null) {
-	    // Check the portal is not in read only mode, throws exception if it is
-	    $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        
-	    $this->validate($values['SITEPROPERTIES'], 'siteproperty');
-	    
-	    $keyname = $values ['SITEPROPERTIES'] ['NAME'];
-	    $keyvalue = $values ['SITEPROPERTIES'] ['VALUE'];
-	    $siteID = $values ['SITEPROPERTIES'] ['SITE'];
-	    $site = $this->getSite($siteID);
-        
-	    //Validate User to perform this action
-	    $this->validatePropertyActions($user, $site);
+     * Adds a key value pair to a site
+     * @param \Site $site
+     * @param \User $user
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @throws \Exception
+     */
+    public function addProperties(\Site $site, \User $user, array $propArr, $preventOverwrite = false) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        //throw new \Exception(var_dump($propArr));
 
-	    //TODO: Future development possibility to check keyname not reserved
-	    //$this->checkNotReserved($user, $site, $keyname);
-   	    
-	    $this->em->getConnection ()->beginTransaction ();
-	
-	    try {
-		/* @var $siteProperty \SiteProperty */
-	        $siteProperty = new \SiteProperty ();
-	        $siteProperty->setKeyName ( $keyname );
-	        $siteProperty->setKeyValue ( $keyvalue );
-                /* @var $site \Site */
-	        $site = $this->em->find ( "Site", $siteID );
-	        $site->addSitePropertyDoJoin ( $siteProperty );
-	        $this->em->persist ( $siteProperty );
-	        	
-	        $this->em->flush ();
-	        $this->em->getConnection ()->commit ();
-	    } catch ( \Exception $e ) {
-	        $this->em->getConnection ()->rollback ();
-	        $this->em->close ();
-	        throw $e;
-	    }
-	    return $siteProperty;
-	}
-	
-	/**
-     * DEPRECATED
-	 * Deletes a site property
-	 *
-	 * @param \Site $site
-	 * @param \User $user
-	 * @param \SiteProperty $prop
-	 */
-//	public function deleteSiteProperty(\Site $site,\User $user = null,\SiteProperty $prop) {
-//	    // Check the portal is not in read only mode, throws exception if it is
-//	    $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-//
-//	    // Validate the user has permission to delete a property
-//	    $this->validatePropertyActions($user, $site);
-//
-//	    $this->em->getConnection ()->beginTransaction ();
-//	    try {
-//	        // Site is the owning side so remove elements from site.
-//	        $site->getSiteProperties ()->removeElement ( $prop );
-//	        $this->em->remove ( $prop );
-//	        $this->em->flush ();
-//	        $this->em->getConnection ()->commit ();
-//	    } catch ( \Exception $e ) {
-//	        $this->em->getConnection ()->rollback ();
-//	        $this->em->close ();
-//	        throw $e;
-//	    }
-//	}
+        $this->validatePropertyActions($user, $site);
+
+        $existingProperties = $site->getSiteProperties();
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if (sizeof($existingProperties) + sizeof($propArr) > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
+        }
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            foreach ($propArr as $i => $prop) {
+                $key = $prop[0];
+                $value = $prop[1];
+                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+
+                foreach ($existingProperties as $existProp) {
+                    if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+                        if ($preventOverwrite == false) {
+                            continue 2;
+                        } else {
+                            throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
+                        }
+                    }
+                }
+
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $validateArray['SITE'] = $site->getId();
+                $this->validate($validateArray, 'siteproperty');
+
+                $property = new \SiteProperty();
+                $property->setKeyName($key);
+                $property->setKeyValue($value);
+                //$service = $this->em->find("Service", $serviceID);
+                $site->addSitePropertyDoJoin($property);
+                $this->em->persist($property);
+
+            }
+
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
 
     /**
      * Deletes site properties, before deletion a check is done to confirm the property
@@ -1100,7 +1060,7 @@ class Site extends AbstractEntityService{
             throw $e;
         }
     }
-	
+        
     /**
      * Edit a site's property. A check is performed to confirm the given property
      * is from the parent site specified by the request, and an exception is thrown if this is
@@ -1113,42 +1073,42 @@ class Site extends AbstractEntityService{
      * @throws \Exception
      */
     public function editSiteProperty(\Site $site,\User $user,\SiteProperty $prop, $newValues) {
-	// Check the portal is not in read only mode, throws exception if it is
-	$this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );	    
-	
-	//Validate User to perform this action
-	$this->validatePropertyActions($user, $site);
-	
-	$this->validate($newValues['SITEPROPERTIES'], 'siteproperty');
-	
-	$keyname=$newValues ['SITEPROPERTIES'] ['NAME'];
-	$keyvalue=$newValues ['SITEPROPERTIES'] ['VALUE'];
+        // Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );            
+        
+        //Validate User to perform this action
+        $this->validatePropertyActions($user, $site);
+        
+        $this->validate($newValues['SITEPROPERTIES'], 'siteproperty');
+        
+        $keyname=$newValues ['SITEPROPERTIES'] ['NAME'];
+        $keyvalue=$newValues ['SITEPROPERTIES'] ['VALUE'];
 
-	//$this->checkNotReserved($user, $site, $keyname);
-	
-	$this->em->getConnection()->beginTransaction();
+        //$this->checkNotReserved($user, $site, $keyname);
+        
+        $this->em->getConnection()->beginTransaction();
     
-	try {
-	    //Check that the prop is from the site 
-	    if ($prop->getParentSite() != $site){
-		$id = $prop->getId();
-		throw new \Exception("Property {$id} does not belong to the specified site");
-	    }
-		    
-	    // Set the site propertys new member variables
-	    $prop->setKeyName ( $keyname );
-	    $prop->setKeyValue ( $keyvalue );
-		    
-	    $this->em->merge ( $prop );
-	    $this->em->flush ();
-	    $this->em->getConnection ()->commit ();
-	} catch ( \Exception $ex ) {
-	    $this->em->getConnection ()->rollback ();
-	    $this->em->close ();
-	    throw $ex;
-	}
+        try {
+            //Check that the prop is from the site 
+            if ($prop->getParentSite() != $site){
+                $id = $prop->getId();
+                throw new \Exception("Property {$id} does not belong to the specified site");
+            }
+                    
+            // Set the site propertys new member variables
+            $prop->setKeyName ( $keyname );
+            $prop->setKeyValue ( $keyvalue );
+                    
+            $this->em->merge ( $prop );
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $ex ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $ex;
+        }
     }
-	
+        
     /**
      * For a given site, returns an array containing the names of all the 
      * scopes that site has as keys and a boolean as value. The bool is true 
@@ -1195,7 +1155,7 @@ class Site extends AbstractEntityService{
      * @return arraycollection collection of sites
      */
     public function getSitesWithGeoInfo() {
-    	//Note - we remove any site with 0,0 as it's location, as we have no
+            //Note - we remove any site with 0,0 as it's location, as we have no
         //sites in the middle of the pacific ocean. We also remove sites with 
         //invaid (too large) longs and lats (these are legacy values, new values
         // entered through the webportal have to be within expected range, 
@@ -1224,10 +1184,10 @@ class Site extends AbstractEntityService{
      */
     public function getGoogleMapXMLString(){
         $sites = $this->getSitesWithGeoInfo();
-        $portalUrl = \Factory::getConfigService()->GetPortalURL();
+        $portalUrl = $this->configService->GetPortalURL();
         
         $xml = new \SimpleXMLElement("<map></map>");
-		foreach($sites as $site) {
+                foreach($sites as $site) {
             $xmlSite = $xml->addChild('Site');
             $xmlSite->addAttribute('ShortName', $site->getShortName());
             $xmlSite->addAttribute('OfficialName', $site->getOfficialName());
@@ -1236,15 +1196,15 @@ class Site extends AbstractEntityService{
             $xmlSite->addAttribute('Description', htmlspecialchars($site->getDescription()));
             $xmlSite->addAttribute('Latitude', $site->getLatitude());
             $xmlSite->addAttribute('Longitude', $site->getLongitude());
-		}
+                }
 
-		$dom_sxe = dom_import_simplexml($xml);
-		$dom = new \DOMDocument('1.0');
-		$dom->encoding='UTF-8';
-		$dom_sxe = $dom->importNode($dom_sxe, true);
-		$dom_sxe = $dom->appendChild($dom_sxe);
-		$dom->formatOutput = true;
-		$xmlString = $dom->saveXML();
+                $dom_sxe = dom_import_simplexml($xml);
+                $dom = new \DOMDocument('1.0');
+                $dom->encoding='UTF-8';
+                $dom_sxe = $dom->importNode($dom_sxe, true);
+                $dom_sxe = $dom->appendChild($dom_sxe);
+                $dom->formatOutput = true;
+                $xmlString = $dom->saveXML();
         
         return $xmlString;
     }

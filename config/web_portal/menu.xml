@@ -8,7 +8,7 @@
     
     <MySites>
         <show_on_instance>all</show_on_instance>
-        <name>My Sites</name>
+        <name>My Resources</name>
         <link>index.php?Page_Type=My_Sites</link>
     </MySites>
     
@@ -41,6 +41,18 @@
       <name>Services</name>
       <link>index.php?Page_Type=Services</link>
     </Services>
+
+    <Scopes>
+      <show_on_instance>all</show_on_instance>
+      <name>Scopes</name>
+      <link>index.php?Page_Type=Scope_Help</link>
+    </Scopes>
+
+    <RoleActionMappings>
+      <show_on_instance>all</show_on_instance>
+      <name>Role Action Map</name>
+      <link>index.php?Page_Type=View_Role_Action_Mappings</link>
+    </RoleActionMappings>
 
     <spacer>
       <spacer>Add</spacer>
@@ -88,17 +100,19 @@
       <name>Active &amp; Imminent</name>
 	  <link>index.php?Page_Type=Downtimes_Overview</link>
 	</current_downtimes>
+
+      <Calendar>
+          <show_on_instance>all</show_on_instance>
+          <name>Downtime Calendar</name>
+          <link>index.php?Page_Type=Downtimes_Calendar</link>
+      </Calendar>
 	
    <spacer>
       <spacer>About GOCDB5</spacer>
       <show_on_instance>all</show_on_instance>
     </spacer>
 
-    <RoleActionMappings>
-      <show_on_instance>all</show_on_instance>
-      <name>Role Action Map</name>
-      <link>index.php?Page_Type=View_Role_Action_Mappings</link>
-    </RoleActionMappings>
+
 	
     <Help_And_Contact>
       <show_on_instance>all</show_on_instance>

@@ -5,7 +5,7 @@ namespace org\gocdb\services;
 /* ______________________________________________________
  * ======================================================
  * File: index.php
- * Author: John Casson
+ * Author: John Casson, David Meredith 
  * Description: Entry point for the programmatic interface
  *
  * License information
@@ -29,12 +29,12 @@ require_once __DIR__ . '/../web_portal/components/Get_User_Principle.php';
 //Require_once all files in PI directory
 #$files = glob(__DIR__ . '/../../lib/Gocdb_Services/PI/*.php');
 #foreach ($files as $file) {
-#	require_once($file);
+#        require_once($file);
 #}
 // The default is 30secs, but some queries can take longer so we may need to 
 // up the limit. This should only be necessary for certain PI queries such as 
 // get_downtime and should not be used in the GUI/portal scripts. 
-//set_time_limit(500); 
+set_time_limit(60); 
 // Set the timezone to UTC for rendering all times/dates in PI.  
 // The date-times stored in the DB are in UTC, however, we still need to 
 // set the TZ to utc when re-readig those date-times for subsequent 
@@ -73,265 +73,295 @@ class PIRequest {
     private $output = null;
     private $params = array();
     private $dn = null;
+    private $baseUrl; 
+    
+    // params used to set the default behaviour of all paging queries, 
+    // these vals can be overidden per query if needed. 
+    // defaultPaging = true means that even if the 'page' URL param is 
+    // not specified, then the query will be paged by default (true is 
+    // the preference for large/production datasets). 
+    private $defaultPageSize = 500; 
+    private $defaultPaging = FALSE;
+    
+    public function __construct(){
+        // returns the base portal URL as defined in conf file 
+        $this->baseUrl = \Factory::getConfigService()->GetPortalURL();
+    }
 
     function process() {
-	header('Content-Type: application/xml');
-	//Type is GET request for XML info
-	$this->parseGET();
-	$xml = $this->getXml();
-	// returns the portal URL as defined in conf file 
-	$portal_url = \Factory::getConfigService()->GetPortalURL();
-	//$portal_url = "https://URL/";
-	$xml = str_replace("#GOCDB_BASE_PORTAL_URL#", $portal_url, $xml);
-	echo($xml);
-	//echo('<test>val</test>');
+        header('Content-Type: application/xml');
+        //Type is GET request for XML info
+        $this->parseGET();
+        $xml = $this->getXml();
+        // don't do search/replace on large XML docs => mem-hungry/expensive!
+        //$xml = str_replace("#GOCDB_BASE_PORTAL_URL#", $this->portal_url, $xml); 
+        echo($xml);
+        //echo('<test>val</test>');
     }
 
     /* Copy the values from the URL into local variables */
 
     function parseGET() {
 
-	if (isset($_GET['method'])) {
-	    $this->method = $_GET['method'];
-	    unset($_GET['method']);
-	}
+        if (isset($_GET['method'])) {
+            $this->method = $_GET['method'];
+            unset($_GET['method']);
+        }
 
-	if (isset($_GET['output'])) {
-	    $this->output = $_GET['output'];
-	    unset($_GET['output']);
-	}
+        if (isset($_GET['output'])) {
+            $this->output = $_GET['output'];
+            unset($_GET['output']);
+        }
 
-	$testDN = Get_User_Principle_PI();
-	if (empty($testDN) == FALSE) {
-	    $this->dn = $testDN;
-	}
+        $testDN = Get_User_Principle_PI();
+        if (empty($testDN) == FALSE) {
+            $this->dn = $testDN;
+        }
 
-	if (count($_GET) > 0)
-	    $this->params = $_GET;
+        if (count($_GET) > 0)
+            $this->params = $_GET;
     }
 
     /* executes a query using the appropriate service layer function */
 
     function getXml() {
-	try {
-	    $directory = __DIR__ . '/../../lib/Gocdb_Services/PI/';
-	    $em = \Factory::getEntityManager();
+        try {
+            $directory = __DIR__ . '/../../lib/Gocdb_Services/PI/';
+            $em = \Factory::getEntityManager();
 
-	    switch ($this->method) {
-		case "get_site":
-		    require_once($directory . 'GetSite.php');
-		    $this->authAnyCert();
-		    $getSite = new GetSite($em);
-		    $getSite->validateParameters($this->params);
-		    $getSite->createQuery();
-		    $getSite->executeQuery();
-		    $xml = $getSite->getXML();
-		    break;
-		case "get_site_list":
-		    require_once($directory . 'GetSite.php');
-		    $getSite = new GetSite($em);
-		    $getSite->validateParameters($this->params);
-		    $getSite->createQuery();
-		    $getSite->executeQuery();
-		    $xml = $getSite->getXMLShort();
-		    break;
-		case "get_site_contacts":
-		    require_once($directory . 'GetSiteContacts.php');
-		    $this->authAnyCert();
-		    $getSiteContacts = new GetSiteContacts($em);
-		    $getSiteContacts->validateParameters($this->params);
-		    $getSiteContacts->createQuery();
-		    $getSiteContacts->executeQuery();
-		    $xml = $getSiteContacts->getXML();
-		    break;
-		case "get_site_security_info":
-		    require_once($directory . 'GetSiteSecurityInfo.php');
-		    //$this->authAcl();
+            switch ($this->method) {
+                case "get_site":
+                    require_once($directory . 'GetSite.php');
                     $this->authAnyCert();
-		    $getSiteSecurityInfo = new GetSiteSecurityInfo($em);
-		    $getSiteSecurityInfo->validateParameters($this->params);
-		    $getSiteSecurityInfo->createQuery();
-		    $getSiteSecurityInfo->executeQuery();
-		    $xml = $getSiteSecurityInfo->getXML();
-		    break;
-		case "get_roc_list":
-		    require_once($directory . 'GetNGIList.php');
-		    $getNGIList = new GetNGIList($em);
-		    $getNGIList->validateParameters($this->params);
-		    $getNGIList->createQuery();
-		    $getNGIList->executeQuery();
-		    $xml = $getNGIList->getXML();
-		    break;
-		case "get_subgrid_list":
-		    require_once($directory . 'GetSubGridList.php');
-		    $getSubGrid = new GetSubGridList($em);
-		    $getSubGrid->validateParameters($this->params);
-		    $getSubGrid->createQuery();
-		    $getSubGrid->executeQuery();
-		    $xml = $getSubGrid->getXML();
-		    break;
-		case "get_roc_contacts":
-		    require_once($directory . 'GetNGIContacts.php');
-		    $this->authAnyCert();
-		    $getNGIContacts = new GetNGIContacts($em);
-		    $getNGIContacts->validateParameters($this->params);
-		    $getNGIContacts->createQuery();
-		    $getNGIContacts->executeQuery();
-		    $xml = $getNGIContacts->getXML();
-		    break;
-		case "get_service":
-		    require_once($directory . 'GetService.php');
-		    $getSE = new GetService($em);
-		    $getSE->validateParameters($this->params);
-		    $getSE->createQuery();
-		    $getSE->executeQuery();
-		    $xml = $getSE->getXML();
-		    break;
-		case "get_service_endpoint":
-		    require_once($directory . 'GetService.php');
-		    $getSE = new GetService($em);
-		    $getSE->validateParameters($this->params);
-		    $getSE->createQuery();
-		    $getSE->executeQuery();
-		    $xml = $getSE->getXML();
-		    break;
-		case "get_service_types":
-		    require_once($directory . 'GetServiceTypes.php');
-		    $getST = new GetServiceTypes($em);
-		    $getST->validateParameters($this->params);
-		    $getST->createQuery();
-		    $getST->executeQuery();
-		    $xml = $getST->getXML();
-		    break;
-		case "get_downtime_to_broadcast":
-		    require_once($directory . 'GetDowntimesToBroadcast.php');
-		    $getDTTBroadcast = new GetDowntimeToBroadcast($em);
-		    $getDTTBroadcast->validateParameters($this->params);
-		    $getDTTBroadcast->createQuery();
-		    $getDTTBroadcast->executeQuery();
-		    $xml = $getDTTBroadcast->getXML();
-		    break;
-		case "get_downtime":
-		    require_once($directory . 'GetDowntime.php');
-		    $getDowntime = new GetDowntime($em);
-		    $getDowntime->validateParameters($this->params);
-		    $getDowntime->createQuery();
-		    $getDowntime->executeQuery();
-		    $xml = $getDowntime->getXML();
-		    break;
-		case "get_downtime_nested_services":
-		    require_once($directory . 'GetDowntime.php');
-		    $getDowntime = new GetDowntime($em, true);
-		    $getDowntime->validateParameters($this->params);
-		    $getDowntime->createQuery();
-		    $getDowntime->executeQuery();
-		    $xml = $getDowntime->getXML();
-		    break;
-		case "get_user":
-		    require_once($directory . 'GetUser.php');
-		    $this->authAnyCert();
-		    $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService());
-		    $getUser->validateParameters($this->params);
-		    $getUser->createQuery();
-		    $getUser->executeQuery();
-		    $xml = $getUser->getXML();
-		    break;
-		case "get_project_contacts":
-		    require_once($directory . 'GetProjectContacts.php');
-		    $this->authAnyCert();
-		    $getProjCon = new GetProjectContacts($em);
-		    $getProjCon->validateParameters($this->params);
-		    $getProjCon->createQuery();
-		    $getProjCon->executeQuery();
-		    $xml = $getProjCon->getXML();
-		    break;
-		case "get_ngi":
-		    require_once($directory . 'GetNGI.php');
-		    $this->authAnyCert();
-		    $getNGI = new GetNGI($em);
-		    $getNGI->validateParameters($this->params);
-		    $getNGI->createQuery();
-		    $getNGI->executeQuery();
-		    $xml = $getNGI->getXML();
-		    break;
-		case "get_service_group" :
-		    require_once($directory . 'GetServiceGroup.php');
-		    $this->authAnyCert();
-		    $getServiceGroup = new GetServiceGroup($em);
-		    $getServiceGroup->validateParameters($this->params);
-		    $getServiceGroup->createQuery();
-		    $getServiceGroup->executeQuery();
-		    $xml = $getServiceGroup->getXML();
-		    break;
-		case "get_service_group_role" :
-		    require_once($directory . 'GetServiceGroupRole.php');
-		    $this->authAnyCert();
-		    $getServiceGroupRole = new GetServiceGroupRole($em);
-		    $getServiceGroupRole->validateParameters($this->params);
-		    $getServiceGroupRole->createQuery();
-		    $getServiceGroupRole->executeQuery();
-		    $xml = $getServiceGroupRole->getXML();
-		    break;
-		case "get_cert_status_date" :
-		    require_once($directory . 'GetCertStatusDate.php');
-		    $this->authAnyCert();
-		    $getCertStatusDate = new GetCertStatusDate($em);
-		    $getCertStatusDate->validateParameters($this->params);
-		    $getCertStatusDate->createQuery();
-		    $getCertStatusDate->executeQuery();
-		    $xml = $getCertStatusDate->getXML();
-		    break;
-		case "get_cert_status_changes":
-		    require_once($directory . 'GetCertStatusChanges.php');
-		    $this->authAnyCert();
-		    $getCertStatusChanges = new GetCertStatusChanges($em);
-		    $getCertStatusChanges->validateParameters($this->params);
-		    $getCertStatusChanges->createQuery();
-		    $getCertStatusChanges->executeQuery();
-		    $xml = $getCertStatusChanges->getXML();
-		    break;
-		case "get_site_count_per_country":
-		    require_once($directory . 'GetSiteCountPerCountry.php');
-		    $GetSiteCountPerCountry = new GetSiteCountPerCountry($em);
-		    $GetSiteCountPerCountry->validateParameters($this->params);
-		    $GetSiteCountPerCountry->createQuery();
-		    $GetSiteCountPerCountry->executeQuery();
-		    $xml = $GetSiteCountPerCountry->getXML();
-		    break;
-		//case "get_role_action_mappings":
-		default:
-		    die("Unable to find method: {$this->method}");
-		    break;
-	    }
-	} catch (\Exception $e) {
-	    print_r($e->getMessage());
-	    die("An error has occured, please contact the GOCDB administrators at gocdb-admins@egi.eu");
-	}
-	return $xml;
+                    $getSite = new GetSite($em, $this->baseUrl);
+                    $getSite->validateParameters($this->params);
+                    $getSite->createQuery();
+                    $getSite->executeQuery();
+                    $xml = $getSite->getXML();
+                    break;
+                case "get_site_list":
+                    require_once($directory . 'GetSite.php');
+                    $getSite = new GetSite($em);
+                    $getSite->validateParameters($this->params);
+                    $getSite->createQuery();
+                    $getSite->executeQuery();
+                    $xml = $getSite->getXMLShort();
+                    break;
+                case "get_site_contacts":
+                    require_once($directory . 'GetSiteContacts.php');
+                    $this->authAnyCert();
+                    $getSiteContacts = new GetSiteContacts($em);
+                    $getSiteContacts->validateParameters($this->params);
+                    $getSiteContacts->createQuery();
+                    $getSiteContacts->executeQuery();
+                    $xml = $getSiteContacts->getXML();
+                    break;
+                case "get_site_security_info":
+                    require_once($directory . 'GetSiteSecurityInfo.php');
+                    //$this->authAcl();
+                    $this->authAnyCert();
+                    $getSiteSecurityInfo = new GetSiteSecurityInfo($em);
+                    $getSiteSecurityInfo->validateParameters($this->params);
+                    $getSiteSecurityInfo->createQuery();
+                    $getSiteSecurityInfo->executeQuery();
+                    $xml = $getSiteSecurityInfo->getXML();
+                    break;
+                case "get_roc_list":
+                    require_once($directory . 'GetNGIList.php');
+                    $getNGIList = new GetNGIList($em);
+                    $getNGIList->validateParameters($this->params);
+                    $getNGIList->createQuery();
+                    $getNGIList->executeQuery();
+                    $xml = $getNGIList->getXML();
+                    break;
+                case "get_subgrid_list":
+                    require_once($directory . 'GetSubGridList.php');
+                    $getSubGrid = new GetSubGridList($em);
+                    $getSubGrid->validateParameters($this->params);
+                    $getSubGrid->createQuery();
+                    $getSubGrid->executeQuery();
+                    $xml = $getSubGrid->getXML();
+                    break;
+                case "get_roc_contacts":
+                    require_once($directory . 'GetNGIContacts.php');
+                    $this->authAnyCert();
+                    $getNGIContacts = new GetNGIContacts($em, $this->baseUrl);
+                    $getNGIContacts->validateParameters($this->params);
+                    $getNGIContacts->createQuery();
+                    $getNGIContacts->executeQuery();
+                    $xml = $getNGIContacts->getXML();
+                    break;
+                case "get_service":
+                    require_once($directory . 'GetService.php');
+                    $getSE = new GetService($em, $this->baseUrl);
+                    if($getSE instanceof IPIQueryPageable){
+                        $getSE->setDefaultPaging($this->defaultPaging); 
+                        $getSE->setPageSize($this->defaultPageSize); 
+                    }
+                    $getSE->validateParameters($this->params);
+                    $getSE->createQuery();
+                    $getSE->executeQuery();
+                    $xml = $getSE->getXML();
+                    break;
+                case "get_service_endpoint":
+                    require_once($directory . 'GetService.php');
+                    $getSE = new GetService($em, $this->baseUrl);
+                    if($getSE instanceof IPIQueryPageable){
+                        $getSE->setDefaultPaging($this->defaultPaging);
+                        $getSE->setPageSize($this->defaultPageSize);
+                    }
+                    $getSE->validateParameters($this->params);
+                    $getSE->createQuery();
+                    $getSE->executeQuery();
+                    $xml = $getSE->getXML();
+                    break;
+                case "get_service_types":
+                    require_once($directory . 'GetServiceTypes.php');
+                    $getST = new GetServiceTypes($em);
+                    $getST->validateParameters($this->params);
+                    $getST->createQuery();
+                    $getST->executeQuery();
+                    $xml = $getST->getXML();
+                    break;
+                case "get_downtime_to_broadcast":
+                    require_once($directory . 'GetDowntimesToBroadcast.php');
+                    $getDTTBroadcast = new GetDowntimeToBroadcast($em, $this->baseUrl);
+                    $getDTTBroadcast->validateParameters($this->params);
+                    $getDTTBroadcast->createQuery();
+                    $getDTTBroadcast->executeQuery();
+                    $xml = $getDTTBroadcast->getXML();
+                    break;
+                case "get_downtime":
+                    //require_once($directory . 'GetDowntimeFallback.php');
+                    require_once($directory . 'GetDowntime.php');
+                    $getDowntime = new GetDowntime($em, false, $this->baseUrl);
+                    if($getDowntime instanceof IPIQueryPageable){
+                        $getDowntime->setDefaultPaging($this->defaultPaging);
+                        $getDowntime->setPageSize($this->defaultPageSize);
+                    }
+                    $getDowntime->validateParameters($this->params);
+                    $getDowntime->createQuery();
+                    $getDowntime->executeQuery();
+                    $xml = $getDowntime->getXML();
+                    break;
+                case "get_downtime_nested_services":
+                    //require_once($directory . 'GetDowntimeFallback.php');
+                    require_once($directory . 'GetDowntime.php');
+                    $getDowntime = new GetDowntime($em, true, $this->baseUrl);
+                    if($getDowntime instanceof IPIQueryPageable){
+                        $getDowntime->setDefaultPaging($this->defaultPaging);
+                        $getDowntime->setPageSize($this->defaultPageSize);
+                    }
+                    $getDowntime->validateParameters($this->params);
+                    $getDowntime->createQuery();
+                    $getDowntime->executeQuery();
+                    $xml = $getDowntime->getXML();
+                    break;
+                case "get_user":
+                    require_once($directory . 'GetUser.php');
+                    $this->authAnyCert();
+                    $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService(), $this->baseUrl);
+                    $getUser->validateParameters($this->params);
+                    $getUser->createQuery();
+                    $getUser->executeQuery();
+                    $xml = $getUser->getXML();
+                    break;
+                case "get_project_contacts":
+                    require_once($directory . 'GetProjectContacts.php');
+                    $this->authAnyCert();
+                    $getProjCon = new GetProjectContacts($em);
+                    $getProjCon->validateParameters($this->params);
+                    $getProjCon->createQuery();
+                    $getProjCon->executeQuery();
+                    $xml = $getProjCon->getXML();
+                    break;
+                case "get_ngi":
+                    require_once($directory . 'GetNGI.php');
+                    $this->authAnyCert();
+                    $getNGI = new GetNGI($em);
+                    $getNGI->validateParameters($this->params);
+                    $getNGI->createQuery();
+                    $getNGI->executeQuery();
+                    $xml = $getNGI->getXML();
+                    break;
+                case "get_service_group" :
+                    require_once($directory . 'GetServiceGroup.php');
+                    $this->authAnyCert();
+                    $getServiceGroup = new GetServiceGroup($em, $this->baseUrl);
+                    $getServiceGroup->validateParameters($this->params);
+                    $getServiceGroup->createQuery();
+                    $getServiceGroup->executeQuery();
+                    $xml = $getServiceGroup->getXML();
+                    break;
+                case "get_service_group_role" :
+                    require_once($directory . 'GetServiceGroupRole.php');
+                    $this->authAnyCert();
+                    $getServiceGroupRole = new GetServiceGroupRole($em, $this->baseUrl);
+                    $getServiceGroupRole->validateParameters($this->params);
+                    $getServiceGroupRole->createQuery();
+                    $getServiceGroupRole->executeQuery();
+                    $xml = $getServiceGroupRole->getXML();
+                    break;
+                case "get_cert_status_date" :
+                    require_once($directory . 'GetCertStatusDate.php');
+                    $this->authAnyCert();
+                    $getCertStatusDate = new GetCertStatusDate($em);
+                    $getCertStatusDate->validateParameters($this->params);
+                    $getCertStatusDate->createQuery();
+                    $getCertStatusDate->executeQuery();
+                    $xml = $getCertStatusDate->getXML();
+                    break;
+                case "get_cert_status_changes":
+                    require_once($directory . 'GetCertStatusChanges.php');
+                    $this->authAnyCert();
+                    $getCertStatusChanges = new GetCertStatusChanges($em);
+                    $getCertStatusChanges->validateParameters($this->params);
+                    $getCertStatusChanges->createQuery();
+                    $getCertStatusChanges->executeQuery();
+                    $xml = $getCertStatusChanges->getXML();
+                    break;
+                case "get_site_count_per_country":
+                    require_once($directory . 'GetSiteCountPerCountry.php');
+                    $GetSiteCountPerCountry = new GetSiteCountPerCountry($em);
+                    $GetSiteCountPerCountry->validateParameters($this->params);
+                    $GetSiteCountPerCountry->createQuery();
+                    $GetSiteCountPerCountry->executeQuery();
+                    $xml = $GetSiteCountPerCountry->getXML();
+                    break;
+                //case "get_role_action_mappings":
+                default:
+                    die("Unable to find method: {$this->method}");
+                    break;
+            }
+        } catch (\Exception $e) {
+            print_r($e->getMessage());
+            die("An error has occured, please contact the GOCDB administrators at gocdb-admins@egi.eu");
+        }
+        return $xml;
     }
 
     /* Authorise a user against an access control list */
 
     function authAcl() {
-	$accessList = simplexml_load_file(__DIR__ . '/../../config/PI/access_control_list.xml');
+        $accessList = simplexml_load_file(__DIR__ . '/../../config/PI/access_control_list.xml');
 
-	$users = $accessList->children();
-	foreach ($users as $user) {
-	    if ((string) $user->dn == $this->dn)
-		return;
-	}
+        $users = $accessList->children();
+        foreach ($users as $user) {
+            if ((string) $user->dn == $this->dn)
+                return;
+        }
 
-	die("Your Certificate DN is not authorized to access this resource." .
-		" Certificate DN: <b>$this->dn</b><br />");
+        die("Your Certificate DN is not authorized to access this resource." .
+                " Certificate DN: <b>$this->dn</b><br />");
     }
 
     /* Authorize a user based on their certificate */
 
     function authAnyCert() {
-	if (empty($this->dn))
-	    die("<No valid certificate found. A trusted certificate is " .
-		    "required to access this resource. Try accessing the " .
-		    "resource through the private interface.");
+        if (empty($this->dn))
+            die("<No valid certificate found. A trusted certificate is " .
+                    "required to access this resource. Try accessing the " .
+                    "resource through the private interface.");
     }
 
 }

@@ -1,3 +1,17 @@
+GOCDB-5.6 Release (07/03/2016). Includes DB schema changes.  
+  - Reserved/Protected scope tags used to control the tagging of resources using 
+    cascading/inheritance rules that limit which tags NGIs->Sites->Services->Downtimes 
+    can declare. Allows certain sites (e.g. sites supporting WLCG-VOs and Elixir sites) 
+    to apply tags only to their resources and prevent other sites from using the same tags. 
+    Allows controlled resource filtering in API and GUI. 
+  - Bulk Add/Upload of multiple custom properties.  Allows the data models of 
+    Sites, ServiceGroups, Services and Endpoints to be easily extended and customised. 
+  - Downtime calendar view with fine-grained downtime filtering. 
+  - Updated/replaced the dateTimePicker JS lib. 
+  - DB Schema change to record user's last login dateTime (User.lastLoginDate field). 
+    Needed to delete inactive accounts that remain idle for >18mths. 
+
+
 GOCDB-5.5 Release (02/12/2015 ). No DB schema changes.  
   - Added 'Action to take For all child service scopes' field when editing a 
     site so that the site's scopes can be easily inherited or used to override 

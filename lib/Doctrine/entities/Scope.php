@@ -41,7 +41,7 @@ class Scope {
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -49,7 +49,7 @@ class Scope {
      * @return string
      */
     public function getName() {
-	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -57,7 +57,7 @@ class Scope {
      * @return string or null
      */
     public function getDescription() {
-	return $this->description;
+        return $this->description;
     }
 
     /**
@@ -65,7 +65,7 @@ class Scope {
      * @param string $name
      */
     public function setName($name) {
-	$this->name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -73,7 +73,7 @@ class Scope {
      * @param string $description
      */
     public function setDescription($description) {
-	$this->description = $description;
+        $this->description = $description;
     }
 
     /**
@@ -81,7 +81,7 @@ class Scope {
      * @return string
      */
     public function __toString() {
-	return $this->getName();
+        return $this->getName();
     }
 
 }

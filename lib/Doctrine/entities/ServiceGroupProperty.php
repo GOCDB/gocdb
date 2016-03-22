@@ -39,7 +39,7 @@ class ServiceGroupProperty {
      * to one ServiceGroup (OWNING ORM SIDE). 
      *   
      * @ManyToOne(targetEntity="ServiceGroup", inversedBy="serviceGroupProperties") 
-     * @JoinColumn(name="parentServiceGroup_id", referencedColumnName="id", onDelete="CASCADE")	 
+     * @JoinColumn(name="parentServiceGroup_id", referencedColumnName="id", onDelete="CASCADE") 
      */
     protected $parentServiceGroup = null; 
     
@@ -118,7 +118,7 @@ class ServiceGroupProperty {
     public function setKeyValue($keyValue){
         $this->keyValue = $keyValue; 
     }
-	
+
 }
 
 ?>

@@ -38,21 +38,33 @@
             <span class="input_syntax"></span>
         </span>
         <input class="input_input_text" type="text" name="GGUS_SU" value="">
+       
         
-        <span class="input_name">Scope(s)
-            <span class="input_syntax">(Select at least <?php xecho($params['NumberOfScopesRequired'])?>)</span>
-        </span>
-        <div style="margin-left: 2em">    
-        <?php foreach ($params['Scopes'] as $scopeArray){ ?>
-            <br />
-            <input type="checkbox" name="SCOPE_IDS[]" value="<?php echo $scopeArray['scope']->getId();?>"<?php if($scopeArray['applied']){echo ' checked="checked"';}?>>
-            <?php xecho($scopeArray['scope']->getName());?>
-
-        <?php } ?>
-        </div>
-        
+        <br/>
+        <br/>
+        <!-- Scope Tags-->
+        <?php 
+        $parentObjectTypeLabel = 'Project'; 
+        require_once __DIR__ . '/../fragments/editScopesFragment.php';
+        ?>
         
         <br />
         <input type="submit" value="Add NGI" class="input_button">
     </form>
 </div>
+
+
+
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/buildScopeCheckBoxes.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
+        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
+            '#reservedScopeCheckBoxDIV',
+            '#reservedOptionalScopeCheckBoxDIV', 
+            '#reservedOptionalInhertiableScopeCheckBoxDIV',
+            '#optionalScopeCheckBoxDIV', 
+            true);
+    });
+</script> 

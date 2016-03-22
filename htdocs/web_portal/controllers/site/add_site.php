@@ -55,10 +55,10 @@ function submit(\User $user = null) {
     
     $serv = \Factory::getSiteService();
     try {
-    	$site = $serv->addSite($newValues, $user);
+        $site = $serv->addSite($newValues, $user);
     } catch(Exception $e) {
-    	show_view('error.php', $e->getMessage());
-    	die();
+        show_view('error.php', $e->getMessage());
+        die();
     }
     $params['site'] = $site;
     show_view("site/submit_new_site.php", $params);
@@ -67,7 +67,7 @@ function submit(\User $user = null) {
 
 
 /**
- *  Draws a form to add a new site
+ * Draws a form to add a new site
  * @param \User $user current user 
  * @return null
  */
@@ -77,13 +77,14 @@ function draw(\User $user = null) {
     }
 
     $siteService = \Factory::getSiteService();
-    //try { $siteService->addAuthorization($user);
-    //} catch(Exception $e) { show_view('error.php', $e->getMessage()); die(); }
-    
+
     if($user->isAdmin()){
+        // can user assign reserved scopes to this site, even though site has not been created yet?
+        $disableReservedScopes = false; 
         // if user is admin, then get all NGIs
         $userNGIs = \Factory::getNgiService()->getNGIs(); 
     } else {
+        $disableReservedScopes = true; 
         // otherwise, get only the NGIs the non-admin user has roles over that support add_site
         $userNGIs = \Factory::getNgiService()->getNGIsBySupportedAction(Action::NGI_ADD_SITE, $user); 
         if(count($userNGIs) == 0){
@@ -92,38 +93,53 @@ function draw(\User $user = null) {
            die(); 
         }
     }
-   
+//   // todo - site will be created under one of the user's ngis, so we can 
+//   // create a temporary site and add it to those ngis in order to apply role model. 
+//    $site = new \Site(); 
+//    foreach($userNGIs as $ngis){ $ngis->addSiteDoJoin($site); } 
+//    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
+//        "ACTION_APPLY_RESERVED_SCOPE_TAG", $site , $user)->getGrantAction()){
+//       $disableReservedScopes = false;  
+//    } 
 
+    // URL mapping
+    if(isset($_GET['getAllScopesForScopedEntity']) && is_numeric($_GET['getAllScopesForScopedEntity'])){
+        // Return all scopes for the parent NGI with the specified Id as a JSON object.  
+        // Used in ajax requests for generating UI checkboxes. 
+        // AJAX is needed here because the parent NGI is not known until the user selects 
+        // which parent NGI in the pull-down which then fires the AJAX request. 
+        $scopedEntityId = $_GET['getAllScopesForScopedEntity']; 
+        $ngiScopedEntity =  \Factory::getNgiService()->getNgi($scopedEntityId); 
+        $jsonScopes = getEntityScopesAsJSON2(null, $ngiScopedEntity, $disableReservedScopes, true); 
+        header('Content-type: application/json');
+        die($jsonScopes);  
+    } 
+   
     $countries = $siteService->getCountries();
-    //$timezones = $siteService->getTimezones(); // Deprecated - don't use the lookup values in the GocDB
     $timezones = DateTimeZone::listIdentifiers(); 
-    $prodStatuses = $siteService->getProdStatuses();
     
     //Remove SC and PPS infrastructures from drop down list. TODO: Delete this block once they no longer exist
     $SCInfrastructure = $siteService->getProdStatusByName('SC');
     $PPSInfrastructure = $siteService->getProdStatusByName('PPS'); 
     $hackprodStatuses=array();
-    foreach($prodStatuses as $ps){
+    foreach($siteService->getProdStatuses() as $ps){
         if($ps != $SCInfrastructure and $ps != $PPSInfrastructure){
             $hackprodStatuses[]=$ps;
         }
     }
     $prodStatuses = $hackprodStatuses;
     //delete up to here once pps and sc infrastructures have been removed from database
-
     $certStatuses = $siteService->getCertStatuses();
-    $scopes = \Factory::getScopeService()->getDefaultScopesSelectedArray();
     $numberOfScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('site');
-    //$dDashNgis = \Factory::getUserService()->getDDashNgis($user);
 
-    $params = array('ngis' => $userNGIs, 'countries' => $countries, 'timezones' => $timezones
-    				, 'prodStatuses' => $prodStatuses, 'certStatuses' => $certStatuses
-    				, 'scopes' => $scopes, 'numberOfScopesRequired' => $numberOfScopesRequired);
+    $params = array('ngis' => $userNGIs, 'countries' => $countries, 'timezones' => $timezones, 
+        'prodStatuses' => $prodStatuses, 'certStatuses' => $certStatuses, 
+        'numberOfScopesRequired' => $numberOfScopesRequired, 
+        'disableReservedScopes' => $disableReservedScopes);
 
     //Check that there is at least one NGI available before allowing an add site. 
     if($params['ngis'] == null){
         show_view('error.php', "GocDB requires one or more NGI's to be able to add a site.");
-    
     }
     
     show_view("site/add_site.php", $params);

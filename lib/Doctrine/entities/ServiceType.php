@@ -39,14 +39,14 @@ class ServiceType {
     protected $services = null;
 
     public function __construct() {
-	$this->services = new ArrayCollection();
+        $this->services = new ArrayCollection();
     }
     
     /**
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -54,7 +54,7 @@ class ServiceType {
      * @return string
      */
     public function getName() {
-	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -62,7 +62,7 @@ class ServiceType {
      * @return string or null
      */
     public function getDescription() {
-	return $this->description;
+        return $this->description;
     }
 
     /**
@@ -70,7 +70,7 @@ class ServiceType {
      * @param string $name
      */
     public function setName($name) {
-	$this->name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -78,7 +78,7 @@ class ServiceType {
      * @param string $description
      */
     public function setDescription($description) {
-	$this->description = $description;
+        $this->description = $description;
     }
 
     /**
@@ -86,7 +86,7 @@ class ServiceType {
      * @return ArrayCollection
      */
     public function getServices() {
-	return $this->services;
+        return $this->services;
     }
 
     /**
@@ -96,8 +96,8 @@ class ServiceType {
      * @param \Service $service
      */
     public function addService($service) {
-	$this->services[] = $service;
-	$service->setServiceType($this);
+        $this->services[] = $service;
+        $service->setServiceType($this);
     }
 
     /**
@@ -105,7 +105,7 @@ class ServiceType {
      * @return string
      */
     public function __toString() {
-	return $this->getName();
+        return $this->getName();
     }
 
 }

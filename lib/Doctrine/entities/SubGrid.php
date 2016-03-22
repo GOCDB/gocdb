@@ -37,36 +37,36 @@ class SubGrid {
     protected $ngi;
 
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     public function getName() {
-	return $this->name;
+        return $this->name;
     }
 
     public function getSites() {
-	return $this->sites;
+        return $this->sites;
     }
 
     public function getNgi() {
-	return $this->ngi;
+        return $this->ngi;
     }
 
     public function setName($name) {
-	$this->name = $name;
+        $this->name = $name;
     }
 
     public function addSiteDoJoin($site) {
-	$this->sites[] = $site;
-	$site->setSubGrid($this);
+        $this->sites[] = $site;
+        $site->setSubGrid($this);
     }
 
     public function setNgi($ngi) {
-	$this->ngi = $ngi;
+        $this->ngi = $ngi;
     }
 
     public function __construct() {
-	$this->sites = new ArrayCollection();
+        $this->sites = new ArrayCollection();
     }
 
 }

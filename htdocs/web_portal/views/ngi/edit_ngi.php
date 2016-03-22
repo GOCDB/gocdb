@@ -42,7 +42,8 @@
             </span>
         </span>
         <input class="input_input_text" type="text" name="GGUS_SU" value="<?php xecho($params['ngi']->getGgus_Su()); ?>">
-        
+
+        <?php /*
         <span class="input_name">Scope(s)
             <span class="input_syntax">(Select at least <?php xecho($params['numberOfScopesRequired'])?>)</span>
         </span>
@@ -54,9 +55,34 @@
 
         <?php } ?>
         </div>
+         */?>
+
+        <br/>
+        <br/>
+        
+        <!-- Scope Tags-->
+        <?php 
+        $parentObjectTypeLabel = 'Project'; 
+        require_once __DIR__ . '/../fragments/editScopesFragment.php';
+        ?>
             
         <input class="input_input_hidden" type="hidden" name="ID" value="<?php echo $params['ngi']->getId(); ?>">
         <br />
         <input class="input_button" type="submit" value="Update NGI">
     </form>
 </div>
+
+
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/buildScopeCheckBoxes.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
+        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
+        '#reservedScopeCheckBoxDIV',
+        '#reservedOptionalScopeCheckBoxDIV', 
+        '#reservedOptionalInhertiableScopeCheckBoxDIV',
+        '#optionalScopeCheckBoxDIV', 
+        true);
+    });
+</script> 

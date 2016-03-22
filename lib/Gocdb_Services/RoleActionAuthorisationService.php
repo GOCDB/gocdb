@@ -112,7 +112,7 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
 //            throw new \LogicException('Coding Error - Invalid action not known'); 
 //        } 
 
-//	 IGNORE THIS COMMENT BLOCK - DECLARING DIFFERENT ROLE ACTION MAPPINGS PER  
+//         IGNORE THIS COMMENT BLOCK - DECLARING DIFFERENT ROLE ACTION MAPPINGS PER  
 //       PROJECT MAY BE NEEDED IN FUTURE, BUT RIGHT NOW IT ADDS UNNECESSARY COMPLEXITY.   
 //       IF THE NEED ARISES, THIS STUFF WILL BE USEFUL:
 //       =======================================================================
@@ -122,15 +122,15 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
 //       // ServiceGroups, so dbProjects may be empty (this is normal). 
 //       //$dbProjects = $this->getReachableProjectsFromOwnedEntity($targetEntity); 
 //
-//	// TODO? 
-//	// iterate the dbProjects and exclude those that are not mapped in the 
-//	// roleActionMappings file
-//	foreach($dbProjects as $dbProj){
-//	   if($this->roleActionMappingService->isProjectMapped($dbProj->getName())){
-//	      $dbProjects[] = $dbProj;  
-//	   } 
-//	}
-//	
+//        // TODO? 
+//        // iterate the dbProjects and exclude those that are not mapped in the 
+//        // roleActionMappings file
+//        foreach($dbProjects as $dbProj){
+//           if($this->roleActionMappingService->isProjectMapped($dbProj->getName())){
+//              $dbProjects[] = $dbProj;  
+//           } 
+//        }
+//        
 //        if(count($dbProjects) > 0){
 //            // If there is an ancestor project, then we ignore the default role action mappings
 //            foreach ($dbProjects as $dbProject) {
@@ -159,7 +159,7 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
 //        } else {
 //            // The entity dont come under a Project, e.g. the entity was 
 //            // Project agnostic like a ServiceGroup, or there was an instance of 
-//	    // an orphan NGI or Site, therefore get the default RoleActionMappings. 
+//            // an orphan NGI or Site, therefore get the default RoleActionMappings. 
 //            $requiredRoleTypesPerProj[] = $this->roleActionMappingService->
 //                    getRoleTypeNamesThatEnableActionOnTargetObjectType(
 //                        $action, $targetEntity->getType(), null);
@@ -169,11 +169,11 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
 //       =======================================================================
 
 
-	
+        
         // Lookup+store the role type mappings that enable 
         // the action on the specified entity type (mappings stored in RoleActionMappings XML). 
         $requiredRoleTypesPerProj = array();
-	$requiredRoleTypesPerProj[] = $this->roleActionMappingService->
+        $requiredRoleTypesPerProj[] = $this->roleActionMappingService->
                     getRoleTypeNamesThatEnableActionOnTargetObjectType(
                         $action, $targetEntity->getType(), null);
 
@@ -203,7 +203,6 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
         // store that users's role in the grantingUserRoles array. 
         $grantingUserRoles = array();
         foreach ($dbUserRoles as $candidateUserRole) {
-            //foreach ($requiredRoleTypesPerProj as $dbProjectId => $requiredRoleTypesForProjX) {
             foreach ($requiredRoleTypesPerProj as $requiredRoleTypesForProjX) {
                 //print_r("candidate granting role: [".$candidateUserRole->getRoleType()->getName()."]\n"); 
                 // Iterate required role types for proj X  
@@ -224,17 +223,17 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
             }
         }
 
-	
+        
         //print_r("Granting User Roles size: [".count($grantingUserRoles)."]"); 
-	$grantResult = new AuthoriseActionResult();
-	$grantResult->setGrantingRoles($grantingUserRoles); 
-	if($user->isAdmin()){
-	    $grantResult->setGrantAction(TRUE); 
-	} else {
-	    if(count($grantingUserRoles) > 0){
-		$grantResult->setGrantAction(TRUE); 
-	    }
-	}
+        $grantResult = new AuthoriseActionResult();
+        $grantResult->setGrantingRoles($grantingUserRoles); 
+        if($user->isAdmin()){
+            $grantResult->setGrantAction(TRUE); 
+        } else {
+            if(count($grantingUserRoles) > 0){
+                $grantResult->setGrantAction(TRUE); 
+            }
+        }
         return $grantResult; 
     }
 

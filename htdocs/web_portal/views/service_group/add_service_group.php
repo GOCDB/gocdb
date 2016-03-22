@@ -27,17 +27,30 @@
         </span>
         <input class="add_edit_form" style="width: auto; display: inline;" type="checkbox" name="monitored" value="" checked="checked"/>
 
-        <span class="input_name">Scope(s)
-            <span class="input_syntax">(Select at least <?php echo $params['numberOfScopesRequired']?>)</span>
-        </span>
-        <div style="margin-left: 2em">    
-        <?php foreach ($params['scopes'] as $scopeArray){ ?>
-            <br />
-            <input type="checkbox" name="Scope_ids[]" value="<?php echo $scopeArray['scope']->getId();?>"<?php if($scopeArray['applied']){echo ' checked="checked"';}?>>
-            <?php echo $scopeArray['scope']->getName();?>
 
-        <?php } ?>
-        </div>
+        <br>
+        <br>
+        <!-- Scope Tags-->
+        <?php 
+        $parentObjectTypeLabel = ''; 
+        require_once __DIR__ . '/../fragments/editScopesFragment.php';
+        ?>
+          
+
     	<input class="input_button" type="submit" value="Add Service Group" />
     </form>
 </div>
+
+<script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/buildScopeCheckBoxes.js"></script>
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
+        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
+          '#reservedScopeCheckBoxDIV', 
+          '#reservedOptionalScopeCheckBoxDIV', 
+          '#reservedOptionalInhertiableScopeCheckBoxDIV',
+          '#optionalScopeCheckBoxDIV', 
+          true);
+    });
+</script>  

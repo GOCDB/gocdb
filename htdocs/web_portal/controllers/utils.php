@@ -1,43 +1,172 @@
 <?php
+require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
 /**
  * Parse properties file
  *
- * @param string $txtProperties String contianing the contens of a .propesdf
+ * @param string $txtProperties String containing the contents of a .properties
+ * @return array $results Associative array of key value pairs
  */
 function parse_properties($txtProperties) {
-    $result = array();
 
-    $lines = split("\n", $txtProperties);
-    $key = "";
+        $result = array();
 
-    $isWaitingOtherLine = false;
-    foreach($lines as $i=>$line) {
+        $lines = explode("\n", $txtProperties);
+        $key = "";
 
-        if(empty($line) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
+        $isWaitingOtherLine = false;
+        foreach($lines as $i=>$line) {
+            $line = trim($line);
+            if(empty($line) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
 
-        if(!$isWaitingOtherLine) {
-            $key = substr($line,0,strpos($line,'='));
-            $value = substr($line,strpos($line,'=') + 1, strlen($line));
+            if(!$isWaitingOtherLine) {
+                $key = trim(substr($line,0,strpos($line,'=')));
+                $value = trim(substr($line,strpos($line,'=') + 1, strlen($line)));
+            }
+            else {
+                $value .= $line;
+            }
+
+            /* Check if ends with single '\' */
+            if(strpos($value,"\\") === strlen($value)-strlen("\\")) {
+                $value = substr($value, 0, strlen($value)-1)."\n";
+                $isWaitingOtherLine = true;
+            }
+            else {
+                $isWaitingOtherLine = false;
+            }
+
+            if ($key == NULL) {
+                $line = $i + 1;
+                throw new \Exception("Property name on line {$line} is null");
+            }
+            if ($value == NULL) {
+                $line = $i + 1;
+                throw new \Exception("Property value on line {$line} is null");
+            }
+
+            //we can't use the prop key as the key due to key duplicates being allowed
+            //we are using an indexed array of indexed arrays
+            $result[] = array($key, $value);
+
+            unset($lines[$i]);
         }
-        else {
-            $value .= $line;
-        }
 
-        /* Check if ends with single '\' */
-        if(strpos($value,"\\") === strlen($value)-strlen("\\")) {
-            $value = substr($value, 0, strlen($value)-1)."\n";
-            $isWaitingOtherLine = true;
-        }
-        else {
-            $isWaitingOtherLine = false;
-        }
+        return $result;
+}
 
-        $result[$key] = $value;
-        unset($lines[$i]);
+
+/**
+ * Builds a JSON string that lists scope tags in different categories based 
+ * on the provided arguments - used when editing or adding a IScopedEntity. 
+ * <p>
+ * Different JSON keys are used to define the scope tag categories: 
+ * <ul>
+ *   <li>'optional' - Lists optional tags that are freely assignable.</li>
+ *   <li>'reserved_optional' - Lists reserved tags that have already been directly 
+ *      assigned to the $targetScopedEntity, but CAN'T be inherited from the $parentScopedEntity.</li>
+ *   <li>'reserved_optional_inheritable' - Lists reserved tags that CAN be inherited 
+ *      from the $parentScopedEntity (the tag may/may-not be already assigned to the target).</li>
+ *   <li>'reserved' - The remaining Reserved tags.</li>
+ *   <li>'disableReserved' - Defines a boolean rather than a tag list - true to disable the 'reserved' tags or false to enable.</li>
+ * </ul>  
+ * <p>
+ * For each scope value, the attributes are ["PK/ID", "tagValue", "boolCheckedOrNot"].
+ * <p>
+ * If both target and parent scopedEntities are null, then 'reserved_optional' and 
+ * 'reserved_optional_inheritable' lists will be empty.  
+ * <p>
+ * Sample output: 
+ * <code>
+ * {
+ * "optional":[[2,"EGI",true],[1,"Local",false]],
+ * "reserved_optional":[[24,"atlas",true],[27,"wlcg",true]],
+ * "reserved_optional_inheritable":[[25,"lhcb",true]],
+ * "reserved":[[26,"alice",false],[23,"cms",false],[22,"tier1",false],[21,"tier2",false]],
+ * "disableReserved":true
+ * }
+ * </code>  
+ * @param \IScopedEntity $targetScopedEntity Optional, use Null if creating a new IScopedEntity 
+ * @param \IScopedEntity $parentScopedEntity Optional, the parent to inherit tags from 
+ * @param bool $disableReservedScopes True to disable 'reserved' tags 
+ * @param bool $inheritParentScopeChecked True to set the checked status of each scope value 
+ *   according to whether the parent has the same scope checked (every scope will always be 
+ *   false if the $parentScopedEntity is null) 
+ * @return string  
+ * @throws \LogicException
+ */
+function getEntityScopesAsJSON2($targetScopedEntity = null, $parentScopedEntity = null, 
+        $disableReservedScopes = true, $inheritParentScopeChecked = false){
+
+    $targetScopes = array(); 
+    if($targetScopedEntity != null){
+        if(!($targetScopedEntity instanceof \IScopedEntity)){
+            throw new \LogicException('Invalid $scopedEntityChild, does not implement IScopedEntity'); 
+        }
+       $targetScopes =  $targetScopedEntity->getScopes()->toArray();
+    }
+    $parentScopes = array(); 
+    if($parentScopedEntity != null) {
+        if(!($parentScopedEntity instanceof \IScopedEntity)){
+            throw new \LogicException('Invalid scopedEntityParent, does not implement IScopedEntity'); 
+        }
+        $parentScopes = $parentScopedEntity->getScopes()->toArray(); 
     }
 
-    return $result;
+    $reservedScopeNames = \Factory::getConfigService()->getReservedScopeList();
+    $allScopes = \Factory::getScopeService()->getScopes(); 
+    $optionalScopeIds = array(); 
+    $reservedOptionalScopeIds = array(); 
+    $reservedOptionalInheritableScopeIds = array(); 
+    $reservedScopeIds = array(); 
+
+    /* @var $scope \Scope */
+    foreach($allScopes as $scope){
+        $targetChecked = false;
+        $parentChecked = false;
+        // is scope already joined to target 
+        if(in_array($scope, $targetScopes)){
+            $targetChecked = true; 
+        } 
+        // is scope already joined to parent 
+        if(in_array($scope, $parentScopes)){
+            $parentChecked = true; 
+        } 
+        // Determine if this tag should be checked = t/f
+        $isChecked = $targetChecked; 
+        if($inheritParentScopeChecked){
+            $isChecked = $parentChecked; 
+        }
+
+        // Is scope tag in the reserved list ?
+        if(in_array($scope->getName(), $reservedScopeNames)){ 
+            // A reserved scope tag:
+            if($parentChecked || $targetChecked){
+                if($parentChecked){
+                    // tag CAN be inherited from parent, so put in relevant array 
+                    $reservedOptionalInheritableScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);
+                } else {
+                    // tag CAN'T be inherited from parent, but it has already been directly assigned, so put in relevant array  
+                    $reservedOptionalScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);  
+                }
+            } else {
+                // tag is not inheritable and has not been directly assigned, so its reserved/protected
+                $reservedScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked); 
+            }
+        } else {
+            // An optional scope tag: 
+            $optionalScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked); 
+        }
+    }
+    // build the response 
+    $scopeCategories = array(); 
+    $scopeCategories['optional'] = $optionalScopeIds; 
+    $scopeCategories['reserved_optional'] = $reservedOptionalScopeIds; 
+    $scopeCategories['reserved_optional_inheritable'] = $reservedOptionalInheritableScopeIds;  
+    $scopeCategories['reserved'] = $reservedScopeIds; 
+    $scopeCategories['disableReserved'] = $disableReservedScopes ? true : false;  
+    
+    return json_encode($scopeCategories); 
 }
 
 /**
@@ -128,16 +257,22 @@ function getSiteDataFromWeb() {
     }
    
     if(isset($_REQUEST['childServiceScopeAction'])){
-	$site_data['childServiceScopeAction'] = $_REQUEST['childServiceScopeAction']; 
+        $site_data['childServiceScopeAction'] = $_REQUEST['childServiceScopeAction']; 
     } else {
-	$site_data['childServiceScopeAction'] = 'noModify'; 
+        $site_data['childServiceScopeAction'] = 'noModify'; 
     }
     
-    // get scopes if any are selected, if not set as null
+    // get non-reserved scopes if any are selected, if not set as empty array 
     if (isset($_REQUEST ['Scope_ids'])){
         $site_data ['Scope_ids'] = $_REQUEST ['Scope_ids'];
     }else{
         $site_data ['Scope_ids'] = array ();
+    }
+    // get reserved scopes if any are selected, if not set as empty array 
+    if (isset($_REQUEST ['ReservedScope_ids'])){
+        $site_data ['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    }else{
+        $site_data ['ReservedScope_ids'] = array ();
     }
     
     /*
@@ -226,6 +361,11 @@ function getSGroupDataFromWeb() {
     }else{
         $sg ['Scope_ids'] = array ();
     }
+    if (isset($_REQUEST ['ReservedScope_ids'])){
+        $sg['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    }else{
+        $sg['ReservedScope_ids'] = array ();
+    }
     
     return $sg;
 }
@@ -250,7 +390,8 @@ function getSeDataFromWeb() {
     }
     
     /*
-     * If the user is adding a new service the optional HOSTING_SITE parameter will be set. If it is set we return it as part of the array
+     * If the user is adding a new service the optional HOSTING_SITE parameter will be set. 
+     * If it is set we return it as part of the array
      */
     if (! empty($_REQUEST ['hostingSite'])){
         $se_data ['hostingSite'] = $_REQUEST ['hostingSite'];
@@ -279,6 +420,12 @@ function getSeDataFromWeb() {
         $se_data ['Scope_ids'] = $_REQUEST ['Scope_ids'];
     }else{
         $se_data ['Scope_ids'] = array ();
+    }
+    
+    if (isset($_REQUEST ['ReservedScope_ids'])){
+        $se_data ['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    }else{
+        $se_data ['ReservedScope_ids'] = array ();
     }
     
     return $se_data;
@@ -323,9 +470,23 @@ function getNGIDataFromWeb() {
         $NGIValues ['NAME'] = $_REQUEST ['NAME'];
     }
     
-    $scopes = array ();
-    if (isset($_REQUEST ['SCOPE_IDS'])){
-        $scopes = $_REQUEST ['SCOPE_IDS'];
+//    $scopes = array ();
+//    if (isset($_REQUEST ['SCOPE_IDS'])){
+//        $scopes = $_REQUEST ['SCOPE_IDS'];
+//    }
+
+    // get scopes if any are selected, if not set as null
+    $optionalScopes = array(); 
+    if (isset($_REQUEST ['Scope_ids'])){
+        $optionalScopes['Scope_ids'] = $_REQUEST ['Scope_ids'];
+    }else{
+        $optionalScopes['Scope_ids'] = array ();
+    }
+    $reservedScopes = array(); 
+    if (isset($_REQUEST ['ReservedScope_ids'])){
+        $reservedScopes['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    }else{
+        $reservedScopes['ReservedScope_ids'] = array ();
     }
     
     $id = null;
@@ -335,7 +496,9 @@ function getNGIDataFromWeb() {
     
     $values = array (
             'NGI' => $NGIValues,
-            'SCOPES' => $scopes,
+            //'SCOPES' => $scopes,
+            'Scope_ids' => $optionalScopes['Scope_ids'], 
+            'ReservedScope_ids' => $reservedScopes['ReservedScope_ids'], 
             'ID' => $id 
     );
     
@@ -404,13 +567,13 @@ function getSpDataFromWeb() {
     if (isset($_REQUEST ['PROP'])){
         $sp ['SITEPROPERTIES'] ['PROP'] = $_REQUEST ['PROP'];
     }
-	
-	if(isset($sp['SITEPROPERTIES']['NAME'])){
+        
+        if(isset($sp['SITEPROPERTIES']['NAME'])){
         $sp['SITEPROPERTIES']['NAME'] = trim($sp['SITEPROPERTIES']['NAME']); 
     }
     if(isset($sp['SITEPROPERTIES']['VALUE'])){
         $sp['SITEPROPERTIES']['VALUE'] = trim($sp['SITEPROPERTIES']['VALUE']); 
-    }	
+    }        
     return $sp;
 }
 
@@ -429,7 +592,7 @@ function getSerPropDataFromWeb() {
     }
     if(isset($sp['SERVICEPROPERTIES']['VALUE'])){
          $sp['SERVICEPROPERTIES']['VALUE'] = trim($sp['SERVICEPROPERTIES']['VALUE']); 
-    }	
+    }        
     return $sp;
 }
 
@@ -449,7 +612,7 @@ function getEndpointPropDataFromWeb() {
     }
     if(isset($_REQUEST ['KEYPAIRVALUE'])){
          $sp['ENDPOINTPROPERTIES']['VALUE'] = trim($_REQUEST ['KEYPAIRVALUE']); 
-    }	
+    }        
     return $sp;
 }
 

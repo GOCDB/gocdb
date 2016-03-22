@@ -79,8 +79,8 @@ class EndpointLocation {
     protected $downtimes = null;
 
     public function __construct() {
-	$this->downtimes = new ArrayCollection();
-	$this->endpointProperties = new ArrayCollection();
+        $this->downtimes = new ArrayCollection();
+        $this->endpointProperties = new ArrayCollection();
     }
 
     //Getters
@@ -89,7 +89,7 @@ class EndpointLocation {
      * @return int The PK of this entity or null if not persisted
      */
     public function getId() {
-	return $this->id;
+        return $this->id;
     }
 
     /**
@@ -97,7 +97,7 @@ class EndpointLocation {
      * @return string or null 
      */
     public function getName() {
-	return $this->name;
+        return $this->name;
     }
 
     /**
@@ -105,7 +105,7 @@ class EndpointLocation {
      * @return ArrayCollection
      */
     public function getDowntimes() {
-	return $this->downtimes;
+        return $this->downtimes;
     }
 
     /**
@@ -114,7 +114,7 @@ class EndpointLocation {
      * @return string or null 
      */
     public function getUrl() {
-	return $this->url;
+        return $this->url;
     }
 
     /**
@@ -122,7 +122,7 @@ class EndpointLocation {
      * @return \Service
      */
     public function getService() {
-	return $this->service;
+        return $this->service;
     }
 
     /**
@@ -131,7 +131,7 @@ class EndpointLocation {
      * @return string or null 
      */
     public function getInterfaceName() {
-	return $this->interfaceName;
+        return $this->interfaceName;
     }
 
     /**
@@ -140,7 +140,7 @@ class EndpointLocation {
      * @return ArrayCollection
      */
     public function getEndpointProperties() {
-	return $this->endpointProperties;
+        return $this->endpointProperties;
     }
 
     /**
@@ -148,7 +148,7 @@ class EndpointLocation {
      * @return string or null
      */
     public function getDescription() {
-	return $this->description;
+        return $this->description;
     }
 
     //Setters
@@ -158,7 +158,7 @@ class EndpointLocation {
      * @param string $name
      */
     public function setName($name) {
-	$this->name = $name;
+        $this->name = $name;
     }
 
     /**
@@ -167,7 +167,7 @@ class EndpointLocation {
      * @param string $url
      */
     public function setUrl($url) {
-	$this->url = $url;
+        $this->url = $url;
     }
 
     /**
@@ -176,7 +176,7 @@ class EndpointLocation {
      * @param string $interfaceName
      */
     public function setInterfaceName($interfaceName) {
-	$this->interfaceName = $interfaceName;
+        $this->interfaceName = $interfaceName;
     }
 
     /**
@@ -190,7 +190,7 @@ class EndpointLocation {
      * @param Service $service
      */
     public function setServiceDoJoin($service) {
-	$this->service = $service;
+        $this->service = $service;
     }
 
     /**
@@ -199,12 +199,12 @@ class EndpointLocation {
      * @param \EndpointProperty $endpointProperty
      */
     public function addEndpointPropertyDoJoin($endpointProperty) {
-	$this->endpointProperties[] = $endpointProperty;
-	$endpointProperty->_setParentEndpoint($this);
-	//$endpointProperty->getParentEndpoint() = $this; 
+        $this->endpointProperties[] = $endpointProperty;
+        $endpointProperty->_setParentEndpoint($this);
+        //$endpointProperty->getParentEndpoint() = $this; 
     }
 
-    /**
+    /*
      * Do not call in client code, always use the opposite 
      * <code>$downtime->addEndpointLocation($thisEl)</code> instead which internally 
      * calls this method to keep the bidirectional relationship consistent.   
@@ -214,10 +214,10 @@ class EndpointLocation {
      * @param Downtime $downtime
      */
 //    public function _addDowntime(Downtime $downtime) {
-//    	$this->downtimes[] = $downtime;
+//            $this->downtimes[] = $downtime;
 //    }
 
-    /**
+    /*
      * Do not call in client code, always use the opposite 
      * <code>$downtime->removeEndpointLocation($thisEl)</code> instead which internally 
      * calls this method to keep the bidirectional relationship consistent.   
@@ -227,7 +227,7 @@ class EndpointLocation {
      * @param Downtime $downtime downtime to be removed
      */
 //    public function _removeDowntime(Downtime $downtime) {
-//    	$this->downtimes->removeElement($downtime);
+//            $this->downtimes->removeElement($downtime);
 //    }
 
     /**
@@ -235,7 +235,7 @@ class EndpointLocation {
      * @param string $description
      */
     public function setDescription($description) {
-	$this->description = $description;
+        $this->description = $description;
     }
 
 }

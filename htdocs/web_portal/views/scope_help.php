@@ -1,124 +1,132 @@
 <div class="rightPageContainer">
-    <h1>Data Scoping</h1>
+    <h1>Resource Scoping</h1>
     <br />
 
-    <div class="Help_And_Documentation">
+    <div>
         <h2>What are scope tags?</h2>
-            <p>
+        <ul>
+            <li>
                 Scope tags are used to selectively tag Services, ServiceGroups, 
-                Sites, and NGIs so that API queries can return only those
-                objects that define the required scope tag or set of scope tags. 
-            </p>
-            <p>
-                Scope tags are added and removed by the GOCDB admins. 
-                Normal users can then select scope tags
-                from the available list. New scope tags can be requested if required.  
-            </p>
-            <p>No special semantics are placed on scope tags within GOCDB itself
-                - they are simply tags. Rather, it is up to dependent systems to
-                interpret the implications of tagging an object with scopeX 
-                and/or scopeY. 
-            </p>
-            <p>
-                In EGI, scope tags are used to name different 
-                Grids/Projects. For example, a Site could be tagged with both
-                the 'EGI' and 'ProjX' tags. Dependent systems should interpret
-                this to mean that the site delivers resources to both projects.
-                Conversely, a single 'Local' tag can be used to declare that
-                this site does not provide any resources to either EGI or ProjX. 
-            </p>
-            <p>
+                Sites and NGIs so that API queries and users of the UI can filter for
+                objects that define the required set of tags. 
+            </li>
+            <li>
+                The available tags are controlled by the GOCDB admins, allowing 
+                users to select relevant tags from the list. New tags can 
+                be requested if required.  
+            </li>
+            <li>
+                In EGI, scope tags are used to categorise resources, 
+                e.g. a Site could be tagged with the 'EGI' and 'ProjX' tags 
+                while a single 'Local' tag can be used to declare that
+                this site does not provide any resources to EGI or ProjX. 
+            </li>
+            <li>
                 Scope tags should not be confused with projects. Projects 
-                provide a means to cascade project level roles/permissions over
-                child NGIs grouped under the project. Scope tags have no effect
-                on permissions. 
-            </p>
-            <p>
-                The following are some examples of scope tags in use in PI 
-                queries: 
-                <ul>
-                    <li>
-                        <pre>?method=get_site&scope=EGI</pre>
-                        (Fetch all sites tagged as 'EGI') 
-                    </li>   
-                    <li>
-                        <pre>?method=get_site&scope=EGI,ProjX&scope_match=all</pre>
-                        (Fetch all sites tagged with <b>both</b> 'EGI' and ProjX) 
-                    </li> 
-                    <li>
-                        <pre>?method=get_site&scope=EGI,ProjX&scope_match=any</pre>
-                        (Fetch all sites tagged with <b>either</b> 'EGI' or ProjX) 
-                    </li> 
-                     <li>
-                        <pre>?method=get_site&scope=</pre>
-                        (Fetch <b>all sites</b> regardless of scope tags) 
-                    </li> 
-                </ul>
-            </p>
-
+                provide a means to cascade roles/permissions over
+                child resources (NGIs, Sites, Services) grouped under the project. 
+                Scope tags have no effect on permissions. 
+            </li>
+            
+        </ul>
+        <h2>What are Reserved tags?</h2>
+        <ul>
+            <li>Some tags may be 'Reserved' which means they are protected - they are used to restrict tag usage 
+            and prevent non-authorised sites/services from using tags not intended for them.</li>
+            <li>Reserved tags are initially assigned to resources by the gocdb-admins, and can then be optionially 
+              inherited by child resources (tags can be initially assigned to NGIs, Sites, Services and ServiceGroups).</li>
+            <li>When creating a new child resource (e.g. a child Site or child Service), 
+              the scopes that are assigned to the parent are automatically inherited and assigned to the child.</li>
+            <li>Reserved tags assigned to a resource are optional and can be de-selected if required.</li>
+            <li>Users can reapply Reserved tags to a resource ONLY if the tag can be 
+              inherited from the parent Scoped Entity (parents include NGIs/Sites).</li>
+            <li>For Sites: If a Reserved tag is removed from a Site, then the same tag is also removed
+              from all the child Services - a Service can't have a reserved tag that 
+              is not supported by its parent Site.</li>
+            <li>For NGIs: If a Reserved tag is removed from an NGI, then the same tag is NOT 
+              removed from all the child Sites - this is intentionally different from the Site->Service relationship.</li>
+        </ul>
+        <h2>How are scope tags used in the API?</h2>
+        The following are some examples of scope tags in use in PI 
+        queries: 
+        <ul>
+            <li>
+                <pre>?method=get_site&scope=EGI</pre>
+                (Fetch all sites tagged as 'EGI') 
+            </li>   
+            <li>
+                <pre>?method=get_site&scope=EGI,ProjX&scope_match=all</pre>
+                (Fetch all sites tagged with <b>both</b> 'EGI' and ProjX) 
+            </li> 
+            <li>
+                <pre>?method=get_site&scope=EGI,ProjX&scope_match=any</pre>
+                (Fetch all sites tagged with <b>either</b> 'EGI' or ProjX) 
+            </li> 
+             <li>
+                <pre>?method=get_site&scope=</pre>
+                (Fetch <b>all sites</b> regardless of scope tags) 
+            </li> 
+        </ul>
     </div>
-    <!--Scopes-->
-    <div class="Help_And_Documentation">
+
+    <div>
         <h2>What scope tags are available?</h2>
-        <div class="listContainer">
-            <span class="header listHeader">
-                The following scopes are available in GOCDB:
-            </span>
-            <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
-            <table class="vSiteResults" id="selectedSETable">
-                <tr class="site_table_row_1">
-                    <th class="site_table">Name</th>
-                    <th class="site_table">Description</th>
+        <div>
+            <table class="table table-striped table-condensed">
+                <thead>
+                    <tr>
+                        <th>Tag name</th>
+                        <th>Description</th>
+                        <th>Reserved?</th>
+                    </tr>
+                </thead>
+                
+               <?php foreach($params['optionalScopes'] as $scope){ ?>
+                <tr>
+                    <td><?php xecho($scope->getName());?></td>
+                    <td><?php xecho($scope->getDescription()); ?></td>
+                    <td>&cross;</td>
                 </tr>
-                <?php           
-                $num = 2;
-                foreach($params['Scopes'] as $scope) {
-                ?>
-                <tr class="site_table_row_<?php echo $num ?>">
-                    <td class="site_table">
-                        <div style="background-color: inherit;">
-                            <span style="vertical-align: middle;">
-                               <?php xecho($scope->getName()); ?>
-                            </span>
-                        </div>
-                    </td>
-
-                    <td class="site_table">
-                        <?php xecho($scope->getDescription()); ?>
-                    </td>
-
+               <?php } ?>
+                
+               <?php foreach($params['reservedScopes'] as $scope){ ?>
+                <tr>
+                    <td><?php xecho($scope->getName());?></td>
+                    <td><?php xecho($scope->getDescription()); ?></td>
+                    <td>&check;</td>
                 </tr>
-                <?php  
-                    if($num == 1) { $num = 2; } else { $num = 1; }
-                    } // End of the foreach loop iterating over SEs
-                ?>
+               <?php } ?>
+                
             </table>
         </div>
     </div>
-    <br/>&nbsp;
+  
+
     
-    <div class="Help_And_Documentation">
+    <div>
         <h2>What does having the EGI scope applied mean?</h2>
-        <p>
-            If a site, service, service group, or NGI is scoped as ‘EGI’ then it
-            will be exposed to the central operational tools for monitoring and 
-            will appear in the operations portal. 
-        </p>
-        <p>
-            The 'EGI' scope not being selected for a given object makes the 
-            object invisible to EGI and the central operation tools (it will not
-            show in the central dashboard and it will not be monitored 
-            centrally). This can be useful if you wish to hide certain parts of 
-            your infrastructure from EGI but still have the information stored
-            and accessed from the same GOCDB instance. In this case you should 
-            use the 'Local' scope tag.
-        </p>
-        <p>
-            Note that scoping a site / service endpoint as EGI does not override
-            the production status or certification status fields. For example if
-            a site is not marked as production it won't be monitored centrally
-            even if it's marked as visible to EGI. 
-        </p> 
+        <ul>
+            <li>
+                If a site, service, service group, or NGI is scoped as ‘EGI’ then it
+                will be exposed to the central operational tools for monitoring and 
+                will appear in the operations portal. 
+            </li>
+            <li>
+                The 'EGI' scope not being selected for a given object makes the 
+                object invisible to EGI and the central operation tools (it will not
+                show in the central dashboard and it will not be monitored 
+                centrally). This can be useful if you wish to hide certain parts of 
+                your infrastructure from EGI but still have the information stored
+                and accessed from the same GOCDB instance. In this case you should 
+                use the 'Local' scope tag.
+            </li>
+            <li>
+                Note that scoping a site / service endpoint as EGI does not override
+                the production status or certification status fields. For example if
+                a site is not marked as production it won't be monitored centrally
+                even if it's marked as visible to EGI. 
+            </li> 
+        </ul>
     </div>
     
 </div>

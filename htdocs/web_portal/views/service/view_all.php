@@ -31,6 +31,9 @@
                     <?php  } ?>   
 <!--		</datalist>	-->
                 </select>
+
+
+
 		<!--<button id="uncheckAllSeTypeBtn" onclick="return false;">&laquo;Any</button>-->
             </div>
             
@@ -56,7 +59,7 @@
             </div>
             
             <div class="topMargin leftFloat clearLeft siteFilter">
-            	<span>Production: </span>
+            <span>Production Service: </span>
                 <select name="production">
                     <option value="">(all)</option>
                     <option value="TRUE"<?php if($params['selectedProduction'] == "TRUE") echo " selected" ?>>Y</option>
@@ -65,17 +68,30 @@
         	</div>
         	
 	    <div class="topMargin leftFloat siteFilter">
-            	<span class="">Monitored: </span>
+            	<span class="">Monitored Service: </span>
                 <select name="monitored">
                     <option value="">(all)</option>
                     <option value="TRUE"<?php if($params['selectedMonitored'] == "TRUE") echo " selected" ?>>Y</option>
                     <option value="FALSE"<?php if($params['selectedMonitored'] == "FALSE") echo " selected" ?>>N</option>
                 </select>
 	    </div>
+
+            <div class="topMargin leftFloat siteFilter">
+                <span class="">Site Certification:</span>
+                <select name="certStatus">
+                    <option value="">(all)</option>
+                    <?php foreach($params['certStatuses'] as $certStatus) { ?>
+                        <option value="<?php xecho($certStatus->getName()); ?>"
+                            <?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>>
+                            <?php xecho($certStatus->getName()); ?>
+                        </option>
+                    <?php  } ?>
+                </select>
+            </div>
         
 	    
 	    <div class="topMargin leftFloat siteFilter">
-		<span class=""><a href="index.php?Page_Type=Scope_Help">With Scopes:</a> </span>
+		<span class=""><a href="index.php?Page_Type=Scope_Help">Service Scopes:</a> </span>
 		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
 		    <?php foreach ($params['scopes'] as $scope) { ?>
 			<option value="<?php xecho($scope->getName()); ?>" 
@@ -84,26 +100,29 @@
 			</option>
 		    <?php } ?>
 		</select>
+            <span class="">Scope match: </span>
+
+            <select id="scopeMatchSelect" name="scopeMatch">
+                <!--                <option value="" disabled selected>match</option>-->
+                <option value="all"<?php if ($params['scopeMatch'] == "all") {
+                    echo ' selected';
+                } ?>>all (selected tags are AND'd)</option>
+                <option value="any"<?php if ($params['scopeMatch'] == "any") {
+                    echo ' selected';
+                } ?>>any (selected tags are OR'd)</option>
+
+            </select>
 	    </div>
+
+
         	
         	
-	    <div class="topMargin leftFloat siteFilter">
-            	<span class="">Certification:</span>
-                <select name="certStatus">
-		    <option value="">(all)</option>
-                    <?php foreach($params['certStatuses'] as $certStatus) { ?>
-                        <option value="<?php xecho($certStatus->getName()); ?>"
-			    <?php if($params['selectedCertStatus'] == $certStatus->getName()) echo " selected"?>>
-				<?php xecho($certStatus->getName()); ?>
-			</option> 
-                    <?php  } ?>                  
-                </select>
-	    </div>
+
 
         	
 
 	    <div class="topMargin leftFloat clearLeft siteFilter">
-		<span class="">Extension Name:</span>
+		<span class="">Service Extension Name:</span>
                 <select name="servKeyNames">
 		    <option value="">(none)</option>
 		    <?php foreach ($params['servKeyNames'] as $servExtensions) { ?>
@@ -218,6 +237,14 @@
         </div>    
         
     </div>
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
+    <br>&nbsp;
 </div>
 
 <script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>
