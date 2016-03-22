@@ -10,7 +10,7 @@
   which already use this plugin). 
 * Add UserProperty entity and join with User, for persisting various un-determined 
   attributes such as AAA/SAML attributes provided by IdP on account registration. 
-* Introduce reserved keyNames for custom properties so that a user can't add/edit  
+* Maybe - Introduce reserved keyNames for CUSTOM properties so that a user can't add/edit  
   a custom prop with a reserved name, e.g. 'GOC_RESERVED_PROPERTY1'. 
   These could be defined in the local_info.xml config file for each 
   type of custom prop (EndpointProperty, SiteProperty, ServiceProperty etc).   
@@ -20,8 +20,8 @@
 * Update role-approve notification email logic 
 * Change `<CERTDN>` element in PI output to `<PRINCIPAL>` and consider adding the 
   `<AuthenticationRealm>` element and DB column. 
-* Add instructions for deployment to MySQL/Mariadb 
-* Allow downtime to affect services across multiple sites (currently DT
+* Add instructions for deployment to MySQL/Mariadb and test on these RDBMS. 
+* Maybe - Allow downtime to affect services across multiple sites (currently DT
   can only affect services from a single site). Check this is actually needed.  
 * Improve the downtime service selection GUI by showing some extra tags/info 
   to better distinguish the services (show id or first ~10 chars of description). 
@@ -47,6 +47,10 @@
   the table can then be used to build an extensions expression as is used in the PI.  
 * More comprehensive change logging: https://rt.egi.eu/rt/Ticket/Display.html?id=9431 
 * Automatic freshness of data check: https://rt.egi.eu/rt/Ticket/Display.html?id=8240  
+* Introduce automatic paging in the PI queries so that a PI call without filter params won't timeout 
+  due to an excessive result-set size (esp get_service_endpoint() and get_service()).
+  Introduce a configurable default page size, for some useful background see: 
+  https://developer.github.com/guides/traversing-with-pagination/   
 
 
 ## Maybe Todo 
