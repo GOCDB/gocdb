@@ -36,6 +36,11 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         <?php /*<li>Time in UTC since last page refresh <strong><?php xecho($params['nowUtc']);?></strong></li>*/ ?>
         <li>Time in UTC: <label id="timeinUtcNowLabel"></label></li>
     </ul>
+    <?php 
+//     echo $downtime->getId().'<br>';
+//     echo( $startDate->format('Y-m-d H:i:s').'<br>' ); 
+//     echo( $endDate->format('Y-m-d H:i:s') ); 
+//     ?>
 	<br>
 
 
@@ -88,14 +93,14 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 			<!-- Date Picker -->
 			<div class="input-group date datePicker" id="startDate">
 				<input type='text' name="startDate" class="form-control"
-					data-format="DD/MM/YYYY" readonly="true" id="startDateContent" /> <span
+					data-format="DD/MM/YYYY" id="startDateContent" /> <span
 					class="input-group-addon"><span
 					class="glyphicon glyphicon-calendar"></span> </span>
 			</div>
 
 			<!-- Time Picker -->
 			<div class="input-group date timePicker" id="startTime">
-				<input type='text' class="form-control" readonly="true"
+				<input type='text' class="form-control" 
 					id="startTimeContent" /> <span class="input-group-addon"><span
 					class="glyphicon glyphicon-time"></span> </span>
 			</div>
@@ -108,14 +113,14 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 			<!-- Date Picker -->
 			<div class="input-group date datePicker" id="endDate">
 				<input type='text' class="form-control" data-format="DD/MM/YYYY"
-					readonly="true" id="endDateContent" /> <span
+					 id="endDateContent" /> <span
 					class="input-group-addon"><span
 					class="glyphicon glyphicon-calendar"></span> </span>
 			</div>
 
 			<!-- Time Picker -->
 			<div class="input-group date timePicker" id="endTime">
-				<input type='text' class="form-control has-error" readonly="true"
+				<input type='text' class="form-control has-error" 
 					id="endTimeContent" /> <span class="input-group-addon"><span
 					class="glyphicon glyphicon-time"></span> </span>
 					
@@ -217,12 +222,12 @@ foreach($downtime->getEndpointLocations() as $endpoints){
        });
 
         //echo out the start and end date into the Jquery setters for the datetime picker
-        $('#startDate').data("DateTimePicker").date("<?php echo date_format($startDate,"d/m/Y H:i"); ?>");
-        $('#endDate').data("DateTimePicker").date("<?php echo date_format($endDate,"d/m/Y H:i"); ?>");
+        $('#startDate').data("DateTimePicker").date("<?php echo date_format($startDate,"d/m/Y"); ?>");
+        $('#endDate').data("DateTimePicker").date("<?php echo date_format($endDate,"d/m/Y"); ?>");
 
-        //Set the start and finish times - we echo in the full date but DateTimePicker will only render the time values
-        $('#startTime').data("DateTimePicker").date("<?php echo date_format($startDate,"m/d/Y H:i"); ?>");
-        $('#endTime').data("DateTimePicker").date("<?php echo date_format($endDate,"m/d/Y H:i"); ?>");
+        //Set the start and finish times (don't echo in the full date, just the time values, time widget didn’t like timestamp with date)
+        $('#startTime').data("DateTimePicker").date("<?php echo date_format($startDate,"H:i"); ?>");
+        $('#endTime').data("DateTimePicker").date("<?php echo date_format($endDate,"H:i"); ?>");
 
         // By default select the original affected services and endpoints  
         loadSitesServicesAndEndpoints();
@@ -243,9 +248,9 @@ foreach($downtime->getEndpointLocations() as $endpoints){
        });
 
        // The bootstrap datetimepickers don't fire the change event
-       // but they trigger a change.dp event instead so a separate 
+       // but they trigger a dp.change event instead so a separate 
        // jQuery handler is needed.
-       $('.date').on("change.dp", function(e) {
+       $('.date').on("dp.change", function(e) {
            updateStartEndTimesInUtc();
            validate();
        });
@@ -305,6 +310,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
 //    		$("#descriptionGroup").removeClass("has-error");
 //    	}
 
+    	//console.log('validating dates'); 
         datesValid = validateUtcDates(); //validateDates(); 	
         
 	    //----------Validate the Endpoints-------------//

@@ -223,7 +223,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
        });
 
        // The bootstrap datetimepickers don't fire the change event
-       // but they trigger a change.dp event instead so a separate 
+       // but they trigger a dp.change event instead so a separate 
        // jQuery handler is needed.
        $('.date').on("dp.change", function(e) {
            updateStartEndTimesInUtc();
@@ -399,6 +399,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
     	}
 
         //----------Validate the dates-------------//
+        //console.log('validate dates'); 
         datesValid = validateUtcDates(); //validateDates(); 
         
 	    //----------Validate the Endpoints-------------//
