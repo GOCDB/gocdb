@@ -86,7 +86,168 @@ class ServiceService extends AbstractEntityService {
 
 	return $endpoint;
     }
-
+    
+    /**
+     * Return all {@link \Service} entities that satisfy the specfied search parameters.
+     * <p>
+     * A null search parameter is not used to narrow the query.
+     *
+     * @param string $term
+     *            An optional search string which can be part-of (like)
+     *            the Service hostname or description.
+     * @param string $serviceType
+     *            Limit returned services to the specified type.
+     * @param string $production
+     *            The string TRUE or FALSE
+     * @param string $monitored
+     *            The string TRUE or FALSE
+     * @param string $scope
+     *            A single scope value (does not support comma-sep list of scopes)
+     * @param string $ngi
+     *            Limit to services that have the parent NGI with this name
+     * @param string $certStatus
+     *            A cert status string
+     * @param boolean $showClosed
+     *            1 is true, 0 is false
+     * @param int $startRecord
+     *            Optional pagination start offset
+     * @param int $endRecord
+     *            Optional pagination max results
+     * @param boolean $returnArray
+     *            True to return a hydrated Doctrine array graph
+     *            false to return a hydrated Doctine object graph
+     * @return type array graph or object graph of {@link \Service} entities
+     */
+    public function getSes($term = null, $serviceType = null, $production = null, 
+            $monitored = null, $scope = null, $ngi = null, $certStatus = null, 
+            $showClosed = null, $servKeyNames = null, $servKeyValues = null, 
+            $startRecord = null, $endRecord = null, $returnArray = false) {
+        
+        // this method needs to be dropped in favor of getServicesFilterByParams, 
+        // but it is still needed when adding services to serviceGroups.  
+        return $this->getServicesHelper ( $term, $serviceType, $production, 
+                $monitored, $scope, $ngi, $certStatus, $showClosed, $servKeyNames, 
+                $servKeyValues, $startRecord, $endRecord, $returnArray, false );
+    }
+    
+    /**
+     * Count the number of {@link \Service} entities that satisfy the specified
+     * search parameters.
+     * {@link getSes}
+     */
+    public function getSesCount($term = null, $serviceType = null, $production = null, 
+            $monitored = null, $scope = null, $ngi = null, $certStatus = null, $showClosed = null, 
+            $servKeyNames = null, $servKeyValues = null, $startRecord = null, 
+            $endRecord = null, $returnArray = false) {
+        
+        return $this->getServicesHelper ( $term, $serviceType, $production, $monitored, 
+                $scope, $ngi, $certStatus, $showClosed, $servKeyNames, $servKeyValues, 
+                $startRecord, $endRecord, $returnArray, true );
+    }
+    
+    private function getServicesHelper($term = null, $serviceType = null, $production = null, 
+            $monitored = null, $scope = null, $ngi = null, $certStatus = null, 
+            $showClosed = null, $servKeyNames = null, $servKeyValues = null, $startRecord = null, 
+            $endRecord = null, $returnArray = false, $count = false) {
+        // this method can be dropped when getSes and getSesCount have been dropped. 
+        
+        if ($production == "TRUE") {
+            $production = "1";
+        } else if ($production == "FALSE") {
+            $production = "0";
+        }
+        
+        if ($monitored == "TRUE") {
+            $monitored = "1";
+        } else if ($monitored == "FALSE") {
+            $monitored = "0";
+        }
+        
+        $qb = $this->em->createQueryBuilder ();
+        
+        if ($count) {
+            $qb->select ( 'count(DISTINCT se)' );
+        } else {
+            $qb->select ( 'DISTINCT se', 'si', 'st', 'cs', 'n' );
+        }
+        
+        $qb->from ( 'Service', 'se' )->leftjoin ( 'se.serviceType', 'st' )->leftjoin ( 'se.scopes', 's' )->leftjoin ( 'se.parentSite', 'si' )->leftjoin ( 'si.certificationStatus', 'cs' )->leftjoin ( 'si.ngi', 'n' )->orderBy ( 'se.hostName' );
+        
+        // For use with search function, convert all terms to upper and do a like query
+        if ($term != null && $term != '%%') {
+            $qb->andWhere ( $qb->expr ()->orX ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.hostName' ), ':term' ), $qb->expr ()->like ( $qb->expr ()->upper ( 'se.description' ), ':term' ) ) )->setParameter ( ':term', strtoupper ( $term ) );
+        }
+        
+        if ($serviceType != null && $serviceType != '%%') {
+            $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'st.name' ), ':serviceType' ) )->setParameter ( ':serviceType', strtoupper ( $serviceType ) );
+        }
+        
+        if ($production != null && $production != '%%') {
+            $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.production' ), ':production' ) )->setParameter ( ':production', $production );
+        }
+        
+        if ($monitored != null && $monitored != '%%') {
+            $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.monitored' ), ':monitored' ) )->setParameter ( ':monitored', $monitored );
+        }
+        
+        if ($scope != null && $scope != '%%') {
+            $qb->andWhere ( $qb->expr ()->like ( 's.name', ':scope' ) )->setParameter ( ':scope', $scope );
+        }
+        
+        if ($certStatus != null && $certStatus != '%%') {
+            $qb->andWhere ( $qb->expr ()->like ( 'cs.name', ':certStatus' ) )->setParameter ( ':certStatus', $certStatus );
+        }
+        
+        if ($showClosed != 1) {
+            $qb->andWhere ( $qb->expr ()->not ( $qb->expr ()->like ( 'cs.name', ':closed' ) ) )->setParameter ( ':closed', 'Closed' );
+        }
+        
+        if ($ngi != null && $ngi != '%%') {
+            $qb->andWhere ( $qb->expr ()->like ( 'n.name', ':ngi' ) )->setParameter ( ':ngi', $ngi );
+        }
+        
+        if ($servKeyNames != null && $servKeyNames != '%%') {
+            if ($servKeyValues == null || $servKeyValues == '') {
+                $servKeyValues = '%%';
+            }
+            
+            $sQ = $this->em->createQueryBuilder ();
+            $sQ->select ( 'se1' . '.id' )->from ( 'Service', 'se1' )->join ( 'se1.serviceProperties', 'sp' )->andWhere ( $sQ->expr ()->andX ( $sQ->expr ()->eq ( 'sp.keyName', ':keyname' ), $sQ->expr ()->like ( 'sp.keyValue', ':keyvalue' ) ) );
+            
+            $qb->andWhere ( $qb->expr ()->in ( 'se', $sQ->getDQL () ) );
+            $qb->setParameter ( ':keyname', $servKeyNames )->setParameter ( ':keyvalue', $servKeyValues );
+        }
+        
+        $query = $qb->getQuery ();
+        
+        if ($count) {
+            $count = $query->getSingleScalarResult ();
+            return $count;
+        } else {
+            
+            if (! empty ( $startRecord )) {
+                $query->setFirstResult ( $startRecord );
+            }
+            
+            if (! empty ( $endRecord )) {
+                $query->setMaxResults ( $endRecord );
+            }
+            
+            if ($returnArray) {
+                $results = $query->getResult ( \Doctrine\ORM\Query::HYDRATE_ARRAY );
+                return $results;
+            } else {
+                $results = $query->getResult ();
+                return $results;
+            }
+            // print_r($results);
+        }
+    }
+    
+    
+    
+    
+    
     public function getAllSesJoinParentSites() {
 	$dql = "SELECT se, st, si 
             FROM Service se
@@ -95,6 +256,7 @@ class ServiceService extends AbstractEntityService {
 	$query = $this->em->createQuery($dql);
 	return $query->getResult();
     }
+    
 
 
     /**
