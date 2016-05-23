@@ -690,7 +690,7 @@ class Site extends AbstractEntityService{
             
             foreach($selectedReservedScopes as $sc){
                 // Reserved scopes must already be assigned to parent 
-                if(in_array($sc, $existingReservedScopesParent)){
+                if(!in_array($sc, $existingReservedScopesParent)){
                     throw new \Exception("A reserved Scope Tag was selected that is not assigned to the Parent NGI");  
                 }
             }
