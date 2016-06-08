@@ -24,8 +24,8 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
   * (note: the free Oracle 11g XE Express Editions which comes with a free license is perfectly suitable)
 
 * [Doctrine](#doctrine) 
-  * 2.3.3 (newer versions should be fine but are untested)
-  * There is a bug in the 2.3.3 Doctrine paging code, which affects the GetDowntime API result. The fix is detailed [below](#doctrineFix)
+  * 2.4.8 (newer versions should be fine but are untested)
+  * Note, for doctine 2.3.3 and older there is a bug in the paging code, which affects the GetDowntime API result. The fix is detailed [below](#doctrineFix)
 
 * PhpUnit and PDO driver for selected DB (optional, required for running DBUnit tests only, see `tests/INSTALL.md` for more info) 
 
@@ -120,14 +120,14 @@ endpoints. See the sample config file for details.
 
 
 ###Doctrine <a id="doctrine"></a>   
-Install Doctrine ORM 2.3.3+ and make sure doctrine is available on the command
+Install Doctrine ORM 2.4.8+ and make sure doctrine is available on the command
 line. Note, Doctrine can be installed either globally using PEAR or as a project
 specific dependency using composer. Either way, ensure your `$PATH` environment 
 variable is updated to run the doctrine command line client:    
 ```bash
 $ export PATH=$PATH:/home/djm76/programming/php/gocdb5_mep/gocdb/vendor/bin
 $ doctrine --version
-Doctrine Command Line Interface version 2.3.3
+Doctrine Command Line Interface version 2.4.8
 ```
 ####Install Doctrine Via Composer (Recommended)
 * See: [composer](https://getcomposer.org/)

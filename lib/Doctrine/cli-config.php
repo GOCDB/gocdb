@@ -2,13 +2,13 @@
 // see: http://doctrine-orm.readthedocs.io/en/latest/reference/configuration.html#setting-up-the-commandline-tool
 
 // Doctrine 2.4 and above:
-//use Doctrine\ORM\Tools\Console\ConsoleRunner;
-//require_once "bootstrap.php";
-//return ConsoleRunner::createHelperSet($entityManager);
+use Doctrine\ORM\Tools\Console\ConsoleRunner;
+require_once "bootstrap.php";
+return ConsoleRunner::createHelperSet($entityManager);
 
 
 // Doctrine 2.3 and below:
-
+/*
 // cli-config.php
 require_once "bootstrap.php";
 
@@ -29,5 +29,5 @@ $helperSet = new \Symfony\Component\Console\Helper\HelperSet(array(
     'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($entityManager)
 ));
 return $helperSet; 
-
+*/
 
