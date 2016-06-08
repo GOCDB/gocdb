@@ -132,7 +132,11 @@ Doctrine Command Line Interface version 2.3.3
 ####Install Doctrine Via Composer (Recommended)
 * See: [composer](https://getcomposer.org/)
 * Download composer.phar into the GOCDB root directory. 
-  * If you are behind a proxy, you may need to set your `http_proxy` and `https_proxy` env vars. 
+  * If you are behind a proxy, you may need to set your `http_proxy` and `https_proxy` env vars e.g. (use SET on Win): 
+```bash
+export http_proxy=http://wwwcache.dl.ac.uk:8080
+export https_proxy=http://wwwcache.dl.ac.uk:8080
+```
   * Note, you may need to unset `https_proxy` and play with the `HTTPS_PROXY_REQUEST_FULLURI` value, 
     see following links:
     * [http-proxy](https://getcomposer.org/doc/03-cli.md#http-proxy-or-http-proxy) 
