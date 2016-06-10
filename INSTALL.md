@@ -131,6 +131,7 @@ $ export PATH=$PATH:/home/djm76/programming/php/gocdb5_mep/gocdb/vendor/bin
 $ doctrine --version
 Doctrine Command Line Interface version 2.4.8
 ```
+Note: you will need to run `$doctrine --version` from within the <gocDBSrcHome>/lib/Doctrine directory.
 
 #### Install Doctrine Via Composer (Recommended)
 
@@ -274,7 +275,7 @@ supported database, SQLite, Oracle and MySQL.
 * Copy this file to `bootstrap_doctrine.php` in the same dir and modify to
 specify your chosen DB connection details (see file for more details, including
 how to compile Doctrine proxy objects for better performance for production usage).
-* Check that doctrine can connect to the DB using:
+* Check that doctrine can connect to the DB running the following (still in the <gocDBSrcHome>/lib/Doctrine directory):
 
   ```
   $ doctrine orm:schema-tool:update
