@@ -311,6 +311,54 @@ $ cd lib/Doctrine
 $ php deploy/DeploySampleDataRunner.php sampleData 
 ```
 
+###Deploy an existing DB .dmp file to populate your DB 
+You may want to deploy an existing dump/backup of the DB rather than deploying the 
+DDL and seeding the empty DB with required data and sample data. Oracle provides the 
+`expdp` and `impdp` command line tools to export and import a `.dmp` file. 
+The impdp tool requires a directory object to have already been created in the DB.
+This directory object is where the .dmp file is loaded from. 
+
+* Create a new directory object, as the sytem user: 
+
+```
+sqlplus system
+SQL> create or replace directory as 'dmpdir'; 
+SQL> grant read,write on directory dmpdir to gocdb5;
+SQL> SELECT owner, directory_name, directory_path FROM all_directories;
+SQL> select directory_path from dba_directories where upper(directory_name) = 'DMPDIR';
+SQL> exit
+```
+
+* Import your dmp file. Note, the example below assumes the 'gocdb5' user/schema does not exist 
+in the db - the import actually creates this user with all its permissions/roles. If you want to 
+use a different schema/username, then specify this in the value of the remap_schema arg on the right of the colon.
+You may need to change different args for your install such as modifying the remap_tablespace:
+
+```
+$impdp system/******** schemas=gocdb5 directory=dmpdir dumpfile=goc5dump.dmp REMAP_SCHEMA=gocdb5:gocdb5 remap_tablespace=GOCDB5:users table_exists_action=replace logfile=gocdbv5deploy.log
+```
+
+To generate statistics after importing the dmp file (this improves performance):  
+
+```
+SQL> EXEC DBMS_STATS.gather_schema_stats('GOCDB5');
+```
+
+impdp can export the DDL of a dmp backup for you so you can inspect it, see schema name, table names etc. 
+For example: 
+
+```
+  impdp system/***** dumpfile=goc5dump.dmp logfile=import_log.txt sqlfile=ddl_dump.txt directory=dmpdir 
+```
+
+To export an existing DB to create the `.dmp` file: 
+
+```
+expdp system/****** schemas=gocdb5 dumpfile=gocdb5.dmp directory=dmpdir
+```
+
+
+
 
 ##First Use Config <a id="firstuse"></a>
 You should now be able to navigate to your GocDB webportal on your host using 
