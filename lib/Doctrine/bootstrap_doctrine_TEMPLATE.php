@@ -6,19 +6,19 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Event\Listeners\OracleSessionInit;
 
-die('Ok, next step is to configure this file for your installation: '.__FILE__); 
+die('Ok, next step is to configure this file for your installation: '.__FILE__);
 // Load Doctrine (via composer OR pear):
-// Via composer 
+// Via composer
 // -------------
-// If you have installed doctrine using composer into a vendor dir 
-// (either as a project specific dependency or globally), then include doctrine 
-// using the composer autoload: 
+// If you have installed doctrine using composer into a vendor dir
+// (either as a project specific dependency or globally), then include doctrine
+// using the composer autoload:
 //require_once  __DIR__."/../../vendor/autoload.php";
 
 // Via pear as a global install
 // ----------------------------
-// If you have installed doctrine globally using pear, then require the 
-// Setup.php and use AutoloadPEAR:   
+// If you have installed doctrine globally using pear, then require the
+// Setup.php and use AutoloadPEAR:
 //require_once "Doctrine/ORM/Tools/Setup.php";
 //Setup::registerAutoloadPEAR();
 
@@ -31,20 +31,20 @@ $isDevMode = true;
 $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/entities"), $isDevMode);
 //$config = Setup::createYAMLMetadataConfiguration(array(__DIR__."/config/yaml"), $isDevMode);
 //
-// If you intend to use APC cache (recommended in production), then you need to 
-// specify the following two lines and install APC cache (see GOCDB wiki): 
+// If you intend to use APC cache (recommended in production), then you need to
+// specify the following two lines and install APC cache (see GOCDB wiki):
 //$config->setMetadataCacheImpl(new \Doctrine\Common\Cache\ApcCache());
 //$config->setQueryCacheImpl(new \Doctrine\Common\Cache\ApcCache());
 //
-// By default, Doctrine will automatically compile Doctrine proxy objects 
-// into the system's tmp dir. This is not recommended for production. 
-// For production, you can specify where these proxy objects should be stored 
-// using "$config->setProxyDir('pathToYourProxyDir');" 
-// If you specify the ProxyDir, then you also need to manually compile your proxy objects 
-// into the specified ProxyDir using the following command:  
-// 'doctrine orm:generate-proxies compiledEntities'  
+// By default, Doctrine will automatically compile Doctrine proxy objects
+// into the system's tmp dir. This is not recommended for production.
+// For production, you can specify where these proxy objects should be stored
+// using "$config->setProxyDir('pathToYourProxyDir');"
+// If you specify the ProxyDir, then you also need to manually compile your proxy objects
+// into the specified ProxyDir using the following command:
+// 'doctrine orm:generate-proxies compiledEntities'
 //$config->setProxyDir(__DIR__.'/compiledEntities');
-// 
+//
 
 
     ///////////////////////SQLITE CONNECTION DETAILS/////////////////////////////////////////////
@@ -62,7 +62,8 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/entities"
     //		'password' => 'doc',
     //		'host' => 'localhost',
     //		'port' => 1521,
-    //		'dbname' => 'XE'
+    //		'dbname' => 'XE',
+    //		'charset' => 'AL32UTF8'
     //	);
     //  // Need to explicitly set the Oracle session date format [1]
     //  $evm = new EventManager();
