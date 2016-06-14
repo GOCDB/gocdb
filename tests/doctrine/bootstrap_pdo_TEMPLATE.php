@@ -15,7 +15,6 @@
  * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
  */
 function getConnectionToTestDB() {
-     require_once 'PHPUnit/Extensions/Database/DB/DefaultDatabaseConnection.php';
      
      /*** Uncomment and fill in the connection details for your chosen database ***/
      
