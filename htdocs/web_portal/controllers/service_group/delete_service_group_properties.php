@@ -52,8 +52,8 @@ function submit(array $propertyArray, \ServiceGroup $serviceGroup, \User $user =
      
      //remove service group property
      try {
-     	$serv = \Factory::getServiceGroupService();
-       	$serv->deleteServiceGroupProperties($serviceGroup, $user, $propertyArray);
+        $serv = \Factory::getServiceGroupService();
+        $serv->deleteServiceGroupProperties($serviceGroup, $user, $propertyArray);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();

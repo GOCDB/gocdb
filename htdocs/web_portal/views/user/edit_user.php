@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <form name="Edit_User" action="index.php?Page_Type=Edit_User" method="post" class="inputForm">
-    	<h1>Update User</h1>
+        <h1>Update User</h1>
         <br />
         <span class="input_name">
             Title
@@ -46,6 +46,6 @@
         
         <input class="input_input_hidden" type="hidden" value="<?php echo $params['user']->getId() ?>" name="OBJECTID">
         <br />
-    	<input class="input_button" type="submit" value="Update User" />
+        <input class="input_button" type="submit" value="Update User" />
     </form>
 </div>

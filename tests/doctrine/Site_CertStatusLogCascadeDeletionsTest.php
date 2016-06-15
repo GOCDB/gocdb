@@ -35,7 +35,7 @@ class Site_CertStatusLogCascadeDeletionsTest extends PHPUnit_Extensions_Database
      */
     public static function setUpBeforeClass() {
         parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing Site_CertStatusLogCascadeDeletionsTest. . .\n";
     }
 

@@ -94,7 +94,7 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
         $rolenamesOver = $roleActionService->getRoleTypeNamesForProject('EGI'); 
         $this->assertEquals(14, count($rolenamesOver)); 
         //print_r($rolenamesOver); 
-	$rolenamesOver = $roleActionService->getRoleTypeNamesForProject(null); 
+    $rolenamesOver = $roleActionService->getRoleTypeNamesForProject(null); 
         $this->assertEquals(14, count($rolenamesOver)); 
         
 //        $rolenamesOver = $roleActionService->getRoleTypeNamesForProject('WLCG'); 
@@ -274,16 +274,16 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
 //    }
 
     public function testGetEnabledActionsForRoleType1() {
-	print __METHOD__ . "\n";
-	$roleActionService = new org\gocdb\services\RoleActionMappingService();
-	$roleActionService->setRoleActionMappingsXmlPath(__DIR__ . "/../../resources/roleActionMappingSamples/TestRoleActionMappings4.xml");
+    print __METHOD__ . "\n";
+    $roleActionService = new org\gocdb\services\RoleActionMappingService();
+    $roleActionService->setRoleActionMappingsXmlPath(__DIR__ . "/../../resources/roleActionMappingSamples/TestRoleActionMappings4.xml");
 
-	$enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('RoleA'); 
-	
+    $enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('RoleA'); 
+    
 //	foreach($enabledActionsOnTargets as $enabledActionOnTarget){
 //	    print_r($enabledActionOnTarget[0].' '.$enabledActionOnTarget[1]."\n"); 
 //	}
-	$expectedActionsOnTargets = array(); 
+    $expectedActionsOnTargets = array(); 
         $expectedActionsOnTargets[] = array('A1', 'site');  	
         $expectedActionsOnTargets[] = array('A1', 'service');  	
         $expectedActionsOnTargets[] = array('A2', 'site');  	
@@ -293,10 +293,10 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
         $expectedActionsOnTargets[] = array('AX', 'site');  	
         $expectedActionsOnTargets[] = array('AX', 'service'); 
         // assert 
-	$this->assertEquals($expectedActionsOnTargets, $enabledActionsOnTargets); 
+    $this->assertEquals($expectedActionsOnTargets, $enabledActionsOnTargets); 
 
-	$enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('RoleD'); 
-	$expectedActionsOnTargets = array(); 
+    $enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('RoleD'); 
+    $expectedActionsOnTargets = array(); 
         $expectedActionsOnTargets[] = array('A4', 'site');  	
         $expectedActionsOnTargets[] = array('A4', 'service');  	
         $expectedActionsOnTargets[] = array('A4', 'project');  	
@@ -306,22 +306,22 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
         $expectedActionsOnTargets[] = array('AX', 'site');  	
         $expectedActionsOnTargets[] = array('AX', 'service');  	
         $expectedActionsOnTargets[] = array('AX', 'project');  	
-	// assert 
-	$this->assertEquals($expectedActionsOnTargets, $enabledActionsOnTargets); 
-	
+    // assert 
+    $this->assertEquals($expectedActionsOnTargets, $enabledActionsOnTargets); 
+    
     }
-	
+    
     public function testGetEnabledActionsForRoleType2() {
-	print __METHOD__ . "\n";	
-	$roleActionService = new org\gocdb\services\RoleActionMappingService();
-	$roleActionService->setRoleActionMappingsXmlPath(__DIR__ . "/../../resources/roleActionMappingSamples/TestRoleActionMappings5.xml");
+    print __METHOD__ . "\n";	
+    $roleActionService = new org\gocdb\services\RoleActionMappingService();
+    $roleActionService->setRoleActionMappingsXmlPath(__DIR__ . "/../../resources/roleActionMappingSamples/TestRoleActionMappings5.xml");
 
-	$enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('NGI Operations Manager'); 
+    $enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('NGI Operations Manager'); 
 //	foreach($enabledActionsOnTargets as $enabledActionOnTarget){
 //	    print_r($enabledActionOnTarget[0].' '.$enabledActionOnTarget[1]."\n"); 
 //	}
 
-	$expectedActionsOnTargets = array(); 
+    $expectedActionsOnTargets = array(); 
         $expectedActionsOnTargets[] = array('ACTION_EDIT_OBJECT', 'Ngi');  	
         $expectedActionsOnTargets[] = array('ACTION_NGI_ADD_SITE', 'Ngi');  	
         $expectedActionsOnTargets[] = array('ACTION_GRANT_ROLE', 'Ngi');  	
@@ -334,12 +334,12 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
         $expectedActionsOnTargets[] = array(' ACTION_REJECT_ROLE', 'Site');  	
         $expectedActionsOnTargets[] = array(' ACTION_REVOKE_ROLE', 'Site');  	
         $expectedActionsOnTargets[] = array('ACTION_SITE_EDIT_CERT_STATUS', 'Site');  	
-	// assert 
-	$this->assertEquals($expectedActionsOnTargets, $enabledActionsOnTargets); 
+    // assert 
+    $this->assertEquals($expectedActionsOnTargets, $enabledActionsOnTargets); 
 
 
-	$enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('COD Staff'); 
-	$expectedActionsOnTargets = array(); 
+    $enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('COD Staff'); 
+    $expectedActionsOnTargets = array(); 
         $expectedActionsOnTargets[] = array('ACTION_EDIT_OBJECT', 'Project');  	
         $expectedActionsOnTargets[] = array('ACTION_GRANT_ROLE', 'Project');  	
         $expectedActionsOnTargets[] = array('ACTION_REJECT_ROLE', 'Project');  	
@@ -348,10 +348,10 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
         $expectedActionsOnTargets[] = array('ACTION_REJECT_ROLE', 'Ngi');  	
         $expectedActionsOnTargets[] = array('ACTION_REVOKE_ROLE', 'Ngi');  	
         $expectedActionsOnTargets[] = array('ACTION_SITE_EDIT_CERT_STATUS', 'Site');  	
-	// assert 
-	$this->assertEquals($expectedActionsOnTargets, $enabledActionsOnTargets); 
-	
-	
+    // assert 
+    $this->assertEquals($expectedActionsOnTargets, $enabledActionsOnTargets); 
+    
+    
     }
 
 }

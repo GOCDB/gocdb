@@ -42,9 +42,9 @@ class FirstTest extends PHPUnit_Framework_TestCase {
     //private $oCSVReader = null;
     //private $sFileName = "fixture.csv";
     private $xXML = '<?xml version="1.0" encoding="UTF-8"?>
-						<root>
-    						<message><![CDATA[Data inserted successfully]]></message>
-						</root>';
+                        <root>
+                            <message><![CDATA[Data inserted successfully]]></message>
+                        </root>';
 
     /**
      * Called once, before any of the tests are executed.

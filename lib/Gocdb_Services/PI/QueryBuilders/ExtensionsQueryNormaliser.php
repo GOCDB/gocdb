@@ -184,7 +184,7 @@ class ExtensionsQueryNormaliser {
         $patternMatchCount = preg_match_all($patternMatchRepeat, $string, $groups);
         if($patternMatchCount === FALSE){
             throw new \InvalidArgumentException("This is not a valid extensions expression. Please see the wiki for information on valid expressions.
-	                \nhttps://wiki.egi.eu/wiki/GOCDB/Release4/Development/ExtensibilityMechanism#PI_Examples\n\n");
+                    \nhttps://wiki.egi.eu/wiki/GOCDB/Release4/Development/ExtensibilityMechanism#PI_Examples\n\n");
         }
         
         // Returns all the values from the array and indexes the array numerically 

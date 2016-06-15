@@ -5,9 +5,9 @@
 <?php $scopeId = $params['ID']?>
 
 <div class="rightPageContainer">
-	<h1 class="Success">Scope In Use</h1><br />
-	The scope ' 
-	<a href="index.php?Page_Type=Admin_Scope&id=<?php echo $scopeId;?>">
+    <h1 class="Success">Scope In Use</h1><br />
+    The scope ' 
+    <a href="index.php?Page_Type=Admin_Scope&id=<?php echo $scopeId;?>">
         <?php xecho($params['Name']);?>
     </a>' 
     is currently in use. If you are absolutely sure you still want to delete it, 
@@ -15,47 +15,47 @@
     <br />
     <br />
     The following NGIs are currently tagged with this scope:
-	<?php 
+    <?php 
         foreach($ngis as $ngi){
             echo "<br />"
-            	. "<a href=\"index.php?Page_Type=NGI&id=" . $ngi->getId() ."\">"
-            	.  xssafe($ngi->getName())
-            	. "</a> ";
+                . "<a href=\"index.php?Page_Type=NGI&id=" . $ngi->getId() ."\">"
+                .  xssafe($ngi->getName())
+                . "</a> ";
         }	
-	?>
+    ?>
     <br />
     <br />
     The following sites are currently tagged with this scope:
-	<?php 
+    <?php 
         foreach($sites as $site){
             echo "<br />"
-            	. "<a href=\"index.php?Page_Type=Site&id=" . $site->getId() ."\">"
-            	.  xssafe($site->getShortName())
-            	. "</a> ";
+                . "<a href=\"index.php?Page_Type=Site&id=" . $site->getId() ."\">"
+                .  xssafe($site->getShortName())
+                . "</a> ";
         }	
-	?>
+    ?>
     <br />
     <br />
     The following service groups are currently tagged with this scope:
-	<?php 
+    <?php 
         foreach($sGroups as $sGroup){
             echo "<br />"
-            	. "<a href=\"index.php?Page_Type=Service_Group&id=" . $sGroup->getId() ."\">"
-            	.  xssafe($sGroup->getName())
-            	. "</a> ";
+                . "<a href=\"index.php?Page_Type=Service_Group&id=" . $sGroup->getId() ."\">"
+                .  xssafe($sGroup->getName())
+                . "</a> ";
         }	
-	?>
+    ?>
     <br />
     <br />
     The following services are currently tagged with this scope:
-	<?php 
+    <?php 
         foreach($sEndpoints as $sEndpoint){
             echo "<br />"
-            	. "<a href=\"index.php?Page_Type=Service&id=" . $sEndpoint->getId() ."\">"
-            	.  xssafe($sEndpoint->getHostName())
-            	. "</a> ";
+                . "<a href=\"index.php?Page_Type=Service&id=" . $sEndpoint->getId() ."\">"
+                .  xssafe($sEndpoint->getHostName())
+                . "</a> ";
         }	
-	?>
+    ?>
     <br />
     <br />
     <form class="inputForm" method="post" action="index.php?Page_Type=Admin_Remove_Scope" name="RemoveScope">

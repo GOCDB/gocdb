@@ -76,7 +76,7 @@ class GetServiceTypes implements IPIQuery{
         foreach((array)$parameterBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-        	
+            
         //Bind all variables
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
     
@@ -95,51 +95,51 @@ class GetServiceTypes implements IPIQuery{
         $this->sts = $this->query->execute();
         return $this->sts;
     }
-	
-	
-	/** Returns proprietary GocDB rendering of the SerivceType data 
-	 *  in an XML String
-	 * @return String
-	 */
-	public function getXML(){
-		$helpers = $this->helpers;
-	
-		$sts = $this->sts;
+    
+    
+    /** Returns proprietary GocDB rendering of the SerivceType data 
+     *  in an XML String
+     * @return String
+     */
+    public function getXML(){
+        $helpers = $this->helpers;
+    
+        $sts = $this->sts;
 
-		$xml = new \SimpleXMLElement ( "<results />" );
-					
-		foreach($sts as $st) {
-			$xmlServiceType = $xml->addChild('SERVICE_TYPE');
-			$xmlServiceType->addAttribute('TYPE_ID', $st->getId() . "G0");
-			$xmlServiceType->addAttribute('PRIMARY_KEY', $st->getId() . "G0");
-			$xmlServiceType->addChild('SERVICE_TYPE_NAME', $st->getName());
-			$xmlServiceType->addChild('SERVICE_TYPE_DESC', $st->getDescription());
-		}
-		
-		$dom_sxe = dom_import_simplexml ( $xml );
-		$dom = new \DOMDocument ( '1.0' );
-		$dom->encoding = 'UTF-8';
-		$dom_sxe = $dom->importNode ( $dom_sxe, true );
-		$dom_sxe = $dom->appendChild ( $dom_sxe );
-		$dom->formatOutput = true;
-		$xmlString = $dom->saveXML ();
-		return $xmlString;
-	}
-	
-	/** Returns the SerivceType data in Glue2 XML string.
-	 * 
-	 * @return String
-	 */
-	public function getGlue2XML(){
-	    throw new LogicException("Not implemented yet");	     
-	}
-	
-	/** Not yet implemented, in future will return the SerivceType 
-	 *  data in JSON format
-	 * @throws LogicException
-	 */
-	public function getJSON(){
-		$query = $this->query;		
-		throw new LogicException("Not implemented yet");
-	}
+        $xml = new \SimpleXMLElement ( "<results />" );
+                    
+        foreach($sts as $st) {
+            $xmlServiceType = $xml->addChild('SERVICE_TYPE');
+            $xmlServiceType->addAttribute('TYPE_ID', $st->getId() . "G0");
+            $xmlServiceType->addAttribute('PRIMARY_KEY', $st->getId() . "G0");
+            $xmlServiceType->addChild('SERVICE_TYPE_NAME', $st->getName());
+            $xmlServiceType->addChild('SERVICE_TYPE_DESC', $st->getDescription());
+        }
+        
+        $dom_sxe = dom_import_simplexml ( $xml );
+        $dom = new \DOMDocument ( '1.0' );
+        $dom->encoding = 'UTF-8';
+        $dom_sxe = $dom->importNode ( $dom_sxe, true );
+        $dom_sxe = $dom->appendChild ( $dom_sxe );
+        $dom->formatOutput = true;
+        $xmlString = $dom->saveXML ();
+        return $xmlString;
+    }
+    
+    /** Returns the SerivceType data in Glue2 XML string.
+     * 
+     * @return String
+     */
+    public function getGlue2XML(){
+        throw new LogicException("Not implemented yet");	     
+    }
+    
+    /** Not yet implemented, in future will return the SerivceType 
+     *  data in JSON format
+     * @throws LogicException
+     */
+    public function getJSON(){
+        $query = $this->query;		
+        throw new LogicException("Not implemented yet");
+    }
 }

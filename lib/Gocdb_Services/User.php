@@ -59,8 +59,8 @@ class User extends AbstractEntityService{
        } 
        $dql = "SELECT u from User u WHERE u.certificateDn = :certDn";
        $user = $this->em->createQuery($dql)
-    			  ->setParameter(":certDn", $userPrinciple)
-    			  ->getOneOrNullResult();
+                  ->setParameter(":certDn", $userPrinciple)
+                  ->getOneOrNullResult();
        return $user;
     }
     
@@ -69,20 +69,20 @@ class User extends AbstractEntityService{
      * @param \User $user
      */
     public function updateLastLoginTime(\User $user){
-    	$nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
-    	$this->em->getConnection()->beginTransaction();
-    	try {
-    		// Set the user's member variables
-    		$user->setLastLoginDate($nowUtc);
-    		$this->em->merge($user);
-    		$this->em->flush();
-    		$this->em->getConnection()->commit();
-    	} catch (\Exception $ex) {
-    		$this->em->getConnection()->rollback();
-    		$this->em->close();
-    		throw $ex;
-    	}
-    	return $user;
+        $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
+        $this->em->getConnection()->beginTransaction();
+        try {
+            // Set the user's member variables
+            $user->setLastLoginDate($nowUtc);
+            $this->em->merge($user);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $ex;
+        }
+        return $user;
     }
 
     /**
@@ -92,30 +92,30 @@ class User extends AbstractEntityService{
      * @return array of \Site objects or emtpy array  
      */
     public function getSitesFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED) {
-    	$dql = "SELECT r FROM Role r
-    			INNER JOIN r.user u
-    			INNER JOIN r.ownedEntity o
-    			WHERE u.id = :id
-    			AND o INSTANCE OF Site
+        $dql = "SELECT r FROM Role r
+                INNER JOIN r.user u
+                INNER JOIN r.ownedEntity o
+                WHERE u.id = :id
+                AND o INSTANCE OF Site
                 AND r.status = :status";
-    	$roles = $this->em->createQuery($dql)
-			    	->setParameter(":id", $user->getId())
+        $roles = $this->em->createQuery($dql)
+                    ->setParameter(":id", $user->getId())
                     ->setParameter(":status", $roleStatus)
-			    	->getResult();
-    	$sites = array();
+                    ->getResult();
+        $sites = array();
 
-    	foreach($roles as $role) {
-    		// Check whether this site is already in the list
-    		// (A user can hold more than one role over an entity)
-    		foreach($sites as $site) {
-    			if($site == $role->getOwnedEntity()) {
-    				continue 2;
-    			}
-    		}
-    		$sites[] = $role->getOwnedEntity();
-    	}
+        foreach($roles as $role) {
+            // Check whether this site is already in the list
+            // (A user can hold more than one role over an entity)
+            foreach($sites as $site) {
+                if($site == $role->getOwnedEntity()) {
+                    continue 2;
+                }
+            }
+            $sites[] = $role->getOwnedEntity();
+        }
 
-    	return $sites;
+        return $sites;
     }
 
     /**
@@ -125,29 +125,29 @@ class User extends AbstractEntityService{
      * @return array of \NGI objects or empty array 
      */
     public function getNgisFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED) {
-    	$dql = "SELECT r FROM Role r
-    			INNER JOIN r.user u
-    			INNER JOIN r.ownedEntity o
-    			WHERE u.id = :id
-    			AND o INSTANCE OF NGI
+        $dql = "SELECT r FROM Role r
+                INNER JOIN r.user u
+                INNER JOIN r.ownedEntity o
+                WHERE u.id = :id
+                AND o INSTANCE OF NGI
                 AND r.status = :status";
-    	$roles = $this->em->createQuery($dql)
-			    	->setParameter(":id", $user->getId())
+        $roles = $this->em->createQuery($dql)
+                    ->setParameter(":id", $user->getId())
                     ->setParameter(":status", $roleStatus)
-			    	->getResult();
-    	$ngis = array();
-    	foreach($roles as $role) {
-    		// Check whether this site is already in the list
-    		// (A user can hold more than one role over an entity)
-    		foreach($ngis as $ngi) {
-    			if($ngi == $role->getOwnedEntity()) {
-    				continue 2;
-    			}
-    		}
-    		$ngis[] = $role->getOwnedEntity();
-    	}
+                    ->getResult();
+        $ngis = array();
+        foreach($roles as $role) {
+            // Check whether this site is already in the list
+            // (A user can hold more than one role over an entity)
+            foreach($ngis as $ngi) {
+                if($ngi == $role->getOwnedEntity()) {
+                    continue 2;
+                }
+            }
+            $ngis[] = $role->getOwnedEntity();
+        }
 
-    	return $ngis;
+        return $ngis;
     }
 
     /**
@@ -157,30 +157,30 @@ class User extends AbstractEntityService{
      * @return array of \ServiceGroup objects or empty array 
      */ 
     public function getSGroupsFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED) {
-    	$dql = "SELECT r FROM Role r
-    			INNER JOIN r.user u
-    			INNER JOIN r.ownedEntity o
-    			WHERE u.id = :id
-    			AND o INSTANCE OF ServiceGroup
+        $dql = "SELECT r FROM Role r
+                INNER JOIN r.user u
+                INNER JOIN r.ownedEntity o
+                WHERE u.id = :id
+                AND o INSTANCE OF ServiceGroup
                 AND r.status = :status";
-    	$roles = $this->em->createQuery($dql)
-	    	        ->setParameter(":id", $user->getId())
+        $roles = $this->em->createQuery($dql)
+                    ->setParameter(":id", $user->getId())
                     ->setParameter(":status", $roleStatus)
-	    	        ->getResult();
-    	$sGroups = array();
+                    ->getResult();
+        $sGroups = array();
 
-    	foreach($roles as $role) {
-    		// Check whether this site is already in the list
-    		// (A user can hold more than one role over an entity)
-    		foreach($sGroups as $sGroup) {
-    			if($sGroup == $role->getOwnedEntity()) {
-    				continue 2;
-    			}
-    		}
-    		$sGroups[] = $role->getOwnedEntity();
-    	}
+        foreach($roles as $role) {
+            // Check whether this site is already in the list
+            // (A user can hold more than one role over an entity)
+            foreach($sGroups as $sGroup) {
+                if($sGroup == $role->getOwnedEntity()) {
+                    continue 2;
+                }
+            }
+            $sGroups[] = $role->getOwnedEntity();
+        }
 
-    	return $sGroups;
+        return $sGroups;
     }
     
     /**
@@ -190,30 +190,30 @@ class User extends AbstractEntityService{
      * @return array of \Project objects or empty array 
      */
     public function getProjectsFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED) {
-    	$dql = "SELECT r FROM Role r
-    			INNER JOIN r.user u
-    			INNER JOIN r.ownedEntity o
-    			WHERE u.id = :id
-    			AND o INSTANCE OF Project
+        $dql = "SELECT r FROM Role r
+                INNER JOIN r.user u
+                INNER JOIN r.ownedEntity o
+                WHERE u.id = :id
+                AND o INSTANCE OF Project
                 AND r.status = :status";
-    	$roles = $this->em->createQuery($dql)
-	    	        ->setParameter(":id", $user->getId())
+        $roles = $this->em->createQuery($dql)
+                    ->setParameter(":id", $user->getId())
                     ->setParameter(":status", $roleStatus)
-	    	        ->getResult();
-    	$projects = array();
+                    ->getResult();
+        $projects = array();
 
-    	foreach($roles as $role) {
-    		// Check whether this site is already in the list
-    		// (A user can hold more than one role over an entity)
-    		foreach($projects as $project) {
-    			if($project == $role->getOwnedEntity()) {
-    				continue 2;
-    			}
-    		}
-    		$projects[] = $role->getOwnedEntity();
-    	}
+        foreach($roles as $role) {
+            // Check whether this site is already in the list
+            // (A user can hold more than one role over an entity)
+            foreach($projects as $project) {
+                if($project == $role->getOwnedEntity()) {
+                    continue 2;
+                }
+            }
+            $projects[] = $role->getOwnedEntity();
+        }
 
-    	return $projects;
+        return $projects;
     }
 
     /**
@@ -241,32 +241,32 @@ class User extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
 
         // Check to see whether the current user can edit this user
-    	$this->editUserAuthorization($user, $currentUser);
+        $this->editUserAuthorization($user, $currentUser);
 
-    	// validate the input fields for the user
-    	$this->validateUser($newValues);
+        // validate the input fields for the user
+        $this->validateUser($newValues);
 
-    	//Explicity demarcate our tx boundary
-    	$this->em->getConnection()->beginTransaction();
+        //Explicity demarcate our tx boundary
+        $this->em->getConnection()->beginTransaction();
 
-    	try {
-    		// Set the user's member variables
-    		$user->setTitle($newValues['TITLE']);
-    		$user->setForename($newValues['FORENAME']);
-    		$user->setSurname($newValues['SURNAME']);
-    		$user->setEmail($newValues['EMAIL']);
-    		$user->setTelephone($newValues['TELEPHONE']);
-    		$this->em->merge($user);
-    		$this->em->flush();
-    		$this->em->getConnection()->commit();
-    	} catch (\Exception $ex) {
-    		$this->em->getConnection()->rollback();
-    		$this->em->close();
-    		throw $ex;
-    	}
-    	return $user;
+        try {
+            // Set the user's member variables
+            $user->setTitle($newValues['TITLE']);
+            $user->setForename($newValues['FORENAME']);
+            $user->setSurname($newValues['SURNAME']);
+            $user->setEmail($newValues['EMAIL']);
+            $user->setTelephone($newValues['TELEPHONE']);
+            $this->em->merge($user);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $ex;
+        }
+        return $user;
     }
-	
+    
     
     /**
      * Check to see if the current user has permission to edit a user entity
@@ -283,11 +283,11 @@ class User extends AbstractEntityService{
         if($currentUser->isAdmin()) {
             return;
         }
-    	// Allow the current user to edit their own info
-    	if($currentUser == $user) {
-    		return;
-    	}
-    	throw new \Exception("You do not have permission to edit this user.");
+        // Allow the current user to edit their own info
+        if($currentUser == $user) {
+            return;
+        }
+        throw new \Exception("You do not have permission to edit this user.");
     }
 
     /**
@@ -302,13 +302,13 @@ class User extends AbstractEntityService{
     private function validateUser($userData) {
         require_once __DIR__ .'/Validate.php'; 
         $serv = new \org\gocdb\services\Validate(); 
-    	foreach($userData as $field => $value) {
-    		$valid = $serv->validate('user', $field, $value);
-    		if(!$valid) {
-    			$error = "$field contains an invalid value: $value";
-    			throw new \Exception($error);
-    		}
-    	}
+        foreach($userData as $field => $value) {
+            $valid = $serv->validate('user', $field, $value);
+            if(!$valid) {
+                $error = "$field contains an invalid value: $value";
+                throw new \Exception($error);
+            }
+        }
     }
 
     /**

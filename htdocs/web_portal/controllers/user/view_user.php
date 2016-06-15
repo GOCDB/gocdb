@@ -46,21 +46,21 @@ function view_user() {
     // can the calling user revoke the targetUser's roles?  
     /* @var $r \Role */
     foreach ($roles as $r) {
-	//echo $r->getId().', '.$r->getRoleType()->getName().', '.$r->getOwnedEntity()->getName().'<br>';
+    //echo $r->getId().', '.$r->getRoleType()->getName().', '.$r->getOwnedEntity()->getName().'<br>';
 
-	// determine if callingUser can REVOKE this role instance
-	if($user != $callingUser){
-	    //echo '<br>'.$r->getOwnedEntity()->getName().' '; 
-	    
+    // determine if callingUser can REVOKE this role instance
+    if($user != $callingUser){
+        //echo '<br>'.$r->getOwnedEntity()->getName().' '; 
+        
             $authorisingRoles = \Factory::getRoleActionAuthorisationService()
-		    ->authoriseAction(\Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser)
-		    ->getGrantingRoles(); 
+            ->authoriseAction(\Action::REVOKE_ROLE, $r->getOwnedEntity(), $callingUser)
+            ->getGrantingRoles(); 
             $authorisingRoleNames = array(); 
-	    //echo ' callingUser authorising Roles: ';
+        //echo ' callingUser authorising Roles: ';
             /* @var $authRole \Role */
             foreach($authorisingRoles as $authRole){
                $authorisingRoleNames[] = $authRole->getRoleType()->getName();  
-	       //echo $authRole->getRoleType()->getName().', ';
+           //echo $authRole->getRoleType()->getName().', ';
             }
             
             if(count($authorisingRoleNames)>=1){
@@ -79,35 +79,35 @@ function view_user() {
                     $r->setDecoratorObject('GOCDB ADMIN'); 
                 }
             }
-	} else {
-	    // current user is viewing their own roles, so they can revoke their own roles 
-	    $r->setDecoratorObject('[Self revoke own role]'); 
-	}
+    } else {
+        // current user is viewing their own roles, so they can revoke their own roles 
+        $r->setDecoratorObject('[Self revoke own role]'); 
+    }
 
-	// Get the names of the parent project(s) for this role so we can 
-	// group by project in the view 
-	$parentProjectsForRole = \Factory::getRoleActionAuthorisationService()
-		->getReachableProjectsFromOwnedEntity($r->getOwnedEntity()); 
-	$projIds = array(); 
-	foreach($parentProjectsForRole as $_proj){
-	    $projIds[] = $_proj->getId(); 
-	}
-	
-	// store role and parent projIds in a 2D array for viewing
-	$role_ProjIds[] = array($r, $projIds); 
-	
+    // Get the names of the parent project(s) for this role so we can 
+    // group by project in the view 
+    $parentProjectsForRole = \Factory::getRoleActionAuthorisationService()
+        ->getReachableProjectsFromOwnedEntity($r->getOwnedEntity()); 
+    $projIds = array(); 
+    foreach($parentProjectsForRole as $_proj){
+        $projIds[] = $_proj->getId(); 
+    }
+    
+    // store role and parent projIds in a 2D array for viewing
+    $role_ProjIds[] = array($r, $projIds); 
+    
     }// end iterating roles 
 
     // Get a list of the projects and their Ids for grouping roles by proj in view  
     $projectNamesIds = array(); 
     $projects = \Factory::getProjectService()->getProjects();
     foreach($projects as $proj){
-	$projectNamesIds[$proj->getId()] = $proj->getName();  
+    $projectNamesIds[$proj->getId()] = $proj->getName();  
     }
 
     // Check to see if the current calling user has permission to edit the target user 
     try {
-    	\Factory::getUserService()->editUserAuthorization($user, $callingUser);
+        \Factory::getUserService()->editUserAuthorization($user, $callingUser);
         $params['ShowEdit'] = true; 
     } catch (Exception $e) {
         $params['ShowEdit'] = false; 

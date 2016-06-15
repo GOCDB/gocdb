@@ -58,7 +58,7 @@ class IPv6FormatTests extends PHPUnit_Framework_TestCase {
         print __METHOD__ . "\n";
         throw $e;
     }
-	
+    
 
     public function testIPv6Validator(){
         print __METHOD__ . "\n";

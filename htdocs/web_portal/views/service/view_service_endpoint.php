@@ -14,7 +14,7 @@ $seId = $se->getId();
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;"><?php xecho('Service Endpoint: ' . $endpoint->getName()) ?> </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-	    Description: <?php xecho($endpoint->getDescription()) ?> 
+        Description: <?php xecho($endpoint->getDescription()) ?> 
         </span>
     </div>
 
@@ -23,24 +23,24 @@ $seId = $se->getId();
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
         <div style="float: right;">
-    	<div style="float: right; margin-left: 2em;">
-    	    <a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId(); ?>&serviceid=<?php echo $seId; ?>">
-    		<img src="<?php echo \GocContextPath::getPath() ?>img/pencil.png" height="25px" style="float: right;" />
-    		<br />
-    		<br />
-    		<span>Edit</span>
-    	    </a>
-    	</div>
-    	<div style="float: right;">
-    	    <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
-    	    <a onclick="return confirmSubmit()" 
-    	       href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId(); ?>&serviceid=<?php echo $seId; ?>">
-    		<img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
-    		<br />
-    		<br />
-    		<span>Delete</span>
-    	    </a>
-    	</div>
+        <div style="float: right; margin-left: 2em;">
+            <a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId(); ?>&serviceid=<?php echo $seId; ?>">
+            <img src="<?php echo \GocContextPath::getPath() ?>img/pencil.png" height="25px" style="float: right;" />
+            <br />
+            <br />
+            <span>Edit</span>
+            </a>
+        </div>
+        <div style="float: right;">
+            <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
+            <a onclick="return confirmSubmit()" 
+               href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId(); ?>&serviceid=<?php echo $seId; ?>">
+            <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+            <br />
+            <br />
+            <span>Delete</span>
+            </a>
+        </div>
         </div>
     <?php endif; ?>
 
@@ -53,9 +53,9 @@ $seId = $se->getId();
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Name</td><td class="site_table">
-			<a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
-			    <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
-			</a>
+            <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
+                <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
+            </a>
                     </td>
                 </tr>
             </table>
@@ -88,7 +88,7 @@ $seId = $se->getId();
     </div>
 
     <div style="float: left; width: 100%; margin-top: 2em;"> 
-	More (GLUE2) attributes can be added on request - please contact gocdb developers.  
+    More (GLUE2) attributes can be added on request - please contact gocdb developers.  
     </div>                 
 
     <!-- Extension Properties -->
@@ -100,27 +100,27 @@ $seId = $se->getId();
 
 
     require_once __DIR__ . '/../fragments/viewPropertiesTable.php';
-	?>
+    ?>
 
     <script type="text/javascript">
-	$(document).ready(function () {
+    $(document).ready(function () {
 
-	    // sort on first and second table cols only 
-	    $("#endpointExtensionPropsTable").tablesorter({
-		// pass the headers argument and passing a object
-		headers: {
-		    // assign the third column (we start counting zero) 
-		    2: {
-			// disable it by setting the property sorter to false 
-			sorter: false
-		    },
-		    3: {
-			// disable it by setting the property sorter to false 
-			sorter: false
-		    }
-		}
-	    });
+        // sort on first and second table cols only 
+        $("#endpointExtensionPropsTable").tablesorter({
+        // pass the headers argument and passing a object
+        headers: {
+            // assign the third column (we start counting zero) 
+            2: {
+            // disable it by setting the property sorter to false 
+            sorter: false
+            },
+            3: {
+            // disable it by setting the property sorter to false 
+            sorter: false
+            }
+        }
+        });
 
-	}
-	);
+    }
+    );
     </script>  

@@ -7,7 +7,7 @@ $sites = $params['Sites'];
 ?>
 
 <div class="rightPageContainer">
-	<h1 class="Success">Delete <?php xecho( $ngiName); ?>?</h1><br />
+    <h1 class="Success">Delete <?php xecho( $ngiName); ?>?</h1><br />
     <p>
         Are you sure you want to delete the NGI '
         <a href="index.php?Page_Type=NGI&id=<?php echo $ngiId;?>">

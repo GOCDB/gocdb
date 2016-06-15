@@ -49,9 +49,9 @@ function showAllSites(){
     
     $showClosed = false;
     if(isset($_GET['showClosed'])) {
-	$showClosed = true;
+    $showClosed = true;
     } else {
-	$filterParams['exclude_certification_status'] = 'Closed'; 
+    $filterParams['exclude_certification_status'] = 'Closed'; 
     }
     
     $certStatus = ''; 
@@ -67,12 +67,12 @@ function showAllSites(){
     $siteExtensionPropValue ="";
     if(!empty($_GET['siteKeyNames'])) {
         $siteExtensionPropName = $_GET['siteKeyNames'];
-	// only set the ext prop value if the keyName has been set too, otherwise
-	// we could end up with an illegal extensions parameter such as: '(=value)' 
-	if(!empty($siteExtensionPropName) && !empty($_GET['selectedSiteKeyValue']) ) {
-	    $siteExtensionPropValue = $_GET['selectedSiteKeyValue'];
-	}
-	$filterParams['extensions'] = '('.$siteExtensionPropName.'='.$siteExtensionPropValue.')'; 
+    // only set the ext prop value if the keyName has been set too, otherwise
+    // we could end up with an illegal extensions parameter such as: '(=value)' 
+    if(!empty($siteExtensionPropName) && !empty($_GET['selectedSiteKeyValue']) ) {
+        $siteExtensionPropValue = $_GET['selectedSiteKeyValue'];
+    }
+    $filterParams['extensions'] = '('.$siteExtensionPropName.'='.$siteExtensionPropValue.')'; 
     }
 
     // Scope parameters 
@@ -83,19 +83,19 @@ function showAllSites(){
     $filterParams['scope_match'] = '';
     $selectedScopes = array();
     if(!empty($_GET['mscope'])) { 
-	$scopeStringParam = ''; 
-	foreach($_GET['mscope'] as $key => $scopeVal){
-	    $scopeStringParam .= $scopeVal.','; 
-	    $selectedScopes[] = $scopeVal; 
-	}
-	$filterParams['scope'] = $scopeStringParam;
+    $scopeStringParam = ''; 
+    foreach($_GET['mscope'] as $key => $scopeVal){
+        $scopeStringParam .= $scopeVal.','; 
+        $selectedScopes[] = $scopeVal; 
+    }
+    $filterParams['scope'] = $scopeStringParam;
         $scopeMatch = 'all';
     if(isset($_GET['scopeMatch'])) {
         $scopeMatch = $_GET['scopeMatch'];
     }
-	$filterParams['scope_match'] = $scopeMatch;
+    $filterParams['scope_match'] = $scopeMatch;
     } 
-	
+    
     $serv = \Factory::getSiteService();
 
     $params['scopes']=  \Factory::getScopeService()->getScopes(); 

@@ -7,7 +7,7 @@ $serviceType = $params['serviceType'];
     <form action="index.php?Page_Type=Add_Service_Endpoint" method="post" 
           id="Add_Service_Endpoint" name="Add_Service_Endpoint"> <!-- class="inputForm"-->
 
-    	<h1>Add Endpoint</h1>    		
+        <h1>Add Endpoint</h1>    		
          <a href="index.php?Page_Type=Service&id=<?php echo $service->getId();?>">
             &LeftArrow;View Parent Service</a>
         <br />
@@ -149,7 +149,7 @@ $serviceType = $params['serviceType'];
              valid = 'empty'; 
          } else {
             if(regEx.test(intefaceName) === false){
-	          valid = 'false'; 	
+              valid = 'false'; 	
             } else {
                 valid = 'true'; 
             }
@@ -157,13 +157,13 @@ $serviceType = $params['serviceType'];
 
          if(valid === 'false' || valid === 'empty') {
             $('#interfaceNameGroup').removeClass("has-success");
-	    	$('#interfaceNameGroup').addClass("has-error");  
+            $('#interfaceNameGroup').addClass("has-error");  
             $("#interfaceNameError").removeClass("hidden");
-	    	$("#interfaceNameError").text("Invalid"); 
+            $("#interfaceNameError").text("Invalid"); 
             return false; 
          } else if(valid === 'true'){
             $("#interfaceNameError").addClass("hidden");    		
-    		$('#interfaceNameGroup').addClass("has-success"); 
+            $('#interfaceNameGroup').addClass("has-success"); 
             return true; 
          }
     }
@@ -180,7 +180,7 @@ $serviceType = $params['serviceType'];
           valid = 'empty';  
        } else {
           if(regEx.test(endpointURL) === false){
-	          valid = 'false'; 	
+              valid = 'false'; 	
             } else {
                 valid = 'true'; 
             } 
@@ -188,13 +188,13 @@ $serviceType = $params['serviceType'];
        
         if(valid === 'false') {
             $('#endpointUrlGroup').removeClass("has-success");
-	    	$('#endpointUrlGroup').addClass("has-error");  
+            $('#endpointUrlGroup').addClass("has-error");  
             $("#endpointUrlError").removeClass("hidden");
-	    	$("#endpointUrlError").text("Invalid URL"); 
+            $("#endpointUrlError").text("Invalid URL"); 
             return false; 
          } else if(valid === 'true' || valid === 'empty'){
             $("#endpointUrlError").addClass("hidden");    		
-    		$('#endpointUrlGroup').addClass("has-success"); 
+            $('#endpointUrlGroup').addClass("has-success"); 
             return true; 
          }
     }
@@ -207,7 +207,7 @@ $serviceType = $params['serviceType'];
              valid = 'empty'; 
          } else {
             if(regEx.test(endpointName) === false){
-	          valid = 'false'; 	
+              valid = 'false'; 	
             } else {
                 valid = 'true'; 
             }
@@ -215,13 +215,13 @@ $serviceType = $params['serviceType'];
 
           if(valid === 'false' || valid === 'empty') {
             $('#endpointNameGroup').removeClass("has-success");
-	    	$('#endpointNameGroup').addClass("has-error");  
+            $('#endpointNameGroup').addClass("has-error");  
             $("#endpointNameError").removeClass("hidden");
-	    	$("#endpointNameError").text("Invalid"); 
+            $("#endpointNameError").text("Invalid"); 
             return false; 
          } else if(valid === 'true'){
             $("#endpointNameError").addClass("hidden");    		
-    		$('#endpointNameGroup').addClass("has-success"); 
+            $('#endpointNameGroup').addClass("has-success"); 
             return true; 
          }
     }*/

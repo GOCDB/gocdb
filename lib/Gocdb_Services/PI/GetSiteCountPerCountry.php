@@ -21,57 +21,57 @@ require_once __DIR__ . '/../OwnedEntity.php';
  * @author David Meredith 
  */
 class GetSiteCountPerCountry implements IPIQuery{
-	
-	protected $query;
-	protected $validParams;
-	protected $em;
-	private $helpers;
-	private $countries;
-	private $sites;
-	
-	/** Constructor takes entity manager which is then used by the
-	 *  query builder
-	 * 
-	 * @param EntityManager $em
-	 */
-	public function __construct($em){
-		$this->em = $em;
-		$this->helpers=new Helpers();		
-	}
-	
-	/** Validates parameters against array of pre-defined valid terms
-	 *  for this PI type
-	 * @param array $parameters
-	 */
-	public function validateParameters($parameters){
+    
+    protected $query;
+    protected $validParams;
+    protected $em;
+    private $helpers;
+    private $countries;
+    private $sites;
+    
+    /** Constructor takes entity manager which is then used by the
+     *  query builder
+     * 
+     * @param EntityManager $em
+     */
+    public function __construct($em){
+        $this->em = $em;
+        $this->helpers=new Helpers();		
+    }
+    
+    /** Validates parameters against array of pre-defined valid terms
+     *  for this PI type
+     * @param array $parameters
+     */
+    public function validateParameters($parameters){
 
-		// Define supported parameters and validate given params (die if an unsupported param is given)
-		$supportedQueryParams = array (
-				'production_status', 'certification_status', 'scope'
-		);
-		
-		$this->helpers->validateParams ( $supportedQueryParams, $parameters );
-		$this->validParams = $parameters;
-	}
-	
-	/** Creates the query by building on a queryBuilder object as
-	 *  required by the supplied parameters 
-	 */
-	public function createQuery() {
-	    $parameters = $this->validParams;
-	    $binds= array();
-	    $bc=-1;
-		
-		$qb = $this->em->createQueryBuilder();		
-		
-		//Main query
+        // Define supported parameters and validate given params (die if an unsupported param is given)
+        $supportedQueryParams = array (
+                'production_status', 'certification_status', 'scope'
+        );
+        
+        $this->helpers->validateParams ( $supportedQueryParams, $parameters );
+        $this->validParams = $parameters;
+    }
+    
+    /** Creates the query by building on a queryBuilder object as
+     *  required by the supplied parameters 
+     */
+    public function createQuery() {
+        $parameters = $this->validParams;
+        $binds= array();
+        $bc=-1;
+        
+        $qb = $this->em->createQueryBuilder();		
+        
+        //Main query
         $qb	->select('COUNT(c.name) as cCount', 'c.name')
-    		->from('Site', 's')    		  
-    		->leftJoin('s.scopes', 'sc')
-    		->join('s.ngi', 'n')
-    		->join('s.country', 'c')
-    		->join('s.certificationStatus', 'cs')
-    		->join('s.infrastructure', 'i')
+            ->from('Site', 's')    		  
+            ->leftJoin('s.scopes', 'sc')
+            ->join('s.ngi', 'n')
+            ->join('s.country', 'c')
+            ->join('s.certificationStatus', 'cs')
+            ->join('s.infrastructure', 'i')
             ->groupBy('c.name')
             ->orderBy('c.name');        
         
@@ -133,78 +133,78 @@ class GetSiteCountPerCountry implements IPIQuery{
             ->from('Country', 'c')
             ->orderBy('c.name');
         
-		$query[1] = $qb->getQuery();	
-		$this->query = $query;		
+        $query[1] = $qb->getQuery();	
+        $this->query = $query;		
         return $this->query; 			
-	}	
-	
-	/**
-	 * To display countries with 0 count we execute two queries here but only sites
-	 * which holds the data of all countries with a count > 0. 
-	 * Executes the query that has been built and stores the returned data
-	 * so it can later be used to create XML, Glue2 XML or JSON.
-	 */
-	public function executeQuery(){	 
-	    //Execute the two queries   
-	    $this->sites = $this->query[0]->execute();
-	    $this->countries = $this->query[1]->execute();
-	    return $this->sites;
-	}
-	
-	
-	/** Returns proprietary GocDB rendering of data 
-	 *  in an XML String
-	 * @return String
-	 */
-	public function getXML(){
-		$helpers = $this->helpers;
-	    
-		//Get the two result sets
-		$sites = $this->sites;
-		$countries = $this->countries;
+    }	
+    
+    /**
+     * To display countries with 0 count we execute two queries here but only sites
+     * which holds the data of all countries with a count > 0. 
+     * Executes the query that has been built and stores the returned data
+     * so it can later be used to create XML, Glue2 XML or JSON.
+     */
+    public function executeQuery(){	 
+        //Execute the two queries   
+        $this->sites = $this->query[0]->execute();
+        $this->countries = $this->query[1]->execute();
+        return $this->sites;
+    }
+    
+    
+    /** Returns proprietary GocDB rendering of data 
+     *  in an XML String
+     * @return String
+     */
+    public function getXML(){
+        $helpers = $this->helpers;
         
-		//Create an array with the names as the key
-		foreach($countries as $country){
-		    $output[$country['name']] = 0;
-		}
-		
-		//For each site with a count store the count
-		foreach ( $sites as $site ) {
-		    $output[$site['name']] = $site['cCount'];
-		}
-		
-		//Render the XML
-		$xml = new \SimpleXMLElement ('<results />');
-		foreach ($output as $country => $count) {		    
-		    $xmlSite = $xml->addChild ('SITE');
-		    $helpers->addIfNotEmpty ($xmlSite, 'COUNTRY', $country);
-		    $xmlSite->addChild('COUNT', $count);
-		}
-		
-		$dom_sxe = dom_import_simplexml ( $xml );
-		$dom = new \DOMDocument ( '1.0' );
-		$dom->encoding = 'UTF-8';
-		$dom_sxe = $dom->importNode ( $dom_sxe, true );
-		$dom_sxe = $dom->appendChild ( $dom_sxe );
-		$dom->formatOutput = true;
-		$xmlString = $dom->saveXML ();
-		
-		return $xmlString;
-	}
-	
-	/** Returns the user data in Glue2 XML string.
-	 * 
-	 * @return String
-	 */
-	public function getGlue2XML(){	
-		throw new LogicException("Not implemented yet");
-	}
-	
-	/** Not yet implemented, in future will return the user 
-	 *  data in JSON format
-	 * @throws LogicException
-	 */
-	public function getJSON(){		
-		throw new LogicException("Not implemented yet");
-	}
+        //Get the two result sets
+        $sites = $this->sites;
+        $countries = $this->countries;
+        
+        //Create an array with the names as the key
+        foreach($countries as $country){
+            $output[$country['name']] = 0;
+        }
+        
+        //For each site with a count store the count
+        foreach ( $sites as $site ) {
+            $output[$site['name']] = $site['cCount'];
+        }
+        
+        //Render the XML
+        $xml = new \SimpleXMLElement ('<results />');
+        foreach ($output as $country => $count) {		    
+            $xmlSite = $xml->addChild ('SITE');
+            $helpers->addIfNotEmpty ($xmlSite, 'COUNTRY', $country);
+            $xmlSite->addChild('COUNT', $count);
+        }
+        
+        $dom_sxe = dom_import_simplexml ( $xml );
+        $dom = new \DOMDocument ( '1.0' );
+        $dom->encoding = 'UTF-8';
+        $dom_sxe = $dom->importNode ( $dom_sxe, true );
+        $dom_sxe = $dom->appendChild ( $dom_sxe );
+        $dom->formatOutput = true;
+        $xmlString = $dom->saveXML ();
+        
+        return $xmlString;
+    }
+    
+    /** Returns the user data in Glue2 XML string.
+     * 
+     * @return String
+     */
+    public function getGlue2XML(){	
+        throw new LogicException("Not implemented yet");
+    }
+    
+    /** Not yet implemented, in future will return the user 
+     *  data in JSON format
+     * @throws LogicException
+     */
+    public function getJSON(){		
+        throw new LogicException("Not implemented yet");
+    }
 }

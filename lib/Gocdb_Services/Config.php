@@ -180,16 +180,16 @@ class Config {
      * @return array Reserved scopes as Strings
      */ 
     public function getReservedScopeList(){
-	$reservedScopes = array(); 
-	/* @var $reserved_scopes \SimpleXMLElement */ 
-	$reserved_scopes = $this->GetLocalInfoXML()->local_info->reserved_scopes; 	
-	if($reserved_scopes != null){
-	    /* @var $scope \SimpleXMLElement */ 
-	    foreach($reserved_scopes->children() as $scope){
-		$reservedScopes[] = (string)$scope; 
-	    }
-	}
-	return $reservedScopes; 
+    $reservedScopes = array(); 
+    /* @var $reserved_scopes \SimpleXMLElement */ 
+    $reserved_scopes = $this->GetLocalInfoXML()->local_info->reserved_scopes; 	
+    if($reserved_scopes != null){
+        /* @var $scope \SimpleXMLElement */ 
+        foreach($reserved_scopes->children() as $scope){
+        $reservedScopes[] = (string)$scope; 
+        }
+    }
+    return $reservedScopes; 
     }
      
     public function getShowMapOnStartPage(){

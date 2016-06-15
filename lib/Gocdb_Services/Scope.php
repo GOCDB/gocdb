@@ -68,8 +68,8 @@ class Scope extends AbstractEntityService{
         // Use is_null() or '===' if there is possible of getting empty array.
         if($scopeIdArray === NULL){
             // get all scopes in the DB by default 
-    	    $dql = "SELECT s from Scope s ORDER BY s.name";
-    	    $query = $this->em->createQuery($dql);
+            $dql = "SELECT s from Scope s ORDER BY s.name";
+            $query = $this->em->createQuery($dql);
             return $query->getResult();
             
         } else if(count($scopeIdArray) > 0){
@@ -120,13 +120,13 @@ class Scope extends AbstractEntityService{
         
         // Check the parameter keys are supoported
         $supportedParams = array('excludeNonDefault', 'excludeDefault', 'excludeReserved', 'excludeNonReserved'); 
-	$testParamKeys = array_keys($filterParams);
-	foreach ($testParamKeys as $key) {
-	    // if givenkey is not defined in supportedkeys it is unsupported
-	    if (!in_array($key, $supportedParams)) {
-		throw new \InvalidArgumentException('Unsupported parameter key');
-	    }
-	}
+    $testParamKeys = array_keys($filterParams);
+    foreach ($testParamKeys as $key) {
+        // if givenkey is not defined in supportedkeys it is unsupported
+        if (!in_array($key, $supportedParams)) {
+        throw new \InvalidArgumentException('Unsupported parameter key');
+        }
+    }
         
         $defaultScopeName = $this->configService->getDefaultScopeName();
 
@@ -196,7 +196,7 @@ class Scope extends AbstractEntityService{
                 ORDER BY si.shortName";
         $query = $this->em->createQuery($dql)
                           ->setParameter(":id", $scope->getId());
-    	return $query->getResult();
+        return $query->getResult();
     }
 
      /**
@@ -212,7 +212,7 @@ class Scope extends AbstractEntityService{
                 ORDER BY n.name";
         $query = $this->em->createQuery($dql)
                           ->setParameter(":id", $scope->getId());
-    	return $query->getResult();
+        return $query->getResult();
     }
     
      /**
@@ -228,7 +228,7 @@ class Scope extends AbstractEntityService{
                 ORDER BY sg.name";
         $query = $this->em->createQuery($dql)
                           ->setParameter(":id", $scope->getId());
-    	return $query->getResult();
+        return $query->getResult();
     }
     
      /**
@@ -244,7 +244,7 @@ class Scope extends AbstractEntityService{
                 ORDER BY se.hostName";
         $query = $this->em->createQuery($dql)
                           ->setParameter(":id", $scope->getId());
-    	return $query->getResult();
+        return $query->getResult();
     }
     
     /**
@@ -475,9 +475,9 @@ class Scope extends AbstractEntityService{
      */
      private function scopeNameIsUnique($name){
         $dql = "SELECT s from Scope s
-    			WHERE s.name = :name";
-    	$query = $this->em->createQuery($dql);
-    	$result = $query->setParameter('name', $name)->getResult();
+                WHERE s.name = :name";
+        $query = $this->em->createQuery($dql);
+        $result = $query->setParameter('name', $name)->getResult();
 
         if(count($result)==0){
             return true;

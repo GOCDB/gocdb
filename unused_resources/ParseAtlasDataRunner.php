@@ -33,14 +33,14 @@ $jsonIterator = new RecursiveIteratorIterator(
 foreach ($jsonIterator as $key => $val) {
     if(is_array($val)) {
         //echo "$key:\n";
-	if($key == 'rcsite'){
-	    //echo "$key\n"; 
-	    if(isset($val['name'])){ 
-	      $siteArray[] = $val['name']; 
-	    }
-	    
-	    //echo $val."\n"; 
-	}
+    if($key == 'rcsite'){
+        //echo "$key\n"; 
+        if(isset($val['name'])){ 
+          $siteArray[] = $val['name']; 
+        }
+        
+        //echo $val."\n"; 
+    }
     } else {
 //        echo "$key => $val\n";
     }

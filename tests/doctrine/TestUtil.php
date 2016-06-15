@@ -83,43 +83,43 @@ class TestUtil {
         $site->setShortName($label);
         return $site;
     }
-	
-	public static function createSampleServiceGroup($label){
-		$sg = new ServiceGroup();
-		$sg->setName($label);
-		$sg->setMonitored(1);
-		$sg->setEmail($label."@email.com");
-		return $sg;
-	}
-			
-	public static function createSampleSiteProperty($key, $val){
-		$prop = new SiteProperty();
-		$prop->setKeyName($key);
-		$prop->setKeyValue($val);
-		return $prop;
-	}
+    
+    public static function createSampleServiceGroup($label){
+        $sg = new ServiceGroup();
+        $sg->setName($label);
+        $sg->setMonitored(1);
+        $sg->setEmail($label."@email.com");
+        return $sg;
+    }
+            
+    public static function createSampleSiteProperty($key, $val){
+        $prop = new SiteProperty();
+        $prop->setKeyName($key);
+        $prop->setKeyValue($val);
+        return $prop;
+    }
 
-	public static function createSampleServiceProperty($name, $key){
-		$prop = new ServiceProperty();
-		$prop->setKeyName($name);
-		$prop->setKeyValue($key);
-		return $prop;
-	}
+    public static function createSampleServiceProperty($name, $key){
+        $prop = new ServiceProperty();
+        $prop->setKeyName($name);
+        $prop->setKeyValue($key);
+        return $prop;
+    }
 
     public static function createSampleEndpointProperty($name, $key){
-		$prop = new EndpointProperty();
-		$prop->setKeyName($name);
-		$prop->setKeyValue($key);
-		return $prop;
-	}
-	
-	public static function createSampleServiceGroupProperty($name, $key){
-		$prop = new ServiceGroupProperty();
-		$prop->setKeyName($name);
-		$prop->setKeyValue($key);
-		return $prop;
-	}	
-	
+        $prop = new EndpointProperty();
+        $prop->setKeyName($name);
+        $prop->setKeyValue($key);
+        return $prop;
+    }
+    
+    public static function createSampleServiceGroupProperty($name, $key){
+        $prop = new ServiceGroupProperty();
+        $prop->setKeyName($name);
+        $prop->setKeyValue($key);
+        return $prop;
+    }	
+    
     public static function createSampleCertStatusLog($addedBy = '/some/user'){
         $certStatusLog = new CertificationStatusLog(); 
         $certStatusLog->setAddedBy($addedBy); 

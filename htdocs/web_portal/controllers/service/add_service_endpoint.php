@@ -62,7 +62,7 @@ function submit(\User $user = null) {
  */
 function draw(\User $user = null) {
 
-	if(is_null($user)) {
+    if(is_null($user)) {
         throw new Exception("Unregistered users can't add an endpoint to a service.");
     }
     if (!isset($_REQUEST['se']) || !is_numeric($_REQUEST['se']) ){
@@ -79,7 +79,7 @@ function draw(\User $user = null) {
     $params['se'] = $service;
     $params['serviceType'] = $seType; 
     $params['serviceTypes'] = $serv->getServiceTypes();
-	show_view("service/add_service_endpoint.php", $params);
+    show_view("service/add_service_endpoint.php", $params);
 
 }
 

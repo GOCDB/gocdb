@@ -74,14 +74,14 @@ class GetSiteContacts implements IPIQuery{
         $qb = $this->em->createQueryBuilder();
     
         //Initialize base query
-		$qb	->select('s', 'n', 'r', 'u', 'rt')
-		->from('Site', 's')		
-		->leftJoin('s.ngi', 'n')
-		->leftJoin('s.country', 'c')		
+        $qb	->select('s', 'n', 'r', 'u', 'rt')
+        ->from('Site', 's')		
+        ->leftJoin('s.ngi', 'n')
+        ->leftJoin('s.country', 'c')		
         ->leftJoin('s.roles', 'r')        
         ->leftJoin('r.user', 'u')        
         ->leftJoin('r.roleType', 'rt')        
-		->orderBy('s.shortName', 'ASC');
+        ->orderBy('s.shortName', 'ASC');
     
         /**This is used to filter the reults at the point
          * of building the XML to only show the correct roletypes.
@@ -144,69 +144,69 @@ class GetSiteContacts implements IPIQuery{
         $this->sites = $this->query->execute();
         return $this->sites;
     }
-	
-	/** Returns proprietary GocDB rendering of the site contacts data 
-	 *  in an XML String
-	 * @return String
-	 */
-	public function getXML(){
-		$helpers = $this->helpers;
-	
-		$sites = $this->sites;
-		$xml = new \SimpleXMLElement("<results />");
-		foreach ( $sites as $site ) {
-			$xmlSite = $xml->addChild ( 'SITE' );
-			$xmlSite->addAttribute ( 'ID', $site->getId () . "G0" );
-			$xmlSite->addAttribute ( 'PRIMARY_KEY', $site->getPrimaryKey () );
-			$xmlSite->addAttribute ( 'NAME', $site->getShortName () );
-			
-			$xmlSite->addChild ( 'PRIMARY_KEY', $site->getPrimaryKey () );
-			$xmlSite->addChild ( 'SHORT_NAME', $site->getShortName () );
-			foreach ( $site->getRoles () as $role ) {
-				if ($role->getStatus () == "STATUS_GRANTED") { // Only show users who are granted the role, not pending
-					
-					$rtype = $role->getRoleType ()->getName ();
-					if ($this->roleT == '%%' || $rtype == $this->roleT) {
-						$user = $role->getUser ();
-						$xmlContact = $xmlSite->addChild ( 'CONTACT' );
-						$xmlContact->addAttribute ( 'USER_ID', $user->getId () . "G0" );
-						$xmlContact->addAttribute ( 'PRIMARY_KEY', $user->getId () . "G0" );
-						$xmlContact->addChild ( 'FORENAME', $user->getForename () );
-						$xmlContact->addChild ( 'SURNAME', $user->getSurname () );
-						$xmlContact->addChild ( 'TITLE', $user->getTitle () );
-						$xmlContact->addChild ( 'EMAIL', $user->getEmail () );
-						$xmlContact->addChild ( 'TEL', $user->getTelephone () );
-						$xmlContact->addChild ( 'CERTDN', $user->getCertificateDn () );
-						$xmlContact->addChild ( 'ROLE_NAME', $role->getRoleType ()->getName () );
-					}
-				}
-			}
-		}
+    
+    /** Returns proprietary GocDB rendering of the site contacts data 
+     *  in an XML String
+     * @return String
+     */
+    public function getXML(){
+        $helpers = $this->helpers;
+    
+        $sites = $this->sites;
+        $xml = new \SimpleXMLElement("<results />");
+        foreach ( $sites as $site ) {
+            $xmlSite = $xml->addChild ( 'SITE' );
+            $xmlSite->addAttribute ( 'ID', $site->getId () . "G0" );
+            $xmlSite->addAttribute ( 'PRIMARY_KEY', $site->getPrimaryKey () );
+            $xmlSite->addAttribute ( 'NAME', $site->getShortName () );
+            
+            $xmlSite->addChild ( 'PRIMARY_KEY', $site->getPrimaryKey () );
+            $xmlSite->addChild ( 'SHORT_NAME', $site->getShortName () );
+            foreach ( $site->getRoles () as $role ) {
+                if ($role->getStatus () == "STATUS_GRANTED") { // Only show users who are granted the role, not pending
+                    
+                    $rtype = $role->getRoleType ()->getName ();
+                    if ($this->roleT == '%%' || $rtype == $this->roleT) {
+                        $user = $role->getUser ();
+                        $xmlContact = $xmlSite->addChild ( 'CONTACT' );
+                        $xmlContact->addAttribute ( 'USER_ID', $user->getId () . "G0" );
+                        $xmlContact->addAttribute ( 'PRIMARY_KEY', $user->getId () . "G0" );
+                        $xmlContact->addChild ( 'FORENAME', $user->getForename () );
+                        $xmlContact->addChild ( 'SURNAME', $user->getSurname () );
+                        $xmlContact->addChild ( 'TITLE', $user->getTitle () );
+                        $xmlContact->addChild ( 'EMAIL', $user->getEmail () );
+                        $xmlContact->addChild ( 'TEL', $user->getTelephone () );
+                        $xmlContact->addChild ( 'CERTDN', $user->getCertificateDn () );
+                        $xmlContact->addChild ( 'ROLE_NAME', $role->getRoleType ()->getName () );
+                    }
+                }
+            }
+        }
 
-		$dom_sxe = dom_import_simplexml($xml);
-		$dom = new \DOMDocument('1.0');
-		$dom->encoding='UTF-8';
-		$dom_sxe = $dom->importNode($dom_sxe, true);
-		$dom_sxe = $dom->appendChild($dom_sxe);
-		$dom->formatOutput = true;
-		$xmlString = $dom->saveXML();
-		return $xmlString;
-	}
-	
-	/** Returns the site contact data in Glue2 XML string.
-	 * 
-	 * @return String
-	 */
-	public function getGlue2XML(){
-	
-	}
-	
-	/** Not yet implemented, in future will return the site contact
-	 *  data in JSON format
-	 * @throws LogicException
-	 */
-	public function getJSON(){
-		$query = $this->query;		
-		throw new LogicException("Not implemented yet");
-	}
+        $dom_sxe = dom_import_simplexml($xml);
+        $dom = new \DOMDocument('1.0');
+        $dom->encoding='UTF-8';
+        $dom_sxe = $dom->importNode($dom_sxe, true);
+        $dom_sxe = $dom->appendChild($dom_sxe);
+        $dom->formatOutput = true;
+        $xmlString = $dom->saveXML();
+        return $xmlString;
+    }
+    
+    /** Returns the site contact data in Glue2 XML string.
+     * 
+     * @return String
+     */
+    public function getGlue2XML(){
+    
+    }
+    
+    /** Not yet implemented, in future will return the site contact
+     *  data in JSON format
+     * @throws LogicException
+     */
+    public function getJSON(){
+        $query = $this->query;		
+        throw new LogicException("Not implemented yet");
+    }
 }

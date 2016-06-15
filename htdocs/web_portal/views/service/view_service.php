@@ -105,25 +105,25 @@ $configService = \Factory::getConfigService();
               table-layout: fixed;">
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 5em;">Host DN</td><td class="site_table">
-                    	<div style="word-wrap: break-word;">
-                    			<?php if ($params['authenticated']) { 
+                        <div style="word-wrap: break-word;">
+                                <?php if ($params['authenticated']) { 
                                     xecho($se->getDn()) ; 
                                 } else echo('PROTECTED - Auth required'); ?>
-                    	</div>
-                   	</td>
+                        </div>
+                    </td>
                 </tr>
                 <tr class="site_table_row_2">
-					<td class="site_table">URL</td><td class="site_table"><?php xecho($se->getUrl()) ?></td>
+                    <td class="site_table">URL</td><td class="site_table"><?php xecho($se->getUrl()) ?></td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Parent Site</td>
-					<td class="site_table">
-						<a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId() ?>">
-							<?php xecho($se->getParentSite()->getShortName()); ?>
-						</a>
-					</td>
+                    <td class="site_table">
+                        <a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId() ?>">
+                            <?php xecho($se->getParentSite()->getShortName()); ?>
+                        </a>
+                    </td>
                 </tr>
-				<!-- scope: remove this for a non-scoping version of view_service -->
+                <!-- scope: remove this for a non-scoping version of view_service -->
                 <tr class="site_table_row_2">
                     <?php
                         $count = 0;
@@ -147,7 +147,7 @@ $configService = \Factory::getConfigService();
                         </a>
                     </td>
                     <td class="site_table">
-			<textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($scopeString); ?></textarea>
+            <textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($scopeString); ?></textarea>
                     </td>
                 </tr>
 
@@ -164,63 +164,63 @@ $configService = \Factory::getConfigService();
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Production Level</td>
-					<td class="site_table">
-					<?php
-					switch($se->getProduction() ) {
-							case true:
-								?>
-								<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
-								<?php
-								break;
-							case false:
-								?>
-								<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
-								<?php
-								break;
-						}
-					?>
-					</td>
+                    <td class="site_table">
+                    <?php
+                    switch($se->getProduction() ) {
+                            case true:
+                                ?>
+                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                                <?php
+                                break;
+                            case false:
+                                ?>
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <?php
+                                break;
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Beta</td><td class="site_table">
-					<?php
-					switch($se->getBeta()) {
-							case true:
-								?>
-								<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
-								<?php
-								break;
-							case false:
-								?>
-								<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
-								<?php
-								break;
-							default:
-								?>
-								<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
-								<?php
-								break;
-						}
-					?>
-					</td>
+                    <?php
+                    switch($se->getBeta()) {
+                            case true:
+                                ?>
+                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                                <?php
+                                break;
+                            case false:
+                                ?>
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <?php
+                                break;
+                            default:
+                                ?>
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <?php
+                                break;
+                        }
+                    ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Monitored</td><td class="site_table">
-					<?php
-					switch($se->getMonitored()) {
-							case true:
-								?>
-								<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
-								<?php
-								break;
-							case false:
-								?>
-								<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
-								<?php
-								break;
-						}
-					?>
-					</td>
+                    <?php
+                    switch($se->getMonitored()) {
+                            case true:
+                                ?>
+                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                                <?php
+                                break;
+                            case false:
+                                ?>
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <?php
+                                break;
+                        }
+                    ?>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -272,17 +272,17 @@ $configService = \Factory::getConfigService();
             <?php
             $num = 2;
             foreach($se->getEndpointLocations() as $endpoint) {
-	            ?>
+                ?>
                                 
-	            <tr class="site_table_row_<?php echo $num ?>">
-	                <td style="width: 30%;"class="site_table">
+                <tr class="site_table_row_<?php echo $num ?>">
+                    <td style="width: 30%;"class="site_table">
                         <a href="index.php?Page_Type=View_Service_Endpoint&id=<?php echo $endpoint->getId() ?>">
                             <?php xecho($endpoint->getName()) ?>
                         </a> 
                     </td>
-	                <td style="width: 30%;"class="site_table"><?php echo($endpoint->getUrl()); ?></td>
-	                <td style="width: 30%;"class="site_table"><?php xecho($endpoint->getInterfaceName()); ?></td>
-	                <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>	                
+                    <td style="width: 30%;"class="site_table"><?php echo($endpoint->getUrl()); ?></td>
+                    <td style="width: 30%;"class="site_table"><?php xecho($endpoint->getInterfaceName()); ?></td>
+                    <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>	                
                         <td style="width: 10%;"align = "center"class="site_table">
                                 <a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>">
                                     <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
@@ -295,14 +295,14 @@ $configService = \Factory::getConfigService();
                         </td>
                     <?php endif; ?>
                         
-	            </tr>
-	            <?php
-	            if($num == 1) { $num = 2; } else { $num = 1; }
+                </tr>
+                <?php
+                if($num == 1) { $num = 2; } else { $num = 1; }
             }
             ?>
         </table>
         <!--  only show this link if we're in read / write mode -->
-		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
+        <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Endpoint -->
             <a href="index.php?Page_Type=Add_Service_Endpoint&se=<?php echo $se->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -310,7 +310,7 @@ $configService = \Factory::getConfigService();
                         Add Endpoint
                 </span>
             </a>
-		<?php endif; ?>
+        <?php endif; ?>
     </div>
     
    
@@ -330,16 +330,16 @@ $configService = \Factory::getConfigService();
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
         <a href="index.php?Page_Type=SE_Downtimes&id=<?php echo $se->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-	
+    
         <table id="downtimesTable"  class="table table-striped table-condensed tablesorter">
-	    <thead>
+        <thead>
             <tr>
                 <th>Description</th>
                 <th>From</th>
                 <th>To</th>
             </tr>
-	    </thead>
-	    <tbody>
+        </thead>
+        <tbody>
             <?php
             //$num = 2;
             foreach($params['Downtimes'] as $d) {
@@ -347,9 +347,9 @@ $configService = \Factory::getConfigService();
 
             <tr>
                 <td>
-                	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
-                		<?php xecho($d->getDescription()) ?>
-                	</a>
+                    <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
+                        <?php xecho($d->getDescription()) ?>
+                    </a>
                 </td>
                 <td><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
                 <td><?php echo $d->getEndDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
@@ -358,11 +358,11 @@ $configService = \Factory::getConfigService();
                 //if($num == 1) { $num = 2; } else { $num = 1; }
             }
             ?>
-	    </tbody>
+        </tbody>
         </table>
-	
+    
         <!--  only show this link if we're in read / write mode -->
-		<?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
+        <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Downtime Link -->
             <a href="index.php?Page_Type=Add_Downtime&se=<?php echo $se->getId();?>&site=<?php echo $se->getParentSite()->getId(); ?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
@@ -370,7 +370,7 @@ $configService = \Factory::getConfigService();
                         Add Downtime
                 </span>
             </a>
-		<?php endif; ?>
+        <?php endif; ?>
     </div>
     
 </div>
@@ -381,7 +381,7 @@ $configService = \Factory::getConfigService();
         $('#extensionsLink').tooltip(); 
 
         $('#downtimesTable').tablesorter(); 
-	// sort on first and second table cols only 
+    // sort on first and second table cols only 
         $("#serviceExtensionPropsTable").tablesorter({ 
         // pass the headers argument and assing a object 
         headers: { 

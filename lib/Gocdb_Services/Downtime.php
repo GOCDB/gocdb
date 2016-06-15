@@ -745,7 +745,7 @@ class Downtime extends AbstractEntityService{
      * @param \Date $windowEnd
      */
     public function getActiveAndImminentDowntimes($windowStart, $windowEnd) {
-	$dql = "SELECT DISTINCT d, se, s, st
+    $dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
                 JOIN d.services se
                 JOIN se.parentSite s
@@ -767,20 +767,20 @@ class Downtime extends AbstractEntityService{
                 )
                 ORDER BY d.startDate DESC";
 
-	$q = $this->em->createQuery($dql)
-		->setParameter('onGoingOnly', 'yes')
-		->setParameter('now', new \DateTime())
-		->setParameter('windowStart', $windowStart)
-		->setParameter('windowEnd', $windowEnd);
+    $q = $this->em->createQuery($dql)
+        ->setParameter('onGoingOnly', 'yes')
+        ->setParameter('now', new \DateTime())
+        ->setParameter('windowStart', $windowStart)
+        ->setParameter('windowEnd', $windowEnd);
 
-	return $downtimes = $q->getResult();
+    return $downtimes = $q->getResult();
     }
 
     /**
      *
      */
     public function getActiveDowntimes() {
-	$dql = "SELECT DISTINCT d, se, s, st
+    $dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
                 JOIN d.services se
                 JOIN se.parentSite s
@@ -794,11 +794,11 @@ class Downtime extends AbstractEntityService{
                 )
                 ORDER BY d.startDate DESC";
 
-	$q = $this->em->createQuery($dql)
-		->setParameter('onGoingOnly', 'yes')
-		->setParameter('now', new \DateTime());
+    $q = $this->em->createQuery($dql)
+        ->setParameter('onGoingOnly', 'yes')
+        ->setParameter('now', new \DateTime());
 
-	return $downtimes = $q->getResult();
+    return $downtimes = $q->getResult();
     }
 
     /**
@@ -808,7 +808,7 @@ class Downtime extends AbstractEntityService{
      * @param \Date $windowEnd
      */
     public function getImminentDowntimes($windowStart, $windowEnd) {
-	$dql = "SELECT DISTINCT d, se, s, st
+    $dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
                 JOIN d.services se
                 JOIN se.parentSite s
@@ -823,11 +823,11 @@ class Downtime extends AbstractEntityService{
                 )
                 ORDER BY d.startDate DESC";
 
-	$q = $this->em->createQuery($dql)
-		->setParameter('windowStart', $windowStart)
-		->setParameter('windowEnd', $windowEnd);
+    $q = $this->em->createQuery($dql)
+        ->setParameter('windowStart', $windowStart)
+        ->setParameter('windowEnd', $windowEnd);
 
-	return $downtimes = $q->getResult();
+    return $downtimes = $q->getResult();
     }
 
 }

@@ -11,15 +11,15 @@ $scopesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/Scopes.xml";
 $scopes = simplexml_load_file($scopesFileName);
 
 foreach($scopes as $scope) {
-	$doctrineScope = new Scope();
-	$name = "";
-	foreach($scope as $key => $value) {
-		if($key == "name") {
-			$name = (string) $value;
-		}
-	}
-	$doctrineScope->setName($name);
-	$entityManager->persist($doctrineScope);
+    $doctrineScope = new Scope();
+    $name = "";
+    foreach($scope as $key => $value) {
+        if($key == "name") {
+            $name = (string) $value;
+        }
+    }
+    $doctrineScope->setName($name);
+    $entityManager->persist($doctrineScope);
 }
 
 $entityManager->flush();

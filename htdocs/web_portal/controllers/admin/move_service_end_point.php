@@ -46,7 +46,7 @@ function move_service_end_point() {
  * @return null
  */
 function submit() {
-	require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
+    require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 
     
@@ -56,7 +56,7 @@ function submit() {
     //If the new sep is not in the array of submitted data yet,
     //then we have come form the select old site page and want the move SEP page
     if(!array_key_exists('NewSite',$movementrequest)){
-    	//Run the submit old site and display the service_end_point_move view
+        //Run the submit old site and display the service_end_point_move view
         submitOldSite($movementrequest);
     }	
     else {
@@ -76,10 +76,10 @@ function drawMoveSite(\Site $oldSite) {
     checkUserIsAdmin();
  
     //Get a list of services and list of sites to select from
-	$sites= \Factory::getSiteService()->getSitesBy();
-	$services = $oldSite->getServices();
-	
-	//Put into an array to be passed to view
+    $sites= \Factory::getSiteService()->getSitesBy();
+    $services = $oldSite->getServices();
+    
+    //Put into an array to be passed to view
     $params = array('Sites' => $sites, 'Services' => $services,
                     'OldSite' => $oldSite->getShortName());
 
@@ -97,8 +97,8 @@ function drawSelectOldSite() {
 
     //Get a list  of Sites to select from
     $sites= \Factory::getSiteService()->getSitesBy();
-	
-	//Put into an array to be passed to view
+    
+    //Put into an array to be passed to view
     $params = array('Sites' => $sites);
 
     show_view("admin/move_service_end_point_select_old_site.php", $params);

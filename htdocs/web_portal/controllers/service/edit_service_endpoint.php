@@ -82,8 +82,8 @@ function submit(\User $user = null) {
         $endpointID = $newValues['SERVICEENDPOINT']['ENDPOINTID'];
 
         $serv = \Factory::getServiceService();
-    	$endpoint = $serv->getEndpoint($endpointID);
-    	$service = $serv->getService($serviceID);    	
+        $endpoint = $serv->getEndpoint($endpointID);
+        $service = $serv->getService($serviceID);    	
         $serv->editEndpoint($service, $user, $endpoint, $newValues);
         $params['serviceid'] = $serviceID;
         $params['endpointid'] = $endpointID; 

@@ -50,9 +50,9 @@ function view_site() {
     
     $params['Downtimes'] = $serv->getDowntimes($site->getId(), 31);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
-	$title = $site->getShortName();
-	$params['site'] = $site;
-	$params['roles'] = $roles;
+    $title = $site->getShortName();
+    $params['site'] = $site;
+    $params['roles'] = $roles;
 
     // Add RoleActionRecords to params 
     $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($site->getId(), 'site'); 

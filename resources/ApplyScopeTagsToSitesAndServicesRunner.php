@@ -102,7 +102,7 @@ $commandLineArgValid = false;
 if (isset($argv[1])) {
     $forceOrShow = $argv[1];
     if ($forceOrShow == '--force' || $forceOrShow == '--show' || '--listSiteNames') {
-	$commandLineArgValid = true;
+    $commandLineArgValid = true;
     }
 }
 if (!$commandLineArgValid) {
@@ -136,13 +136,13 @@ if(count($requestedScopeNames) !== count(array_unique($requestedScopeNames))){
 // Nasty shortcut just to extract all the GOCDB names from the site name list 
 if ($forceOrShow == '--listSiteNames') {
     foreach ($requestedSiteNames as $requestedSiteName) {
-	$filterParams = array('sitename' => $requestedSiteName);
-	$siteArray = $siteService->getSitesFilterByParams($filterParams);
-	if (count($siteArray) == 0) {
-	    //die("ERROR - Requested Site does not exist in the DB [" . $requestedSiteName . "]\n");
-	} else {
-	    echo $siteArray[0]->getShortName()."\n"; 
-	}
+    $filterParams = array('sitename' => $requestedSiteName);
+    $siteArray = $siteService->getSitesFilterByParams($filterParams);
+    if (count($siteArray) == 0) {
+        //die("ERROR - Requested Site does not exist in the DB [" . $requestedSiteName . "]\n");
+    } else {
+        echo $siteArray[0]->getShortName()."\n"; 
+    }
     }
     die('done'); 
 }
@@ -159,14 +159,14 @@ foreach ($requestedScopeNames as $requestedScopeName) {
     // iterate all DB scopes and check the requested scope exists
     /* @var $scope \Scope */
     foreach ($allScopes as $scope) {
-	if ($scope->getName() == $requestedScopeName) {
-	    $targetScopesToAdd[] = $scope;
-	    $requestedScopeExist = true;
-	    break;
-	}
+    if ($scope->getName() == $requestedScopeName) {
+        $targetScopesToAdd[] = $scope;
+        $requestedScopeExist = true;
+        break;
+    }
     }
     if (!$requestedScopeExist) {
-	die("Requested scope don't exist [" . $requestedScopeName . "]\n");
+    die("Requested scope don't exist [" . $requestedScopeName . "]\n");
     }
 }
 echo "Scopes OK\n"; 
@@ -180,7 +180,7 @@ foreach ($requestedSiteNames as $requestedSiteName) {
     $filterParams = array('sitename' => $requestedSiteName);
     $siteArray = $siteService->getSitesFilterByParams($filterParams);
     if (count($siteArray) == 0) {
-	die("ERROR - Requested Site does not exist in the DB [" . $requestedSiteName . "]\n");
+    die("ERROR - Requested Site does not exist in the DB [" . $requestedSiteName . "]\n");
     }
 }
 echo "Sites OK\n";
@@ -193,65 +193,65 @@ $em->getConnection()->beginTransaction();
 try {
 // Get Site instance, see if it is missing a targetScope  
     foreach ($requestedSiteNames as $requestedSiteName) {
-	$filterParams = array('sitename' => $requestedSiteName);
-	$siteArray = $siteService->getSitesFilterByParams($filterParams);
-	/* @var $site \Site */
-	$site = $siteArray[0];
-	$siteScopes = $site->getScopes();
-	echo $site->getName() . ':';
+    $filterParams = array('sitename' => $requestedSiteName);
+    $siteArray = $siteService->getSitesFilterByParams($filterParams);
+    /* @var $site \Site */
+    $site = $siteArray[0];
+    $siteScopes = $site->getScopes();
+    echo $site->getName() . ':';
 
-	foreach ($targetScopesToAdd as $addTargetScope) {
-	    $addScope = true;
+    foreach ($targetScopesToAdd as $addTargetScope) {
+        $addScope = true;
 
-	    // Iterate Site's scopes and determine if it already has the targetScope 
-	    /* @var $siteScope \Scope */
-	    foreach ($siteScopes as $siteScope) {
-		if ($siteScope->getName() == $addTargetScope->getName()) {
-		    // the site already has the requested scope, so break
-		    $addScope = false;
-		    break;
-		}
-	    }
-	    // Site don't have scope, so add it and echo 
-	    if ($addScope) {
-		echo ' +' . $addTargetScope->getName();
-		//if ($forceOrShow == '--force') {
-		    $site->addScope($addTargetScope);
-		    $em->persist($addTargetScope);
-		//}
-	    }
-	    // Iterate child services scopes and see if each is missing the targetScope
-	    if ($applyScopeToChildSites) {
-		//echo "\n\tSEs: (".$addTargetScope->getName(); 
-		/* @var $se \Service */
-		foreach ($site->getServices() as $se) {
-		    $addSeScope = true;
-		    $seScopes = $se->getScopes();
-		    foreach ($seScopes as $seScope) {
-			if ($seScope->getName() == $addTargetScope->getName()) {
-			    // the service already has the scope, so break 
-			    $addSeScope = false;
-			    break;
-			}
-		    }
-		    // Service don't have scope, so add it 
-		    if ($addSeScope) {
-			//echo ' +'.$se->getHostName().',';  	
-			//if ($forceOrShow == '--force') {
-			    $se->addScope($addTargetScope);
-			    $em->persist($se); 
-			//}
-		    }
-		}
-		//echo ')'; 
-	    }
-	}
-	echo "\n";
+        // Iterate Site's scopes and determine if it already has the targetScope 
+        /* @var $siteScope \Scope */
+        foreach ($siteScopes as $siteScope) {
+        if ($siteScope->getName() == $addTargetScope->getName()) {
+            // the site already has the requested scope, so break
+            $addScope = false;
+            break;
+        }
+        }
+        // Site don't have scope, so add it and echo 
+        if ($addScope) {
+        echo ' +' . $addTargetScope->getName();
+        //if ($forceOrShow == '--force') {
+            $site->addScope($addTargetScope);
+            $em->persist($addTargetScope);
+        //}
+        }
+        // Iterate child services scopes and see if each is missing the targetScope
+        if ($applyScopeToChildSites) {
+        //echo "\n\tSEs: (".$addTargetScope->getName(); 
+        /* @var $se \Service */
+        foreach ($site->getServices() as $se) {
+            $addSeScope = true;
+            $seScopes = $se->getScopes();
+            foreach ($seScopes as $seScope) {
+            if ($seScope->getName() == $addTargetScope->getName()) {
+                // the service already has the scope, so break 
+                $addSeScope = false;
+                break;
+            }
+            }
+            // Service don't have scope, so add it 
+            if ($addSeScope) {
+            //echo ' +'.$se->getHostName().',';  	
+            //if ($forceOrShow == '--force') {
+                $se->addScope($addTargetScope);
+                $em->persist($se); 
+            //}
+            }
+        }
+        //echo ')'; 
+        }
+    }
+    echo "\n";
     }
 
     if ($forceOrShow == '--force') {
-	$em->flush();
-	$em->getConnection()->commit();
+    $em->flush();
+    $em->getConnection()->commit();
     }
     
 } catch (\Exception $e) {

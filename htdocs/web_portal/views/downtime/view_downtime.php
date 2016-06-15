@@ -12,7 +12,7 @@ $dt = $params['downtime'];
                    Downtime <?php echo $dt->getId() ?>
             </h1>
             <span style="float: left; clear: both;">
-            	<?php xecho( $dt->getDescription()) ?><br />
+                <?php xecho( $dt->getDescription()) ?><br />
              </span>
         </div>
 
@@ -44,32 +44,32 @@ $dt = $params['downtime'];
 
         <!-- If the downtime is ongoing and the portal is not in read only mode, show a notification and show the end downtime button -->
         <?php if($dt->isOnGoing() and !$params['portalIsReadOnly']) { ?>
-	    	<div style="float: left; width: 100%; margin-top: 2em;">
-		    	<div class="tableContainer" style="width: 99.5%; float: left;">
-					<span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-						Downtime is ongoing
-					</span>
-		            <img src="<?php echo \GocContextPath::getPath()?>img/star.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;">
-		            <table style="clear: both; width: 100%; table-layout: fixed;">
-		                <tr class="site_table_row_1">
-		                    <td class="site_table" style="width: 30%">
-		                    	<script type="text/javascript">
-									function submitform()
-									{
-									    document.forms["endNow"].submit();
-									}
-								</script>
-								<form id="endNow" action="index.php" method="post">
-									<input type='Hidden' name='Page_Type' value="End_Downtime" />
-									<input type='Hidden' name='id' value="<?php echo $dt->getId()?>" />
-									<a href="javascript: submitform()">End Now</a>
-								</form>
-		                	</td>
-		                </tr>
-		            </table>
-		        </div>
-		    </div>
-		<?php } ?>
+            <div style="float: left; width: 100%; margin-top: 2em;">
+                <div class="tableContainer" style="width: 99.5%; float: left;">
+                    <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                        Downtime is ongoing
+                    </span>
+                    <img src="<?php echo \GocContextPath::getPath()?>img/star.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;">
+                    <table style="clear: both; width: 100%; table-layout: fixed;">
+                        <tr class="site_table_row_1">
+                            <td class="site_table" style="width: 30%">
+                                <script type="text/javascript">
+                                    function submitform()
+                                    {
+                                        document.forms["endNow"].submit();
+                                    }
+                                </script>
+                                <form id="endNow" action="index.php" method="post">
+                                    <input type='Hidden' name='Page_Type' value="End_Downtime" />
+                                    <input type='Hidden' name='id' value="<?php echo $dt->getId()?>" />
+                                    <a href="javascript: submitform()">End Now</a>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        <?php } ?>
 
         <!-- Downtime information and timing container div -->
         <div style="float: left; width: 100%; margin-top: 2em;">
@@ -117,7 +117,7 @@ $dt = $params['downtime'];
                     <tr class="site_table_row_2">
                         <td class="site_table">Announcement Date</td><td class="site_table">
                             <?php
-                            	echo $dt->getAnnounceDate()->format($dt::DATE_FORMAT);
+                                echo $dt->getAnnounceDate()->format($dt::DATE_FORMAT);
                             ?>
                         </td>
                     </tr>
@@ -142,7 +142,7 @@ $dt = $params['downtime'];
 
                 <?php
                 $num = 2;
-    			foreach($dt->getServices() as $se) {
+                foreach($dt->getServices() as $se) {
                     $alreadyRenderedSE = array();
                                     
                     if(in_array($se->getId(), $alreadyRenderedSE)){
@@ -164,23 +164,23 @@ $dt = $params['downtime'];
                     </td>
                     <td class="site_table"><?php xecho($se->getDescription()) ?></td>
                     <td class="site_table">
-    				<?php
-    				switch($se->getProduction()) {
-    					case true:
-    						?>
-    						<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
-    						<?php
-    						break;
-    					case false:
-    						?>
-    						<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
-    						<?php
-    						break;
-    				}
-    				?>
-    				</td>
+                    <?php
+                    switch($se->getProduction()) {
+                        case true:
+                            ?>
+                            <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        case false:
+                            ?>
+                            <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                    }
+                    ?>
+                    </td>
                     <td class="site_table">
-    				<?php xecho($se->getScopeNamesAsString()); ?>
+                    <?php xecho($se->getScopeNamesAsString()); ?>
                     </td>
                 </tr>
                 <!--&rdsh; --> 
@@ -212,7 +212,7 @@ $dt = $params['downtime'];
                 </tr> 
                 
                 <?php
-    				if($num == 1) { $num = 2; } else { $num = 1; }
+                    if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
                 ?>
             </table>

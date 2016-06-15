@@ -18,38 +18,38 @@ $egiProject = $entityManager->getRepository('Project')->findOneBy(array("name" =
 $egiScope = $entityManager->getRepository('Scope')->findOneBy(array("name" => "EGI"));
 
 foreach($ngis as $xmlNgi) {
-	$doctrineNgi = new NGI();
-	$name = "";
-	$email = "";
-	$rodEmail = "";
-	$helpdeskEmail = "";
-	$securityEmail = "";
+    $doctrineNgi = new NGI();
+    $name = "";
+    $email = "";
+    $rodEmail = "";
+    $helpdeskEmail = "";
+    $securityEmail = "";
     $creationDate = new \DateTime("now");
     
-	foreach($xmlNgi as $key => $value) {
-		if((string) $key == "NAME") {
-			$name = (string) $value;
-		}
-		
-		if((string) $key == "EMAIL") {
-			$email = (string) $value;
-		}
-		
-		if((string) $key == "DESCRIPTION") {
-			$description = (string) $value;
-		}
-		
-		if((string) $key == "ROD_EMAIL") {
-			$rodEmail = (string) $value;
-		}
-		
-		if((string) $key == "HELPDESK_EMAIL") {
-			$helpdeskEmail = (string) $value;
-		}
-		
-		if((string) $key == "SECURITY_EMAIL") {
-			$securityEmail = (string) $value;
-		}
+    foreach($xmlNgi as $key => $value) {
+        if((string) $key == "NAME") {
+            $name = (string) $value;
+        }
+        
+        if((string) $key == "EMAIL") {
+            $email = (string) $value;
+        }
+        
+        if((string) $key == "DESCRIPTION") {
+            $description = (string) $value;
+        }
+        
+        if((string) $key == "ROD_EMAIL") {
+            $rodEmail = (string) $value;
+        }
+        
+        if((string) $key == "HELPDESK_EMAIL") {
+            $helpdeskEmail = (string) $value;
+        }
+        
+        if((string) $key == "SECURITY_EMAIL") {
+            $securityEmail = (string) $value;
+        }
         
         if((string) $key == "CDATEON") {
             // $cdateonString has the following format: '12-JAN-10 14.12.56.000000' 
@@ -63,19 +63,19 @@ foreach($ngis as $xmlNgi) {
             }
         }        
         
-	}
+    }
     $doctrineNgi->setCreationDate($creationDate);
-	$doctrineNgi->setDescription($description);
-	$doctrineNgi->setName($name);
-	$doctrineNgi->setEmail($email);
-	$doctrineNgi->setRodEmail($rodEmail);
-	$doctrineNgi->setHelpdeskEmail($helpdeskEmail);
-	$doctrineNgi->setSecurityEmail($securityEmail);
+    $doctrineNgi->setDescription($description);
+    $doctrineNgi->setName($name);
+    $doctrineNgi->setEmail($email);
+    $doctrineNgi->setRodEmail($rodEmail);
+    $doctrineNgi->setHelpdeskEmail($helpdeskEmail);
+    $doctrineNgi->setSecurityEmail($securityEmail);
     
     // TODO 
     //if($cdateon == null) throw new Exception("CDATEON is null"); 
-	//$doctrineNgi->setCreationDate($cdateon);
-	
+    //$doctrineNgi->setCreationDate($cdateon);
+    
     $egiProject->addNgi($doctrineNgi);
     
     $doctrineNgi->addScope($egiScope);

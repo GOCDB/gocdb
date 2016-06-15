@@ -6,13 +6,13 @@ $configService = \Factory::getConfigService();
 //Get the affected services and store the ids in an array. 
 $affectedServiceIds = array();
 foreach($dt->getServices() as $affectedService){
-	$affectedServiceIds[] = $affectedService->getId();
+    $affectedServiceIds[] = $affectedService->getId();
 }
 
 //Get the affected endpoints and store the ids in an array
 $affectedEndpointIds = array();
 foreach($dt->getEndpointLocations() as $affectedEndpoints){
-	$affectedEndpointIds[] = $affectedEndpoints->getId();
+    $affectedEndpointIds[] = $affectedEndpoints->getId();
 }
 
 ?>
@@ -28,24 +28,24 @@ foreach($dt->getEndpointLocations() as $affectedEndpoints){
 <?php 
     foreach($services as $service){
         $count=0;
-		
-		// Set the html 'SELECTED' attribute on the <option> only if this service was affected.
-		if(in_array($service->getId(), $affectedServiceIds)){
-			$selected = 'SELECTED';
-		}else{
-			$selected = '';
-		}
+        
+        // Set the html 'SELECTED' attribute on the <option> only if this service was affected.
+        if(in_array($service->getId(), $affectedServiceIds)){
+            $selected = 'SELECTED';
+        }else{
+            $selected = '';
+        }
         echo "<option value=\"s" . $service->getId() . "\" id=\"" . $service->getId() . "\" ".$selected.">"; 
                 xecho('('.$service->getServiceType()->getName().') '); 
                 xecho($service->getHostName());  
                 echo("</option>");
         
         foreach($service->getEndpointLocations() as $endpoint){
-					if(in_array($endpoint->getId(), $affectedEndpointIds)){
-						$selected = 'SELECTED';
-					}else{
-						$selected = '';
-					}
+                    if(in_array($endpoint->getId(), $affectedEndpointIds)){
+                        $selected = 'SELECTED';
+                    }else{
+                        $selected = '';
+                    }
             if($endpoint->getName() == ''){
                 $name = xssafe('myEndpoint');
             }else{
