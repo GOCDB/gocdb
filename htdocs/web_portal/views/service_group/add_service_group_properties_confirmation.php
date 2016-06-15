@@ -1,4 +1,4 @@
-<?php 
+<?php
 $propertyArray = $params['proparr'];
 $parent = $params['serviceGroup'];
 $addPropertiesPage = "Add_Service_Group_Properties";

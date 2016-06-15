@@ -22,44 +22,44 @@ require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 require_once __DIR__.'/../utils.php';
 
 function remove_scope(){
-    
+
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     //Check user has permission
     checkUserIsAdmin();
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
-    
+
     //Get the scope from the id
     $serv= \Factory::getScopeService();
     $scope =$serv ->getScope($_REQUEST['id']);
-    
+
     //keep the name to display later
     $params['Name'] = $scope -> getName();
-    
+
     //check to see if there are NGIs, Sites, Service Groups, & services,
     // with this scope tag. If there are, prevent deletion of it.
     $ngisWithScope = $serv->getNgisFromScope($scope);
     $sitesWithScope = $serv->getSitesFromScope($scope);
     $sGroupWithScope = $serv->getServiceGroupsFromScope($scope);
     $serviceWithScope = $serv->getServicesFromScope($scope);
-    
+
     $deletionAllowed = true;
     if(sizeof($ngisWithScope)>0){
-      $deletionAllowed = false;  
+      $deletionAllowed = false;
     }
     if(sizeof($sitesWithScope )>0){
-      $deletionAllowed = false;  
+      $deletionAllowed = false;
     }
    if(sizeof($sGroupWithScope)>0){
-      $deletionAllowed = false;  
+      $deletionAllowed = false;
    }
    if(sizeof($serviceWithScope)>0){
-      $deletionAllowed = false;  
+      $deletionAllowed = false;
     }
-    
+
     //Allow the deletion of scopes that are in use
     $scopeInUseOveride=false;
     if(isset($_REQUEST['ScopeInUseOveride'])){
@@ -68,9 +68,9 @@ function remove_scope(){
             $deletionAllowed  = true;
         }
     }
-    
+
     if($deletionAllowed){
-        //Delete the scope. This fuction will check the user is allowed to 
+        //Delete the scope. This fuction will check the user is allowed to
         //perform this action and throw an error if not.
         $dn = Get_User_Principle();
         $user = \Factory::getUserService()->getUserByPrinciple($dn);
@@ -89,8 +89,8 @@ function remove_scope(){
         $params['Sites'] = $sitesWithScope;
         $params['ServiceGroups']=$sGroupWithScope;
         $params['Services']=$serviceWithScope;
-        show_view('admin/delete_scope_denied.php', $params, "Scope still in use");        
+        show_view('admin/delete_scope_denied.php', $params, "Scope still in use");
     }
-            
+
 }
 

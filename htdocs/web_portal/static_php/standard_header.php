@@ -1,6 +1,6 @@
-<?php 
+<?php
 function get_standard_header($title = null) {
- 
+
     $header = '<!doctype html>
     <html>
         <head>

@@ -14,7 +14,7 @@ $seId = $se->getId();
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;"><?php xecho('Service Endpoint: ' . $endpoint->getName()) ?> </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-        Description: <?php xecho($endpoint->getDescription()) ?> 
+        Description: <?php xecho($endpoint->getDescription()) ?>
         </span>
     </div>
 
@@ -33,7 +33,7 @@ $seId = $se->getId();
         </div>
         <div style="float: right;">
             <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
-            <a onclick="return confirmSubmit()" 
+            <a onclick="return confirmSubmit()"
                href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId(); ?>&serviceid=<?php echo $seId; ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
             <br />
@@ -87,9 +87,9 @@ $seId = $se->getId();
         </div>
     </div>
 
-    <div style="float: left; width: 100%; margin-top: 2em;"> 
-    More (GLUE2) attributes can be added on request - please contact gocdb developers.  
-    </div>                 
+    <div style="float: left; width: 100%; margin-top: 2em;">
+    More (GLUE2) attributes can be added on request - please contact gocdb developers.
+    </div>
 
     <!-- Extension Properties -->
     <?php
@@ -105,17 +105,17 @@ $seId = $se->getId();
     <script type="text/javascript">
     $(document).ready(function () {
 
-        // sort on first and second table cols only 
+        // sort on first and second table cols only
         $("#endpointExtensionPropsTable").tablesorter({
         // pass the headers argument and passing a object
         headers: {
-            // assign the third column (we start counting zero) 
+            // assign the third column (we start counting zero)
             2: {
-            // disable it by setting the property sorter to false 
+            // disable it by setting the property sorter to false
             sorter: false
             },
             3: {
-            // disable it by setting the property sorter to false 
+            // disable it by setting the property sorter to false
             sorter: false
             }
         }
@@ -123,4 +123,4 @@ $seId = $se->getId();
 
     }
     );
-    </script>  
+    </script>

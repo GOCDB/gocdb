@@ -20,7 +20,7 @@
             <?php if($params['UserIsAdmin']):?>
                 <div style="float: right; margin-left: 2em; text-align:center;">
                     <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
-                    <a onclick="return confirmSubmit()" 
+                    <a onclick="return confirmSubmit()"
                        href="index.php?Page_Type=Admin_Delete_NGI&id=<?php echo $params['ngi']->getId() ?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" />
                         <br />
@@ -93,14 +93,14 @@
                     </tr>
                 </table>
         </div>
-        
+
         <!-- Project memberships (Top right) -->
         <div class="tableContainer" style="width: 42%; float: right;" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Project memberships</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['Projects'])) {
-                        $num = 1; 
+                        $num = 1;
                         foreach($params['Projects'] as $project) { ?>
                         <tr class="site_table_row_<?php echo $num ?>">
                             <td class="site_table">
@@ -108,11 +108,11 @@
                             </td>
                         </tr>
                         <?php if($num == 1) { $num = 2; } else { $num = 1; } } ?>
-                    
+
                 <?php } ?>
             </table>
         </div>
-       
+
         <!-- Scopes (bottom right) -->
         <div class="tableContainer" style="width: 42%; float: right; margin-top: 1.6em" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em; word-wrap: normal">
@@ -124,11 +124,11 @@
                             <td class="site_table" >
                                 <textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($params['ngi']->getScopeNamesAsString()); ?></textarea>
                             </td>
-                            
+
                         </tr>
             </table>
         </div>
-        
+
     </div>
 
 
@@ -136,10 +136,10 @@
     <div class="listContainer">
         <span class="header listHeader">
             <?php echo sizeof($params['ngi']->getSites()) ?> Site<?php if(sizeof($params['ngi']->getSites()) != 1) echo "s"?>
-        (Note, Scope values marked with (x) indicate the parent NGI does not share that scope) 
+        (Note, Scope values marked with (x) indicate the parent NGI does not share that scope)
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="decoration" />
-    
+
         <table id="sitesTable" class="table table-striped table-condensed tablesorter" >
         <thead>
         <tr>
@@ -151,11 +151,11 @@
         </thead>
         <tbody>
 <!--            <tr class="site_table">
-              <td colspan="4"> 
-                  Note, Scope values marked with (x) indicate the parent NGI does not share that scope 
+              <td colspan="4">
+                  Note, Scope values marked with (x) indicate the parent NGI does not share that scope
               </td>
             </tr>-->
-        
+
             <?php
             //$num = 2;
             if(sizeof($params['ngi']->getSites()) > 0) {
@@ -181,7 +181,7 @@
                                  <?php
                                  $count = 0;
                                  $numScopes = sizeof($scopes);
-                                 $scopeString = ''; 
+                                 $scopeString = '';
                                  foreach ($scopes as $scopeName => $sharedWithParent) {
                                      if ($sharedWithParent) {
                                          $scopeString .= $scopeName;
@@ -191,11 +191,11 @@
                                      if (++$count != $numScopes) {
                                          $scopeString .= ", ";
                                      }
-                                 } ?>   
+                                 } ?>
                           <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
                     </td>
 
-                    
+
                 </tr>
                 <?php
                     //if($num == 1) { $num = 2; } else { $num = 1; }
@@ -209,7 +209,7 @@
     <!--  Users and Roles -->
     <div class="listContainer">
         <span class="header listHeader">
-           Users (Click on name to manage roles) 
+           Users (Click on name to manage roles)
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
 
@@ -263,31 +263,31 @@
 
     <!-- Show RoleActionRecords if user has permissions over this NGI -->
     <?php if ($params['ShowEdit']){
-        require_once __DIR__ . '/../fragments/viewRoleActionsTable.php'; 
+        require_once __DIR__ . '/../fragments/viewRoleActionsTable.php';
     } ?>
-    
+
 
 </div>
 
 <script>
-    $(document).ready(function() 
+    $(document).ready(function()
     {
 
-    $("#sitesTable").tablesorter(); 
-    $("#usersTable").tablesorter(); 
-    // sort on first and second table cols only 
-//	$("#sitesTable").tablesorter({ 
-//	    // pass the headers argument and assing a object 
-//	    headers: { 
-//		// assign the third column (we start counting zero) 
-//		2: { 
-//		    sorter: false 
-//		}, 
-//		3: { 
-//		    sorter: false 
+    $("#sitesTable").tablesorter();
+    $("#usersTable").tablesorter();
+    // sort on first and second table cols only
+//	$("#sitesTable").tablesorter({
+//	    // pass the headers argument and assing a object
+//	    headers: {
+//		// assign the third column (we start counting zero)
+//		2: {
+//		    sorter: false
+//		},
+//		3: {
+//		    sorter: false
 //		}
-//	    } 
-//	}); 
-    
-    }); 
+//	    }
+//	});
+
+    });
 </script>

@@ -15,38 +15,38 @@
 namespace org\gocdb\security\authentication;
 
 /**
- * A stateless configuration that supports the specified providers, tokens and 
- * user details service.  
- * 
+ * A stateless configuration that supports the specified providers, tokens and
+ * user details service.
+ *
  * @see IConfigFirewallComponent
  * @author David Meredith
  */
 class MyConfig1 implements IConfigFirewallComponent {
-    private $providerList; 
-    private $gocdbUserDetailsService; 
-    private $tokenClassList; 
-    
-    function __construct() {
-       $this->providerList = array(); 
-       $this->providerList[] = new GOCDBAuthProvider();  
-       //$this->providerList[] = new SampleAuthProvider(); 
-    
-       $this->gocdbUserDetailsService = new GOCDBUserDetailsService(); 
+    private $providerList;
+    private $gocdbUserDetailsService;
+    private $tokenClassList;
 
-       $this->tokenClassList = array(); 
-       $this->tokenClassList[] = 'org\gocdb\security\authentication\X509AuthenticationToken'; 
-       //$this->tokenClassList[] = 'org\gocdb\security\authentication\ShibAuthToken'; 
-       //$this->tokenClassList[] = 'org\gocdb\security\authentication\SimpleSamlPhpAuthToken'; 
-       //$this->tokenClassList[] = 'org\gocdb\security\authentication\UsernamePasswordAuthenticationToken'; 
+    function __construct() {
+       $this->providerList = array();
+       $this->providerList[] = new GOCDBAuthProvider();
+       //$this->providerList[] = new SampleAuthProvider();
+
+       $this->gocdbUserDetailsService = new GOCDBUserDetailsService();
+
+       $this->tokenClassList = array();
+       $this->tokenClassList[] = 'org\gocdb\security\authentication\X509AuthenticationToken';
+       //$this->tokenClassList[] = 'org\gocdb\security\authentication\ShibAuthToken';
+       //$this->tokenClassList[] = 'org\gocdb\security\authentication\SimpleSamlPhpAuthToken';
+       //$this->tokenClassList[] = 'org\gocdb\security\authentication\UsernamePasswordAuthenticationToken';
     }
 
     /**
      * Get an array containing <codeGOCDBAuthProvider</code> as the first element.
      * @see IConfigFirewallComponent::getAuthProviders()
-     * @return 
+     * @return
      */
     public function getAuthProviders(){
-        return $this->providerList; 
+        return $this->providerList;
     }
 
     /**
@@ -54,27 +54,27 @@ class MyConfig1 implements IConfigFirewallComponent {
      * @return \org\gocdb\security\authentication\GOCDBUserDetailsService
      */
     public function getUserDetailsService(){
-        return $this->gocdbUserDetailsService;  
+        return $this->gocdbUserDetailsService;
     }
 
     /**
-     * Get the supported auth token class names as strings. 
+     * Get the supported auth token class names as strings.
      * <pre>
-     * [0] = 'org\gocdb\security\authentication\X509AuthenticationToken' 
+     * [0] = 'org\gocdb\security\authentication\X509AuthenticationToken'
      * [1] = 'org\gocdb\security\authentication\SimpleSamlPhpAuthToken'
      * </pre>
      * @see IConfigFirewallComponent::getAuthTokenClassList()
      * @return array
      */
     public function getAuthTokenClassList(){
-        return $this->tokenClassList; 
+        return $this->tokenClassList;
     }
-   
+
     /**
      * @see IConfigFirewallComponent::getCreateSession()
      * @return false
      */
     public function getCreateSession(){
-        return false; 
+        return false;
     }
 }

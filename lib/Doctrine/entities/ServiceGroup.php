@@ -15,22 +15,22 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * A ServiceGroup aggregates existing {@see Service}s that may be hosted across 
- * different sites into a loosely defined group. 
+ * A ServiceGroup aggregates existing {@see Service}s that may be hosted across
+ * different sites into a loosely defined group.
  * <p>
- * Having Roles over the ServiceGroup does NOT cascade any permissions over 
- * those services. SGs are typically used to group a set of related services 
- * for monitoring purposes. 
- * 
- * @author John Casson 
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * 
+ * Having Roles over the ServiceGroup does NOT cascade any permissions over
+ * those services. SGs are typically used to group a set of related services
+ * for monitoring purposes.
+ *
+ * @author John Casson
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ *
  * @Entity @Table(name="ServiceGroups")
  */
 class ServiceGroup extends OwnedEntity implements IScopedEntity {
-   
-    // DM: The SG name should have a unique constraint, added to the todo list. 
-    // Right now there is nasty manual check run when adding a new service group. 
+
+    // DM: The SG name should have a unique constraint, added to the todo list.
+    // Right now there is nasty manual check run when adding a new service group.
 
     /** @Column(type="string") */
     protected $name;
@@ -64,17 +64,17 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
      *      )
      */
     protected $services = null;
-    
+
     /* DATETIME NOTE:
      * Doctrine checks whether a date's been updated by doing a byreference comparison.
      * If you just update an existing DateTime object, Doctrine won't persist it!
      * Create a new DateTime object and reference that for it to persist during an update.
      * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
      */
-    
+
     /** @Column(type="datetime", nullable=false) */
     protected $creationDate;
-    
+
     /**
      * Bidirectional - A ServiceGroup (INVERSE ORM SIDE) can have many properties
      * @OneToMany(targetEntity="ServiceGroupProperty", mappedBy="parentServiceGroup", cascade={"remove"})
@@ -83,7 +83,7 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
 
     public function __construct() {
         parent::__construct();
-        
+
         // Set cretion date
         $this->creationDate =  new \DateTime("now");
         $this->serviceGroupProperties = new ArrayCollection();
@@ -93,15 +93,15 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
 
 
     /**
-     * @return ArrayCollection Empty collection, ServiceGroup has no owning parents.  
+     * @return ArrayCollection Empty collection, ServiceGroup has no owning parents.
      */
     public function getParentOwnedEntities() {
-        // return empty collection - no parents 
+        // return empty collection - no parents
         return new ArrayCollection();
     }
 
     /**
-     * The name of the service group. 
+     * The name of the service group.
      * @return string
      */
     public function getName() {
@@ -131,32 +131,32 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
     public function getServiceGroupProperties(){
         return $this->serviceGroupProperties;
     }
-        
+
     /**
-     * A string containg a list of the names of scopes with which the 
+     * A string containg a list of the names of scopes with which the
      * object has been tagged.
-     * @return string  string containing ", " seperated list of the names 
-     */ 
+     * @return string  string containing ", " seperated list of the names
+     */
     public function getScopeNamesAsString() {
-        //Get the scopes for the service 
+        //Get the scopes for the service
         $scopes = $this->getScopes();
-        
+
         //Create an empty array to contain scope names
         $scopeNames= array();
-        
+
         //populate the array
         foreach ($scopes as $scope){
             $scopeNames[]=$scope->getName();
         }
-        
+
         sort($scopeNames);
 
         //Turn into a string
         $scopeNamesAsString = implode(", " , $scopeNames);
-        
+
         return $scopeNamesAsString;
     }
-    
+
     public function getCreationDate() {
         return $this->creationDate;
     }
@@ -180,26 +180,26 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
     public function setCreationDate($creationDate) {
         $this->creationDate = $creationDate;
     }
-  
+
     public function addScope(Scope $scope) {
         $this->scopes[] = $scope;
     }
 
     public function addService(Service $se) {
-        $this->services[] = $se;                
+        $this->services[] = $se;
         $se->addServiceGroup($this);
     }
-        
+
     /**
-     * Add a ServiceGroupProperty entity to this Service's collection of properties. 
-     * This method also sets the ServiceGroupProperty's parentService.  
+     * Add a ServiceGroupProperty entity to this Service's collection of properties.
+     * This method also sets the ServiceGroupProperty's parentService.
      * @param \ServiceGroupProperty $serviceGroupProperty
      */
     public function addServiceGroupPropertyDoJoin($serviceGroupProperty) {
         $this->serviceGroupProperties[] = $serviceGroupProperty;
         $serviceGroupProperty->_setParentServiceGroup($this);
     }
-        
+
     public function removeService(Service $se) {
         $this->services->removeElement($se);
     }
@@ -220,9 +220,9 @@ class ServiceGroup extends OwnedEntity implements IScopedEntity {
     /**
      * Returns value of {@link \OwnedEntity::TYPE_SERVICEGROUP}
      * @see \OwnedEntity::getType()
-     * @return string 
+     * @return string
      */
     public function getType() {
-        return parent::TYPE_SERVICEGROUP; 
+        return parent::TYPE_SERVICEGROUP;
     }
 }

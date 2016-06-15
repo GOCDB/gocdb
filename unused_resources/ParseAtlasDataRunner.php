@@ -14,11 +14,11 @@
  */
 
 
-// Simple script to extract 'name' value from 'rcsite' json array/structure 
-// and print this to standard output. This output can be re-directed to a 
-// text file and modified to produce a php file that contains an array of site 
-// names for subsequent import into: 
-// e.g. 'resources/ApplyScopeTagsToSitesAndServicesRunner.php'. 
+// Simple script to extract 'name' value from 'rcsite' json array/structure
+// and print this to standard output. This output can be re-directed to a
+// text file and modified to produce a php file that contains an array of site
+// names for subsequent import into:
+// e.g. 'resources/ApplyScopeTagsToSitesAndServicesRunner.php'.
 
 // download json file for atlas from: http://atlas-agis-api.cern.ch/request/site/query/list/?json&vo_name=atlas
 $jsonstring = file_get_contents("atlas-agis-api.cern.json");
@@ -34,21 +34,21 @@ foreach ($jsonIterator as $key => $val) {
     if(is_array($val)) {
         //echo "$key:\n";
     if($key == 'rcsite'){
-        //echo "$key\n"; 
-        if(isset($val['name'])){ 
-          $siteArray[] = $val['name']; 
+        //echo "$key\n";
+        if(isset($val['name'])){
+          $siteArray[] = $val['name'];
         }
-        
-        //echo $val."\n"; 
+
+        //echo $val."\n";
     }
     } else {
 //        echo "$key => $val\n";
     }
 }
 
-// remove duplicates 
-$siteArray = array_unique($siteArray); 
+// remove duplicates
+$siteArray = array_unique($siteArray);
 foreach($siteArray as $siteName){
-    echo $siteName."\n"; 
+    echo $siteName."\n";
 }
 

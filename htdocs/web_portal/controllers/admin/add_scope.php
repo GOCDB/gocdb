@@ -32,7 +32,7 @@ require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 function add_scope() {
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's to add a scope
         submit();
     } else { // If there is no post data, draw the add scope form
@@ -45,10 +45,10 @@ function add_scope() {
  * @return null
  */
 function draw() {
-    //Check the user has permission to see the page, will throw exception 
+    //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
-      
+
     //show the add service type view
     show_view("admin/add_scope.php", null, "Add Scope");
 }
@@ -63,7 +63,7 @@ function submit() {
 
     //Get the posted service type data
     $values = getScopeDataFromWeb();
-    
+
     //get the user data for the add scope function (so it can check permissions)
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);

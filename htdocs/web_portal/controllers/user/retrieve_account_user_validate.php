@@ -29,10 +29,10 @@ function validate_dn_change() {
     require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
     require_once __DIR__ . '/utils.php';
-    
+
     //Check the portal is not in read only mode, returns exception if it is
     checkPortalIsNotReadOnly();
-    
+
     if(!isset($_REQUEST['c'])){
         show_view('error.php', "a confirmation code must be specified");
     }
@@ -41,7 +41,7 @@ function validate_dn_change() {
     $currentDn = Get_User_Principle();
     if(empty($currentDn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-        die(); 
+        die();
     }
 
     try {

@@ -14,34 +14,34 @@ require_once __DIR__ . '/IPIQuery.php';
 
  /**
  * Return an XML document that encodes Site CertificationStatusLog entities.
- * Optionally provide an associative array of query parameters with values 
- * used to restrict the results. Only known parameters are honoured while 
+ * Optionally provide an associative array of query parameters with values
+ * used to restrict the results. Only known parameters are honoured while
  * unknown produce and error doc. Parmeter array keys include:
  * <pre>
- * 'site', 'startdate', 'enddate' 
+ * 'site', 'startdate', 'enddate'
  * </pre>
- * 
+ *
  * @author James McCarthy
  * @author David Meredith
  */
 class GetCertStatusChanges implements IPIQuery{
-    
+
     protected $query;
     protected $validParams;
     protected $em;
     private $helpers;
     private $allLogs;
-    
+
     /** Constructor takes entity manager that will be used by the
      *  query builder
-     * 
+     *
      * @param EntityManager $em
      */
     public function __construct($em){
         $this->em = $em;
-        $this->helpers=new Helpers();		
+        $this->helpers=new Helpers();
     }
-    
+
     /** Validates parameters against array of pre-defined valid terms
      *  for this PI type
      * @param array $parameters
@@ -52,32 +52,32 @@ class GetCertStatusChanges implements IPIQuery{
         $supportedQueryParams = array (
                 'site',
                 'startdate',
-                'enddate' 
+                'enddate'
         );
-        
+
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
         $this->validParams = $parameters;
     }
-    
+
     /** Creates the query by building on a queryBuilder object as
-     *  required by the supplied parameters 
+     *  required by the supplied parameters
      */
     public function createQuery() {
         $parameters = $this->validParams;
         $binds= array();
         $bc=-1;
-    
+
         $qb = $this->em->createQueryBuilder();
-        
-        //Initialize base query		
+
+        //Initialize base query
         $qb	->select('log','s')
-            ->from('CertificationStatusLog', 'log')		
+            ->from('CertificationStatusLog', 'log')
             ->Join('log.parentSite', 's')
-            ->Join('s.certificationStatus', 'cs')    		
-            ->leftJoin('s.scopes', 'sc')    	
+            ->Join('s.certificationStatus', 'cs')
+            ->leftJoin('s.scopes', 'sc')
             ->Join('s.infrastructure', 'i')
             ->orderBy('log.id', 'ASC');
-        
+
 
         if (isset ( $parameters ['enddate'] )) {
             $endDate = new \DateTime ( $parameters ['enddate'] );
@@ -86,7 +86,7 @@ class GetCertStatusChanges implements IPIQuery{
         }
         $qb->andWhere($qb->expr()->orX($qb->expr()->isNull('?'.++$bc), $qb->expr()->gt('log.addedDate', '?'.$bc)));
         $binds[] = array($bc, $endDate);
-                
+
         if (isset ( $parameters ['startdate'] )) {
             $startDate = new \DateTime ( $parameters ['startdate'] );
         } else {
@@ -94,10 +94,10 @@ class GetCertStatusChanges implements IPIQuery{
         }
         $qb->andWhere($qb->expr()->orX($qb->expr()->isNull('?'.++$bc), $qb->expr()->lt('log.addedDate', '?'.$bc)));
         $binds[] = array($bc, $startDate);
-        
+
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.
-        */	
+        */
         $parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
         //Get the result of the scope builder
         $qb = $parameterBuilder->getQB();
@@ -106,20 +106,20 @@ class GetCertStatusChanges implements IPIQuery{
         foreach((array)$parameterBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-        
-    
+
+
         //Bind all variables
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
-    
+
         $dql = $qb->getDql(); //for testing
-        //echo $dql;   
+        //echo $dql;
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
-        
-        $this->query = $query;	
-        return $this->query; 
-    }	
-    
+
+        $this->query = $query;
+        return $this->query;
+    }
+
     /**
      * Executes the query that has been built and stores the returned data
      * so it can later be used to create XML, Glue2 XML or JSON.
@@ -128,19 +128,19 @@ class GetCertStatusChanges implements IPIQuery{
         $this->allLogs = $this->query->execute();
         return $this->allLogs;
     }
-    
-    /** 
-     * Returns proprietary GocDB rendering of the certification status change data 
+
+    /**
+     * Returns proprietary GocDB rendering of the certification status change data
      * in an XML String
-     *  
+     *
      * @return String
      */
     public function getXML(){
         $helpers = $this->helpers;
-        
+
         $allLogs = $this->allLogs;
-        
-        
+
+
         $xml = new \SimpleXMLElement ( "<results />" );
         foreach ( $allLogs as $log ) {
             $xmlLog = $xml->addChild ( 'result' );
@@ -156,7 +156,7 @@ class GetCertStatusChanges implements IPIQuery{
             $xmlLog->addChild ( 'CHANGED_BY', $log->getAddedBy () );
             $xmlLog->addChild ( 'COMMENT', xssafe($log->getReason()));
         }
-        
+
         $dom_sxe = dom_import_simplexml ( $xml );
         $dom = new \DOMDocument ( '1.0' );
         $dom->encoding = 'UTF-8';
@@ -166,20 +166,20 @@ class GetCertStatusChanges implements IPIQuery{
         $xmlString = $dom->saveXML ();
         return $xmlString;
     }
-    
+
     /** Returns the certification status change data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
-    public function getGlue2XML(){	
+    public function getGlue2XML(){
         throw new LogicException("Not implemented yet");
     }
-    
-    /** Not yet implemented, in future will return the sites 
+
+    /** Not yet implemented, in future will return the sites
      *  data in JSON format
      * @throws LogicException
      */
-    public function getJSON(){		
+    public function getJSON(){
         throw new LogicException("Not implemented yet");
     }
 }

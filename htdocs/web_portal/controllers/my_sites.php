@@ -50,7 +50,7 @@ function my_sites() {
     if (!empty($ngis)) {
         $params['ngis_from_roles'] = $ngis;
     }
-    
+
     $projects = $userServ->getProjectsFromRoles($user);
     if (!empty($projects)) {
         $params['projects_from_roles'] = $projects;

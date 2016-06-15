@@ -24,34 +24,34 @@ require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once '../web_portal/components/Get_User_Principle.php';
 
 /**
- * Controller for a Site role request. 
- * Is called by 'Page_Type=Request_Role' page mapping in index.php front controller. 
+ * Controller for a Site role request.
+ * Is called by 'Page_Type=Request_Role' page mapping in index.php front controller.
  * @global array $_POST only set if the browser has POSTed data
  */
-function request_role() {   
+function request_role() {
     $user = \Factory::getUserService()->getUserByPrinciple(Get_User_Principle());
     if($user == null) {
-        throw new Exception("Unregistered users can't request roles"); 
+        throw new Exception("Unregistered users can't request roles");
     }
-    
+
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
     // If we receive a POST request it's for a new role
-    if(isset($_REQUEST['Role_Name_Value']) && isset($_REQUEST['Object_ID']) ) {     
+    if(isset($_REQUEST['Role_Name_Value']) && isset($_REQUEST['Object_ID']) ) {
         submitRoleRequest($_REQUEST['Role_Name_Value'], $_REQUEST['Object_ID'], $user);
-        
+
     } else if(isset($_REQUEST['id'])){
-       drawViewRequestRole($_REQUEST['id'], $user); 
-    } 
-    else { 
+       drawViewRequestRole($_REQUEST['id'], $user);
+    }
+    else {
         // If there is no post data, draw the request role form
     }
 }
 
 
 /**
- * Show the select role page for the given entityId. 
+ * Show the select role page for the given entityId.
  * @param \User $user Current user
  * @param int $entityId
  */
@@ -59,20 +59,20 @@ function drawViewRequestRole($entityId, \User $user = null){
     if(!is_numeric($entityId)){
         throw new Exception('Invalid entityId');
     }
-    
+
     $ownedEntity = \Factory::getOwnedEntityService()->getOwnedEntityById($entityId);
-    
-    // build model to be passed to view (a parameter map/array)  
-    $params['entityName'] = $ownedEntity->getName(); 
+
+    // build model to be passed to view (a parameter map/array)
+    $params['entityName'] = $ownedEntity->getName();
     $params['entityType'] = \Factory::getOwnedEntityService()->getOwnedEntityDerivedClassName($ownedEntity);
     $params['objectId'] = $entityId;
-    // array ([0] => array(RoleTypeName => ProjectName)) 
+    // array ([0] => array(RoleTypeName => ProjectName))
     $roleTypes = \Factory::getRoleService()->getRoleTypeNamesForOwnedEntity($ownedEntity);
     $params['roles'] = $roleTypes;
-    //print_r($params['roles']); 
-    
+    //print_r($params['roles']);
+
     show_view('political_role/request_role.php', $params);
-    die(); 
+    die();
 }
 
 /**
@@ -87,17 +87,17 @@ function submitRoleRequest($roleName, $entityId, \User $user =null) {
    if(!is_numeric($entityId)){
         throw new Exception('Invalid entityId');
    }
-   
-   // Get the owned entity instance 
+
+   // Get the owned entity instance
    $entity = \Factory::getOwnedEntityService()->getOwnedEntityById($entityId);
-   
-   // Create a new Role linking user, entity and roletype. The addRole 
-   // perfoms role validation and throws exceptios accordingly. 
+
+   // Create a new Role linking user, entity and roletype. The addRole
+   // perfoms role validation and throws exceptios accordingly.
    $newRole = \Factory::getRoleService()->addRole($roleName, $user, $entity);
-  
+
    if(\Factory::getConfigService()->getSendEmails()){
        \Factory::getNotificationService()->roleRequest($entity);
-   } 
-       
-   show_view('political_role/new_request.php');    
+   }
+
+   show_view('political_role/new_request.php');
 }

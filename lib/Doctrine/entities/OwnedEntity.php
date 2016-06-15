@@ -16,20 +16,20 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
- * Defines an 'owned' entity, i.e. one where a user can request a {@see Role} 
+ * Defines an 'owned' entity, i.e. one where a user can request a {@see Role}
  * over an implementing entity.
  * <p>
  * Implementations include {@see Project}, {@see Site}, {@see ServiceGroup} and {@see NGI}.
- * Owning a Role over an OwnedEntity grants certain permissions over that object, 
- * allowing the user to edit/delete attributes for example. 
- *  
- * @author David Meredith <david.meredithh@stfc.ac.uk> 
- * @author John Casson 
- * 
+ * Owning a Role over an OwnedEntity grants certain permissions over that object,
+ * allowing the user to edit/delete attributes for example.
+ *
+ * @author David Meredith <david.meredithh@stfc.ac.uk>
+ * @author John Casson
+ *
  * @Entity  @Table(name="OwnedEntities")
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
- * @DiscriminatorMap({"site" = "Site", "ngi" = "NGI", "project" = "Project", 
+ * @DiscriminatorMap({"site" = "Site", "ngi" = "NGI", "project" = "Project",
  *                      "serviceGroup" = "ServiceGroup"})
  */
 abstract class OwnedEntity {
@@ -37,13 +37,13 @@ abstract class OwnedEntity {
     /** @Id @Column(type="integer") @GeneratedValue **/
     protected $id;
 
-    const TYPE_NGI = 'ngi'; 
-    const TYPE_SITE = 'site'; 
-    const TYPE_SERVICEGROUP = 'servicegroup'; 
-    const TYPE_PROJECT = 'project'; 
-        
-    /** 
-     * @OneToMany(targetEntity="Role", mappedBy="ownedEntity") 
+    const TYPE_NGI = 'ngi';
+    const TYPE_SITE = 'site';
+    const TYPE_SERVICEGROUP = 'servicegroup';
+    const TYPE_PROJECT = 'project';
+
+    /**
+     * @OneToMany(targetEntity="Role", mappedBy="ownedEntity")
      * @OrderBy({"id" = "ASC"})
      */
     protected $roles = null;
@@ -53,8 +53,8 @@ abstract class OwnedEntity {
     }
 
     /**
-     * Get the array of {@see Role}s held by users over the implementing entity.   
-     * @return Doctrine\Common\Collections\ArrayCollection 
+     * Get the array of {@see Role}s held by users over the implementing entity.
+     * @return Doctrine\Common\Collections\ArrayCollection
      */
     public function getRoles() {
         return $this->roles;
@@ -66,24 +66,24 @@ abstract class OwnedEntity {
     public function getId() {
         return $this->id;
     }
-        
+
     /**
-     * Join the given Role to this OwnedEntity. 
+     * Join the given Role to this OwnedEntity.
      * <p>
-     * This method also calls <code>$role->setOwnedEntity($this)</code> which  
-     * establishes the relationship 'on both sides' and so does not need to be 
-     * called (again) by client code. 
+     * This method also calls <code>$role->setOwnedEntity($this)</code> which
+     * establishes the relationship 'on both sides' and so does not need to be
+     * called (again) by client code.
      * @param \Role $role
      */
     public function addRoleDoJoin(\Role $role) {
         $this->roles[] = $role;
         $role->setOwnedEntity($this);
     }
-        
+
 
     /**
-     * Get the entity type as a string.  
-     * The value is same as the discriminator column of the database (case may be different). 
+     * Get the entity type as a string.
+     * The value is same as the discriminator column of the database (case may be different).
      * <p>
      * Returns one of the following depending on the extending class type:
      * <ul>
@@ -92,28 +92,28 @@ abstract class OwnedEntity {
      * <li>OwnedEntity::TYPE_SERVICEGROUP</li>
      * <li>OwnedEntity::TYPE_SITE</li>
      * </ul>
-     * @return string The entity type as a string. 
+     * @return string The entity type as a string.
      */
     abstract public function getType();
 
     /**
-     * Get the entity name. 
-     * @return string The entity name as a string. 
+     * Get the entity name.
+     * @return string The entity name as a string.
      */
-    abstract public function getName(); 
+    abstract public function getName();
 
 
     /**
-     * Get the direct parent OwnedEntities that own this instance. 
-     * @return \Doctrine\Common\Collections\ArrayCollection An array of {@see \OwnedEntity} 
-     * instances or an empty array  
+     * Get the direct parent OwnedEntities that own this instance.
+     * @return \Doctrine\Common\Collections\ArrayCollection An array of {@see \OwnedEntity}
+     * instances or an empty array
      */
-    abstract public function getParentOwnedEntities(); 
+    abstract public function getParentOwnedEntities();
 
     /**
-     * Get the direct child OwnedEntities owned by this instance. 
-     * @return \Doctrine\Common\Collections\ArrayCollection An array of {@see \OwnedEntity} 
-     * instances or an empty array  
+     * Get the direct child OwnedEntities owned by this instance.
+     * @return \Doctrine\Common\Collections\ArrayCollection An array of {@see \OwnedEntity}
+     * instances or an empty array
      */
-    //abstract public function getChildOwnedEntities(); 
+    //abstract public function getChildOwnedEntities();
 }

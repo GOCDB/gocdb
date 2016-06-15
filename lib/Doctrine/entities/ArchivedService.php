@@ -14,7 +14,7 @@
 
 /**
  * Keeps a record of deleted services and some information about the deletion.
- * This is a standalone table that has no relationships, therefore these records 
+ * This is a standalone table that has no relationships, therefore these records
  * will persist even when an {@see Service} is deleted.
  *
  * @author George Ryall
@@ -22,83 +22,83 @@
  * @Entity @Table(name="ArchivedServices")
  */
 class ArchivedService {
-   
+
     /** @Id @Column(type="integer") @GeneratedValue **/
     protected $id;
 
     /*
-     * Note, we define the entity attributes as simple types rather than linking 
-     * to related entities because we need to record a history/log, including 
-     * recordig information on entitites that may be deleted. For example the 
-     * parents site is stored as a string containing the sitres name These record the 
+     * Note, we define the entity attributes as simple types rather than linking
+     * to related entities because we need to record a history/log, including
+     * recordig information on entitites that may be deleted. For example the
+     * parents site is stored as a string containing the sitres name These record the
      * name of that entity on the day the service was delted. Similary, we
-     * record the user's DN rather than linking to the User object as that User 
-     * may be deleted in future.  
+     * record the user's DN rather than linking to the User object as that User
+     * may be deleted in future.
      */
-    
+
     /**
-     * DN of deleting user 
-     * @Column(type="string", nullable=false) 
+     * DN of deleting user
+     * @Column(type="string", nullable=false)
      */
-    protected $deletedBy; 
- 
+    protected $deletedBy;
+
     /* DATETIME NOTE:
      * Doctrine checks whether a date's been updated by doing a byreference comparison.
      * If you just update an existing DateTime object, Doctrine won't persist it!
      * Create a new DateTime object and reference that for it to persist during an update.
      * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
      */
-    
-    /** 
-     * @Column(type="datetime", nullable=false) 
+
+    /**
+     * @Column(type="datetime", nullable=false)
      */
-    protected $deletedDate; 
+    protected $deletedDate;
 
     /**
      * Name of Service  (not unique - only servicetype/hostname will be
-     * @Column(type="string", nullable=false) 
+     * @Column(type="string", nullable=false)
      */
-    protected $hostName; 
-    
+    protected $hostName;
+
     /**
      * service type of service
-     * @Column(type="string", nullable=false) 
+     * @Column(type="string", nullable=false)
      */
-    protected $serviceType; 
-    
+    protected $serviceType;
+
     /**
      * Scopes applied to the service group at the time it was deleted
      * @Column(type="string", nullable=true) */
     protected $scopes = null;
-    
+
     /**
      * Name of parent site when it was deleted.
      * @Column(type="string", nullable=true) */
     protected $parentSite = null;
-    
+
     /**
      * Was service monitored at the time it was deleted
      * @Column(type="boolean", nullable=true) */
     protected $monitored = null;
-    
+
     /**
      * Was the service beta when it was deleted
      * @Column(type="boolean", nullable=true) */
     protected $beta = null;
-    
+
     /**
      * Was the service production status when it was deleted
      * @Column(type="boolean", nullable=true) */
     protected $production = null;
-    
-    
+
+
     /** @Column(type="datetime", nullable=false) **/
-    protected $originalCreationDate; 
+    protected $originalCreationDate;
 
     public function __construct() {
-        $this->deletedDate =  new \DateTime(null, new \DateTimeZone('UTC')); 
+        $this->deletedDate =  new \DateTime(null, new \DateTimeZone('UTC'));
     }
-   
+
     /**
      * @return int The PK of this entity or null if not persisted
      */
@@ -107,15 +107,15 @@ class ArchivedService {
     }
 
     /**
-     * ID/DN of deleting user.  
-     * @return String 
+     * ID/DN of deleting user.
+     * @return String
      */
     public function getDeletedBy() {
         return $this->deletedBy;
     }
 
     /**
-     * The UTC DateTime when the target Service was deleted. 
+     * The UTC DateTime when the target Service was deleted.
      * @return \DateTime
      */
     public function getDeletedDate() {
@@ -123,7 +123,7 @@ class ArchivedService {
     }
 
     /**
-     * Service host name. 
+     * Service host name.
      * @return string
      */
     public function getHostName() {
@@ -131,7 +131,7 @@ class ArchivedService {
     }
 
     /**
-     * Comma separated list of scope names applied to the service at the time it was deleted. 
+     * Comma separated list of scope names applied to the service at the time it was deleted.
      * @return String or null
      */
     public function getScopes() {
@@ -139,39 +139,39 @@ class ArchivedService {
     }
 
     /**
-     * The name of the site that owned this service. 
-     * @return string or null 
+     * The name of the site that owned this service.
+     * @return string or null
      */
     public function getParentSite() {
         return $this->parentSite;
     }
 
     /**
-     * The DateTime when the Service was originally created.  
-     * @return \DateTime 
+     * The DateTime when the Service was originally created.
+     * @return \DateTime
      */
     public function getOriginalCreationDate() {
         return $this->originalCreationDate;
     }
-   
+
     /**
-     * Was this service monitored. 
-     * @return boolean or null 
+     * Was this service monitored.
+     * @return boolean or null
      */
     public function getMonitored() {
         return $this->monitored;
     }
 
     /**
-     * Was this a beta service. 
-     * @return boolean or null 
+     * Was this a beta service.
+     * @return boolean or null
      */
     public function getBeta() {
         return $this->beta;
     }
 
     /**
-     * Was this a production service. 
+     * Was this a production service.
      * @return boolean or null
      */
     public function getProduction() {
@@ -179,15 +179,15 @@ class ArchivedService {
     }
 
     /**
-     * Get the name of the service type. 
-     * @return string 
+     * Get the name of the service type.
+     * @return string
      */
     public function getServiceType() {
         return $this->serviceType;
     }
 
     /**
-     * ID/DN of deleting user. Required. 
+     * ID/DN of deleting user. Required.
      * @param string $deletedBy
      */
     public function setDeletedBy($deletedBy) {
@@ -195,7 +195,7 @@ class ArchivedService {
     }
 
     /**
-     * Host name of service. Required. 
+     * Host name of service. Required.
      * @param string $hostName
      */
     public function setHostName($hostName) {
@@ -204,7 +204,7 @@ class ArchivedService {
 
     /**
      * Comma separated list of scope names which applied to the servcie before
-     * it was deleted. 
+     * it was deleted.
      * @param string $scopes
      */
     public function setScopes($scopes) {
@@ -212,7 +212,7 @@ class ArchivedService {
     }
 
     /**
-     * Name of owning parent site. 
+     * Name of owning parent site.
      * @param string $parentSite
      */
     public function setParentSite($parentSite) {
@@ -220,7 +220,7 @@ class ArchivedService {
     }
 
     /**
-     * Date time when the service was created. Required. 
+     * Date time when the service was created. Required.
      * @param \DateTime $originalCreationDate
      */
     public function setOriginalCreationDate($originalCreationDate) {
@@ -228,7 +228,7 @@ class ArchivedService {
     }
 
     /**
-     * Was this service monitored. 
+     * Was this service monitored.
      * @param boolean $monitored
      */
     public function setMonitored($monitored) {
@@ -236,7 +236,7 @@ class ArchivedService {
     }
 
     /**
-     * Was this service beta. 
+     * Was this service beta.
      * @param boolean $beta
      */
     public function setBeta($beta) {
@@ -244,15 +244,15 @@ class ArchivedService {
     }
 
     /**
-     * Was this service production. 
+     * Was this service production.
      * @param boolean $production
      */
     public function setProduction($production) {
         $this->production = $production;
     }
-   
+
     /**
-     * Service type of service. Required. 
+     * Service type of service. Required.
      * @param string $serviceType
      */
     public function setServiceType($serviceType) {

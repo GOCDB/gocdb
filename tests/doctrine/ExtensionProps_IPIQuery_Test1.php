@@ -18,13 +18,13 @@ require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/Factory.php';
 
 
 /**
- * Creates selected <code>IPIQuery</code> objects that perform queries on 
- * entity objects that own extension properties. Assert that the query objects return 
- * the expected number of entities when querying against known fixture data using 
- * different extension queries. 
+ * Creates selected <code>IPIQuery</code> objects that perform queries on
+ * entity objects that own extension properties. Assert that the query objects return
+ * the expected number of entities when querying against known fixture data using
+ * different extension queries.
  * <p>
- * Covers the following IPIQuery objects: GetSite 
- * 
+ * Covers the following IPIQuery objects: GetSite
+ *
  * @author David Meredith
  */
 class ExtensionProps_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
@@ -32,7 +32,7 @@ class ExtensionProps_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase
     private $em;
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     public static function setUpBeforeClass() {
         parent::setUpBeforeClass();
@@ -50,8 +50,8 @@ class ExtensionProps_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Overridden. Returns the test dataset.  
-     * Defines how the initial state of the database should look before each test is executed. 
+     * Overridden. Returns the test dataset.
+     * Defines how the initial state of the database should look before each test is executed.
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
     protected function getDataSet() {
@@ -61,7 +61,7 @@ class ExtensionProps_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getSetUpOperation() {
         // CLEAN_INSERT is default
@@ -69,14 +69,14 @@ class ExtensionProps_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase
         //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
         //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
         //
-        // Issue a DELETE from <table> which is more portable than a 
-        // TRUNCATE table <table> (some DBs require high privileges for truncate statements 
+        // Issue a DELETE from <table> which is more portable than a
+        // TRUNCATE table <table> (some DBs require high privileges for truncate statements
         // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
         return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getTearDownOperation() {
         // NONE is default
@@ -113,7 +113,7 @@ class ExtensionProps_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase
             //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM " . $tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
-            //echo 'row count: '.$result->getRowCount() ; 
+            //echo 'row count: '.$result->getRowCount() ;
             if ($result->getRowCount() != 0)
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
         }
@@ -121,240 +121,240 @@ class ExtensionProps_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase
 
 
     /**
-     * Use this test to print out how the GocDB query will parenthesise a WHERE 
-     * clause in a DQL query. To run, the name of the test needs to start with 'test'  
+     * Use this test to print out how the GocDB query will parenthesise a WHERE
+     * clause in a DQL query. To run, the name of the test needs to start with 'test'
      */
     public function xtestDemo_PrintQuery() {
         print __METHOD__ . "\n";
-        
+
         $query = new \org\gocdb\services\GetSite($this->em);
-        $params = array('scope' => '', 'scope_match' => 'all', 
-            'extensions' => '(VO=food)(s4p1=v1)OR(VO2=baz)AND(VO2=bling)'); 
+        $params = array('scope' => '', 'scope_match' => 'all',
+            'extensions' => '(VO=food)(s4p1=v1)OR(VO2=baz)AND(VO2=bling)');
             // becomes: (((VO=food)(s4p1=v1))OR(VO2=baz)) AND(VO2=bling)
         $query->validateParameters($params);
         /* @var $dqlQuery \Doctrine\ORM\Query */
         $dqlQuery = $query->createQuery();
-        //print_r($dqlQuery->getDql()); 
+        //print_r($dqlQuery->getDql());
         /*
         http://www.freeformatter.com/sql-formatter.html
-        SELECT s, sc, sp, i, cs, c, n, sgrid, ti 
-        FROM Site s 
-        LEFT JOIN s.siteProperties sp 
-        LEFT JOIN s.scopes sc 
-        LEFT JOIN s.ngi n 
-        LEFT JOIN s.country c 
-        LEFT JOIN s.certificationStatus cs 
-        LEFT JOIN s.infrastructure i 
-        LEFT JOIN s.subGrid sgrid 
-        LEFT JOIN s.tier ti 
+        SELECT s, sc, sp, i, cs, c, n, sgrid, ti
+        FROM Site s
+        LEFT JOIN s.siteProperties sp
+        LEFT JOIN s.scopes sc
+        LEFT JOIN s.ngi n
+        LEFT JOIN s.country c
+        LEFT JOIN s.certificationStatus cs
+        LEFT JOIN s.infrastructure i
+        LEFT JOIN s.subGrid sgrid
+        LEFT JOIN s.tier ti
         WHERE
            (
               (
                  (
-                    s IN( SELECT s0.id FROM Site s0 
-                       INNER JOIN s0.siteProperties sp0 
+                    s IN( SELECT s0.id FROM Site s0
+                       INNER JOIN s0.siteProperties sp0
                        WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1)
-                 ) 
+                 )
                  AND (
-                    s IN( SELECT s1.id FROM Site s1 
-                       INNER JOIN s1.siteProperties sp1 
+                    s IN( SELECT s1.id FROM Site s1
+                       INNER JOIN s1.siteProperties sp1
                        WHERE sp1.keyName = ?2 AND sp1.keyValue = ?3)
                  )
-              ) 
+              )
               OR (
-                 s IN( SELECT s2.id FROM Site s2 
-                    INNER JOIN s2.siteProperties sp2 
+                 s IN( SELECT s2.id FROM Site s2
+                    INNER JOIN s2.siteProperties sp2
                     WHERE sp2.keyName = ?4 AND sp2.keyValue = ?5)
               )
-           ) 
-           AND ( s IN( SELECT s3.id FROM Site s3 
-                 INNER JOIN s3.siteProperties sp3 
-                 WHERE sp3.keyName = ?6 AND sp3.keyValue = ?7)
            )
-         */
-        
-        $query = new \org\gocdb\services\GetSite($this->em);
-        $params = array('scope' => '', 'scope_match' => 'all', 
-            'extensions' =>'(VO=food)(s4p1=v1)OR(VO2=bar)(VO2=baz)');
-           // becomes: ((VO=food)(s4p1=v1))OR(VO2=bar)OR(VO2=baz)  // notice ORs at same level 
-        $query->validateParameters($params);
-        /* @var $dqlQuery \Doctrine\ORM\Query */
-        $dqlQuery = $query->createQuery();
-        //print_r($dqlQuery->getDql()); 
-        /*
-        SELECT s, sc, sp, i, cs, c, n, sgrid, ti 
-        FROM Site s 
-        LEFT JOIN s.siteProperties sp 
-        LEFT JOIN s.scopes sc 
-        LEFT JOIN s.ngi n 
-        LEFT JOIN s.country c 
-        LEFT JOIN s.certificationStatus cs 
-        LEFT JOIN s.infrastructure i 
-        LEFT JOIN s.subGrid sgrid 
-        LEFT JOIN s.tier ti 
-        WHERE
-           (
-              (
-                 s IN( SELECT s0.id FROM Site s0 
-                    INNER JOIN s0.siteProperties sp0 
-                    WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1)
-              ) 
-              AND (
-                 s IN( SELECT s1.id FROM Site s1 
-                    INNER JOIN s1.siteProperties sp1 
-                    WHERE sp1.keyName = ?2 AND sp1.keyValue = ?3)
-              )
-           ) 
-           OR ( s IN( SELECT s2.id FROM Site s2 
-                 INNER JOIN s2.siteProperties sp2 
-                 WHERE sp2.keyName = ?4 AND sp2.keyValue = ?5)
-           ) 
-           OR ( s IN(
-                 SELECT s3.id FROM Site s3 
-                 INNER JOIN s3.siteProperties sp3 
+           AND ( s IN( SELECT s3.id FROM Site s3
+                 INNER JOIN s3.siteProperties sp3
                  WHERE sp3.keyName = ?6 AND sp3.keyValue = ?7)
            )
          */
 
         $query = new \org\gocdb\services\GetSite($this->em);
-        $params = array('scope' => '', 'scope_match' => 'all', 
-            'extensions' =>'(VO=food)OR(s4p1=v1)OR(VO2=bar)'); // notice ORs at same level 
+        $params = array('scope' => '', 'scope_match' => 'all',
+            'extensions' =>'(VO=food)(s4p1=v1)OR(VO2=bar)(VO2=baz)');
+           // becomes: ((VO=food)(s4p1=v1))OR(VO2=bar)OR(VO2=baz)  // notice ORs at same level
+        $query->validateParameters($params);
+        /* @var $dqlQuery \Doctrine\ORM\Query */
+        $dqlQuery = $query->createQuery();
+        //print_r($dqlQuery->getDql());
+        /*
+        SELECT s, sc, sp, i, cs, c, n, sgrid, ti
+        FROM Site s
+        LEFT JOIN s.siteProperties sp
+        LEFT JOIN s.scopes sc
+        LEFT JOIN s.ngi n
+        LEFT JOIN s.country c
+        LEFT JOIN s.certificationStatus cs
+        LEFT JOIN s.infrastructure i
+        LEFT JOIN s.subGrid sgrid
+        LEFT JOIN s.tier ti
+        WHERE
+           (
+              (
+                 s IN( SELECT s0.id FROM Site s0
+                    INNER JOIN s0.siteProperties sp0
+                    WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1)
+              )
+              AND (
+                 s IN( SELECT s1.id FROM Site s1
+                    INNER JOIN s1.siteProperties sp1
+                    WHERE sp1.keyName = ?2 AND sp1.keyValue = ?3)
+              )
+           )
+           OR ( s IN( SELECT s2.id FROM Site s2
+                 INNER JOIN s2.siteProperties sp2
+                 WHERE sp2.keyName = ?4 AND sp2.keyValue = ?5)
+           )
+           OR ( s IN(
+                 SELECT s3.id FROM Site s3
+                 INNER JOIN s3.siteProperties sp3
+                 WHERE sp3.keyName = ?6 AND sp3.keyValue = ?7)
+           )
+         */
+
+        $query = new \org\gocdb\services\GetSite($this->em);
+        $params = array('scope' => '', 'scope_match' => 'all',
+            'extensions' =>'(VO=food)OR(s4p1=v1)OR(VO2=bar)'); // notice ORs at same level
            // becomes:  (VO=food)OR(s4p1=v1)OR(VO2=bar)
         $query->validateParameters($params);
         /* @var $dqlQuery \Doctrine\ORM\Query */
         $dqlQuery = $query->createQuery();
-        //print_r($dqlQuery->getDql()); 
+        //print_r($dqlQuery->getDql());
         /*
-        SELECT s, sc, sp, i, cs, c, n, sgrid, ti 
-        FROM Site s 
-        LEFT JOIN s.siteProperties sp 
-        LEFT JOIN s.scopes sc 
-        LEFT JOIN s.ngi n 
-        LEFT JOIN s.country c 
-        LEFT JOIN s.certificationStatus cs 
-        LEFT JOIN s.infrastructure i 
-        LEFT JOIN s.subGrid sgrid 
-        LEFT JOIN s.tier ti 
+        SELECT s, sc, sp, i, cs, c, n, sgrid, ti
+        FROM Site s
+        LEFT JOIN s.siteProperties sp
+        LEFT JOIN s.scopes sc
+        LEFT JOIN s.ngi n
+        LEFT JOIN s.country c
+        LEFT JOIN s.certificationStatus cs
+        LEFT JOIN s.infrastructure i
+        LEFT JOIN s.subGrid sgrid
+        LEFT JOIN s.tier ti
         WHERE
            (
-              s IN( SELECT s0.id FROM Site s0 
-                 INNER JOIN s0.siteProperties sp0 
+              s IN( SELECT s0.id FROM Site s0
+                 INNER JOIN s0.siteProperties sp0
                  WHERE sp0.keyName = ?0 AND sp0.keyValue  = ?1)
-           ) 
-           OR ( s IN( SELECT s1.id FROM Site s1 
-                 INNER JOIN s1.siteProperties sp1 
+           )
+           OR ( s IN( SELECT s1.id FROM Site s1
+                 INNER JOIN s1.siteProperties sp1
                  WHERE sp1.keyName = ?2 AND sp1.keyValue = ?3)
-           )  
-           OR ( s IN( SELECT s2.id FROM Site s2 
-                 INNER JOIN s2.siteProperties sp2 
+           )
+           OR ( s IN( SELECT s2.id FROM Site s2
+                 INNER JOIN s2.siteProperties sp2
                  WHERE sp2.keyName = ?4 AND sp2.keyValue = ?5)
            )
          */
 
 
         $query = new \org\gocdb\services\GetSite($this->em);
-        $params = array('scope' => '', 'scope_match' => 'all', 
-            'extensions' =>'(VO=food)OR(s4p1=v1)AND(VO2=bar)');    
-           // becomes: ((VO=food)OR(s4p1=v1))AND(VO2=bar)  // notice brackets around OR'd 
+        $params = array('scope' => '', 'scope_match' => 'all',
+            'extensions' =>'(VO=food)OR(s4p1=v1)AND(VO2=bar)');
+           // becomes: ((VO=food)OR(s4p1=v1))AND(VO2=bar)  // notice brackets around OR'd
         $query->validateParameters($params);
         /* @var $dqlQuery \Doctrine\ORM\Query */
         $dqlQuery = $query->createQuery();
-        //print_r($dqlQuery->getDql()); 
+        //print_r($dqlQuery->getDql());
         /*
-        SELECT s, sc, sp, i, cs, c, n, sgrid, ti 
-        FROM Site s 
-        LEFT JOIN s.siteProperties  sp 
-        LEFT JOIN s.scopes sc 
-        LEFT JOIN s.ngi n 
-        LEFT JOIN s.country c 
-        LEFT JOIN s.certificationStatus cs 
-        LEFT JOIN s.infrastructure i 
-        LEFT JOIN s.subGrid sgrid 
-        LEFT  JOIN s.tier ti 
+        SELECT s, sc, sp, i, cs, c, n, sgrid, ti
+        FROM Site s
+        LEFT JOIN s.siteProperties  sp
+        LEFT JOIN s.scopes sc
+        LEFT JOIN s.ngi n
+        LEFT JOIN s.country c
+        LEFT JOIN s.certificationStatus cs
+        LEFT JOIN s.infrastructure i
+        LEFT JOIN s.subGrid sgrid
+        LEFT  JOIN s.tier ti
         WHERE
            (
               (
-                 s IN( SELECT s0.id FROM Site s0 
-                    INNER JOIN s0.siteProperties sp0 
+                 s IN( SELECT s0.id FROM Site s0
+                    INNER JOIN s0.siteProperties sp0
                     WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1)
-              ) 
-              OR ( s IN( SELECT s1.id FROM Site s1 
-                    INNER JOIN s1.siteProperties sp1 
+              )
+              OR ( s IN( SELECT s1.id FROM Site s1
+                    INNER JOIN s1.siteProperties sp1
                     WHERE sp1.keyName = ?2 AND sp1.keyValue = ?3)
               )
-           ) 
+           )
            AND (
-              s IN( SELECT s2.id FROM Site s2 
-                 INNER JOIN s2.siteProperties sp2 
+              s IN( SELECT s2.id FROM Site s2
+                 INNER JOIN s2.siteProperties sp2
                  WHERE sp2.keyName = ?4 AND sp2.keyValue = ?5)
            )
          */
     }
-    
+
     /**
-     * Run queries against Sites with extension properties. 
+     * Run queries against Sites with extension properties.
      */
     public function testSiteExtensions() {
         print __METHOD__ . "\n";
         include __DIR__ . '/resources/sampleFixtureData3.php';
 
         $query = new \org\gocdb\services\GetSite($this->em);
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => 'NOT(key=val)'), 5); 
-         
-        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(s1p1=v1)'), 1); 
-        $this->assertEquals('Site1', $sites[0]->getShortName());  
-        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(s1p1=)'), 1); 
-        $this->assertEquals('Site1', $sites[0]->getShortName());  
-        
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(s2p1=)(s2p2=)'), 1); 
-        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(s2p1=v1)(s2p2=v2)'), 1); 
-        $this->assertEquals('Site2', $sites[0]->getShortName());  
-        
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=)'), 2); 
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=foo)'), 2); 
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=)(VO2=)'), 2); 
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=foo)(VO2=)'), 2); 
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO2=)NOT(VO=foo)'), 0); 
-        
-        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=)(VO2=)NOT(VO2=baz)'), 1); 
-        $this->assertEquals('Site3', $sites[0]->getShortName());  
-        
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=)(VO2=)NOT(VO2=)(VO=)'), 0); 
-        
-        
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => 'OR(VO2=bar)(VO2=baz)'), 2); 
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)OR(VO2=bar)(VO2=baz)'), 2); 
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)OR(VO2=bar)OR(VO2=baz)'), 2); 
-        
-        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)OR(VO2=bar)OR(VO2=baz)AND(s4p1=v1)'), 1); 
-        $this->assertEquals('Site4', $sites[0]->getShortName());  
-        
-        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)(s4p1=v1)OR(VO2=bar)(VO2=baz)'), 2); 
-        $this->assertEquals('Site3', $sites[0]->getShortName()); 
-        $this->assertEquals('Site4', $sites[1]->getShortName()); 
-        
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)(s4p1=v1)OR(VO2=baz)AND(VO2=bling)'), 0); 
-        
-        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO2=bing)AND(VO2=baz)AND(VO=bar)OR(s1p1=v1)'), 2); 
-        $this->assertEquals('Site1', $sites[0]->getShortName()); 
-        $this->assertEquals('Site4', $sites[1]->getShortName()); 
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => 'NOT(key=val)'), 5);
+
+        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(s1p1=v1)'), 1);
+        $this->assertEquals('Site1', $sites[0]->getShortName());
+        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(s1p1=)'), 1);
+        $this->assertEquals('Site1', $sites[0]->getShortName());
+
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(s2p1=)(s2p2=)'), 1);
+        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(s2p1=v1)(s2p2=v2)'), 1);
+        $this->assertEquals('Site2', $sites[0]->getShortName());
+
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=)'), 2);
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=foo)'), 2);
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=)(VO2=)'), 2);
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=foo)(VO2=)'), 2);
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO2=)NOT(VO=foo)'), 0);
+
+        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=)(VO2=)NOT(VO2=baz)'), 1);
+        $this->assertEquals('Site3', $sites[0]->getShortName());
+
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=)(VO2=)NOT(VO2=)(VO=)'), 0);
+
+
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => 'OR(VO2=bar)(VO2=baz)'), 2);
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)OR(VO2=bar)(VO2=baz)'), 2);
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)OR(VO2=bar)OR(VO2=baz)'), 2);
+
+        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)OR(VO2=bar)OR(VO2=baz)AND(s4p1=v1)'), 1);
+        $this->assertEquals('Site4', $sites[0]->getShortName());
+
+        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)(s4p1=v1)OR(VO2=bar)(VO2=baz)'), 2);
+        $this->assertEquals('Site3', $sites[0]->getShortName());
+        $this->assertEquals('Site4', $sites[1]->getShortName());
+
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO=food)(s4p1=v1)OR(VO2=baz)AND(VO2=bling)'), 0);
+
+        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO2=bing)AND(VO2=baz)AND(VO=bar)OR(s1p1=v1)'), 2);
+        $this->assertEquals('Site1', $sites[0]->getShortName());
+        $this->assertEquals('Site4', $sites[1]->getShortName());
 
         /*$params = array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO2=bing)AND(VO2=baz)AND(VO=bar)OR(s1p1=v1)');
         $query->validateParameters($params);
         $dql = $query->createQuery();
-        print $dql->getDql(); 
+        print $dql->getDql();
         $results = $query->executeQuery();
         print count($results);
         $this->assertTrue(2 == count($results));
         foreach ( $results as $site ) {
-            print_r('site: ['.$site->getShortName().']'); 
+            print_r('site: ['.$site->getShortName().']');
         }
         */
-        
-        // these property values are only supported by ExtensionsParser2  
-        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO2=\(bing\))AND(VO2=baz&)'), 0); 
-        //$this->assertEquals('Site1', $sites[0]->getShortName()); 
-        
+
+        // these property values are only supported by ExtensionsParser2
+        $sites = $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all', 'extensions' => '(VO2=\(bing\))AND(VO2=baz&)'), 0);
+        //$this->assertEquals('Site1', $sites[0]->getShortName());
+
     }
 
 
@@ -364,7 +364,7 @@ class ExtensionProps_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase
         $query->createQuery();
         $results = $query->executeQuery();
         $this->assertTrue($expectedCount == count($results));
-        return $results; 
+        return $results;
     }
 
 }

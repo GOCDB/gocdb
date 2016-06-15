@@ -32,42 +32,42 @@ function delete() {
 
     //get the site
     $site = \Factory::getSiteService()->getSite($_REQUEST['id']);
-    
+
     if($_POST or (sizeof($site->getServices()) == 0)) {
         submit($site, $user);
     }
     else {
         draw($site);
     }
-    
+
 }
 
 function draw(\Site $site) {
      //Only administrators can delete sites, double check user is an administrator
      checkUserIsAdmin();
-     
+
      $params['Site'] = $site;
      $params['Services'] = $site->getServices();
-     
+
      show_view('/site/delete_site.php', $params);
-     
+
 }
 
 function submit(\Site $site, \User $user = null) {
     //Only administrators can delete sites, double check user is an administrator
      checkUserIsAdmin();
-     
+
      //save name to display later
      $params['Name'] = $site->getName();
-     
+
      //remove Site
      try {
        \Factory::getSiteService()->deleteSite($site, $user);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
-    }   
-    
+    }
+
     show_view('/site/deleted_site.php', $params);
 
 }

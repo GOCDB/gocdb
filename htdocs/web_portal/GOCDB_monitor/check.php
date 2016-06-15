@@ -7,7 +7,7 @@ $res[2] = test_url(PI_URL);
 $res[3] = test_url(SERVER_BASE_URL);
 
 
-$counts=array(	"ok" => 0, 
+$counts=array(	"ok" => 0,
                 "warn" => 0,
                 "error" => 0
             );
@@ -25,7 +25,7 @@ else if ($counts["warn"] != 0) {
     exit(0); // we don't want notifications if there is just a warning
 }
 else {
-    echo("All GOCDB tests are looking good\n"); 
+    echo("All GOCDB tests are looking good\n");
     exit(0);
 }
 

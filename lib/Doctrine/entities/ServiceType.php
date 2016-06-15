@@ -16,12 +16,12 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * A lookup record for different service types. 
- * A single serviceType can be joined to many different {@see Service} instances. 
- * 
+ * A lookup record for different service types.
+ * A single serviceType can be joined to many different {@see Service} instances.
+ *
  * @author John Casson
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * 
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ *
  * @Entity @Table(name="ServiceTypes")
  */
 class ServiceType {
@@ -41,7 +41,7 @@ class ServiceType {
     public function __construct() {
         $this->services = new ArrayCollection();
     }
-    
+
     /**
      * @return int The PK of this entity or null if not persisted
      */
@@ -50,7 +50,7 @@ class ServiceType {
     }
 
     /**
-     * Get the unique name of this service type. 
+     * Get the unique name of this service type.
      * @return string
      */
     public function getName() {
@@ -58,7 +58,7 @@ class ServiceType {
     }
 
     /**
-     * Get the human readable description of this service type.  
+     * Get the human readable description of this service type.
      * @return string or null
      */
     public function getDescription() {
@@ -66,7 +66,7 @@ class ServiceType {
     }
 
     /**
-     * Set the unique name of this service type. Required. 
+     * Set the unique name of this service type. Required.
      * @param string $name
      */
     public function setName($name) {
@@ -74,7 +74,7 @@ class ServiceType {
     }
 
     /**
-     * Set the human readable description of this service type. 
+     * Set the human readable description of this service type.
      * @param string $description
      */
     public function setDescription($description) {
@@ -82,7 +82,7 @@ class ServiceType {
     }
 
     /**
-     * Get all the {@see Service}s that are linked to this service type. 
+     * Get all the {@see Service}s that are linked to this service type.
      * @return ArrayCollection
      */
     public function getServices() {
@@ -90,9 +90,9 @@ class ServiceType {
     }
 
     /**
-     * Join the given Service to this ServiceType. 
-     * Note, this method calls the <code>$service->setServiceType($this);</code> 
-     * to establish the join on both sides of the relationship. 
+     * Join the given Service to this ServiceType.
+     * Note, this method calls the <code>$service->setServiceType($this);</code>
+     * to establish the join on both sides of the relationship.
      * @param \Service $service
      */
     public function addService($service) {
@@ -101,7 +101,7 @@ class ServiceType {
     }
 
     /**
-     * Gets the name of this service type. 
+     * Gets the name of this service type.
      * @return string
      */
     public function __toString() {

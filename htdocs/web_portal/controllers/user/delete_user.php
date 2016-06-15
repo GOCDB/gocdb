@@ -27,7 +27,7 @@ function delete() {
     require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
     require_once __DIR__ . '/utils.php';
-    
+
     //Check the portal is not in read only mode, returns exception if it is
     checkPortalIsNotReadOnly();
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){

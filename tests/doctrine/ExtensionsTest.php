@@ -13,8 +13,8 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 
 /**
  * A template that includes all the setup and tear down functions for writting
- * a PHPUnit test to test doctrine.  
- * 
+ * a PHPUnit test to test doctrine.
+ *
  * @author James McCarthy
  */
 class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
@@ -22,7 +22,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     private $em;
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     public static function setUpBeforeClass() {
     parent::setUpBeforeClass();
@@ -40,8 +40,8 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * Overridden. Returns the test dataset.  
-     * Defines how the initial state of the database should look before each test is executed. 
+     * Overridden. Returns the test dataset.
+     * Defines how the initial state of the database should look before each test is executed.
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
     protected function getDataSet() {
@@ -49,7 +49,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getSetUpOperation() {
     // CLEAN_INSERT is default
@@ -57,14 +57,14 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
     //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
     //
-        // Issue a DELETE from <table> which is more portable than a 
-    // TRUNCATE table <table> (some DBs require high privileges for truncate statements 
+        // Issue a DELETE from <table> which is more portable than a
+    // TRUNCATE table <table> (some DBs require high privileges for truncate statements
     // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
     return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getTearDownOperation() {
     // NONE is default
@@ -81,7 +81,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * @todo Still need to setup connection to different databases. 
+     * @todo Still need to setup connection to different databases.
      * @return EntityManager
      */
     private function createEntityManager() {
@@ -102,20 +102,20 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
         //print $tableName->getName() . "\n";
         $sql = "SELECT * FROM " . $tableName->getName();
         $result = $con->createQueryTable('results_table', $sql);
-        //echo 'row count: '.$result->getRowCount() ; 
+        //echo 'row count: '.$result->getRowCount() ;
         if ($result->getRowCount() != 0)
         throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
     }
     }
 
     /**
-     * An example test showing the creation of a site and properties and that 
+     * An example test showing the creation of a site and properties and that
      * all data is removed on deletion of a site or property
      */
     public function testSitePropertyDeletions() {
     print __METHOD__ . "\n";
 
-    //Create a site    	
+    //Create a site
     $site = TestUtil::createSampleSite("TestSite");
     //Create site property
     $prop1 = TestUtil::createSampleSiteProperty("VO", "Atlas");
@@ -184,23 +184,23 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $siteService->deleteSite($site, $adminUser, false);
     $this->em->flush();
 
-    //Check site is gone		
+    //Check site is gone
     $result = $con->createQueryTable('results', "SELECT * FROM Sites WHERE ID = '$siteId'");
     $this->assertEquals(0, $result->getRowCount());
 
-    //Check properties are gone		
+    //Check properties are gone
     $result = $con->createQueryTable('results', "SELECT * FROM site_properties WHERE PARENTSITE_ID = '$siteId'");
     $this->assertEquals(0, $result->getRowCount());
     }
 
     /**
-     * An example test showing the creation of a service and properties and that 
+     * An example test showing the creation of a service and properties and that
      * all data is removed on deletion of a service or property
      */
     public function testServicePropertyDeletions() {
     print __METHOD__ . "\n";
 
-    //Create a service    	
+    //Create a service
     $service = TestUtil::createSampleService("TestService");
 
     //Create a NGI
@@ -208,7 +208,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     //Create a site
     $site = TestUtil::createSampleSite("TestSite");
 
-    //Join service to site, and site to NGI. 		
+    //Join service to site, and site to NGI.
     $ngi->addSiteDoJoin($site);
 
     $site->addServiceDoJoin($service);
@@ -279,23 +279,23 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $serviceService->deleteService($service, $adminUser, true);
     $this->em->flush();
 
-    //Check service is gone		
+    //Check service is gone
     $result = $con->createQueryTable('results', "SELECT * FROM Services WHERE ID = '$servId'");
     $this->assertEquals(0, $result->getRowCount());
 
-    //Check properties are gone		
+    //Check properties are gone
     $result = $con->createQueryTable('results', "SELECT * FROM service_properties WHERE PARENTSERVICE_ID = '$servId'");
     $this->assertEquals(0, $result->getRowCount());
     }
 
     /**
-     * An example test showing the creation of a service group and properties 
+     * An example test showing the creation of a service group and properties
      * and that all data is removed on deletion of a service group or property
      */
     public function testServiceGroupPropertyDeletions() {
     print __METHOD__ . "\n";
 
-    //Create a service    	
+    //Create a service
     $service = TestUtil::createSampleService("TestService");
 
     //Create a NGI
@@ -306,7 +306,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     //Create a service group
     $sg = TestUtil::createSampleServiceGroup("TestServiceGroup");
 
-    //Join service to site, and site to NGI. 		
+    //Join service to site, and site to NGI.
     $ngi->addSiteDoJoin($site);
     $site->addServiceDoJoin($service);
 
@@ -352,7 +352,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $roleService = new org\gocdb\services\Role();
     $roleService->setEntityManager($this->em);
     $authService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService/* , $roleService */);
-    $authService->setEntityManager($this->em); 
+    $authService->setEntityManager($this->em);
     $sgService = new org\gocdb\services\ServiceGroup($authService);
     $sgService->setEntityManager($this->em);
     $sgService->setRoleActionAuthorisationService($authService);
@@ -384,17 +384,17 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $sgService->deleteServiceGroup($sg, $adminUser, true);
     $this->em->flush();
 
-    //Check service group is gone		
+    //Check service group is gone
     $result = $con->createQueryTable('results', "SELECT * FROM ServiceGroups WHERE ID = '$sgId'");
     $this->assertEquals(0, $result->getRowCount());
 
-    //Check properties are gone		
+    //Check properties are gone
     $result = $con->createQueryTable('results', "SELECT * FROM servicegroup_properties WHERE PARENTSERVICEGROUP_ID = '$sgId'");
     $this->assertEquals(0, $result->getRowCount());
     }
 
     /**
-     * Show the creation of an endpoint and properties and that 
+     * Show the creation of an endpoint and properties and that
      * all data is removed on deletion of an endpoint or property
      */
     public function testEndpointPropertyDeletions() {
@@ -405,7 +405,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $site = TestUtil::createSampleSite("TestSite");
     $endpoint = TestUtil::createSampleEndpointLocation();
 
-    //Join service to site, and site to NGI. 		
+    //Join service to site, and site to NGI.
     $ngi->addSiteDoJoin($site);
     $site->addServiceDoJoin($service);
     $service->addEndpointLocationDoJoin($endpoint);
@@ -475,16 +475,16 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     //Assert that only 2 service properties exist in the database for this service
     $this->assertEquals(2, $result->getRowCount());
 
-    //Now delete the endpont and check that it cascade deletes 
+    //Now delete the endpont and check that it cascade deletes
     //the endpoint's associated properties
     $serviceService->deleteEndpoint($endpoint, $adminUser);
     $this->em->flush();
 
-    //Check endpoint is gone		
+    //Check endpoint is gone
     $result = $con->createQueryTable('results', "SELECT * FROM EndpointLocations WHERE ID = '$endpointId'");
     $this->assertEquals(0, $result->getRowCount());
 
-    //Check properties are gone		
+    //Check properties are gone
     $result = $con->createQueryTable('results', "SELECT * FROM endpoint_properties WHERE PARENTENDPOINT_ID = '$endpointId'");
     $this->assertEquals(0, $result->getRowCount());
     }

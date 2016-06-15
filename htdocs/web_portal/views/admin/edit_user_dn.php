@@ -2,7 +2,7 @@
     <h1>Update Certificate DN</h1>
     <br />
     <br />
-    The current certificate DN for 
+    The current certificate DN for
     <b><?php echo xssafe($params['Title']) ." ". xssafe($params['Forename']) ." ". xssafe($params['Surname']) ?></b>
     is:
     <br />

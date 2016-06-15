@@ -57,7 +57,7 @@ $extensionProperties = $site->getSiteProperties();
             <?php if ($params['authenticated']) { ?>
                 <a href="mailto:<?php xecho($site->getEmail()) ?>">
                 <?php xecho($site->getEmail()) ?>
-                </a> 
+                </a>
             <?php } else echo('PROTECTED - Auth Required'); ?>
             </td>
         </tr>
@@ -143,7 +143,7 @@ $extensionProperties = $site->getSiteProperties();
                 <?php if (!$portalIsReadOnly): ?>
                 <a href="index.php?Page_Type=Edit_Certification_Status&id=<?php echo($site->getId()) ?>">Change</a>
                 <?php endif; ?>
-            <?php } else echo('PROTECTED - Auth Required'); ?>    
+            <?php } else echo('PROTECTED - Auth Required'); ?>
                     </td>
                 </tr>
 
@@ -162,9 +162,9 @@ $extensionProperties = $site->getSiteProperties();
                 $scopeString .= ", ";
                 }
             }
-            ?> 
+            ?>
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal" 
+                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal"
                            title="Note, Scope(x) indicates the parent NGI does not share this scope">
                             Scope Tags
                         </a>
@@ -203,7 +203,7 @@ $extensionProperties = $site->getSiteProperties();
                 xecho($site->getGiisUrl());
             } else
                 echo('PROTECTED - Auth Required');
-            ?> 
+            ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
@@ -227,7 +227,7 @@ $extensionProperties = $site->getSiteProperties();
                 echo('PROTECTED - Auth Required');
             ?>
                     </td>
-                </tr>                 
+                </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Domain</td>
                     <td class="site_table">
@@ -323,7 +323,7 @@ $extensionProperties = $site->getSiteProperties();
         Services (Note, Service scope values marked with (x) indicate the Site does not share that scope)
     </span>
         <img src="<?php echo \GocContextPath::getPath() ?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-    
+
         <table id="servicesTable" class="table table-striped table-condensed tablesorter">
         <thead>
             <tr>
@@ -400,7 +400,7 @@ $extensionProperties = $site->getSiteProperties();
                 $scopeString .= ", ";
             }
             }
-            ?>   
+            ?>
             <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
             </td>
             </tr>
@@ -411,14 +411,14 @@ $extensionProperties = $site->getSiteProperties();
         </tbody>
         </table>
 
-    
+
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
         <!-- Add new Service Link -->
         <a href="index.php?Page_Type=Add_Service&siteId=<?php echo($site->getId()); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-            Add Service 
+            Add Service
             </span>
         </a>
     <?php endif; ?>
@@ -429,7 +429,7 @@ $extensionProperties = $site->getSiteProperties();
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
         <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-    
+
         <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
         <thead>
             <tr>
@@ -493,7 +493,7 @@ $extensionProperties = $site->getSiteProperties();
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes Affecting <?php xecho($site->getShortName()) ?>'s SEs </span>
         <a href="index.php?Page_Type=Site_Downtimes&id=<?php echo($site->getId()); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
-    
+
         <table id="siteDowntimesTable" class="table table-striped table-condensed tablesorter">
         <thead>
         <tr>
@@ -521,7 +521,7 @@ $extensionProperties = $site->getSiteProperties();
         }
         ?>
         </table>
-    
+
         <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
         <!-- Add new Downtime Link -->
@@ -544,38 +544,38 @@ $extensionProperties = $site->getSiteProperties();
 </div>
 
 <script>
-   $(document).ready(function() 
-    { 
-    $("#siteDowntimesTable").tablesorter(); 
-    $("#siteUsersTable").tablesorter(); 
-    
-       $("#servicesTable").tablesorter( { 
-        // pass the headers argument and assing a object 
-        headers: { 
-        // assign the third column (we start counting zero) 
-        2: { 
-            sorter: false 
-        }, 
-        3: { 
-            sorter: false 
-        } 
-        } 
-    }); 
+   $(document).ready(function()
+    {
+    $("#siteDowntimesTable").tablesorter();
+    $("#siteUsersTable").tablesorter();
 
-    // sort on first and second table cols only 
-        $("#siteExtensionPropsTable").tablesorter({ 
-        // pass the headers argument and assing a object 
-        headers: { 
-            // assign the third column (we start counting zero) 
-            2: { 
-                // disable it by setting the property sorter to false 
-                sorter: false 
-            }, 
-            3: { 
-                // disable it by setting the property sorter to false 
-                sorter: false 
-            } 
-        } 
+       $("#servicesTable").tablesorter( {
+        // pass the headers argument and assing a object
+        headers: {
+        // assign the third column (we start counting zero)
+        2: {
+            sorter: false
+        },
+        3: {
+            sorter: false
+        }
+        }
+    });
+
+    // sort on first and second table cols only
+        $("#siteExtensionPropsTable").tablesorter({
+        // pass the headers argument and assing a object
+        headers: {
+            // assign the third column (we start counting zero)
+            2: {
+                // disable it by setting the property sorter to false
+                sorter: false
+            },
+            3: {
+                // disable it by setting the property sorter to false
+                sorter: false
+            }
+        }
     });
 
     //register handler for the select/deselect all properties checkbox
@@ -583,8 +583,8 @@ $extensionProperties = $site->getSiteProperties();
         $(".propCheckBox").prop('checked', $(this).prop("checked"));
     });
 
-    } 
+    }
 );
 
 
-</script>  
+</script>

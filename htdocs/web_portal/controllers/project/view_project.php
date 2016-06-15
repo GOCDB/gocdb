@@ -24,48 +24,48 @@ function show_project() {
     require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
-   
+
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     }
-    $projId = $_GET['id']; 
-    
+    $projId = $_GET['id'];
+
     $serv=\Factory::getProjectService();
     $project = $serv->getProject($projId);
-    $allRoles = $project->getRoles(); 
-    $roles = array(); 
+    $allRoles = $project->getRoles();
+    $roles = array();
     foreach ($allRoles as $role){
-        if($role->getStatus() == \RoleStatus::GRANTED && 
+        if($role->getStatus() == \RoleStatus::GRANTED &&
                 $role->getRoleType()->getName() != \RoleTypeName::CIC_STAFF){
-            $roles[] = $role; 
+            $roles[] = $role;
         }
     }
-    
+
     //get user for case that portal is read only and user is admin, so they can still see edit links
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    $params['ShowEdit'] = false;  
+    $params['ShowEdit'] = false;
     if (\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $project, $user)->getGrantAction())  {
         $params['ShowEdit'] = true;
     }
 //    if(count($serv->authorize Action(\Action::EDIT_OBJECT, $project, $user))>=1){
-//       $params['ShowEdit'] = true;  
+//       $params['ShowEdit'] = true;
 //    }
-    
-    $params['authenticated'] = false; 
+
+    $params['authenticated'] = false;
     if($user != null){
-        $params['authenticated'] = true; 
+        $params['authenticated'] = true;
     }
 
-    // Add RoleActionRecords to params 
-    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($project->getId(), 'project'); 
-    
+    // Add RoleActionRecords to params
+    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($project->getId(), 'project');
+
     $params['Name'] = $project->getName();
     $params['Description'] = $project->getDescription();
     $params['ID']=$project->getId();
     $params['NGIs'] = $project->getNgis();
     $params['Sites']= $serv->getSites($project);
-    $params['Roles'] =$roles;    
+    $params['Roles'] =$roles;
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
     show_view('project/view_project.php', $params, $params['Name']);
 }

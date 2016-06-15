@@ -12,17 +12,17 @@ class AbstractDAO {
     }
 
     /**
-     * Set the EntityManager instance used by all DAO. 
+     * Set the EntityManager instance used by all DAO.
      * @param \Doctrine\ORM\EntityManager $em
      */
     public function setEntityManager(\Doctrine\ORM\EntityManager $em){
-        $this->em = $em;  
+        $this->em = $em;
     }
-    
+
     /**
-     * @return \Doctrine\ORM\EntityManager 
+     * @return \Doctrine\ORM\EntityManager
      */
     public function getEntityManager(){
-        return $this->em; 
+        return $this->em;
     }
 }

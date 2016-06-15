@@ -46,7 +46,7 @@ $siteName = $service->getParentSite()->getName();
         <span class="input_name">
             Host IP
             <span class="input_syntax" >
-                a.b.c.d 
+                a.b.c.d
             </span>
         </span>
         <input class="input_input_text" type="text" name="HOST_IP" value="<?php xecho($service->getIpAddress()) ?>" />
@@ -127,18 +127,18 @@ $siteName = $service->getParentSite()->getName();
         <br>
 
         <!-- Scope Tags-->
-        <?php 
-        $parentObjectTypeLabel = 'Site'; 
+        <?php
+        $parentObjectTypeLabel = 'Site';
         require_once __DIR__ . '/../fragments/editScopesFragment.php';
         ?>
 
         <br>
-        
+
         <div class="alert alert-warning" role="alert">
             Note, rather than setting scope tags individually for each service, you can update
-            the scopes of every service when editing the parent Site 
-            (options such as 'Inherit Site scopes' and 'Override Service scopes with Site scopes' 
-            are provided for your convenience) 
+            the scopes of every service when editing the parent Site
+            (options such as 'Inherit Site scopes' and 'Override Service scopes with Site scopes'
+            are provided for your convenience)
         </div>
 
         <input class="input_input_hidden" type="hidden" value="<?php echo $service->getId() ?>" name="ID">
@@ -152,11 +152,11 @@ $siteName = $service->getParentSite()->getName();
 
     $(document).ready(function () {
         var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
-        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
+        ScopeUtil.addScopeCheckBoxes(scopeJSON,
         '#reservedScopeCheckBoxDIV',
-        '#reservedOptionalScopeCheckBoxDIV', 
+        '#reservedOptionalScopeCheckBoxDIV',
         '#reservedOptionalInhertiableScopeCheckBoxDIV',
-        '#optionalScopeCheckBoxDIV', 
+        '#optionalScopeCheckBoxDIV',
         true);
     });
-</script>  
+</script>

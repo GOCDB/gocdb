@@ -5,7 +5,7 @@ namespace org\gocdb\services;
 /* ______________________________________________________
  * ======================================================
  * File: index.php
- * Author: John Casson, David Meredith 
+ * Author: John Casson, David Meredith
  * Description: Entry point for the programmatic interface
  *
  * License information
@@ -31,21 +31,21 @@ require_once __DIR__ . '/../web_portal/components/Get_User_Principle.php';
 #foreach ($files as $file) {
 #        require_once($file);
 #}
-// The default is 30secs, but some queries can take longer so we may need to 
-// up the limit. This should only be necessary for certain PI queries such as 
-// get_downtime and should not be used in the GUI/portal scripts. 
-set_time_limit(60); 
-// Set the timezone to UTC for rendering all times/dates in PI.  
-// The date-times stored in the DB are in UTC, however, we still need to 
-// set the TZ to utc when re-readig those date-times for subsequent 
-// getTimestamp() calls; without setting the TZ to UTC, the calculated timestamp 
-// value will be according to the server's default timezone (e.g. GMT). 
+// The default is 30secs, but some queries can take longer so we may need to
+// up the limit. This should only be necessary for certain PI queries such as
+// get_downtime and should not be used in the GUI/portal scripts.
+set_time_limit(60);
+// Set the timezone to UTC for rendering all times/dates in PI.
+// The date-times stored in the DB are in UTC, however, we still need to
+// set the TZ to utc when re-readig those date-times for subsequent
+// getTimestamp() calls; without setting the TZ to UTC, the calculated timestamp
+// value will be according to the server's default timezone (e.g. GMT).
 date_default_timezone_set("UTC");
 
 /**
- * Safely escape and return the data string (xss mitigation function). 
- * The string is esacped using htmlspecialchars.  
- * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet  
+ * Safely escape and return the data string (xss mitigation function).
+ * The string is esacped using htmlspecialchars.
+ * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
  * @param string $data to encode
  * @param string $encoding
  * @return string
@@ -56,8 +56,8 @@ function xssafe($data, $encoding = 'UTF-8') {
 }
 
 /**
- * Safely escape then echo the given string (xss mitigation function).  
- * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet  
+ * Safely escape then echo the given string (xss mitigation function).
+ * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
  * @param string $data to encode
  */
 function xecho($data) {
@@ -73,18 +73,18 @@ class PIRequest {
     private $output = null;
     private $params = array();
     private $dn = null;
-    private $baseUrl; 
-    
-    // params used to set the default behaviour of all paging queries, 
-    // these vals can be overidden per query if needed. 
-    // defaultPaging = true means that even if the 'page' URL param is 
-    // not specified, then the query will be paged by default (true is 
-    // the preference for large/production datasets). 
-    private $defaultPageSize = 500; 
+    private $baseUrl;
+
+    // params used to set the default behaviour of all paging queries,
+    // these vals can be overidden per query if needed.
+    // defaultPaging = true means that even if the 'page' URL param is
+    // not specified, then the query will be paged by default (true is
+    // the preference for large/production datasets).
+    private $defaultPageSize = 500;
     private $defaultPaging = TRUE; //FALSE;
-    
+
     public function __construct(){
-        // returns the base portal URL as defined in conf file 
+        // returns the base portal URL as defined in conf file
         $this->baseUrl = \Factory::getConfigService()->GetPortalURL();
     }
 
@@ -94,7 +94,7 @@ class PIRequest {
         $this->parseGET();
         $xml = $this->getXml();
         // don't do search/replace on large XML docs => mem-hungry/expensive!
-        //$xml = str_replace("#GOCDB_BASE_PORTAL_URL#", $this->portal_url, $xml); 
+        //$xml = str_replace("#GOCDB_BASE_PORTAL_URL#", $this->portal_url, $xml);
         echo($xml);
         //echo('<test>val</test>');
     }
@@ -195,8 +195,8 @@ class PIRequest {
                     require_once($directory . 'GetService.php');
                     $getSE = new GetService($em, $this->baseUrl);
                     if($getSE instanceof IPIQueryPageable){
-                        $getSE->setDefaultPaging($this->defaultPaging); 
-                        $getSE->setPageSize($this->defaultPageSize); 
+                        $getSE->setDefaultPaging($this->defaultPaging);
+                        $getSE->setPageSize($this->defaultPageSize);
                     }
                     $getSE->validateParameters($this->params);
                     $getSE->createQuery();

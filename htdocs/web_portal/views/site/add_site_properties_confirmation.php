@@ -1,4 +1,4 @@
-<?php 
+<?php
 $propertyArray = $params['proparr'];
 $parent = $params['site'];
 $addPropertiesPage = "Add_Site_Properties";

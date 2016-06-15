@@ -15,27 +15,27 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 
 /**
- * Defines a unique value for the certification status of each {@see Site} such as 
- * 'Certified' or 'Suspended'. Each unique cert status record is joined to 
- * the Sites which have that value. When a site CertificationStatus is updated, 
- * the Site is re-joined to another CertificationStatus record.  
- * 
+ * Defines a unique value for the certification status of each {@see Site} such as
+ * 'Certified' or 'Suspended'. Each unique cert status record is joined to
+ * the Sites which have that value. When a site CertificationStatus is updated,
+ * the Site is re-joined to another CertificationStatus record.
+ *
  * @author John Casson
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * 
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ *
  * @Entity @Table(name="CertificationStatuses")
  */
 class CertificationStatus {
-    
+
     /** @Id @Column(type="integer") @GeneratedValue **/
     protected $id;
 
     /** @Column(type="string", unique=true) **/
     protected $name;
 
-    /** 
-     * Bidirectional - A single CertStatus (INVERSE ORM SIDE) can be linked to many Sites. 
-     * @OneToMany(targetEntity="Site", mappedBy="certificationStatus") 
+    /**
+     * Bidirectional - A single CertStatus (INVERSE ORM SIDE) can be linked to many Sites.
+     * @OneToMany(targetEntity="Site", mappedBy="certificationStatus")
      */
     protected $sites = null;
 
@@ -51,7 +51,7 @@ class CertificationStatus {
     }
 
     /**
-     * Get the unique certification status value, e.g. 'Certified' or 'Suspended'. 
+     * Get the unique certification status value, e.g. 'Certified' or 'Suspended'.
      * @return string
      */
     public function getName() {
@@ -59,7 +59,7 @@ class CertificationStatus {
     }
 
     /**
-     * Set the unique value of this cert status. Required. 
+     * Set the unique value of this cert status. Required.
      * @param string $name
      */
     public function setName($name) {
@@ -67,7 +67,7 @@ class CertificationStatus {
     }
 
     /**
-     * Fetch all the {@see Site} objects that are linked to this certification status.  
+     * Fetch all the {@see Site} objects that are linked to this certification status.
      * @return Doctrine\Common\Collections\ArrayCollection
      */
     public function getSites() {
@@ -75,9 +75,9 @@ class CertificationStatus {
     }
 
     /**
-     * Add the given Site to this certifcation status sites list. 
+     * Add the given Site to this certifcation status sites list.
      * Note, this method calls the opposite <code>$site->setCertificationStatus($this);</code>
-     * method to establish the join on both sides of the relationship. 
+     * method to establish the join on both sides of the relationship.
      * @param \Site $site
      */
     public function addSiteDoJoin($site) {
@@ -86,8 +86,8 @@ class CertificationStatus {
     }
 
     /**
-     * Return the name of this CertificationStatus record. 
-     * @see CertificationStatus#getName(); 
+     * Return the name of this CertificationStatus record.
+     * @see CertificationStatus#getName();
      * @return string
      */
     public function __toString() {

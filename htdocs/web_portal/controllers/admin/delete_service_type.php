@@ -21,21 +21,21 @@
 require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 
 function delete_service_type(){
-    
+
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-   
+
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
     //Get the service type from the id
     $serv= \Factory::getServiceTypeService();
     $serviceType =$serv ->getServiceType($_REQUEST['id']);
-    
+
     //keep the name to display later
     $params['Name'] = $serviceType -> getName();
-    
-    //Delete the service type. This fuction will check the user is allowed to 
+
+    //Delete the service type. This fuction will check the user is allowed to
     //perform this action and throw an error if not.
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
@@ -45,7 +45,7 @@ function delete_service_type(){
         show_view('error.php', $e->getMessage());
         die();
     }
-    
+
     show_view("admin/deleted_service_type.php", $params, $params['Name'].'deleted');
-            
+
 }

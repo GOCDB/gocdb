@@ -3,10 +3,10 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, software distributed under 
+ * Copyright 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software distributed under
  * the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
  * either express or implied. See the License for the specific language governing permissions
  * and limitations under the License.
@@ -44,7 +44,7 @@ class ParameterBuilder {
     return $this->qb;
     }
 
-    /** 
+    /**
      * Initialize variables, convert then store the new query
      * @param Array $parameters
      * @param QueryBuilder $qb
@@ -109,17 +109,17 @@ class ParameterBuilder {
     // http://www.doctrine-project.org/jira/browse/DDC-1683
     // http://stackoverflow.com/questions/11413752/doctrine2-and-postgres-invalid-input-syntax-for-boolean
     // Specifying TRUE instead of 1 works as expected, but specifying FALSE
-    // instead of 0 does not work as expected. This looks to be due to a 
-    // Doctrine bug related the one listed above. 
+    // instead of 0 does not work as expected. This looks to be due to a
+    // Doctrine bug related the one listed above.
     if (isset($parameters ['monitored'])) {
         if ($parameters['monitored'] == 'Y' || $parameters['monitored'] == 'y') {
-        // we can't bind a literal using the ? syntax so do it directly here  
+        // we can't bind a literal using the ? syntax so do it directly here
         $qb->andWhere($qb->expr()->eq('se.monitored', $qb->expr()->literal(true)));
         // below works, but is probably not DB agnostic
         //$qb->andWhere($qb->expr()->eq('se.monitored', '?'.++$bc ));
         //$this->binds[] = array($bc, 1);
         } else if ($parameters['monitored'] == 'N' || $parameters['monitored'] == 'n') {
-        // we can't bind a literal using the ? sytnax so do it directly here 
+        // we can't bind a literal using the ? sytnax so do it directly here
         $qb->andWhere($qb->expr()->eq('se.monitored', $qb->expr()->literal(false)));
         // below works, but is probably not DB agnostic
         //$qb->andWhere($qb->expr()->eq('se.monitored', '?'.++$bc ));

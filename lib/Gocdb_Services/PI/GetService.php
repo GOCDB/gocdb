@@ -19,46 +19,46 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
 /**
  * Return an XML document that encodes the services.
  * Optionally provide an associative array of query parameters with values to restrict the results.
- * Only known parameters are honoured while unknown params produce an error doc. 
+ * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
  * <pre>
- * 'hostname', 'sitename', 'roc', 'country', 'service_type', 'monitored', 
- * 'scope', 'scope_match', 'properties', page (where scope refers to Service scope) 
+ * 'hostname', 'sitename', 'roc', 'country', 'service_type', 'monitored',
+ * 'scope', 'scope_match', 'properties', page (where scope refers to Service scope)
  * </pre>
- * 
+ *
  * @author James McCarthy
- * @author David Meredith 
- * @author Tom Byrne 
+ * @author David Meredith
+ * @author Tom Byrne
  */
 class GetService implements IPIQuery, IPIQueryPageable {
 
     protected $query;
     protected $validParams;
     protected $em;
-    protected $queryBuilder; 
+    protected $queryBuilder;
     private $helpers;
     private $serviceEndpoints;
     private $renderMultipleEndpoints;
-    private $baseUrl; 
-    
+    private $baseUrl;
+
     private $page;  // specifies the requested page number - must be null if not paging
     private $maxResults = 500; //1000;
     private $seCountTotal;
     private $queryBuilder2;
     private $query2;
-    private $defaultPaging = false; 
+    private $defaultPaging = false;
 
-    /** 
-     * Constructor takes entity manager which is then used by the query builder. 
+    /**
+     * Constructor takes entity manager which is then used by the query builder.
      *
      * @param EntityManager $em
-     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output.
      */
     public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal') {
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
-        $this->baseUrl = $baseUrl; 
+        $this->baseUrl = $baseUrl;
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -144,7 +144,7 @@ class GetService implements IPIQuery, IPIQueryPageable {
 
         //Run ScopeQueryBuilder regardless of if scope is set.
         $scopeQueryBuilder = new ScopeQueryBuilder(
-                (isset($parameters['scope'])) ? $parameters['scope'] : null, 
+                (isset($parameters['scope'])) ? $parameters['scope'] : null,
                 (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null,
                 $qb, $this->em, $bc, 'Service', 'se'
         );
@@ -200,23 +200,23 @@ class GetService implements IPIQuery, IPIQueryPageable {
             $this->query2 = $this->queryBuilder2->getQuery();
             //then we don't use setFirst/MaxResult on this query
             //so all SE's will be returned and counted, but without all the additional info
-            
-            // offset is zero offset (starts from zero) 
+
+            // offset is zero offset (starts from zero)
             $offset = (($this->page - 1) * $this->maxResults);
             // sets the position of the first result to retrieve (the "offset")
-            $query->setFirstResult($offset); 
+            $query->setFirstResult($offset);
             // Sets the maximum number of results to retrieve (the "limit")
             $query->setMaxResults($this->maxResults);
 
         }
-         
-        $this->queryBuilder = $qb; 
+
+        $this->queryBuilder = $qb;
         $this->query = $query;
         return $this->query;
     }
 
     public function getQueryBuilder(){
-        return $this->queryBuilder; 
+        return $this->queryBuilder;
     }
 
     /**
@@ -231,15 +231,15 @@ class GetService implements IPIQuery, IPIQueryPageable {
             $this->serviceEndpoints = new Paginator($this->query, $fetchJoinCollection = true);
             //put the total number of SE's into $this->seCountTotal
             $this->seCountTotal = $this->query2->getSingleScalarResult();
-            
+
         } else {
             $this->serviceEndpoints = $this->query->execute();
         }
-        
+
         return $this->serviceEndpoints;
     }
 
-    /** Returns proprietary GocDB rendering of the service endpoint data 
+    /** Returns proprietary GocDB rendering of the service endpoint data
      *  in an XML String
      * @return String
      */
@@ -263,7 +263,7 @@ class GetService implements IPIQuery, IPIQueryPageable {
         $serviceEndpoints = $this->serviceEndpoints;
 
         foreach ($serviceEndpoints as $se) {
-            // maybe rename SERVICE_ENDPOINT to SERVICE 
+            // maybe rename SERVICE_ENDPOINT to SERVICE
             $xmlSe = $xml->addChild('SERVICE_ENDPOINT');
             $xmlSe->addAttribute("PRIMARY_KEY", $se->getId() . "G0");
             $helpers->addIfNotEmpty($xmlSe, 'PRIMARY_KEY', $se->getId() . "G0");
@@ -312,7 +312,7 @@ class GetService implements IPIQuery, IPIQueryPageable {
                     $xmlEndpoint = $xmlEndpoints->addChild('ENDPOINT');
                     $xmlEndpoint->addChild('ID', $endpoint->getId());
                     $xmlEndpoint->addChild('NAME', xssafe($endpoint->getName()));
-                    // Endpoint Extensions 
+                    // Endpoint Extensions
                     $xmlExtensions = $xmlEndpoint->addChild('EXTENSIONS');
                     foreach ($endpoint->getEndpointProperties() as $prop) {
                         $xmlProperty = $xmlExtensions->addChild('EXTENSION');
@@ -325,13 +325,13 @@ class GetService implements IPIQuery, IPIQueryPageable {
                 }
             }
 
-            // scopes  
+            // scopes
             $xmlScopes = $xmlSe->addChild('SCOPES');
             foreach($se->getScopes() as $scope){
-               $xmlScopes->addChild('SCOPE', xssafe($scope->getName())); 
+               $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
             }
-            
-            // Service Extensions 
+
+            // Service Extensions
             $xmlExtensions = $xmlSe->addChild('EXTENSIONS');
             foreach ($se->getServiceProperties() as $prop) {
                 $xmlProperty = $xmlExtensions->addChild('EXTENSION');
@@ -352,14 +352,14 @@ class GetService implements IPIQuery, IPIQueryPageable {
     }
 
     /** Returns the service endpoint data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
     public function getGlue2XML() {
         throw new LogicException("Not implemented yet");
     }
 
-    /** Not yet implemented, in future will return the service endpoint 
+    /** Not yet implemented, in future will return the service endpoint
      *  data in JSON format
      * @throws LogicException
      */
@@ -368,26 +368,26 @@ class GetService implements IPIQuery, IPIQueryPageable {
     }
 
     /**
-     * Choose to render the multiple endpoints of a service (or not) 
+     * Choose to render the multiple endpoints of a service (or not)
      * @param boolean $renderMultipleEndpoints
      */
     public function setRenderMultipleEndpoints($renderMultipleEndpoints) {
         $this->renderMultipleEndpoints = $renderMultipleEndpoints;
     }
 
-    
-    
+
+
     /**
-     * This query does not page by default.   
+     * This query does not page by default.
      * If set to true, the query will return the first page of results even if the
      * the <pre>page</page> URL param is not provided.
      *
      * @return bool
      */
     public function getDefaultPaging(){
-        return $this->defaultPaging; 
+        return $this->defaultPaging;
     }
-    
+
     /**
      * @param boolean $pageTrueOrFalse Set if this query pages by default
      */
@@ -395,27 +395,27 @@ class GetService implements IPIQuery, IPIQueryPageable {
         if(!is_bool($pageTrueOrFalse)){
             throw new \InvalidArgumentException('Invalid pageTrueOrFalse, requried bool');
         }
-        $this->defaultPaging = $pageTrueOrFalse;  
+        $this->defaultPaging = $pageTrueOrFalse;
     }
-     
+
     /**
-     * Set the default page size (100 by default if not set) 
+     * Set the default page size (100 by default if not set)
      * @return int The page size (number of results per page)
      */
     public function getPageSize(){
-        return $this->maxResults; 
+        return $this->maxResults;
     }
-    
+
     /**
      * Set the size of a single page.
      * @param int $pageSize
      */
     public function setPageSize($pageSize){
         if(!is_int($pageSize)){
-            throw new \InvalidArgumentException('Invalid pageSize, required int'); 
+            throw new \InvalidArgumentException('Invalid pageSize, required int');
         }
-        $this->maxResults = $pageSize; 
+        $this->maxResults = $pageSize;
     }
-    
-    
+
+
 }

@@ -8,7 +8,7 @@
             Click on the name of a service type to edit or delete it.
         </span>
     </div>
-   
+
     <!-- Only show add when not in read only mode-->
     <?php if(!$params['portalIsReadOnly']):?>
         <div style="float: right;">
@@ -22,7 +22,7 @@
         </div>
     <?php endif; ?>
 
-    <?php $numberOfServiceTypes = sizeof($params['ServiceTypes'])?>  
+    <?php $numberOfServiceTypes = sizeof($params['ServiceTypes'])?>
     <div class="listContainer">
         <span class="header listHeader">
             <?php echo $numberOfServiceTypes ?> Service Type<?php if($numberOfServiceTypes) echo "s"?>
@@ -32,7 +32,7 @@
                 <th class="site_table">Name</th>
                 <th class="site_table">Description</th>
             </tr>
-            <?php           
+            <?php
             $num = 2;
             if(sizeof($numberOfServiceTypes > 0)) {
                 foreach($params['ServiceTypes'] as $serviceType) {
@@ -41,18 +41,18 @@
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Admin_Service_Type&id=<?php echo $serviceType->getId() ?>">                            
+                                <a href="index.php?Page_Type=Admin_Service_Type&id=<?php echo $serviceType->getId() ?>">
                                     <?php xecho($serviceType->getName()); ?>
                                 </a>
                             </span>
                         </div>
                     </td>
-                    
+
                     <td class="site_table">
                         <?php xecho($serviceType->getDescription()); ?>
-                    </td> 
+                    </td>
                 </tr>
-                <?php  
+                <?php
                     if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over service types
             }

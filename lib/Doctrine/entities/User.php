@@ -14,11 +14,11 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Defines a registered GOCDB User who may request {@see Role}s over {@see OwnedEntity} objects. 
- * 
+ * Defines a registered GOCDB User who may request {@see Role}s over {@see OwnedEntity} objects.
+ *
  * @author John Casson
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * 
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ *
  * @Entity @Table(name="Users", options={"collate"="utf8_bin"})
  */
 class User {
@@ -70,17 +70,17 @@ class User {
 
     /** @Column(type="datetime", nullable=true)  */
     protected $lastLoginDate;
-    
+
     /*
-     * TODO: 
-     * This entity will need to own a property bag (akin to custom props) 
-     * to store zero-to-many additional attributes (e.g. SAML/AAA attributes). 
-     * For example, when a user authenticates via an IdP, a bunch of different attributes 
-     * can be sent in a SAML auth response which will need persisting in the 
-     * DB so that other users can see this data before they are approve any roles 
-     * for this user.    
+     * TODO:
+     * This entity will need to own a property bag (akin to custom props)
+     * to store zero-to-many additional attributes (e.g. SAML/AAA attributes).
+     * For example, when a user authenticates via an IdP, a bunch of different attributes
+     * can be sent in a SAML auth response which will need persisting in the
+     * DB so that other users can see this data before they are approve any roles
+     * for this user.
      */
-    
+
 
     public function __construct() {
         // Set cretion date
@@ -104,44 +104,44 @@ class User {
     }
 
     /**
-     * @return string The user's second name.  
+     * @return string The user's second name.
      */
     public function getSurname() {
         return $this->surname;
     }
 
     /**
-     * @return string User's optional title or null. 
+     * @return string User's optional title or null.
      */
     public function getTitle() {
         return $this->title;
     }
 
     /**
-     * @return string User's contact email address or null. 
+     * @return string User's contact email address or null.
      */
     public function getEmail() {
         return $this->email;
     }
 
     /**
-     * @return string User's contact tel or null.  
+     * @return string User's contact tel or null.
      */
     public function getTelephone() {
         return $this->telephone;
     }
 
     /**
-     * Nullable string for the user's working hours. 
+     * Nullable string for the user's working hours.
      * @deprecated since version 5.4
      * @return string
-     */ 
+     */
     public function getWorkingHoursStart() {
         return $this->workingHoursStart;
     }
 
     /**
-     * Nullable string for the user's working hours. 
+     * Nullable string for the user's working hours.
      * @deprecated since version 5.4
      * @return string
      */
@@ -150,7 +150,7 @@ class User {
     }
 
     /**
-     * Get the user's unique ID string, typically an x509 DN string. 
+     * Get the user's unique ID string, typically an x509 DN string.
      * @todo This needs to be renamed to getAccountID
      * @return string
      */
@@ -159,9 +159,9 @@ class User {
     }
 
     /**
-     * An optional field to define an extra username. 
-     * This field was added to store the EGI SSO username, but other values 
-     * could also be applied. 
+     * An optional field to define an extra username.
+     * This field was added to store the EGI SSO username, but other values
+     * could also be applied.
      * @return string or null
      */
     public function getUsername1() {
@@ -169,8 +169,8 @@ class User {
     }
 
     /**
-     * Get the user's optional home.  
-     * @deprecated since version 5.4 
+     * Get the user's optional home.
+     * @deprecated since version 5.4
      * @return \Site or null
      */
     public function getHomeSite() {
@@ -178,23 +178,23 @@ class User {
     }
 
     /**
-     * The DateTime when the user account was created. 
+     * The DateTime when the user account was created.
      * @return \DateTime
      */
     public function getCreationDate() {
         return $this->creationDate;
     }
-    
+
     /**
-     * The DateTime of the user's last authentication/login. 
+     * The DateTime of the user's last authentication/login.
      * @return \DateTime
      */
     public function getLastLoginDate(){
-        return $this->lastLoginDate; 
+        return $this->lastLoginDate;
     }
 
     /**
-     * Is the user a GOCDB admin user. Defaults to false.  
+     * Is the user a GOCDB admin user. Defaults to false.
      * @return boolean
      */
     public function isAdmin() {
@@ -202,7 +202,7 @@ class User {
     }
 
     /**
-     * Set the user's first name. Required. 
+     * Set the user's first name. Required.
      * @param string $forename
      */
     public function setForename($forename) {
@@ -210,7 +210,7 @@ class User {
     }
 
     /**
-     * Set the user's first name. Required. 
+     * Set the user's first name. Required.
      * @param string $surname
      */
     public function setSurname($surname) {
@@ -218,7 +218,7 @@ class User {
     }
 
     /**
-     * Set the user's optional title. 
+     * Set the user's optional title.
      * @param string $title
      */
     public function setTitle($title) {
@@ -226,7 +226,7 @@ class User {
     }
 
     /**
-     * Set the user's optional contact email address. 
+     * Set the user's optional contact email address.
      * @param string $email
      */
     public function setEmail($email) {
@@ -250,7 +250,7 @@ class User {
     }
 
     /**
-     * @deprecated since version 5.4 
+     * @deprecated since version 5.4
      * @param string $workingHoursEnd
      */
     public function setWorkingHoursEnd($workingHoursEnd) {
@@ -258,7 +258,7 @@ class User {
     }
 
     /**
-     * Set the user's unique account ID, typcially and x509 DN string. Required.  
+     * Set the user's unique account ID, typcially and x509 DN string. Required.
      * @todo Needs renaming to setAccountID
      * @param string $certificateDn
      */
@@ -267,9 +267,9 @@ class User {
     }
 
     /**
-     * Set an optional/additional name  to define an extra username. 
-     * This field was added to store the EGI SSO username, but other values 
-     * could also be applied.  
+     * Set an optional/additional name  to define an extra username.
+     * This field was added to store the EGI SSO username, but other values
+     * could also be applied.
      * @param string $username1
      */
     public function setUsername1($username1) {
@@ -277,8 +277,8 @@ class User {
     }
 
     /**
-     * Set the user's home Site, Legacy and optional.  
-     * @deprecated since version 5.4 
+     * Set the user's home Site, Legacy and optional.
+     * @deprecated since version 5.4
      * @param Site $homeSite
      */
     public function setHomeSiteDoJoin(Site $homeSite) {
@@ -286,7 +286,7 @@ class User {
     }
 
     /**
-     * Set this user as a GOCDB admin user. Defaults is false. 
+     * Set this user as a GOCDB admin user. Defaults is false.
      * @param boolean $isAdmin
      */
     public function setAdmin($isAdmin) {
@@ -294,32 +294,32 @@ class User {
     }
 
     /**
-     * Set the Date time when this user was registered. Required. 
+     * Set the Date time when this user was registered. Required.
      * @param \DateTime $creationDate
      */
     public function setCreationDate($creationDate) {
         $this->creationDate = $creationDate;
     }
-    
+
     /**
      * Set the date time of the user's last authentication/login
      * @param \DateTime $lastLoginDate
      */
     public function setLastLoginDate($lastLoginDate){
-        $this->lastLoginDate = $lastLoginDate; 
+        $this->lastLoginDate = $lastLoginDate;
     }
 
     /**
-     * @return string Concat of 'forename surname' 
+     * @return string Concat of 'forename surname'
      */
     public function getFullName() {
         return $this->forename . " " . $this->surname;
     }
 
     /**
-     * Add the given Role to the user's list of roles. 
-     * Note, this method calls the <code>$role->setUser($this);</code> to 
-     * establish the join on both sides of the relationship. 
+     * Add the given Role to the user's list of roles.
+     * Note, this method calls the <code>$role->setUser($this);</code> to
+     * establish the join on both sides of the relationship.
      * @param \Role $role
      */
     public function addRoleDoJoin(\Role $role) {
@@ -328,8 +328,8 @@ class User {
     }
 
     /**
-     * Get all the users {@see Role}s. 
-     * @return ArrayCollection 
+     * Get all the users {@see Role}s.
+     * @return ArrayCollection
      */
     public function getRoles() {
         return $this->roles;

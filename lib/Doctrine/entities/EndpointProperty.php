@@ -16,19 +16,19 @@
 
 /**
  * A custom Key=Value pair (extension property) used to augment an {@see EndpointLocation}
- * object with additional attributes. These properties can also be used for 
+ * object with additional attributes. These properties can also be used for
  * the purposes of resource matching.
  * <p>
- * A unique constraint is defined on the DB preventing duplicate key=value pairs. 
- * Note, duplicate key names with different values ARE allowed for the purpose 
- * of defning multi-valued properties. 
+ * A unique constraint is defined on the DB preventing duplicate key=value pairs.
+ * Note, duplicate key names with different values ARE allowed for the purpose
+ * of defning multi-valued properties.
  * <p>
- * When the owning parent EndpointLocation is deleted, its EndpointProperties 
- * are also cascade-deleted.    
- *  
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * 
- * @Entity @Table(name="Endpoint_Properties", uniqueConstraints={@UniqueConstraint(name="endpointproperty_keypairs", columns={"parentEndpoint_id", "keyName", "keyValue"})}) 
+ * When the owning parent EndpointLocation is deleted, its EndpointProperties
+ * are also cascade-deleted.
+ *
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ *
+ * @Entity @Table(name="Endpoint_Properties", uniqueConstraints={@UniqueConstraint(name="endpointproperty_keypairs", columns={"parentEndpoint_id", "keyName", "keyValue"})})
  */
 class EndpointProperty {
 
@@ -36,10 +36,10 @@ class EndpointProperty {
     protected $id;
 
     /**
-     * Bidirectional - Many EndpointProperties (SIDE THAT OWNS FK) 
-     * can be linked to one EndpointLocation (OWNING ORM SIDE). 
-     *   
-     * @ManyToOne(targetEntity="EndpointLocation", inversedBy="endpointProperties") 
+     * Bidirectional - Many EndpointProperties (SIDE THAT OWNS FK)
+     * can be linked to one EndpointLocation (OWNING ORM SIDE).
+     *
+     * @ManyToOne(targetEntity="EndpointLocation", inversedBy="endpointProperties")
      * @JoinColumn(name="parentEndpoint_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $parentEndpoint = null;
@@ -51,12 +51,12 @@ class EndpointProperty {
     protected $keyValue = null;
 
     public function __construct() {
-        
+
     }
 
     /**
-     * Get the owning EndpointLocation. When the parent EL is deleted, then 
-     * all the EndpointProperties are cascade deleted also. 
+     * Get the owning EndpointLocation. When the parent EL is deleted, then
+     * all the EndpointProperties are cascade deleted also.
      * @return \EndpointLocation
      */
     public function getParentEndpoint() {
@@ -64,8 +64,8 @@ class EndpointProperty {
     }
 
     /**
-     * Get the key name, usually a simple alphaNumeric name, but this is not 
-     * enforced by the entity. 
+     * Get the key name, usually a simple alphaNumeric name, but this is not
+     * enforced by the entity.
      * @return string
      */
     public function getKeyName() {
@@ -73,7 +73,7 @@ class EndpointProperty {
     }
 
     /**
-     * Get the key value, can contain any char. 
+     * Get the key value, can contain any char.
      * @return String
      */
     public function getKeyValue() {
@@ -90,12 +90,12 @@ class EndpointProperty {
     /**
      * Do not call in client code, always use the opposite
      * <code>$site->addEndpointPropertyDoJoin($endpointProperty)</code>
-     * instead which internally calls this method to keep the bidirectional 
-     * relationship consistent.  
+     * instead which internally calls this method to keep the bidirectional
+     * relationship consistent.
      * <p>
-     * This is the OWNING side of the ORM relationship so this method WILL 
-     * establish the relationship in the database. 
-     * 
+     * This is the OWNING side of the ORM relationship so this method WILL
+     * establish the relationship in the database.
+     *
      * @param \EndpointLocation $endpoint
      */
     public function _setParentEndpoint(\EndpointLocation $endpoint) {
@@ -103,9 +103,9 @@ class EndpointProperty {
     }
 
     /**
-     * The custom keyname of this key=value pair. 
-     * This value should be a simple alphanumeric name without special chars, but 
-     * this is not enforced here by the entity.   
+     * The custom keyname of this key=value pair.
+     * This value should be a simple alphanumeric name without special chars, but
+     * this is not enforced here by the entity.
      * @param string $keyName
      */
     public function setKeyName($keyName) {
@@ -113,8 +113,8 @@ class EndpointProperty {
     }
 
     /**
-     * The custom value of this key=value pair. 
-     * This value can contain any chars. 
+     * The custom value of this key=value pair.
+     * This value can contain any chars.
      * @param string $keyValue
      */
     public function setKeyValue($keyValue) {

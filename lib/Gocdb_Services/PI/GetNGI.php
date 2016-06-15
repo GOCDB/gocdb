@@ -15,12 +15,12 @@ require_once __DIR__ . '/IPIQuery.php';
 /**
  * Return an XML document that encodes the NGIs selected from the DB.
  * Optionally provide an associative array of query parameters with values to restrict the results.
- * Only known parameters are honoured while unknown params produce an error doc. 
+ * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
  * <pre>
- * 'roc', 'scope', 'scope_match' (where scope refers to NGI scope)  
+ * 'roc', 'scope', 'scope_match' (where scope refers to NGI scope)
  * </pre>
- * 
+ *
  * @author James McCarthy
  * @author David Meredith
  */
@@ -34,7 +34,7 @@ class GetNGI implements IPIQuery {
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
-     * 
+     *
      * @param EntityManager $em
      */
     public function __construct($em) {
@@ -60,7 +60,7 @@ class GetNGI implements IPIQuery {
     }
 
     /** Creates the query by building on a queryBuilder object as
-     *  required by the supplied parameters 
+     *  required by the supplied parameters
      */
     public function createQuery() {
     $parameters = $this->validParams;
@@ -69,7 +69,7 @@ class GetNGI implements IPIQuery {
 
     $qb = $this->em->createQueryBuilder();
 
-    //Initialize base query		
+    //Initialize base query
     $qb->select('n')
         ->from('NGI', 'n')
         ->leftJoin('n.scopes', 'sc')
@@ -90,8 +90,8 @@ class GetNGI implements IPIQuery {
     //////Start Scope
     //Run ScopeQueryBuilder regardless of if scope is set.
     $scopeQueryBuilder = new ScopeQueryBuilder(
-        (isset($parameters['scope'])) ? $parameters['scope'] : null, 
-        (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null, 
+        (isset($parameters['scope'])) ? $parameters['scope'] : null,
+        (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null,
         $qb, $this->em, $bc, 'NGI', 'n'
     );
 
@@ -123,7 +123,7 @@ class GetNGI implements IPIQuery {
     return $this->ngis;
     }
 
-    /** Returns proprietary GocDB rendering of the NGI data 
+    /** Returns proprietary GocDB rendering of the NGI data
      *  in an XML String
      * @return String
      */
@@ -146,7 +146,7 @@ class GetNGI implements IPIQuery {
         $xmlNgi->addChild("HELPDESK_EMAIL", $ngi->getHelpdeskEmail());
         $xmlNgi->addChild("SECURITY_EMAIL", $ngi->getSecurityEmail());
         $xmlNgi->addChild("SITE_COUNT", count($ngi->getSites()));
-        // scopes  
+        // scopes
         $xmlScopes = $xmlNgi->addChild('SCOPES');
         foreach ($ngi->getScopes() as $scope) {
         $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
@@ -164,7 +164,7 @@ class GetNGI implements IPIQuery {
     }
 
     /** Returns the NGI data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
     public function getGlue2XML() {
@@ -214,7 +214,7 @@ class GetNGI implements IPIQuery {
     return $xmlString;
     }
 
-    /** Not yet implemented, in future will return the NGI 
+    /** Not yet implemented, in future will return the NGI
      *  data in JSON format
      * @throws LogicException
      */

@@ -13,7 +13,7 @@ namespace org\gocdb\services;
  */
 
 require_once __DIR__ . '/AbstractEntityService.php';
-require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
+require_once __DIR__ . '/RoleActionAuthorisationService.php';
 
 /**
  * GOCDB Stateless service facade (business routnes) for project objects.
@@ -34,7 +34,7 @@ class Project  extends AbstractEntityService{
 
 
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
-        $this->roleActionAuthorisationService = $roleActionAuthService; 
+        $this->roleActionAuthorisationService = $roleActionAuthService;
     }
 
     /*
@@ -53,23 +53,23 @@ class Project  extends AbstractEntityService{
      */
 
     /**
-     * Adds a new GOCDB project. 
+     * Adds a new GOCDB project.
      * @param array $values array containing name and description of the new project
      * @param \user $user User making the change, only admin users may add projects
-     * @return \Project 
+     * @return \Project
      * @throws \Exception
      * @throws \org\gocdb\services\Exception
      */
     public function addProject($values, \user $user = null){
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-        
+
         //Throws exception if user is not an administrator
         $this->checkUserIsAdmin($user);
-        
+
         //Check all the required values are present and validate the new values using the GOCDB schema file
         $this->validate($values);
-        
+
         //check the name is unique
         if(!$this->projectNameIsUnique($values['Name'])){
             throw new \Exception("Project names must be unique, '".$values['Name']."' is already in use");
@@ -82,7 +82,7 @@ class Project  extends AbstractEntityService{
             $project = new \Project($values['Name']);
             //set description
             $project->setDescription($values['Description']);
-            
+
             $this->em->persist($project);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -90,16 +90,16 @@ class Project  extends AbstractEntityService{
             $this->em->getConnection()->rollback();
             $this->em->close();
             throw $e;
-        }        
+        }
 
         return $project;
     }
 
      /**
-     * Edits a GOCDB project. 
+     * Edits a GOCDB project.
      * @param array $values array containing the new name and description of the project
      * @param \user $user User making the change
-     * @return \Project 
+     * @return \Project
      * @throws \Exception
      * @throws \org\gocdb\services\Exception
      */
@@ -115,34 +115,34 @@ class Project  extends AbstractEntityService{
 
         //Check all the required values are present and validate the new values using the GOCDB schema file
         $this->validate($values);
-        
+
         //check the name is unique (or that it has not changed)
         if(!($this->projectNameIsUnique($values['Name']) or $values['Name'] == $project->getName())){
             throw new \Exception("Project names must be unique, '".$values['Name']."' is already in use");
         }
-       
+
         //Start transaction
         $this->em->getConnection()->beginTransaction(); // suspend auto-commit
         try {
             //set description
             $project->setDescription($values['Description']);
-            
+
             //set name
             $project->setName($values['Name']);
-            
+
             $this->em->merge($project);
             $this->em->flush();
             $this->em->getConnection()->commit();
-            
+
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             $this->em->close();
             throw $e;
-        }        
+        }
 
         return $project;
     }
-    
+
 
     /**
      * Returns true if the name given is not currently in use for a project
@@ -161,9 +161,9 @@ class Project  extends AbstractEntityService{
         else {
             return false;
         }
-        
+
     }
-    
+
     /**
      * Gets all projects
      * @return array An array of project objects
@@ -174,7 +174,7 @@ class Project  extends AbstractEntityService{
         $query = $this->em->createQuery($dql);
         return $query->getResult();
     }
-    
+
      /**
      * Finds a single project by ID and returns it
      * @param int $id the project ID
@@ -188,19 +188,19 @@ class Project  extends AbstractEntityService{
             ->createQuery($dql)
             ->setParameter('id', $id)
             ->getSingleResult();
-        
+
         return $project;
     }
-    
+
     /**
-     * Returns an array of all sites that belong to NGIs that are members of the 
+     * Returns an array of all sites that belong to NGIs that are members of the
      * specified project.
      * @param \project $project project we want sites for
      * @return array sites belonging to NGIs that belong are project members
      */
     public function getSites(\project $project){
         $id = $project->getId();
-        $dql = "SELECT s 
+        $dql = "SELECT s
                 FROM Site s
                 WHERE s.ngi IN
                     (SELECT n
@@ -209,23 +209,23 @@ class Project  extends AbstractEntityService{
                      WHERE p.id = :id
                     )
                 ORDER BY s.shortName";
-        // Bug fix here: the dql above previously contained a 'GROUP BY s' in 
-        // on the line above the ORDER BY. Oracle didn't like this and threw 
-        // 'ORA-00979: not a GROUP BY expression' error.  MySQL didn't seem to mind though. 
+        // Bug fix here: the dql above previously contained a 'GROUP BY s' in
+        // on the line above the ORDER BY. Oracle didn't like this and threw
+        // 'ORA-00979: not a GROUP BY expression' error.  MySQL didn't seem to mind though.
         $sites = $this->em
                 ->createQuery($dql)
                 ->setParameter('id', $id)
                 ->getResult();
 
         return $sites;
-        
+
     }
-    
+
     /**
      * Deletes a project from GOCDB. Only GOCDB admins can do this.
-     * Does not cascade delete the project's NGIs and users' Role objects are 
+     * Does not cascade delete the project's NGIs and users' Role objects are
      * automatically cascade deleted.
-     *  
+     *
      * @param \Project $project Project  to be deleted
      * @param \User $user User performing the deletion - must be an administrator for it to be successful
      * @throws \Exception
@@ -236,11 +236,11 @@ class Project  extends AbstractEntityService{
 
         //Throws exception if user is not an administrator
         $this->checkUserIsAdmin($user);
-        
+
         //get list of NGIs to allow the link with them to be broken
         $ngis = $project->getNgis();
-       
-        
+
+
         //merge changes and remove project.
         $this->em->getConnection()->beginTransaction();
         try {
@@ -259,9 +259,9 @@ class Project  extends AbstractEntityService{
             throw $e;
         }
     }
-    
+
     /**
-     * Adds Ngis to a project. Only GOCDB admins may perform this action and 
+     * Adds Ngis to a project. Only GOCDB admins may perform this action and
      * the code enforces this
      * @param \Project $project The project to which the NGI is being added
      * @param \Doctrine\Common\Collections\ArrayCollection $ngis ngis to be added
@@ -274,14 +274,14 @@ class Project  extends AbstractEntityService{
 
         //Throws exception if user is not an administrator
         $this->checkUserIsAdmin($user);
-        
+
         //Check the NGIs are all NGIs
         foreach ($ngis as $ngi) {
             if(!($ngi instanceof \NGI)){
                 throw new \Exception("one or more objects being added to project is not of type NGI");
             }
         }
-        
+
         //Actually Add the NGIs
         $this->em->getConnection()->beginTransaction();
         try {
@@ -297,7 +297,7 @@ class Project  extends AbstractEntityService{
             throw $e;
         }
     }
-    
+
     /**
      * Remove given NGIs from a given project
      * @param \Project $project project from which ngis are to be removed
@@ -311,14 +311,14 @@ class Project  extends AbstractEntityService{
 
         //Throws exception if user is not an administrator
         $this->checkUserIsAdmin($user);
-        
+
         //Check the NGIs are all NGIs
         foreach ($ngis as $ngi) {
             if(!($ngi instanceof \NGI)){
                 throw new \Exception("one or more objects being added to project is not of type NGI");
             }
         }
-        
+
         //Actually remove the NGIs
         $this->em->getConnection()->beginTransaction();
         try {
@@ -335,76 +335,76 @@ class Project  extends AbstractEntityService{
             $this->em->close();
             throw $e;
         }
-        
+
     }
-    
+
 
     /**
-     * Get an array of Role names granted to the user that permit the requested 
-     * action on the given Project. If the user has no roles that 
-     * permit the requested action, then return an empty array. 
-     * 
-     * Suppored actions: EDIT_OBJECT, GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE  
-     * 
-     * @param string $action @see \Action 
+     * Get an array of Role names granted to the user that permit the requested
+     * action on the given Project. If the user has no roles that
+     * permit the requested action, then return an empty array.
+     *
+     * Suppored actions: EDIT_OBJECT, GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE
+     *
+     * @param string $action @see \Action
      * @param \ServiceGroup $sg
      * @param \User $user
-     * @return array of RoleName string values that grant the requested action  
-     * @throws \LogicException if action is not supported or is unknown 
+     * @return array of RoleName string values that grant the requested action
+     * @throws \LogicException if action is not supported or is unknown
      */
     /*public function authorize Action($action, \Project $project, \User $user = null){
         require_once __DIR__ . '/Role.php';
-        
+
         if(!in_array($action, \Action::getAsArray())){
-            throw new \LogicException('Coding Error - Invalid action not known'); 
-        } 
+            throw new \LogicException('Coding Error - Invalid action not known');
+        }
         if(is_null($user)){
-            return array(); 
+            return array();
         }
          if(is_null($user->getId())){
-            return array(); 
+            return array();
         }
         $roleService = new \org\gocdb\services\Role(); // to inject
         $roleService->setEntityManager($this->em);
-        
-        if($action == \Action::EDIT_OBJECT){
-            // Only Project (E) level roles can edit project 
-            $requiredRoles = array(  
-                //\RoleTypeName::CIC_STAFF, 
-                \RoleTypeName::COD_ADMIN,
-                \RoleTypeName::COD_STAFF,
-                \RoleTypeName::EGI_CSIRT_OFFICER,
-                \RoleTypeName::COO);
-            $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($project, $user);  
-            $enablingRoles = array_intersect($requiredRoles, array_unique($usersActualRoleNames));
 
-        } else if($action == \Action::GRANT_ROLE ||
-                $action == \Action::REJECT_ROLE || $action == \Action::REVOKE_ROLE){
-           $requiredRoles = array(
-                //\RoleTypeName::CIC_STAFF, 
+        if($action == \Action::EDIT_OBJECT){
+            // Only Project (E) level roles can edit project
+            $requiredRoles = array(
+                //\RoleTypeName::CIC_STAFF,
                 \RoleTypeName::COD_ADMIN,
                 \RoleTypeName::COD_STAFF,
                 \RoleTypeName::EGI_CSIRT_OFFICER,
                 \RoleTypeName::COO);
             $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($project, $user);
             $enablingRoles = array_intersect($requiredRoles, array_unique($usersActualRoleNames));
-            
+
+        } else if($action == \Action::GRANT_ROLE ||
+                $action == \Action::REJECT_ROLE || $action == \Action::REVOKE_ROLE){
+           $requiredRoles = array(
+                //\RoleTypeName::CIC_STAFF,
+                \RoleTypeName::COD_ADMIN,
+                \RoleTypeName::COD_STAFF,
+                \RoleTypeName::EGI_CSIRT_OFFICER,
+                \RoleTypeName::COO);
+            $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($project, $user);
+            $enablingRoles = array_intersect($requiredRoles, array_unique($usersActualRoleNames));
+
         } else {
-            throw new \LogicException('Unsupported Action');  
+            throw new \LogicException('Unsupported Action');
         }
         if($user->isAdmin()){
-           $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;  
+           $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;
         }
         return array_unique($enablingRoles);
     }*/
-    
+
     /**
      * returns all those NGIs which are not a member of a given project
      * @param \Project $project project which returned NGIs aren't in
-     * @return ArrayCollection $ngis 
+     * @return ArrayCollection $ngis
      */
     public function getNgisNotinProject(\Project $project){
-        
+
         $id = $project->getId();
         $dql = "SELECT n
                 FROM ngi n
@@ -415,18 +415,18 @@ class Project  extends AbstractEntityService{
                      WHERE p.id = :id
                     )
                 ORDER BY n.name";
-        
+
         $ngis = $this->em
                 ->createQuery($dql)
                 ->setParameter('id', $id)
                 ->getResult();
 
         return $ngis;
-        
+
     }
 
     /**
-     * Checks the required values are present and then Validates the user 
+     * Checks the required values are present and then Validates the user
      * inputted project data against the data in the gocdb_schema.xml.
      * @param array $projectData containing all the fields for a GOCDB project
      *                       object
@@ -436,17 +436,17 @@ class Project  extends AbstractEntityService{
      * @return null */
     private function validate($projectData) {
         require_once __DIR__.'/Validate.php';
-        
+
         //check values are there (description may be "")
         if(!((array_key_exists('Name',$projectData)) and (array_key_exists('Description',$projectData)))){
             throw new \Exception("A name and description for the project must be specified");
-        }    
-        
+        }
+
         //check values are strings
         if(!((is_string($projectData['Name'])) and (is_string($projectData['Description'])))){
             throw new \Exception("The new project name and description must be valid strings");
         }
-                     
+
         //check that the name is not null
         if(empty($projectData['Name'])){
             throw new \Exception("A name must be specified for the Project");
@@ -457,7 +457,7 @@ class Project  extends AbstractEntityService{
         if(array_key_exists("ID",$projectData)){
             unset($projectData["ID"]);
         }
-               
+
         $serv = new \org\gocdb\services\Validate();
         foreach($projectData as $field => $value) {
             $valid = $serv->validate('project', strtoupper($field), $value);
@@ -467,6 +467,6 @@ class Project  extends AbstractEntityService{
             }
         }
     }
-}   
+}
 
 

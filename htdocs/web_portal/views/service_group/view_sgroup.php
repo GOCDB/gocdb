@@ -65,10 +65,10 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                         }
                         ?></td>
                 </tr>
-                <?php 
-                if($params['sGroup']->getScopes() != null && $params['sGroup']->getScopes()->first() != null && 
-                        $params['sGroup']->getScopes()->first()->getName() == "Local") { 
-                    $style = " style=\"background-color: #A3D7A3;\""; } else { $style = ""; } 
+                <?php
+                if($params['sGroup']->getScopes() != null && $params['sGroup']->getScopes()->first() != null &&
+                        $params['sGroup']->getScopes()->first()->getName() == "Local") {
+                    $style = " style=\"background-color: #A3D7A3;\""; } else { $style = ""; }
                 ?>
                 <tr class="site_table_row_2" <?php echo $style ?>>
                     <td class="site_table">
@@ -152,7 +152,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
             } // End of the foreach loop iterating over SEs
             ?>
         </table>
-    
+
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Link -->
@@ -197,10 +197,10 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                     </div>
                 </td>
                 <td class="site_table">
-                    <?php 
-                    if($params['authenticated']) { 
-                       xecho($role->getRoleType()->getName()) ; 
-                    } else {echo 'PROTECTED'; } 
+                    <?php
+                    if($params['authenticated']) {
+                       xecho($role->getRoleType()->getName()) ;
+                    } else {echo 'PROTECTED'; }
                     ?>
                 </td>
             </tr>
@@ -265,26 +265,26 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
 
     <!-- Show RoleActionRecords if user has permissions over this object -->
     <?php if ($params['ShowEdit']){
-        require_once __DIR__ . '/../fragments/viewRoleActionsTable.php'; 
+        require_once __DIR__ . '/../fragments/viewRoleActionsTable.php';
     } ?>
-        
+
 </div>
 
 
     <script type="text/javascript">
     $(document).ready(function () {
 
-        // sort on first and second table cols only 
+        // sort on first and second table cols only
         $("#sgExtensionPropsTable").tablesorter({
-        // pass the headers argument and assing a object 
+        // pass the headers argument and assing a object
         headers: {
-            // assign the third column (we start counting zero) 
+            // assign the third column (we start counting zero)
             2: {
-            // disable it by setting the property sorter to false 
+            // disable it by setting the property sorter to false
             sorter: false
             },
             3: {
-            // disable it by setting the property sorter to false 
+            // disable it by setting the property sorter to false
             sorter: false
             }
         }
@@ -292,4 +292,4 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
 
     }
     );
-    </script>  
+    </script>

@@ -31,18 +31,18 @@ require_once __DIR__.  '/Config.php';
 class ServiceService extends AbstractEntityService {
 
     private $roleActionAuthorisationService;
-    private $configService; 
-    private $scopeService; 
+    private $configService;
+    private $scopeService;
 
     function __construct(/* $roleActionAuthorisationService */) {
     parent::__construct();
     //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
-        $this->configService = new Config(); 
+        $this->configService = new Config();
     }
 
     /**
-     * Set class dependency (REQUIRED). 
-     * @todo Mandatory objects should be injected via constructor. 
+     * Set class dependency (REQUIRED).
+     * @todo Mandatory objects should be injected via constructor.
      * @param \org\gocdb\services\RoleActionAuthorisationService $roleActionAuthService
      */
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService) {
@@ -50,12 +50,12 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * Set class dependency (REQUIRED). 
-     * @todo Mandatory objects should be injected via constructor. 
+     * Set class dependency (REQUIRED).
+     * @todo Mandatory objects should be injected via constructor.
      * @param \org\gocdb\services\Scope $scopeService
      */
     public function setScopeService(Scope $scopeService){
-        $this->scopeService = $scopeService; 
+        $this->scopeService = $scopeService;
     }
 
     /**
@@ -86,7 +86,7 @@ class ServiceService extends AbstractEntityService {
 
     return $endpoint;
     }
-    
+
     /**
      * Return all {@link \Service} entities that satisfy the specfied search parameters.
      * <p>
@@ -118,121 +118,121 @@ class ServiceService extends AbstractEntityService {
      *            false to return a hydrated Doctine object graph
      * @return type array graph or object graph of {@link \Service} entities
      */
-    public function getSes($term = null, $serviceType = null, $production = null, 
-            $monitored = null, $scope = null, $ngi = null, $certStatus = null, 
-            $showClosed = null, $servKeyNames = null, $servKeyValues = null, 
+    public function getSes($term = null, $serviceType = null, $production = null,
+            $monitored = null, $scope = null, $ngi = null, $certStatus = null,
+            $showClosed = null, $servKeyNames = null, $servKeyValues = null,
             $startRecord = null, $endRecord = null, $returnArray = false) {
-        
-        // this method needs to be dropped in favor of getServicesFilterByParams, 
-        // but it is still needed when adding services to serviceGroups.  
-        return $this->getServicesHelper ( $term, $serviceType, $production, 
-                $monitored, $scope, $ngi, $certStatus, $showClosed, $servKeyNames, 
+
+        // this method needs to be dropped in favor of getServicesFilterByParams,
+        // but it is still needed when adding services to serviceGroups.
+        return $this->getServicesHelper ( $term, $serviceType, $production,
+                $monitored, $scope, $ngi, $certStatus, $showClosed, $servKeyNames,
                 $servKeyValues, $startRecord, $endRecord, $returnArray, false );
     }
-    
+
     /**
      * Count the number of {@link \Service} entities that satisfy the specified
      * search parameters.
      * {@link getSes}
      */
-    public function getSesCount($term = null, $serviceType = null, $production = null, 
-            $monitored = null, $scope = null, $ngi = null, $certStatus = null, $showClosed = null, 
-            $servKeyNames = null, $servKeyValues = null, $startRecord = null, 
+    public function getSesCount($term = null, $serviceType = null, $production = null,
+            $monitored = null, $scope = null, $ngi = null, $certStatus = null, $showClosed = null,
+            $servKeyNames = null, $servKeyValues = null, $startRecord = null,
             $endRecord = null, $returnArray = false) {
-        
-        return $this->getServicesHelper ( $term, $serviceType, $production, $monitored, 
-                $scope, $ngi, $certStatus, $showClosed, $servKeyNames, $servKeyValues, 
+
+        return $this->getServicesHelper ( $term, $serviceType, $production, $monitored,
+                $scope, $ngi, $certStatus, $showClosed, $servKeyNames, $servKeyValues,
                 $startRecord, $endRecord, $returnArray, true );
     }
-    
-    private function getServicesHelper($term = null, $serviceType = null, $production = null, 
-            $monitored = null, $scope = null, $ngi = null, $certStatus = null, 
-            $showClosed = null, $servKeyNames = null, $servKeyValues = null, $startRecord = null, 
+
+    private function getServicesHelper($term = null, $serviceType = null, $production = null,
+            $monitored = null, $scope = null, $ngi = null, $certStatus = null,
+            $showClosed = null, $servKeyNames = null, $servKeyValues = null, $startRecord = null,
             $endRecord = null, $returnArray = false, $count = false) {
-        // this method can be dropped when getSes and getSesCount have been dropped. 
-        
+        // this method can be dropped when getSes and getSesCount have been dropped.
+
         if ($production == "TRUE") {
             $production = "1";
         } else if ($production == "FALSE") {
             $production = "0";
         }
-        
+
         if ($monitored == "TRUE") {
             $monitored = "1";
         } else if ($monitored == "FALSE") {
             $monitored = "0";
         }
-        
+
         $qb = $this->em->createQueryBuilder ();
-        
+
         if ($count) {
             $qb->select ( 'count(DISTINCT se)' );
         } else {
             $qb->select ( 'DISTINCT se', 'si', 'st', 'cs', 'n' );
         }
-        
+
         $qb->from ( 'Service', 'se' )->leftjoin ( 'se.serviceType', 'st' )->leftjoin ( 'se.scopes', 's' )->leftjoin ( 'se.parentSite', 'si' )->leftjoin ( 'si.certificationStatus', 'cs' )->leftjoin ( 'si.ngi', 'n' )->orderBy ( 'se.hostName' );
-        
+
         // For use with search function, convert all terms to upper and do a like query
         if ($term != null && $term != '%%') {
             $qb->andWhere ( $qb->expr ()->orX ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.hostName' ), ':term' ), $qb->expr ()->like ( $qb->expr ()->upper ( 'se.description' ), ':term' ) ) )->setParameter ( ':term', strtoupper ( $term ) );
         }
-        
+
         if ($serviceType != null && $serviceType != '%%') {
             $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'st.name' ), ':serviceType' ) )->setParameter ( ':serviceType', strtoupper ( $serviceType ) );
         }
-        
+
         if ($production != null && $production != '%%') {
             $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.production' ), ':production' ) )->setParameter ( ':production', $production );
         }
-        
+
         if ($monitored != null && $monitored != '%%') {
             $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.monitored' ), ':monitored' ) )->setParameter ( ':monitored', $monitored );
         }
-        
+
         if ($scope != null && $scope != '%%') {
             $qb->andWhere ( $qb->expr ()->like ( 's.name', ':scope' ) )->setParameter ( ':scope', $scope );
         }
-        
+
         if ($certStatus != null && $certStatus != '%%') {
             $qb->andWhere ( $qb->expr ()->like ( 'cs.name', ':certStatus' ) )->setParameter ( ':certStatus', $certStatus );
         }
-        
+
         if ($showClosed != 1) {
             $qb->andWhere ( $qb->expr ()->not ( $qb->expr ()->like ( 'cs.name', ':closed' ) ) )->setParameter ( ':closed', 'Closed' );
         }
-        
+
         if ($ngi != null && $ngi != '%%') {
             $qb->andWhere ( $qb->expr ()->like ( 'n.name', ':ngi' ) )->setParameter ( ':ngi', $ngi );
         }
-        
+
         if ($servKeyNames != null && $servKeyNames != '%%') {
             if ($servKeyValues == null || $servKeyValues == '') {
                 $servKeyValues = '%%';
             }
-            
+
             $sQ = $this->em->createQueryBuilder ();
             $sQ->select ( 'se1' . '.id' )->from ( 'Service', 'se1' )->join ( 'se1.serviceProperties', 'sp' )->andWhere ( $sQ->expr ()->andX ( $sQ->expr ()->eq ( 'sp.keyName', ':keyname' ), $sQ->expr ()->like ( 'sp.keyValue', ':keyvalue' ) ) );
-            
+
             $qb->andWhere ( $qb->expr ()->in ( 'se', $sQ->getDQL () ) );
             $qb->setParameter ( ':keyname', $servKeyNames )->setParameter ( ':keyvalue', $servKeyValues );
         }
-        
+
         $query = $qb->getQuery ();
-        
+
         if ($count) {
             $count = $query->getSingleScalarResult ();
             return $count;
         } else {
-            
+
             if (! empty ( $startRecord )) {
                 $query->setFirstResult ( $startRecord );
             }
-            
+
             if (! empty ( $endRecord )) {
                 $query->setMaxResults ( $endRecord );
             }
-            
+
             if ($returnArray) {
                 $results = $query->getResult ( \Doctrine\ORM\Query::HYDRATE_ARRAY );
                 return $results;
@@ -243,28 +243,28 @@ class ServiceService extends AbstractEntityService {
             // print_r($results);
         }
     }
-    
-    
-    
-    
-    
+
+
+
+
+
     public function getAllSesJoinParentSites() {
-    $dql = "SELECT se, st, si 
+    $dql = "SELECT se, st, si
             FROM Service se
             JOIN se.serviceType st
             JOIN se.parentSite si";
     $query = $this->em->createQuery($dql);
     return $query->getResult();
     }
-    
+
 
 
     /**
-     * Return all {@link \Service} entities OR a count of the services that 
-     * satisfy the specfied filter parameters. 
+     * Return all {@link \Service} entities OR a count of the services that
+     * satisfy the specfied filter parameters.
      * <p>
-     * $filterParams defines an associative array of optional parameters for 
-     * filtering the services. The supported Key => Value pairs include:  
+     * $filterParams defines an associative array of optional parameters for
+     * filtering the services. The supported Key => Value pairs include:
      * <ul>
      *   <li>'searchTerm' => 'StringSearchTerm'</li>
      *   <li>'serviceType' => 'StringServiceType'</li>
@@ -278,38 +278,38 @@ class ServiceService extends AbstractEntityService {
      *   <li>'servKeyValue' => Single string extension property value</li>
      *   <li>'startRecord' => integer for the query start/offset postion</li>
      *   <li>'maxResults' => integer for the maximum number of results</li>
-     *   <li>'returnArray' => boolean, if 'count' is not true, returns a hydrated 
-     *      Doctrine array when true {@see \Doctrine\ORM\Query::HYDRATE_ARRAY} 
+     *   <li>'returnArray' => boolean, if 'count' is not true, returns a hydrated
+     *      Doctrine array when true {@see \Doctrine\ORM\Query::HYDRATE_ARRAY}
      *      otherwise an array of hydrated Doctrine objects {@see \Doctrine\ORM\Query::HYDRATE_OBJECT} </li>
      *   <li>'count' => boolean, if true returns a count of the result set rather than services</li>
      * </ul>
-     * 
-     * @param array $filterParams Associative array of key => value pairs. 
-     * @return mixed Array of {@link \Service} entities or int representing 
-     *   the service count 
+     *
+     * @param array $filterParams Associative array of key => value pairs.
+     * @return mixed Array of {@link \Service} entities or int representing
+     *   the service count
      */
     public function getServicesFilterByParams($filterParams){
-    $searchTerm = null; 
-    $serviceType = null; 
+    $searchTerm = null;
+    $serviceType = null;
     $production = null;
-    $monitored = null; 
-    $scope = null; 
-    $ngi = null; 
-    $certStatus = null; 
-    $showClosed = false; 
-    $servKeyNames = null; 
-    $servKeyValue = null; 
-        $startRecord = null; 
-    $maxResults = null; 
-    $returnArray = false; 
-    $count = false; 
+    $monitored = null;
+    $scope = null;
+    $ngi = null;
+    $certStatus = null;
+    $showClosed = false;
+    $servKeyNames = null;
+    $servKeyValue = null;
+        $startRecord = null;
+    $maxResults = null;
+    $returnArray = false;
+    $count = false;
 
     if(isset($filterParams['searchTerm'])){
-        $searchTerm = $filterParams['searchTerm']; 
+        $searchTerm = $filterParams['searchTerm'];
     }
         if(isset($filterParams['serviceType'])){
-       $serviceType = $filterParams['serviceType'];  
-    }	
+       $serviceType = $filterParams['serviceType'];
+    }
     if(isset($filterParams['production'])){
         if (strtoupper($filterParams['production']) == "TRUE") {
         $production = "1";
@@ -332,35 +332,35 @@ class ServiceService extends AbstractEntityService {
             $scopeMatch = $filterParams['scopeMatch'];
         }
     if(isset($filterParams['ngi'])){
-        $ngi = $filterParams['ngi']; 
+        $ngi = $filterParams['ngi'];
     }
     if(isset($filterParams['certStatus'])){
-       $certStatus = $filterParams['certStatus'];  
+       $certStatus = $filterParams['certStatus'];
     }
     if(isset($filterParams['showClosed']) && $filterParams['showClosed'] == TRUE){
-        $showClosed = $filterParams['showClosed']; 
+        $showClosed = $filterParams['showClosed'];
     }
     if(isset($filterParams['servKeyNames'])){
-        $servKeyNames = $filterParams['servKeyNames']; 
+        $servKeyNames = $filterParams['servKeyNames'];
     }
     if(isset($filterParams['servKeyValue'])){
-       $servKeyValue = $filterParams['servKeyValue'];  
+       $servKeyValue = $filterParams['servKeyValue'];
     }
     if(isset($filterParams['startRecord'])){
-        $startRecord = $filterParams['startRecord'];  
+        $startRecord = $filterParams['startRecord'];
     }
     if(isset($filterParams['maxResults'])){
-        $maxResults = $filterParams['maxResults']; 
+        $maxResults = $filterParams['maxResults'];
     }
     if(isset($filterParams['returnArray'])){
-        $returnArray = $filterParams['returnArray']; 
+        $returnArray = $filterParams['returnArray'];
     }
     if(isset($filterParams['count']) && $filterParams['count'] != null){
         $count = $filterParams['count'];
     }
 
-    // bind count - used to create positional bind params. 
-        $bc = -1; 
+    // bind count - used to create positional bind params.
+        $bc = -1;
     $qb = $this->em->createQueryBuilder();
 
     if ($count) {
@@ -380,7 +380,7 @@ class ServiceService extends AbstractEntityService {
     //For use with search function, convert all terms to upper and do a like query
     if ($searchTerm != null) {
         $qb->andWhere($qb->expr()->orX(
-            $qb->expr()->like($qb->expr()->upper('se.hostName'), '?'.++$bc), 
+            $qb->expr()->like($qb->expr()->upper('se.hostName'), '?'.++$bc),
             $qb->expr()->like($qb->expr()->upper('se.description'), '?'.$bc) )
         )
         ->setParameter($bc, strtoupper($searchTerm));
@@ -401,14 +401,14 @@ class ServiceService extends AbstractEntityService {
             ->setParameter($bc, $monitored);
     }
 
-    // Create WHERE clauses for multiple scopes using positional bind params 
+    // Create WHERE clauses for multiple scopes using positional bind params
     if ($scope != null) {
         require_once __DIR__ . '/PI/QueryBuilders/ScopeQueryBuilder.php';
         $scopeQueryBuilder = new ScopeQueryBuilder($scope, $scopeMatch, $qb, $this->em, $bc, 'Service', 'se');
         //Get the result of the scope builder
-        /* @var $qb \Doctrine\ORM\QueryBuilder */ 
+        /* @var $qb \Doctrine\ORM\QueryBuilder */
         $qb = $scopeQueryBuilder->getQB();
-        $bc = $scopeQueryBuilder->getBindCount(); 
+        $bc = $scopeQueryBuilder->getBindCount();
         //Get the binds and store them in the local bind array only if any binds are fetched from scopeQueryBuilder
         $binds = (array)$scopeQueryBuilder->getBinds();
         foreach ( $binds as $bind) {
@@ -426,8 +426,8 @@ class ServiceService extends AbstractEntityService {
     }
 
     if ($showClosed) {
-        // don't add the extra where clause 
-    } else { 
+        // don't add the extra where clause
+    } else {
         // add a where clause to drop Closed certStatus, i.e. 'WHERE cs.name IS NOT LIKE Closed'
         $qb->andWhere($qb->expr()->not($qb->expr()->like('cs.name', '?'.++$bc)))
             ->setParameter($bc, 'Closed');
@@ -447,7 +447,7 @@ class ServiceService extends AbstractEntityService {
             ->from('Service', 'se_p1')
             ->join('se_p1.serviceProperties', 'sp')
             ->andWhere($sQ->expr()->andX(
-                $sQ->expr()->eq('sp.keyName', '?'.++$bc), 
+                $sQ->expr()->eq('sp.keyName', '?'.++$bc),
                 $sQ->expr()->like('sp.keyValue', '?'.++$bc)
                 ));
 
@@ -490,11 +490,11 @@ class ServiceService extends AbstractEntityService {
         $dayLimit->sub($di);
     }
 
-    //Simplified and updated query for MEPs model by JM&DM - 18/06/2014 
-    $dql = "SELECT d  
+    //Simplified and updated query for MEPs model by JM&DM - 18/06/2014
+    $dql = "SELECT d
                 FROM Downtime d
                 JOIN d.services se
-                WHERE se.id = :id 
+                WHERE se.id = :id
                 AND ( :dayLimit IS NULL OR d.startDate > :dayLimit)
                 ORDER BY d.startDate DESC";
 
@@ -503,7 +503,7 @@ class ServiceService extends AbstractEntityService {
         ->setParameter('dayLimit', $dayLimit)
         ->getResult();
 
-    //$downtimes = $this->getService($id)->getDowntimes();  
+    //$downtimes = $this->getService($id)->getDowntimes();
     return $downtimes;
     }
 
@@ -568,72 +568,72 @@ class ServiceService extends AbstractEntityService {
     $this->validate($newValues['SE'], 'service');
     $this->validateEndpointUrl($newValues['endpointUrl']);
     $this->uniqueCheck($newValues['SE']['HOSTNAME'], $st, $se->getParentSite());
-        // validate production/monitored combination 
+        // validate production/monitored combination
     if ($st != 'VOMS' && $st != 'emi.ARGUS') {
         if ($newValues['PRODUCTION_LEVEL'] == "Y" && $newValues['IS_MONITORED'] != "Y") {
         throw new \Exception("If Production flat is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)");
         }
     }
-    
-        // EDIT SCOPE TAGS: 
+
+        // EDIT SCOPE TAGS:
         // collate selected scopeIds (reserved and non-reserved)
-        $scopeIdsToApply = array(); 
+        $scopeIdsToApply = array();
         foreach($newValues['Scope_ids'] as $sid){
-            $scopeIdsToApply[] = $sid; 
+            $scopeIdsToApply[] = $sid;
         }
         foreach($newValues['ReservedScope_ids'] as $sid){
-            $scopeIdsToApply[] = $sid; 
+            $scopeIdsToApply[] = $sid;
         }
-        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply);
 
-        // If not admin, Check user edits to the service's Reserved scopes: 
+        // If not admin, Check user edits to the service's Reserved scopes:
         // Required to prevent users manually crafting a POST request in an attempt
-        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        // to select reserved scopes, this is unlikely but it is a possible hack.
         if (!$user->isAdmin()) {
             $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), $selectedScopesToApply);  
-            
+                    array('excludeNonReserved' => true), $selectedScopesToApply);
+
             $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), $se->getScopes()->toArray()); 
-            
+                    array('excludeNonReserved' => true), $se->getScopes()->toArray());
+
             $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), $se->getParentSite()->getScopes()->toArray()); 
-            
+                    array('excludeNonReserved' => true), $se->getParentSite()->getScopes()->toArray());
+
             foreach($selectedReservedScopes as $sc){
-                // Reserved scopes must already be assigned to se or parent 
+                // Reserved scopes must already be assigned to se or parent
                 if(!in_array($sc, $existingReservedScopes) && !in_array($sc, $existingReservedScopesParent)){
                     throw new \Exception("A reserved Scope Tag was selected that "
-                            . "is not assigned to the Service or to the Parent Site");  
+                            . "is not assigned to the Service or to the Parent Site");
                 }
             }
         }
-        
-        // Check no changes to Reserved scopes (if not admin): 
-        // When normal users EDIT the service, the selected scopeIds should 
+
+        // Check no changes to Reserved scopes (if not admin):
+        // When normal users EDIT the service, the selected scopeIds should
         // be checked to prevent users manually crafting a POST request in an attempt
-        // to select reserved scopes, this is unlikely but it is a possible hack. 
-        // 
-        // Note, on edit we also don't want to enforce cascading of parent Site scopes to the service,  
-        // as we need to allow an admin to de-select a service's reserved scopes 
-        // (which is a perfectly valid requirement) and prevent re-cascading 
-        // when the user next edits the service! 
+        // to select reserved scopes, this is unlikely but it is a possible hack.
+        //
+        // Note, on edit we also don't want to enforce cascading of parent Site scopes to the service,
+        // as we need to allow an admin to de-select a service's reserved scopes
+        // (which is a perfectly valid requirement) and prevent re-cascading
+        // when the user next edits the service!
         /*if (!$user->isAdmin()) {
             $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), $selectedScopesToApply);  
-            
+                    array('excludeNonReserved' => true), $selectedScopesToApply);
+
             $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), $se->getScopes()->toArray()); 
-            
+                    array('excludeNonReserved' => true), $se->getScopes()->toArray());
+
             if(count($selectedReservedScopes) != count($existingReservedScopes)) {
-                    throw new \Exception("The reserved Scope count does not match the Services's existing scope count "); 
+                    throw new \Exception("The reserved Scope count does not match the Services's existing scope count ");
             }
             foreach($selectedReservedScopes as $sc){
                 if(!in_array($sc, $existingReservedScopes)){
-                    throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the Service"); 
+                    throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the Service");
                 }
             }
         }*/
-        
+
         //check there are the required number of optional scopes specified
     $this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
                array('excludeReserved' => true), $selectedScopesToApply));
@@ -695,7 +695,7 @@ class ServiceService extends AbstractEntityService {
 //		$se->addScope($scope);
 //	    }
             foreach($selectedScopesToApply as $scope){
-                $se->addScope($scope); 
+                $se->addScope($scope);
             }
 
         $this->em->merge($se);
@@ -711,18 +711,18 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * Get an array of Role names granted to the user that permit the requested 
-     * action on the given Service. If the user has no roles that 
-     * permit the requested action, then return an empty array. 
+     * Get an array of Role names granted to the user that permit the requested
+     * action on the given Service. If the user has no roles that
+     * permit the requested action, then return an empty array.
      * <p>
      * Supported actions: EDIT_OBJECT
-     * @see \Action  
-     * 
-     * @param string $action @see \Action 
+     * @see \Action
+     *
+     * @param string $action @see \Action
      * @param \Service $se
      * @param \User $user
-     * @return array of RoleName string values that grant the requested action  
-     * @throws \LogicException if action is not supported or is unknown 
+     * @return array of RoleName string values that grant the requested action
+     * @throws \LogicException if action is not supported or is unknown
      */
     /* public function authorize Action($action, \Service $se, \User $user = null){
       if(!in_array($action, \Action::getAsArray())){
@@ -773,7 +773,7 @@ class ServiceService extends AbstractEntityService {
     /**
      * Validates user inputted service data against the
      * checks in the gocdb_schema.xml.
-     * @param array $se_data containing all the fields for a Service 
+     * @param array $se_data containing all the fields for a Service
      * @throws \Exception If the SE data can't be
      *                   validated. The \Exception message will contain a human
      *                   readable description of which field failed validation.
@@ -866,44 +866,44 @@ class ServiceService extends AbstractEntityService {
     $this->validateEndpointUrl($values['endpointUrl']);
     $this->uniqueCheck($values['SE']['HOSTNAME'], $st, $site);
 
-        // validate production/monitored combination 
+        // validate production/monitored combination
     if ($st != 'VOMS' && $st != 'emi.ARGUS') {
         if ($values['PRODUCTION_LEVEL'] == "Y" && $values['IS_MONITORED'] != "Y") {
         throw new \Exception("If Production flag is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)");
         }
     }
 
-        // ADD SCOPE TAGS: 
-        // collate selected reserved and non-reserved scopeIds. 
-        // Note, Reserved scopes can be inherited from the parent Site. 
-        $allSelectedScopeIds = array(); 
+        // ADD SCOPE TAGS:
+        // collate selected reserved and non-reserved scopeIds.
+        // Note, Reserved scopes can be inherited from the parent Site.
+        $allSelectedScopeIds = array();
         foreach($values['Scope_ids'] as $sid){
-            $allSelectedScopeIds[] = $sid; 
+            $allSelectedScopeIds[] = $sid;
         }
         foreach($values['ReservedScope_ids'] as $sid){
-            $allSelectedScopeIds[] = $sid; 
+            $allSelectedScopeIds[] = $sid;
         }
 
-        $selectedScopesToApply = $this->scopeService->getScopes($allSelectedScopeIds); 
-        
-        // If not admin, check that requested reserved scopes are already implemented by the parent Site. 
+        $selectedScopesToApply = $this->scopeService->getScopes($allSelectedScopeIds);
+
+        // If not admin, check that requested reserved scopes are already implemented by the parent Site.
         // Required to prevent users manually crafting a POST request in an attempt
-        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        // to select reserved scopes, this is unlikely but it is a possible hack.
         if (!$user->isAdmin()) {
             $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), $selectedScopesToApply);  
-            
+                    array('excludeNonReserved' => true), $selectedScopesToApply);
+
             $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), $site->getScopes()->toArray()); 
-            
+                    array('excludeNonReserved' => true), $site->getScopes()->toArray());
+
             foreach($selectedReservedScopes as $sc){
-                // Reserved scopes must already be assigned to parent 
+                // Reserved scopes must already be assigned to parent
                 if(!in_array($sc, $existingReservedScopesParent)){
-                    throw new \Exception("A reserved Scope Tag was selected that is not assigned to the Parent Site");  
+                    throw new \Exception("A reserved Scope Tag was selected that is not assigned to the Parent Site");
                 }
             }
         }
-        
+
         //check there are the required number of OPTIONAL scopes specified
     $this->checkNumberOfScopes($values['Scope_ids']);
 
@@ -943,7 +943,7 @@ class ServiceService extends AbstractEntityService {
 //		$se->addScope($scope);
 //	    }
             foreach($selectedScopesToApply as $scope){
-                $se->addScope($scope); 
+                $se->addScope($scope);
             }
 
         $se->setDn($values['SE']['HOST_DN']);
@@ -1299,10 +1299,10 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * Edits an existing service property that already belongs to the service. 
-     * A check is performed to confirm the given property is from the parent 
-     * service, and an exception is thrown if not.   
-     * 
+     * Edits an existing service property that already belongs to the service.
+     * A check is performed to confirm the given property is from the parent
+     * service, and an exception is thrown if not.
+     *
      * @param \Service $service
      * @param \User $user
      * @param \ServiceProperty $prop
@@ -1319,7 +1319,7 @@ class ServiceService extends AbstractEntityService {
 
     $this->em->getConnection()->beginTransaction();
     try {
-        //Check that the prop is from the service  
+        //Check that the prop is from the service
         if ($prop->getParentService() != $service){
         $id = $prop->getId();
         throw new \Exception("Property {$id} does not belong to the specified service");
@@ -1339,10 +1339,10 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * Edits an existing endpoint property that already belongs to the endpoint. 
-     * A check is performed to confirm the given property is from the endpoint's 
-     * parent service, and an exception is thrown if not.  
-     *   
+     * Edits an existing endpoint property that already belongs to the endpoint.
+     * A check is performed to confirm the given property is from the endpoint's
+     * parent service, and an exception is thrown if not.
+     *
      * @param \Service $service
      * @param \User $user
      * @param \EndpointProperty $prop
@@ -1360,12 +1360,12 @@ class ServiceService extends AbstractEntityService {
 
     $this->em->getConnection()->beginTransaction();
     try {
-        //Check that the prop is from the endpoint 
+        //Check that the prop is from the endpoint
         if ($prop->getParentEndpoint()->getService() != $service){
         $id = $prop->getId();
         throw new \Exception("Property {$id} does not belong to the specified service endpoint");
         }
-        
+
         // Set the service propertys new member variables
         $prop->setKeyName($keyname);
         $prop->setKeyValue($keyvalue);
@@ -1381,12 +1381,12 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * Deletes a service 
+     * Deletes a service
      * @param \Service $s To be deleted
      * @param \User $user Making the request
      * @param $isTest when unit testing this allows for true to be supplied and this method
      * will not attempt to archive the service which can easily cause errors for service objects without
-     * a full set of information 
+     * a full set of information
      * @throws \Exception If user can't be authorized
      */
     public function deleteService(\Service $s, \User $user = null, $isTest = false) {
@@ -1404,7 +1404,7 @@ class ServiceService extends AbstractEntityService {
         $serviceDAO = new \ServiceDAO;
         $serviceDAO->setEntityManager($this->em);
 
-        //Archive site - if this is a test then don't archive            
+        //Archive site - if this is a test then don't archive
         if ($isTest == false) {
         //Create entry in audit table
         $serviceDAO->addServiceToArchive($s, $user);
@@ -1424,15 +1424,15 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * Move the service to the given site. 
-     * If the service is already a child of the site, no move is attempted. 
-     * 
-     * @param \Service $Service Service to move. 
-     * @param \Site $Site Target site to move the service to. 
-     * @param \User $user 
+     * Move the service to the given site.
+     * If the service is already a child of the site, no move is attempted.
+     *
+     * @param \Service $Service Service to move.
+     * @param \Site $Site Target site to move the service to.
+     * @param \User $user
      * @throws \Exception
      * @throws \LogicException
-     */ 
+     */
     public function moveService(\Service $Service, \Site $Site, \User $user = null) {
     //Throws exception if user is not an administrator
     $this->checkUserIsAdmin($user);
@@ -1558,7 +1558,7 @@ class ServiceService extends AbstractEntityService {
 
     // check endpoint's name is unique under the service
     foreach ($service->getEndpointLocations() as $endpointL) {
-        // exclude itself 
+        // exclude itself
         if ($endpoint != $endpointL && $endpointL->getName() == $name) {
         throw new \Exception("Please provide a unique name for this endpoint.");
         }
@@ -1587,7 +1587,7 @@ class ServiceService extends AbstractEntityService {
     //Check the portal is not in read only mode, throws exception if it is
     $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
     $service = $endpoint->getService();
-    // check user has permission to edit endpoint's service 
+    // check user has permission to edit endpoint's service
     $this->validateAddEditDeleteActions($user, $service);
 
     $this->em->getConnection()->beginTransaction();
@@ -1615,9 +1615,9 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * For a given service, returns an array containing the names of all the 
-     * scopes that service has as keys and a boolean as value. The bool is true 
-     * if the scope is hared with the parent site, false if not. 
+     * For a given service, returns an array containing the names of all the
+     * scopes that service has as keys and a boolean as value. The bool is true
+     * if the scope is hared with the parent site, false if not.
      * @param \Service $service
      * @return associative array
      */

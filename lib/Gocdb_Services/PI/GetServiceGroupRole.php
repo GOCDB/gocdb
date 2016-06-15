@@ -12,19 +12,19 @@ require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
 
 
-/** 
+/**
  * Return an XML document that encodes the service groups selected from the DB.
  * Optionally provide an associative array of query parameters with values used to restrict the results.
- * Only known parameters are honoured while unknown params produce error doc. 
+ * Only known parameters are honoured while unknown params produce error doc.
  * Parmeter array keys include:
  * <pre>
  * 	'service_group_name',
  *	'scope',
- *	'scope_match' 
+ *	'scope_match'
  * </pre>
- * 
+ *
  * @author James McCarthy
- * @author David Meredith 
+ * @author David Meredith
  */
 class GetServiceGroupRole implements IPIQuery{
 
@@ -34,36 +34,36 @@ class GetServiceGroupRole implements IPIQuery{
     private $helpers;
     private $sgs;
     private $baseUrl;
-    
+
     /** Constructor takes entity manager which is then used by the
      *  query builder
      *
      * @param EntityManager $em
-     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output.
      */
     public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal'){
         $this->em = $em;
         $this->helpers=new Helpers();
-        $this->baseUrl = $baseUrl; 
+        $this->baseUrl = $baseUrl;
     }
-    
+
     /** Validates parameters against array of pre-defined valid terms
      *  for this PI type
      * @param array $parameters
      */
     public function validateParameters($parameters){
-    
+
         // Define supported parameters and validate given params (die if an unsupported param is given)
         $supportedQueryParams = array (
                 'service_group_name',
                 'scope',
                 'scope_match'
         );
-    
+
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
         $this->validParams = $parameters;
     }
-    
+
     /** Creates the query by building on a queryBuilder object as
      *  required by the supplied parameters
      */
@@ -71,9 +71,9 @@ class GetServiceGroupRole implements IPIQuery{
         $parameters = $this->validParams;
         $binds= array();
         $bc=-1;
-    
+
         $qb = $this->em->createQueryBuilder();
-    
+
         //Initialize base query
         $qb	->select('sg', 'r', 'u', 'rt')
         ->from('ServiceGroup', 'sg')
@@ -81,8 +81,8 @@ class GetServiceGroupRole implements IPIQuery{
         ->leftJoin('r.user', 'u')
         ->leftJoin('r.roleType', 'rt')
         ->orderBy('sg.id', 'ASC');
-    
-    
+
+
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.
         */
@@ -94,8 +94,8 @@ class GetServiceGroupRole implements IPIQuery{
         foreach((array)$parameterBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-    
-    
+
+
         //Run ScopeQueryBuilder regardless of if scope is set.
         $scopeQueryBuilder = new ScopeQueryBuilder(
                 (isset($parameters['scope'])) ? $parameters['scope'] : null,
@@ -106,26 +106,26 @@ class GetServiceGroupRole implements IPIQuery{
                 'ServiceGroup',
                 'sg'
         );
-    
+
         //Get the result of the scope builder
         $qb = $scopeQueryBuilder->getQB();
         $bc = $scopeQueryBuilder->getBindCount();
-    
+
         //Get the binds and store them in the local bind array only if any binds are fetched from scopeQueryBuilder
         foreach((array)$scopeQueryBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-    
+
         //Bind all variables
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
-    
+
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
-    
+
         $this->query = $query;
         return $this->query;
     }
-    
+
     /**
      * Executes the query that has been built and stores the returned data
      * so it can later be used to create XML, Glue2 XML or JSON.
@@ -134,19 +134,19 @@ class GetServiceGroupRole implements IPIQuery{
         $this->sgs = $this->query->execute();
         return $this->sgs;
     }
-    
-    
-    /** Returns proprietary GocDB rendering of the service group data 
+
+
+    /** Returns proprietary GocDB rendering of the service group data
      *  in an XML String
      * @return String
      */
     public function getXML(){
         $helpers = $this->helpers;
-            
+
         $xml = new \SimpleXMLElement ( "<results />" );
-        
+
         $sgs = $this->sgs;
-        
+
         $xml = new \SimpleXMLElement ( "<results />" );
         foreach ( $sgs as $sg ) {
             $xmlSg = $xml->addChild ( 'SERVICE_GROUP' );
@@ -171,7 +171,7 @@ class GetServiceGroupRole implements IPIQuery{
                 $xmlUser->addChild ( 'ROLE', $role->getRoleType ()->getName () );
             }
         }
-        
+
         $dom_sxe = dom_import_simplexml ( $xml );
         $dom = new \DOMDocument ( '1.0' );
         $dom->encoding = 'UTF-8';
@@ -181,22 +181,22 @@ class GetServiceGroupRole implements IPIQuery{
         $xmlString = $dom->saveXML ();
         return $xmlString;
     }
-    
+
     /** Returns the service group data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
     public function getGlue2XML(){
         $query = $this->query;
         throw new LogicException("Not implemented yet");
     }
-    
-    /** Not yet implemented, in future will return the service group 
+
+    /** Not yet implemented, in future will return the service group
      *  data in JSON format
      * @throws LogicException
      */
     public function getJSON(){
-        $query = $this->query;		
+        $query = $this->query;
         throw new LogicException("Not implemented yet");
     }
 }

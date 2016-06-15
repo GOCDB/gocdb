@@ -4,20 +4,20 @@
     </div>
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
-                Services 
+                Services
         </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">All Services in GOCDB</span>
     </div>
-    
+
     <!-- Filter -->
     <div class="siteContainer">
         <form action="index.php?Page_Type=Services" method="GET" class="inline">
             <input type="hidden" name="Page_Type" value="Services" />
-            
+
             <span class="header leftFloat">
                 Filter <a href="index.php?Page_Type=Services">&nbsp;&nbsp;(clear)</a>
             </span>
-            
+
             <div class="topMargin leftFloat clearLeft siteFilter">
                 <span>Service Type: </span>
                 <select id="serviceTypeSelect" name="serviceType"  multiple="multiple">
@@ -27,8 +27,8 @@
                     <?php foreach($params['serviceTypes'] as $serviceType) { ?>
                         <option value="<?php xecho($serviceType->getName()); ?>"<?php if($params['selectedServiceType'] == $serviceType->getName()) echo " selected"?>>
                 <?php xecho($serviceType->getName()); ?>
-            </option> 
-                    <?php  } ?>   
+            </option>
+                    <?php  } ?>
 <!--		</datalist>	-->
                 </select>
 
@@ -36,28 +36,28 @@
 
         <!--<button id="uncheckAllSeTypeBtn" onclick="return false;">&laquo;Any</button>-->
             </div>
-            
+
             <div class="topMargin leftFloat siteFilter">
                 <span>NGI:</span>
-                <select name="ngi">                                        
+                <select name="ngi">
                     <option value="">(all)</option>
                     <?php foreach ($params['ngis'] as $ngi){ ?>
                         <option value="<?php xecho($ngi->getName())?>"<?php if($params['selectedNgi'] == $ngi->getName()){echo " selected";} ?>><?php xecho($ngi->getName())?></option>
                     <?php }?>
-                    
+
                 </select>
             </div>
-            <?php 
+            <?php
             //Clean off % from searchTerm
             if(isset($params['searchTerm'])){
                 $params['searchTerm'] = str_replace('%', '', $params['searchTerm']);
-            } 
+            }
             ?>
             <div class="topMargin leftFloat clearLeft siteFilter">
                 <span>Search for text in Hostname or Service Description: </span>
                 <input type="text" name="searchTerm" style="width: 400px" <?php if(isset($params['searchTerm'])) echo "value=\"{$params['searchTerm']}\"";?>/>
             </div>
-            
+
             <div class="topMargin leftFloat clearLeft siteFilter">
             <span>Production Service: </span>
                 <select name="production">
@@ -66,7 +66,7 @@
                     <option value="FALSE"<?php if($params['selectedProduction'] == "FALSE") echo " selected" ?>>N</option>
                 </select>
             </div>
-            
+
         <div class="topMargin leftFloat siteFilter">
                 <span class="">Monitored Service: </span>
                 <select name="monitored">
@@ -88,13 +88,13 @@
                     <?php  } ?>
                 </select>
             </div>
-        
-        
+
+
         <div class="topMargin leftFloat siteFilter">
         <span class=""><a href="index.php?Page_Type=Scope_Help">Service Scopes:</a> </span>
         <select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
             <?php foreach ($params['scopes'] as $scope) { ?>
-            <option value="<?php xecho($scope->getName()); ?>" 
+            <option value="<?php xecho($scope->getName()); ?>"
                 <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
                 <?php xecho($scope->getName()); ?>
             </option>
@@ -115,11 +115,11 @@
         </div>
 
 
-            
-            
 
 
-            
+
+
+
 
         <div class="topMargin leftFloat clearLeft siteFilter">
         <span class="">Service Extension Name:</span>
@@ -128,28 +128,28 @@
             <?php foreach ($params['servKeyNames'] as $servExtensions) { ?>
                 <option value="<?php xecho($servExtensions); ?>"<?php if ($params['selectedServKeyNames'] == $servExtensions) echo " selected" ?>>
                 <?php xecho($servExtensions); ?>
-                </option> 
-            <?php } ?>                  
+                </option>
+            <?php } ?>
                 </select>
-        </div> 
+        </div>
 
 
         <div class="topMargin leftFloat siteFilter siteFilter">
         <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
-        <input class="middle" type="text" name="servKeyValue" 
+        <input class="middle" type="text" name="servKeyValue"
             <?php if (isset($params['selectedServKeyValue'])) echo "value=\"{$params['selectedServKeyValue']}\""; ?>/>
         </div>
 
 
         <div class="topMargin leftFloat clearLeft siteFilter">
         <span class="">Include Closed Sites: </span>
-        <input type="checkbox" value=""<?php if ($params['showClosed'] == true) echo " checked=checked" ?> name="showClosed" /> 
+        <input type="checkbox" value=""<?php if ($params['showClosed'] == true) echo " checked=checked" ?> name="showClosed" />
         <input type="submit" value="Filter Services">
         </div>
-            
+
         </form>
     </div>
-    
+
     <!--  Services -->
     <div class="listContainer">
         <span class="header listHeader">
@@ -175,7 +175,7 @@
         <?php
         if (count($params['services']) > 0) {
             foreach ($params['services'] as $se) {
-            ?>	
+            ?>
             <tr>
                 <td>
                 <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
@@ -211,7 +211,7 @@
                 <textarea readonly="true" style="height: 25px;"><?php xecho($se->getScopeNamesAsString()); ?></textarea>
                 </td>
 
-            </tr> 	
+            </tr>
             <?php
             }
         }
@@ -233,9 +233,9 @@
             </a>
             <a href="<?php echo $params['lastLink'] ?>">
                 <img class="nav" src="<?php echo \GocContextPath::getPath()?>img/last.png" />
-            </a>  
-        </div>    
-        
+            </a>
+        </div>
+
     </div>
     <br>&nbsp;
     <br>&nbsp;
@@ -250,26 +250,26 @@
 <script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>
 
 <script>
-    $(document).ready(function() 
+    $(document).ready(function()
     {
 
-    //$("#selectedSETable").tablesorter(); 
+    //$("#selectedSETable").tablesorter();
 
-    // sort on first and second table cols only 
-    $("#selectedSETable").tablesorter({ 
-        // pass the headers argument and assing a object 
-        headers: { 
-        // assign the third column (we start counting zero) 
-        2: { 
-            sorter: false 
-        }, 
-        3: { 
-            sorter: false 
+    // sort on first and second table cols only
+    $("#selectedSETable").tablesorter({
+        // pass the headers argument and assing a object
+        headers: {
+        // assign the third column (we start counting zero)
+        2: {
+            sorter: false
+        },
+        3: {
+            sorter: false
         }
-        } 
-    }); 
-    
-     
+        }
+    });
+
+
     $('#scopeSelect').multipleSelect({
         filter: true,
             placeholder: "Service Scopes"
@@ -278,11 +278,11 @@
     $('#serviceTypeSelect').multipleSelect({
         filter: true,
         single: true,
-            placeholder: "Service Types" 
+            placeholder: "Service Types"
         });
 //	$("#uncheckAllSeTypeBtn").click(function() {
 //            $("#serviceTypeSelect").multipleSelect("uncheckAll");
 //        });
-    }); 
+    });
 </script>
- 
+

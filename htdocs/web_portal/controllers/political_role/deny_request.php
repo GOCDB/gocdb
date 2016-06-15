@@ -23,27 +23,27 @@ function view_deny_request() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../components/Get_User_Principle.php';
     require_once __DIR__ . '/../utils.php';
-      
+
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     if($user == null) {
-        throw new Exception("Unregistered users can't view/deny role requests"); 
+        throw new Exception("Unregistered users can't view/deny role requests");
     }
     $requestId = $_POST['id'];
-    
+
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if(!isset($requestId) || !is_numeric($requestId)) {
         throw new LogicException("Invalid role request id");
     }
 
-    // Lookup role request with id  
-    $roleRequest = \Factory::getRoleService()->getRoleById($requestId); 
-    
-    \Factory::getRoleService()->rejectRoleRequest($roleRequest, $user); 
-   
+    // Lookup role request with id
+    $roleRequest = \Factory::getRoleService()->getRoleById($requestId);
+
+    \Factory::getRoleService()->rejectRoleRequest($roleRequest, $user);
+
     show_view('political_role/request_denied.php');
-    die(); 
+    die();
 
 }
