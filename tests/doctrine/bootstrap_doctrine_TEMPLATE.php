@@ -6,19 +6,19 @@ use Doctrine\ORM\Tools\Setup;
 use Doctrine\Common\EventManager;
 use Doctrine\DBAL\Event\Listeners\OracleSessionInit;
 
-die('Ok, next step is to configure this file for your TEST DB: '.__FILE__); 
+die('Ok, next step is to configure this file for your TEST DB: '.__FILE__);
 // Load Doctrine (via composer OR pear):
-// Via composer 
+// Via composer
 // -------------
-// If you have installed doctrine using composer into a vendor dir 
-// (either as a project specific dependency or globally), then include doctrine 
-// using the composer autoload: 
+// If you have installed doctrine using composer into a vendor dir
+// (either as a project specific dependency or globally), then include doctrine
+// using the composer autoload:
 //require_once  __DIR__."/../../vendor/autoload.php";
 
 // Via pear as a global install
 // ----------------------------
-// If you have installed doctrine globally using pear, then require the 
-// Setup.php and use AutoloadPEAR:   
+// If you have installed doctrine globally using pear, then require the
+// Setup.php and use AutoloadPEAR:
 //require_once "Doctrine/ORM/Tools/Setup.php";
 //Setup::registerAutoloadPEAR();
 
@@ -63,7 +63,8 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/../../lib
     //	'user' => 'doctrine',
     //	'password' => 'doc',
     //	'host' => 'localhost',
-    //	'dbname' => 'doctrine'
+    //	'dbname' => 'doctrine',
+    //  'charset' => 'AL32UTF8'
     //);
     /////////////////////////////////////////////////////////////////////////////////////////////
     
