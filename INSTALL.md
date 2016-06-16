@@ -131,6 +131,7 @@ $ export PATH=$PATH:/home/djm76/programming/php/gocdb5_mep/gocdb/vendor/bin
 $ doctrine --version
 Doctrine Command Line Interface version 2.4.8
 ```
+Note: you will need to run `$doctrine --version` from within the <gocDBSrcHome>/lib/Doctrine directory.
 
 #### Install Doctrine Via Composer (Recommended)
 
@@ -142,14 +143,13 @@ Doctrine Command Line Interface version 2.4.8
     export http_proxy=http://wwwcache.dl.ac.uk:8080
     export https_proxy=http://wwwcache.dl.ac.uk:8080
     ```
-
-  * Note, you may need to unset `https_proxy` and play with the `HTTPS_PROXY_REQUEST_FULLURI` value,
+    Note, you may need to unset `https_proxy` and play with the `HTTPS_PROXY_REQUEST_FULLURI` value,
     see following links:
     * [http-proxy](https://getcomposer.org/doc/03-cli.md#http-proxy-or-http-proxy)
     * [composer stopped working behind proxy](https://github.com/composer/composer/issues/3611)
   * To run composer you can use `php composer.phar --version` or rename it, e.g. `mv composer.phar composer`
- * Use the `composer diag` option to test that it has connectivity to download packages (see below)
-  * If you are on Win, you can create a `composer.bat` file with the following content: `php "%~dp0composer.phar" %*`
+  * Use the `composer diag` option to test that it has connectivity to download packages (see below)
+  * If you are on Windows you can simply download a .exe file to the GOCDB directory, execute it and make the appropriate change to your PATH variable (see [the composer website](https://getcomposer.org/doc/00-intro.md#installation-windows)). Alternativly, you can create a `composer.bat` file with the following content: `php "%~dp0composer.phar" %*`
 
     ```
     $ composer --version
@@ -275,7 +275,7 @@ supported database, SQLite, Oracle and MySQL.
 * Copy this file to `bootstrap_doctrine.php` in the same dir and modify to
 specify your chosen DB connection details (see file for more details, including
 how to compile Doctrine proxy objects for better performance for production usage).
-* Check that doctrine can connect to the DB using:
+* Check that doctrine can connect to the DB running the following (still in the <gocDBSrcHome>/lib/Doctrine directory):
 
   ```
   $ doctrine orm:schema-tool:update
