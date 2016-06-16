@@ -88,49 +88,47 @@ class NGI extends AbstractEntityService{
                    ->getSingleResult();
         return $ngi;
     }
-
-
-   
+    
     /**
-     * Return all {@see \NGI}s that satisfy the specfied filter parameters. 
-     * <p>  
-     * $filterParams defines an associative array of optional parameters for 
-     * filtering. The supported Key => Value pairs include: 
+     * Return all {@see \NGI}s that satisfy the specfied filter parameters.
+     *
+     * <p>
+     * $filterParams defines an associative array of optional parameters for
+     * filtering. The supported Key => Value pairs include:
      * <ul>
-     *   <li>'roc' => String name of the NGI/ROC</li>
-     *   <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
-     *   <li>'scope_match' => String 'any' or 'all' </li>
+     * <li>'roc' => String name of the NGI/ROC</li>
+     * <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
+     * <li>'scope_match' => String 'any' or 'all' </li>
      * <ul>
-     * 
+     *
      * @param array $filterParams
      * @return array NGI array
      */
-    public function getNGIsFilterByParams($filterParams){
-        require_once __DIR__.'/PI/GetNGI.php'; 
-    $getNgi = new GetNGI($this->em); 	
-    $getNgi->validateParameters($filterParams); 
-    $getNgi->createQuery(); 
-    $ngis = $getNgi->executeQuery();
-    return $ngis; 
+    public function getNGIsFilterByParams($filterParams) {
+        require_once __DIR__ . '/PI/GetNGI.php';
+        $getNgi = new GetNGI( $this->em );
+        $getNgi->validateParameters( $filterParams );
+        $getNgi->createQuery();
+        $ngis = $getNgi->executeQuery();
+        return $ngis;
     }
-
+    
     /**
-     * Get all NGIs as an object array with joined scopes. 
+     * Get all NGIs as an object array with joined scopes.
+     *
      * @see NGI
      * @return \NGI object array
      */
-     public function getNGIs($scope = NULL) {
-    $qb = $this->em->createQueryBuilder();
-    $qb->select('n', 'sc')->from('NGI', 'n')
-        ->leftjoin('n.scopes', 'sc')->orderBy('n.name', 'ASC');
-
-    if ($scope != null && $scope != '%%') {
-        $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
-            ->setParameter(':scope', $scope);
-    }
-    $query = $qb->getQuery();
-    $ngis = $query->execute();
-    return $ngis;
+    public function getNGIs($scope = NULL) {
+        $qb = $this->em->createQueryBuilder();
+        $qb->select( 'n', 'sc' )->from( 'NGI', 'n' )->leftjoin( 'n.scopes', 'sc' )->orderBy( 'n.name', 'ASC' );
+        
+        if ($scope != null && $scope != '%%') {
+            $qb->andWhere( $qb->expr()->like( 'sc.name', ':scope' ) )->setParameter( ':scope', $scope );
+        }
+        $query = $qb->getQuery();
+        $ngis = $query->execute();
+        return $ngis;
     }
 
     /**

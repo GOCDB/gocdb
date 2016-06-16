@@ -775,12 +775,11 @@ class Downtime extends AbstractEntityService{
 
     return $downtimes = $q->getResult();
     }
-
+    
     /**
-     *
      */
     public function getActiveDowntimes() {
-    $dql = "SELECT DISTINCT d, se, s, st
+        $dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
                 JOIN d.services se
                 JOIN se.parentSite s
@@ -793,22 +792,21 @@ class Downtime extends AbstractEntityService{
                         AND d.endDate > :now)
                 )
                 ORDER BY d.startDate DESC";
-
-    $q = $this->em->createQuery($dql)
-        ->setParameter('onGoingOnly', 'yes')
-        ->setParameter('now', new \DateTime());
-
-    return $downtimes = $q->getResult();
+        
+        $q = $this->em->createQuery( $dql )->setParameter( 'onGoingOnly', 'yes' )->setParameter( 'now', new \DateTime () );
+        
+        return $downtimes = $q->getResult ();
     }
-
+    
     /**
      * Get downtimes where the downtime endDate is after windowStart, and
      * downtime start date is before windowEnd.
+     * 
      * @param \Date $windowStart
      * @param \Date $windowEnd
      */
     public function getImminentDowntimes($windowStart, $windowEnd) {
-    $dql = "SELECT DISTINCT d, se, s, st
+        $dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d                
                 JOIN d.services se
                 JOIN se.parentSite s
@@ -822,12 +820,10 @@ class Downtime extends AbstractEntityService{
                     OR d.startDate < :windowEnd
                 )
                 ORDER BY d.startDate DESC";
-
-    $q = $this->em->createQuery($dql)
-        ->setParameter('windowStart', $windowStart)
-        ->setParameter('windowEnd', $windowEnd);
-
-    return $downtimes = $q->getResult();
+        
+        $q = $this->em->createQuery( $dql )->setParameter( 'windowStart', $windowStart )->setParameter( 'windowEnd', $windowEnd );
+        
+        return $downtimes = $q->getResult ();
     }
 
 }
