@@ -4,12 +4,12 @@ $service = $params['service'];
 ?>
 
 <div class="rightPageContainer">
-	<h1 class="Success">Delete Endpoint</h1><br/>
+    <h1 class="Success">Delete Endpoint</h1><br/>
     <p>
-	Are you sure you want to delete:<br/><br/>
+    Are you sure you want to delete:<br/><br/>
     Endponit Name: <b><?php xecho($endpoint->getName());?><br/></b> 
-	Endpoint URL: <b><?php xecho($endpoint->getUrl());?><br/></b>
-	Interface Name: <b><?php xecho($endpoint->getInterfaceName());?><br/></b>
+    Endpoint URL: <b><?php xecho($endpoint->getUrl());?><br/></b>
+    Interface Name: <b><?php xecho($endpoint->getInterfaceName());?><br/></b>
     </p>
     <p>
         Are you sure you wish to continue?

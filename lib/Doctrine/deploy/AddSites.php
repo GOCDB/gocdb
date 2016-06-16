@@ -25,143 +25,143 @@ foreach($sites as $xmlSite) {
     }
     
     
-	$doctrineSite = new Site();
-	$doctrineSite->setPrimaryKey((string) $xmlSite->PRIMARY_KEY);
-	$doctrineSite->setOfficialName((string) $xmlSite->OFFICIAL_NAME);
-	$doctrineSite->setShortName((string)$xmlSite->SHORT_NAME);
-	$doctrineSite->setDescription((string) $xmlSite->SITE_DESCRIPTION);
-	$doctrineSite->setHomeUrl((string) $xmlSite->HOME_URL);
-	$doctrineSite->setEmail((string) $xmlSite->CONTACT_EMAIL);
-	$doctrineSite->setTelephone((string) $xmlSite->CONTACT_TEL);
-	$doctrineSite->setGiisUrl((string) $xmlSite->GIIS_URL);
+    $doctrineSite = new Site();
+    $doctrineSite->setPrimaryKey((string) $xmlSite->PRIMARY_KEY);
+    $doctrineSite->setOfficialName((string) $xmlSite->OFFICIAL_NAME);
+    $doctrineSite->setShortName((string)$xmlSite->SHORT_NAME);
+    $doctrineSite->setDescription((string) $xmlSite->SITE_DESCRIPTION);
+    $doctrineSite->setHomeUrl((string) $xmlSite->HOME_URL);
+    $doctrineSite->setEmail((string) $xmlSite->CONTACT_EMAIL);
+    $doctrineSite->setTelephone((string) $xmlSite->CONTACT_TEL);
+    $doctrineSite->setGiisUrl((string) $xmlSite->GIIS_URL);
     if(strlen((string)$xmlSite->LATITUDE) > 0){
         $doctrineSite->setLatitude((float)$xmlSite->LATITUDE);
     } 
     if(strlen((string)$xmlSite->LONGITUDE) > 0){
         $doctrineSite->setLongitude((float)$xmlSite->LONGITUDE);
     }
-	$doctrineSite->setCsirtEmail((string) $xmlSite->CSIRT_EMAIL);
-	$doctrineSite->setIpRange((string) $xmlSite->IP_RANGE);
-	$doctrineSite->setDomain((string) $xmlSite->DOMAIN->DOMAIN_NAME);
-	$doctrineSite->setLocation((string) $xmlSite->LOCATION);
-	$doctrineSite->setCsirtTel((string) $xmlSite->CSIRTTEL);
-	$doctrineSite->setEmergencyTel((string) $xmlSite->EMERGENCYTEL);
-	$doctrineSite->setEmergencyEmail((string) $xmlSite->EMERGENCYEMAIL);
-	$doctrineSite->setAlarmEmail((string) $xmlSite->ALARM_EMAIL);
-	$doctrineSite->setHelpdeskEmail((string) $xmlSite->HELPDESKEMAIL);
+    $doctrineSite->setCsirtEmail((string) $xmlSite->CSIRT_EMAIL);
+    $doctrineSite->setIpRange((string) $xmlSite->IP_RANGE);
+    $doctrineSite->setDomain((string) $xmlSite->DOMAIN->DOMAIN_NAME);
+    $doctrineSite->setLocation((string) $xmlSite->LOCATION);
+    $doctrineSite->setCsirtTel((string) $xmlSite->CSIRTTEL);
+    $doctrineSite->setEmergencyTel((string) $xmlSite->EMERGENCYTEL);
+    $doctrineSite->setEmergencyEmail((string) $xmlSite->EMERGENCYEMAIL);
+    $doctrineSite->setAlarmEmail((string) $xmlSite->ALARM_EMAIL);
+    $doctrineSite->setHelpdeskEmail((string) $xmlSite->HELPDESKEMAIL);
 
-	// get the parent NGI entity
-	$dql = "SELECT n FROM NGI n WHERE n.name = ?1";
-	$parentNgis = $entityManager->createQuery($dql)
-								 ->setParameter(1, (string) $xmlSite->ROC)
-								 ->getResult();
-	// /* Error checking: ensure each SE's "parent ngi" refers to exactly
-	 // * one ngi */
-	if(count($parentNgis) !== 1) {
-		throw new Exception(count($parentNgis) . " NGIs found with name: " .
-			$xmlSite->ROC);
-	}
-	foreach($parentNgis as $result) {
-		$parentNgi = $result;
-	}
-	$doctrineSite->setNgiDoJoin($parentNgi);
+    // get the parent NGI entity
+    $dql = "SELECT n FROM NGI n WHERE n.name = ?1";
+    $parentNgis = $entityManager->createQuery($dql)
+                                 ->setParameter(1, (string) $xmlSite->ROC)
+                                 ->getResult();
+    // /* Error checking: ensure each SE's "parent ngi" refers to exactly
+     // * one ngi */
+    if(count($parentNgis) !== 1) {
+        throw new Exception(count($parentNgis) . " NGIs found with name: " .
+            $xmlSite->ROC);
+    }
+    foreach($parentNgis as $result) {
+        $parentNgi = $result;
+    }
+    $doctrineSite->setNgiDoJoin($parentNgi);
 
-	// get the target infrastructure
-	$dql = "SELECT i FROM Infrastructure i WHERE i.name = :name";
-	$infs = $entityManager->createQuery($dql)
-								 ->setParameter('name', (string) $xmlSite->PRODUCTION_INFRASTRUCTURE)
-								 ->getResult();
-	// /* Error checking: ensure each SE's "PRODUCTION_INFRASTRUCTURE" refers to exactly
-	 // * one PRODUCTION_INFRASTRUCTURE */
-	if(count($infs) !== 1) {
-		throw new Exception(count($infs) . " Infrastructures found with name: " .
-			$xmlSite->PRODUCTION_INFRASTRUCTURE);
-	}
-	foreach($infs as $inf) {
-		$inf = $inf;
-	}
-	$doctrineSite->setInfrastructure($inf);
+    // get the target infrastructure
+    $dql = "SELECT i FROM Infrastructure i WHERE i.name = :name";
+    $infs = $entityManager->createQuery($dql)
+                                 ->setParameter('name', (string) $xmlSite->PRODUCTION_INFRASTRUCTURE)
+                                 ->getResult();
+    // /* Error checking: ensure each SE's "PRODUCTION_INFRASTRUCTURE" refers to exactly
+     // * one PRODUCTION_INFRASTRUCTURE */
+    if(count($infs) !== 1) {
+        throw new Exception(count($infs) . " Infrastructures found with name: " .
+            $xmlSite->PRODUCTION_INFRASTRUCTURE);
+    }
+    foreach($infs as $inf) {
+        $inf = $inf;
+    }
+    $doctrineSite->setInfrastructure($inf);
 
-	// get the cert status
-	$dql = "SELECT c FROM CertificationStatus c WHERE c.name = ?1";
-	$certStatuses = $entityManager->createQuery($dql)
-								 ->setParameter(1, (string) $xmlSite->CERTIFICATION_STATUS)
-								 ->getResult();
-	/* Error checking: ensure each Site's "cert status" refers to exactly
-	 * one cert status */
-	if(count($certStatuses) !== 1) {
-		throw new Exception(count($certStatuses) . " cert statuses found with name: " .
-			$xmlSite->CERTIFICATION_STATUS);
-	}
-	foreach($certStatuses as $certStatus) {
-		$certStatus = $certStatus;
-	}
-	$doctrineSite->setCertificationStatus($certStatus);
+    // get the cert status
+    $dql = "SELECT c FROM CertificationStatus c WHERE c.name = ?1";
+    $certStatuses = $entityManager->createQuery($dql)
+                                 ->setParameter(1, (string) $xmlSite->CERTIFICATION_STATUS)
+                                 ->getResult();
+    /* Error checking: ensure each Site's "cert status" refers to exactly
+     * one cert status */
+    if(count($certStatuses) !== 1) {
+        throw new Exception(count($certStatuses) . " cert statuses found with name: " .
+            $xmlSite->CERTIFICATION_STATUS);
+    }
+    foreach($certStatuses as $certStatus) {
+        $certStatus = $certStatus;
+    }
+    $doctrineSite->setCertificationStatus($certStatus);
 
-	// get the scope
-	$dql = "SELECT s FROM Scope s WHERE s.name = ?1";
-	$scopes = $entityManager->createQuery($dql)
-								 ->setParameter(1, (string) $xmlSite->SCOPE)
-								 ->getResult();
-	/* Error checking: ensure each Site's "SCOPE" refers to exactly
-	 * one SCOPE */
-	if(count($scopes) !== 1) {
-		throw new Exception(count($scopes) . " SCOPEs found with name: " .
-			$xmlSite->SCOPE);
-	}
-	foreach($scopes as $scope) {
-		$scope = $scope;
-	}
-	$doctrineSite->addScope($scope);
+    // get the scope
+    $dql = "SELECT s FROM Scope s WHERE s.name = ?1";
+    $scopes = $entityManager->createQuery($dql)
+                                 ->setParameter(1, (string) $xmlSite->SCOPE)
+                                 ->getResult();
+    /* Error checking: ensure each Site's "SCOPE" refers to exactly
+     * one SCOPE */
+    if(count($scopes) !== 1) {
+        throw new Exception(count($scopes) . " SCOPEs found with name: " .
+            $xmlSite->SCOPE);
+    }
+    foreach($scopes as $scope) {
+        $scope = $scope;
+    }
+    $doctrineSite->addScope($scope);
 
-	// get / set the country
-	$dql = "SELECT c FROM Country c WHERE c.name = ?1";
-	$countries = $entityManager->createQuery($dql)
-								 ->setParameter(1, (string) $xmlSite->COUNTRY)
-								 ->getResult();
-	/* Error checking: ensure each country refers to exactly
-	 * one country */
-	if(count($countries) !== 1) {
-		throw new Exception(count($countries) . " country found with name: " .
-			$xmlSite->COUNTRY);
-	}
-	foreach($countries as $country) {
-		$country = $country;
-	}
-	$doctrineSite->setCountry($country);
+    // get / set the country
+    $dql = "SELECT c FROM Country c WHERE c.name = ?1";
+    $countries = $entityManager->createQuery($dql)
+                                 ->setParameter(1, (string) $xmlSite->COUNTRY)
+                                 ->getResult();
+    /* Error checking: ensure each country refers to exactly
+     * one country */
+    if(count($countries) !== 1) {
+        throw new Exception(count($countries) . " country found with name: " .
+            $xmlSite->COUNTRY);
+    }
+    foreach($countries as $country) {
+        $country = $country;
+    }
+    $doctrineSite->setCountry($country);
 
     $doctrineSite->setTimezoneId('UTC');
 
 
     // get the Tier (optional value)
-	$dql = "SELECT t FROM Tier t WHERE t.name = ?1";
-	$tiers = $entityManager->createQuery($dql)
-								 ->setParameter(1, (string) $xmlSite->TIER)
-								 ->getResult();
-	/* Error checking: ensure each tier refers to exactly
-	 * one TIER */
-	if(count($tiers) == 1) {
-		foreach($tiers as $tier) {
+    $dql = "SELECT t FROM Tier t WHERE t.name = ?1";
+    $tiers = $entityManager->createQuery($dql)
+                                 ->setParameter(1, (string) $xmlSite->TIER)
+                                 ->getResult();
+    /* Error checking: ensure each tier refers to exactly
+     * one TIER */
+    if(count($tiers) == 1) {
+        foreach($tiers as $tier) {
             $tier = $tier;
         }
 
         $doctrineSite->setTier($tier);
-	}
+    }
 
     // get the SubGrid (optional value)
-	$dql = "SELECT s FROM SubGrid s WHERE s.name = ?1";
-	$subGrids = $entityManager->createQuery($dql)
-		->setParameter(1, (string) $xmlSite->SUBGRID)
-	    ->getResult();
-	/* Error checking: ensure each subgrid refers to exactly
-	 * one subgrid */
-	if(count($subGrids) == 1) {
-		foreach($subGrids as $subGrid) {
+    $dql = "SELECT s FROM SubGrid s WHERE s.name = ?1";
+    $subGrids = $entityManager->createQuery($dql)
+        ->setParameter(1, (string) $xmlSite->SUBGRID)
+        ->getResult();
+    /* Error checking: ensure each subgrid refers to exactly
+     * one subgrid */
+    if(count($subGrids) == 1) {
+        foreach($subGrids as $subGrid) {
             $subGrid = $subGrid;
         }
 
         $doctrineSite->setSubGrid($subGrid);
-	}
+    }
 
 
         
@@ -220,7 +220,7 @@ foreach($sites as $xmlSite) {
        }
     }
     
-	$entityManager->persist($doctrineSite);
+    $entityManager->persist($doctrineSite);
 
 }
 

@@ -35,8 +35,8 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
      * Overridden. 
      */
     public static function setUpBeforeClass() {
-     	parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        parent::setUpBeforeClass();
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing RoleServiceTest. . .\n";
     }
     
@@ -124,14 +124,14 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
 
     public function NOT_RUN_test_authoriseActionBug(){
         print __METHOD__ . "\n";	
-	$codRT = TestUtil::createSampleRoleType(TestRoleTypeName::COD_ADMIN);
-	$this->em->persist($codRT);  // edit all sites cert status only  
+    $codRT = TestUtil::createSampleRoleType(TestRoleTypeName::COD_ADMIN);
+    $this->em->persist($codRT);  // edit all sites cert status only  
 
-	// Create a user
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    	$this->em->persist($u);
+    // Create a user
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $this->em->persist($u);
 
-	/*
+    /*
          * Create test data with the following structure 
          * 
          *   p1  EGI
@@ -139,15 +139,15 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          *     n1  
          */
         $p1 = new \Project("p1");  
-	$p2 = new \Project("EGI");  
-    	$n1 = TestUtil::createSampleNGI("n1");
-	$this->em->persist($p1);
-	$this->em->persist($p2);
-	$this->em->persist($n1);
-	$p1->addNgi($n1); 
-	$p2->addNgi($n1); 
+    $p2 = new \Project("EGI");  
+        $n1 = TestUtil::createSampleNGI("n1");
+    $this->em->persist($p1);
+    $this->em->persist($p2);
+    $this->em->persist($n1);
+    $p1->addNgi($n1); 
+    $p2->addNgi($n1); 
 
-	// Build dependencies and inject business objects: 
+    // Build dependencies and inject business objects: 
         // start a new connection to test transactional isolation of RoleService methods.  
         //$em2 = $this->createEntityManager();
         $em2 = $this->em;
@@ -157,48 +157,48 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $roleActionMappingService->setRoleActionMappingsXmlPath(
                 __DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings7.xml"); 
 
-	// Create RoleActionAuthorisationService with dependencies 
+    // Create RoleActionAuthorisationService with dependencies 
         $roleAuthServ = new org\gocdb\services\RoleActionAuthorisationService
                 ($roleActionMappingService/*, $roleService*/);  
         $roleAuthServ->setEntityManager($em2); 
 
         // Create role and link user and owned entities (user link not shown) 
-	/*
+    /*
          * r1->p1  EGI
          *      \  /
          *       n1  
          */
-	$r1 = TestUtil::createSampleRole($u, $codRT, $p1, RoleStatus::GRANTED); 
-    	$this->em->persist($r1);
-    	$this->em->flush();
+    $r1 = TestUtil::createSampleRole($u, $codRT, $p1, RoleStatus::GRANTED); 
+        $this->em->persist($r1);
+        $this->em->flush();
 
-	// Assert user has no authorising roles over n1 BECAUSE p1 is not 
-	// mapped in XML file and there is no default mapping!
+    // Assert user has no authorising roles over n1 BECAUSE p1 is not 
+    // mapped in XML file and there is no default mapping!
         $enablingRoles = $roleAuthServ->authoriseAction(\Action::REVOKE_ROLE, $n1, $u)->getGrantingRoles(); 
-	//print_r("dave: ".$enablingRoles[0]->getRoleType()->getName()); 
+    //print_r("dave: ".$enablingRoles[0]->getRoleType()->getName()); 
         $this->assertEquals(0, count($enablingRoles)); 
     }
 
     public function test_authoriseAction(){
         print __METHOD__ . "\n";
-    	// Create roletypes
-    	$siteAdminRT = TestUtil::createSampleRoleType(TestRoleTypeName::SITE_ADMIN);
-    	$siteDepManAdminRT = TestUtil::createSampleRoleType(TestRoleTypeName::SITE_OPS_DEP_MAN);
+        // Create roletypes
+        $siteAdminRT = TestUtil::createSampleRoleType(TestRoleTypeName::SITE_ADMIN);
+        $siteDepManAdminRT = TestUtil::createSampleRoleType(TestRoleTypeName::SITE_OPS_DEP_MAN);
         $ngiManRT = TestUtil::createSampleRoleType(TestRoleTypeName::NGI_OPS_MAN);
         $rodRT = TestUtil::createSampleRoleType(TestRoleTypeName::REG_STAFF_ROD);
         $codRT = TestUtil::createSampleRoleType(TestRoleTypeName::COD_ADMIN);
         $cooRT = TestUtil::createSampleRoleType(TestRoleTypeName::COO);
-    	$this->em->persist($siteAdminRT); // edit site1 (but not cert status) 
-    	$this->em->persist($ngiManRT); // edit owned site1/site2 and cert status
-    	$this->em->persist($rodRT);  // edit owned sites 1and2 (but not cert status)
-    	$this->em->persist($codRT);  // edit all sites cert status only  
-    	$this->em->persist($cooRT);  // edit all sites cert status only  
-    	$this->em->persist($siteDepManAdminRT);  // edit all sites cert status only  
+        $this->em->persist($siteAdminRT); // edit site1 (but not cert status) 
+        $this->em->persist($ngiManRT); // edit owned site1/site2 and cert status
+        $this->em->persist($rodRT);  // edit owned sites 1and2 (but not cert status)
+        $this->em->persist($codRT);  // edit all sites cert status only  
+        $this->em->persist($cooRT);  // edit all sites cert status only  
+        $this->em->persist($siteDepManAdminRT);  // edit all sites cert status only  
    
 
         // Create a user
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    	$this->em->persist($u);
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $this->em->persist($u);
 
         /*
          * Create test data with the following structure (note p3 has two ngis) 
@@ -240,8 +240,8 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          *    s1  s2  s3 
          */
         $r1 = TestUtil::createSampleRole($u, $ngiManRT, $n1, RoleStatus::GRANTED); 
-    	$this->em->persist($r1);
-    	$this->em->flush();
+        $this->em->persist($r1);
+        $this->em->flush();
         
         // Assert user can edit s1 using r1 
         $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s1, $u)->getGrantingRoles(); 
@@ -275,7 +275,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * r2-s1  s2  s3 
          */
         $r2 = TestUtil::createSampleRole($u, $siteAdminRT, $s1, RoleStatus::GRANTED) ; 
-    	$this->em->persist($r2);
+        $this->em->persist($r2);
         $this->em->flush(); 
 
         // Assert user can edit s1 using r1 + r2 
@@ -309,7 +309,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * r2-s1  r3-s2  s3  
          */
         $r3 = TestUtil::createSampleRole($u, $siteAdminRT, $s2, RoleStatus::GRANTED) ; 
-    	$this->em->persist($r3);
+        $this->em->persist($r3);
         $this->em->flush(); 
 
         // Assert user can edit s1 via r1 + r2 
@@ -349,7 +349,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * r2-s1  r3-s2  s3  
          */
         $r4 = TestUtil::createSampleRole($u, $cooRT, $p2, RoleStatus::GRANTED); 
-    	$this->em->persist($r4);
+        $this->em->persist($r4);
         $this->em->flush(); 
 
         // Assert user can edit p2 via r4
@@ -381,7 +381,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * r2-s1  r3-s2  s3  
          */
         $r5 = TestUtil::createSampleRole($u, $codRT, $p3, RoleStatus::GRANTED); 
-    	$this->em->persist($r5);
+        $this->em->persist($r5);
         $this->em->flush(); 
 
         // Assert user can edit p3 with r5 
@@ -410,7 +410,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * r2-s1  r3-s2  s3  
          */
         $r6 = TestUtil::createSampleRole($u, $ngiManRT, $n3, RoleStatus::GRANTED); 
-    	$this->em->persist($r6);
+        $this->em->persist($r6);
         $this->em->flush(); 
 
         /*
@@ -421,7 +421,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * r2-s1  r3-s2  s3-r7  
          */
         $r7 = TestUtil::createSampleRole($u, $siteAdminRT, $s3, RoleStatus::GRANTED); 
-    	$this->em->persist($r7);
+        $this->em->persist($r7);
         $this->em->flush(); 
 
         // Assert user can edit s3 with r6 + r7
@@ -439,7 +439,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * r2-s1  r3-s2  s3-r7  
          */
         $r8 = TestUtil::createSampleRole($u, $ngiManRT, $n2, RoleStatus::GRANTED); 
-    	$this->em->persist($r8);
+        $this->em->persist($r8);
         $this->em->flush(); 
         
         $enablingRoles = $roleAuthServ->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $s2, $u)->getGrantingRoles();
@@ -461,7 +461,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * r2-s1  r3-s2  s3-r7,r9  
          */
         $r9 = TestUtil::createSampleRole($u, $siteDepManAdminRT, $s3, RoleStatus::GRANTED); 
-    	$this->em->persist($r9);
+        $this->em->persist($r9);
         $this->em->flush(); 
 
         // Assert user can edit s3 with r7, r9, r6
@@ -485,7 +485,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * r2-s1  r3-s2  s3-r7,r9  
          */
         $r10 = TestUtil::createSampleRole($u, $rodRT, $n3, RoleStatus::GRANTED); 
-    	$this->em->persist($r10);
+        $this->em->persist($r10);
         $this->em->flush(); 
 
         $enablingRoles = $roleAuthServ->authoriseAction(\Action::EDIT_OBJECT, $s3, $u)->getGrantingRoles(); 
@@ -519,10 +519,10 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $siteRoleType = TestUtil::createSampleRoleType("SITE_RT");
         $siteRoleType2 = TestUtil::createSampleRoleType("SITE_RT2");
         $projRoleType = TestUtil::createSampleRoleType("PROJ_RT");
-    	$this->em->persist($ngiRoleType);
-    	$this->em->persist($siteRoleType);
-    	$this->em->persist($siteRoleType2);
-    	$this->em->persist($projRoleType);
+        $this->em->persist($ngiRoleType);
+        $this->em->persist($siteRoleType);
+        $this->em->persist($siteRoleType2);
+        $this->em->persist($projRoleType);
         
         $this->em->flush(); 
 
@@ -569,7 +569,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * s1     s2     s3 
          */
         $r1 = TestUtil::createSampleRole($u, $ngiRoleType, $n2, RoleStatus::GRANTED); 
-    	$this->em->persist($r1);
+        $this->em->persist($r1);
         $this->em->flush(); 
 
         $rolesDirect = $u->getRoles(); 
@@ -590,7 +590,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * s1     s2     s3 
          */
         $r2 = TestUtil::createSampleRole($u, $ngiRoleType, $n3, RoleStatus::GRANTED); 
-    	$this->em->persist($r2);
+        $this->em->persist($r2);
         $this->em->flush(); 
 
         $roles = $roleAuthServ->getUserRolesReachableFromEntityASC($u, $s2); 
@@ -609,7 +609,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * s1     s2     s3-r3 
          */
         $r3 = TestUtil::createSampleRole($u, $siteRoleType, $s3, RoleStatus::GRANTED); 
-    	$this->em->persist($r3);
+        $this->em->persist($r3);
         $this->em->flush(); 
 
         $roles = $roleAuthServ->getUserRolesReachableFromEntityASC($u, $s3); 
@@ -625,7 +625,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * s1     s2     s3-r3 
          */
         $r4 = TestUtil::createSampleRole($u, $projRoleType, $p3, RoleStatus::GRANTED); 
-    	$this->em->persist($r4);
+        $this->em->persist($r4);
         $this->em->flush(); 
 
          /*
@@ -636,7 +636,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * s1     s2-r5  s3-r3 
          */
         $r5 = TestUtil::createSampleRole($u, $siteRoleType, $s2, RoleStatus::GRANTED); 
-    	$this->em->persist($r5);
+        $this->em->persist($r5);
         $this->em->flush(); 
 
         /*
@@ -647,7 +647,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * s1-r6  s2-r5  s3-r3 
          */
         $r6 = TestUtil::createSampleRole($u, $siteRoleType, $s1, RoleStatus::GRANTED); 
-    	$this->em->persist($r6);
+        $this->em->persist($r6);
         $this->em->flush(); 
 
         /*
@@ -658,7 +658,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * s1-r6  s2-r5  s3-r3,r7 
          */
         $r7 = TestUtil::createSampleRole($u, $siteRoleType2, $s3, RoleStatus::GRANTED); 
-    	$this->em->persist($r7);
+        $this->em->persist($r7);
         $this->em->flush(); 
 
         /*
@@ -669,7 +669,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
          * s1-r6  s2-r5  s3-r3,r7 
          */
         $r8 = TestUtil::createSampleRole($u, $projRoleType, $p2, RoleStatus::GRANTED); 
-    	$this->em->persist($r8);
+        $this->em->persist($r8);
         $this->em->flush(); 
 
         $roles = $roleAuthServ->getUserRolesReachableFromEntityASC($u, $s1); 
@@ -702,22 +702,22 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
      * of roles that allow an NGI certification status change.  
      */
     public function testAuthoriseAction2(){
-    	print __METHOD__ . "\n";
-    	// Create roletypes
-    	$siteAdminRT = TestUtil::createSampleRoleType(RoleTypeName::SITE_ADMIN/*, RoleTypeClass::SITE_USER*/);
+        print __METHOD__ . "\n";
+        // Create roletypes
+        $siteAdminRT = TestUtil::createSampleRoleType(RoleTypeName::SITE_ADMIN/*, RoleTypeClass::SITE_USER*/);
         $ngiManRT = TestUtil::createSampleRoleType(RoleTypeName::NGI_OPS_MAN/*, RoleTypeClass::REGIONAL_MANAGER*/);
         $rodRT = TestUtil::createSampleRoleType(RoleTypeName::REG_STAFF_ROD/*, RoleTypeClass::REGIONAL_USER*/);
         $codRT = TestUtil::createSampleRoleType(RoleTypeName::COD_ADMIN/*, RoleTypeClass::PROJECT*/);
-    	$this->em->persist($siteAdminRT); // edit site1 (but not cert status) 
-    	$this->em->persist($ngiManRT); // edit owned site1/site2 and cert status
-    	$this->em->persist($rodRT);  // edit owned sites 1and2 (but not cert status)
-    	$this->em->persist($codRT);  // edit all sites cert status only  
+        $this->em->persist($siteAdminRT); // edit site1 (but not cert status) 
+        $this->em->persist($ngiManRT); // edit owned site1/site2 and cert status
+        $this->em->persist($rodRT);  // edit owned sites 1and2 (but not cert status)
+        $this->em->persist($codRT);  // edit all sites cert status only  
     
-    	// Create a user
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    	$this->em->persist($u);
+        // Create a user
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $this->em->persist($u);
     
-    	// Create a linked object graph 
+        // Create a linked object graph 
 /*
                                  p1
                                  |
@@ -729,19 +729,19 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
                                  
  */
         
-    	$ngi = TestUtil::createSampleNGI("MYNGI");
-    	$this->em->persist($ngi);
-    	$site1 = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
+        $ngi = TestUtil::createSampleNGI("MYNGI");
+        $this->em->persist($ngi);
+        $site1 = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
         //$site1->setNgiDoJoin($ngi); 
         $ngi->addSiteDoJoin($site1); 
-    	$this->em->persist($site1);
+        $this->em->persist($site1);
         $se1 = TestUtil::createSampleService('somelabel'); 
         $site1->addServiceDoJoin($se1); 
-    	$this->em->persist($se1);
+        $this->em->persist($se1);
         $site2_userHasNoDirectRole = TestUtil::createSampleSite("SITENAME_2"/*, "PK01"*/);
         $ngi->addSiteDoJoin($site2_userHasNoDirectRole); 
         //$site2_userHasNoDirectRole->setNgiDoJoin($ngi);
-    	$this->em->persist($site2_userHasNoDirectRole);
+        $this->em->persist($site2_userHasNoDirectRole);
 
         $p1 = new \Project("EGI");
         $this->em->persist($p1);
@@ -749,15 +749,15 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         
 
     
-    	// Create ngiManagerRole, ngiUserRole, siteAdminRole and link user and owned entities  
+        // Create ngiManagerRole, ngiUserRole, siteAdminRole and link user and owned entities  
         $ngiManagerRole = TestUtil::createSampleRole($u, $ngiManRT, $ngi, RoleStatus::GRANTED); 
-    	$this->em->persist($ngiManagerRole);
+        $this->em->persist($ngiManagerRole);
         $rodUserRole = TestUtil::createSampleRole($u, $rodRT, $ngi, RoleStatus::GRANTED); 
-    	$this->em->persist($rodUserRole);
+        $this->em->persist($rodUserRole);
         $siteAdminRole = TestUtil::createSampleRole($u, $siteAdminRT, $site1, RoleStatus::GRANTED) ; 
-    	$this->em->persist($siteAdminRole);
-    	
-    	$this->em->flush();
+        $this->em->persist($siteAdminRole);
+        
+        $this->em->flush();
 
         // ********MUST******** start a new connection to test transactional 
         // isolation of RoleService methods.  
@@ -784,7 +784,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
 // 
 //        // Add a new project role and link ngi and give user COD_ADMIN Project role (use $this->em to isolate)
         $codRole = TestUtil::createSampleRole($u, $codRT, $p1, RoleStatus::GRANTED); 
-    	$this->em->persist($codRole); 
+        $this->em->persist($codRole); 
         $this->em->flush();
 
 /*

@@ -1,5 +1,5 @@
 <div class="rightPageContainer">
-	<h1 class="Success">Success</h1><br />
+    <h1 class="Success">Success</h1><br />
     
     <?php xecho($params['Name'])?> has been successfully added as a new project.
     <br />

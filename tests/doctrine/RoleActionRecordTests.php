@@ -29,13 +29,13 @@ use Doctrine\ORM\EntityManager;
 class RoleActionRecordTests extends PHPUnit_Extensions_Database_TestCase {
 
     private $em;
-	
-	/**
+    
+    /**
      * Overridden. 
      */
     public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        parent::setUpBeforeClass();
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing RoleActionRecordTests. . .\n";
     }
 
@@ -47,7 +47,7 @@ class RoleActionRecordTests extends PHPUnit_Extensions_Database_TestCase {
         require_once dirname(__FILE__) . '/bootstrap_pdo.php';
         return getConnectionToTestDB(); 
     }
-	
+    
     /**
      * Overridden. Returns the test dataset.  
      * Defines how the initial state of the database should look before each test is executed. 
@@ -127,14 +127,14 @@ class RoleActionRecordTests extends PHPUnit_Extensions_Database_TestCase {
         }
         
         //Commit the entites to the database
-		$this->em->flush();
+        $this->em->flush();
 
         //Check this via the database
-    	$con = $this->getConnection();
+        $con = $this->getConnection();
 
         $result = $con->createQueryTable('results', "SELECT * FROM RoleActionRecords");
-		//Assert that data exist in the database for this service
-	    $this->assertEquals(10, $result->getRowCount());
+        //Assert that data exist in the database for this service
+        $this->assertEquals(10, $result->getRowCount());
     }
 
     public function testGetOwnedEntityDiscriminator() {

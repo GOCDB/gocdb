@@ -30,7 +30,7 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase {
      */
     public static function setUpBeforeClass() {
         parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing ServiceMoveTest. . .\n";
     }
     
@@ -122,141 +122,141 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase {
      *  Checks the sites are under the right NGIs.
      */
     public function testServiceMoves() {
-		
-    	print __METHOD__ . "\n";	
-    	
-    	//Insert initial data
-    	$S1 = TestUtil::createSamplesite("Site1");
-    	$S2 = TestUtil::createSamplesite("Site2");
-    	$SE1 = TestUtil::createSampleService("SEP1");
-    	$SE2 = TestUtil::createSampleService("SEP2");
-    	$SE3 = TestUtil::createSampleService("SEP3");
-    	$dummy_user = TestUtil::createSampleUser('Test', 'User', '/Some/string');
-    	
-    	//Make dummy user a GOCDB admin so it can perfirm site moves etc.
-    	$dummy_user->setAdmin(true);
-    	
-    	// Assign the service end points to the sites
-    	$S1->addServiceDoJoin($SE1);
-    	$S2->addServiceDoJoin($SE2);
-    	$S2->addServiceDoJoin($SE3);   	
-    		
-    	//Persist initial data
-    	$this->em->persist($S1);
-    	$this->em->persist($S2);
-    	$this->em->persist($SE1);
-    	$this->em->persist($SE2);
-    	$this->em->persist($SE3);
-    	$this->em->persist($dummy_user);
-    	$this->em->flush();
-    	
-    	//Use DB connection to check data
-    	$con = $this->getConnection();
-	    	
-	    	/*
-	    	 * Check both that each Site is present and that the ID matches the doctrine one
-	    	 */
-    		$S1_ID = $S1->getId();
-	    	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-			
-    		$S2_ID = $S2->getId();
-	    	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-	    	
-	    	/*
-	    	 * Check each service endpoint is: present, has the right ID & parent Site
-	    	 */
-	    	$SE1_id= $SE1->getId();
-	    	$sql = "SELECT 1 FROM services WHERE hostname = 'SEP1' AND ID = '$SE1_id' AND PARENTSITE_ID = '$S1_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-	    	
-	    	$SE2_id= $SE2->getId();
-	    	$sql = "SELECT 1 FROM services WHERE hostname = 'SEP2' AND ID = '$SE2_id' AND PARENTSITE_ID = '$S2_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-	    	
-	    	$SE3_id= $SE3->getId();
-	    	$sql = "SELECT 1 FROM services WHERE hostname = 'SEP3' AND ID = '$SE3_id' AND PARENTSITE_ID = '$S2_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
+        
+        print __METHOD__ . "\n";	
+        
+        //Insert initial data
+        $S1 = TestUtil::createSamplesite("Site1");
+        $S2 = TestUtil::createSamplesite("Site2");
+        $SE1 = TestUtil::createSampleService("SEP1");
+        $SE2 = TestUtil::createSampleService("SEP2");
+        $SE3 = TestUtil::createSampleService("SEP3");
+        $dummy_user = TestUtil::createSampleUser('Test', 'User', '/Some/string');
+        
+        //Make dummy user a GOCDB admin so it can perfirm site moves etc.
+        $dummy_user->setAdmin(true);
+        
+        // Assign the service end points to the sites
+        $S1->addServiceDoJoin($SE1);
+        $S2->addServiceDoJoin($SE2);
+        $S2->addServiceDoJoin($SE3);   	
+            
+        //Persist initial data
+        $this->em->persist($S1);
+        $this->em->persist($S2);
+        $this->em->persist($SE1);
+        $this->em->persist($SE2);
+        $this->em->persist($SE3);
+        $this->em->persist($dummy_user);
+        $this->em->flush();
+        
+        //Use DB connection to check data
+        $con = $this->getConnection();
+            
+            /*
+             * Check both that each Site is present and that the ID matches the doctrine one
+             */
+            $S1_ID = $S1->getId();
+            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            $S2_ID = $S2->getId();
+            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            /*
+             * Check each service endpoint is: present, has the right ID & parent Site
+             */
+            $SE1_id= $SE1->getId();
+            $sql = "SELECT 1 FROM services WHERE hostname = 'SEP1' AND ID = '$SE1_id' AND PARENTSITE_ID = '$S1_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            $SE2_id= $SE2->getId();
+            $sql = "SELECT 1 FROM services WHERE hostname = 'SEP2' AND ID = '$SE2_id' AND PARENTSITE_ID = '$S2_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            $SE3_id= $SE3->getId();
+            $sql = "SELECT 1 FROM services WHERE hostname = 'SEP3' AND ID = '$SE3_id' AND PARENTSITE_ID = '$S2_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
 
- 	   	
-    	//Move service endpoints
-    	$serv = new org\gocdb\services\ServiceService;
-	   	$serv->setEntityManager($this->em);
-    	$serv->moveService($SE1, $S2, $dummy_user);
-    	$serv->moveService($SE2, $S1, $dummy_user);
-    	$serv->moveService($SE3, $S2, $dummy_user); //No change
-    	
-     	
-    	//flush movement
-    	$this->em->flush();
-    	
-    	//Use doctrine to check movement
-  	 		//Check correct Site for each service endpoint
-    	    $this->assertEquals($S2, $SE1->getParentSite());
-    	    $this->assertEquals($S1, $SE2->getParentSite());
-    	    $this->assertEquals($S2, $SE3->getParentSite());
-    	    
-        	    
-    	    //Check correct service endpoints for each Site
-	    	    //Site1
-	    	    $SiteSEPs = $S1->getServices();
-	    	    foreach ($SiteSEPs as $SEP){
-	    	    	$this->assertEquals($SE2, $SEP); 
-	    	    }
-	        	//Site2
-	    	    $SiteSEPs = $S2->getServices();
-	    	    foreach ($SiteSEPs as $SEP){
-	    	    	$this->assertTrue(($SEP==$SE1) or ($SEP==$SE3));
-	    	    }
-    	    
-   	
-    	//Use database connection to check movememrnt
-    		$con = $this->getConnection();
-    		
-    		//Check Sites are still present and their ID is unchanged
-	    	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-			
-		   	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-  		  	
-    		
-    		//Check each Site has the correct number of service endpoints
-		    	//Site 1
-		    	$sql = "SELECT 1 FROM services WHERE parentsite_id = '$S1_ID'";
-		        $result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(1, $result->getRowCount());	    	
-		    	
-				//Site 2
-		    	$sql = "SELECT 1 FROM services WHERE parentsite_id = '$S2_ID'";
-		        $result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(2, $result->getRowCount());	 
-		    	
-	    	//check Site IDs are unchanged and they are assigned to the correct NGI
-		    	//Site 1
-		    	$sql = "SELECT 1 FROM services WHERE hostname = 'SEP1' AND id = '$SE1_id' AND parentsite_id = '$S2_ID'";
-		        $result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(1, $result->getRowCount());
-		    	
-		    	//Site 2
-		    	$sql = "SELECT 1 FROM services WHERE hostname = 'SEP2' AND id = '$SE2_id' AND parentsite_id = '$S1_ID'";
-		    	$result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(1, $result->getRowCount());
-		    	
-		    	//Site 3
-		    	$sql = "SELECT 1 FROM services WHERE hostname = 'SEP3' AND id = '$SE3_id' AND parentsite_id = '$S2_ID'";
-		    	$result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(1, $result->getRowCount());				
-  	
-	}//close function
+        
+        //Move service endpoints
+        $serv = new org\gocdb\services\ServiceService;
+        $serv->setEntityManager($this->em);
+        $serv->moveService($SE1, $S2, $dummy_user);
+        $serv->moveService($SE2, $S1, $dummy_user);
+        $serv->moveService($SE3, $S2, $dummy_user); //No change
+        
+        
+        //flush movement
+        $this->em->flush();
+        
+        //Use doctrine to check movement
+            //Check correct Site for each service endpoint
+            $this->assertEquals($S2, $SE1->getParentSite());
+            $this->assertEquals($S1, $SE2->getParentSite());
+            $this->assertEquals($S2, $SE3->getParentSite());
+            
+                
+            //Check correct service endpoints for each Site
+                //Site1
+                $SiteSEPs = $S1->getServices();
+                foreach ($SiteSEPs as $SEP){
+                    $this->assertEquals($SE2, $SEP); 
+                }
+                //Site2
+                $SiteSEPs = $S2->getServices();
+                foreach ($SiteSEPs as $SEP){
+                    $this->assertTrue(($SEP==$SE1) or ($SEP==$SE3));
+                }
+            
+    
+        //Use database connection to check movememrnt
+            $con = $this->getConnection();
+            
+            //Check Sites are still present and their ID is unchanged
+            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            
+            //Check each Site has the correct number of service endpoints
+                //Site 1
+                $sql = "SELECT 1 FROM services WHERE parentsite_id = '$S1_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(1, $result->getRowCount());	    	
+                
+                //Site 2
+                $sql = "SELECT 1 FROM services WHERE parentsite_id = '$S2_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(2, $result->getRowCount());	 
+                
+            //check Site IDs are unchanged and they are assigned to the correct NGI
+                //Site 1
+                $sql = "SELECT 1 FROM services WHERE hostname = 'SEP1' AND id = '$SE1_id' AND parentsite_id = '$S2_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(1, $result->getRowCount());
+                
+                //Site 2
+                $sql = "SELECT 1 FROM services WHERE hostname = 'SEP2' AND id = '$SE2_id' AND parentsite_id = '$S1_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(1, $result->getRowCount());
+                
+                //Site 3
+                $sql = "SELECT 1 FROM services WHERE hostname = 'SEP3' AND id = '$SE3_id' AND parentsite_id = '$S2_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(1, $result->getRowCount());				
+    
+    }//close function
 }//close class
 
 ?>

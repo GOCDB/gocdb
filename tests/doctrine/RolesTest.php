@@ -32,7 +32,7 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase {
      */
     public static function setUpBeforeClass() {
         parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing RolesTest. . .\n";
     }
     
@@ -124,32 +124,32 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase {
      * returns an instanceof Site.
      */
     public function testRoleDiscriminatorSite() {
-    	print __METHOD__ . "\n";
-    	// Create a roletype
-    	$rt = TestUtil::createSampleRoleType("ROLENAME");
-    	$this->em->persist($rt);
-    	
-    	// Create a user
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    	$this->em->persist($u);
-    	
-    	// Create a site
-    	$s = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
-    	$this->em->persist($s);
-    	
-    	// Create a role and link to the user, role type and site
+        print __METHOD__ . "\n";
+        // Create a roletype
+        $rt = TestUtil::createSampleRoleType("ROLENAME");
+        $this->em->persist($rt);
+        
+        // Create a user
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $this->em->persist($u);
+        
+        // Create a site
+        $s = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
+        $this->em->persist($s);
+        
+        // Create a role and link to the user, role type and site
         $r = TestUtil::createSampleRole($u, $rt, $s, RoleStatus::GRANTED); 
-    	$this->em->persist($r);
-    	
-    	$this->em->flush();
-    	
-    	// New reference to the freshly created role entity
-    	$dbRole = $this->em->find("Role", $r->getId());
-    	if(!$dbRole->getOwnedEntity() instanceof Site) {
-    		$this->fail();
-    	}
-    	// if we've reached this point without error the test
-    	// has passed.    	 
+        $this->em->persist($r);
+        
+        $this->em->flush();
+        
+        // New reference to the freshly created role entity
+        $dbRole = $this->em->find("Role", $r->getId());
+        if(!$dbRole->getOwnedEntity() instanceof Site) {
+            $this->fail();
+        }
+        // if we've reached this point without error the test
+        // has passed.    	 
     }
       
    /**
@@ -159,33 +159,33 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase {
     * returns an instance of NGI.
     */
     public function testRoleDiscriminatorNGI() {
-    	print __METHOD__ . "\n";
-    	// Create a roletype
-    	$rt = TestUtil::createSampleRoleType("Name");
-    	$this->em->persist($rt);
-    	 
-    	// Create a user
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    	$this->em->persist($u);
-    	 
-    	// Create an NGI
-    	$n = TestUtil::createSampleNGI("MYNGI");
-    	$this->em->persist($n);
-    	 
-    	// Create a role and link to the user, role type and site
-    	$r = TestUtil::createSampleRole($u, $rt, $n, RoleStatus::GRANTED);
-    	
-    	$this->em->persist($r);
-    	 
-    	$this->em->flush();
-    	 
-    	// New reference to the freshly created role entity
-    	$dbRole = $this->em->find("Role", $r->getId());
-    	if(!$dbRole->getOwnedEntity() instanceof NGI) {
-    		$this->fail();
-    	}
-    	// if we've reached this point without error the test
-    	// has passed.
+        print __METHOD__ . "\n";
+        // Create a roletype
+        $rt = TestUtil::createSampleRoleType("Name");
+        $this->em->persist($rt);
+         
+        // Create a user
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $this->em->persist($u);
+         
+        // Create an NGI
+        $n = TestUtil::createSampleNGI("MYNGI");
+        $this->em->persist($n);
+         
+        // Create a role and link to the user, role type and site
+        $r = TestUtil::createSampleRole($u, $rt, $n, RoleStatus::GRANTED);
+        
+        $this->em->persist($r);
+         
+        $this->em->flush();
+         
+        // New reference to the freshly created role entity
+        $dbRole = $this->em->find("Role", $r->getId());
+        if(!$dbRole->getOwnedEntity() instanceof NGI) {
+            $this->fail();
+        }
+        // if we've reached this point without error the test
+        // has passed.
     }
         
     /**
@@ -196,28 +196,28 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase {
      * @expectedException \Doctrine\DBAL\DBALException
      */
     public function testRoleTypeIntegrityConstraint() {
-    	print __METHOD__ . "\n";
-    	// Create a roletype
-    	$rt = TestUtil::createSampleRoleType("NAME");
-    	$this->em->persist($rt);
+        print __METHOD__ . "\n";
+        // Create a roletype
+        $rt = TestUtil::createSampleRoleType("NAME");
+        $this->em->persist($rt);
     
-    	// Create a user
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    	$this->em->persist($u);
+        // Create a user
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $this->em->persist($u);
     
-    	// Create an NGI
-    	$n = TestUtil::createSampleNGI("MYNGI");
-    	$this->em->persist($n);
+        // Create an NGI
+        $n = TestUtil::createSampleNGI("MYNGI");
+        $this->em->persist($n);
     
-    	// Create a role and link to the user, role type and ngi 
+        // Create a role and link to the user, role type and ngi 
         $r = TestUtil::createSampleRole($u, $rt, $n, RoleStatus::GRANTED); 
-    	$this->em->persist($r);
-    	$this->em->flush();
-    	
-    	// try to delete the role type before deleting
-    	// the dependant role
-    	$this->em->remove($rt);
-    	$this->em->flush();
+        $this->em->persist($r);
+        $this->em->flush();
+        
+        // try to delete the role type before deleting
+        // the dependant role
+        $this->em->remove($rt);
+        $this->em->flush();
     }
 
     /**
@@ -228,18 +228,18 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase {
         print __METHOD__ . "\n";
         // Should throw an expected exception because the role type Name value 
         // must be unique
-    	$rt1 = TestUtil::createSampleRoleType("RoleName"/*, RoleTypeClass::SITE_USER*/);
-    	$rt2 = TestUtil::createSampleRoleType("RoleName"/*, RoleTypeClass::REGIONAL_USER*/);
-    	$this->em->persist($rt1);
-    	$this->em->persist($rt2);
-    	$this->em->flush();
+        $rt1 = TestUtil::createSampleRoleType("RoleName"/*, RoleTypeClass::SITE_USER*/);
+        $rt2 = TestUtil::createSampleRoleType("RoleName"/*, RoleTypeClass::REGIONAL_USER*/);
+        $this->em->persist($rt1);
+        $this->em->persist($rt2);
+        $this->em->flush();
     }
 
     
 
 
     public function testRoleConstants(){
-    	print __METHOD__ . "\n";
+        print __METHOD__ . "\n";
         
         $roleNames = RoleTypeName::getAsArray(); 
         $this->assertEquals(RoleTypeName::SITE_ADMIN, $roleNames['SITE_ADMIN'] ); 

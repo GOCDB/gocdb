@@ -190,7 +190,7 @@ class User {
      * @return \DateTime
      */
     public function getLastLoginDate(){
-    	return $this->lastLoginDate; 
+        return $this->lastLoginDate; 
     }
 
     /**
@@ -306,7 +306,7 @@ class User {
      * @param \DateTime $lastLoginDate
      */
     public function setLastLoginDate($lastLoginDate){
-    	$this->lastLoginDate = $lastLoginDate; 
+        $this->lastLoginDate = $lastLoginDate; 
     }
 
     /**

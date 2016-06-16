@@ -3,16 +3,16 @@
 
 // Finds one or more services by hostname and service type
 function findSEs($hostName, $serviceType) {
-	$dql = "SELECT s FROM Service s JOIN s.serviceType st"
-			. " WHERE s.hostName = :hostName AND st.name = :serviceType";
+    $dql = "SELECT s FROM Service s JOIN s.serviceType st"
+            . " WHERE s.hostName = :hostName AND st.name = :serviceType";
 
-	$services = $GLOBALS['entityManager']
-	->createQuery($dql)
-	->setParameter(":hostName", $hostName)
-	->setParameter(":serviceType", $serviceType)
-	->getResult();
+    $services = $GLOBALS['entityManager']
+    ->createQuery($dql)
+    ->setParameter(":hostName", $hostName)
+    ->setParameter(":serviceType", $serviceType)
+    ->getResult();
 
-	return $services;
+    return $services;
 }
 
 /* Is the passed site invalid?

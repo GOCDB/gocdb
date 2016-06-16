@@ -34,7 +34,7 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
     public static function setUpBeforeClass() {
         parent::setUpBeforeClass();
 
-		echo "\n\n-------------------------------------------------\n";
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing DoctrineCleanInsert1Test. . .\n";
     }
     
@@ -163,16 +163,16 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
         // close causes all managed entities ($refetchedSite) to become detached
         // and the em2 can't be used again. 
         
-				                                /** Why the following works **/
-		/* When doctrine fetches an entity its default is to lazy load related entities - it does
-		 * not directly hydrate them it creates a proxy. Although the entity manager is closed the 
-		 * code below is able to get the service count, name and parent site. This is because when 
-		 * doctrine creates a proxy the proxy also contains an instance of the EntityManager and it's
-		 * dependancies which can then be used when the proxy is called to hydrate the entity and provide
-		 * the required data. 
-		 */	
-		
-		
+                                                /** Why the following works **/
+        /* When doctrine fetches an entity its default is to lazy load related entities - it does
+         * not directly hydrate them it creates a proxy. Although the entity manager is closed the 
+         * code below is able to get the service count, name and parent site. This is because when 
+         * doctrine creates a proxy the proxy also contains an instance of the EntityManager and it's
+         * dependancies which can then be used when the proxy is called to hydrate the entity and provide
+         * the required data. 
+         */	
+        
+        
         $seList = $refetchedSite->getServices(); 
         /*foreach($seList as $se){
             print $se->getId().' '.$se->getHostName()."\n"; 
@@ -517,8 +517,8 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
     public function testCascadeDeleteFromOwnedEntity(){
         print __METHOD__ . "\n";
         // create and commit a new site 
-       	$s = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
-    	$this->em->persist($s);
+        $s = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
+        $this->em->persist($s);
         $this->em->flush(); 
 
         // lookup the site's super class (OwnedEntity) 
@@ -553,9 +553,9 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
     public function testShowMergeIsRequiredBetweenDifferentPersistenceCtxt(){
         print __METHOD__ . "\n";
         // User
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
         $regFLSupportRT = TestUtil::createSampleRoleType(RoleTypeName::REG_FIRST_LINE_SUPPORT/*, RoleTypeClass::REGIONAL_USER*/);
-    	$this->em->persist($u);
+        $this->em->persist($u);
         $this->em->persist($regFLSupportRT); 
         $this->em->flush();
 
@@ -568,11 +568,11 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
         //$regFLSupportRT = $this->em->merge($regFLSupportRT);
 
         // Create new NGI
-    	$n = TestUtil::createSampleNGI("MYNGI");
-    	$this->em->persist($n);
+        $n = TestUtil::createSampleNGI("MYNGI");
+        $this->em->persist($n);
         
         $roleNgi = TestUtil::createSampleRole($u, $regFLSupportRT, $n, RoleStatus::GRANTED); 
-    	$this->em->persist($roleNgi);
+        $this->em->persist($roleNgi);
         // the flush below is what causes the expected exception 
         $this->em->flush();
     }
@@ -581,8 +581,8 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
     public function testSiteV4PK(){
         print __METHOD__ . "\n";
         $this->em->getConnection()->beginTransaction();
-    	$pk = new \PrimaryKey();
-    	$this->em->persist($pk);
+        $pk = new \PrimaryKey();
+        $this->em->persist($pk);
         // Below line is interesting - Oracle returns a value for $pk->getId()
         // (i.e. before flush) while MySQL does not return a value until the 
         // flush. Either way, the subsequent rollback causes the PK to be removed
@@ -590,12 +590,12 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
         //$this->assertEmpty($pk->getId()); 
         //print "the pk is before: [".$pk->getId()."]\n"; 
         
-    	$this->em->flush(); // sync in-memory state with db so that the pk Id has a value
+        $this->em->flush(); // sync in-memory state with db so that the pk Id has a value
         //print "the pk is after: [".$pk->getId()."]\n"; 
         // We expect after the flush the pk to have an id value  
         $this->assertNotEmpty($pk->getId()); 
-	    $site = new \Site();
-	    $site->setPrimaryKey($pk->getId() . "G0");
+        $site = new \Site();
+        $site->setPrimaryKey($pk->getId() . "G0");
         $site->setShortName('testshortname'); 
         $this->em->persist($site); 
         $this->em->flush(); 
@@ -880,9 +880,9 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
                 // **Note** setNgiDoJoin() MUST have the following definition for this test to work as expected:
                 // 
                 //   public function setNgiDoJoin(NGI $ngi) {
-	        //       $this->ngi = $ngi;  
+            //       $this->ngi = $ngi;  
                 //       $ngi->addSiteNoJoin($this);    
-	        //   }
+            //   }
             } else {
                 // This will NOT set the join/association (only setting on the inverse side) 
                 $ngi->addSiteNoJoin($site); 
@@ -890,8 +890,8 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
                 // **Note** addSiteNoJoin() MUST have the following definition for this test to work as expected: 
                 // 
                 //   public function addSiteNoJoin(Site $site) {
-		//       $this->sites[] = $site; 
-	        //   }
+        //       $this->sites[] = $site; 
+            //   }
             }          
             $this->em->persist($site); // is now managed
             $this->em->persist($ngi);  // is now managed

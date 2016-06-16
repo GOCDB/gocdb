@@ -31,7 +31,7 @@ function view() {
     
     $timePeriod = 1;
     if(isset($_REQUEST['timePeriod'])) {
-    	$timePeriod = $_REQUEST['timePeriod'];
+        $timePeriod = $_REQUEST['timePeriod'];
     }
     
     $days = 7 * $timePeriod;

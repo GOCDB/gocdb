@@ -47,13 +47,13 @@ function draw() {
     $dn = Get_User_Principle();
     if(empty($dn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	die(); 
+    die(); 
     }
     $user = $serv->getUserByPrinciple($dn);
 
     if(!is_null($user)) {
-	show_view('error.php', "Only unregistered users can register");
-	die();
+    show_view('error.php', "Only unregistered users can register");
+    die();
     }
 
     /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
@@ -70,7 +70,7 @@ function submit() {
     $dn = Get_User_Principle();
     if(empty($dn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	die(); 
+    die(); 
     }
     $values['CERTIFICATE_DN'] = $dn;
 

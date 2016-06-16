@@ -124,9 +124,9 @@ class RetrieveAccount extends AbstractEntityService {
                 WHERE u.id = :id";
         
         $request = $this->em
-	    	->createQuery($dql)
-	    	->setParameter('id', $userId)
-	    	->getOneOrNullResult();
+            ->createQuery($dql)
+            ->setParameter('id', $userId)
+            ->getOneOrNullResult();
         
         return $request;
     }
@@ -142,9 +142,9 @@ class RetrieveAccount extends AbstractEntityService {
                 WHERE r.confirmCode = :code";
         
         $request = $this->em
-	    	->createQuery($dql)
-	    	->setParameter('code', $code)
-	    	->getOneOrNullResult();
+            ->createQuery($dql)
+            ->setParameter('code', $code)
+            ->getOneOrNullResult();
         
         return $request;
     }

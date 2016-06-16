@@ -50,26 +50,26 @@
         
         <?php if ($ngiCount != 0): ?>
             <table id="ngisTable" class="table table-striped table-condensed tablesorter">
-		<thead>
-		    <tr>
-			<th></th>
-			<th>Name</th>
-			<th>Description</th>
-		    </tr>
+        <thead>
+            <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Description</th>
+            </tr>
                 </thead>
-		<tbody>
+        <tbody>
                 <?php
                 //$num = 2;
                 foreach($params['NGIs'] as $ngi) {
                 ?>
                 <tr>
-		    <td>
-			<img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg">                            
-		    </td>
+            <td>
+            <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg">                            
+            </td>
                     <td>
-			<a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
-			    <?php xecho($ngi->getName()); ?>
-			</a>
+            <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
+                <?php xecho($ngi->getName()); ?>
+            </a>
                     </td>
                     <td><?php xecho($ngi->getDescription()) ?></td>
                 </tr>
@@ -77,9 +77,9 @@
                     //if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
                 ?>
-		</tbody>
+        </tbody>
             </table>
-	
+    
         <?php else: echo "<br><br>&nbsp &nbsp"; endif; ?>
         <!-- Don't show link in read only mode -->
         <?php if(!$params['portalIsReadOnly']):?>
@@ -115,30 +115,30 @@
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <?php if (sizeof($params['Roles'])>0): ?>
-	
+    
             <table id="usersTable" class="table table-striped table-condensed tablesorter">
-		<thead>
-		    <tr>
-			<th></th>
-			<th>Name</th>
-			<th>Role</th>
-		    </tr>
-		</thead>
-		<tbody>
+        <thead>
+            <tr>
+            <th></th>
+            <th>Name</th>
+            <th>Role</th>
+            </tr>
+        </thead>
+        <tbody>
                 <?php
                     $num = 2;
                     foreach($params['Roles'] as $role) {
                 ?>
                 <tr>
                     <td>
-			<img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
-		    </td>
-		    <td>
-			<?php if($params['authenticated']){ ?>
-			<a  href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
-			    <?php echo $role->getUser()->getFullName()?>
-			</a>
-			<?php } else {echo 'PROTECTED'; } ?>
+            <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+            </td>
+            <td>
+            <?php if($params['authenticated']){ ?>
+            <a  href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
+                <?php echo $role->getUser()->getFullName()?>
+            </a>
+            <?php } else {echo 'PROTECTED'; } ?>
                     </td>
                     <td>
                         <?php if($params['authenticated']) { xecho($role->getRoleType()->getName()); } else {echo('PROTECTED'); } ?>
@@ -148,7 +148,7 @@
                     //if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over user roles
                 ?>
-		</tbody>
+        </tbody>
             </table>
         <?php else: echo "<br><br>&nbsp &nbsp There are currently no users with roles over this project<br>"; endif; ?>
         <!-- don't allow role requests in read only mode -->
@@ -172,23 +172,23 @@
         <?php if(sizeof($params['Sites']) > 0): ?>
 
             <table id="sitesTable" class="table table-striped table-condensed tablesorter">
-		<thead>
-		    <tr>
-			<th>Name</th>
-			<th>Certification Status</th>
-			<th>NGI</th>
-			<th>Production Status</th>
-		    </tr>
-		</thead>
+        <thead>
+            <tr>
+            <th>Name</th>
+            <th>Certification Status</th>
+            <th>NGI</th>
+            <th>Production Status</th>
+            </tr>
+        </thead>
                 <?php
                 $num = 2;
                 foreach($params['Sites'] as $site) {
                 ?>
                 <tr>
                     <td>
-			<a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-			    <?php xecho($site->getShortName()); ?>
-			</a>
+            <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+                <?php xecho($site->getShortName()); ?>
+            </a>
                     </td>
 
                     <td>
@@ -206,8 +206,8 @@
                     </td>
                 </tr>
                 <?php 
-		//if($num == 1) { $num = 2; } else { $num = 1; }
-		}?>
+        //if($num == 1) { $num = 2; } else { $num = 1; }
+        }?>
             </table>
         <?php endif; // End of the foreach loop iterating over sites?>
 
@@ -222,31 +222,31 @@
     $(document).ready(function() 
     {
 
-	$("#sitesTable").tablesorter(); 
+    $("#sitesTable").tablesorter(); 
 
-	// sort on first and second table cols only 
-	$("#ngisTable").tablesorter({ 
-	    // pass the headers argument and assing a object 
-	    headers: { 
-		// assign the third column (we start counting zero) 
-		0: { 
-		    sorter: false 
-		}, 
-		2: { 
-		    sorter: false 
-		}
-	    } 
-	}); 
+    // sort on first and second table cols only 
+    $("#ngisTable").tablesorter({ 
+        // pass the headers argument and assing a object 
+        headers: { 
+        // assign the third column (we start counting zero) 
+        0: { 
+            sorter: false 
+        }, 
+        2: { 
+            sorter: false 
+        }
+        } 
+    }); 
 
-	$("#usersTable").tablesorter({ 
-	    // pass the headers argument and assing a object 
-	    headers: { 
-		// assign the third column (we start counting zero) 
-		0: { 
-		    sorter: false 
-		}
-	    } 
-	}); 
-	
+    $("#usersTable").tablesorter({ 
+        // pass the headers argument and assing a object 
+        headers: { 
+        // assign the third column (we start counting zero) 
+        0: { 
+            sorter: false 
+        }
+        } 
+    }); 
+    
     }); 
 </script>

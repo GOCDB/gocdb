@@ -62,7 +62,7 @@ function draw(\EndpointLocation $endpoint, \Service $service, \User $user) {
 function submit(\EndpointLocation $endpoint, \Service $service, \User $user = null) {
      $serv = \Factory::getServiceService();
      try {
-       	$serv->deleteEndpoint($endpoint, $user);
+        $serv->deleteEndpoint($endpoint, $user);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();

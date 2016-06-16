@@ -38,7 +38,7 @@ class RoleCascadeDeletionsTest extends PHPUnit_Extensions_Database_TestCase {
      */
     public static function setUpBeforeClass() {
         parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing RoleCascadeDeletionsTest. . .\n";
     }
 

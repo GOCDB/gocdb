@@ -43,17 +43,17 @@ function retrieve() {
  * @return null
  */
 function draw() {
-	$dn = Get_User_Principle();
+    $dn = Get_User_Principle();
     if(empty($dn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	    die(); 
+        die(); 
     }
-	$user = \Factory::getUserService()->getUserByPrinciple($dn);
+    $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
-	if(!is_null($user)) {
-	    show_view('error.php', "Only unregistered users can retrieve an account.");
-	    die();
-	}
+    if(!is_null($user)) {
+        show_view('error.php', "Only unregistered users can retrieve an account.");
+        die();
+    }
 
     $params['DN'] = $dn;
     
@@ -66,7 +66,7 @@ function submit() {
     $currentDn = Get_User_Principle();
     if(empty($currentDn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	    die(); 
+        die(); 
     }
     
     try {

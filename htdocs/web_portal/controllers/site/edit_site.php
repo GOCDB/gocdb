@@ -51,7 +51,7 @@ function draw(\User $user = null) {
     // can user assign reserved scopes to this site, even though site has not been created yet?
     $disableReservedScopes = true; 
     if($user->isAdmin()){
-	$disableReservedScopes = false; 
+    $disableReservedScopes = false; 
     } 
     
     // URL mapping

@@ -66,60 +66,60 @@ function add() {
 function submit(\User $user = null) {
     
     
-	//Check if this is a confirmed submit or intial submit
-	$confirmed = $_POST['CONFIRMED'];	
+    //Check if this is a confirmed submit or intial submit
+    $confirmed = $_POST['CONFIRMED'];	
     if($confirmed == true){
-    	//Downtime is confirmed, submit it
-    	//$downtimeInfo = unserialize($_REQUEST['newValues']);  // didn't cater for UTF-8 chars   	
+        //Downtime is confirmed, submit it
+        //$downtimeInfo = unserialize($_REQUEST['newValues']);  // didn't cater for UTF-8 chars   	
         $downtimeInfo = json_decode($_POST['newValues'], TRUE); 
-    	$serv = \Factory::getDowntimeService();   	
+        $serv = \Factory::getDowntimeService();   	
         
-    	$params['dt'] = $serv->addDowntime($downtimeInfo, $user);    	
-    	show_view("downtime/added_downtime.php", $params);
+        $params['dt'] = $serv->addDowntime($downtimeInfo, $user);    	
+        show_view("downtime/added_downtime.php", $params);
     }else{
-    	//Show user confirmation screen with their input
-    	$downtimeInfo = getDtDataFromWeb(); 
-    	
-    	//Need to sort the impacted_ids into impacted services and impacted endpoints
-    	$impactedids = $downtimeInfo['IMPACTED_IDS'];
+        //Show user confirmation screen with their input
+        $downtimeInfo = getDtDataFromWeb(); 
+        
+        //Need to sort the impacted_ids into impacted services and impacted endpoints
+        $impactedids = $downtimeInfo['IMPACTED_IDS'];
 
-    	$services=array();
-    	$endpoints=array();
-    	
-    	//For each impacted id sort between endpoints and services using the prepended letter
-    	foreach($impactedids as $id){
-    	    if (strpos($id, 's') !== FALSE){
-    	        //This is a service id
-    	        $services[] = str_replace('s', '', $id); //trim off the identifying char before storing in array
-    	    }else{
-    	        //This is an endpoint id
-    	        $endpoints[] = str_replace('e', '', $id); //trim off the identifying char before storing in array
-    	    }
-    	}
-    	
-    	unset($downtimeInfo['IMPACTED_IDS']); //Delete the unsorted Ids from the downtime info
-    	 
-    	$downtimeInfo['Impacted_Endpoints'] = $endpoints;
-    	 
-    	
-    	$serv = \Factory::getServiceService();
-    	
-    	/** For endpoint put into downtime we want the parent service also. If a user has selected
-    	 * endpoints but not the parent service here we will add the service to maintain the link beteween
-    	 * a downtime having both the service and the endpoint.
-    	 */
-    	foreach($downtimeInfo['Impacted_Endpoints'] as $endpointIds){
-    	   $endpoint = $serv->getEndpoint($endpointIds);
-    	   $services[] = $endpoint->getService()->getId();
-    	}
-    	
-    	//Remove any duplicate service ids and store the array of ids
-    	$services = array_unique($services);
-    	
-    	//Assign the impacted services and endpoints to their own arrays for us by the addDowntime method
-    	$downtimeInfo['Impacted_Services'] = $services;
-    	    	
-    	show_view("downtime/confirm_add_downtime.php", $downtimeInfo);
+        $services=array();
+        $endpoints=array();
+        
+        //For each impacted id sort between endpoints and services using the prepended letter
+        foreach($impactedids as $id){
+            if (strpos($id, 's') !== FALSE){
+                //This is a service id
+                $services[] = str_replace('s', '', $id); //trim off the identifying char before storing in array
+            }else{
+                //This is an endpoint id
+                $endpoints[] = str_replace('e', '', $id); //trim off the identifying char before storing in array
+            }
+        }
+        
+        unset($downtimeInfo['IMPACTED_IDS']); //Delete the unsorted Ids from the downtime info
+         
+        $downtimeInfo['Impacted_Endpoints'] = $endpoints;
+         
+        
+        $serv = \Factory::getServiceService();
+        
+        /** For endpoint put into downtime we want the parent service also. If a user has selected
+         * endpoints but not the parent service here we will add the service to maintain the link beteween
+         * a downtime having both the service and the endpoint.
+         */
+        foreach($downtimeInfo['Impacted_Endpoints'] as $endpointIds){
+           $endpoint = $serv->getEndpoint($endpointIds);
+           $services[] = $endpoint->getService()->getId();
+        }
+        
+        //Remove any duplicate service ids and store the array of ids
+        $services = array_unique($services);
+        
+        //Assign the impacted services and endpoints to their own arrays for us by the addDowntime method
+        $downtimeInfo['Impacted_Services'] = $services;
+                
+        show_view("downtime/confirm_add_downtime.php", $downtimeInfo);
     }  
 }
 
@@ -159,35 +159,35 @@ function draw(\User $user = null) {
     }
 
     // URL Mapping 
-	// If the user wants to add a downtime to a specific site, show only that site's SEs
-	else if(isset($_GET['site'])) {
-		$site = \Factory::getSiteService()->getSite($_GET['site']);
+    // If the user wants to add a downtime to a specific site, show only that site's SEs
+    else if(isset($_GET['site'])) {
+        $site = \Factory::getSiteService()->getSite($_GET['site']);
         if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE){
            throw new \Exception("You don't have permission over $site"); 
         }
-		$ses = $site->getServices();
-		$params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'), 'selectAll' => true);
-		show_view("downtime/add_downtime.php", $params);
-		die();
-	}
+        $ses = $site->getServices();
+        $params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'), 'selectAll' => true);
+        show_view("downtime/add_downtime.php", $params);
+        die();
+    }
 
     // URL Mapping 
-	// If the user wants to add a downtime to a specific SE, show only that SE
-	else if(isset($_GET['se'])) {
-	    $se = \Factory::getServiceService()->getService($_GET['se']);
+    // If the user wants to add a downtime to a specific SE, show only that SE
+    else if(isset($_GET['se'])) {
+        $se = \Factory::getServiceService()->getService($_GET['se']);
         $site = \Factory::getSiteService()->getSite($se->getParentSite()->getId());
         if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() == FALSE){
            throw new \Exception("You do not have permission over $se."); 
         } 
         
-	    //$ses = array($se);
+        //$ses = array($se);
         $ses = $site->getServices();
-		$params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'), 'selectAll' => true);
-		show_view("downtime/add_downtime.php", $params);
-		die();
-	}
+        $params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'), 'selectAll' => true);
+        show_view("downtime/add_downtime.php", $params);
+        die();
+    }
 
-	// If the user doesn't want to add a downtime to a specific SE or site show all SEs
+    // If the user doesn't want to add a downtime to a specific SE or site show all SEs
     else {
         $ses = array(); 
         if($user->isAdmin()){

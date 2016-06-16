@@ -14,7 +14,7 @@
 
         <input class="input_input_text " type="hidden" name ="PARENT" value="<?php echo $parentID;?>" />
 
-    	<input class="btn btn-default singleProp" type="submit" value="Add Property" style="display: inline;"/>
+        <input class="btn btn-default singleProp" type="submit" value="Add Property" style="display: inline;"/>
 
 
 

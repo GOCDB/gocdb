@@ -17,13 +17,13 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 class DoctrineTestTemplate extends PHPUnit_Extensions_Database_TestCase {
 
     private $em;
-	
-	 /**
+    
+     /**
      * Overridden. 
      */
     public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        parent::setUpBeforeClass();
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing Your Test Name. . .\n";
     }
 
@@ -110,8 +110,8 @@ class DoctrineTestTemplate extends PHPUnit_Extensions_Database_TestCase {
      */
     public function testYourTest() {
         print __METHOD__ . "\n";
-		
-		// Your test here
+        
+        // Your test here
 
     }
 

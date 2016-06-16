@@ -134,69 +134,69 @@ class GetServiceGroupRole implements IPIQuery{
         $this->sgs = $this->query->execute();
         return $this->sgs;
     }
-	
-	
-	/** Returns proprietary GocDB rendering of the service group data 
-	 *  in an XML String
-	 * @return String
-	 */
-	public function getXML(){
-		$helpers = $this->helpers;
-			
-		$xml = new \SimpleXMLElement ( "<results />" );
-		
-		$sgs = $this->sgs;
-		
-		$xml = new \SimpleXMLElement ( "<results />" );
-		foreach ( $sgs as $sg ) {
-			$xmlSg = $xml->addChild ( 'SERVICE_GROUP' );
-			$xmlSg->addAttribute ( "PRIMARY_KEY", $sg->getId () . "G0" );
-			$xmlSg->addChild ( 'NAME', $sg->getName () );
-			$xmlSg->addChild ( 'DESCRIPTION', htmlspecialchars ( $sg->getDescription () ) );
-			$mon = ($sg->getMonitored ()) ? 'Y' : 'N';
-			$xmlSg->addChild ( 'MONITORED', $mon );
-			$xmlSg->addChild ( 'CONTACT_EMAIL', $sg->getEmail () );
-			$url = $this->baseUrl.'/index.php?Page_Type=Service_Group&id=' . $sg->getId ();
-			$url = htmlspecialchars ( $url );
-			$xmlSg->addChild ( 'GOCDB_PORTAL_URL', $url );
-			foreach ( $sg->getRoles () as $role ) {
-				$user = $role->getUser ();
-				$xmlUser = $xmlSg->addChild ( 'USER' );
-				$xmlUser->addChild ( 'FORENAME', $user->getForename () );
-				$xmlUser->addChild ( 'SURNAME', $user->getSurname () );
-				$xmlUser->addChild ( 'CERTDN', $user->getCertificateDn () );
-				$url = $this->baseUrl.'/index.php?Page_Type=User&id=' . $user->getId ();
-				$url = htmlspecialchars ( $url );
-				$xmlUser->addChild ( 'GOCDB_PORTAL_URL', $url );
-				$xmlUser->addChild ( 'ROLE', $role->getRoleType ()->getName () );
-			}
-		}
-		
-		$dom_sxe = dom_import_simplexml ( $xml );
-		$dom = new \DOMDocument ( '1.0' );
-		$dom->encoding = 'UTF-8';
-		$dom_sxe = $dom->importNode ( $dom_sxe, true );
-		$dom_sxe = $dom->appendChild ( $dom_sxe );
-		$dom->formatOutput = true;
-		$xmlString = $dom->saveXML ();
-		return $xmlString;
-	}
-	
-	/** Returns the service group data in Glue2 XML string.
-	 * 
-	 * @return String
-	 */
-	public function getGlue2XML(){
-		$query = $this->query;
-		throw new LogicException("Not implemented yet");
-	}
-	
-	/** Not yet implemented, in future will return the service group 
-	 *  data in JSON format
-	 * @throws LogicException
-	 */
-	public function getJSON(){
-		$query = $this->query;		
-		throw new LogicException("Not implemented yet");
-	}
+    
+    
+    /** Returns proprietary GocDB rendering of the service group data 
+     *  in an XML String
+     * @return String
+     */
+    public function getXML(){
+        $helpers = $this->helpers;
+            
+        $xml = new \SimpleXMLElement ( "<results />" );
+        
+        $sgs = $this->sgs;
+        
+        $xml = new \SimpleXMLElement ( "<results />" );
+        foreach ( $sgs as $sg ) {
+            $xmlSg = $xml->addChild ( 'SERVICE_GROUP' );
+            $xmlSg->addAttribute ( "PRIMARY_KEY", $sg->getId () . "G0" );
+            $xmlSg->addChild ( 'NAME', $sg->getName () );
+            $xmlSg->addChild ( 'DESCRIPTION', htmlspecialchars ( $sg->getDescription () ) );
+            $mon = ($sg->getMonitored ()) ? 'Y' : 'N';
+            $xmlSg->addChild ( 'MONITORED', $mon );
+            $xmlSg->addChild ( 'CONTACT_EMAIL', $sg->getEmail () );
+            $url = $this->baseUrl.'/index.php?Page_Type=Service_Group&id=' . $sg->getId ();
+            $url = htmlspecialchars ( $url );
+            $xmlSg->addChild ( 'GOCDB_PORTAL_URL', $url );
+            foreach ( $sg->getRoles () as $role ) {
+                $user = $role->getUser ();
+                $xmlUser = $xmlSg->addChild ( 'USER' );
+                $xmlUser->addChild ( 'FORENAME', $user->getForename () );
+                $xmlUser->addChild ( 'SURNAME', $user->getSurname () );
+                $xmlUser->addChild ( 'CERTDN', $user->getCertificateDn () );
+                $url = $this->baseUrl.'/index.php?Page_Type=User&id=' . $user->getId ();
+                $url = htmlspecialchars ( $url );
+                $xmlUser->addChild ( 'GOCDB_PORTAL_URL', $url );
+                $xmlUser->addChild ( 'ROLE', $role->getRoleType ()->getName () );
+            }
+        }
+        
+        $dom_sxe = dom_import_simplexml ( $xml );
+        $dom = new \DOMDocument ( '1.0' );
+        $dom->encoding = 'UTF-8';
+        $dom_sxe = $dom->importNode ( $dom_sxe, true );
+        $dom_sxe = $dom->appendChild ( $dom_sxe );
+        $dom->formatOutput = true;
+        $xmlString = $dom->saveXML ();
+        return $xmlString;
+    }
+    
+    /** Returns the service group data in Glue2 XML string.
+     * 
+     * @return String
+     */
+    public function getGlue2XML(){
+        $query = $this->query;
+        throw new LogicException("Not implemented yet");
+    }
+    
+    /** Not yet implemented, in future will return the service group 
+     *  data in JSON format
+     * @throws LogicException
+     */
+    public function getJSON(){
+        $query = $this->query;		
+        throw new LogicException("Not implemented yet");
+    }
 }

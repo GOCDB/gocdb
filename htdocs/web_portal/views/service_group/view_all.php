@@ -14,52 +14,52 @@
                 What is a service group?
             </a>
         </span>
-		<!-- <span style="clear: both; float: left;">Intentionally Blank</span>  -->
+        <!-- <span style="clear: both; float: left;">Intentionally Blank</span>  -->
     </div>
     
     <!-- Filter -->
     <div class="siteContainer">
         <form action="index.php?Page_Type=Service_Groups" method="GET" class="inline">
-	    <input type="hidden" name="Page_Type" value="Service_Groups" />
+        <input type="hidden" name="Page_Type" value="Service_Groups" />
 
-	    <span class="header leftFloat">
-		Filter <a href="index.php?Page_Type=Service_Groups">&nbsp;&nbsp;(clear)</a>
-	    </span>
-	    
-	    <div class="topMargin leftFloat siteFilter clearLeft">
-		<span class=""><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
-		<select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
-		    <?php foreach ($params['scopes'] as $scope) { ?>
-			<option value="<?php xecho($scope->getName()); ?>" 
-			    <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
-			    <?php xecho($scope->getName()); ?>
-			</option>
-		    <?php } ?>
-		</select>
-	    </div>                 
+        <span class="header leftFloat">
+        Filter <a href="index.php?Page_Type=Service_Groups">&nbsp;&nbsp;(clear)</a>
+        </span>
+        
+        <div class="topMargin leftFloat siteFilter clearLeft">
+        <span class=""><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
+        <select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
+            <?php foreach ($params['scopes'] as $scope) { ?>
+            <option value="<?php xecho($scope->getName()); ?>" 
+                <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
+                <?php xecho($scope->getName()); ?>
+            </option>
+            <?php } ?>
+        </select>
+        </div>                 
 
-	    <div class="topMargin leftFloat siteFilter">
-		<span class="">Extension Name:</span>
+        <div class="topMargin leftFloat siteFilter">
+        <span class="">Extension Name:</span>
                 <select name="extKeyNames">
-		    <option value="">(none)</option>
-		    <?php foreach ($params['extKeyName'] as $extensions) { ?>
-    		    <option value="<?php echo $extensions; ?>"
-			<?php if ($params['selectedExtKeyName'] == $extensions){ echo " selected";} ?>>
-			    <?php echo $extensions; ?>
-		    </option> 
-		    <?php } ?>                  
+            <option value="">(none)</option>
+            <?php foreach ($params['extKeyName'] as $extensions) { ?>
+                <option value="<?php echo $extensions; ?>"
+            <?php if ($params['selectedExtKeyName'] == $extensions){ echo " selected";} ?>>
+                <?php echo $extensions; ?>
+            </option> 
+            <?php } ?>                  
                 </select>
-	    </div> 
+        </div> 
 
-    	    <div class="topMargin leftFloat siteFilter">
+            <div class="topMargin leftFloat siteFilter">
                     <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
                     <input class="middle" type="text" name="selectedExtKeyValue" 
-			<?php if (isset($params['selectedExtKeyValue'])){ echo "value=\"{$params['selectedExtKeyValue']}\""; } ?>/>
+            <?php if (isset($params['selectedExtKeyValue'])){ echo "value=\"{$params['selectedExtKeyValue']}\""; } ?>/>
             </div>        	
 
-	    <div class="topMargin leftFloat siteFilter clearLeft">
-		<input type="submit" value="Filter ServiceGroups">
-	    </div>
+        <div class="topMargin leftFloat siteFilter clearLeft">
+        <input type="submit" value="Filter ServiceGroups">
+        </div>
         </form>
     </div>
 
@@ -70,23 +70,23 @@
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <table id="selectedSgTable" class="table table-striped table-condensed tablesorter">
-	    <thead>
+        <thead>
             <tr>
                 <th>Name</th>
                 <th>Description</th>
                 <th>Scope(s)</th>
             </tr>
-	    </thead>
-	    <tbody>
+        </thead>
+        <tbody>
             <?php           
             //$num = 2;
             foreach($params['sGroups'] as $sGroup) {
             ?>
             <tr>
                 <td>
-		    <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
-			<?php xecho($sGroup->getName()); ?>
-		    </a>
+            <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
+            <?php xecho($sGroup->getName()); ?>
+            </a>
                 </td>
                     
                 <td>
@@ -94,14 +94,14 @@
                 </td>
                 
                 <td>
-		   <textarea readonly="true" style="height: 25px;"><?php xecho($sGroup->getScopeNamesAsString()); ?></textarea>
+           <textarea readonly="true" style="height: 25px;"><?php xecho($sGroup->getScopeNamesAsString()); ?></textarea>
                 </td>
             </tr>
             <?php  
                 //if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
             ?>
-	    </tbody>
+        </tbody>
         </table>
     </div>
     <br>&nbsp;
@@ -119,10 +119,10 @@
 <script>
     $(document).ready(function() 
     {
-	$("#selectedSgTable").tablesorter(); 
-	
-	$('#scopeSelect').multipleSelect({
-	    filter: true,
+    $("#selectedSgTable").tablesorter(); 
+    
+    $('#scopeSelect').multipleSelect({
+        filter: true,
             placeholder: "SG Scopes"
         });
     }); 

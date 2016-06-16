@@ -186,12 +186,12 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
 //      $results = $query->executeQuery();
 //	print_r(count($results)); 
 //      $this->assertTrue(4 == count($results));
-	
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope0,Scope1,ScopeX', 'scope_match' => 'any'), 4);
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope1,ScopeX,ScopeXX', 'scope_match' => 'any'), 3);
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope1,Scope2', 'scope_match' => 'any'), 3);
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope2,Scope3,Scope4', 'scope_match' => 'any'), 2);
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope5,ScopeX,ScopeXX', 'scope_match' => 'any'), 1);
+    
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope0,Scope1,ScopeX', 'scope_match' => 'any'), 4);
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope1,ScopeX,ScopeXX', 'scope_match' => 'any'), 3);
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope1,Scope2', 'scope_match' => 'any'), 3);
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope2,Scope3,Scope4', 'scope_match' => 'any'), 2);
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope5,ScopeX,ScopeXX', 'scope_match' => 'any'), 1);
     }
 
     private function queryForIScopedEntity(\org\gocdb\services\IPIQuery $query, $params, $expectedCount) {

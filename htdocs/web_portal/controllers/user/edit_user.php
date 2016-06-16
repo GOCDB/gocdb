@@ -46,9 +46,9 @@ function draw() {
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
-	$serv = \Factory::getUserService();
-	$dn = Get_User_Principle();
-	// Current User
+    $serv = \Factory::getUserService();
+    $dn = Get_User_Principle();
+    // Current User
     $currentUser = $serv->getUserByPrinciple($dn);
     // User entity to edit
     $user = $serv->getUser($_REQUEST['id']);
@@ -59,7 +59,7 @@ function draw() {
     }
 
     try {
-    	$serv->editUserAuthorization($user, $currentUser);
+        $serv->editUserAuthorization($user, $currentUser);
     } catch (Exception $e) {
         show_view('error.php', $e->getMessage());
         die();

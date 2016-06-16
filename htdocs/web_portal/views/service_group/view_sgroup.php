@@ -75,7 +75,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                         <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal">Scope Tags</a>
                     </td>
                     <td class="site_table">
-			<textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($params['sGroup']->getScopeNamesAsString())?></textarea>
+            <textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($params['sGroup']->getScopeNamesAsString())?></textarea>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
@@ -106,7 +106,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
 
             <?php
             $num = 2;
-	    foreach($params['sGroup']->getServices() as $se) {
+        foreach($params['sGroup']->getServices() as $se) {
 //	            if($se->getScopes()->first()->getName() == "Local") {
 //					$style = " style=\"background-color: #A3D7A3;\"";
 //				} else {
@@ -128,31 +128,31 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                 </td>
                 <td class="site_table"><?php xecho($se->getDescription()) ?></td>
                 <td class="site_table">
-				<?php
-				switch($se->getProduction()) {
-					case true:
-						?>
-						<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
-						<?php
-						break;
-					case false:
-						?>
-						<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
-						<?php
-						break;
-				}
-				?>
-				</td>
+                <?php
+                switch($se->getProduction()) {
+                    case true:
+                        ?>
+                        <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                        <?php
+                        break;
+                    case false:
+                        ?>
+                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                        <?php
+                        break;
+                }
+                ?>
+                </td>
                 <td class="site_table">
-		    <textarea readonly="true" style="height: 25px;"><?php xecho($se->getScopeNamesAsString())?></textarea>
+            <textarea readonly="true" style="height: 25px;"><?php xecho($se->getScopeNamesAsString())?></textarea>
                 </td>
             </tr>
             <?php
-		if($num == 1) { $num = 2; } else { $num = 1; }
+        if($num == 1) { $num = 2; } else { $num = 1; }
             } // End of the foreach loop iterating over SEs
             ?>
         </table>
-	
+    
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Link -->
@@ -199,7 +199,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                 <td class="site_table">
                     <?php 
                     if($params['authenticated']) { 
-                	   xecho($role->getRoleType()->getName()) ; 
+                       xecho($role->getRoleType()->getName()) ; 
                     } else {echo 'PROTECTED'; } 
                     ?>
                 </td>
@@ -249,10 +249,10 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
 
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table">
-                	<a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
-                		<?php xecho($d->getDescription()) ?>
-                	</a>
-               	</td>
+                    <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
+                        <?php xecho($d->getDescription()) ?>
+                    </a>
+                </td>
                 <td class="site_table"><?php echo $d->getStartDate()->format($d::DATE_FORMAT) ?></td>
                 <td class="site_table"><?php echo $d->getEndDate()->format($d::DATE_FORMAT) ?></td>
             </tr>
@@ -272,24 +272,24 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
 
 
     <script type="text/javascript">
-	$(document).ready(function () {
+    $(document).ready(function () {
 
-	    // sort on first and second table cols only 
-	    $("#sgExtensionPropsTable").tablesorter({
-		// pass the headers argument and assing a object 
-		headers: {
-		    // assign the third column (we start counting zero) 
-		    2: {
-			// disable it by setting the property sorter to false 
-			sorter: false
-		    },
-		    3: {
-			// disable it by setting the property sorter to false 
-			sorter: false
-		    }
-		}
-	    });
+        // sort on first and second table cols only 
+        $("#sgExtensionPropsTable").tablesorter({
+        // pass the headers argument and assing a object 
+        headers: {
+            // assign the third column (we start counting zero) 
+            2: {
+            // disable it by setting the property sorter to false 
+            sorter: false
+            },
+            3: {
+            // disable it by setting the property sorter to false 
+            sorter: false
+            }
+        }
+        });
 
-	}
-	);
+    }
+    );
     </script>  

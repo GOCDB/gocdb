@@ -32,8 +32,8 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
      * Overridden. 
      */
     public static function setUpBeforeClass() {
-     	parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        parent::setUpBeforeClass();
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing RoleServiceTest. . .\n";
     }
     
@@ -140,7 +140,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         print __METHOD__ . "\n";
         // Create fixture data
         // RoleTypes
-    	$siteAdminRT = TestUtil::createSampleRoleType(RoleTypeName::SITE_ADMIN/*, RoleTypeClass::SITE_USER*/);
+        $siteAdminRT = TestUtil::createSampleRoleType(RoleTypeName::SITE_ADMIN/*, RoleTypeClass::SITE_USER*/);
         $siteManRT = TestUtil::createSampleRoleType(RoleTypeName::SITE_OPS_MAN/*, RoleTypeClass::SITE_MANAGER*/); 
         $regFLSupportRT = TestUtil::createSampleRoleType(RoleTypeName::REG_FIRST_LINE_SUPPORT/*, RoleTypeClass::REGIONAL_USER*/);
         
@@ -149,11 +149,11 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $this->em->persist($siteManRT);
         
         // User
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    	$this->em->persist($u);
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $this->em->persist($u);
         // Site
-    	$site1 = TestUtil::createSampleSite("SITENAME");
-    	$this->em->persist($site1);
+        $site1 = TestUtil::createSampleSite("SITENAME");
+        $this->em->persist($site1);
         $n1 = TestUtil::createSampleNGI("NGI_UK"); 
         $this->em->persist($n1); 
         $p1 = new \Project("EGI");  
@@ -164,14 +164,14 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         
         // Create a SITE_OPS_MAN Role and link to the User, RoleType and site 
         $roleSite = TestUtil::createSampleRole($u, $siteManRT, $site1, RoleStatus::GRANTED); 
-    	$this->em->persist($roleSite);
+        $this->em->persist($roleSite);
 
         // new user 
         $u2 = TestUtil::createSampleUser("Test2", "Testing2", "/c=test2");
         $this->em->persist($u2);
         // Create a pending SITE_ADMIN Role request for new user  
         $pendingSiteRole = TestUtil::createSampleRole($u2, $siteAdminRT, $site1, RoleStatus::PENDING); 
-    	$this->em->persist($pendingSiteRole);
+        $this->em->persist($pendingSiteRole);
         $this->em->flush();
 
         // ********NOTE******** Role Service uses a new connection for its transactional methods
@@ -200,21 +200,21 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
     
     public function test_getUserRoleNamesOverEntity(){
         print __METHOD__ . "\n";
-    	// Create fixture data
+        // Create fixture data
         // RoleTypes
-    	$siteAdminRT = TestUtil::createSampleRoleType(RoleTypeName::SITE_ADMIN/*, RoleTypeClass::SITE_USER*/);
+        $siteAdminRT = TestUtil::createSampleRoleType(RoleTypeName::SITE_ADMIN/*, RoleTypeClass::SITE_USER*/);
         $regFLSupportRT = TestUtil::createSampleRoleType(RoleTypeName::REG_FIRST_LINE_SUPPORT/*, RoleTypeClass::REGIONAL_USER*/);
         $this->em->persist($regFLSupportRT); 
         $this->em->persist($siteAdminRT);
         // User
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    	$this->em->persist($u);
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $this->em->persist($u);
         // Site
-    	$site1 = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
-    	$this->em->persist($site1);
+        $site1 = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
+        $this->em->persist($site1);
         // Create a Role and link to the User, ngiRoleType and site 
         $roleSite = TestUtil::createSampleRole($u, $siteAdminRT, $site1, RoleStatus::GRANTED); 
-    	$this->em->persist($roleSite);
+        $this->em->persist($roleSite);
         $this->em->flush();
        
         // ********NOTE******** Role Service uses a new connection for its transactional methods
@@ -227,11 +227,11 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $this->assertContains(RoleTypeName::SITE_ADMIN, $roleNames); 
 
         // Create new NGI
-    	$n = TestUtil::createSampleNGI("MYNGI");
-    	$this->em->persist($n);
+        $n = TestUtil::createSampleNGI("MYNGI");
+        $this->em->persist($n);
         
-    	$roleNgi = TestUtil::createSampleRole($u, $regFLSupportRT, $n, RoleStatus::GRANTED); 
-    	$this->em->persist($roleNgi);
+        $roleNgi = TestUtil::createSampleRole($u, $regFLSupportRT, $n, RoleStatus::GRANTED); 
+        $this->em->persist($roleNgi);
         $this->em->flush();
 
         // Now test that method returns expected results 
@@ -242,44 +242,44 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
 
     
     public function testGetUserRoles(){
-    	print __METHOD__ . "\n";
-    	// Create two roletypes
-    	$ngiRoleType = TestUtil::createSampleRoleType("RT1_NAME"/*, RoleTypeClass::SITE_USER*/);
+        print __METHOD__ . "\n";
+        // Create two roletypes
+        $ngiRoleType = TestUtil::createSampleRoleType("RT1_NAME"/*, RoleTypeClass::SITE_USER*/);
         $siteRoleType = TestUtil::createSampleRoleType("RT2_NAME"/*, RoleTypeClass::REGIONAL_USER*/);
-    	$this->em->persist($ngiRoleType);
-    	$this->em->persist($siteRoleType);
+        $this->em->persist($ngiRoleType);
+        $this->em->persist($siteRoleType);
     
-    	// Create a user
-    	$u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    	$this->em->persist($u);
+        // Create a user
+        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+        $this->em->persist($u);
     
-    	// Create an NGI
-    	$ngi = TestUtil::createSampleNGI("MYNGI");
-    	$this->em->persist($ngi);
+        // Create an NGI
+        $ngi = TestUtil::createSampleNGI("MYNGI");
+        $this->em->persist($ngi);
     
-    	// Create a Role and link to the User, ngiRoleType and ngi 
+        // Create a Role and link to the User, ngiRoleType and ngi 
         $roleNgi = TestUtil::createSampleRole($u, $ngiRoleType, $ngi, RoleStatus::GRANTED); 
-    	$this->em->persist($roleNgi);
+        $this->em->persist($roleNgi);
 
         // Create a site
-    	$site1 = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
-    	$this->em->persist($site1);
+        $site1 = TestUtil::createSampleSite("SITENAME"/*, "PK01"*/);
+        $this->em->persist($site1);
 
         // Create another role and link to the User, siteRoleType and site
         $roleSite = TestUtil::createSampleRole($u, $siteRoleType, $site1, RoleStatus::GRANTED) ; 
-    	$this->em->persist($roleSite);
+        $this->em->persist($roleSite);
 
         // Create a second and third sites and add to the NGI, but DO NOT add direct 
         // roles over those sites for the user. The user will still have role 
         // over the sites because they have a role over the NGI ! 
-    	$site2 = TestUtil::createSampleSite("SITENAME2"/*, "PK01"*/);
-    	$site3 = TestUtil::createSampleSite("SITENAME3"/*, "PK01"*/);
-    	$this->em->persist($site2);        
-    	$this->em->persist($site3);        
+        $site2 = TestUtil::createSampleSite("SITENAME2"/*, "PK01"*/);
+        $site3 = TestUtil::createSampleSite("SITENAME3"/*, "PK01"*/);
+        $this->em->persist($site2);        
+        $this->em->persist($site3);        
         $ngi->addSiteDoJoin($site2);  
         $ngi->addSiteDoJoin($site3);  
-    	
-    	$this->em->flush();
+        
+        $this->em->flush();
 
         // ********MUST******** start a new connection to test transactional 
         // isolation of RoleService methods.  
@@ -307,7 +307,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
      * @expectedException \LogicException 
      */
     public function testInvalidRoleStatus(){
-    	print __METHOD__ . "\n";
+        print __METHOD__ . "\n";
        $roleService = new org\gocdb\services\Role();   
        $this->assertFalse($roleService->isValidRoleStatus("some invalid role"));
        $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
@@ -316,7 +316,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
 
 
     public function test_getReachableProjectsFromOwnedEntity(){
-    	print __METHOD__ . "\n";
+        print __METHOD__ . "\n";
         include __DIR__ . '/resources/sampleFixtureData5.php';
         $this->em->flush(); 
 
@@ -373,10 +373,10 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $siteRoleType = TestUtil::createSampleRoleType("SITE_RT");
         $siteRoleType2 = TestUtil::createSampleRoleType("SITE_RT2");
         $projRoleType = TestUtil::createSampleRoleType("PROJ_RT");
-    	$this->em->persist($ngiRoleType);
-    	$this->em->persist($siteRoleType);
-    	$this->em->persist($siteRoleType2);
-    	$this->em->persist($projRoleType);
+        $this->em->persist($ngiRoleType);
+        $this->em->persist($siteRoleType);
+        $this->em->persist($siteRoleType2);
+        $this->em->persist($projRoleType);
         
         $this->em->flush(); 
 
@@ -419,7 +419,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
          * s1     s2     s3 
          */
         $r1 = TestUtil::createSampleRole($u, $ngiRoleType, $n2, RoleStatus::GRANTED); 
-    	$this->em->persist($r1);
+        $this->em->persist($r1);
         $this->em->flush(); 
 
         $rolesDirect = $u->getRoles(); 
@@ -443,7 +443,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
          * s1     s2     s3 
          */
         $r2 = TestUtil::createSampleRole($u, $ngiRoleType, $n3, RoleStatus::GRANTED); 
-    	$this->em->persist($r2);
+        $this->em->persist($r2);
         $this->em->flush(); 
        
         $roles = $roleService->getUserRolesByProject($u, $p1); 
@@ -467,7 +467,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
          * s1     s2     s3-r3 
          */
         $r3 = TestUtil::createSampleRole($u, $siteRoleType, $s3, RoleStatus::GRANTED); 
-    	$this->em->persist($r3);
+        $this->em->persist($r3);
         $this->em->flush(); 
 
         $roles = $roleService->getUserRolesByProject($u, $p1); 
@@ -490,7 +490,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
          * s1     s2     s3-r3 
          */
         $r4 = TestUtil::createSampleRole($u, $projRoleType, $p3, RoleStatus::GRANTED); 
-    	$this->em->persist($r4);
+        $this->em->persist($r4);
         $this->em->flush(); 
 
         $rolesDirect = $u->getRoles(); 
@@ -516,7 +516,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
          * s1     s2-r5  s3-r3 
          */
         $r5 = TestUtil::createSampleRole($u, $siteRoleType, $s2, RoleStatus::GRANTED); 
-    	$this->em->persist($r5);
+        $this->em->persist($r5);
         $this->em->flush(); 
 
         $rolesDirect = $u->getRoles(); 
@@ -545,7 +545,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
          * s1-r6  s2-r5  s3-r3 
          */
         $r6 = TestUtil::createSampleRole($u, $siteRoleType, $s1, RoleStatus::GRANTED); 
-    	$this->em->persist($r6);
+        $this->em->persist($r6);
         $this->em->flush(); 
 
         $rolesDirect = $u->getRoles(); 
@@ -574,7 +574,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
          * s1-r6  s2-r5  s3-r3,r7 
          */
         $r7 = TestUtil::createSampleRole($u, $siteRoleType2, $s3, RoleStatus::GRANTED); 
-    	$this->em->persist($r7);
+        $this->em->persist($r7);
         $this->em->flush(); 
 
         $rolesDirect = $u->getRoles(); 
@@ -605,7 +605,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
          * s1-r6  s2-r5  s3-r3,r7 
          */
         $r8 = TestUtil::createSampleRole($u, $projRoleType, $p2, RoleStatus::GRANTED); 
-    	$this->em->persist($r8);
+        $this->em->persist($r8);
         $this->em->flush(); 
         
         $rolesDirect = $u->getRoles(); 
@@ -636,7 +636,7 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
     
 
     /*public function testRoleTypeValues(){
-    	print __METHOD__ . "\n";
+        print __METHOD__ . "\n";
         $roleService = new org\gocdb\services\Role();  
         
         $roleType = new RoleType(RoleTypeName::SITE_ADMIN, RoleTypeClass::SITE_USER); 

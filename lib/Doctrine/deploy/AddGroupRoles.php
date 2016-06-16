@@ -74,9 +74,9 @@ foreach($usersRoles as $user) {
         // /* Error checking: ensure each "user" refers to exactly
          // * one user */
         if(count($users) !== 1) {
-        	foreach($users as $u) {
-        		echo "Certificate DN is " . $u->getCertificateDn() . "-------";
-        	}
+            foreach($users as $u) {
+                echo "Certificate DN is " . $u->getCertificateDn() . "-------";
+            }
             throw new Exception(count($users) . " users found with DN: " . 
                 $user->CERTDN);
         }
@@ -95,7 +95,7 @@ foreach($usersRoles as $user) {
         // get ngi entity
         // skip EGI level roles (these are inserted by AddEgiRoles.php)
         if((string) $role->ON_ENTITY == "EGI") {
-        	continue;
+            continue;
         }
         $ngiName = (string) $role->ON_ENTITY;
         $dql = "SELECT n FROM NGI n WHERE n.name = :ngi";

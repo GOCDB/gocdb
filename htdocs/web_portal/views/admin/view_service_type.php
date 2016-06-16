@@ -61,7 +61,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                 </tr>
             
 
-	            <?php $num = 2;
+                <?php $num = 2;
 
                 foreach($services as $se) {
                 ?>

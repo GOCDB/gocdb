@@ -45,7 +45,7 @@ function xml_to_menu($menu_name, $menus_xml)
     $html .= "<ul class=\"Smaller_Left_Padding Smaller_Top_Margin\">";
     foreach($menus_xml->$menu_name->children() as $key => $value)
     {
-       	$html .= add_menu_item($value) . "\n";
+        $html .= add_menu_item($value) . "\n";
     }
     $html .= "</ul>";
     return $html;
@@ -57,20 +57,20 @@ function add_menu_item($menu_item)
 {
     //Get user in order to correctly display GOCDB admin menu Items 
     include_once __DIR__ . '/../Get_User_Principle.php';
-	$dn = Get_User_Principle();
-	$userserv = \Factory::getUserService();
+    $dn = Get_User_Principle();
+    $userserv = \Factory::getUserService();
     $user = $userserv->getUserByPrinciple($dn);
-	if ($user == null){
+    if ($user == null){
         $userisadmin = false;
     }
     else {
         $userisadmin = $user->isAdmin();
     }
-	
+    
     //Find out if the portal is currently read only from local_info.xml
     $portalIsReadOnly = \Factory::getConfigService()->IsPortalReadOnly();
  
-	foreach($menu_item->children() as $key => $value)
+    foreach($menu_item->children() as $key => $value)
     {
         $html = "";
         switch($key)

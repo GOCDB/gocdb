@@ -84,8 +84,8 @@ class Validate {
             if ((string) $entity->name == $Object_Name) {
                 return $entity;
             }
-    	}
-    	throw new \Exception("Object type: $Object_Name not found in schema XML");
+        }
+        throw new \Exception("Object type: $Object_Name not found in schema XML");
     }
 
 

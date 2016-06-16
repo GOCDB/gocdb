@@ -151,9 +151,9 @@ class Project  extends AbstractEntityService{
      */
     public function projectNameIsUnique($name){
         $dql = "SELECT p from Project p
-    			WHERE UPPER(p.name) = UPPER(:name)";
-    	$query = $this->em->createQuery($dql);
-    	$result = $query->setParameter('name', $name)->getResult();
+                WHERE UPPER(p.name) = UPPER(:name)";
+        $query = $this->em->createQuery($dql);
+        $result = $query->setParameter('name', $name)->getResult();
 
         if(count($result)==0){
             return true;
@@ -169,10 +169,10 @@ class Project  extends AbstractEntityService{
      * @return array An array of project objects
      */
     public function getProjects() {
-    	$dql = "SELECT p from Project p
-    			ORDER BY p.name";
-    	$query = $this->em->createQuery($dql);
-    	return $query->getResult();
+        $dql = "SELECT p from Project p
+                ORDER BY p.name";
+        $query = $this->em->createQuery($dql);
+        return $query->getResult();
     }
     
      /**
@@ -181,15 +181,15 @@ class Project  extends AbstractEntityService{
      * @return \Project a project object
      */
     public function getProject($id) {
-    	$dql = "SELECT p FROM Project p
-				WHERE p.id = :id";
+        $dql = "SELECT p FROM Project p
+                WHERE p.id = :id";
 
-    	$project = $this->em
-	    	->createQuery($dql)
-	    	->setParameter('id', $id)
-	    	->getSingleResult();
+        $project = $this->em
+            ->createQuery($dql)
+            ->setParameter('id', $id)
+            ->getSingleResult();
         
-    	return $project;
+        return $project;
     }
     
     /**
@@ -217,7 +217,7 @@ class Project  extends AbstractEntityService{
                 ->setParameter('id', $id)
                 ->getResult();
 
-    	return $sites;
+        return $sites;
         
     }
     
@@ -246,18 +246,18 @@ class Project  extends AbstractEntityService{
         try {
             //Break the links with ngis to the project
             foreach($ngis as $ngi) {
-				$project->getNgis()->removeElement($ngi);
+                $project->getNgis()->removeElement($ngi);
                 $ngi->getProjects()->removeElement($project);
-			}
+            }
             //remove the project - users' Role objects are automatically cascade deleted
-			$this->em->remove($project);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			$this->em->close();
-			throw $e;
-		}
+            $this->em->remove($project);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
     }
     
     /**
@@ -284,18 +284,18 @@ class Project  extends AbstractEntityService{
         
         //Actually Add the NGIs
         $this->em->getConnection()->beginTransaction();
-		try {
-			foreach($ngis as $ngi) {
-				$project->addNgi($ngi);
-			}
-			$this->em->merge($project);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			$this->em->close();
-			throw $e;
-		}
+        try {
+            foreach($ngis as $ngi) {
+                $project->addNgi($ngi);
+            }
+            $this->em->merge($project);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
     }
     
     /**
@@ -321,20 +321,20 @@ class Project  extends AbstractEntityService{
         
         //Actually remove the NGIs
         $this->em->getConnection()->beginTransaction();
-		try {
-			foreach($ngis as $ngi) {
-				$project->getNgis()->removeElement($ngi);
+        try {
+            foreach($ngis as $ngi) {
+                $project->getNgis()->removeElement($ngi);
                 $ngi->getProjects()->removeElement($project);
                 $this->em->merge($ngi);
-			}
-			$this->em->merge($project);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			$this->em->close();
-			throw $e;
-		}
+            }
+            $this->em->merge($project);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
         
     }
     
@@ -421,22 +421,22 @@ class Project  extends AbstractEntityService{
                 ->setParameter('id', $id)
                 ->getResult();
 
-    	return $ngis;
+        return $ngis;
         
     }
 
     /**
-	 * Checks the required values are present and then Validates the user 
+     * Checks the required values are present and then Validates the user 
      * inputted project data against the data in the gocdb_schema.xml.
-	 * @param array $projectData containing all the fields for a GOCDB project
-	 *                       object
-	 * @throws \Exception If the project's data can't be
-	 *                    validated. The \Exception message will contain a human
-	 *                    readable description of which field failed validation.
-	 * @return null */
-	private function validate($projectData) {
-		require_once __DIR__.'/Validate.php';
-		
+     * @param array $projectData containing all the fields for a GOCDB project
+     *                       object
+     * @throws \Exception If the project's data can't be
+     *                    validated. The \Exception message will contain a human
+     *                    readable description of which field failed validation.
+     * @return null */
+    private function validate($projectData) {
+        require_once __DIR__.'/Validate.php';
+        
         //check values are there (description may be "")
         if(!((array_key_exists('Name',$projectData)) and (array_key_exists('Description',$projectData)))){
             throw new \Exception("A name and description for the project must be specified");
@@ -459,14 +459,14 @@ class Project  extends AbstractEntityService{
         }
                
         $serv = new \org\gocdb\services\Validate();
-		foreach($projectData as $field => $value) {
-			$valid = $serv->validate('project', strtoupper($field), $value);
-			if(!$valid) {
-				$error = "$field contains an invalid value: $value";
-				throw new \Exception($error);
-			}
-		}
-	}
+        foreach($projectData as $field => $value) {
+            $valid = $serv->validate('project', strtoupper($field), $value);
+            if(!$valid) {
+                $error = "$field contains an invalid value: $value";
+                throw new \Exception($error);
+            }
+        }
+    }
 }   
 
 

@@ -153,7 +153,7 @@ function confirm(array $propArr, \Service $service, \User $user = null){
  */
 function draw(\User $user = null) {
 
-	if(is_null($user)) {
+    if(is_null($user)) {
         throw new Exception("Unregistered users can't add a service property.");
     }
     if (!isset($_REQUEST['parentid']) || !is_numeric($_REQUEST['parentid']) ){
@@ -165,7 +165,7 @@ function draw(\User $user = null) {
     $serv->validateAddEditDeleteActions($user, $service);
         
     $params['parentid'] = $_REQUEST['parentid'];
-	show_view("service/add_service_properties.php", $params);
+    show_view("service/add_service_properties.php", $params);
 
 }
 
