@@ -14,9 +14,9 @@
  */
 
 /**
- * Test/display PHP's current timezone conversions. You may need to update 
+ * Test/display PHP's current timezone conversions. You may need to update
  * the PHP timezonedb.so|dll file to be up to date with the current Olsen IANA
- * timezone daylight saving values. 
+ * timezone daylight saving values.
  *
  * @author David Meredith
  */
@@ -24,7 +24,7 @@ class DateTimeConvertTests extends PHPUnit_Framework_TestCase {
     //put your code here
 
     const FORMAT = 'd/m/Y H:i';
-     
+
     /**
      * Called once, before any of the tests are executed.
      */
@@ -72,74 +72,74 @@ class DateTimeConvertTests extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * Print what PHP thinks are the current times in the specified timezones. 
-     * You can run this test to check that you have configured the PHP timezone 
-     * settings correctly and have an up to date timezonedb.so|dll installed. 
+     * Print what PHP thinks are the current times in the specified timezones.
+     * You can run this test to check that you have configured the PHP timezone
+     * settings correctly and have an up to date timezonedb.so|dll installed.
      */
     public function testCurrentTimeInTimezones(){
         print __METHOD__ . "\n";
         print "To check your daylight timezone settings are correct and that "
         . "your php timezone.db is up to date, compare the output below with "
                 . "the current real times on the web. You may need to update your"
-                . "timezonedb.so|dll lib. \n"; 
+                . "timezonedb.so|dll lib. \n";
         // see: http://stackoverflow.com/questions/2532729/daylight-saving-time-and-time-zone-best-practices
 
         //date_default_timezone_set("UTC");
-        $utcTz = new \DateTimeZone("UTC"); 
-        $targetTz1 = new \DateTimeZone("Europe/Moscow"); 
-        $targetTz2 = new \DateTimeZone("Europe/Amsterdam"); 
-        $targetTz3 = new \DateTimeZone("America/New_York"); 
-        $targetTz4 = new \DateTimeZone("America/Denver"); 
-        $targetTz5 = new \DateTimeZone("Europe/London"); 
-       
-        // now in specified Tz 
-        $nowTz = new \DateTime(null, $targetTz1); 
-        print_r($nowTz);  
-        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n"); //Returns the timezone offset in seconds from UTC on success or FALSE on failure. 
-        
-        $nowTz = new \DateTime(null, $targetTz2); 
-        print_r($nowTz);  
-        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n");
-        
-        $nowTz = new \DateTime(null, $targetTz3); 
-        print_r($nowTz);  
-        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n");
-        
-        $nowTz = new \DateTime(null, $targetTz4); 
-        print_r($nowTz);  
-        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n"); 
-        
-        $nowTz = new \DateTime(null, $targetTz5); 
-        print_r($nowTz);  
-        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n"); 
+        $utcTz = new \DateTimeZone("UTC");
+        $targetTz1 = new \DateTimeZone("Europe/Moscow");
+        $targetTz2 = new \DateTimeZone("Europe/Amsterdam");
+        $targetTz3 = new \DateTimeZone("America/New_York");
+        $targetTz4 = new \DateTimeZone("America/Denver");
+        $targetTz5 = new \DateTimeZone("Europe/London");
 
-        
-        // now in utc 
-        $nowUtc = new \DateTime(null, $utcTz); 
-        print_r($nowUtc); 
-        print_r("Offset from UTC in secs: ".$nowUtc->getOffset()."\n\n"); 
-        
+        // now in specified Tz
+        $nowTz = new \DateTime(null, $targetTz1);
+        print_r($nowTz);
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n"); //Returns the timezone offset in seconds from UTC on success or FALSE on failure.
+
+        $nowTz = new \DateTime(null, $targetTz2);
+        print_r($nowTz);
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n");
+
+        $nowTz = new \DateTime(null, $targetTz3);
+        print_r($nowTz);
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n");
+
+        $nowTz = new \DateTime(null, $targetTz4);
+        print_r($nowTz);
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n");
+
+        $nowTz = new \DateTime(null, $targetTz5);
+        print_r($nowTz);
+        print_r("Offset from UTC in secs: ".$nowTz->getOffset()."\n\n");
+
+
+        // now in utc
+        $nowUtc = new \DateTime(null, $utcTz);
+        print_r($nowUtc);
+        print_r("Offset from UTC in secs: ".$nowUtc->getOffset()."\n\n");
+
     }
 
     public function ntestDateConvert1(){
         print __METHOD__ . "\n";
 
-         // convert start and end into UTC 
+         // convert start and end into UTC
         $UTC = new \DateTimeZone("UTC");
         //$sourceTZ = new \DateTimeZone("Europe/Moscow");  // not ok
         //$sourceTZ = new \DateTimeZone("Europe/Amsterdam");
         $sourceTZ = new \DateTimeZone("America/New_York");
         //$sourceTZ = new \DateTimeZone("America/Denver");
         //$sourceTZ = new \DateTimeZone("Asia/Qatar");
-        
-        $start = \DateTime::createFromFormat($this::FORMAT, '14/05/2015 16:00', $sourceTZ);
-        
-        print_r($start); 
-        
-        // reset the TZ to UTC
-        $start->setTimezone($UTC); 
 
-        print_r($start); 
-        print_r('startEnd in UTC: '.$start->format($this::FORMAT)); 
+        $start = \DateTime::createFromFormat($this::FORMAT, '14/05/2015 16:00', $sourceTZ);
+
+        print_r($start);
+
+        // reset the TZ to UTC
+        $start->setTimezone($UTC);
+
+        print_r($start);
+        print_r('startEnd in UTC: '.$start->format($this::FORMAT));
     }
 }

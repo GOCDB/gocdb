@@ -3,13 +3,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, 
- * Version 2.0 (the "License"); you may not use this file except in compliance 
- * with the License. You may obtain a copy of the License at 
- * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable 
- * law or agreed to in writing, software distributed under the License is 
- * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, 
- * either express or implied. See the License for the specific language 
+ * Copyright © 2011 STFC Licensed under the Apache License,
+ * Version 2.0 (the "License"); you may not use this file except in compliance
+ * with the License. You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable
+ * law or agreed to in writing, software distributed under the License is
+ * distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND,
+ * either express or implied. See the License for the specific language
  * governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -29,9 +29,9 @@ require_once __DIR__ . '/../OwnedEntity.php';
  * 'dn', 'dnlike', 'forename', 'surname', 'roletype'
  * </pre>
  * Implemented with Doctrine.
- * 
+ *
  * @author James McCarthy
- * @author David Meredith 
+ * @author David Meredith
  */
 class GetUser implements IPIQuery {
 
@@ -40,21 +40,21 @@ class GetUser implements IPIQuery {
     protected $em;
     private $helpers;
     private $users;
-    private $roleAuthorisationService; 
-    private $baseUrl; 
+    private $roleAuthorisationService;
+    private $baseUrl;
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
      *
      * @param EntityManager $em
-     * @param $roleAuthorisationService org\gocdb\services\RoleActionAuthorisationService 
-     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
+     * @param $roleAuthorisationService org\gocdb\services\RoleActionAuthorisationService
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output.
      */
     public function __construct($em, $roleAuthorisationService, $baseUrl = 'https://goc.egi.eu/portal') {
         $this->em = $em;
         $this->helpers = new Helpers();
-        $this->roleAuthorisationService = $roleAuthorisationService; 
-        $this->baseUrl = $baseUrl; 
+        $this->roleAuthorisationService = $roleAuthorisationService;
+        $this->baseUrl = $baseUrl;
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -150,7 +150,7 @@ class GetUser implements IPIQuery {
         return $this->users;
     }
 
-    /** Returns proprietary GocDB rendering of the user data 
+    /** Returns proprietary GocDB rendering of the user data
      *  in an XML String
      * @return String
      */
@@ -165,7 +165,7 @@ class GetUser implements IPIQuery {
             $xmlUser->addChild('SURNAME', $user->getSurname());
             $xmlUser->addChild('TITLE', $user->getTitle());
             /*
-             * Description is always blank in the PROM get_user output so 
+             * Description is always blank in the PROM get_user output so
              * we'll keep it blank in the Doctrine output for compatibility
              */
             $xmlUser->addChild('DESCRIPTION', "");
@@ -186,7 +186,7 @@ class GetUser implements IPIQuery {
             }
 
             /*
-             * APPROVED and ACTIVE are always blank in the GOCDBv4 get_user 
+             * APPROVED and ACTIVE are always blank in the GOCDBv4 get_user
              * output so we'll keep it blank in the GOCDBv5 output for compatibility
              */
             $xmlUser->addChild('APPROVED', null);
@@ -235,17 +235,17 @@ class GetUser implements IPIQuery {
                     if ($entityPk != '') {
                         $xmlRole->addChild('PRIMARY_KEY', $entityPk);
                     }
-                   
+
                     // Show which projects recognise the role
                     $xmlProjects = $xmlRole->addChild('RECOGNISED_IN_PROJECTS');
                     $parentProjectsForRole = $this->roleAuthorisationService
-                            ->getReachableProjectsFromOwnedEntity($role->getOwnedEntity()); 
+                            ->getReachableProjectsFromOwnedEntity($role->getOwnedEntity());
                     foreach($parentProjectsForRole as $_proj){
-                       $xmlProj = $xmlProjects->addChild('PROJECT', $_proj->getName());           
-                       $xmlProj->addAttribute('ID', $_proj->getId()); 
+                       $xmlProj = $xmlProjects->addChild('PROJECT', $_proj->getName());
+                       $xmlProj->addAttribute('ID', $_proj->getId());
                     }
-        
-                    
+
+
                 }
             }
         }
@@ -257,19 +257,19 @@ class GetUser implements IPIQuery {
         $dom_sxe = $dom->appendChild ( $dom_sxe );
         $dom->formatOutput = true;
         $xmlString = $dom->saveXML ();
-        return $xmlString; 
-        //return $xml->asXML(); // loses formatting 
+        return $xmlString;
+        //return $xml->asXML(); // loses formatting
     }
 
     /** Returns the user data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
     public function getGlue2XML() {
         throw new LogicException("Not implemented yet");
     }
 
-    /** Not yet implemented, in future will return the user 
+    /** Not yet implemented, in future will return the user
      *  data in JSON format
      * @throws LogicException
      */

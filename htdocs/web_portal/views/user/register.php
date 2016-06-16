@@ -1,14 +1,14 @@
 <div class="rightPageContainer">
     <form name="Register" action="index.php?Page_Type=Register" method="post" class="inputForm"
           onsubmit="return confirm('Click OK to confirm you provide consent for your ID and user details to be re-published by GOCDB and made visible to other authenticated GOCDB services and users.');">
-    	<h1>Register</h1>
-    	<br />
+        <h1>Register</h1>
+        <br />
         Register Unique Identity: <b> <?php echo($params['dn']); ?> </b>
-        <br/> 
-        <br/> 
+        <br/>
+        <br/>
 
-        
-	<div class="alert alert-warning" role="alert">
+
+    <div class="alert alert-warning" role="alert">
             <h3>Terms and Conditions of Account Registration</h3>
             <ul>
                <li>Registering a GOCDB account means <b>you accept that your ID string, your basic user details and roles will be visible to other authenticated users and client-services of GOCDB</b>, including those authenticated by: </br></br>
@@ -42,7 +42,7 @@
                 echo '<br>';
             }
             ?>
-        </div> 
+        </div>
         <br>
 
         <span class="input_name">
@@ -83,6 +83,6 @@
         <input class="input_input_text" type="text" name="TELEPHONE" />
 
         <br />
-    	<input class="input_button" type="submit" value="Submit" />
+        <input class="input_button" type="submit" value="Submit" />
     </form>
 </div>

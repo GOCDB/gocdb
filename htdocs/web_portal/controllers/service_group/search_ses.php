@@ -4,10 +4,10 @@ use Doctrine\Common\Cache\ArrayCache;
  *======================================================
  * File: search_ses.php
  * Author: John Casson, James McCarthy
- * Description: Returns a JSON view of service 
+ * Description: Returns a JSON view of service
  *              affected by a downtime, also used to add
  *              SEs to a service group.
- *              
+ *
  *
  * License information
  *
@@ -31,20 +31,20 @@ function search_ses() {
         $searchTerm = strip_tags(trim($_REQUEST['term']));
     }
     if(1 === preg_match("/[';\"]/", $searchTerm)){ throw new Exception("Invalid char in search term"); }
-    
+
     if(substr($searchTerm, 0,1) != '%'){
         $searchTerm ='%'.$searchTerm;
     }
-    
+
     if(substr($searchTerm,-1) != '%'){
         $searchTerm = $searchTerm.'%';
     }
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     try {
        $ses = \Factory::getServiceService()->getSes($searchTerm,null,null,null,null,null,null,null,null,null,null,null,true);
-       
-       
-       
+
+
+
     } catch(Exception $ex){
         show_view(  'error.php', $ex->getMessage() . "<br /><br />Please contact the "
         . "<a href=\"index.php?Page_Type=Static_HTML&Page=Help_And_Contact\">"

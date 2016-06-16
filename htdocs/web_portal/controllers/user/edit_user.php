@@ -21,7 +21,7 @@
 require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/../../components/Get_User_Principle.php';
 require_once __DIR__.'/utils.php';
-    
+
 /**
  * Controller for an edit_user request
  * @global array $_POST only set if the browser has POSTed data
@@ -30,7 +30,7 @@ require_once __DIR__.'/utils.php';
 function edit_user() {
     //Check the portal is not in read only mode, returns exception if it is
     checkPortalIsNotReadOnly();
-    
+
     if($_POST) {     // If we receive a POST request it's to update a user
         submit();
     } else { // If there is no post data, draw the edit user form
@@ -46,9 +46,9 @@ function draw() {
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
-	$serv = \Factory::getUserService();
-	$dn = Get_User_Principle();
-	// Current User
+    $serv = \Factory::getUserService();
+    $dn = Get_User_Principle();
+    // Current User
     $currentUser = $serv->getUserByPrinciple($dn);
     // User entity to edit
     $user = $serv->getUser($_REQUEST['id']);
@@ -59,7 +59,7 @@ function draw() {
     }
 
     try {
-    	$serv->editUserAuthorization($user, $currentUser);
+        $serv->editUserAuthorization($user, $currentUser);
     } catch (Exception $e) {
         show_view('error.php', $e->getMessage());
         die();

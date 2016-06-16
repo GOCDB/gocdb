@@ -14,12 +14,12 @@
 //use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * A RoleType defines the type of {@see Role}. 
- * The <code>name</code> is required and must be unique in the database. 
- * 
- * @author John Casson 
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * 
+ * A RoleType defines the type of {@see Role}.
+ * The <code>name</code> is required and must be unique in the database.
+ *
+ * @author John Casson
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ *
  * @Entity @Table(name="RoleTypes")
  */
 class RoleType {
@@ -31,14 +31,14 @@ class RoleType {
     protected $name;
 
     /**
-     * Create a new instance. The given name must have a value and be unique in the database. 
-     * 
-     * @param string $name The roleType name. 
-     * @throws RuntimeException if the given args are not strings 
+     * Create a new instance. The given name must have a value and be unique in the database.
+     *
+     * @param string $name The roleType name.
+     * @throws RuntimeException if the given args are not strings
      */
     public function __construct($name/* , $classification */) {
         $this->setName($name);
-        //$this->setClassification($classification);  
+        //$this->setClassification($classification);
     }
 
     /**
@@ -58,9 +58,9 @@ class RoleType {
 
 
     /**
-     * Set/update the name of the RoleType. It must be unique in the DB. 
+     * Set/update the name of the RoleType. It must be unique in the DB.
      * @param string $name
-     * @throws RuntimeException if the given param is not a string 
+     * @throws RuntimeException if the given param is not a string
      */
     public function setName($name) {
         if (!is_string($name)) {

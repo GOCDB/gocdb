@@ -24,12 +24,12 @@ function show_help() {
     //$params['Scopes'] = \Factory::getScopeService()->getScopes();
 
     $optionalScopes = \Factory::getScopeService()->getScopesFilterByParams(
-                    array('excludeReserved' => true), null);  
+                    array('excludeReserved' => true), null);
     $reservedScopes = \Factory::getScopeService()->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), null); 
+                    array('excludeNonReserved' => true), null);
 
-    $params['optionalScopes'] = $optionalScopes; 
-    $params['reservedScopes'] = $reservedScopes; 
-    
+    $params['optionalScopes'] = $optionalScopes;
+    $params['reservedScopes'] = $reservedScopes;
+
     show_view("scope_help.php", $params, "Scopes");
 }

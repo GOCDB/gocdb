@@ -30,7 +30,7 @@ require_once __DIR__ . '/../utils.php';
 function move_site() {
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's for a site move
         submit();
     } else { // If there is no post data, draw the select old NGI form
@@ -44,23 +44,23 @@ function move_site() {
  * @return null
  */
 function submit() {
-	require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
+    require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 
-    
+
     //Get the submitted data
     $movementrequest = getSiteMoveDataFromWeb();
 
     //If new NGI is not in the array of submitted data yet,
     //then we have come form the select old NGI page and want the move site page
     if(!array_key_exists('NewNGI',$movementrequest)){
-    	//Run the submit old NGI and display the site_move view
+        //Run the submit old NGI and display the site_move view
         submitOldNgi($movementrequest);
-    }	
+    }
     else {
         //Carry out the move with submitted data then show success view
         submitMoveSite($movementrequest);
-    } 
+    }
 }
 
 /**
@@ -69,15 +69,15 @@ function submit() {
  *  @return null
  */
 function drawMoveSite(\NGI $oldNgi) {
-    //Check the user has permission to see the page, will throw exception 
+    //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
- 
+
     //Get a list of sites and list of NGIs to select from
-	$ngis= \Factory::getNgiService()->getNGIs();
-	$sites = $oldNgi->getSites();
-	
-	//Put into an array to be passed to view
+    $ngis= \Factory::getNgiService()->getNGIs();
+    $sites = $oldNgi->getSites();
+
+    //Put into an array to be passed to view
     $params = array('Ngis' => $ngis, 'sites' => $sites, 'OldNgi' => $oldNgi->getName());
 
     show_view("admin/move_site.php", $params);
@@ -88,14 +88,14 @@ function drawMoveSite(\NGI $oldNgi) {
  *  @return null
  */
 function drawSelectOldNgi() {
-    // Check the user has permission to see the page, will throw exception 
+    // Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
-    checkUserIsAdmin();   
+    checkUserIsAdmin();
 
     //Get a list  of NGIs to select from
     $ngis= \Factory::getSiteService()->getNGIs();
-	
-	//Put into an array to be passed to view
+
+    //Put into an array to be passed to view
     $params = array('Ngis' => $ngis);
 
     show_view("admin/move_site_select_old_ngi.php", $params);
@@ -111,7 +111,7 @@ function drawSelectOldNgi() {
 function getSiteMoveDataFromWeb() {
     // Fields that are used to link other objects to the site
     $fields = array('OldNGI', 'NewNGI', 'Sites');
-    
+
     foreach($fields as $field) {
         if(array_key_exists($field,$_REQUEST)){
             $site_move_data[$field] = $_REQUEST[$field];
@@ -128,7 +128,7 @@ function getSiteMoveDataFromWeb() {
  */
 function submitOldNgi($submitvalues) {
     //Get the NGI
-    $oldNgi_id = $submitvalues['OldNGI'];        
+    $oldNgi_id = $submitvalues['OldNGI'];
     $oldNgi = \Factory::getNgiService()->getNGI($oldNgi_id);
     //Draw the move site form
     drawMoveSite($oldNgi);
@@ -168,7 +168,7 @@ function submitMoveSite($movementDetails) {
         foreach($site_ids as $site_id){
             $site= $serv->getSite($site_id);
             $serv->moveSite($site, $newNgi, $user);
-            $sites[] = $site; 
+            $sites[] = $site;
         }
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());

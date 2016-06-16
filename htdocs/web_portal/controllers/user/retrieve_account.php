@@ -21,7 +21,7 @@
 require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/../../components/Get_User_Principle.php';
 require_once __DIR__.'/utils.php';
-    
+
 /**
  * Controller for a retrieve account request.
  * @global array $_POST only set if the browser has POSTed data
@@ -30,7 +30,7 @@ require_once __DIR__.'/utils.php';
 function retrieve() {
     //Check the portal is not in read only mode, returns exception if it is
     checkPortalIsNotReadOnly();
-    
+
     if($_POST) { // If we receive a POST request it's to update a user
         submit();
     } else { // If there is no post data, draw the edit user form
@@ -43,20 +43,20 @@ function retrieve() {
  * @return null
  */
 function draw() {
-	$dn = Get_User_Principle();
+    $dn = Get_User_Principle();
     if(empty($dn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	    die(); 
+        die();
     }
-	$user = \Factory::getUserService()->getUserByPrinciple($dn);
+    $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
-	if(!is_null($user)) {
-	    show_view('error.php', "Only unregistered users can retrieve an account.");
-	    die();
-	}
+    if(!is_null($user)) {
+        show_view('error.php', "Only unregistered users can retrieve an account.");
+        die();
+    }
 
     $params['DN'] = $dn;
-    
+
     show_view('user/retrieve_account.php', $params, 'Retrieve Account');
 }
 
@@ -66,15 +66,15 @@ function submit() {
     $currentDn = Get_User_Principle();
     if(empty($currentDn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	    die(); 
+        die();
     }
-    
+
     try {
         $changeReq = \Factory::getRetrieveAccountService()->newRetrieveAccountRequest($currentDn, $givenEmail, $oldDn);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
     }
-    
+
     show_view('user/retrieve_account_accepted.php');
 }

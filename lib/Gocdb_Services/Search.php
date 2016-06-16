@@ -20,24 +20,24 @@ namespace org\gocdb\services;
  * @author David Meredith
  */
 class Search {
-    private $em; 
+    private $em;
 
     public function __construct() {
     }
 
     /**
-     * Set the EntityManager instance used by all service methods. 
+     * Set the EntityManager instance used by all service methods.
      * @param \Doctrine\ORM\EntityManager $em
      */
     public function setEntityManager(\Doctrine\ORM\EntityManager $em){
-        $this->em = $em;  
+        $this->em = $em;
     }
-    
+
     /**
-     * @return \Doctrine\ORM\EntityManager 
+     * @return \Doctrine\ORM\EntityManager
      */
     public function getEntityManager(){
-        return $this->em; 
+        return $this->em;
     }
 
     /*

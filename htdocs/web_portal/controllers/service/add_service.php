@@ -3,7 +3,7 @@
  *======================================================
  * Author: John Casson, George Ryall, David Meredith
  * Description: Processes a new service request. If the user
- *              hasn't POSTed any data we draw the new service 
+ *              hasn't POSTed any data we draw the new service
  *              form. If they post data we assume they've posted it from
  *              the form and validate then insert it into the DB.
  *
@@ -35,7 +35,7 @@ function add_service() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's for a new SE
         submit($user);
     } else { // If there is no post data, draw the New SE form
@@ -48,10 +48,10 @@ function add_service() {
  * @param \User $user Current user
  * @return null
  */
-function submit(\User $user = null) { 
+function submit(\User $user = null) {
     $newValues = getSeDataFromWeb();
 
-    if($user == null) throw new Exception("Unregistered users can't add services"); 
+    if($user == null) throw new Exception("Unregistered users can't add services");
     $se = \Factory::getServiceService()->addService($newValues, $user);
     $params = array('se' => $se);
     show_view("service/submit_add_service.php", $params);
@@ -59,7 +59,7 @@ function submit(\User $user = null) {
 
 /**
  * Draw the add service form
- * @param \User $user current user 
+ * @param \User $user current user
  * @return null
  */
 function draw($user) {
@@ -83,12 +83,12 @@ function draw($user) {
 
     $sites = array();
     if ($user->isAdmin()) {
-        $disableReservedScopes = false; 
+        $disableReservedScopes = false;
         //For admin users, return all sites instead.
         $sites = \Factory::getSiteService()->getSitesBy();
     } else {
-        $disableReservedScopes = true; 
-        // Collate sites which user has required action permission to array. 
+        $disableReservedScopes = true;
+        // Collate sites which user has required action permission to array.
         $allUserSites = \Factory::getUserService()->getSitesFromRoles($user);
         foreach ($allUserSites as $s) {
             if (\Factory::getRoleActionAuthorisationService()->authoriseAction(
@@ -99,25 +99,25 @@ function draw($user) {
     }
 
     if(count($sites)==0 and !$user->isAdmin()){
-      throw new Exception("You need at least one NGI or Site level role to add a new service.");  
+      throw new Exception("You need at least one NGI or Site level role to add a new service.");
     }
 
     // URL mapping
-    // Return all scopes for the parent Site with the specified Id as a JSON object 
+    // Return all scopes for the parent Site with the specified Id as a JSON object
     // Used in ajax requests for display purposes
     if(isset($_GET['getAllScopesForScopedEntity']) && is_numeric($_GET['getAllScopesForScopedEntity'])){
-        // Return all scopes for the parent Site with the specified Id as a JSON object.  
-        // Used in ajax requests for generating UI checkboxes. 
-        // AJAX is needed here because the parent Site is not known until the user selects 
-        // which parent Site in the pull-down which then fires the AJAX request. 
-        $scopedEntityId = $_GET['getAllScopesForScopedEntity']; 
-        $siteScopedEntity =  \Factory::getSiteService()->getSite($scopedEntityId); 
-        $scopeJson = getEntityScopesAsJSON2(null, $siteScopedEntity, $disableReservedScopes, true);  
-        //$scopeJson = getEntityScopesAsJSON($siteScopedEntity, $disableReservedScopes);  
+        // Return all scopes for the parent Site with the specified Id as a JSON object.
+        // Used in ajax requests for generating UI checkboxes.
+        // AJAX is needed here because the parent Site is not known until the user selects
+        // which parent Site in the pull-down which then fires the AJAX request.
+        $scopedEntityId = $_GET['getAllScopesForScopedEntity'];
+        $siteScopedEntity =  \Factory::getSiteService()->getSite($scopedEntityId);
+        $scopeJson = getEntityScopesAsJSON2(null, $siteScopedEntity, $disableReservedScopes, true);
+        //$scopeJson = getEntityScopesAsJSON($siteScopedEntity, $disableReservedScopes);
         header('Content-type: application/json');
-        die($scopeJson);  
-    } 
-    
+        die($scopeJson);
+    }
+
     $serviceTypes = \Factory::getServiceService()->getServiceTypes();
     // remove the deprecated CE type (temp hack)
     foreach($serviceTypes as $key => $st) {
@@ -128,17 +128,17 @@ function draw($user) {
 
     //get the number of scopes that we require
     $numberScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('service');
-    
+
     $params = array('sites' => $sites, 'serviceTypes' => $serviceTypes,
                     "disableReservedScopes"=> $disableReservedScopes,
-                    'site' => $site, 
+                    'site' => $site,
                     'numberOfScopesRequired' => $numberScopesRequired);
-    
+
     //Check that there is at least one Site available before allowing a user to add a service.
     if($params['sites'] == null){
         show_view('error.php', "GocDB requires one or more Sites to be able to add a service.");
     }
-    
+
     show_view("service/add_service.php", $params);
 }
 

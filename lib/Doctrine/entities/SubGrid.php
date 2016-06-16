@@ -30,9 +30,9 @@ class SubGrid {
     /** @OneToMany(targetEntity="Site", mappedBy="subGrid") */
     protected $sites = null;
 
-    /** 
-     * @ManyToOne(targetEntity="NGI") 
-     * @JoinColumn(name="NGI_Id", referencedColumnName="id", onDelete="CASCADE") 
+    /**
+     * @ManyToOne(targetEntity="NGI")
+     * @JoinColumn(name="NGI_Id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $ngi;
 

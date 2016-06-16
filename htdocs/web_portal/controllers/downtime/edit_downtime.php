@@ -30,10 +30,10 @@ require_once __DIR__ . '/../utils.php';
 function edit() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    
+
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's to update a downtime
         submit($user);
     } else { // If there is no post data, draw the edit downtime form
@@ -57,91 +57,91 @@ function draw(\User $user = null) {
     $serv = \Factory::getDowntimeService();
     $dt = $serv->getDowntime($_GET['id']);
     if($dt == null){
-        throw new Exception("No downtime with that id"); 
+        throw new Exception("No downtime with that id");
     }
 
-    // check that this downtime is eligible for editing, throws exception if not.  
-    $serv->editValidationDatePreConditions($dt); 
+    // check that this downtime is eligible for editing, throws exception if not.
+    $serv->editValidationDatePreConditions($dt);
     $serv->authorisation($dt->getServices(), $user);
-    
+
     $nowUtcDateTime = new \DateTime(null, new \DateTimeZone("UTC"));
     $twoDaysAgoUtcDateTime = $nowUtcDateTime->sub(\DateInterval::createFromDateString('2 days'));
     $twoDaysAgoUtc = $twoDaysAgoUtcDateTime->format('d/m/Y H:i'); //e.g.  02/10/2013 13:20
-    
+
     $params = array(
-        'dt' => $dt, 
-        'format' => getDateFormat(), 
-        'nowUtc' => $nowUtcDateTime->format('H:i T'), 
-        'twoDaysAgoUtc' => $twoDaysAgoUtc);  
+        'dt' => $dt,
+        'format' => getDateFormat(),
+        'nowUtc' => $nowUtcDateTime->format('H:i T'),
+        'twoDaysAgoUtc' => $twoDaysAgoUtc);
     show_view('downtime/edit_downtime.php', $params);
 }
 
 /**
- * 
+ *
  * @param \User $user current user
  * @throws Exception
  */
 function submit(\User $user = null) {
- 
-	//Check if this is a confirmed submit or intial submit
-	$confirmed = $_POST['CONFIRMED'];	
+
+    //Check if this is a confirmed submit or intial submit
+    $confirmed = $_POST['CONFIRMED'];
     if($confirmed == true){
-    	//Downtime is confirmed, submit it
-        $downtimeInfo = json_decode($_POST['newValues'], TRUE); 
-        
-    	$serv = \Factory::getDowntimeService();   	
+        //Downtime is confirmed, submit it
+        $downtimeInfo = json_decode($_POST['newValues'], TRUE);
+
+        $serv = \Factory::getDowntimeService();
         $dt = $serv->getDowntime($downtimeInfo['DOWNTIME']['EXISTINGID']);
         unset($downtimeInfo['DOWNTIME']['EXISTINGID']);
         unset($downtimeInfo['isEdit']);
-    	$params['dt'] = $serv->editDowntime($dt, $downtimeInfo, $user); 
-    	   	
-    	show_view("downtime/edited_downtime.php", $params);
-    }else{
-    	//Show user confirmation screen with their input
-    	$downtimeInfo = getDtDataFromWeb(); 
-    	
-    	//Need to sort the impacted_ids into impacted services and impacted endpoints
-    	$impactedids = $downtimeInfo['IMPACTED_IDS'];
+        $params['dt'] = $serv->editDowntime($dt, $downtimeInfo, $user);
 
-    	$services=array();
-    	$endpoints=array();
-    	
-    	//For each impacted id sort between endpoints and services using the prepended letter
-    	foreach($impactedids as $id){
-    	    if (strpos($id, 's') !== FALSE){
-    	        //This is a service id
-    	        $services[] = str_replace('s', '', $id); //trim off the identifying char before storing in array
-    	    }else{
-    	        //This is an endpoint id
-    	        $endpoints[] = str_replace('e', '', $id); //trim off the identifying char before storing in array
-    	    }
-    	}
-    	
-    	unset($downtimeInfo['IMPACTED_IDS']); //Delete the unsorted Ids from the downtime info
-    	 
-    	$downtimeInfo['Impacted_Endpoints'] = $endpoints;
-    	 
-    	
-    	$serv = \Factory::getServiceService();
-    	
-    	/** For endpoint put into downtime we want the parent service also. If a user has selected
-    	 * endpoints but not the parent service here we will add the service to maintain the link beteween
-    	 * a downtime having both the service and the endpoint.
-    	 */
-    	foreach($downtimeInfo['Impacted_Endpoints'] as $endpointIds){
-    	   $endpoint = $serv->getEndpoint($endpointIds);
-    	   $services[] = $endpoint->getService()->getId();
-    	}
-    	
-    	//Remove any duplicate service ids and store the array of ids
-    	$services = array_unique($services);
-    	
-    	//Assign the impacted services and endpoints to their own arrays for us by the addDowntime method
-    	$downtimeInfo['Impacted_Services'] = $services;    	
-    	//Pass the edit variable so the confirm_add view works as the confirm edit view.
-    	$downtimeInfo['isEdit'] = true;    	
-    	show_view("downtime/confirm_add_downtime.php", $downtimeInfo);
-    }  
+        show_view("downtime/edited_downtime.php", $params);
+    }else{
+        //Show user confirmation screen with their input
+        $downtimeInfo = getDtDataFromWeb();
+
+        //Need to sort the impacted_ids into impacted services and impacted endpoints
+        $impactedids = $downtimeInfo['IMPACTED_IDS'];
+
+        $services=array();
+        $endpoints=array();
+
+        //For each impacted id sort between endpoints and services using the prepended letter
+        foreach($impactedids as $id){
+            if (strpos($id, 's') !== FALSE){
+                //This is a service id
+                $services[] = str_replace('s', '', $id); //trim off the identifying char before storing in array
+            }else{
+                //This is an endpoint id
+                $endpoints[] = str_replace('e', '', $id); //trim off the identifying char before storing in array
+            }
+        }
+
+        unset($downtimeInfo['IMPACTED_IDS']); //Delete the unsorted Ids from the downtime info
+
+        $downtimeInfo['Impacted_Endpoints'] = $endpoints;
+
+
+        $serv = \Factory::getServiceService();
+
+        /** For endpoint put into downtime we want the parent service also. If a user has selected
+         * endpoints but not the parent service here we will add the service to maintain the link beteween
+         * a downtime having both the service and the endpoint.
+         */
+        foreach($downtimeInfo['Impacted_Endpoints'] as $endpointIds){
+           $endpoint = $serv->getEndpoint($endpointIds);
+           $services[] = $endpoint->getService()->getId();
+        }
+
+        //Remove any duplicate service ids and store the array of ids
+        $services = array_unique($services);
+
+        //Assign the impacted services and endpoints to their own arrays for us by the addDowntime method
+        $downtimeInfo['Impacted_Services'] = $services;
+        //Pass the edit variable so the confirm_add view works as the confirm edit view.
+        $downtimeInfo['isEdit'] = true;
+        show_view("downtime/confirm_add_downtime.php", $downtimeInfo);
+    }
 }
 
 ?>

@@ -15,17 +15,17 @@ require_once __DIR__ . '/IPIQuery.php';
 /**
  * Return an XML document that encodes the service groups selected from the DB.
  * Optionally provide an associative array of query parameters with values used to restrict the results.
- * Only known parameters are honoured while unknown params produce error doc. 
+ * Only known parameters are honoured while unknown params produce error doc.
  * Parmeter array keys include:
  * <pre>
  *         'service_group_name',
  *         'scope',
- *         'scope_match', 
- *      'extensions' 
+ *         'scope_match',
+ *      'extensions'
  * </pre>
- * 
+ *
  * @author James McCarthy
- * @author David Meredith 
+ * @author David Meredith
  */
 class GetServiceGroup implements IPIQuery {
 
@@ -35,22 +35,22 @@ class GetServiceGroup implements IPIQuery {
     private $helpers;
     private $sgs;
     private $renderMultipleEndpoints;
-    private $baseUrl; 
+    private $baseUrl;
 
-    /** 
+    /**
      * Constructor takes entity manager which is then used by the query builder
      *
      * @param EntityManager $em
-     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output.
      */
     public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal') {
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
-        $this->baseUrl = $baseUrl; 
+        $this->baseUrl = $baseUrl;
     }
 
-    /** 
+    /**
      * Validates parameters against array of pre-defined valid terms for this PI type
      * @param array $parameters
      */
@@ -68,7 +68,7 @@ class GetServiceGroup implements IPIQuery {
         $this->validParams = $parameters;
     }
 
-    /** 
+    /**
      * Creates the query by building on a queryBuilder object as
      * required by the supplied parameters
      */
@@ -109,8 +109,8 @@ class GetServiceGroup implements IPIQuery {
 
         //Run ScopeQueryBuilder regardless of if scope is set.
         $scopeQueryBuilder = new ScopeQueryBuilder(
-                (isset($parameters['scope'])) ? $parameters['scope'] : null, 
-                (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null, 
+                (isset($parameters['scope'])) ? $parameters['scope'] : null,
+                (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null,
                 $qb, $this->em, $bc, 'ServiceGroup', 'sg'
         );
 
@@ -156,7 +156,7 @@ class GetServiceGroup implements IPIQuery {
         return $this->sgs;
     }
 
-    /** Returns proprietary GocDB rendering of the service group data 
+    /** Returns proprietary GocDB rendering of the service group data
      *  in an XML String
      * @return String
      */
@@ -200,7 +200,7 @@ class GetServiceGroup implements IPIQuery {
                         $xmlEndpoint = $xmlEndpoints->addChild('ENDPOINT');
                         $xmlEndpoint->addChild('ID', $endpoint->getId());
                         $xmlEndpoint->addChild('NAME', htmlspecialchars($endpoint->getName()));
-                        // Endpoint Extensions 
+                        // Endpoint Extensions
                         $xmlEndpointExtensions = $xmlEndpoint->addChild('EXTENSIONS');
                         foreach ($endpoint->getEndpointProperties() as $prop) {
                             $xmlProperty = $xmlEndpointExtensions->addChild('EXTENSION');
@@ -213,13 +213,13 @@ class GetServiceGroup implements IPIQuery {
                     }
                 }
 
-                // Service scopes  
+                // Service scopes
                 $xmlScopes = $xmlService->addChild('SCOPES');
                 foreach ($service->getScopes() as $scope) {
                     $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
                 }
 
-                // Service Extensions 
+                // Service Extensions
                 $xmlServiceExtensions = $xmlService->addChild('EXTENSIONS');
                 foreach ($service->getServiceProperties() as $prop) {
                     $xmlProperty = $xmlServiceExtensions->addChild('EXTENSION');
@@ -229,13 +229,13 @@ class GetServiceGroup implements IPIQuery {
                 }
             }
 
-            // SG scopes  
+            // SG scopes
             $xmlScopes = $xmlSg->addChild('SCOPES');
             foreach ($sg->getScopes() as $scope) {
                 $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
             }
 
-            // SG extensions 
+            // SG extensions
             $xmlSGExtensions = $xmlSg->addChild('EXTENSIONS');
             foreach ($sg->getServiceGroupProperties() as $sgProp) {
                 $xmlSgProperty = $xmlSGExtensions->addChild('EXTENSION');
@@ -256,7 +256,7 @@ class GetServiceGroup implements IPIQuery {
     }
 
     /** Returns the service group data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
     public function getGlue2XML() {
@@ -264,7 +264,7 @@ class GetServiceGroup implements IPIQuery {
         throw new LogicException("Not implemented yet");
     }
 
-    /** Not yet implemented, in future will return the service group 
+    /** Not yet implemented, in future will return the service group
      *  data in JSON format
      * @throws LogicException
      */
@@ -274,7 +274,7 @@ class GetServiceGroup implements IPIQuery {
     }
 
     /**
-     * Choose to render the multiple endpoints of a service (or not) 
+     * Choose to render the multiple endpoints of a service (or not)
      * @param boolean $renderMultipleEndpoints
      */
     public function setRenderMultipleEndpoints($renderMultipleEndpoints) {

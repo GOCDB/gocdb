@@ -33,7 +33,7 @@ function add_ses() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's after form submission
         submit($user);
     } else { // If there is no post data, draw the add SEs form
@@ -64,17 +64,17 @@ function draw(\User $user = null) {
         show_view('error.php', 'You do not have permission to edit this ServiceGroup');
         die();
     }
-        
+
     // Check to see whether to show the link to "add a new SE to this virtual site"
     if(\Factory::getConfigService()
-    		->IsOptionalFeatureSet("siteless_services")) {
+            ->IsOptionalFeatureSet("siteless_services")) {
         $siteLessServices = true;
     } else {
         $siteLessServices = false;
     }
 
     $params = array('sg' => $sg,
-        			'siteLessServices' => $siteLessServices);
+                    'siteLessServices' => $siteLessServices);
 
     show_view('service_group/add_ses.php', $params);
 }
@@ -90,25 +90,25 @@ function submit(\User $user = null) {
         throw new Exception("An id must be specified");
     }
     $sg = \Factory::getServiceGroupService()
-    	->getServiceGroup($_REQUEST['id']);
+        ->getServiceGroup($_REQUEST['id']);
 
     $ses = array();
     if(empty($_REQUEST['endpointIds'])) {
-    	show_view('error.php', 'No service selected');
-    	die();
+        show_view('error.php', 'No service selected');
+        die();
     }
     foreach($_REQUEST['endpointIds'] as $seId) {
-    	$ses[] = \Factory::getServiceService()
-    		->getService($seId);
+        $ses[] = \Factory::getServiceService()
+            ->getService($seId);
     }
 
     try {
         \Factory::getServiceGroupService()
-        	->addServices($sg, $ses, $user);
+            ->addServices($sg, $ses, $user);
         $params = array('sg' => $sg);
         show_view("service_group/submit_service_group_ses.php", $params);
     } catch (Exception $e) {
-    	show_view('error.php', $e->getMessage());
+        show_view('error.php', $e->getMessage());
         die();
     }
 }

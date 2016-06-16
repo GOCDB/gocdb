@@ -8,7 +8,7 @@ require_once dirname(__FILE__)."/bootstrap.php";
 return ConsoleRunner::createHelperSet($entityManager);
 
 
-// Doctrine 2.3 and below: 
+// Doctrine 2.3 and below:
 /*
 require_once dirname(__FILE__)."/bootstrap.php";
 
@@ -16,6 +16,6 @@ $helperSet = new \Symfony\Component\Console\Helper\HelperSet(array(
     'db' => new \Doctrine\DBAL\Tools\Console\Helper\ConnectionHelper($entityManager->getConnection()),
     'em' => new \Doctrine\ORM\Tools\Console\Helper\EntityManagerHelper($entityManager)
 ));
-return $helperSet; 
+return $helperSet;
 */
 

@@ -1,9 +1,9 @@
-<?php 
+<?php
 $propertyArray = $params['propArr'];
 $serviceGroup = $params['serviceGroup'];
 ?>
 <div class="rightPageContainer">
-	<h1 class="Success">Deletion Successful</h1><br />
+    <h1 class="Success">Deletion Successful</h1><br />
 
     <br />
 

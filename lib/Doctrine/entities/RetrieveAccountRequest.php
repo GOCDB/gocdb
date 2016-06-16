@@ -13,13 +13,13 @@
  */
 
 /**
- * Records a new retrieve account request record. 
+ * Records a new retrieve account request record.
  * <p>
- * Users may need to retrieve their old account when their ID/DN has changed. 
- * This record stores the relevant data needed to retrieve their old account, 
- * including a confirmation code that is sent to the user's existing email 
- * address - they need to provide the code to complete the account retrieval transaction.  
- * 
+ * Users may need to retrieve their old account when their ID/DN has changed.
+ * This record stores the relevant data needed to retrieve their old account,
+ * including a confirmation code that is sent to the user's existing email
+ * address - they need to provide the code to complete the account retrieval transaction.
+ *
  * @author John Casson
  * @author David Meredith <david.meredith@stfc.ac.uk>
  * @Entity @Table(name="RetrieveAccountRequests")
@@ -29,9 +29,9 @@ class RetrieveAccountRequest {
     /** @Id @Column(type="integer") @GeneratedValue */
     protected $id;
 
-    /** 
+    /**
      * @OneToOne(targetEntity="User")
-     * @JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE") 
+     * @JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $user;
 
@@ -55,7 +55,7 @@ class RetrieveAccountRequest {
     }
 
     /**
-     * Get the User who made this request. 
+     * Get the User who made this request.
      * @return \User
      */
     public function getUser() {
@@ -63,9 +63,9 @@ class RetrieveAccountRequest {
     }
 
     /**
-     * Return the confirmation code that is used to authenticate the user. 
-     * This code is sent to the user's existing email address - they need to 
-     * provide the code to complete the account retrieval transaction. 
+     * Return the confirmation code that is used to authenticate the user.
+     * This code is sent to the user's existing email address - they need to
+     * provide the code to complete the account retrieval transaction.
      * @return string
      */
     public function getConfirmCode() {
@@ -73,7 +73,7 @@ class RetrieveAccountRequest {
     }
 
     /**
-     * Get the updated user DN/ID that newly identifies the user account. 
+     * Get the updated user DN/ID that newly identifies the user account.
      * @return string
      */
     public function getNewDn() {
@@ -81,7 +81,7 @@ class RetrieveAccountRequest {
     }
 
     /**
-     * Set the user. 
+     * Set the user.
      * @param \User $user
      */
     public function setUser($user) {
@@ -89,9 +89,9 @@ class RetrieveAccountRequest {
     }
 
     /**
-     * Set the confirmation code that is used to authenticate the user. 
-     * This code is sent to the user's existing email address - they need to 
-     * provide the code to complete the account retrieval transaction. 
+     * Set the confirmation code that is used to authenticate the user.
+     * This code is sent to the user's existing email address - they need to
+     * provide the code to complete the account retrieval transaction.
      * @param string $code
      */
     public function setConfirmCode($code) {
@@ -99,7 +99,7 @@ class RetrieveAccountRequest {
     }
 
     /**
-     * Set the new DN/ID string of the user account. 
+     * Set the new DN/ID string of the user account.
      * @param string $dn
      */
     public function setNewDn($dn) {

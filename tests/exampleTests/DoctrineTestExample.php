@@ -10,21 +10,21 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 
 /**
  * A template that includes all the setup and tear down functions for writting
- * a PHPUnit test to test doctrine.  
- * 
+ * a PHPUnit test to test doctrine.
+ *
  * @author David Meredith
  * @author James McCarthy
  */
 class DoctrineTestExample extends PHPUnit_Extensions_Database_TestCase {
 
     private $em;
-	
-	 /**
-     * Overridden. 
+
+     /**
+     * Overridden.
      */
     public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        parent::setUpBeforeClass();
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing Your Test Name. . .\n";
     }
 
@@ -34,12 +34,12 @@ class DoctrineTestExample extends PHPUnit_Extensions_Database_TestCase {
      */
     protected function getConnection() {
         require_once dirname(__FILE__) . '/bootstrap_pdo.php';
-        return getConnectionToTestDB(); 
+        return getConnectionToTestDB();
     }
-	
+
     /**
-     * Overridden. Returns the test dataset.  
-     * Defines how the initial state of the database should look before each test is executed. 
+     * Overridden. Returns the test dataset.
+     * Defines how the initial state of the database should look before each test is executed.
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
     protected function getDataSet() {
@@ -47,7 +47,7 @@ class DoctrineTestExample extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getSetUpOperation() {
         // CLEAN_INSERT is default
@@ -55,14 +55,14 @@ class DoctrineTestExample extends PHPUnit_Extensions_Database_TestCase {
         //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
         //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
         //
-        // Issue a DELETE from <table> which is more portable than a 
-        // TRUNCATE table <table> (some DBs require high privileges for truncate statements 
+        // Issue a DELETE from <table> which is more portable than a
+        // TRUNCATE table <table> (some DBs require high privileges for truncate statements
         // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
         return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getTearDownOperation() {
         // NONE is default
@@ -79,7 +79,7 @@ class DoctrineTestExample extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * @todo Still need to setup connection to different databases. 
+     * @todo Still need to setup connection to different databases.
      * @return EntityManager
      */
     private function createEntityManager() {
@@ -100,51 +100,51 @@ class DoctrineTestExample extends PHPUnit_Extensions_Database_TestCase {
             //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM " . $tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
-            //echo 'row count: '.$result->getRowCount() ; 
+            //echo 'row count: '.$result->getRowCount() ;
             if ($result->getRowCount() != 0)
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
         }
     }
 
     /**
-	* An example test showing the creation of a site and assertation of its data
+    * An example test showing the creation of a site and assertation of its data
     */
     public function testDoctrineExample() {
         print __METHOD__ . "\n";
-		
-		//Create a site
-    	$ourSite = TestUtil::createSampleSite("Our Example Site");
-		
-		//Set some details of the site
-		$ourSite->setEmail("myTest@email.com");
-		$ourSite->setTelephone("012345678910");
-		$ourSite->setLocation("United Kingdom");
-		
-		//Persist the site in memory
-		$this->em->persist($ourSite);
-		
-		//Get the site ID from the object
-		$siteId = $ourSite->getId();   
-		
-		//Get a PDO database connection	    	
-    	$con = $this->getConnection();
-		
-		//Search the database for this site
-	    $sql = "SELECT 1 FROM sites WHERE ID = '$siteId'";
-	    $result = $con->createQueryTable('', $sql);
-		
-		//We expect this query to return no rows as the site does not exist in the database yet
-	    $this->assertEquals(0, $result->getRowCount());
-		
-		//Commit the site to the database
-		$this->em->flush();
-				
-		//Search the database for this site again
-	    $sql = "SELECT 1 FROM sites WHERE ID = '$siteId'";
-	    $result = $con->createQueryTable('', $sql);
-		
-		//We expect this query to return 1 rows as the site now exists in the database
-	    $this->assertEquals(1, $result->getRowCount());		
+
+        //Create a site
+        $ourSite = TestUtil::createSampleSite("Our Example Site");
+
+        //Set some details of the site
+        $ourSite->setEmail("myTest@email.com");
+        $ourSite->setTelephone("012345678910");
+        $ourSite->setLocation("United Kingdom");
+
+        //Persist the site in memory
+        $this->em->persist($ourSite);
+
+        //Get the site ID from the object
+        $siteId = $ourSite->getId();
+
+        //Get a PDO database connection
+        $con = $this->getConnection();
+
+        //Search the database for this site
+        $sql = "SELECT 1 FROM sites WHERE ID = '$siteId'";
+        $result = $con->createQueryTable('', $sql);
+
+        //We expect this query to return no rows as the site does not exist in the database yet
+        $this->assertEquals(0, $result->getRowCount());
+
+        //Commit the site to the database
+        $this->em->flush();
+
+        //Search the database for this site again
+        $sql = "SELECT 1 FROM sites WHERE ID = '$siteId'";
+        $result = $con->createQueryTable('', $sql);
+
+        //We expect this query to return 1 rows as the site now exists in the database
+        $this->assertEquals(1, $result->getRowCount());
     }
 
 }

@@ -103,7 +103,7 @@ foreach ($ses as $xmlSe) {
     //set creation date
     $creationDate = new \DateTime("now", new DateTimeZone('UTC'));
 
-    
+
     $doctrineSe->setCreationDate($creationDate);
     $doctrineSe->setDn((string) $xmlSe->HOSTDN);
     $doctrineSe->setIpAddress((string) $xmlSe->HOST_IP);
@@ -112,7 +112,7 @@ foreach ($ses as $xmlSe) {
     $doctrineSe->setHostName((string) $xmlSe->HOSTNAME);
     $doctrineSe->setDescription((string) $xmlSe->DESCRIPTION);
 
-    // A service has ELs  
+    // A service has ELs
     $doctrineEndpointLocation = new EndpointLocation();
     $doctrineEndpointLocation->setUrl((string) $xmlSe->URL);
     $doctrineEndpointLocation->setName('sampleEndpoint');

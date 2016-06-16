@@ -108,7 +108,7 @@ function get_https2($url){
     if ($return == false) {
         throw new Exception("no result returned. curl says: ".curl_getinfo($handle));
     }
-     
+
     return $return;
 }
 

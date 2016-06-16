@@ -1,6 +1,6 @@
 <?php
 namespace org\gocdb\security\authentication;
-require_once __DIR__.'/../IAuthentication.php'; 
+require_once __DIR__.'/../IAuthentication.php';
 
 /*
  * Copyright (C) 2015 STFC
@@ -16,57 +16,57 @@ require_once __DIR__.'/../IAuthentication.php';
  */
 
 /**
- * AuthToken for use with ShibSP. 
+ * AuthToken for use with ShibSP.
  * <p>
- * Requires installation/config of ShibSP before use. 
- * You will almost certainly need to modify this class to request the necessary 
- * SAML attribute from the IdP that is used as the principle string. 
+ * Requires installation/config of ShibSP before use.
+ * You will almost certainly need to modify this class to request the necessary
+ * SAML attribute from the IdP that is used as the principle string.
  * <p>
- * The token is stateless because it relies on the ShibSP session and simply 
- * reads the attributes stored in the ShibSP session. 
+ * The token is stateless because it relies on the ShibSP session and simply
+ * reads the attributes stored in the ShibSP session.
  *
- * @see IAuthentication 
- * @author David Meredith 
+ * @see IAuthentication
+ * @author David Meredith
  */
 class ShibAuthToken implements IAuthentication {
-    
+
     private $userDetails = null;
     private $authorities = array();
-    private $principal;  
+    private $principal;
 
       public function __construct() {
-       $this->getAttributesInitToken();   
+       $this->getAttributesInitToken();
     }
 
     /**
      * {@see IAuthentication::eraseCredentials()}
-     */ 
+     */
     public function eraseCredentials() {
-        
+
     }
 
     /**
-     * {@see IAuthentication::getAuthorities()} 
+     * {@see IAuthentication::getAuthorities()}
      */
     public function getAuthorities() {
-       return $this->authorities;  
+       return $this->authorities;
     }
 
     /**
      * {@see IAuthentication::getCredentials()}
-     * @return string An empty string as passwords are not used by this token. 
+     * @return string An empty string as passwords are not used by this token.
      */
     public function getCredentials() {
-        return ""; // none used in this token, handled by SSO/SAML 
+        return ""; // none used in this token, handled by SSO/SAML
     }
 
     /**
-     * A custom object used to store additional user details.  
-     * Allows non-security related user information (such as email addresses, 
-     * telephone numbers etc) to be stored in a convenient location. 
+     * A custom object used to store additional user details.
+     * Allows non-security related user information (such as email addresses,
+     * telephone numbers etc) to be stored in a convenient location.
      * {@see IAuthentication::getDetails()}
-     * 
-     * @return Object or null if not used 
+     *
+     * @return Object or null if not used
      */
     public function getDetails() {
         return $this->userDetails;
@@ -74,42 +74,42 @@ class ShibAuthToken implements IAuthentication {
 
     /**
      * {@see IAuthentication::getPrinciple()}
-     * @return string unique principle string of user  
+     * @return string unique principle string of user
      */
     public function getPrinciple() {
-       return $this->principal;  
+       return $this->principal;
     }
 
     private function getAttributesInitToken(){
-        $hostname = gethostname(); // gocdb-test.esc.rl.ac.uk, goc.egi.eu 
-        // specify location of the Shib Logout handler 
+        $hostname = gethostname(); // gocdb-test.esc.rl.ac.uk, goc.egi.eu
+        // specify location of the Shib Logout handler
         \Factory::$properties['LOGOUTURL'] = 'https://'.$hostname.'/Shibboleth.sso/Logout';
         $idp = $_SERVER['Shib-Identity-Provider'];
-        if ($idp == 'https://unity.eudat-aai.fz-juelich.de:8443/saml-idp/metadata' 
+        if ($idp == 'https://unity.eudat-aai.fz-juelich.de:8443/saml-idp/metadata'
                 &&  $_SERVER['distinguishedName'] != null){
             $this->principal = $_SERVER['distinguishedName'];
             $this->userDetails = array('AuthenticationRealm' => array('EUDAT_SSO_IDP'));
-            return; 
-        } else if($idp == 'https://idp.ebi.ac.uk/idp/shibboleth' 
+            return;
+        } else if($idp == 'https://idp.ebi.ac.uk/idp/shibboleth'
                 &&  $_SERVER['eppn'] != null){
             $this->principal = hash('sha256', $_SERVER['eppn']);
             $this->userDetails = array('AuthenticationRealm' => array('UK_ACCESS_FED'));
-            return; 
+            return;
         }
 //        else {
-//            die('Now go configure this AuthToken file ['.__FILE__.']');   
+//            die('Now go configure this AuthToken file ['.__FILE__.']');
 //        }
-        // if we have not set the principle/userDetails, re-direct to our Discovery Service 
+        // if we have not set the principle/userDetails, re-direct to our Discovery Service
         $target = urlencode("https://" . $hostname . "/portal/");
         header("Location: https://" . $hostname . "/Shibboleth.sso/Login?target=" . $target);
         die();
     }
 
     /**
-     * {@see IAuthentication::setAuthorities($authorities)} 
+     * {@see IAuthentication::setAuthorities($authorities)}
      */
     public function setAuthorities($authorities) {
-       $this->authorities = $authorities;  
+       $this->authorities = $authorities;
     }
 
     /**
@@ -119,28 +119,28 @@ class ShibAuthToken implements IAuthentication {
     public function setDetails($userDetails) {
         $this->userDetails = $userDetails;
     }
- 
+
     /**
      * {@see IAuthentication::validate()}
      */
     public function validate() {
-        
+
     }
 
     /**
      * {@see IAuthentication::isPreAuthenticating()}
      */
     public static function isPreAuthenticating() {
-        return true;         
+        return true;
     }
 
     /**
-     * Returns true, this token reads the ShibSP session attributes and so 
-     * does not need to be stateful itself. 
-     * {@see IAuthentication::isStateless()} 
+     * Returns true, this token reads the ShibSP session attributes and so
+     * does not need to be stateful itself.
+     * {@see IAuthentication::isStateless()}
      */
     public static function isStateless() {
-        return true;         
+        return true;
     }
 
 }

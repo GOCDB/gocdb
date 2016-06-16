@@ -16,16 +16,16 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * A {@see Service} owns zero or more EndpointLocations. ELs are linked to {@see Downtime}s.   
+ * A {@see Service} owns zero or more EndpointLocations. ELs are linked to {@see Downtime}s.
  * <p>
- * More formally; an EL models a network location that can be contacted to access certain 
- * functionalities based on a well-defined interface. The defined attributes 
- * refer to aspects such as the network location, the exposed interface name, 
- * the details of the implementation and the linked downtimes. 
- * 
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * @author John Casson 
- * 
+ * More formally; an EL models a network location that can be contacted to access certain
+ * functionalities based on a well-defined interface. The defined attributes
+ * refer to aspects such as the network location, the exposed interface name,
+ * the details of the implementation and the linked downtimes.
+ *
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ * @author John Casson
+ *
  * @Entity @Table(name="EndpointLocations")
  */
 class EndpointLocation {
@@ -59,21 +59,21 @@ class EndpointLocation {
      */
 
     /**
-     * Bidirectional - Many endpointlocations (DB OWNING SIDE) can link to one Service. 
-     *  
+     * Bidirectional - Many endpointlocations (DB OWNING SIDE) can link to one Service.
+     *
      * @ManyToOne(targetEntity="Service", inversedBy="endpointLocations")
      * @JoinColumn(name="service_id", referencedColumnName="id", onDelete="CASCADE")
      */
     protected $service = null;
 
     /**
-     * Bidirectional - Many Endpoints (INVERSE SIDE) can link to many Downtimes. 
-     * Note, we do not configure any cascade=remove behaviour here as we need to 
+     * Bidirectional - Many Endpoints (INVERSE SIDE) can link to many Downtimes.
+     * Note, we do not configure any cascade=remove behaviour here as we need to
      * have fine-grained programmatic control over which downtimes are deleted when a service
-     * endpoint is deleted (i.e. we only want to delete those DTs that exclusively link to 
-     * this EL only which would subsequently be orphaned). We do this managed 
-     * deletion of DTs in the DAO/Service layer. 
-     *   
+     * endpoint is deleted (i.e. we only want to delete those DTs that exclusively link to
+     * this EL only which would subsequently be orphaned). We do this managed
+     * deletion of DTs in the DAO/Service layer.
+     *
      * @ManyToMany(targetEntity="Downtime", mappedBy="endpointLocations")
      */
     protected $downtimes = null;
@@ -93,15 +93,15 @@ class EndpointLocation {
     }
 
     /**
-     * The human readable name of this endpoint location, e.g. 'Production GOCDB REST endpoint'. 
-     * @return string or null 
+     * The human readable name of this endpoint location, e.g. 'Production GOCDB REST endpoint'.
+     * @return string or null
      */
     public function getName() {
         return $this->name;
     }
 
     /**
-     * Get a list of the {@see Downtime}s linked to this EL. 
+     * Get a list of the {@see Downtime}s linked to this EL.
      * @return ArrayCollection
      */
     public function getDowntimes() {
@@ -109,16 +109,16 @@ class EndpointLocation {
     }
 
     /**
-     * Network location of an endpoint, which enables a specific component of 
-     * the Service to be contacted. Corresponds directly with the OGF GLUE2 Endpoint. 
-     * @return string or null 
+     * Network location of an endpoint, which enables a specific component of
+     * the Service to be contacted. Corresponds directly with the OGF GLUE2 Endpoint.
+     * @return string or null
      */
     public function getUrl() {
         return $this->url;
     }
 
     /**
-     * The Service instance that owns this EL. 
+     * The Service instance that owns this EL.
      * @return \Service
      */
     public function getService() {
@@ -128,15 +128,15 @@ class EndpointLocation {
     /**
      * The identification name of the primary protocol supported by the endpoint interface.
      * This corresponds directly with the OGF GLUE2 interfaceName.
-     * @return string or null 
+     * @return string or null
      */
     public function getInterfaceName() {
         return $this->interfaceName;
     }
 
     /**
-     * Custom Key=Value pairs (extension properties) used to augment the 
-     * ELs attributes. 
+     * Custom Key=Value pairs (extension properties) used to augment the
+     * ELs attributes.
      * @return ArrayCollection
      */
     public function getEndpointProperties() {
@@ -144,7 +144,7 @@ class EndpointLocation {
     }
 
     /**
-     * A human readable description for the EL, max 2000 chars. 
+     * A human readable description for the EL, max 2000 chars.
      * @return string or null
      */
     public function getDescription() {
@@ -154,7 +154,7 @@ class EndpointLocation {
     //Setters
 
     /**
-     * The human readable name of this endpoint location, e.g. 'Production GOCDB REST endpoint'. 
+     * The human readable name of this endpoint location, e.g. 'Production GOCDB REST endpoint'.
      * @param string $name
      */
     public function setName($name) {
@@ -162,7 +162,7 @@ class EndpointLocation {
     }
 
     /**
-     * Set the network location of an endpoint, which enables a specific component of 
+     * Set the network location of an endpoint, which enables a specific component of
      * the Service to be contacted. Corresponds directly with the OGF GLUE2 Endpoint.
      * @param string $url
      */
@@ -182,11 +182,11 @@ class EndpointLocation {
     /**
      * Do not call in client code, always use the opposite
      * <code>$service->addEndpointLocationDoJoin($endpointLocation)</code>
-     * instead which internally calls this method to keep the bidirectional 
-     * relationship consistent.  
+     * instead which internally calls this method to keep the bidirectional
+     * relationship consistent.
      * <p>
-     * EndpointLocation is the OWNING side so this method WILL establish the relationship in the database. 
-     * 
+     * EndpointLocation is the OWNING side so this method WILL establish the relationship in the database.
+     *
      * @param Service $service
      */
     public function setServiceDoJoin($service) {
@@ -194,23 +194,23 @@ class EndpointLocation {
     }
 
     /**
-     * Add a endpointProperty entity to this Endpoint's collection of properties. 
-     * This method also sets the EndpointProperty's parentEndpoint.  
+     * Add a endpointProperty entity to this Endpoint's collection of properties.
+     * This method also sets the EndpointProperty's parentEndpoint.
      * @param \EndpointProperty $endpointProperty
      */
     public function addEndpointPropertyDoJoin($endpointProperty) {
         $this->endpointProperties[] = $endpointProperty;
         $endpointProperty->_setParentEndpoint($this);
-        //$endpointProperty->getParentEndpoint() = $this; 
+        //$endpointProperty->getParentEndpoint() = $this;
     }
 
     /*
-     * Do not call in client code, always use the opposite 
-     * <code>$downtime->addEndpointLocation($thisEl)</code> instead which internally 
-     * calls this method to keep the bidirectional relationship consistent.   
+     * Do not call in client code, always use the opposite
+     * <code>$downtime->addEndpointLocation($thisEl)</code> instead which internally
+     * calls this method to keep the bidirectional relationship consistent.
      * <p>
-     * This is the INVERSE side so this method will NOT establish the relationship in the database. 
-     *  
+     * This is the INVERSE side so this method will NOT establish the relationship in the database.
+     *
      * @param Downtime $downtime
      */
 //    public function _addDowntime(Downtime $downtime) {
@@ -218,12 +218,12 @@ class EndpointLocation {
 //    }
 
     /*
-     * Do not call in client code, always use the opposite 
-     * <code>$downtime->removeEndpointLocation($thisEl)</code> instead which internally 
-     * calls this method to keep the bidirectional relationship consistent.   
+     * Do not call in client code, always use the opposite
+     * <code>$downtime->removeEndpointLocation($thisEl)</code> instead which internally
+     * calls this method to keep the bidirectional relationship consistent.
      * <p>
-     * This is the INVERSE side so this method will NOT remove the relationship in the database. 
-     *  
+     * This is the INVERSE side so this method will NOT remove the relationship in the database.
+     *
      * @param Downtime $downtime downtime to be removed
      */
 //    public function _removeDowntime(Downtime $downtime) {
@@ -231,7 +231,7 @@ class EndpointLocation {
 //    }
 
     /**
-     * Set the human readable description for this EL, max 2000 chars. 
+     * Set the human readable description for this EL, max 2000 chars.
      * @param string $description
      */
     public function setDescription($description) {

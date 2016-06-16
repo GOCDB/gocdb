@@ -2,7 +2,7 @@
 /*______________________________________________________
  *======================================================
  * File: accept_request.php
- * Author: John Casson, David Meredith 
+ * Author: John Casson, David Meredith
  * Description: Accepts a political role request
  *
  * License information
@@ -25,27 +25,27 @@ function view_accept_request() {
     require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__ . '/../../components/Get_User_Principle.php';
     require_once __DIR__ . '/../utils.php';
-    
+
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     if($user == null){
-        throw new Exception("Unregistered users can't grant role requests"); 
+        throw new Exception("Unregistered users can't grant role requests");
     }
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-   
+
     $requestId = $_POST['id'];
-    
+
     if(!isset($requestId) || !is_numeric($requestId)) {
         throw new LogicException("Invalid role request id");
     }
-    
-    // Lookup role request with id  
-    $roleRequest = \Factory::getRoleService()->getRoleById($requestId); 
-    
-    \Factory::getRoleService()->grantRole($roleRequest, $user); 
-   
+
+    // Lookup role request with id
+    $roleRequest = \Factory::getRoleService()->getRoleById($requestId);
+
+    \Factory::getRoleService()->grantRole($roleRequest, $user);
+
     show_view('political_role/request_accepted.php');
-    die(); 
+    die();
 }

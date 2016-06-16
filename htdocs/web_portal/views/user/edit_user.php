@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <form name="Edit_User" action="index.php?Page_Type=Edit_User" method="post" class="inputForm">
-    	<h1>Update User</h1>
+        <h1>Update User</h1>
         <br />
         <span class="input_name">
             Title
@@ -16,36 +16,36 @@
                 } else {
                   echo '<option value="'.$title.'">'.$title.'</option>';
                 }
-            } 
+            }
         ?>
         </select>
-        
+
         <span class="input_name">
-            Forename * 
+            Forename *
             <span class="input_syntax" >(unaccentuated letters, spaces, dashes and quotes)</span>
         </span>
         <input class="input_input_text" type="text" name="FORENAME" value="<?php xecho($params['user']->getForename()); ?>" />
-        
+
         <span class="input_name">
-            Surname * 
+            Surname *
             <span class="input_syntax" >(unaccentuated letters, spaces, dashes and quotes)</span>
         </span>
         <input class="input_input_text" type="text" name="SURNAME" value="<?php xecho($params['user']->getSurname()); ?>"/>
-        
+
         <span class="input_name">
             E-Mail *
             <span class="input_syntax" >(valid e-mail format)</span>
         </span>
         <input class="input_input_text" type="text" name="EMAIL" value="<?php xecho($params['user']->getEmail()); ?>"/>
-        
+
         <span class="input_name">
             Telephone Number
             <span class="input_syntax" >(numbers, optional +, dots spaces or dashes)</span>
         </span>
         <input class="input_input_text" type="text" name="TELEPHONE" value="<?php echo $params['user']->getTelephone(); ?>"/>
-        
+
         <input class="input_input_hidden" type="hidden" value="<?php echo $params['user']->getId() ?>" name="OBJECTID">
         <br />
-    	<input class="input_button" type="submit" value="Update User" />
+        <input class="input_button" type="submit" value="Update User" />
     </form>
 </div>

@@ -29,12 +29,12 @@ function view() {
     //date_default_timezone_set("UTC");
     $downtime = \Factory::getDowntimeService()->getDowntime($_REQUEST['id']);
     if($downtime == null){
-        throw new Exception('No downtime with id ['.$_REQUEST['id'].']'); 
+        throw new Exception('No downtime with id ['.$_REQUEST['id'].']');
     }
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
-    
+
     $params['downtime'] = $downtime;
     $title = $downtime->getDescription();
     show_view("downtime/view_downtime.php", $params, $title);

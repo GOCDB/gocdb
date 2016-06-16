@@ -16,23 +16,23 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
 
 
 <div class="rightPageContainer">
-    
+
     <!--Headings-->
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;">Scope: <?php echo $name?></h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php echo $description ?></span>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
             <?php if($totalCount>0):?>
-                In total, there are <?php if($totalCount==1){echo "is";}else{echo "are";}?> 
-                <?php if ($totalCount == 0){echo "no";} else{echo $totalCount;} ?> 
-                entit<?php if($totalCount != 1){echo "ies";}else{echo "y";}?> 
+                In total, there are <?php if($totalCount==1){echo "is";}else{echo "are";}?>
+                <?php if ($totalCount == 0){echo "no";} else{echo $totalCount;} ?>
+                entit<?php if($totalCount != 1){echo "ies";}else{echo "y";}?>
                 (<?php echo $ngiCount?> NGIs, <?php echo $siteCount?> sites, <?php echo $serviceGroupsCount?>
                 service groups, and <?php echo $serviceCount?> services) with this scope.
             <?php else: ?>
                 This scope is currently not used by any NGI, site, service group, or service.
             <?php endif; ?>
         </span>
-    
+
     </div>
 
     <!--Edit/Delete buttons-->
@@ -59,17 +59,17 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             </div>
         </div>
     <?php endif; ?>
-    
+
 
     <!--  NGIs -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
             There <?php if($ngiCount==1){echo "is";}else{echo "are";}?> <?php if ($ngiCount == 0){echo "no";} else{echo $ngiCount;} ?> NGI<?php if($ngiCount != 1) echo "s"?> with this scope
         </span>
-<!--        
+<!--
         <img src="<?php echo \GocContextPath::getPath()?>img/NGI.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         -->
-        
+
         <?php if ($ngiCount != 0): ?>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
@@ -88,7 +88,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
                                 <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
-                                    <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">                            
+                                    <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">
                                     <span>&nbsp;&nbsp;</span><?php xecho($ngi->getName()); ?>
                                 </a>
                             </span>
@@ -104,7 +104,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             </table>
         <?php else: echo "<br><br>&nbsp &nbsp"; endif; ?>
     </div>
-    
+
     <!--  Sites -->
     <div class="listContainer">
         <span class="header listHeader">
@@ -159,7 +159,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                     <th class="site_table">Name</th>
                     <th class="site_table">Description</th>
                 </tr>
-                <?php           
+                <?php
                 $num = 2;
                 foreach($serviceGroups as $sGroup) {
                 ?>
@@ -180,14 +180,14 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                     </td>
 
                 </tr>
-                <?php  
+                <?php
                     if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over SEs
                 ?>
             </table>
         <?php endif; ?>
     </div>
-    
+
       <!--  Services - count and link -->
     <div class="listContainer">
         <span class="header listHeader">
@@ -206,5 +206,5 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             </table>
         <?php endif; ?>
     </div>
-    
+
 </div>

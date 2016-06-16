@@ -30,8 +30,8 @@ require_once __DIR__ . '/../utils.php';
 function move_service_end_point() {
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
-    if($_POST) {    
+
+    if($_POST) {
         // If we receive a POST request it's for a service movement
         submit();
     } else {
@@ -46,23 +46,23 @@ function move_service_end_point() {
  * @return null
  */
 function submit() {
-	require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
+    require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 
-    
+
     //Get the submitted data
     $movementrequest = getSEPMoveDataFromWeb();
 
     //If the new sep is not in the array of submitted data yet,
     //then we have come form the select old site page and want the move SEP page
     if(!array_key_exists('NewSite',$movementrequest)){
-    	//Run the submit old site and display the service_end_point_move view
+        //Run the submit old site and display the service_end_point_move view
         submitOldSite($movementrequest);
-    }	
+    }
     else {
         //Carry out the move with submitted data then show success view
         submitMoveSEP($movementrequest);
-    } 
+    }
 }
 
 /**
@@ -71,15 +71,15 @@ function submit() {
  *  @return null
  */
 function drawMoveSite(\Site $oldSite) {
-    //Check the user has permission to see the page, will throw exception 
+    //Check the user has permission to see the page, will throw exception
     //if the user is not an admin
     checkUserIsAdmin();
- 
+
     //Get a list of services and list of sites to select from
-	$sites= \Factory::getSiteService()->getSitesBy();
-	$services = $oldSite->getServices();
-	
-	//Put into an array to be passed to view
+    $sites= \Factory::getSiteService()->getSitesBy();
+    $services = $oldSite->getServices();
+
+    //Put into an array to be passed to view
     $params = array('Sites' => $sites, 'Services' => $services,
                     'OldSite' => $oldSite->getShortName());
 
@@ -87,18 +87,18 @@ function drawMoveSite(\Site $oldSite) {
 }
 
 /**
- *  Draws a form to select the Site from which you wish to move a service 
+ *  Draws a form to select the Site from which you wish to move a service
  *  @return null
  */
 function drawSelectOldSite() {
-    // Check the user has permission to see the page, will throw exception 
+    // Check the user has permission to see the page, will throw exception
     //if the user does not
-    checkUserIsAdmin();   
+    checkUserIsAdmin();
 
     //Get a list  of Sites to select from
     $sites= \Factory::getSiteService()->getSitesBy();
-	
-	//Put into an array to be passed to view
+
+    //Put into an array to be passed to view
     $params = array('Sites' => $sites);
 
     show_view("admin/move_service_end_point_select_old_site.php", $params);
@@ -114,7 +114,7 @@ function drawSelectOldSite() {
 function getSEPMoveDataFromWeb() {
     // Fields that are used to link other objects to the site
     $fields = array('OldSite', 'NewSite', 'Services');
-    
+
     foreach($fields as $field) {
         if(array_key_exists($field,$_REQUEST)){
             $SEP_move_data[$field] = $_REQUEST[$field];
@@ -131,7 +131,7 @@ function getSEPMoveDataFromWeb() {
  */
 function submitOldSite($submitvalues) {
     //Get the old site
-    $oldSite_id = $submitvalues['OldSite'];        
+    $oldSite_id = $submitvalues['OldSite'];
     $oldSite = \Factory::getSiteService()->getSite($oldSite_id);
     //Draw the move site form
     drawMoveSite($oldSite);
@@ -171,7 +171,7 @@ function submitMoveSEP($movementDetails) {
         foreach($service_ids as $service_id){
             $serviceInstance = $serv->getService($service_id);
             $serv->moveService($serviceInstance, $newSite, $user);
-            $services[] = $serviceInstance; 
+            $services[] = $serviceInstance;
         }
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());

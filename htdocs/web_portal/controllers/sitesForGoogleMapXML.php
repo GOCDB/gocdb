@@ -2,7 +2,7 @@
 /*======================================================
  * File: sitesForGoogleMapXML.php
  * Author: George Ryall
- * Description: Returns xml containing all sites that are not closed and have 
+ * Description: Returns xml containing all sites that are not closed and have
  * lcation information. Used by google map on start page.
  *
  *

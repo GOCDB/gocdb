@@ -23,16 +23,16 @@
 function startPage() {
     require_once __DIR__.'/../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../components/Get_User_Principle.php';
-	$dn = Get_User_Principle();
-	$user = \Factory::getUserService()->getUserByPrinciple($dn);
-    
+    $dn = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($dn);
+
     $roles = \Factory::getRoleService()->getPendingRolesUserCanApprove($user);
-   
+
     $configServ = \Factory::getConfigService();
     $showMap = $configServ->getShowMapOnStartPage();
     $apiKey = $configServ->getGoogleAPIKey();
-    
-	$params = array('roles' => $roles, 
+
+    $params = array('roles' => $roles,
                     'googleAPIKey'=>$apiKey,
                     'showMap'=>$showMap);
     $title = "GOCDB";

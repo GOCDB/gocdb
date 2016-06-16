@@ -1,6 +1,6 @@
 <?php
 /**
- * @deprecated since version v5.4 
+ * @deprecated since version v5.4
  */
 require_once __DIR__."/../bootstrap.php";
 require_once __DIR__."/AddUtils.php";
@@ -13,10 +13,10 @@ $timezonesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/Timezones.xml";
 $timezones = simplexml_load_file($timezonesFileName);
 
 foreach($timezones as $timezone) {
-	$doctrineTimezone = new Timezone();
-	$name = (string) $timezone;
-	$doctrineTimezone->setName($name);
-	$entityManager->persist($doctrineTimezone);
+    $doctrineTimezone = new Timezone();
+    $name = (string) $timezone;
+    $doctrineTimezone->setName($name);
+    $entityManager->persist($doctrineTimezone);
 }
 
 $entityManager->flush();

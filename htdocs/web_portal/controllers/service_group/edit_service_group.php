@@ -24,7 +24,7 @@
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
 require_once __DIR__ . '/../utils.php';
-    
+
 /**
  * Controller for an edit service group request
  * @global array $_POST only set if the browser has POSTed data
@@ -36,7 +36,7 @@ function edit_service_group() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's for a new vsite
         submit($user);
     } else { // If there is no post data, draw the new vsite form
@@ -78,17 +78,17 @@ function draw(\User $user = null) {
     $sg = \Factory::getServiceGroupService()->getServiceGroup($_REQUEST['id']);
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
             \Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
-       show_view('error.php', 'You do not have permission to edit this ServiceGroup'); 
-       die(); 
+       show_view('error.php', 'You do not have permission to edit this ServiceGroup');
+       die();
     }
-    
+
     $scopes = \Factory::getScopeService()->getAllScopesMarkProvided($sg->getScopes());
     $numberScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('service_group');
     // a ServiceGroup has no parent hence pass null
-    $scopejsonStr = getEntityScopesAsJSON2($sg, null, $user->isAdmin() ? false : true); 
+    $scopejsonStr = getEntityScopesAsJSON2($sg, null, $user->isAdmin() ? false : true);
 
-    $params = array('serviceGroup' => $sg, 'scopes' => $scopes, 
-            'numberOfScopesRequired'=>$numberScopesRequired, 
+    $params = array('serviceGroup' => $sg, 'scopes' => $scopes,
+            'numberOfScopesRequired'=>$numberScopesRequired,
             'scopejson'=>$scopejsonStr);
 
     show_view("service_group/edit_service_group.php", $params, "Edit " . $sg->getName());

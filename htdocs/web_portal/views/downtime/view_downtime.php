@@ -12,7 +12,7 @@ $dt = $params['downtime'];
                    Downtime <?php echo $dt->getId() ?>
             </h1>
             <span style="float: left; clear: both;">
-            	<?php xecho( $dt->getDescription()) ?><br />
+                <?php xecho( $dt->getDescription()) ?><br />
              </span>
         </div>
 
@@ -44,32 +44,32 @@ $dt = $params['downtime'];
 
         <!-- If the downtime is ongoing and the portal is not in read only mode, show a notification and show the end downtime button -->
         <?php if($dt->isOnGoing() and !$params['portalIsReadOnly']) { ?>
-	    	<div style="float: left; width: 100%; margin-top: 2em;">
-		    	<div class="tableContainer" style="width: 99.5%; float: left;">
-					<span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-						Downtime is ongoing
-					</span>
-		            <img src="<?php echo \GocContextPath::getPath()?>img/star.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;">
-		            <table style="clear: both; width: 100%; table-layout: fixed;">
-		                <tr class="site_table_row_1">
-		                    <td class="site_table" style="width: 30%">
-		                    	<script type="text/javascript">
-									function submitform()
-									{
-									    document.forms["endNow"].submit();
-									}
-								</script>
-								<form id="endNow" action="index.php" method="post">
-									<input type='Hidden' name='Page_Type' value="End_Downtime" />
-									<input type='Hidden' name='id' value="<?php echo $dt->getId()?>" />
-									<a href="javascript: submitform()">End Now</a>
-								</form>
-		                	</td>
-		                </tr>
-		            </table>
-		        </div>
-		    </div>
-		<?php } ?>
+            <div style="float: left; width: 100%; margin-top: 2em;">
+                <div class="tableContainer" style="width: 99.5%; float: left;">
+                    <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                        Downtime is ongoing
+                    </span>
+                    <img src="<?php echo \GocContextPath::getPath()?>img/star.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;">
+                    <table style="clear: both; width: 100%; table-layout: fixed;">
+                        <tr class="site_table_row_1">
+                            <td class="site_table" style="width: 30%">
+                                <script type="text/javascript">
+                                    function submitform()
+                                    {
+                                        document.forms["endNow"].submit();
+                                    }
+                                </script>
+                                <form id="endNow" action="index.php" method="post">
+                                    <input type='Hidden' name='Page_Type' value="End_Downtime" />
+                                    <input type='Hidden' name='id' value="<?php echo $dt->getId()?>" />
+                                    <a href="javascript: submitform()">End Now</a>
+                                </form>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        <?php } ?>
 
         <!-- Downtime information and timing container div -->
         <div style="float: left; width: 100%; margin-top: 2em;">
@@ -117,7 +117,7 @@ $dt = $params['downtime'];
                     <tr class="site_table_row_2">
                         <td class="site_table">Announcement Date</td><td class="site_table">
                             <?php
-                            	echo $dt->getAnnounceDate()->format($dt::DATE_FORMAT);
+                                echo $dt->getAnnounceDate()->format($dt::DATE_FORMAT);
                             ?>
                         </td>
                     </tr>
@@ -129,7 +129,7 @@ $dt = $params['downtime'];
         <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
                 Affected Services&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="checkbox" id="affectedEndpointsCheckBox" /> &nbsp;Show Affected Child Endpoints 
+                <input type="checkbox" id="affectedEndpointsCheckBox" /> &nbsp;Show Affected Child Endpoints
             </span>
             <img src="<?php echo \GocContextPath::getPath()?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%;">
@@ -142,13 +142,13 @@ $dt = $params['downtime'];
 
                 <?php
                 $num = 2;
-    			foreach($dt->getServices() as $se) {
+                foreach($dt->getServices() as $se) {
                     $alreadyRenderedSE = array();
-                                    
+
                     if(in_array($se->getId(), $alreadyRenderedSE)){
-                        continue; 
+                        continue;
                     } else {
-                        $alreadyRenderedSE[] = $se->getId(); 
+                        $alreadyRenderedSE[] = $se->getId();
                     }
                 ?>
 
@@ -164,69 +164,69 @@ $dt = $params['downtime'];
                     </td>
                     <td class="site_table"><?php xecho($se->getDescription()) ?></td>
                     <td class="site_table">
-    				<?php
-    				switch($se->getProduction()) {
-    					case true:
-    						?>
-    						<img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
-    						<?php
-    						break;
-    					case false:
-    						?>
-    						<img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
-    						<?php
-    						break;
-    				}
-    				?>
-    				</td>
+                    <?php
+                    switch($se->getProduction()) {
+                        case true:
+                            ?>
+                            <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        case false:
+                            ?>
+                            <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                    }
+                    ?>
+                    </td>
                     <td class="site_table">
-    				<?php xecho($se->getScopeNamesAsString()); ?>
+                    <?php xecho($se->getScopeNamesAsString()); ?>
                     </td>
                 </tr>
-                <!--&rdsh; --> 
+                <!--&rdsh; -->
                 <tr class="affectedendpointsrow site_table_row_<?php echo $num ?>">
                     <td class="site_table" colspan="4" style="padding-left:5em">
                         <table class="site_table" style="width: 100%; border: solid #D5D5D5 thin">
                             <tr>
-                                <th class="site_table">Affected Endpoints</th> 
-                                <th class="site_table">Url</th> 
-                                <th class="site_table">Interface Name</th> 
+                                <th class="site_table">Affected Endpoints</th>
+                                <th class="site_table">Url</th>
+                                <th class="site_table">Interface Name</th>
                             </tr>
-                            <?php 
+                            <?php
                             foreach($se->getEndpointLocations() as $el){
-                                echo '<tr>'; 
+                                echo '<tr>';
                                 if(in_array($el, $dt->getEndpointLocations()->toArray())){
-                                    echo '<td>&check; <a href="index.php?Page_Type=View_Service_Endpoint&id=' . $el->getId() . '">'.xssafe($el->getName()).'</a></td>'; 
-                                    echo '<td>'.xssafe($el->getUrl()).'</td>'; 
-                                    echo '<td>'.xssafe($el->getInterfaceName()).'</td>'; 
+                                    echo '<td>&check; <a href="index.php?Page_Type=View_Service_Endpoint&id=' . $el->getId() . '">'.xssafe($el->getName()).'</a></td>';
+                                    echo '<td>'.xssafe($el->getUrl()).'</td>';
+                                    echo '<td>'.xssafe($el->getInterfaceName()).'</td>';
                                 } else {
-                                    echo '<td><span style=\'color: grey\'>&cross; <a href="index.php?Page_Type=View_Service_Endpoint&id='.$el->getId().'">'.xssafe($el->getName()).'</span></td>'; 
-                                    echo "<td><span style='color: grey'>".xssafe($el->getUrl()).'</span></td>'; 
-                                    echo "<td><span style='color: grey'>".xssafe($el->getInterfaceName()).'</span></td>'; 
+                                    echo '<td><span style=\'color: grey\'>&cross; <a href="index.php?Page_Type=View_Service_Endpoint&id='.$el->getId().'">'.xssafe($el->getName()).'</span></td>';
+                                    echo "<td><span style='color: grey'>".xssafe($el->getUrl()).'</span></td>';
+                                    echo "<td><span style='color: grey'>".xssafe($el->getInterfaceName()).'</span></td>';
                                 }
-                                echo '</tr>'; 
+                                echo '</tr>';
                             }
                             ?>
-                        </table>    
-                    </td>    
-                </tr> 
-                
+                        </table>
+                    </td>
+                </tr>
+
                 <?php
-    				if($num == 1) { $num = 2; } else { $num = 1; }
+                    if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
                 ?>
             </table>
         </div>
-       
+
     </div>
 </div>
 
 <script>
 $(document).ready(function(){
-    // hide all nested affected endpoints by default  
-    $(".affectedendpointsrow").hide(); 
-    
-    // toggle hide/show affected endpoints on click 
+    // hide all nested affected endpoints by default
+    $(".affectedendpointsrow").hide();
+
+    // toggle hide/show affected endpoints on click
     $("#affectedEndpointsCheckBox").click(function(){
         $(".affectedendpointsrow").toggle();
     });

@@ -1,16 +1,16 @@
 <?php
 include_once __DIR__ . '/AbstractDAO.php';
 /**
- * All public methods are non transacional. They should always be called from 
+ * All public methods are non transacional. They should always be called from
  * within a transaction. Authorisation and validation is not carried out here
  * and should take place in the service layer.
  *
  * @author George Ryall
- * @author David Meredith 
+ * @author David Meredith
  * @author John Casson
  */
 class ServiceGroupDAO extends AbstractDAO{
-    
+
     /**
      * Non-transactional. Removes a service group from GOCDB. No authorisation
      * or validation occours here.
@@ -21,10 +21,10 @@ class ServiceGroupDAO extends AbstractDAO{
         $this->em->remove($sg);
     }
 
-    
+
     /**
-     * Creates an entry in the servicegroup archive table, to enable auditing 
-     * of deletion. 
+     * Creates an entry in the servicegroup archive table, to enable auditing
+     * of deletion.
      * @param \ServiceGroup $sg
      * @param \User $user
      */
@@ -34,14 +34,14 @@ class ServiceGroupDAO extends AbstractDAO{
         $archievedSG->setName($sg->getName());
         $archievedSG->setOriginalCreationDate($sg->getCreationDate());
         $archievedSG->setScopes($sg->getScopeNamesAsString());
-        
+
         $serviceNamesAsArray = array();
         foreach ($sg->getServices() AS $s){
-            $serviceNamesAsArray[] = $s->getHostName() . "(" . $s->getServiceType()->getName() . ")"; 
+            $serviceNamesAsArray[] = $s->getHostName() . "(" . $s->getServiceType()->getName() . ")";
         }
         $serviceNamesAsString = implode(", ", $serviceNamesAsArray);
         $archievedSG->setServices($serviceNamesAsString);
-        
+
         $this->em->persist($archievedSG);
     }
 }

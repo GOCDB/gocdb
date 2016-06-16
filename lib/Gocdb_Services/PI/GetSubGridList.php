@@ -12,16 +12,16 @@ require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
 
 
-/** 
+/**
  * Return an XML document that encodes the sub grid info from the DB.
  * Optionally provide an associative array of query parameters with values used to restrict the results.
  * Only known parameters are honoured while unknown params are ignored.
  * <pre>
  * 'subgrid'
  * </pre>
- *  
+ *
  * @author James McCarthy
- * @author David Meredith 
+ * @author David Meredith
  */
 class GetSubGridList implements IPIQuery{
 
@@ -30,7 +30,7 @@ class GetSubGridList implements IPIQuery{
     protected $em;
     private $helpers;
     private $subGrids;
-    
+
     /** Constructor takes entity manager which is then used by the
      *  query builder
      *
@@ -40,22 +40,22 @@ class GetSubGridList implements IPIQuery{
         $this->em = $em;
         $this->helpers=new Helpers();
     }
-    
+
     /** Validates parameters against array of pre-defined valid terms
      *  for this PI type
      * @param array $parameters
      */
     public function validateParameters($parameters){
-    
+
         // Define supported parameters and validate given params (die if an unsupported param is given)
         $supportedQueryParams = array (
                 'subgrid'
         );
-    
+
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
         $this->validParams = $parameters;
     }
-    
+
     /** Creates the query by building on a queryBuilder object as
      *  required by the supplied parameters
      */
@@ -63,14 +63,14 @@ class GetSubGridList implements IPIQuery{
         $parameters = $this->validParams;
         $binds= array();
         $bc=-1;
-    
+
         $qb = $this->em->createQueryBuilder();
-    
+
         //Initialize base query
         $qb	->select('s')
         ->from('SubGrid', 's')
         ->orderBy('s.id', 'ASC');
-    
+
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.
         */
@@ -82,18 +82,18 @@ class GetSubGridList implements IPIQuery{
         foreach((array)$parameterBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-    
-    
+
+
         //Bind all variables
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
-    
+
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
-    
+
         $this->query = $query;
         return $this->query;
     }
-    
+
     /**
      * Executes the query that has been built and stores the returned data
      * so it can later be used to create XML, Glue2 XML or JSON.
@@ -102,51 +102,51 @@ class GetSubGridList implements IPIQuery{
         $this->subGrids = $this->query->execute();
         return $this->subGrids;
     }
-    
-	
-	/** Returns proprietary GocDB rendering of the Sub Grid data 
-	 *  in an XML String
-	 * @return String
-	 */
-	public function getXML(){
-		$helpers = $this->helpers;
-		
-		$subGrids = $this->query->execute();
-		
-		$xml = new \SimpleXMLElement ( "<results />" );	
-		
-		foreach ( $subGrids as $subGrid ) {
-			$xmlSubGrid = $xml->addChild ( 'SUBGRID' );
-			$xmlSubGrid->addAttribute ( 'PRIMARY_KEY', $subGrid->getId () . "G0" );
-			$xmlSubGrid->addAttribute ( 'SUBGRID_NAME', $subGrid->getName () );
-			$xmlSubGrid->addAttribute ( 'PARENT_ROC', $subGrid->getNgi ()->getName () );
-		}
-		
-		$dom_sxe = dom_import_simplexml ( $xml );
-		$dom = new \DOMDocument ( '1.0' );
-		$dom->encoding = 'UTF-8';
-		$dom_sxe = $dom->importNode ( $dom_sxe, true );
-		$dom_sxe = $dom->appendChild ( $dom_sxe );
-		$dom->formatOutput = true;
-		$xmlString = $dom->saveXML ();
-		return $xmlString;
-	}
-	
-	/** Returns the Sub Grid data in Glue2 XML string.
-	 * 
-	 * @return String
-	 */
-	public function getGlue2XML(){
-		throw new LogicException("Not implemented yet");
-	    
-	}
-	
-	/** Not yet implemented, in future will return the Sub Grid 
-	 *  data in JSON format
-	 * @throws LogicException
-	 */
-	public function getJSON(){
-		$query = $this->query;		
-		throw new LogicException("Not implemented yet");
-	}
+
+
+    /** Returns proprietary GocDB rendering of the Sub Grid data
+     *  in an XML String
+     * @return String
+     */
+    public function getXML(){
+        $helpers = $this->helpers;
+
+        $subGrids = $this->query->execute();
+
+        $xml = new \SimpleXMLElement ( "<results />" );
+
+        foreach ( $subGrids as $subGrid ) {
+            $xmlSubGrid = $xml->addChild ( 'SUBGRID' );
+            $xmlSubGrid->addAttribute ( 'PRIMARY_KEY', $subGrid->getId () . "G0" );
+            $xmlSubGrid->addAttribute ( 'SUBGRID_NAME', $subGrid->getName () );
+            $xmlSubGrid->addAttribute ( 'PARENT_ROC', $subGrid->getNgi ()->getName () );
+        }
+
+        $dom_sxe = dom_import_simplexml ( $xml );
+        $dom = new \DOMDocument ( '1.0' );
+        $dom->encoding = 'UTF-8';
+        $dom_sxe = $dom->importNode ( $dom_sxe, true );
+        $dom_sxe = $dom->appendChild ( $dom_sxe );
+        $dom->formatOutput = true;
+        $xmlString = $dom->saveXML ();
+        return $xmlString;
+    }
+
+    /** Returns the Sub Grid data in Glue2 XML string.
+     *
+     * @return String
+     */
+    public function getGlue2XML(){
+        throw new LogicException("Not implemented yet");
+
+    }
+
+    /** Not yet implemented, in future will return the Sub Grid
+     *  data in JSON format
+     * @throws LogicException
+     */
+    public function getJSON(){
+        $query = $this->query;
+        throw new LogicException("Not implemented yet");
+    }
 }

@@ -22,7 +22,7 @@ include_once __DIR__ . '/AbstractEntityService.php';
  * @author David Meredith
  */
 class ServiceType extends AbstractEntityService{
-    
+
     /*
      * All the public service methods in a service facade are typically atomic -
      * they demarcate the tx boundary at the start and end of the method
@@ -43,29 +43,29 @@ class ServiceType extends AbstractEntityService{
      * @return array An array of service type objects
      */
     public function getServiceTypes() {
-    	$dql = "SELECT s from ServiceType s
-    			ORDER BY s.name";
-    	$query = $this->em->createQuery($dql);
-    	return $query->getResult();
+        $dql = "SELECT s from ServiceType s
+                ORDER BY s.name";
+        $query = $this->em->createQuery($dql);
+        return $query->getResult();
     }
-    
+
      /**
      * Finds a single service type by ID and returns its entity
      * @param int $id the service type ID
      * @return ServiceType a service type object
      */
     public function getServiceType($id) {
-    	$dql = "SELECT s FROM ServiceType s
-				WHERE s.id = :id";
+        $dql = "SELECT s FROM ServiceType s
+                WHERE s.id = :id";
 
-    	$serviceType = $this->em
-	    	->createQuery($dql)
-	    	->setParameter('id', $id)
-	    	->getSingleResult();
-        
-    	return $serviceType;
+        $serviceType = $this->em
+            ->createQuery($dql)
+            ->setParameter('id', $id)
+            ->getSingleResult();
+
+        return $serviceType;
     }
-    
+
     /**
      * Finds and returns all services which have the service type with
      * the input id.
@@ -73,14 +73,14 @@ class ServiceType extends AbstractEntityService{
      */
     public function getServices($id) {
         $dql = "SELECT se FROM Service se
-                JOIN se.serviceType st 
+                JOIN se.serviceType st
                 WHERE st.id = :id";
         $services =  $this->em->createQuery($dql)
                             ->setParameter('id', $id)
                             ->getResult();
         return $services;
     }
-    
+
         /**
      * Deletes a downtime
      * @param \Downtime $dt
@@ -89,10 +89,10 @@ class ServiceType extends AbstractEntityService{
     public function deleteServiceType(\ServiceType $serviceType, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-        
+
         //Throws exception if user is not an administrator
         $this->checkUserIsAdmin($user);
-        
+
         //Start a transaction
         $this->em->getConnection()->beginTransaction();
         try {
@@ -110,10 +110,10 @@ class ServiceType extends AbstractEntityService{
             throw $e;
         }
     }
-    
+
     /**
-     * 
-     * @param array $newValues array containing the name and description for the 
+     *
+     * @param array $newValues array containing the name and description for the
      *                        new service type
      * @param \user $user   User adding the service type, used for permissions check
      * @return \org\gocdb\services\ServiceType returns created service type
@@ -124,15 +124,15 @@ class ServiceType extends AbstractEntityService{
 
         //Throws exception if user is not an administrator
         $this->checkUserIsAdmin($user);
-        
+
         //Check the values are actually there, then validate the values as per the GOCDB schema
         $this->validate($values);
-        
+
         //check the name is unique
         if(!$this->serviceTypeNameIsUnique($values['Name'])){
             throw new \Exception("Service type names must be unique, '".$values['Name']."' is already in use");
         }
-        
+
 
         //Start transaction
         $this->em->getConnection()->beginTransaction(); // suspend auto-commit
@@ -143,7 +143,7 @@ class ServiceType extends AbstractEntityService{
             $serviceType->setName($values['Name']);
             //set description
             $serviceType->setDescription($values['Description']);
-            
+
             $this->em->persist($serviceType);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -151,11 +151,11 @@ class ServiceType extends AbstractEntityService{
             $this->em->getConnection()->rollback();
             $this->em->close();
             throw $e;
-        }        
+        }
 
         return $serviceType;
     }
-    
+
     /**
      * Edit a service type
      * @param \ServiceType $serviceType service type to be altered
@@ -167,18 +167,18 @@ class ServiceType extends AbstractEntityService{
     public function editServiceType(\ServiceType $serviceType, $newValues, \User $user = null){
         //Throws exception if user is not an administrator
         $this->checkUserIsAdmin($user);
-        
+
         //Validate the values as per the GOCDB schema and check values are present and valid.
         $this->validate($newValues);
-        
+
         //check the name is unique, if it has changed
         if($newValues['Name']!=$serviceType->getName()){
             if(!$this->serviceTypeNameIsUnique($newValues['Name'])){
                 throw new \Exception("Service type names must be unique, '".$newValues['Name']."' is already in use");
             }
         }
-        
-   
+
+
         //Start transaction
         $this->em->getConnection()->beginTransaction(); // suspend auto-commit
         try {
@@ -186,7 +186,7 @@ class ServiceType extends AbstractEntityService{
             $serviceType->setName($newValues['Name']);
             //set description
             $serviceType->setDescription($newValues['Description']);
-            
+
             $this->em->merge($serviceType);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -194,14 +194,14 @@ class ServiceType extends AbstractEntityService{
             $this->em->getConnection()->rollback();
             $this->em->close();
             throw $e;
-        }        
+        }
 
         return $serviceType;
     }
 
 
-    
-    
+
+
     /**
      * Returns true if the name given is not currently in use for a service type
      * @param type $name potential service type name
@@ -209,9 +209,9 @@ class ServiceType extends AbstractEntityService{
      */
     public function serviceTypeNameIsUnique($name){
         $dql = "SELECT s from ServiceType s
-    			WHERE s.name = :name";
-    	$query = $this->em->createQuery($dql);
-    	$result = $query->setParameter('name', $name)->getResult();
+                WHERE s.name = :name";
+        $query = $this->em->createQuery($dql);
+        $result = $query->setParameter('name', $name)->getResult();
 
         if(count($result)==0){
             return true;
@@ -219,56 +219,56 @@ class ServiceType extends AbstractEntityService{
         else {
             return false;
         }
-        
+
     }
-    
+
     /**
-	 * Performs some basic checks on the values aray and then validates the user
+     * Performs some basic checks on the values aray and then validates the user
      * inputted service type data against the data in the gocdb_schema.xml.
-	 * @param array $serviceTypeData containing all the fields for a GOCDB 
+     * @param array $serviceTypeData containing all the fields for a GOCDB
      *                               service type object
-	 * @throws \Exception If the project's data can't be
-	 *                    validated. The \Exception message will contain a human
-	 *                    readable description of which field failed validation.
-	 * @return null */
-	private function validate($serviceTypeData) {
-		require_once __DIR__.'/Validate.php';
-		
+     * @throws \Exception If the project's data can't be
+     *                    validated. The \Exception message will contain a human
+     *                    readable description of which field failed validation.
+     * @return null */
+    private function validate($serviceTypeData) {
+        require_once __DIR__.'/Validate.php';
+
         //check values are there
         if(!((array_key_exists('Name',$serviceTypeData)) and (array_key_exists('Description',$serviceTypeData)))){
             throw new \Exception("A name and description for the service type must be specified");
-        }    
-        
+        }
+
         //check values are strings
         if(!((is_string($serviceTypeData['Name'])) and (is_string($serviceTypeData['Description'])))){
             throw new \Exception("The new service type name and description must be valid strings");
         }
-                     
+
         //check that the name is not null
         if(empty($serviceTypeData['Name'])){
             throw new \Exception("A name must be specified for the Service Type");
         }
-        
+
         //check that the description is not null
         if(empty($serviceTypeData['Description'])){
             throw new \Exception("A description must be specified for the Service Type");
         }
- 
-        
+
+
         //remove the ID from the values file if present (which it may be for an edit)
         if(array_key_exists("ID",$serviceTypeData)){
             unset($serviceTypeData["ID"]);
         }
-               
+
         $serv = new \org\gocdb\services\Validate();
-		foreach ($serviceTypeData as $field => $value) {
-			$valid = $serv->validate('service_type', strtoupper($field), $value);
-			if(!$valid) {
-				$error = "$field contains an invalid value: $value";
-				throw new \Exception($error);
-			}
-		}
-	}
-}   
+        foreach ($serviceTypeData as $field => $value) {
+            $valid = $serv->validate('service_type', strtoupper($field), $value);
+            if(!$valid) {
+                $error = "$field contains an invalid value: $value";
+                throw new \Exception($error);
+            }
+        }
+    }
+}
 
 

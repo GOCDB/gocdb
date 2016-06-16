@@ -16,33 +16,33 @@ use Doctrine\Common\Collections\ArrayCollection;
 require_once 'NGI.php';
 
 /**
- * A Site is an adminstrative domain (often a physical site) for hosting zero or more {@see Service}s. 
- * A Site has a single parent {@see NGI). Users hold Roles over their Sites which 
- * cascade to their services. Sites can be scoped using {@see Scope} tags 
- * for resource filtering/matching. 
- * 
+ * A Site is an adminstrative domain (often a physical site) for hosting zero or more {@see Service}s.
+ * A Site has a single parent {@see NGI). Users hold Roles over their Sites which
+ * cascade to their services. Sites can be scoped using {@see Scope} tags
+ * for resource filtering/matching.
+ *
  * @author John Casson
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * 
- * @Entity @Table(name="Sites") 
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ *
+ * @Entity @Table(name="Sites")
  */
 class Site extends OwnedEntity implements IScopedEntity{
-   
+
     /* The site primary key carried over from GOCDB4.
-     * Other operational tools use this 
+     * Other operational tools use this
      * as the unique identifier for a site.
-     * For new sites created in v5 this value is 
+     * For new sites created in v5 this value is
      * programmatically generated.
      */
     /** @Column(type="string", unique=true, nullable=true) */
     protected $primaryKey;
 
-    /** 
-     * It is v.important that the Site name is unique for backward compatibility 
-     * with the GOCDB v4 data. We therefore use a DB unique constraint. Other 
-     * deployments/instances may not require this restriction. 
-     * 
-     * @Column(type="string", unique=true) 
+    /**
+     * It is v.important that the Site name is unique for backward compatibility
+     * with the GOCDB v4 data. We therefore use a DB unique constraint. Other
+     * deployments/instances may not require this restriction.
+     *
+     * @Column(type="string", unique=true)
      */
     protected $shortName;
 
@@ -78,10 +78,10 @@ class Site extends OwnedEntity implements IScopedEntity{
 
     /** @Column(type="string", nullable=true) */
     protected $ipRange;
-        
+
     /** @Column(type="string", nullable=true) */
     protected $ipV6Range;
-        
+
     /** @Column(type="string", nullable=true) */
     protected $domain;
 
@@ -108,7 +108,7 @@ class Site extends OwnedEntity implements IScopedEntity{
      * @OneToMany(targetEntity="Service", mappedBy="parentSite")
      */
     protected $services = null;
-                
+
     /**
      * Bidirectional - A Site (INVERSE ORM SIDE) can have many properties
      * @OneToMany(targetEntity="SiteProperty", mappedBy="parentSite", cascade={"remove"})
@@ -120,27 +120,27 @@ class Site extends OwnedEntity implements IScopedEntity{
 
     /** @ManyToOne(targetEntity="CertificationStatus", inversedBy="sites") */
     protected $certificationStatus;
-    
+
     /* DATETIME NOTE:
      * Doctrine checks whether a date's been updated by doing a by reference comparison.
      * If you just update an existing DateTime object, Doctrine won't persist it!
      * Create a new DateTime object and reference that for it to persist during an update.
      * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
      */
-    
+
     /** @Column(type="datetime", nullable=true) */
-    protected $certificationStatusChangeDate = null; 
+    protected $certificationStatusChangeDate = null;
 
 
     /**
-     * Bidirectional - A Site (INVERSE ORM SIDE) has a history of certification statuses 
+     * Bidirectional - A Site (INVERSE ORM SIDE) has a history of certification statuses
      * @OneToMany(targetEntity="CertificationStatusLog", mappedBy="parentSite")
      */
-    protected $certificationStatusLog; 
+    protected $certificationStatusLog;
 
-    /**    
+    /**
      * Unidirectional - Scope tags associated with this site.
-     * 
+     *
      * @ManyToMany(targetEntity="Scope")
      * @JoinTable(name="Sites_Scopes",
      *      joinColumns={@JoinColumn(name="site_Id", referencedColumnName="id")},
@@ -152,22 +152,22 @@ class Site extends OwnedEntity implements IScopedEntity{
     /** @ManyToOne(targetEntity="Country", inversedBy="sites")  */
     protected $country;
 
-    /** 
-     * Dont' use the Timezone entity, use the timezoneId variable instead. 
+    /**
+     * Dont' use the Timezone entity, use the timezoneId variable instead.
      * @deprecated since version 5.4
-     * @ManyToOne(targetEntity="Timezone", inversedBy="sites") 
+     * @ManyToOne(targetEntity="Timezone", inversedBy="sites")
      */
     protected $timezone;
 
-    /** @Column(type="string", nullable=true) */ 
-    protected $timezoneId; 
+    /** @Column(type="string", nullable=true) */
+    protected $timezoneId;
 
     /** @ManyToOne(targetEntity="Tier", inversedBy="sites")  */
     protected $tier;
 
-    /** 
+    /**
      * @ManyToOne(targetEntity="SubGrid", inversedBy="sites")
-     * @JoinColumn(name = "subgrid_id", referencedColumnName="id", onDelete="SET NULL")  
+     * @JoinColumn(name = "subgrid_id", referencedColumnName="id", onDelete="SET NULL")
      */
     protected $subGrid;
 
@@ -183,7 +183,7 @@ class Site extends OwnedEntity implements IScopedEntity{
 
     public function __construct() {
         parent::__construct();
-        $this->creationDate =  new \DateTime("now");        
+        $this->creationDate =  new \DateTime("now");
         $this->services = new ArrayCollection();
         $this->siteProperties = new ArrayCollection();
         $this->scopes = new ArrayCollection();
@@ -191,7 +191,7 @@ class Site extends OwnedEntity implements IScopedEntity{
         $this->certificationStatusLog = new ArrayCollection();
     }
 
-   
+
     /**
      * The Site's legacy GOCDBv4 PK.
      * Other operational tools require this as the unique identifier for a site.
@@ -210,15 +210,15 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * @see Site::getShortName() 
+     * @see Site::getShortName()
      * @return string Unique short name of this site
      */
     public function getName(){
-       return $this->shortName; 
+       return $this->shortName;
     }
 
     /**
-     * @return string The long/official name of the site. 
+     * @return string The long/official name of the site.
      */
     public function getofficialName() {
         return $this->officialName;
@@ -232,42 +232,42 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * @return string Nullable home URL for this Site.  
+     * @return string Nullable home URL for this Site.
      */
     public function getHomeUrl() {
         return $this->homeUrl;
     }
 
     /**
-     * @return string Nullable email addresses for this Site. 
+     * @return string Nullable email addresses for this Site.
      */
     public function getEmail() {
         return $this->email;
     }
 
     /**
-     * @return string Nullable tel number for this Site.  
+     * @return string Nullable tel number for this Site.
      */
     public function getTelephone() {
         return $this->telephone;
     }
 
     /**
-     * @return string Nullable field to record the URL of the Grid Info Service 
+     * @return string Nullable field to record the URL of the Grid Info Service
      */
     public function getGiisUrl() {
         return $this->giisUrl;
     }
 
     /**
-     * @return float Nullable latitute value for this site. 
+     * @return float Nullable latitute value for this site.
      */
     public function getLatitude() {
         return $this->latitude;
     }
 
     /**
-     * @return float Nullable longitude value for this site. 
+     * @return float Nullable longitude value for this site.
      */
     public function getLongitude() {
         return $this->longitude;
@@ -276,11 +276,11 @@ class Site extends OwnedEntity implements IScopedEntity{
     public function getIpRange() {
         return $this->ipRange;
     }
-        
+
     public function getIpV6Range() {
         return $this->ipV6Range;
     }
-        
+
     public function getDomain() {
         return $this->domain;
     }
@@ -316,10 +316,10 @@ class Site extends OwnedEntity implements IScopedEntity{
     public function getServices() {
         return $this->services;
     }
-        
+
     /**
-     * The Site's list of {@see SiteProperty} extension objects. When the 
-     * Site is deleted, the SiteProperties are also cascade deleted. 
+     * The Site's list of {@see SiteProperty} extension objects. When the
+     * Site is deleted, the SiteProperties are also cascade deleted.
      * @return ArrayCollection
      */
     public function getSiteProperties(){
@@ -327,56 +327,56 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * @return \NGI The Site's owning NGI  
+     * @return \NGI The Site's owning NGI
      */
     public function getNgi() {
         return $this->ngi;
     }
 
     /**
-     * @return ArrayCollection Contains parent NGI or empty collection if no parent. 
+     * @return ArrayCollection Contains parent NGI or empty collection if no parent.
      */
     public function getParentOwnedEntities() {
         $ngiArray = new ArrayCollection();
         if($this->ngi != null){
-            $ngiArray->add($this->ngi); 
+            $ngiArray->add($this->ngi);
         }
-        return $ngiArray; 
+        return $ngiArray;
     }
 
     /**
-     * @return \Infrastructure 
+     * @return \Infrastructure
      */
     public function getInfrastructure() {
         return $this->infrastructure;
     }
 
     /**
-     * @return \CertificationStatus 
+     * @return \CertificationStatus
      */
     public function getCertificationStatus() {
         return $this->certificationStatus;
     }
-   
+
     /**
-     * Get the DateTime when the certification status was last changed. 
+     * Get the DateTime when the certification status was last changed.
      * @return \DateTime
      */
     public function getCertificationStatusChangeDate(){
-        return $this->certificationStatusChangeDate; 
+        return $this->certificationStatusChangeDate;
     }
 
     /**
-     * Get the Site's {@see CertificationStatusLog} objects. 
+     * Get the Site's {@see CertificationStatusLog} objects.
      * @return ArrayCollection
      */
     public function getCertificationStatusLog(){
-        return $this->certificationStatusLog; 
+        return $this->certificationStatusLog;
     }
 
     /**
-     * Get all the Site's joined {@see Scope} objects. 
-     * @return ArrayCollection 
+     * Get all the Site's joined {@see Scope} objects.
+     * @return ArrayCollection
      */
     public function getScopes() {
         return $this->scopes;
@@ -390,82 +390,82 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * Don't use, use the getTimezoneId() instead. 
-     * @deprecated since version 5.4 
+     * Don't use, use the getTimezoneId() instead.
+     * @deprecated since version 5.4
      */
     public function getTimezone() {
         return $this->timezone;
     }
 
     /**
-     * Get the timezone identifier label. 
+     * Get the timezone identifier label.
      * Labels should be of the IANA form, e.g.  Europe/London
-     * @link http://www.iana.org/time-zones IANA timezones 
-     * @return String 
+     * @link http://www.iana.org/time-zones IANA timezones
+     * @return String
      */
-    public function getTimezoneId() { 
-        return $this->timezoneId; 
+    public function getTimezoneId() {
+        return $this->timezoneId;
     }
 
     /**
-     * @return \Tier  
+     * @return \Tier
      */
     public function getTier() {
         return $this->tier;
     }
 
     /**
-     * @return \SubGrid 
+     * @return \SubGrid
      */
     public function getSubGrid() {
         return $this->subGrid;
     }
 
     /**
-     * Get all the Site's {@see \User}s. 
+     * Get all the Site's {@see \User}s.
      * @return ArrayCollection
      */
     public function getUsers() {
         return $this->users;
     }
-     
+
     /**
-     * A CSV string listing the names of scopes with which the 
+     * A CSV string listing the names of scopes with which the
      * object been tagged.
-     * @return string  string containing ", " seperated list of the names 
+     * @return string  string containing ", " seperated list of the names
      */
     public function getScopeNamesAsString() {
-        //Get the scopes for the service 
+        //Get the scopes for the service
         $scopes = $this->getScopes();
-        
+
         //Create an empty array to contain scope names
         $scopeNames= array();
-        
+
         //populate the array
         foreach ($scopes as $scope){
             $scopeNames[]=$scope->getName();
         }
-        
+
         sort($scopeNames);
 
         //Turn into a string
         $scopeNamesAsString = implode(", " , $scopeNames);
-        
+
         return $scopeNamesAsString;
     }
 
     /**
-     * @return \DateTime The datetime when the Site was created.  
+     * @return \DateTime The datetime when the Site was created.
      */
     public function getCreationDate() {
         return $this->creationDate;
     }
-    
+
     /* ======== End of Getters ============= */
     public function setPrimaryKey($primaryKey) {
         $this->primaryKey = $primaryKey;
     }
-    
+
     public function setShortName($shortName) {
         $this->shortName = $shortName;
     }
@@ -509,11 +509,11 @@ class Site extends OwnedEntity implements IScopedEntity{
     public function setIpRange($ipRange) {
         $this->ipRange = $ipRange;
     }
-        
+
     public function setIpV6Range($ipRange) {
         $this->ipV6Range = $ipRange;
     }
-        
+
     public function setDomain($domain) {
         $this->domain = $domain;
     }
@@ -548,8 +548,8 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * Add a SiteProperty entity to this Site's collection of properties. 
-     * This method also sets the SiteProperty's parentSite. 
+     * Add a SiteProperty entity to this Site's collection of properties.
+     * This method also sets the SiteProperty's parentSite.
      * @param \SiteProperty $siteProperty
      */
     public function addSitePropertyDoJoin($siteProperty) {
@@ -578,31 +578,31 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     public function setCertificationStatusChangeDate($certStatusChangeDate){
-        $this->certificationStatusChangeDate = $certStatusChangeDate; 
+        $this->certificationStatusChangeDate = $certStatusChangeDate;
     }
 
     public function setCreationDate($creationDate) {
         $this->creationDate = $creationDate;
     }
-    
+
     /**
-     * Add the given certStatusLog to the list. This method internally calls 
-     * <code>$certStatusLog->setSite($this)</code> to keep both  
-     * sides of the bidirectional relationship consistent (i.e. don't separately 
-     * call <code>$certStatusLog->setSite($this)</code>). 
+     * Add the given certStatusLog to the list. This method internally calls
+     * <code>$certStatusLog->setSite($this)</code> to keep both
+     * sides of the bidirectional relationship consistent (i.e. don't separately
+     * call <code>$certStatusLog->setSite($this)</code>).
      * <p>
-     * This is the INVERSE side of the ORM relation so the internal call to 
-     * setSite actually establishes the relationship in the DB. 
-     * 
-     * @param \CertificationStatusLog $certStatusLog 
+     * This is the INVERSE side of the ORM relation so the internal call to
+     * setSite actually establishes the relationship in the DB.
+     *
+     * @param \CertificationStatusLog $certStatusLog
      */
     public function addCertificationStatusLog(\CertificationStatusLog $certStatusLog){
-        $this->certificationStatusLog[] = $certStatusLog; 
-        $certStatusLog->setParentSite($this); 
+        $this->certificationStatusLog[] = $certStatusLog;
+        $certStatusLog->setParentSite($this);
     }
 
     /**
-     * Tag this Site with the given Scope. 
+     * Tag this Site with the given Scope.
      * @param Scope $scope
      */
     public function addScope(Scope $scope) {
@@ -619,9 +619,9 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * Add the given {@see User} to the Site's list of users. 
-     * This method also calls <code>user->setHomeSiteDoJoin($this);</code> to 
-     * ensure the relationship is established from both sides. 
+     * Add the given {@see User} to the Site's list of users.
+     * This method also calls <code>user->setHomeSiteDoJoin($this);</code> to
+     * ensure the relationship is established from both sides.
      * @param User $user
      */
     public function addUserDoJoin(User $user) {
@@ -630,7 +630,7 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * Set this Site's country. 
+     * Set this Site's country.
      * @param \Country $country
      */
     public function setCountry($country) {
@@ -638,21 +638,21 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * Don't use, use the setTimezoneId() instead. 
-     * @deprecated since version 5.4 
+     * Don't use, use the setTimezoneId() instead.
+     * @deprecated since version 5.4
      */
     public function setTimezone($timezone) {
         $this->timezone = $timezone;
     }
 
     /**
-     * Set the timezone identifier label. 
+     * Set the timezone identifier label.
      * Labels should be of the IANA form, e.g.  Europe/London
-     * @link http://www.iana.org/time-zones IANA timezones 
-     * @return null 
+     * @link http://www.iana.org/time-zones IANA timezones
+     * @return null
      */
     public function setTimezoneId($timezoneId){
-        $this->timezoneId = $timezoneId; 
+        $this->timezoneId = $timezoneId;
     }
 
     /**
@@ -670,7 +670,7 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * Returns this Site's unique shortName 
+     * Returns this Site's unique shortName
      * @return string
      */
     public function __toString () {
@@ -680,10 +680,10 @@ class Site extends OwnedEntity implements IScopedEntity{
     /**
      * Returns value of {@link \OwnedEntity::TYPE_SITE}
      * @see \OwnedEntity::getType()
-     * @return string 
+     * @return string
      */
     public function getType() {
-        return 'site'; 
+        return 'site';
     }
 
 }

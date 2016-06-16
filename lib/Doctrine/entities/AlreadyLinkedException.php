@@ -14,10 +14,10 @@
 
 
 /**
- * Thrown when a downtime is already linked to a service. 
- * @author John Casson  
- * @author David Meredith <david.meredith@stfc.ac.uk> 
+ * Thrown when a downtime is already linked to a service.
+ * @author John Casson
+ * @author David Meredith <david.meredith@stfc.ac.uk>
  */
 class AlreadyLinkedException extends Exception {
-	
+
 }

@@ -14,20 +14,20 @@ namespace org\gocdb\services;
 
 
 /**
- * GOCDB service for GOCDB configuration settings in config files:  
+ * GOCDB service for GOCDB configuration settings in config files:
  * <code>config/local_info.xml</code> and <code>config/gocdb_schema.xml</code>.
  *
- * @author David Meredith <david.meredith@stfc.ac.uk> 
+ * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author John Casson
  */
 class Config {
-    private $gocdb_schemaFile;   
-    private $local_infoFile; 
-    
+    private $gocdb_schemaFile;
+    private $local_infoFile;
+
 
     public function __construct() {
         $this->gocdb_schemaFile = __DIR__."/../../config/gocdb_schema.xml";
-        $this->local_infoFile =  __DIR__."/../../config/local_info.xml"; 
+        $this->local_infoFile =  __DIR__."/../../config/local_info.xml";
     }
 
     /**
@@ -39,19 +39,19 @@ class Config {
     }
 
     /**
-     * Set the full path to the 'gocdb_schema.xml' config file. 
+     * Set the full path to the 'gocdb_schema.xml' config file.
      * <p>
-     * Useful for testing when creating a sample seed configuration. If not 
-     * set, then defaults to <src>__DIR__."/../../config/gocdb_schema.xml</src> 
-     * 
+     * Useful for testing when creating a sample seed configuration. If not
+     * set, then defaults to <src>__DIR__."/../../config/gocdb_schema.xml</src>
+     *
      * @param string $filePath
      * @throws \LogicException If not a string
      */
     public function setSchemaFileLocation($filePath){
         if(!is_string($filePath)){
-            throw new \LogicException("Invalid filePath given for gocdb_schema.xml file"); 
+            throw new \LogicException("Invalid filePath given for gocdb_schema.xml file");
         }
-        $this->gocdb_schemaFile = $filePath; 
+        $this->gocdb_schemaFile = $filePath;
     }
 
     /**
@@ -63,19 +63,19 @@ class Config {
     }
 
     /**
-     * Set the full path to the 'local_info.xml' config file. 
+     * Set the full path to the 'local_info.xml' config file.
      * <p>
-     * Useful for testing when creating a sample seed configuration. If not 
-     * set, then defaults to <src>__DIR__."/../../config/local_info.xml</src> 
-     * 
+     * Useful for testing when creating a sample seed configuration. If not
+     * set, then defaults to <src>__DIR__."/../../config/local_info.xml</src>
+     *
      * @param string $filePath
      * @throws \LogicException If not a string
      */
     public function setLocalInfoFileLocation($filePath){
         if(!is_string($filePath)){
-            throw new \LogicException("Invalid filePath given for local_info.xml file"); 
+            throw new \LogicException("Invalid filePath given for local_info.xml file");
         }
-        $this->local_infoFile = $filePath;  
+        $this->local_infoFile = $filePath;
     }
 
     /**
@@ -94,7 +94,7 @@ class Config {
         return simplexml_load_file($this->getLocalInfoFileLocation());
     }
 
-    
+
     /**
      * returns true if the portal has ben set to read only mode in local_info.xml
      * @return boolean
@@ -104,10 +104,10 @@ class Config {
         if (strtolower($localInfo->local_info->read_only) == 'true'){
             return true;
         }
-        
+
         return false;
     }
-    
+
     /**
      * Determine if the requested feature is set in the local_info.xml file.
      * @param type $featureName The feature name which should correspond to an
@@ -134,7 +134,7 @@ class Config {
         $url = $localInfo->local_info->web_portal_url;
         return strval($url);
     }
-    
+
     public function getDefaultScopeName(){
         $scopeName = $this->GetLocalInfoXML()->local_info->default_scope->name;
 
@@ -144,7 +144,7 @@ class Config {
 
         return strval($scopeName);
     }
-    
+
     public function getDefaultScopeMatch(){
         $scopeMatch = $this->GetLocalInfoXML()->local_info->default_scope_match;
 
@@ -157,44 +157,44 @@ class Config {
 
     public function  getMinimumScopesRequired($entityType){
         $supportedEntities = array('ngi', 'site', 'service', 'service_group');
-        
+
         if(!in_array($entityType, $supportedEntities)){
             throw new \LogicException("Function does not support entity type");
         }
-        
+
         $numScopesRequired = $this->GetLocalInfoXML()->local_info->minimum_scopes->$entityType;
-                
+
         if (empty($numScopesRequired)){
             $numScopesRequired = 0;
         }
-        
+
         return intval($numScopesRequired);
     }
 
 
     /**
-     * Get an array of 'reserved' scope strings or an empty array if non are configured. 
+     * Get an array of 'reserved' scope strings or an empty array if non are configured.
      * <p>
-     * Reserved scopes can only be assiged by gocdb admin (and in future by selected roles);  
-     * they can't be freely assigned to resources by their users/owners. 
+     * Reserved scopes can only be assiged by gocdb admin (and in future by selected roles);
+     * they can't be freely assigned to resources by their users/owners.
      * @return array Reserved scopes as Strings
-     */ 
+     */
     public function getReservedScopeList(){
-	$reservedScopes = array(); 
-	/* @var $reserved_scopes \SimpleXMLElement */ 
-	$reserved_scopes = $this->GetLocalInfoXML()->local_info->reserved_scopes; 	
-	if($reserved_scopes != null){
-	    /* @var $scope \SimpleXMLElement */ 
-	    foreach($reserved_scopes->children() as $scope){
-		$reservedScopes[] = (string)$scope; 
-	    }
-	}
-	return $reservedScopes; 
+    $reservedScopes = array();
+    /* @var $reserved_scopes \SimpleXMLElement */
+    $reserved_scopes = $this->GetLocalInfoXML()->local_info->reserved_scopes;
+    if($reserved_scopes != null){
+        /* @var $scope \SimpleXMLElement */
+        foreach($reserved_scopes->children() as $scope){
+        $reservedScopes[] = (string)$scope;
+        }
     }
-     
+    return $reservedScopes;
+    }
+
     public function getShowMapOnStartPage(){
         $showMapString = $this->GetLocalInfoXML()->local_info->google->show_map_on_start_page;
-                
+
         if(empty($showMapString)){
             $showMap = false;
         }
@@ -207,24 +207,24 @@ class Config {
 
         return $showMap;
     }
-    
+
     public function getGoogleAPIKey(){
         $apiKey = $this->GetLocalInfoXML()->local_info->google->google_API_key;
-                
+
         if(empty($apiKey)){
             $apiKey = '';
         }
 
         return $apiKey;
     }
-    
+
     public function getExtensionsLimit(){
-        return $this->GetLocalInfoXML()->local_info->extensions->max;        
+        return $this->GetLocalInfoXML()->local_info->extensions->max;
     }
-    
-        
+
+
     public function getSendEmails(){
-        $sendEmailString = $this->GetLocalInfoXML()->local_info->send_email;  
+        $sendEmailString = $this->GetLocalInfoXML()->local_info->send_email;
          if(empty($sendEmailString)){
             $sendEmail = false;
         }
@@ -236,7 +236,7 @@ class Config {
         }
         return $sendEmail;
     }
-    
+
 }
 
 

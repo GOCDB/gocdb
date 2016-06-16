@@ -22,23 +22,23 @@
 function view() {
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
-    
+
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
-    
+
     //date_default_timezone_set("UTC");
-    
+
     $timePeriod = 1;
     if(isset($_REQUEST['timePeriod'])) {
-    	$timePeriod = $_REQUEST['timePeriod'];
+        $timePeriod = $_REQUEST['timePeriod'];
     }
-    
+
     $days = 7 * $timePeriod;
-    
-    $windowStart = date("Y-m-d");    
+
+    $windowStart = date("Y-m-d");
     $windowEnd = date_add(date_create(date("Y-m-d")), date_interval_create_from_date_string($days.' days'));
-    
+
     $downtimesA = \Factory::getDowntimeService()->getActiveDowntimes();
     $downtimesI = \Factory::getDowntimeService()->getImminentDowntimes($windowStart,$windowEnd);
     $params['timePeriod'] = $timePeriod;

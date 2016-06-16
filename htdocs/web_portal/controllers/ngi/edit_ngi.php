@@ -33,7 +33,7 @@ function edit_ngi() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's to update a downtime
         submit($user);
     } else { // If there is no post data, draw the edit form
@@ -53,24 +53,24 @@ function draw(\User $user = null) {
     $ngi = \Factory::getNgiService()->getNgi($_REQUEST['id']);
 
     if($user == null){
-       throw new Exception('You do not have permission to edit this NGI, null user'); 
+       throw new Exception('You do not have permission to edit this NGI, null user');
     }
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
             Action::EDIT_OBJECT, $ngi, $user)->getGrantAction() == FALSE){
         throw new Exception('You do not have permission to edit this NGI');
     }
     // can user assign reserved scopes ?
-    $disableReservedScopes = true; 
+    $disableReservedScopes = true;
     if($user->isAdmin()){
-	$disableReservedScopes = false; 
+    $disableReservedScopes = false;
     }
-    // pass null for the parent as we don't consider project scopes (yet) 
-    $scopejsonStr = getEntityScopesAsJSON2($ngi, null, $disableReservedScopes); 
-     
+    // pass null for the parent as we don't consider project scopes (yet)
+    $scopejsonStr = getEntityScopesAsJSON2($ngi, null, $disableReservedScopes);
+
     $params = array('ngi' => $ngi);
     $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
-    $params['scopejson'] = $scopejsonStr; 
-    
+    $params['scopejson'] = $scopejsonStr;
+
     show_view('ngi/edit_ngi.php', $params);
 }
 
@@ -80,14 +80,14 @@ function draw(\User $user = null) {
  * @return null
  */
 function submit(\User $user = null) {
-	$serv = \Factory::getNgiService();
-	$newValues = getNgiDataFromWeb();
-//        print_r($newValues); 
-//        die(); 
-        
-	$ngi = $serv->getNgi($newValues['ID']);
-	$ngi = $serv->editNgi($ngi, $newValues, $user);
-	$params = array('ngi' => $ngi);
-	show_view('ngi/ngi_updated.php', $params);
+    $serv = \Factory::getNgiService();
+    $newValues = getNgiDataFromWeb();
+//        print_r($newValues);
+//        die();
+
+    $ngi = $serv->getNgi($newValues['ID']);
+    $ngi = $serv->editNgi($ngi, $newValues, $user);
+    $params = array('ngi' => $ngi);
+    show_view('ngi/ngi_updated.php', $params);
 }
 ?>

@@ -1,17 +1,17 @@
 <?php
 
 /**
- * Get/set the directory path (context path) that is used as a prefix in 
- * the relative path of web assests (e.g. in the 'src' value of javascript and images). 
+ * Get/set the directory path (context path) that is used as a prefix in
+ * the relative path of web assests (e.g. in the 'src' value of javascript and images).
  * <p>
  * This is needed if deploying gocdb within another environment (such as a Symfony
- * component) which may require a context-path to that component. 
+ * component) which may require a context-path to that component.
  * If deploying GOCDB standalone, this path will normally be an empty string.
   </p>
- * Sample usage within an html view: 
- * <code> 
+ * Sample usage within an html view:
+ * <code>
  *    <img src="<?php echo \GocContextPath::getPath()?>img/site.png"/>
- * </code>   
+ * </code>
  *
  * @author David Meredith
  */
@@ -22,7 +22,7 @@ class GocContextPath {
         return self::$path;
     }
     public static function setPath($path){
-        self::$path = $path; 
+        self::$path = $path;
     }
-    
+
 }
