@@ -11,11 +11,10 @@
 
 /**
  * Returns the database connection to your test databse.
- * Modify as required to return a connection to your test db. 
+ * Modify as required to return a connection to your test db.
  * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
  */
 function getConnectionToTestDB() {
-     require_once 'PHPUnit/Extensions/Database/DB/DefaultDatabaseConnection.php';
      
      /*** Uncomment and fill in the connection details for your chosen database ***/
      
@@ -27,7 +26,7 @@ function getConnectionToTestDB() {
      /////////////////////////////////////////////////////////////////////////////////////////////
          
      ///////////////////////ORACLE CONNECTION DETAILS/////////////////////////////////////////////
-     // $pdo = new PDO('oci:dbname=//localhost:1521/xe', 'DoctrineUnitTests', 'doc');      
+     // $pdo = new PDO('oci:dbname=//localhost:1521/xe', '<USER>', '<PASSWORD>');      
      // return new PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection($pdo, 'USERS');
      /////////////////////////////////////////////////////////////////////////////////////////////
         
