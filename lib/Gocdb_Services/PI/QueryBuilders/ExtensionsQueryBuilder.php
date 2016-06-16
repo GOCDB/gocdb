@@ -65,15 +65,15 @@ class ExtensionsQueryBuilder{
     private $tableAliasBindCounter = 0;
 
     private function setParsedExtensions($pExt) {
-	$this->parsedExt = $pExt;
+    $this->parsedExt = $pExt;
     }
 
     private function getParsedExtensions() {
-	return $this->parsedExt;
+    return $this->parsedExt;
     }
 
     private function setQB($qb) {
-	$this->qb = $qb;
+    $this->qb = $qb;
     }
 
     /**
@@ -81,7 +81,7 @@ class ExtensionsQueryBuilder{
      * @return \Doctrine\ORM\QueryBuilder 
      */
     public function getQB() {
-	return $this->qb;
+    return $this->qb;
     }
 
     /**
@@ -90,11 +90,11 @@ class ExtensionsQueryBuilder{
      * @return int 
      */
     public function getParameterBindCounter() {
-	return $this->parameterBindCounter;
+    return $this->parameterBindCounter;
     }
 
     private function setParameterBindCounter($bc) {
-	$this->parameterBindCounter = $bc;
+    $this->parameterBindCounter = $bc;
     }
 
     /**
@@ -108,11 +108,11 @@ class ExtensionsQueryBuilder{
      * @return array counter-to-value mapping array or empty array    
      */
     public function getValuesToBind() {
-	return $this->valuesToBind;
+    return $this->valuesToBind;
     }
 
     private function setValues($valuesToBind) {
-	$this->valuesToBind = $valuesToBind;
+    $this->valuesToBind = $valuesToBind;
     }
 
     /**
@@ -122,11 +122,11 @@ class ExtensionsQueryBuilder{
      * @return int 
      */
     public function getTableAliasBindCounter() {
-	return $this->tableAliasBindCounter;
+    return $this->tableAliasBindCounter;
     }
 
     private function setTableAliasBindCounter($uID) {
-	$this->tableAliasBindCounter = $uID;
+    $this->tableAliasBindCounter = $uID;
     }
 
     /**
@@ -140,23 +140,23 @@ class ExtensionsQueryBuilder{
      * @param String $entityType
      */
     private function setPropType($entityType) {
-	switch ($entityType) {
-	    case 'Site':
-		$this->type = 'Site';
-		$this->propertyType = 'siteProperties';
-		$this->ltype = 's';
-		break;
-	    case 'Service':
-		$this->type = 'Service';
-		$this->propertyType = 'serviceProperties';
-		$this->ltype = 'se';
-		break;
-	    case 'ServiceGroup':
-		$this->type = 'ServiceGroup';
-		$this->propertyType = 'serviceGroupProperties';
-		$this->ltype = 'sg';
-		break;
-	}
+    switch ($entityType) {
+        case 'Site':
+        $this->type = 'Site';
+        $this->propertyType = 'siteProperties';
+        $this->ltype = 's';
+        break;
+        case 'Service':
+        $this->type = 'Service';
+        $this->propertyType = 'serviceProperties';
+        $this->ltype = 'se';
+        break;
+        case 'ServiceGroup':
+        $this->type = 'ServiceGroup';
+        $this->propertyType = 'serviceGroupProperties';
+        $this->ltype = 'sg';
+        break;
+    }
     }
 
     /** 
@@ -179,18 +179,18 @@ class ExtensionsQueryBuilder{
      * @throws \InvalidArgumentException if query can't be processed. 
      */
     public function __construct($extensionsQuery, \Doctrine\ORM\QueryBuilder $qb, 
-	    \Doctrine\ORM\EntityManager $em, $parameterBindCounter, $entityType, 
-	    $tableAliasBindCounter = 0) {
-	//die($rawExt); 
-	$this->setTableAliasBindCounter($tableAliasBindCounter);
-	$this->em = $em;
-	$this->parseExtensions($extensionsQuery);
-	$this->setParameterBindCounter($parameterBindCounter);
-	$this->setQB($qb);
-	$this->setPropType($entityType);
-	foreach ($this->getParsedExtensions() as $query) {
-	    $this->createSubQuery($this->type, $this->propertyType, $query);
-	}
+        \Doctrine\ORM\EntityManager $em, $parameterBindCounter, $entityType, 
+        $tableAliasBindCounter = 0) {
+    //die($rawExt); 
+    $this->setTableAliasBindCounter($tableAliasBindCounter);
+    $this->em = $em;
+    $this->parseExtensions($extensionsQuery);
+    $this->setParameterBindCounter($parameterBindCounter);
+    $this->setQB($qb);
+    $this->setPropType($entityType);
+    foreach ($this->getParsedExtensions() as $query) {
+        $this->createSubQuery($this->type, $this->propertyType, $query);
+    }
     }
 
     /**
@@ -205,9 +205,9 @@ class ExtensionsQueryBuilder{
 //		$parsedLDAP = $extensionsParser->parseQuery($rawExt);
 //		$this->setParsedExtensions($parsedLDAP);
 
-	$extensionsParser = new ExtensionsParser2();
-	$normalisedQuery = $extensionsParser->parseQuery($rawExt);
-	$this->setParsedExtensions($normalisedQuery);
+    $extensionsParser = new ExtensionsParser2();
+    $normalisedQuery = $extensionsParser->parseQuery($rawExt);
+    $this->setParsedExtensions($normalisedQuery);
     }
 
     /**
@@ -229,57 +229,57 @@ class ExtensionsQueryBuilder{
      *   [0]=>predicateString, eg 'AND', 'OR' or 'NOT', [1]=>expressionString, eg 'key=value'
      */
     private function createSubQuery($entityT, $propT, $query){
-	//Get core variables    	    
-	$valuesToBind = $this->getValuesToBind();
-	$bc = $this->getParameterBindCounter();
-	$uID = $this->getTableAliasBindCounter(); //Used to keep each subqueries table aliases unique
-	
-	//Create query builder and start of the subquery
-	/* @var $sQ \Doctrine\ORM\QueryBuilder */
-	$sQ = $this->em->createQueryBuilder();
-	$sQ->select('s' . $uID . '.id')
-		->from($entityT, 's' . $uID)
-		->join('s' . $uID . '.' . $propT, 'sp' . $uID);
+    //Get core variables    	    
+    $valuesToBind = $this->getValuesToBind();
+    $bc = $this->getParameterBindCounter();
+    $uID = $this->getTableAliasBindCounter(); //Used to keep each subqueries table aliases unique
+    
+    //Create query builder and start of the subquery
+    /* @var $sQ \Doctrine\ORM\QueryBuilder */
+    $sQ = $this->em->createQueryBuilder();
+    $sQ->select('s' . $uID . '.id')
+        ->from($entityT, 's' . $uID)
+        ->join('s' . $uID . '.' . $propT, 'sp' . $uID);
 
-	// Split each given keyname and keyvalue pair on the first '=' char
-	// If limit arg is set and positive, the returned array will contain a 
-	// maximum of limit elements with the last element containing the rest of string. 
-	// namevalue[0] = keyName
-	// namevalue[1] = keyValue 
-	$namevalue = explode('=', $query[1], 2);
+    // Split each given keyname and keyvalue pair on the first '=' char
+    // If limit arg is set and positive, the returned array will contain a 
+    // maximum of limit elements with the last element containing the rest of string. 
+    // namevalue[0] = keyName
+    // namevalue[1] = keyValue 
+    $namevalue = explode('=', $query[1], 2);
 
-	if (trim($namevalue[1]) == null) { //if no value or no value after trim do a wildcard search
-	    $namevalue[1] = '%%'; //Set value as database wildcard symbol	                        
-	}
-	/*
-	 * Create the where clause of the subquery, e.g: 
-	 * WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1 
-	 * ...and append, e.g: 
-	 * SELECT s0.id FROM Site s0 INNER JOIN s0.siteProperties sp0 WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1 
-	 */
-	// This could be simplified further - no need to andX the property 
+    if (trim($namevalue[1]) == null) { //if no value or no value after trim do a wildcard search
+        $namevalue[1] = '%%'; //Set value as database wildcard symbol	                        
+    }
+    /*
+     * Create the where clause of the subquery, e.g: 
+     * WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1 
+     * ...and append, e.g: 
+     * SELECT s0.id FROM Site s0 INNER JOIN s0.siteProperties sp0 WHERE sp0.keyName = ?0 AND sp0.keyValue = ?1 
+     */
+    // This could be simplified further - no need to andX the property 
         // value if the query doesn't need to match the property value..
         $sQ->where($sQ->expr()->andX(
-		$sQ->expr()->eq('sp' . $uID . '.keyName', '?' . ++$bc), 
-		$namevalue[1] == "%%" ? 
-		$sQ->expr()->like('sp' . $uID . '.keyValue', '?' . ++$bc) : 
-	        $sQ->expr()->eq('sp' . $uID . '.keyValue', '?' . ++$bc)
-	));
+        $sQ->expr()->eq('sp' . $uID . '.keyName', '?' . ++$bc), 
+        $namevalue[1] == "%%" ? 
+        $sQ->expr()->like('sp' . $uID . '.keyValue', '?' . ++$bc) : 
+            $sQ->expr()->eq('sp' . $uID . '.keyValue', '?' . ++$bc)
+    ));
 
-	// Bind keyName
-	$valuesToBind[] = array(($bc - 1), $namevalue[0]);   
-	// Bind keyValue
-	$valuesToBind[] = array(($bc), $namevalue[1]);   
-	
-	//Update core variables
+    // Bind keyName
+    $valuesToBind[] = array(($bc - 1), $namevalue[0]);   
+    // Bind keyValue
+    $valuesToBind[] = array(($bc), $namevalue[1]);   
+    
+    //Update core variables
         $this->setTableAliasBindCounter(++$uID);
-	$this->setParameterBindCounter($bc);
-	$this->setValues($valuesToBind);
+    $this->setParameterBindCounter($bc);
+    $this->setValues($valuesToBind);
         //Add this sub query to the main query
         $this->addSubQueryToMainQuery($sQ, $query[0]);
     }
 
-	
+    
     /**
      * Add the given subquery as a new clause in the main query's  
      * WHERE clause using and an AND or OR operator. 
@@ -292,9 +292,9 @@ class ExtensionsQueryBuilder{
      * @param String $operator AND, OR or NOT 
      */
     private function addSubQueryToMainQuery($sQ, $operator){
-	//Get the query that was passed at initialization
+    //Get the query that was passed at initialization
         /* @var $qb \Doctrine\ORM\QueryBuilder */
-	$qb = $this->getQB(); 
+    $qb = $this->getQB(); 
        
         // QueryBuilder:  
         // orWhere() forms a logical DISCJUNCTION with all 
@@ -315,20 +315,20 @@ class ExtensionsQueryBuilder{
         // Of course, this will also require a change in the syntax of the 
         // 'expressions' query string to support nesting parethesis.  
                 
-	switch ($operator) {
-	    case 'OR': //OR
-		$qb->orWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));
-		break;
-	    case 'AND': //AND        	           
-		$qb->andWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));
-		break;
-	    case 'NOT': //NOT
-		$qb->andWhere($qb->expr()->notIn($this->ltype, $sQ->getDQL()));
-		break;
-	}
+    switch ($operator) {
+        case 'OR': //OR
+        $qb->orWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));
+        break;
+        case 'AND': //AND        	           
+        $qb->andWhere($qb->expr()->in($this->ltype, $sQ->getDQL()));
+        break;
+        case 'NOT': //NOT
+        $qb->andWhere($qb->expr()->notIn($this->ltype, $sQ->getDQL()));
+        break;
+    }
 
-	//finally replace original query with updated query ready for fetching by the calling class
-	$this->setQB($qb);
+    //finally replace original query with updated query ready for fetching by the calling class
+    $this->setQB($qb);
     }		
 }  
 

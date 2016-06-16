@@ -98,7 +98,7 @@ class GetNGIContacts implements IPIQuery {
         foreach((array)$parameterBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-        	
+            
         //Bind all variables
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
     
@@ -118,72 +118,72 @@ class GetNGIContacts implements IPIQuery {
     return $this->ngis;
     }
     
-	
-	/** Returns proprietary GocDB rendering of the NGI contact data 
-	 *  in an XML String
-	 * @return String
-	 */
-	public function getXML(){
-		$helpers = $this->helpers;
+    
+    /** Returns proprietary GocDB rendering of the NGI contact data 
+     *  in an XML String
+     * @return String
+     */
+    public function getXML(){
+        $helpers = $this->helpers;
 
-		$ngis = $this->ngis;
+        $ngis = $this->ngis;
 
-		$xml = new \SimpleXMLElement ( "<results />" );
-		
-	   foreach($ngis as $ngi) {
-			$xmlNgi = $xml->addChild('ROC');
-			$xmlNgi->addAttribute('ROC_NAME', $ngi->getName());
-			$xmlNgi->addChild('ROCNAME', $ngi->getName());
-			$xmlNgi->addChild('MAIL_CONTACT', $ngi->getEmail());
-			$portalUrl = $this->baseUrl.'/index.php?Page_Type=NGI&id=' . $ngi->getId ();
-			$portalUrl = htmlspecialchars ( $portalUrl );
-			$helpers->addIfNotEmpty ( $xmlNgi, 'GOCDB_PORTAL_URL', $portalUrl );
-			foreach($ngi->getRoles() as $role) {
-				if ($role->getStatus() == "STATUS_GRANTED") {   //Only show users who are granted the role, not pending				
-	                $rtype = $role->getRoleType()->getName(); 
-	                if($this->roleT == '%%' || $rtype == $this->roleT) {
-	                    $user = $role->getUser();
-	                    $xmlContact = $xmlNgi->addChild('CONTACT');
-	                    $xmlContact->addAttribute('USER_ID', $user->getId() . "G0");
-	                    $xmlContact->addAttribute('PRIMARY_KEY', $user->getId() . "G0");
-	                    $xmlContact->addChild('FORENAME', $user->getForename());
-	                    $xmlContact->addChild('SURNAME', $user->getSurname());
-	                    $xmlContact->addChild('TITLE', $user->getTitle());
-	                    $xmlContact->addChild('EMAIL', $user->getEmail());
-	                    $xmlContact->addChild('TEL', $user->getTelephone());
-	                    $xmlContact->addChild('CERTDN', $user->getCertificateDn());
-	                    
-	                    $roleName = $role->getRoleType()->getName();  
-	                    $xmlContact->addChild('ROLE_NAME', $roleName);
-	                }
-				}	
-			}
-		}
-		
-		$dom_sxe = dom_import_simplexml ( $xml );
-		$dom = new \DOMDocument ( '1.0' );
-		$dom->encoding = 'UTF-8';
-		$dom_sxe = $dom->importNode ( $dom_sxe, true );
-		$dom_sxe = $dom->appendChild ( $dom_sxe );
-		$dom->formatOutput = true;
-		$xmlString = $dom->saveXML ();
-		return $xmlString;
-	}
-	
-	/** Returns the NGI contact data in Glue2 XML string.
-	 * 
-	 * @return String
-	 */
-	public function getGlue2XML(){
-	    throw new LogicException("Not implemented yet");	     
-	}
-	
-	/** Not yet implemented, in future will return the NGI contact 
-	 *  data in JSON format
-	 * @throws LogicException
-	 */
-	public function getJSON(){
-		$query = $this->query;		
-		throw new LogicException("Not implemented yet");
-	}
+        $xml = new \SimpleXMLElement ( "<results />" );
+        
+       foreach($ngis as $ngi) {
+            $xmlNgi = $xml->addChild('ROC');
+            $xmlNgi->addAttribute('ROC_NAME', $ngi->getName());
+            $xmlNgi->addChild('ROCNAME', $ngi->getName());
+            $xmlNgi->addChild('MAIL_CONTACT', $ngi->getEmail());
+            $portalUrl = $this->baseUrl.'/index.php?Page_Type=NGI&id=' . $ngi->getId ();
+            $portalUrl = htmlspecialchars ( $portalUrl );
+            $helpers->addIfNotEmpty ( $xmlNgi, 'GOCDB_PORTAL_URL', $portalUrl );
+            foreach($ngi->getRoles() as $role) {
+                if ($role->getStatus() == "STATUS_GRANTED") {   //Only show users who are granted the role, not pending				
+                    $rtype = $role->getRoleType()->getName(); 
+                    if($this->roleT == '%%' || $rtype == $this->roleT) {
+                        $user = $role->getUser();
+                        $xmlContact = $xmlNgi->addChild('CONTACT');
+                        $xmlContact->addAttribute('USER_ID', $user->getId() . "G0");
+                        $xmlContact->addAttribute('PRIMARY_KEY', $user->getId() . "G0");
+                        $xmlContact->addChild('FORENAME', $user->getForename());
+                        $xmlContact->addChild('SURNAME', $user->getSurname());
+                        $xmlContact->addChild('TITLE', $user->getTitle());
+                        $xmlContact->addChild('EMAIL', $user->getEmail());
+                        $xmlContact->addChild('TEL', $user->getTelephone());
+                        $xmlContact->addChild('CERTDN', $user->getCertificateDn());
+                        
+                        $roleName = $role->getRoleType()->getName();  
+                        $xmlContact->addChild('ROLE_NAME', $roleName);
+                    }
+                }	
+            }
+        }
+        
+        $dom_sxe = dom_import_simplexml ( $xml );
+        $dom = new \DOMDocument ( '1.0' );
+        $dom->encoding = 'UTF-8';
+        $dom_sxe = $dom->importNode ( $dom_sxe, true );
+        $dom_sxe = $dom->appendChild ( $dom_sxe );
+        $dom->formatOutput = true;
+        $xmlString = $dom->saveXML ();
+        return $xmlString;
+    }
+    
+    /** Returns the NGI contact data in Glue2 XML string.
+     * 
+     * @return String
+     */
+    public function getGlue2XML(){
+        throw new LogicException("Not implemented yet");	     
+    }
+    
+    /** Not yet implemented, in future will return the NGI contact 
+     *  data in JSON format
+     * @throws LogicException
+     */
+    public function getJSON(){
+        $query = $this->query;		
+        throw new LogicException("Not implemented yet");
+    }
 }

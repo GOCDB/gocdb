@@ -69,11 +69,11 @@ class ExtensionsParser2 implements IExtensionsParser{
     }
 
     /**
-	 * Check that the amount of queries the user has entered is not greater
-	 * than the limit set in local_info.xml
-	 * @param Array $parsedQueries
-	 * @return boolean
-	 */
+     * Check that the amount of queries the user has entered is not greater
+     * than the limit set in local_info.xml
+     * @param Array $parsedQueries
+     * @return boolean
+     */
 //	private function checkLimit($parsedQueries){
 //	    $configService = \Factory::getConfigService();	     
 //	    $limit = $configService->getExtensionsLimit();

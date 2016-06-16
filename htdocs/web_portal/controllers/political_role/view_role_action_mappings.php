@@ -48,19 +48,19 @@ function view_role_action_mappings() {
     //      ...
     $roleTypeActionTarget_byObjectType = array(); 
     foreach($roleTypesOver as $roleTypeName => $heldOverObjectType){
-	if(!array_key_exists($heldOverObjectType, $roleTypeActionTarget_byObjectType)){
-	   $roleTypeActionTarget_byObjectType[$heldOverObjectType] = array();  
-	}
+    if(!array_key_exists($heldOverObjectType, $roleTypeActionTarget_byObjectType)){
+       $roleTypeActionTarget_byObjectType[$heldOverObjectType] = array();  
+    }
         $actionsOverArray = \Factory::getRoleActionMappingService()->getEnabledActionsForRoleType($roleTypeName);
-	foreach($actionsOverArray as $actionOverArray){
-	    $roleActionTarget = array(); 
-	    $roleActionTarget[0] = $roleTypeName;       //RoleType: 'Site Administrator' 
-	    $roleActionTarget[1] = $actionOverArray[0]; //Action: 'EDIT_OBJECT'
-	    $roleActionTarget[2] = $actionOverArray[1]; //TargetObj: 'Site'
-	    
-	    // add element to result array (element is a new array) 
-	    $roleTypeActionTarget_byObjectType[$heldOverObjectType][] = $roleActionTarget; 
-	}
+    foreach($actionsOverArray as $actionOverArray){
+        $roleActionTarget = array(); 
+        $roleActionTarget[0] = $roleTypeName;       //RoleType: 'Site Administrator' 
+        $roleActionTarget[1] = $actionOverArray[0]; //Action: 'EDIT_OBJECT'
+        $roleActionTarget[2] = $actionOverArray[1]; //TargetObj: 'Site'
+        
+        // add element to result array (element is a new array) 
+        $roleTypeActionTarget_byObjectType[$heldOverObjectType][] = $roleActionTarget; 
+    }
     }
 
     $params = array();

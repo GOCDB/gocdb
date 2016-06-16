@@ -25,124 +25,124 @@ require_once __DIR__ . '/IPIQuery.php';
  * @author David Meredith 
  */
 class GetNGIList implements IPIQuery{
-	
+    
 protected $query;
-	protected $validParams;
-	protected $em;
-	private $helpers;
-	private $ngis;
-	
-	/** Constructor takes entity manager which is then used by the
-	 *  query builder
-	 * 
-	 * @param EntityManager $em
-	 */
-	public function __construct($em){
-		$this->em = $em;
-		$this->helpers=new Helpers();		
-	}
-	
-	/** Validates parameters against array of pre-defined valid terms
-	 *  for this PI type
-	 * @param array $parameters
-	 */
-	public function validateParameters($parameters){
+    protected $validParams;
+    protected $em;
+    private $helpers;
+    private $ngis;
+    
+    /** Constructor takes entity manager which is then used by the
+     *  query builder
+     * 
+     * @param EntityManager $em
+     */
+    public function __construct($em){
+        $this->em = $em;
+        $this->helpers=new Helpers();		
+    }
+    
+    /** Validates parameters against array of pre-defined valid terms
+     *  for this PI type
+     * @param array $parameters
+     */
+    public function validateParameters($parameters){
 
-		// Define supported parameters and validate given params (die if an unsupported param is given)
-		$supportedQueryParams = array (
-				'roc' 
-		);
-		
-		$this->helpers->validateParams ( $supportedQueryParams, $parameters );
-		$this->validParams = $parameters;
-	}
-	
-	/** Creates the query by building on a queryBuilder object as
-	 *  required by the supplied parameters 
-	 */
-	public function createQuery() {
-		$parameters = $this->validParams;
-		$binds= array();
-		$bc=-1;
-	
-		$qb = $this->em->createQueryBuilder();
-		
-		//Initialize base query		
-		$qb	->select('n')
-		->from('NGI', 'n')
-		->orderBy('n.id', 'ASC');
-	
-		/*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
-		* based on set parameters.
-		*/	
-		$parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
-		//Get the result of the scope builder
-		$qb = $parameterBuilder->getQB();
-		$bc = $parameterBuilder->getBindCount();
-		//Get the binds and store them in the local bind array - only runs if the returned value is an array
-		foreach((array)$parameterBuilder->getBinds() as $bind){
-			$binds[] = $bind;
-		}
-	
-		//Bind all variables
-		$qb = $this->helpers->bindValuesToQuery($binds, $qb);
-	
-		//Get the dql query from the Query Builder object
-		$query = $qb->getQuery();
+        // Define supported parameters and validate given params (die if an unsupported param is given)
+        $supportedQueryParams = array (
+                'roc' 
+        );
+        
+        $this->helpers->validateParams ( $supportedQueryParams, $parameters );
+        $this->validParams = $parameters;
+    }
+    
+    /** Creates the query by building on a queryBuilder object as
+     *  required by the supplied parameters 
+     */
+    public function createQuery() {
+        $parameters = $this->validParams;
+        $binds= array();
+        $bc=-1;
+    
+        $qb = $this->em->createQueryBuilder();
+        
+        //Initialize base query		
+        $qb	->select('n')
+        ->from('NGI', 'n')
+        ->orderBy('n.id', 'ASC');
+    
+        /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
+        * based on set parameters.
+        */	
+        $parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
+        //Get the result of the scope builder
+        $qb = $parameterBuilder->getQB();
+        $bc = $parameterBuilder->getBindCount();
+        //Get the binds and store them in the local bind array - only runs if the returned value is an array
+        foreach((array)$parameterBuilder->getBinds() as $bind){
+            $binds[] = $bind;
+        }
+    
+        //Bind all variables
+        $qb = $this->helpers->bindValuesToQuery($binds, $qb);
+    
+        //Get the dql query from the Query Builder object
+        $query = $qb->getQuery();
 
-		$this->query = $query;	
+        $this->query = $query;	
          return $this->query; 
-	}	
-	
-	/**
-	 * Executes the query that has been built and stores the returned data
-	 * so it can later be used to create XML, Glue2 XML or JSON.
-	 */
-	public function executeQuery(){
-	    $this->ngis = $this->query->execute();
-	    return $this->ngis;
-	}
-	
-	/** Returns proprietary GocDB rendering of the NGI data 
-	 *  in an XML String
-	 * @return String
-	 */
-	public function getXML(){
-		$helpers = $this->helpers;
+    }	
+    
+    /**
+     * Executes the query that has been built and stores the returned data
+     * so it can later be used to create XML, Glue2 XML or JSON.
+     */
+    public function executeQuery(){
+        $this->ngis = $this->query->execute();
+        return $this->ngis;
+    }
+    
+    /** Returns proprietary GocDB rendering of the NGI data 
+     *  in an XML String
+     * @return String
+     */
+    public function getXML(){
+        $helpers = $this->helpers;
 
-		$ngis = $this->query->execute();
-		
-		$xml = new \SimpleXMLElement ( "<results />" );
-		
-		foreach ( $ngis as $ngi ) {
-			$xmlNgi = $xml->addChild ( 'ROC' );
-			$xmlNgi->addAttribute ( 'PRIMARY_KEY', $ngi->getId () . "G0" );
-			$xmlNgi->addAttribute ( 'ROC_NAME', $ngi->getName () );
-		}
-		
-		$dom_sxe = dom_import_simplexml ( $xml );
-		$dom = new \DOMDocument ( '1.0' );
-		$dom->encoding = 'UTF-8';
-		$dom_sxe = $dom->importNode ( $dom_sxe, true );
-		$dom_sxe = $dom->appendChild ( $dom_sxe );
-		$dom->formatOutput = true;
-		$xmlString = $dom->saveXML ();
-		return $xmlString;
-	}
-	
-	/** Returns the NGI data in Glue2 XML string.
-	 * 
-	 * @return String
-	 */
-	public function getGlue2XML(){
-		$helpers = $this->helpers;
-		$query = $this->query;
-		
-		$ngis = $query->getResult();
+        $ngis = $this->query->execute();
+        
+        $xml = new \SimpleXMLElement ( "<results />" );
+        
+        foreach ( $ngis as $ngi ) {
+            $xmlNgi = $xml->addChild ( 'ROC' );
+            $xmlNgi->addAttribute ( 'PRIMARY_KEY', $ngi->getId () . "G0" );
+            $xmlNgi->addAttribute ( 'ROC_NAME', $ngi->getName () );
+        }
+        
+        $dom_sxe = dom_import_simplexml ( $xml );
+        $dom = new \DOMDocument ( '1.0' );
+        $dom->encoding = 'UTF-8';
+        $dom_sxe = $dom->importNode ( $dom_sxe, true );
+        $dom_sxe = $dom->appendChild ( $dom_sxe );
+        $dom->formatOutput = true;
+        $xmlString = $dom->saveXML ();
+        return $xmlString;
+    }
+    
+    /** Returns the NGI data in Glue2 XML string.
+     * 
+     * @return String
+     */
+    public function getGlue2XML(){
+        $helpers = $this->helpers;
+        $query = $this->query;
+        
+        $ngis = $query->getResult();
 
-		$xml = new \SimpleXMLElement("<Entities />");
-		
-		foreach($ngis as $ngi) {
+        $xml = new \SimpleXMLElement("<Entities />");
+        
+        foreach($ngis as $ngi) {
             $xmlNgi = $xml->addChild("AdminDomain");
             $xmlNgi->addAttribute("BaseType", "Domain");
             $xmlNgi->addChild("ID", $ngi->getId());                                 
@@ -168,26 +168,26 @@ protected $query;
                 $xmlNgiAsoc->addChild("ChildDomainID", $site->getPrimaryKey());
             }
             
-		}
+        }
 
-		$dom_sxe = dom_import_simplexml($xml);
-		$dom = new \DOMDocument('1.0');
-		$dom->encoding='UTF-8';
-		$dom_sxe = $dom->importNode($dom_sxe, true);
-		$dom_sxe = $dom->appendChild($dom_sxe);
-		$dom->formatOutput = true;
+        $dom_sxe = dom_import_simplexml($xml);
+        $dom = new \DOMDocument('1.0');
+        $dom->encoding='UTF-8';
+        $dom_sxe = $dom->importNode($dom_sxe, true);
+        $dom_sxe = $dom->appendChild($dom_sxe);
+        $dom->formatOutput = true;
 
-		$xmlString = $dom->saveXML();
+        $xmlString = $dom->saveXML();
 
-		return $xmlString;
-	}
-	
-	/** Not yet implemented, in future will return the NGI 
-	 *  data in JSON format
-	 * @throws LogicException
-	 */
-	public function getJSON(){
-		$query = $this->query;		
-		throw new LogicException("Not implemented yet");
-	}
+        return $xmlString;
+    }
+    
+    /** Not yet implemented, in future will return the NGI 
+     *  data in JSON format
+     * @throws LogicException
+     */
+    public function getJSON(){
+        $query = $this->query;		
+        throw new LogicException("Not implemented yet");
+    }
 }

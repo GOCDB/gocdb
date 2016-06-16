@@ -80,15 +80,15 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     try {
-    	$newValues = getSerPropDataFromWeb();  
-    	$serviceID = $newValues['SERVICEPROPERTIES']['SERVICE'];
-    	$propID = $newValues['SERVICEPROPERTIES']['PROP'];
-    	if($newValues['SERVICEPROPERTIES']['NAME'] == null || $newValues['SERVICEPROPERTIES']['VALUE'] == null){
-    	    show_view('error.php', "A property name and value must be provided.");
-    	    die();
-    	}
-    	$property = \Factory::getServiceService()->getProperty($propID);
-    	$service = \Factory::getServiceService()->getService($serviceID);    	
+        $newValues = getSerPropDataFromWeb();  
+        $serviceID = $newValues['SERVICEPROPERTIES']['SERVICE'];
+        $propID = $newValues['SERVICEPROPERTIES']['PROP'];
+        if($newValues['SERVICEPROPERTIES']['NAME'] == null || $newValues['SERVICEPROPERTIES']['VALUE'] == null){
+            show_view('error.php', "A property name and value must be provided.");
+            die();
+        }
+        $property = \Factory::getServiceService()->getProperty($propID);
+        $service = \Factory::getServiceService()->getService($serviceID);    	
         $service = \Factory::getServiceService()->editServiceProperty($service, $user, $property, $newValues);
         $params['serviceid'] = $serviceID;
         show_view('service/service_property_updated.php', $params);

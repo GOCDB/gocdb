@@ -43,7 +43,7 @@ function my_sites() {
 
     $sGroups = $userServ->getSGroupsFromRoles($user);
     if (!empty($sGroups)) {
-    	$params['sgroups_from_roles'] = $sGroups;
+        $params['sgroups_from_roles'] = $sGroups;
     }
 
     $ngis = $userServ->getNgisFromRoles($user);

@@ -5,17 +5,17 @@
     topology and resources information.
 
 
-	<br/><br/>   
-	<h2 class="startPage">What information is stored here?</h2>
+    <br/><br/>   
+    <h2 class="startPage">What information is stored here?</h2>
     <br />
 
-	The GOCDB data consists mainly of:
-	<ul>
-	<li class="no_border">Participating National Grid Initiatives (NGI)</li>
-	<li class="no_border">Grid Sites providing resources to the infrastructure</li>
-	<li class="no_border">Resources and services, including maintenance plans for these resources</li>
-	<li class="no_border">Participating people, and their roles within EGI operations</li>
-	</ul>
+    The GOCDB data consists mainly of:
+    <ul>
+    <li class="no_border">Participating National Grid Initiatives (NGI)</li>
+    <li class="no_border">Grid Sites providing resources to the infrastructure</li>
+    <li class="no_border">Resources and services, including maintenance plans for these resources</li>
+    <li class="no_border">Participating people, and their roles within EGI operations</li>
+    </ul>
    Data are provided and updated by participating 
    NGIs, and are presented through this web portal.<br/><br/>
    
@@ -25,12 +25,12 @@
           <li>If an organisation deploys and uses their own system or a local GOCDB installation, their data won't appear here.</li>
         </ul>  
    
-	</div>
-	<?php if(sizeof($params['roles']) > 0) { ?>
-		<div class="alert alert-warning" style="width: 98%; margin-bottom:1%; float: left;">
+    </div>
+    <?php if(sizeof($params['roles']) > 0) { ?>
+        <div class="alert alert-warning" style="width: 98%; margin-bottom:1%; float: left;">
                 <span class="glyphicon glyphicon-asterisk"></span>   <b>Notification:</b> You have pending role requests - <a href="index.php?Page_Type=Role_Requests">Manage Roles</a>                   
         </div>
-	<?php } ?>
+    <?php } ?>
     
     <!-- map Block -->
     <?php if($params['showMap']): ?> 

@@ -39,7 +39,7 @@ foreach($usersRoles as $user) {
             $roleType = $result;
         }
         if(!($roleType instanceof RoleType)) {
-        	throw new Exception("Not a doctrine role type");
+            throw new Exception("Not a doctrine role type");
         }
         
         // Find the user
@@ -51,9 +51,9 @@ foreach($usersRoles as $user) {
         // /* Error checking: ensure each "user" refers to exactly
          // * one user */
         if(count($users) !== 1) {
-        	foreach($users as $u) {
-        		echo "Certificate DN is " . $u->getCertificateDn() . "-------";
-        	}
+            foreach($users as $u) {
+                echo "Certificate DN is " . $u->getCertificateDn() . "-------";
+            }
             throw new Exception(count($users) . " users found with DN: " . 
                 $user->CERTDN);
         }
@@ -63,7 +63,7 @@ foreach($usersRoles as $user) {
         }
         
         if(!($doctrineUser instanceof User)) {
-        	throw new Exception("Not a doctrine user");
+            throw new Exception("Not a doctrine user");
         }
         
         // Check for invalid sites and skip adding this role
@@ -87,7 +87,7 @@ foreach($usersRoles as $user) {
             $doctrineSite = $doctrineSite;
         }
         if(!($doctrineSite instanceof Site)) {
-        	throw new Exception("Not a doctrine site");
+            throw new Exception("Not a doctrine site");
         }
         
         //check that the role is not a duplicate (v4 data contaisn duplicates)

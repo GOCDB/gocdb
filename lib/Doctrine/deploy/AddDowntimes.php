@@ -22,11 +22,11 @@ require_once __DIR__.'/../entities/AlreadyLinkedException.php';
 // to be registered. Either that or there's a business reason
 // for registering two. 
 $duplicateSes = array ("se.reef.man.poznan.pl",  "lcg05.sinp.msu.ru",
-		"grid-se.ii.edu.mk",
-		"storage01.lcg.cscs.ch", "grid002.ics.forth.gr",
-		"eymir.grid.metu.edu.tr", "torik1.ulakbim.gov.tr",
-		"hyx.grid.icm.edu.pl", "cert-ce-01.cnaf.infn.it", // cert-ce-01 is a CE, not SRM
-		"se01.mosigrid.utcluj.ro");
+        "grid-se.ii.edu.mk",
+        "storage01.lcg.cscs.ch", "grid002.ics.forth.gr",
+        "eymir.grid.metu.edu.tr", "torik1.ulakbim.gov.tr",
+        "hyx.grid.icm.edu.pl", "cert-ce-01.cnaf.infn.it", // cert-ce-01 is a CE, not SRM
+        "se01.mosigrid.utcluj.ro");
 // Hack: the above SEs appear twice with the same service type. (nightmare)
 // However in most cases both SEs share the same downtimes...
 
@@ -61,44 +61,44 @@ foreach ($downtimes as $downtimeXml) {
         // xml PRIMARY_KEY attribute. 
         //  
         // $downtime = $entityManager->createQuery("select d FROM Downtime d WHERE d.primaryKey = ?1")
-		//   ->setParameter(1, (string) $promId.'G0')
-		//   ->getResult();
+        //   ->setParameter(1, (string) $promId.'G0')
+        //   ->getResult();
         $downtime = $allDowntimes[$promId];
     }
 
-	if(!isset($downtime)) {
-	    // Create a new downtime, add the SE to it
-	    $downtime = newDowntime($downtimeXml);
+    if(!isset($downtime)) {
+        // Create a new downtime, add the SE to it
+        $downtime = newDowntime($downtimeXml);
         // Finds one or more SEs by hostname and service type
-      	$services = findSEs((string) $downtimeXml->HOSTNAME
-    		, (string) $downtimeXml->SERVICE_TYPE);
+        $services = findSEs((string) $downtimeXml->HOSTNAME
+            , (string) $downtimeXml->SERVICE_TYPE);
         
         // There are some edge cases where findSEs returns
         // more than one SE (see the comment at the top of this file)
         // However if the downtime isn't yet created we always
         // link to the first SE found.
         if(!isset($services[0])) {
-        	throw new Exception("No SE found with "
-    				. "hostname " . $downtimeXml->HOSTNAME . " ");
+            throw new Exception("No SE found with "
+                    . "hostname " . $downtimeXml->HOSTNAME . " ");
         }
 
         // Bidirectional link the el and dt 
         $els = $services[0]->getEndpointLocations(); 
         $downtime->addEndpointLocation($els[0]); 
-	    //$downtime->addService($services[0]);
+        //$downtime->addService($services[0]);
 
         // save the id rather than the whole downtime to reduce memory 
-	    $GLOBALS['allDowntimes'][$promId] = $downtime;
-	} else {
-    	// Find the SE and link it to the downtime
-    	$services = findSEs((string) $downtimeXml->HOSTNAME
-    			, (string) $downtimeXml->SERVICE_TYPE);
+        $GLOBALS['allDowntimes'][$promId] = $downtime;
+    } else {
+        // Find the SE and link it to the downtime
+        $services = findSEs((string) $downtimeXml->HOSTNAME
+                , (string) $downtimeXml->SERVICE_TYPE);
 
-    	if(!isset($services[0])) {
-    		throw new Exception("No SE found with "
-    				. "hostname " . $downtimeXml->HOSTNAME . " ");
-    	}
-    	try {
+        if(!isset($services[0])) {
+            throw new Exception("No SE found with "
+                    . "hostname " . $downtimeXml->HOSTNAME . " ");
+        }
+        try {
             // TODO? - We should probably iterate each el and try to link each 
             // to this DT. Will still need to throw alreadylinked exception when 
             // trying to link a SE that is already linked to the downtime
@@ -123,64 +123,64 @@ foreach ($downtimes as $downtimeXml) {
 
             // Bidirectional link the el and dt 
             $downtime->addEndpointLocation($els[0]); 
-		   	//$downtime->addService($services[0]);
+            //$downtime->addService($services[0]);
             
-    	} catch (Exception $e) {
-    		if($e instanceof AlreadyLinkedException) {
+        } catch (Exception $e) {
+            if($e instanceof AlreadyLinkedException) {
                 // Downtime is already linked to this SE 
                 
-    			// Check whether this exception is caused by a known issue
-    			// with duplicate SEs (see comment at the top of the file).
-    			// Issue is known if two SEs are found and the hostname is
-    			// a known duplicate 
-    			$twoSes = false;
-    			if(count($services) == 2) {
-    				$twoSes = true;
-    			} else {
+                // Check whether this exception is caused by a known issue
+                // with duplicate SEs (see comment at the top of the file).
+                // Issue is known if two SEs are found and the hostname is
+                // a known duplicate 
+                $twoSes = false;
+                if(count($services) == 2) {
+                    $twoSes = true;
+                } else {
                     // we will have to deal with this case and link the 
                     throw new Exception("More than duplicate 2 SEs found: ".$services[0]->getHostName()); 
                 }
 
-    			$knownDup = false;
-    			foreach($duplicateSes as $dup) {
-    				if($dup == $services[0]->getHostName()) {
-    					$knownDup = true;
-    				}
-    			}
+                $knownDup = false;
+                foreach($duplicateSes as $dup) {
+                    if($dup == $services[0]->getHostName()) {
+                        $knownDup = true;
+                    }
+                }
 
-    			// If the above two tests are true then we've hit an edge case
-    			// where a downtime currently links to one SE that's a known
-    			// duplicate and it needs to link to the other (duplicated) SE.
-    			// The other SE will always be the second result in $services ([1])
-    			if($twoSes && $knownDup) {
-    				//$downtime->addService($services[1]);
+                // If the above two tests are true then we've hit an edge case
+                // where a downtime currently links to one SE that's a known
+                // duplicate and it needs to link to the other (duplicated) SE.
+                // The other SE will always be the second result in $services ([1])
+                if($twoSes && $knownDup) {
+                    //$downtime->addService($services[1]);
                     $els = $services[1]->getEndpointLocations(); 
 
         
-		// Check this SE isn't already registered
-		//foreach($downtime->getEndpointLocations() as $existingEL) {
-		//	if($existingEL == $els[0]) {
-		//		throw new AlreadyLinkedException("Downtime {$downtime->getId()} is already "
-		//		. "linked to el {$existingEL->getId()}");
-		//	}
-		//}
+        // Check this SE isn't already registered
+        //foreach($downtime->getEndpointLocations() as $existingEL) {
+        //	if($existingEL == $els[0]) {
+        //		throw new AlreadyLinkedException("Downtime {$downtime->getId()} is already "
+        //		. "linked to el {$existingEL->getId()}");
+        //	}
+        //}
                    
                     // Bidirectional link the el and dt 
                     $downtime->addEndpointLocation($els[0]);
-    			}
-    		}
-    	}
-	}
+                }
+            }
+        }
+    }
 }
 
 foreach($allDowntimes as $downtime) {
-	$GLOBALS['entityManager']->persist($downtime);
+    $GLOBALS['entityManager']->persist($downtime);
 }
 
 try {
-	$entityManager->flush();
+    $entityManager->flush();
 } catch(Exception $e) {
-	print_r($e);
+    print_r($e);
 }
 
 // Creates a new Doctrine downtime entity from the output of a get_downtime

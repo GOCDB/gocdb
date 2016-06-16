@@ -23,7 +23,7 @@ function showAllServiceGroups(){
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 
     $filterParams = array(); 
-	
+    
     // Scope parameters 
     // By default, use an empty value to return all scopes, i.e. in the PI '&scope=' 
     // which is same as the PI. If the 'scope' param is not set, then it would fall 
@@ -31,13 +31,13 @@ function showAllServiceGroups(){
     $filterParams['scope'] = ''; 	
     $selectedScopes = array();
     if(!empty($_GET['mscope'])) { 
-	$scopeStringParam = ''; 
-	foreach($_GET['mscope'] as $key => $scopeVal){
-	    $scopeStringParam .= $scopeVal.','; 
-	    $selectedScopes[] = $scopeVal; 
-	}
-	$filterParams['scope'] = $scopeStringParam; 
-	$filterParams['scope_match'] = 'all';
+    $scopeStringParam = ''; 
+    foreach($_GET['mscope'] as $key => $scopeVal){
+        $scopeStringParam .= $scopeVal.','; 
+        $selectedScopes[] = $scopeVal; 
+    }
+    $filterParams['scope'] = $scopeStringParam; 
+    $filterParams['scope_match'] = 'all';
     } 
     
     
@@ -47,12 +47,12 @@ function showAllServiceGroups(){
     $extensionPropValue ="";
     if(!empty($_GET['extKeyNames'])) {
         $extensionPropName = $_GET['extKeyNames'];
-	// only set the ext prop value if the keyName has been set too, otherwise
-	// we could end up with an illegal extensions parameter such as: '(=value)' 
-	if(!empty($extensionPropName) && !empty($_GET['selectedExtKeyValue']) ) {
-	    $extensionPropValue = $_GET['selectedExtKeyValue'];
-	}
-	$filterParams['extensions'] = '('.$extensionPropName.'='.$extensionPropValue.')'; 
+    // only set the ext prop value if the keyName has been set too, otherwise
+    // we could end up with an illegal extensions parameter such as: '(=value)' 
+    if(!empty($extensionPropName) && !empty($_GET['selectedExtKeyValue']) ) {
+        $extensionPropValue = $_GET['selectedExtKeyValue'];
+    }
+    $filterParams['extensions'] = '('.$extensionPropName.'='.$extensionPropValue.')'; 
     }
     
     $scopes = \Factory::getScopeService()->getScopes();

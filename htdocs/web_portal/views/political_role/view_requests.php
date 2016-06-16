@@ -8,11 +8,11 @@
         <h1 style="float: left; margin-left: 0em; padding-bottom: 0.3em;">
             Role Requests and Approvals
         </h1>
-		<span style="clear: both; float: left; padding-bottom: 0.4em;">
-		  <a href="https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Understanding_and_manipulating_roles">
-		      How to Manage Roles in GOCDB
-		  </a>
-		 </span>
+        <span style="clear: both; float: left; padding-bottom: 0.4em;">
+          <a href="https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Understanding_and_manipulating_roles">
+              How to Manage Roles in GOCDB
+          </a>
+         </span>
     </div>
     <!-- do not show Apply for a role when portal is read only -->
     <?php if(!$params['portalIsReadOnly']):?>
@@ -46,11 +46,11 @@
                 <input type="submit">
             </form>
 
-	    <ul>
-		<li>Newly requested roles will be queued for approval.</li>
-		<li>See the <a href="index.php?Page_Type=View_Role_Action_Mappings">role action mappings</a> page to see which permissions are granted by different roles.</li>
-	    </ul>
-	    
+        <ul>
+        <li>Newly requested roles will be queued for approval.</li>
+        <li>See the <a href="index.php?Page_Type=View_Role_Action_Mappings">role action mappings</a> page to see which permissions are granted by different roles.</li>
+        </ul>
+        
         </div>
     <?php endif; ?>
         

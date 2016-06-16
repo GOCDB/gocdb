@@ -25,23 +25,23 @@ class ParameterBuilder {
     private $em;
 
     public function getBinds() {
-	return $this->binds;
+    return $this->binds;
     }
 
     private function setBindCount($bc) {
-	$this->bc = $bc;
+    $this->bc = $bc;
     }
 
     public function getBindCount() {
-	return $this->bc;
+    return $this->bc;
     }
 
     private function setQB($qb) {
-	$this->qb = $qb;
+    $this->qb = $qb;
     }
 
     public function getQB() {
-	return $this->qb;
+    return $this->qb;
     }
 
     /** 
@@ -51,120 +51,120 @@ class ParameterBuilder {
      * @param EntityManager $em
      */
     public function __construct($parameters, $qb, $em, $bc) {
-	$this->em = $em;
-	$this->setQB($qb);
-	$this->setBindCount($bc);
-	if ($parameters != null){
-	    $this->ifSet($parameters, $qb);
-	}
+    $this->em = $em;
+    $this->setQB($qb);
+    $this->setBindCount($bc);
+    if ($parameters != null){
+        $this->ifSet($parameters, $qb);
+    }
     }
 
     private function ifSet($parameters, $qb) {
-	$bc = $this->getBindCount();
-	if (isset($parameters ['sitename'])) {
-	    $qb->andWhere($qb->expr()->like('s.shortName', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters['sitename']);
-	}
+    $bc = $this->getBindCount();
+    if (isset($parameters ['sitename'])) {
+        $qb->andWhere($qb->expr()->like('s.shortName', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters['sitename']);
+    }
 
-	if (isset($parameters ['roc'])) {
-	    $qb->andWhere($qb->expr()->like('n.name', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters['roc']);
-	}
+    if (isset($parameters ['roc'])) {
+        $qb->andWhere($qb->expr()->like('n.name', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters['roc']);
+    }
 
-	if (isset($parameters ['country'])) {
-	    $qb->andWhere($qb->expr()->like('c.name', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters['country']);
-	}
+    if (isset($parameters ['country'])) {
+        $qb->andWhere($qb->expr()->like('c.name', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters['country']);
+    }
 
-	if (isset($parameters ['certification_status'])) {
-	    $qb->andWhere($qb->expr()->like('cs.name', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters['certification_status']);
-	}
+    if (isset($parameters ['certification_status'])) {
+        $qb->andWhere($qb->expr()->like('cs.name', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters['certification_status']);
+    }
 
-	if (isset($parameters ['exclude_certification_status'])) {
-	    $qb->andWhere($qb->expr()->not($qb->expr()->like('cs.name', '?' . ++$bc)));
-	    $this->binds[] = array($bc, $parameters['exclude_certification_status']);
-	}
+    if (isset($parameters ['exclude_certification_status'])) {
+        $qb->andWhere($qb->expr()->not($qb->expr()->like('cs.name', '?' . ++$bc)));
+        $this->binds[] = array($bc, $parameters['exclude_certification_status']);
+    }
 
-	if (isset($parameters ['production_status'])) {
-	    $qb->andWhere($qb->expr()->like('i.name', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters['production_status']);
-	}
+    if (isset($parameters ['production_status'])) {
+        $qb->andWhere($qb->expr()->like('i.name', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters['production_status']);
+    }
 
-	if (isset($parameters ['site'])) {
-	    $qb->andWhere($qb->expr()->like('s.shortName', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters['site']);
-	}
+    if (isset($parameters ['site'])) {
+        $qb->andWhere($qb->expr()->like('s.shortName', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters['site']);
+    }
 
-	if (isset($parameters ['subgrid'])) {
-	    $qb->andWhere($qb->expr()->like('s.name', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters ['subgrid']);
-	}
+    if (isset($parameters ['subgrid'])) {
+        $qb->andWhere($qb->expr()->like('s.name', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters ['subgrid']);
+    }
 
-	if (isset($parameters ['hostname'])) {
-	    $qb->andWhere($qb->expr()->like('se.hostName', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters ['hostname']);
-	}
+    if (isset($parameters ['hostname'])) {
+        $qb->andWhere($qb->expr()->like('se.hostName', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters ['hostname']);
+    }
 
-	// http://www.doctrine-project.org/jira/browse/DDC-1683
-	// http://stackoverflow.com/questions/11413752/doctrine2-and-postgres-invalid-input-syntax-for-boolean
-	// Specifying TRUE instead of 1 works as expected, but specifying FALSE
-	// instead of 0 does not work as expected. This looks to be due to a 
-	// Doctrine bug related the one listed above. 
-	if (isset($parameters ['monitored'])) {
-	    if ($parameters['monitored'] == 'Y' || $parameters['monitored'] == 'y') {
-		// we can't bind a literal using the ? syntax so do it directly here  
-		$qb->andWhere($qb->expr()->eq('se.monitored', $qb->expr()->literal(true)));
-		// below works, but is probably not DB agnostic
-		//$qb->andWhere($qb->expr()->eq('se.monitored', '?'.++$bc ));
-		//$this->binds[] = array($bc, 1);
-	    } else if ($parameters['monitored'] == 'N' || $parameters['monitored'] == 'n') {
-		// we can't bind a literal using the ? sytnax so do it directly here 
-		$qb->andWhere($qb->expr()->eq('se.monitored', $qb->expr()->literal(false)));
-		// below works, but is probably not DB agnostic
-		//$qb->andWhere($qb->expr()->eq('se.monitored', '?'.++$bc ));
-		//$this->binds[] = array($bc, 0);
-	    }
-	}
+    // http://www.doctrine-project.org/jira/browse/DDC-1683
+    // http://stackoverflow.com/questions/11413752/doctrine2-and-postgres-invalid-input-syntax-for-boolean
+    // Specifying TRUE instead of 1 works as expected, but specifying FALSE
+    // instead of 0 does not work as expected. This looks to be due to a 
+    // Doctrine bug related the one listed above. 
+    if (isset($parameters ['monitored'])) {
+        if ($parameters['monitored'] == 'Y' || $parameters['monitored'] == 'y') {
+        // we can't bind a literal using the ? syntax so do it directly here  
+        $qb->andWhere($qb->expr()->eq('se.monitored', $qb->expr()->literal(true)));
+        // below works, but is probably not DB agnostic
+        //$qb->andWhere($qb->expr()->eq('se.monitored', '?'.++$bc ));
+        //$this->binds[] = array($bc, 1);
+        } else if ($parameters['monitored'] == 'N' || $parameters['monitored'] == 'n') {
+        // we can't bind a literal using the ? sytnax so do it directly here 
+        $qb->andWhere($qb->expr()->eq('se.monitored', $qb->expr()->literal(false)));
+        // below works, but is probably not DB agnostic
+        //$qb->andWhere($qb->expr()->eq('se.monitored', '?'.++$bc ));
+        //$this->binds[] = array($bc, 0);
+        }
+    }
 
-	if (isset($parameters ['service_type'])) {
-	    $qb->andWhere($qb->expr()->like('st.name', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters ['service_type']);
-	}
+    if (isset($parameters ['service_type'])) {
+        $qb->andWhere($qb->expr()->like('st.name', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters ['service_type']);
+    }
 
-	if (isset($parameters ['forename'])) {
-	    $qb->andWhere($qb->expr()->like('u.forename', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters ['forename']);
-	}
+    if (isset($parameters ['forename'])) {
+        $qb->andWhere($qb->expr()->like('u.forename', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters ['forename']);
+    }
 
-	if (isset($parameters ['surname'])) {
-	    $qb->andWhere($qb->expr()->like('u.surname', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters ['surname']);
-	}
+    if (isset($parameters ['surname'])) {
+        $qb->andWhere($qb->expr()->like('u.surname', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters ['surname']);
+    }
 
-	if (isset($parameters ['dn'])) {
-	    $qb->andWhere($qb->expr()->like('u.certificateDn', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters ['dn']);
-	}
+    if (isset($parameters ['dn'])) {
+        $qb->andWhere($qb->expr()->like('u.certificateDn', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters ['dn']);
+    }
 
-	if (isset($parameters ['dnlike'])) {
-	    $qb->andWhere($qb->expr()->like('u.certificateDn', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters ['dnlike']);
-	}
+    if (isset($parameters ['dnlike'])) {
+        $qb->andWhere($qb->expr()->like('u.certificateDn', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters ['dnlike']);
+    }
 
-	if (isset($parameters ['service_group_name'])) {
-	    $qb->andWhere($qb->expr()->like('sg.name', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters ['service_group_name']);
-	}
+    if (isset($parameters ['service_group_name'])) {
+        $qb->andWhere($qb->expr()->like('sg.name', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters ['service_group_name']);
+    }
 
-	if (isset($parameters ['project'])) {
-	    $qb->where($qb->expr()->like('p.name', '?' . ++$bc));
-	    $this->binds[] = array($bc, $parameters ['project']);
-	}
+    if (isset($parameters ['project'])) {
+        $qb->where($qb->expr()->like('p.name', '?' . ++$bc));
+        $this->binds[] = array($bc, $parameters ['project']);
+    }
 
-	//finally replace original query with updated joined query
-	$this->setBindCount($bc);
-	$this->setQB($qb);
+    //finally replace original query with updated joined query
+    $this->setBindCount($bc);
+    $this->setQB($qb);
     }
 
 }

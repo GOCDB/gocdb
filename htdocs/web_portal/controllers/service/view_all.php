@@ -38,11 +38,11 @@ function drawSEs(){
     }
     $production = "";
     if(isset($_GET['production'])) {
-    	$production = $_GET['production'];
+        $production = $_GET['production'];
     }
     $monitored = "";
     if(isset($_GET['monitored'])) {
-    	$monitored = $_GET['monitored'];
+        $monitored = $_GET['monitored'];
     }
     $scopeMatch = "";
     if(isset($_GET['scopeMatch'])) {
@@ -53,14 +53,14 @@ function drawSEs(){
     $selectedScopes = array();
     $scope = ''; 
     if(!empty($_GET['mscope'])) { 
-	foreach($_GET['mscope'] as $key => $scopeVal){
-	    $scope .= $scopeVal.','; 
-	    $selectedScopes[] = $scopeVal; 
-	}
+    foreach($_GET['mscope'] as $key => $scopeVal){
+        $scope .= $scopeVal.','; 
+        $selectedScopes[] = $scopeVal; 
+    }
     } 
     $ngi = "";
     if(isset($_GET['ngi'])) {
-    	$ngi = $_GET['ngi'];
+        $ngi = $_GET['ngi'];
     }
     $servKeyNames = "";
     if(isset($_GET['servKeyNames'])) {
@@ -73,8 +73,8 @@ function drawSEs(){
     //must be done before the if certstatus in the block that sets $certStatus
     $showClosed = false;
     if(isset($_GET['showClosed'])){
-	// showClosed is a bool, so presence of param indicates it was 
-	// checked, no need to parse the value. 
+    // showClosed is a bool, so presence of param indicates it was 
+    // checked, no need to parse the value. 
         $showClosed = true; 
     }
     $certStatus = "";
@@ -94,47 +94,47 @@ function drawSEs(){
         $startRecord = 1;
     }
     if($serviceType != "") {
-	$filterParams['serviceType'] = $serviceType; 
+    $filterParams['serviceType'] = $serviceType; 
     }
     if($production != "") {
-	$filterParams['production'] = $production; 
+    $filterParams['production'] = $production; 
     }
     if($monitored != "") {
-	$filterParams['monitored'] = $monitored; 
+    $filterParams['monitored'] = $monitored; 
     }
     if($scope != "") {
-	$filterParams['scope'] = $scope; 
+    $filterParams['scope'] = $scope; 
     }
     if($scopeMatch != "") {
         $filterParams['scopeMatch'] = $scopeMatch;
     }
     if($ngi != "") {
-	$filterParams['ngi'] = $ngi; 
+    $filterParams['ngi'] = $ngi; 
     }
     if($certStatus != "") {
-	$filterParams['certStatus'] = $certStatus; 
+    $filterParams['certStatus'] = $certStatus; 
     }
     if($servKeyNames != "") {
-	$filterParams['servKeyNames'] = $servKeyNames; 
+    $filterParams['servKeyNames'] = $servKeyNames; 
     }
     if($servKeyValue != "") {
-	$filterParams['servKeyValue'] = $servKeyValue; 
+    $filterParams['servKeyValue'] = $servKeyValue; 
     }
     if ($searchTerm != "") {
-	$searchTerm = strip_tags(trim($searchTerm));
-	if (1 === preg_match("/[';\"]/", $searchTerm)) {
-	    throw new Exception("Invalid char in search term");
-	}
-	if (substr($searchTerm, 0, 1) != '%') {
-	    $searchTerm = '%' . $searchTerm;
-	}
-	if (substr($searchTerm, -1) != '%') {
-	    $searchTerm = $searchTerm . '%';
-	}
-	$filterParams['searchTerm'] = $searchTerm; 
+    $searchTerm = strip_tags(trim($searchTerm));
+    if (1 === preg_match("/[';\"]/", $searchTerm)) {
+        throw new Exception("Invalid char in search term");
+    }
+    if (substr($searchTerm, 0, 1) != '%') {
+        $searchTerm = '%' . $searchTerm;
+    }
+    if (substr($searchTerm, -1) != '%') {
+        $searchTerm = $searchTerm . '%';
+    }
+    $filterParams['searchTerm'] = $searchTerm; 
     }
     if($showClosed) {
-	$filterParams['showClosed'] = $showClosed; 
+    $filterParams['showClosed'] = $showClosed; 
     }
 
 
@@ -154,8 +154,8 @@ function drawSEs(){
     $thisPage .= '&servKeyValue=' . $servKeyValue;
     $thisPage .= '&searchTerm=' . $searchTerm;
     if($showClosed){
-	// showClosed is a bool, so presence of param indicates it was 
-	// checked, no need to add a value. 
+    // showClosed is a bool, so presence of param indicates it was 
+    // checked, no need to add a value. 
         $thisPage .= '&showClosed=';
     }
     //print_r($filterParams); // debug 
@@ -173,31 +173,31 @@ function drawSEs(){
 
     // < Set the "Previous" link
     if ($startRecord > $recordsPerPage) {
-	$prevInt = ($startRecord - $recordsPerPage);
+    $prevInt = ($startRecord - $recordsPerPage);
     } else {
-	$prevInt = 1;
+    $prevInt = 1;
     }
     // Set the "Next" link >
     if (($startRecord + $recordsPerPage) < $numResults) { //($numResults - $startRecord) > $recordsPerPage
-	$nextInt = $startRecord + $recordsPerPage;
+    $nextInt = $startRecord + $recordsPerPage;
     } else {
-	if (($numResults - $startRecord) <= 1) {
-	    $nextInt = 1;
-	} else {
-	    $nextInt = ($numResults + 1) - $recordsPerPage;
-	}
+    if (($numResults - $startRecord) <= 1) {
+        $nextInt = 1;
+    } else {
+        $nextInt = ($numResults + 1) - $recordsPerPage;
+    }
     }
     if($nextInt < 1){
-	$nextInt = 1; 
+    $nextInt = 1; 
     }
     // Set the "Last" link >> 
     if (($numResults - $startRecord) <= 1) {
-	$lastInt = 1;
+    $lastInt = 1;
     } else {
-	$lastInt = ($numResults + 1 - $recordsPerPage);
+    $lastInt = ($numResults + 1 - $recordsPerPage);
     }
     if($lastInt < 1){
-	$lastInt = 1; 
+    $lastInt = 1; 
     }
 
     $firstLink = $thisPage . "&record=1";
@@ -218,7 +218,7 @@ function drawSEs(){
      * even if there are zero results. If this is the case it's
      * zero here to display accurately in the portal.  */
     if(count($ses) == 0) {
-    	$startRecord = 0;
+        $startRecord = 0;
     }
     
     

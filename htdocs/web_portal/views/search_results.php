@@ -23,25 +23,25 @@
                     NGIs
                 </h3>
             </div>
-	    
+        
             <table id="ngisTable" class="table table-striped table-condensed tablesorter">
-		<thead>
-		    <tr>
-			<th>Name</th>
-			<th>Description</th>
-		    </tr>
-		</thead>
-		<tbody>
+        <thead>
+            <tr>
+            <th>Name</th>
+            <th>Description</th>
+            </tr>
+        </thead>
+        <tbody>
                 <?php           
                 $num = 2;
                 foreach($params['ngiResults'] as $ngi) {
                 ?>
                 <tr>
                     <td style="width: 25%">
-			<a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId()?>">
-			    <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg" style="vertical-align: middle">
-			    &nbsp;&nbsp;&nbsp;<?php xecho($ngi->getName()); ?>
-			</a>
+            <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId()?>">
+                <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg" style="vertical-align: middle">
+                &nbsp;&nbsp;&nbsp;<?php xecho($ngi->getName()); ?>
+            </a>
                     </td>
                         
                     <td>
@@ -52,7 +52,7 @@
                     //if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over users
                 ?>
-		</tbody>
+        </tbody>
             </table>
         </div>
     <?php } // end of "if NGIs is > 0"?>
@@ -66,15 +66,15 @@
                     Sites
                 </h3>
             </div>
-	    
+        
             <table id="sitesTable" class="table table-striped table-condensed tablesorter">
-		<thead>
+        <thead>
                 <tr>
                     <th>Short Name</th>
                     <th>Official Name</th>
                 </tr>
-		</thead>
-		<tbody>
+        </thead>
+        <tbody>
                 <?php           
                 $num = 2;
                 if(sizeof($params['siteResults'] > 0)) {
@@ -82,9 +82,9 @@
                 ?>
                 <tr>
                     <td style="width: 30%">
-			<a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-			    <?php xecho($site->getShortName()); ?>
-			</a>
+            <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+                <?php xecho($site->getShortName()); ?>
+            </a>
                     </td>
                         
                     <td>
@@ -96,7 +96,7 @@
                     } // End of the foreach loop iterating over sites
                 }
                 ?>
-		</tbody>
+        </tbody>
             </table>
         </div>
     <?php } // end of "if sites is > 0"?>
@@ -111,23 +111,23 @@
                 </h3>
             </div>
             <table id="servicesTable" class="table table-striped table-condensed tablesorter">
-		<thead>
+        <thead>
                 <tr>
                     <th>Hostname</th>
                     <th>Service Type</th>
                     <th>Description</th>
                 </tr>
-		</thead>
-		<tbody>
+        </thead>
+        <tbody>
                 <?php           
                 $num = 2;
                 foreach($params['serviceResults'] as $ser) {
                 ?>
                 <tr>
                     <td style="width: 30%">
-			<a href="index.php?Page_Type=Service&id=<?php echo $ser->getId() ?>">
-			    <?php xecho($ser->getHostName()); ?>
-			</a>
+            <a href="index.php?Page_Type=Service&id=<?php echo $ser->getId() ?>">
+                <?php xecho($ser->getHostName()); ?>
+            </a>
                     </td>
                         
                     <td>
@@ -142,7 +142,7 @@
                     //if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over services 
                 ?>
-		</tbody>
+        </tbody>
             </table>
         </div>
     <?php } // end of "if services is > 0"?>
@@ -158,22 +158,22 @@
             </div>
             <?php if($params['authenticated']) { ?>
                 <table id="usersTable" class="table table-striped table-condensed tablesorter">
-		    <thead>
+            <thead>
                     <tr>
                         <th>Name</th>
                         <th>E-Mail</th>
                     </tr>
-		    </thead>
-		    <tbody>
+            </thead>
+            <tbody>
                     <?php           
                     $num = 2;
                     foreach($params['userResults'] as $user) {
                     ?>
                     <tr >
                         <td style="width: 25%">
-			    <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
-				<?php xecho($user->getFullName()); ?>
-			    </a>
+                <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
+                <?php xecho($user->getFullName()); ?>
+                </a>
                         </td>
                             
                         <td>
@@ -184,7 +184,7 @@
                         if($num == 1) { $num = 2; } else { $num = 1; }
                         } // End of the foreach loop iterating over users
                     ?>
-		    </tbody>
+            </tbody>
                 </table>
             <?php } else {echo 'PROTECTED'; } ?>
         </div>
@@ -200,10 +200,10 @@
 <script>
    $(document).ready(function() 
     { 
-	$("#ngisTable").tablesorter(); 
-	$("#sitesTable").tablesorter(); 
-	$("#servicesTable").tablesorter(); 
-	$("#usersTable").tablesorter(); 
+    $("#ngisTable").tablesorter(); 
+    $("#sitesTable").tablesorter(); 
+    $("#servicesTable").tablesorter(); 
+    $("#usersTable").tablesorter(); 
     });  
 </script>  
 

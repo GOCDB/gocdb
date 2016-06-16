@@ -22,8 +22,8 @@ require_once __DIR__."/../../Gocdb_Services/RoleConstants.php";
     array("COD Administrator", "E"),
     array("EGI CSIRT Officer", "E"),
     array("Chief Operations Officer", "E"),
-		
-	array("Service Group Administrator", "ServiceGroupC'"),
+        
+    array("Service Group Administrator", "ServiceGroupC'"),
     
     // "Other" roles that have slipped by us
     array("CIC Staff", ""),

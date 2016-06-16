@@ -26,8 +26,8 @@
  * @return null
  */
 function endDt() {
-	require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
-	require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
+    require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
+    require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
     require_once __DIR__ . '/../utils.php';
     
     if (!isset($_POST['id']) || !is_numeric($_POST['id']) ){
@@ -39,8 +39,8 @@ function endDt() {
         throw new Exception("No downtime with that id"); 
     }
     
-   	$dn = Get_User_Principle();
-	$user = \Factory::getUserService()->getUserByPrinciple($dn);
+    $dn = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($dn);
  
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);

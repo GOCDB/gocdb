@@ -31,7 +31,7 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
      */
     public static function setUpBeforeClass() {
         parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing SiteMoveTest. . .\n";
     }
     
@@ -123,155 +123,155 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
      *  Checks the sites are under the right NGIs.
      */
     public function testSiteMoves() {
-		
-    	print __METHOD__ . "\n";	
-    	
-    	//Insert initial data
-    	$N1 = TestUtil::createSampleNGI("NGI1");
-    	$N2 = TestUtil::createSampleNGI("NGI2");
-    	$S1 = TestUtil::createSampleSite("Site1");
-    	$S2 = TestUtil::createSampleSite("Site2");
-    	$S3 = TestUtil::createSampleSite("Site3");
-    	$SE1= TestUtil::createSampleService("SEP1");
-    	$dummy_user = TestUtil::createSampleUser('Test', 'User', '/Some/string');
-    	
-    	//Make dummy user a GOCDB admin so it can perfirm site moves etc.
-    	$dummy_user->setAdmin(true);
-    	
-    	/*
-    	 * Current code in TestUtil does not set sites up as being owned by an an NGI by default.
-    	 *Add them to NGI
-    	 */
-    	$N1->addSiteDoJoin($S1);
-    	$N2->addSiteDoJoin($S2);
-    	$N2->addSiteDoJoin($S3);
+        
+        print __METHOD__ . "\n";	
+        
+        //Insert initial data
+        $N1 = TestUtil::createSampleNGI("NGI1");
+        $N2 = TestUtil::createSampleNGI("NGI2");
+        $S1 = TestUtil::createSampleSite("Site1");
+        $S2 = TestUtil::createSampleSite("Site2");
+        $S3 = TestUtil::createSampleSite("Site3");
+        $SE1= TestUtil::createSampleService("SEP1");
+        $dummy_user = TestUtil::createSampleUser('Test', 'User', '/Some/string');
+        
+        //Make dummy user a GOCDB admin so it can perfirm site moves etc.
+        $dummy_user->setAdmin(true);
+        
+        /*
+         * Current code in TestUtil does not set sites up as being owned by an an NGI by default.
+         *Add them to NGI
+         */
+        $N1->addSiteDoJoin($S1);
+        $N2->addSiteDoJoin($S2);
+        $N2->addSiteDoJoin($S3);
 
-    	//Add service end point to service 1
-    	$S1->addServiceDoJoin($SE1);
-    		
-    	//Persist initial data
-    	$this->em->persist($N1);
-    	$this->em->persist($N2);
-    	$this->em->persist($S1);
-    	$this->em->persist($S2);
-    	$this->em->persist($S3);
-    	$this->em->persist($SE1);
-    	$this->em->persist($dummy_user);
-    	$this->em->flush();
-    	
-    	//Use DB connection to check data
-    	$con = $this->getConnection();
-	    	
-	    	/*
-	    	 * Check both that each NGI is present and that the ID matches the doctrine one
-	    	 */
-    		$N1_ID = $N1->getId();
-	    	$sql = "SELECT 1 FROM ngis WHERE name = 'NGI1' AND ID = '$N1_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-			
-	    	$N2_ID = $N2->getId();
-		   	$sql = "SELECT 1 FROM ngis WHERE name = 'NGI2' AND ID = '$N2_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-	    	
-	    	/*
-	    	 * Check each site is: present, has the right ID & parent NGI
-	    	 */
-	    	$S1_id= $S1->getId();
-	    	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_id' AND NGI_ID = '$N1_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-	    	
-	    	$S2_id= $S2->getId();
-	    	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_id' AND NGI_ID = '$N2_ID'";
-	    	$result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-	    	
-	    	$S3_id= $S3->getId();
-	    	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
-	    	$result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-	    	
-	    	//Check the SEP has correct id and Site 
-	    	$sql = "SELECT 1 FROM services WHERE hostname = 'SEP1' AND parentsite_id = '$S1_id'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
- 	   	
-    	//Move sites
-    	$serv =  new org\gocdb\services\Site();
-	    $serv->setEntityManager($this->em);
-    	$serv->moveSite($S1,$N2, $dummy_user);
-    	$serv->moveSite($S2,$N1, $dummy_user);
-    	$serv->moveSite($S3,$N2, $dummy_user); //No change
-    	
-     	
-    	//flush movement
-    	$this->em->flush();
-    	
-    	//Use doctrine to check movement
-    		//Check correct NGI for each site
-    	    $this->assertEquals($N2, $S1->getNgi());
-    	    $this->assertEquals($N1, $S2->getNgi());
-    	    $this->assertEquals($N2, $S3->getNgi());
-    	    
-    	    //Check correct sites for each NGI
-	    	    //NGI1
-	    	    $ngisites = $N1->getSites();
-	    	    foreach ($ngisites as $site){
-	    	    	$this->assertEquals($S2, $site); 
-	    	    }
-	        	//NGI2
-	    	    $ngisites = $N2->getSites();
-	    	    foreach ($ngisites as $site){
-	    	    	$this->assertTrue(($site==$S1) or ($site==$S3));
-	    	    }
-    	    
-    	    //check Service End Point
-    	    $this->assertEquals($S1,$SE1->getParentSite());
-    	    
-   	
-    	//Use database connection to check movememrnt
-    		$con = $this->getConnection();
-    		
-    		//Check NGIs are still present and their ID is unchanged
-	    	$sql = "SELECT 1 FROM ngis WHERE name = 'NGI1' AND ID = '$N1_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-			
-		   	$sql = "SELECT 1 FROM ngis WHERE name = 'NGI2' AND ID = '$N2_ID'";
-	        $result = $con->createQueryTable('', $sql);
-	    	$this->assertEquals(1, $result->getRowCount());
-  		  	
-    		
-    		//Check each NGI has the correct number of sites
-		    	//NGI1
-		    	$sql = "SELECT 1 FROM sites WHERE NGI_ID = '$N1_ID'";
-		        $result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(1, $result->getRowCount());	    	
-		    	
-				//NGI2
-		    	$sql = "SELECT 1 FROM sites WHERE NGI_ID = '$N2_ID'";
-		        $result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(2, $result->getRowCount());	 
-		    	
-	    	//check Site IDs are unchanged and they are assigned to the correct NGI
-		    	//Site 1
-		    	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_id' AND NGI_ID = '$N2_ID'";
-		        $result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(1, $result->getRowCount());
-		    	
-		    	//Site 2
-		    	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_id' AND NGI_ID = '$N1_ID'";
-		    	$result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(1, $result->getRowCount());
-		    	
-		    	//Site 3
-		    	$sql = "SELECT 1 FROM sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
-		    	$result = $con->createQueryTable('', $sql);
-		    	$this->assertEquals(1, $result->getRowCount());				
-  	
-	}//close function
+        //Add service end point to service 1
+        $S1->addServiceDoJoin($SE1);
+            
+        //Persist initial data
+        $this->em->persist($N1);
+        $this->em->persist($N2);
+        $this->em->persist($S1);
+        $this->em->persist($S2);
+        $this->em->persist($S3);
+        $this->em->persist($SE1);
+        $this->em->persist($dummy_user);
+        $this->em->flush();
+        
+        //Use DB connection to check data
+        $con = $this->getConnection();
+            
+            /*
+             * Check both that each NGI is present and that the ID matches the doctrine one
+             */
+            $N1_ID = $N1->getId();
+            $sql = "SELECT 1 FROM ngis WHERE name = 'NGI1' AND ID = '$N1_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            $N2_ID = $N2->getId();
+            $sql = "SELECT 1 FROM ngis WHERE name = 'NGI2' AND ID = '$N2_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            /*
+             * Check each site is: present, has the right ID & parent NGI
+             */
+            $S1_id= $S1->getId();
+            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_id' AND NGI_ID = '$N1_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            $S2_id= $S2->getId();
+            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_id' AND NGI_ID = '$N2_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            $S3_id= $S3->getId();
+            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            //Check the SEP has correct id and Site 
+            $sql = "SELECT 1 FROM services WHERE hostname = 'SEP1' AND parentsite_id = '$S1_id'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+        
+        //Move sites
+        $serv =  new org\gocdb\services\Site();
+        $serv->setEntityManager($this->em);
+        $serv->moveSite($S1,$N2, $dummy_user);
+        $serv->moveSite($S2,$N1, $dummy_user);
+        $serv->moveSite($S3,$N2, $dummy_user); //No change
+        
+        
+        //flush movement
+        $this->em->flush();
+        
+        //Use doctrine to check movement
+            //Check correct NGI for each site
+            $this->assertEquals($N2, $S1->getNgi());
+            $this->assertEquals($N1, $S2->getNgi());
+            $this->assertEquals($N2, $S3->getNgi());
+            
+            //Check correct sites for each NGI
+                //NGI1
+                $ngisites = $N1->getSites();
+                foreach ($ngisites as $site){
+                    $this->assertEquals($S2, $site); 
+                }
+                //NGI2
+                $ngisites = $N2->getSites();
+                foreach ($ngisites as $site){
+                    $this->assertTrue(($site==$S1) or ($site==$S3));
+                }
+            
+            //check Service End Point
+            $this->assertEquals($S1,$SE1->getParentSite());
+            
+    
+        //Use database connection to check movememrnt
+            $con = $this->getConnection();
+            
+            //Check NGIs are still present and their ID is unchanged
+            $sql = "SELECT 1 FROM ngis WHERE name = 'NGI1' AND ID = '$N1_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            $sql = "SELECT 1 FROM ngis WHERE name = 'NGI2' AND ID = '$N2_ID'";
+            $result = $con->createQueryTable('', $sql);
+            $this->assertEquals(1, $result->getRowCount());
+            
+            
+            //Check each NGI has the correct number of sites
+                //NGI1
+                $sql = "SELECT 1 FROM sites WHERE NGI_ID = '$N1_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(1, $result->getRowCount());	    	
+                
+                //NGI2
+                $sql = "SELECT 1 FROM sites WHERE NGI_ID = '$N2_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(2, $result->getRowCount());	 
+                
+            //check Site IDs are unchanged and they are assigned to the correct NGI
+                //Site 1
+                $sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_id' AND NGI_ID = '$N2_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(1, $result->getRowCount());
+                
+                //Site 2
+                $sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_id' AND NGI_ID = '$N1_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(1, $result->getRowCount());
+                
+                //Site 3
+                $sql = "SELECT 1 FROM sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
+                $result = $con->createQueryTable('', $sql);
+                $this->assertEquals(1, $result->getRowCount());				
+    
+    }//close function
 }//close class
 
 ?>

@@ -123,9 +123,9 @@ function view_requests() {
     }
     
     $params = array();
-	$params['entities'] = $entities;
-	$params['myRequests'] = $myPendingRoleRequests;
-	$params['allRequests'] = $otherRolesUserCanApprove;
+    $params['entities'] = $entities;
+    $params['myRequests'] = $myPendingRoleRequests;
+    $params['allRequests'] = $otherRolesUserCanApprove;
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
     show_view("political_role/view_requests.php", $params, "Role Requests");
     die(); 

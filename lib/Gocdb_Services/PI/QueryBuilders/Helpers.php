@@ -44,30 +44,30 @@ class Helpers {
      */
     public function bindValuesToQuery($bindIdValues, $query) {
 
-	foreach ($bindIdValues as $bindIdValue) {
-	    $query->setParameter($bindIdValue[0], $bindIdValue[1]);
-	    
-	    // Check value is string not time/date object
-	    /*if (is_string($bindIdValue[1])) {
+    foreach ($bindIdValues as $bindIdValue) {
+        $query->setParameter($bindIdValue[0], $bindIdValue[1]);
+        
+        // Check value is string not time/date object
+        /*if (is_string($bindIdValue[1])) {
 
-		// Presence of a 3rd element in the bind array means the bind 
-		// value has to be exploded using the string stored in the 3rd 
-		// element, e.g. for multiple scopes this is a comma: 'EGI,wlcg,scopex' 
-		//if (count($bindIdValue) == 3 && strpos($bindIdValue[1], ',')) {
-		//if (count($bindIdValue) == 3) {
-		//    $explodedValuesArray = explode($bindIdValue[2], $bindIdValue[1]);
-		//    $query->setParameter($bindIdValue[0], $explodedValuesArray);
-		//} else {
-		    // No 3rd element in bind array means bind the raw value 
-		    // echo "Binding at: ".$values[0]. " With: ".$values[1]. "\n\n";
-		    $query->setParameter($bindIdValue[0], $bindIdValue[1]);
-		//}
-		//If value was object bind it as is	
-	    } else {
-		$query->setParameter($bindIdValue[0], $bindIdValue[1]);
-	    }*/
-	}
-	return $query;
+        // Presence of a 3rd element in the bind array means the bind 
+        // value has to be exploded using the string stored in the 3rd 
+        // element, e.g. for multiple scopes this is a comma: 'EGI,wlcg,scopex' 
+        //if (count($bindIdValue) == 3 && strpos($bindIdValue[1], ',')) {
+        //if (count($bindIdValue) == 3) {
+        //    $explodedValuesArray = explode($bindIdValue[2], $bindIdValue[1]);
+        //    $query->setParameter($bindIdValue[0], $explodedValuesArray);
+        //} else {
+            // No 3rd element in bind array means bind the raw value 
+            // echo "Binding at: ".$values[0]. " With: ".$values[1]. "\n\n";
+            $query->setParameter($bindIdValue[0], $bindIdValue[1]);
+        //}
+        //If value was object bind it as is	
+        } else {
+        $query->setParameter($bindIdValue[0], $bindIdValue[1]);
+        }*/
+    }
+    return $query;
     }
 
     /**
@@ -83,29 +83,29 @@ class Helpers {
      * @throws \InvalidArgumentException if either of the given args are not arrays.
      */
     public function validateParams($supportedParams, $testParams) {
-	if (!is_array($supportedParams) || !is_array($testParams)) {
-	    throw new \InvalidArgumentException('Invalid parameters passed to PI query'); 
-	}
+    if (!is_array($supportedParams) || !is_array($testParams)) {
+        throw new \InvalidArgumentException('Invalid parameters passed to PI query'); 
+    }
 
-	// Check the parameter keys are supoported
-	$testParamKeys = array_keys($testParams);
-	foreach ($testParamKeys as $key) {
-	    // if givenkey is not defined in supportedkeys it is unsupported
-	    if (!in_array($key, $supportedParams)) {
-		echo '<error>Unsupported parameter: ' . $key . '</error>';
-		die();
-	    }
-	}
+    // Check the parameter keys are supoported
+    $testParamKeys = array_keys($testParams);
+    foreach ($testParamKeys as $key) {
+        // if givenkey is not defined in supportedkeys it is unsupported
+        if (!in_array($key, $supportedParams)) {
+        echo '<error>Unsupported parameter: ' . $key . '</error>';
+        die();
+        }
+    }
 
-	// Check that the paramater does not contain invalid chracters
-	$testParamValues = array_values($testParams);
-	foreach ($testParamValues as $value) {
-	    // whole string anchored left and right, allow any char except "'`
-	    if (!preg_match("/^[^\"'`]*$/", $value)) {
-		echo '<error>Unsuported chracter in value: ' . $value . '</error>';
-		die();
-	    }
-	}
+    // Check that the paramater does not contain invalid chracters
+    $testParamValues = array_values($testParams);
+    foreach ($testParamValues as $value) {
+        // whole string anchored left and right, allow any char except "'`
+        if (!preg_match("/^[^\"'`]*$/", $value)) {
+        echo '<error>Unsuported chracter in value: ' . $value . '</error>';
+        die();
+        }
+    }
     }
 
     /**
@@ -120,9 +120,9 @@ class Helpers {
      * @throws \Exception
      */
     public function addIfNotEmpty($xml, $tagName, $value) {
-	if ($value != null && $value != "") {
-	    $xml->addChild($tagName, $value);
-	}
+    if ($value != null && $value != "") {
+        $xml->addChild($tagName, $value);
+    }
     }
 
     /**
@@ -134,12 +134,12 @@ class Helpers {
      * @return string XML result string
      */
     public function addExtIfNotEmpty($xmlParent, $tagName, $value) {
-	if ($value != "") {
-	    $extension = $xmlParent->addChild("Extension");
-	    $extension->addChild("LocalID", $tagName);
-	    $extension->addChild("Key", $tagName);
-	    $extension->addChild("Value", $value);
-	}
+    if ($value != "") {
+        $extension = $xmlParent->addChild("Extension");
+        $extension->addChild("LocalID", $tagName);
+        $extension->addChild("Key", $tagName);
+        $extension->addChild("Value", $value);
+    }
     }
 
 }

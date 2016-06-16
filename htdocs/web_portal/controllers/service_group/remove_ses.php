@@ -48,17 +48,17 @@ function remove_ses() {
  * @return null
  */
 function draw(\User $user = null) {
-	$serv = \Factory::getServiceGroupService();
+    $serv = \Factory::getServiceGroupService();
 
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
-	// The service group to remove SEs from
-	$sg =  $serv->getServiceGroup($_REQUEST['id']);
+    // The service group to remove SEs from
+    $sg =  $serv->getServiceGroup($_REQUEST['id']);
 
-	// Check the user is authorized to perform this operation
-	//try { $serv->editAuthorization($sg, $user); } catch(Exception $e) {
-	//    show_view('error.php', $e->getMessage()); die(); }
+    // Check the user is authorized to perform this operation
+    //try { $serv->editAuthorization($sg, $user); } catch(Exception $e) {
+    //    show_view('error.php', $e->getMessage()); die(); }
     //if(count($serv->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
        show_view('error.php', 'You do not have permission to edit this ServiceGroup'); 
@@ -90,13 +90,13 @@ function submit(\User $user = null) {
     $sg =  $serv->getServiceGroup($_REQUEST['sgId']);
 
     $se = \Factory::getServiceService()
-    		->getService($_REQUEST['seId']);
+            ->getService($_REQUEST['seId']);
 
     try {
         /* If the service is siteless and was created under this
          * service group then we delete it */
-    	if(is_null($se->getParentSite())) {
-    		// TODO: v5 implementation
+        if(is_null($se->getParentSite())) {
+            // TODO: v5 implementation
             // If 0 was returned above then the SE doesn't have a hosting site
 //             $hostingVSite = \Factory::getServiceService()->
 //                 getHostVirtualSite($endpointId, $gridId);

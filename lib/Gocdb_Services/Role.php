@@ -253,10 +253,10 @@ class Role extends AbstractEntityService{
      * @return array Of \Site objects
      */
     public function getReachableSitesFromOwnedObjectRoles(\User $user) {
-    	// Build the list of sites a user is allowed to add an SE to
-    	$sites = array();
-    	$roles = $user->getRoles();
-    	foreach($roles as $role) {
+        // Build the list of sites a user is allowed to add an SE to
+        $sites = array();
+        $roles = $user->getRoles();
+        foreach($roles as $role) {
             if($role->getStatus() == \RoleStatus::GRANTED){
                 if($role->getOwnedEntity() instanceof \Site) {
                     $sites[] = $role->getOwnedEntity();
@@ -270,13 +270,13 @@ class Role extends AbstractEntityService{
                     }
                 }
             }
-    	}
-    	$sites = array_unique($sites);
+        }
+        $sites = array_unique($sites);
 
-    	usort($sites, function($a, $b) {
-		    return strcmp($a, $b);
-		});
-    	return $sites;
+        usort($sites, function($a, $b) {
+            return strcmp($a, $b);
+        });
+        return $sites;
     }
 
 
@@ -344,12 +344,12 @@ class Role extends AbstractEntityService{
     */
     public function getRoleTypeNamesForOwnedEntity(\OwnedEntity $ownedEntity) {
         $roleTypeNamesForOE = array();
-	$projRoleMappings = $this->roleActionMappingService->getRoleTypeNamesForProject(null);
-	foreach ($projRoleMappings as $keyRoleTypeName => $valOwnedObjectType) {
-	    if(strtoupper($ownedEntity->getType()) == strtoupper($valOwnedObjectType)) {
-		$roleTypeNamesForOE[] =  $keyRoleTypeName; 
-	    }
-	}
+    $projRoleMappings = $this->roleActionMappingService->getRoleTypeNamesForProject(null);
+    foreach ($projRoleMappings as $keyRoleTypeName => $valOwnedObjectType) {
+        if(strtoupper($ownedEntity->getType()) == strtoupper($valOwnedObjectType)) {
+        $roleTypeNamesForOE[] =  $keyRoleTypeName; 
+        }
+    }
         return $roleTypeNamesForOE;
     }
 
@@ -410,9 +410,9 @@ class Role extends AbstractEntityService{
             return array(); // return empty array
         }
         $dql = "SELECT r FROM Role r
-        		JOIN r.user u
-        		WHERE u.id = :id
-        		AND r.status = :status 
+                JOIN r.user u
+                WHERE u.id = :id
+                AND r.status = :status 
                 ORDER BY r.id
                 ";
          $roles = $this->em->createQuery($dql)
@@ -710,8 +710,8 @@ class Role extends AbstractEntityService{
     public function getRoleActionRecordsById_Type($id, $ownedEntityType){
         
         $dql = "SELECT ra FROM RoleActionRecord ra
-        		WHERE ra.roleTargetOwnedEntityId = :id
-        		AND ra.roleTargetOwnedEntityType = :type
+                WHERE ra.roleTargetOwnedEntityId = :id
+                AND ra.roleTargetOwnedEntityType = :type
                 ORDER BY ra.id DESC";
          $roleActionRecords = $this->em->createQuery($dql)
             ->setParameter("id", $id)

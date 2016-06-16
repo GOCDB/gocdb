@@ -1,9 +1,9 @@
 <div class="rightPageContainer">
     <form name="Update_Group" action="index.php?Page_Type=Edit_NGI" method="post" class="inputForm">
-    	
-    	<h1><?php xecho($params['ngi']->getName()) ?></h1>
-    	<br />
-    	
+        
+        <h1><?php xecho($params['ngi']->getName()) ?></h1>
+        <br />
+        
         <span class="input_name">
             Management contact/mailing list 
             <span class="input_syntax">

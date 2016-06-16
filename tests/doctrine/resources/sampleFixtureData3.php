@@ -28,13 +28,13 @@
         
 
         // site1 has 1 prop
-		$s1p1 = TestUtil::createSampleSiteProperty("s1p1", "v1");
+        $s1p1 = TestUtil::createSampleSiteProperty("s1p1", "v1");
         $site1->addSitePropertyDoJoin($s1p1); 
         $this->em->persist($s1p1);
 
         // site2 has 2 props
-		$s2p1 = TestUtil::createSampleSiteProperty("s2p1", "v1");
-		$s2p2 = TestUtil::createSampleSiteProperty("s2p2", "v2");
+        $s2p1 = TestUtil::createSampleSiteProperty("s2p1", "v1");
+        $s2p2 = TestUtil::createSampleSiteProperty("s2p2", "v2");
         $this->em->persist($s2p1);
         $this->em->persist($s2p2);
         $site2->addSitePropertyDoJoin($s2p1); 
@@ -42,9 +42,9 @@
 
         // site3  
         $s3p1 = TestUtil::createSampleSiteProperty("s3p1", "v1");
-		$s3p2 = TestUtil::createSampleSiteProperty("s3p2", "v2");
-		$s3p3 = TestUtil::createSampleSiteProperty("VO", "foo");
-		$s3p4 = TestUtil::createSampleSiteProperty("VO2", "bar");
+        $s3p2 = TestUtil::createSampleSiteProperty("s3p2", "v2");
+        $s3p3 = TestUtil::createSampleSiteProperty("VO", "foo");
+        $s3p4 = TestUtil::createSampleSiteProperty("VO2", "bar");
         $this->em->persist($s3p1);
         $this->em->persist($s3p2);
         $this->em->persist($s3p3);
@@ -56,11 +56,11 @@
        
         // site4  
         $s4p1 = TestUtil::createSampleSiteProperty("s4p1", "v1");
-		$s4p2 = TestUtil::createSampleSiteProperty("s4p2", "v2");
-		$s4p3 = TestUtil::createSampleSiteProperty("VO", "foo");
-		$s4p4 = TestUtil::createSampleSiteProperty("VO", "bar");
-		$s4p5 = TestUtil::createSampleSiteProperty("VO2", "baz");
-		$s4p6 = TestUtil::createSampleSiteProperty("VO2", "bing");
+        $s4p2 = TestUtil::createSampleSiteProperty("s4p2", "v2");
+        $s4p3 = TestUtil::createSampleSiteProperty("VO", "foo");
+        $s4p4 = TestUtil::createSampleSiteProperty("VO", "bar");
+        $s4p5 = TestUtil::createSampleSiteProperty("VO2", "baz");
+        $s4p6 = TestUtil::createSampleSiteProperty("VO2", "bing");
         $this->em->persist($s4p1);
         $this->em->persist($s4p2);
         $this->em->persist($s4p3);

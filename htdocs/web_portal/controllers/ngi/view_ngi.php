@@ -58,7 +58,7 @@ function view_ngi() {
     }
       
     // Add ngi to params 
-	$params['ngi'] = $ngi;
+    $params['ngi'] = $ngi;
 
     // Add all roles over ngi to params 
     $allRoles = $ngi->getRoles();

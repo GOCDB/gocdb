@@ -62,7 +62,7 @@ function draw(\User $user = null) {
     // can user assign reserved scopes ?
     $disableReservedScopes = true; 
     if($user->isAdmin()){
-	$disableReservedScopes = false; 
+    $disableReservedScopes = false; 
     }
     // pass null for the parent as we don't consider project scopes (yet) 
     $scopejsonStr = getEntityScopesAsJSON2($ngi, null, $disableReservedScopes); 
@@ -80,14 +80,14 @@ function draw(\User $user = null) {
  * @return null
  */
 function submit(\User $user = null) {
-	$serv = \Factory::getNgiService();
-	$newValues = getNgiDataFromWeb();
+    $serv = \Factory::getNgiService();
+    $newValues = getNgiDataFromWeb();
 //        print_r($newValues); 
 //        die(); 
         
-	$ngi = $serv->getNgi($newValues['ID']);
-	$ngi = $serv->editNgi($ngi, $newValues, $user);
-	$params = array('ngi' => $ngi);
-	show_view('ngi/ngi_updated.php', $params);
+    $ngi = $serv->getNgi($newValues['ID']);
+    $ngi = $serv->editNgi($ngi, $newValues, $user);
+    $params = array('ngi' => $ngi);
+    show_view('ngi/ngi_updated.php', $params);
 }
 ?>

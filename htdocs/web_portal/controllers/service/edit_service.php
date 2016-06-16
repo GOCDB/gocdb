@@ -34,10 +34,10 @@ function edit_service() {
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
     
     if($_POST) {     // If we receive a POST request it's for a new site
-		submit($user);
-	} else { // If there is no post data, draw the edit site form
-		draw($user);
-	}
+        submit($user);
+    } else { // If there is no post data, draw the edit site form
+        draw($user);
+    }
 }
 
 /**
@@ -62,7 +62,7 @@ function draw(\User $user = null) {
     // can user assign reserved scopes to this site?
     $disableReservedScopes = true; 
     if($user->isAdmin()){
-	$disableReservedScopes = false; 
+    $disableReservedScopes = false; 
     }
     
     // URL mapping

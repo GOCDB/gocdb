@@ -26,27 +26,27 @@ require_once __DIR__ . '/IPIQuery.php';
  * @author David Meredith 
  */
 class GetDowntimeToBroadcast implements IPIQuery{
-	
+    
     protected $query;
-	protected $validParams;
-	protected $em;
-	private $helpers;
-	private $downtimes;
+    protected $validParams;
+    protected $em;
+    private $helpers;
+    private $downtimes;
     private $renderMultipleEndpoints; 
     private $baseUrl; 
-	
-	/** Constructor takes entity manager which is then used by the
-	 *  query builder
-	 * 
-	 * @param EntityManager $em
-	 * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
-	 */
-	public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal'){
-		$this->em = $em;
-		$this->helpers=new Helpers();		
+    
+    /** Constructor takes entity manager which is then used by the
+     *  query builder
+     * 
+     * @param EntityManager $em
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
+     */
+    public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal'){
+        $this->em = $em;
+        $this->helpers=new Helpers();		
         $this->renderMultipleEndpoints = true;
         $this->baseUrl = $baseUrl; 
-	}
+    }
     
     /**
      * Validates parameters against array of pre-defined valid terms
@@ -68,131 +68,131 @@ class GetDowntimeToBroadcast implements IPIQuery{
         $this->validParams = $parameters;
 
     }
-	
-	/** Creates the query by building on a queryBuilder object as
-	 *  required by the supplied parameters 
-	 */
-	public function createQuery() {
-		$parameters = $this->validParams;
-		$binds= array();
-		$bc=-1;
-	   
-		
-		define('DATE_FORMAT', 'Y-m-d H:i');
-		
-		//Set the interval 
-		if(isset($parameters['interval'])) {
-		    if(is_numeric($parameters['interval'])) {
-		        $interval = $parameters['interval'];
-		    } else {
-		        echo '<error>interval is not a number</error>';
-		        die();
-		    }
-		} else {
-		    // Default: downtimes declared in the last day
-		    $interval = '1';
-		}
-		
-		$nowMinusIntervalDays = new \DateTime();
-		$nowMinusIntervalDays->sub(new \DateInterval('P'.$interval.'D'));
-	
-		$qb = $this->em->createQueryBuilder();
-		
-		$qb	->select('d', 'els', 'se', 's', 'st'/*, 'elp'*/)
-    		->from('Downtime', 'd')    		
-    		->join('d.services', 'se')
-    		->leftJoin('d.endpointLocations', 'els')
+    
+    /** Creates the query by building on a queryBuilder object as
+     *  required by the supplied parameters 
+     */
+    public function createQuery() {
+        $parameters = $this->validParams;
+        $binds= array();
+        $bc=-1;
+       
+        
+        define('DATE_FORMAT', 'Y-m-d H:i');
+        
+        //Set the interval 
+        if(isset($parameters['interval'])) {
+            if(is_numeric($parameters['interval'])) {
+                $interval = $parameters['interval'];
+            } else {
+                echo '<error>interval is not a number</error>';
+                die();
+            }
+        } else {
+            // Default: downtimes declared in the last day
+            $interval = '1';
+        }
+        
+        $nowMinusIntervalDays = new \DateTime();
+        $nowMinusIntervalDays->sub(new \DateInterval('P'.$interval.'D'));
+    
+        $qb = $this->em->createQueryBuilder();
+        
+        $qb	->select('d', 'els', 'se', 's', 'st'/*, 'elp'*/)
+            ->from('Downtime', 'd')    		
+            ->join('d.services', 'se')
+            ->leftJoin('d.endpointLocations', 'els')
                  //->leftjoin('els.endpointProperties', 'elp') // to add if rendering endpoint in full (and in select clause)  
             ->join('se.serviceType', 'st')    
-    		->join('se.parentSite', 's')
-    		->leftJoin('se.scopes', 'sc')
-    		->join('s.ngi', 'n')
-    		->join('s.country', 'c')
-    		->andWhere($qb->expr()->gt('d.insertDate', '?'.++$bc))
+            ->join('se.parentSite', 's')
+            ->leftJoin('se.scopes', 'sc')
+            ->join('s.ngi', 'n')
+            ->join('s.country', 'c')
+            ->andWhere($qb->expr()->gt('d.insertDate', '?'.++$bc))
             ->orderBy('d.startDate', 'DESC');
             //->orderBy('se.id', 'DESC');
-		
-		//Bind interval days
-		$binds[] = array($bc,  $nowMinusIntervalDays);
+        
+        //Bind interval days
+        $binds[] = array($bc,  $nowMinusIntervalDays);
 
         if(isset($parameters['id'])){
            $qb->andWhere($qb->expr()->eq('d.id', '?'.++$bc)); 
            $binds[] = array($bc, $parameters['id']);
         }
-			    
-		/*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
-		* based on set parameters.
-		*/	
-		$parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
-		//Get the result of the scope builder
-		$qb = $parameterBuilder->getQB();
-		$bc = $parameterBuilder->getBindCount();
-		//Get the binds and store them in the local bind array - only runs if the returned value is an array
-		foreach((array)$parameterBuilder->getBinds() as $bind){
-			$binds[] = $bind;
-		}
-				
-		//Run ScopeQueryBuilder regardless of if scope is set.
-		$scopeQueryBuilder = new ScopeQueryBuilder(
-				(isset($parameters['scope'])) ? $parameters['scope'] : null,
-				(isset($parameters['scope_match'])) ? $parameters['scope_match'] : null,
-				$qb,
-				$this->em,
-				$bc,
-				'Service',
-				'se'				
-		);
+                
+        /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
+        * based on set parameters.
+        */	
+        $parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
+        //Get the result of the scope builder
+        $qb = $parameterBuilder->getQB();
+        $bc = $parameterBuilder->getBindCount();
+        //Get the binds and store them in the local bind array - only runs if the returned value is an array
+        foreach((array)$parameterBuilder->getBinds() as $bind){
+            $binds[] = $bind;
+        }
+                
+        //Run ScopeQueryBuilder regardless of if scope is set.
+        $scopeQueryBuilder = new ScopeQueryBuilder(
+                (isset($parameters['scope'])) ? $parameters['scope'] : null,
+                (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null,
+                $qb,
+                $this->em,
+                $bc,
+                'Service',
+                'se'				
+        );
 
 
-				
-		//Get the result of the scope builder
-		$qb = $scopeQueryBuilder->getQB();
-		$bc = $scopeQueryBuilder->getBindCount();
-	
-		//Get the binds and store them in the local bind array only if any binds are fetched from scopeQueryBuilder
-		foreach((array)$scopeQueryBuilder->getBinds() as $bind){
-			$binds[] = $bind;
-		}
+                
+        //Get the result of the scope builder
+        $qb = $scopeQueryBuilder->getQB();
+        $bc = $scopeQueryBuilder->getBindCount();
+    
+        //Get the binds and store them in the local bind array only if any binds are fetched from scopeQueryBuilder
+        foreach((array)$scopeQueryBuilder->getBinds() as $bind){
+            $binds[] = $bind;
+        }
 
-		//Bind all variables
-		$qb = $this->helpers->bindValuesToQuery($binds, $qb);
+        //Bind all variables
+        $qb = $this->helpers->bindValuesToQuery($binds, $qb);
 
 
-		
-		$query = $qb->getQuery();
+        
+        $query = $qb->getQuery();
 
-		$this->query = $query;	
+        $this->query = $query;	
         return $this->query; 
-	}	
-	
-	/**
-	 * Executes the query that has been built and stores the returned data
-	 * so it can later be used to create XML, Glue2 XML or JSON.
-	 */
-	public function executeQuery(){
-	    $this->downtimes = $this->query->execute();
-	    return $this->downtimes;
-	}
-	
+    }	
+    
+    /**
+     * Executes the query that has been built and stores the returned data
+     * so it can later be used to create XML, Glue2 XML or JSON.
+     */
+    public function executeQuery(){
+        $this->downtimes = $this->query->execute();
+        return $this->downtimes;
+    }
+    
 
-	
-	
-	/** Returns proprietary GocDB rendering of the downtime data 
-	 *  in an XML String
-	 * @return String
-	 */
+    
+    
+    /** Returns proprietary GocDB rendering of the downtime data 
+     *  in an XML String
+     * @return String
+     */
     public function getXML(){
-		$helpers = $this->helpers;
-		$query = $this->query;
-		
-		$xml = new \SimpleXMLElement ( "<results />" );
-	
-	    $downtimes = $this->downtimes;
-	   
-		foreach($downtimes as $downtime) {		      
+        $helpers = $this->helpers;
+        $query = $this->query;
+        
+        $xml = new \SimpleXMLElement ( "<results />" );
+    
+        $downtimes = $this->downtimes;
+       
+        foreach($downtimes as $downtime) {		      
             // duplicate the downtime for each affected service 
             foreach($downtime->getServices() as $se){
-				$xmlDowntime = $xml->addChild('DOWNTIME');
+                $xmlDowntime = $xml->addChild('DOWNTIME');
                 $xmlDowntime->addAttribute("ID", $downtime->getId());
                 // Note, we are preserving the v4 primary keys here. 
                 $xmlDowntime->addAttribute("PRIMARY_KEY", $downtime->getPrimaryKey());
@@ -226,33 +226,33 @@ class GetDowntimeToBroadcast implements IPIQuery{
                 // Intentionally left blank to duplicate GOCDBv4 PI behaviour
                 $xmlDowntime->addChild('BROADCASTING_START_DOWNTIME', "");
             }
-		}
-	
-	    $dom_sxe = dom_import_simplexml ( $xml );
-	    $dom = new \DOMDocument ( '1.0' );
-	    $dom->encoding = 'UTF-8';
-	    $dom_sxe = $dom->importNode ( $dom_sxe, true );
-	    $dom_sxe = $dom->appendChild ( $dom_sxe );
-	    $dom->formatOutput = true;
-	    $xmlString = $dom->saveXML ();
-	    return $xmlString;
+        }
+    
+        $dom_sxe = dom_import_simplexml ( $xml );
+        $dom = new \DOMDocument ( '1.0' );
+        $dom->encoding = 'UTF-8';
+        $dom_sxe = $dom->importNode ( $dom_sxe, true );
+        $dom_sxe = $dom->appendChild ( $dom_sxe );
+        $dom->formatOutput = true;
+        $xmlString = $dom->saveXML ();
+        return $xmlString;
 
-	}
-	
-	/** Not yet implemented, in future will return the downtime data in Glue2 XML string.	 
-	 * @return String
-	 */
-	public function getGlue2XML(){
-	    throw new LogicException("Not implemented yet");
-	}
-	
-	/** Not yet implemented, in future will return the downtime 
-	 *  data in JSON format
-	 * @throws LogicException
-	 */
-	public function getJSON(){
-		throw new LogicException("Not implemented yet");
-	}
+    }
+    
+    /** Not yet implemented, in future will return the downtime data in Glue2 XML string.	 
+     * @return String
+     */
+    public function getGlue2XML(){
+        throw new LogicException("Not implemented yet");
+    }
+    
+    /** Not yet implemented, in future will return the downtime 
+     *  data in JSON format
+     * @throws LogicException
+     */
+    public function getJSON(){
+        throw new LogicException("Not implemented yet");
+    }
 
     /**
      * Choose to render the multiple endpoints of a service (or not) 
@@ -262,6 +262,6 @@ class GetDowntimeToBroadcast implements IPIQuery{
         $this->renderMultipleEndpoints = $renderMultipleEndpoints; 
     }
 
-	
-	
+    
+    
 }

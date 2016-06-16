@@ -9,7 +9,7 @@ function site_downtimes() {
     $params['site'] = $site;
     $params['downtimes'] = $downtimes;
 
-	$title = "$site downtimes";
+    $title = "$site downtimes";
     show_view('site/site_downtimes.php', $params, $title);
     return;
 }

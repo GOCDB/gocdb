@@ -44,7 +44,7 @@ function move_site() {
  * @return null
  */
 function submit() {
-	require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
+    require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 
     
@@ -54,7 +54,7 @@ function submit() {
     //If new NGI is not in the array of submitted data yet,
     //then we have come form the select old NGI page and want the move site page
     if(!array_key_exists('NewNGI',$movementrequest)){
-    	//Run the submit old NGI and display the site_move view
+        //Run the submit old NGI and display the site_move view
         submitOldNgi($movementrequest);
     }	
     else {
@@ -74,10 +74,10 @@ function drawMoveSite(\NGI $oldNgi) {
     checkUserIsAdmin();
  
     //Get a list of sites and list of NGIs to select from
-	$ngis= \Factory::getNgiService()->getNGIs();
-	$sites = $oldNgi->getSites();
-	
-	//Put into an array to be passed to view
+    $ngis= \Factory::getNgiService()->getNGIs();
+    $sites = $oldNgi->getSites();
+    
+    //Put into an array to be passed to view
     $params = array('Ngis' => $ngis, 'sites' => $sites, 'OldNgi' => $oldNgi->getName());
 
     show_view("admin/move_site.php", $params);
@@ -94,8 +94,8 @@ function drawSelectOldNgi() {
 
     //Get a list  of NGIs to select from
     $ngis= \Factory::getSiteService()->getNGIs();
-	
-	//Put into an array to be passed to view
+    
+    //Put into an array to be passed to view
     $params = array('Ngis' => $ngis);
 
     show_view("admin/move_site_select_old_ngi.php", $params);

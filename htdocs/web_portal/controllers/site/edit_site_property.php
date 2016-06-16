@@ -68,15 +68,15 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     try {
-    	$newValues = getSpDataFromWeb();  
-    	$siteID = $newValues['SITEPROPERTIES']['SITE'];
-    	$propID = $newValues['SITEPROPERTIES']['PROP'];
-    	if($newValues['SITEPROPERTIES']['NAME'] == null || $newValues['SITEPROPERTIES']['VALUE'] == null){
-    	    show_view('error.php', "A property name and value must be provided.");
-    	    die();
-    	}
-    	$property = \Factory::getSiteService()->getProperty($propID);
-    	$site = \Factory::getSiteService()->getSite($siteID);    	
+        $newValues = getSpDataFromWeb();  
+        $siteID = $newValues['SITEPROPERTIES']['SITE'];
+        $propID = $newValues['SITEPROPERTIES']['PROP'];
+        if($newValues['SITEPROPERTIES']['NAME'] == null || $newValues['SITEPROPERTIES']['VALUE'] == null){
+            show_view('error.php', "A property name and value must be provided.");
+            die();
+        }
+        $property = \Factory::getSiteService()->getProperty($propID);
+        $site = \Factory::getSiteService()->getSite($siteID);    	
         $site = \Factory::getSiteService()->editSiteProperty($site, $user, $property, $newValues);
         $params['siteid'] = $siteID;
         show_view('site/site_property_updated.php', $params);

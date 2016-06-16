@@ -134,56 +134,56 @@ class GetSiteSecurityInfo implements IPIQuery{
         $this->sites = $this->query->execute();
         return $this->sites;
     }
-	
-	
-	/** Returns proprietary GocDB rendering of the sites data 
-	 *  in an XML String
-	 * @return String
-	 */
-	public function getXML(){
-		$helpers = $this->helpers;
-	
-		$sites = $this->sites;
-		
-		$xml = new \SimpleXMLElement ( "<results />" );
-		foreach ( $sites as $site ) {
-			$xmlSite = $xml->addChild ( 'SITE' );
-			$xmlSite->addAttribute ( 'ID', $site->getId () . "G0" );
-			$xmlSite->addAttribute ( 'PRIMARY_KEY', $site->getPrimaryKey () );
-			$xmlSite->addAttribute ( 'NAME', $site->getShortName () );
-			
-			$xmlSite->addChild ( 'PRIMARY_KEY', $site->getPrimaryKey () );
-			$xmlSite->addChild ( 'SHORT_NAME', $site->getShortName () );
-			$xmlSite->addChild ( 'CSIRT_EMAIL', $site->getCsirtEmail () );
-			$xmlSite->addChild ( 'CSIRT_TEL', $site->getCsirtTel () );
-		}
-		
-		$dom_sxe = dom_import_simplexml ( $xml );
-		$dom = new \DOMDocument ( '1.0' );
-		$dom->encoding = 'UTF-8';
-		$dom_sxe = $dom->importNode ( $dom_sxe, true );
-		$dom_sxe = $dom->appendChild ( $dom_sxe );
-		$dom->formatOutput = true;
-		
-		$xmlString = $dom->saveXML ();
-		
-		return $xmlString;
-	}
-	
-	/** Returns the site data in Glue2 XML string.
-	 * 
-	 * @return String
-	 */
-	public function getGlue2XML(){
-	
-	}
-	
-	/** Not yet implemented, in future will return the sites 
-	 *  data in JSON format
-	 * @throws LogicException
-	 */
-	public function getJSON(){
-		$query = $this->query;		
-		throw new LogicException("Not implemented yet");
-	}
+    
+    
+    /** Returns proprietary GocDB rendering of the sites data 
+     *  in an XML String
+     * @return String
+     */
+    public function getXML(){
+        $helpers = $this->helpers;
+    
+        $sites = $this->sites;
+        
+        $xml = new \SimpleXMLElement ( "<results />" );
+        foreach ( $sites as $site ) {
+            $xmlSite = $xml->addChild ( 'SITE' );
+            $xmlSite->addAttribute ( 'ID', $site->getId () . "G0" );
+            $xmlSite->addAttribute ( 'PRIMARY_KEY', $site->getPrimaryKey () );
+            $xmlSite->addAttribute ( 'NAME', $site->getShortName () );
+            
+            $xmlSite->addChild ( 'PRIMARY_KEY', $site->getPrimaryKey () );
+            $xmlSite->addChild ( 'SHORT_NAME', $site->getShortName () );
+            $xmlSite->addChild ( 'CSIRT_EMAIL', $site->getCsirtEmail () );
+            $xmlSite->addChild ( 'CSIRT_TEL', $site->getCsirtTel () );
+        }
+        
+        $dom_sxe = dom_import_simplexml ( $xml );
+        $dom = new \DOMDocument ( '1.0' );
+        $dom->encoding = 'UTF-8';
+        $dom_sxe = $dom->importNode ( $dom_sxe, true );
+        $dom_sxe = $dom->appendChild ( $dom_sxe );
+        $dom->formatOutput = true;
+        
+        $xmlString = $dom->saveXML ();
+        
+        return $xmlString;
+    }
+    
+    /** Returns the site data in Glue2 XML string.
+     * 
+     * @return String
+     */
+    public function getGlue2XML(){
+    
+    }
+    
+    /** Not yet implemented, in future will return the sites 
+     *  data in JSON format
+     * @throws LogicException
+     */
+    public function getJSON(){
+        $query = $this->query;		
+        throw new LogicException("Not implemented yet");
+    }
 }

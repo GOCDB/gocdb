@@ -43,10 +43,10 @@ class ServiceType extends AbstractEntityService{
      * @return array An array of service type objects
      */
     public function getServiceTypes() {
-    	$dql = "SELECT s from ServiceType s
-    			ORDER BY s.name";
-    	$query = $this->em->createQuery($dql);
-    	return $query->getResult();
+        $dql = "SELECT s from ServiceType s
+                ORDER BY s.name";
+        $query = $this->em->createQuery($dql);
+        return $query->getResult();
     }
     
      /**
@@ -55,15 +55,15 @@ class ServiceType extends AbstractEntityService{
      * @return ServiceType a service type object
      */
     public function getServiceType($id) {
-    	$dql = "SELECT s FROM ServiceType s
-				WHERE s.id = :id";
+        $dql = "SELECT s FROM ServiceType s
+                WHERE s.id = :id";
 
-    	$serviceType = $this->em
-	    	->createQuery($dql)
-	    	->setParameter('id', $id)
-	    	->getSingleResult();
+        $serviceType = $this->em
+            ->createQuery($dql)
+            ->setParameter('id', $id)
+            ->getSingleResult();
         
-    	return $serviceType;
+        return $serviceType;
     }
     
     /**
@@ -209,9 +209,9 @@ class ServiceType extends AbstractEntityService{
      */
     public function serviceTypeNameIsUnique($name){
         $dql = "SELECT s from ServiceType s
-    			WHERE s.name = :name";
-    	$query = $this->em->createQuery($dql);
-    	$result = $query->setParameter('name', $name)->getResult();
+                WHERE s.name = :name";
+        $query = $this->em->createQuery($dql);
+        $result = $query->setParameter('name', $name)->getResult();
 
         if(count($result)==0){
             return true;
@@ -223,17 +223,17 @@ class ServiceType extends AbstractEntityService{
     }
     
     /**
-	 * Performs some basic checks on the values aray and then validates the user
+     * Performs some basic checks on the values aray and then validates the user
      * inputted service type data against the data in the gocdb_schema.xml.
-	 * @param array $serviceTypeData containing all the fields for a GOCDB 
+     * @param array $serviceTypeData containing all the fields for a GOCDB 
      *                               service type object
-	 * @throws \Exception If the project's data can't be
-	 *                    validated. The \Exception message will contain a human
-	 *                    readable description of which field failed validation.
-	 * @return null */
-	private function validate($serviceTypeData) {
-		require_once __DIR__.'/Validate.php';
-		
+     * @throws \Exception If the project's data can't be
+     *                    validated. The \Exception message will contain a human
+     *                    readable description of which field failed validation.
+     * @return null */
+    private function validate($serviceTypeData) {
+        require_once __DIR__.'/Validate.php';
+        
         //check values are there
         if(!((array_key_exists('Name',$serviceTypeData)) and (array_key_exists('Description',$serviceTypeData)))){
             throw new \Exception("A name and description for the service type must be specified");
@@ -261,14 +261,14 @@ class ServiceType extends AbstractEntityService{
         }
                
         $serv = new \org\gocdb\services\Validate();
-		foreach ($serviceTypeData as $field => $value) {
-			$valid = $serv->validate('service_type', strtoupper($field), $value);
-			if(!$valid) {
-				$error = "$field contains an invalid value: $value";
-				throw new \Exception($error);
-			}
-		}
-	}
+        foreach ($serviceTypeData as $field => $value) {
+            $valid = $serv->validate('service_type', strtoupper($field), $value);
+            if(!$valid) {
+                $error = "$field contains an invalid value: $value";
+                throw new \Exception($error);
+            }
+        }
+    }
 }   
 
 

@@ -494,7 +494,7 @@ class ServiceGroup extends AbstractEntityService{
      */
     public function uniqueCheck($name) {
         $dql = "SELECT sg FROM ServiceGroup sg
-	            WHERE sg.name = :name";
+                WHERE sg.name = :name";
         $sgs = $this->em->createQuery($dql)
                 ->setParameter('name', $name)
                 ->getResult();

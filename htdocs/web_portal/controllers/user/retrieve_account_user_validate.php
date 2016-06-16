@@ -41,7 +41,7 @@ function validate_dn_change() {
     $currentDn = Get_User_Principle();
     if(empty($currentDn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	    die(); 
+        die(); 
     }
 
     try {

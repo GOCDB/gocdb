@@ -72,14 +72,14 @@ echo "Copying [Service->EndpointLocation->url] field to [Service->url field]\n";
 foreach ($services as $service) {
     $endpoints = $service->getEndpointLocations();
     foreach ($endpoints as $endpoint) {
-	$url = $endpoint->getUrl();
-	if ($url != null) {
-	    //echo "Adding URL to ".$service->getHostName()."\n";
-	    //echo $url."\n";
-	    echo ".";
-	    $service->setUrl($url);
-	    $em->persist($service);
-	}
+    $url = $endpoint->getUrl();
+    if ($url != null) {
+        //echo "Adding URL to ".$service->getHostName()."\n";
+        //echo $url."\n";
+        echo ".";
+        $service->setUrl($url);
+        $em->persist($service);
+    }
     }
 }
 //Write changes to db
@@ -96,12 +96,12 @@ echo "Linking [Service-to-Downtime] and deleting the current (single) [Downtime-
 foreach ($downtimes as $downtime) {
     $endpoints = $downtime->getEndpointLocations();
     foreach ($endpoints as $endpoint) {
-	//echo $downtime->getId().",";
-	echo ".";
-	$service = $endpoint->getService();
-	$downtime->addService($service);
-	$downtime->removeEndpointLocation($endpoint);
-	$em->persist($downtime);
+    //echo $downtime->getId().",";
+    echo ".";
+    $service = $endpoint->getService();
+    $downtime->addService($service);
+    $downtime->removeEndpointLocation($endpoint);
+    $em->persist($downtime);
     }
 }
 
@@ -118,14 +118,14 @@ echo "Delete Service's single [EndpointLocation] entity \n";
 foreach ($services as $service) {
     $endpoints = $service->getEndpointLocations();
     foreach ($endpoints as $endpoint) {
-	//echo $endpoint->getId().", ";
-	echo ".";
-	//Remove the endpoint from the services collection of endpoints
-	//$service->remove_EndpointLocation($endpoint);
-	$service->getEndpointLocations()->removeElement($endpoint);
-	//Delete the orphaned entity
-	$em->remove($endpoint);
-	$em->persist($service);
+    //echo $endpoint->getId().", ";
+    echo ".";
+    //Remove the endpoint from the services collection of endpoints
+    //$service->remove_EndpointLocation($endpoint);
+    $service->getEndpointLocations()->removeElement($endpoint);
+    //Delete the orphaned entity
+    $em->remove($endpoint);
+    $em->persist($service);
     }
 }
 

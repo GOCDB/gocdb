@@ -81,12 +81,12 @@ class NGI extends AbstractEntityService{
      * @return NGI an NGI entity
      */
     public function getNgi($id) {
-    	$dql = "SELECT n FROM NGI n
-				WHERE n.id = :id";
-    	$ngi = $this->em->createQuery($dql)
-		    	   ->setParameter('id', $id)
-		    	   ->getSingleResult();
-    	return $ngi;
+        $dql = "SELECT n FROM NGI n
+                WHERE n.id = :id";
+        $ngi = $this->em->createQuery($dql)
+                   ->setParameter('id', $id)
+                   ->getSingleResult();
+        return $ngi;
     }
 
 
@@ -107,11 +107,11 @@ class NGI extends AbstractEntityService{
      */
     public function getNGIsFilterByParams($filterParams){
         require_once __DIR__.'/PI/GetNGI.php'; 
-	$getNgi = new GetNGI($this->em); 	
-	$getNgi->validateParameters($filterParams); 
-	$getNgi->createQuery(); 
-	$ngis = $getNgi->executeQuery();
-	return $ngis; 
+    $getNgi = new GetNGI($this->em); 	
+    $getNgi->validateParameters($filterParams); 
+    $getNgi->createQuery(); 
+    $ngis = $getNgi->executeQuery();
+    return $ngis; 
     }
 
     /**
@@ -120,17 +120,17 @@ class NGI extends AbstractEntityService{
      * @return \NGI object array
      */
      public function getNGIs($scope = NULL) {
-	$qb = $this->em->createQueryBuilder();
-	$qb->select('n', 'sc')->from('NGI', 'n')
-		->leftjoin('n.scopes', 'sc')->orderBy('n.name', 'ASC');
+    $qb = $this->em->createQueryBuilder();
+    $qb->select('n', 'sc')->from('NGI', 'n')
+        ->leftjoin('n.scopes', 'sc')->orderBy('n.name', 'ASC');
 
-	if ($scope != null && $scope != '%%') {
-	    $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
-		    ->setParameter(':scope', $scope);
-	}
-	$query = $qb->getQuery();
-	$ngis = $query->execute();
-	return $ngis;
+    if ($scope != null && $scope != '%%') {
+        $qb->andWhere($qb->expr()->like('sc.name', ':scope'))
+            ->setParameter(':scope', $scope);
+    }
+    $query = $qb->getQuery();
+    $ngis = $query->execute();
+    return $ngis;
     }
 
     /**
@@ -265,21 +265,21 @@ class NGI extends AbstractEntityService{
      * @return null
      */
     /*public function edit Authorization(\NGI $ngi, \User $user = null) {
-    	require_once __DIR__ . '/Factory.php';
+        require_once __DIR__ . '/Factory.php';
 
-    	if(is_null($user)) {
-    	    throw new \Exception("Unregistered users can't edit an NGI.");
-    	}
-    	
-    	// see if the user has a D or D' role over the NGI
-    	$classifications = array("D", "D'");
-    	if (\Factory::getRoleService()
-    			->userHasNgiRole($classifications, $ngi, $user)) {
-    		return;
-    	}
+        if(is_null($user)) {
+            throw new \Exception("Unregistered users can't edit an NGI.");
+        }
+        
+        // see if the user has a D or D' role over the NGI
+        $classifications = array("D", "D'");
+        if (\Factory::getRoleService()
+                ->userHasNgiRole($classifications, $ngi, $user)) {
+            return;
+        }
 
-    	// If we've reached this point the user doesn't have permission
-    	throw new \Exception("You don't have permission to edit this NGI.");
+        // If we've reached this point the user doesn't have permission
+        throw new \Exception("You don't have permission to edit this NGI.");
     }*/
 
     /**
@@ -289,15 +289,15 @@ class NGI extends AbstractEntityService{
      * Accepts an array $newValues as a parameter. $newVales' format is as follows:
      * <pre>
      *  Array
-	 *  (
-	 *	    [DESCRIPTION] => NGI_DE
-	 *	    [EMAIL] => ngi-de-jru-leitung@listserv.dfn.de
-	 *	    [HELPDESK_EMAIL] =>
-	 *	    [ROD_EMAIL] =>
-	 *	    [SECURITY_EMAIL] =>
-	 *	    [GGUS_SU] =>
-	 *	    [ID] => 14
-	 *	)
+     *  (
+     *	    [DESCRIPTION] => NGI_DE
+     *	    [EMAIL] => ngi-de-jru-leitung@listserv.dfn.de
+     *	    [HELPDESK_EMAIL] =>
+     *	    [ROD_EMAIL] =>
+     *	    [SECURITY_EMAIL] =>
+     *	    [GGUS_SU] =>
+     *	    [ID] => 14
+     *	)
      * </pre>
      * @param NGI The NGI to update
      * @param array $newValues Array of updated data, specified above.
@@ -351,9 +351,9 @@ class NGI extends AbstractEntityService{
         $this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
                array('excludeReserved' => true), $selectedScopesToApply));
         
-    	//Explicity demarcate our tx boundary
-    	$this->em->getConnection()->beginTransaction();
-    	try {
+        //Explicity demarcate our tx boundary
+        $this->em->getConnection()->beginTransaction();
+        try {
             //Update the NGI
             $ngi->setEmail($newValues['NGI']['EMAIL']);
             $ngi->setHelpdeskEmail($newValues['NGI']['HELPDESK_EMAIL']);
@@ -384,12 +384,12 @@ class NGI extends AbstractEntityService{
             $this->em->merge($ngi);
             $this->em->flush();
             $this->em->getConnection()->commit();
-    	} catch (\Exception $e) {
+        } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             $this->em->close();
             throw $e;
-    	}
-    	return $ngi;
+        }
+        return $ngi;
     }
 
     /**
@@ -405,13 +405,13 @@ class NGI extends AbstractEntityService{
         //require_once __DIR__.'/Factory.php';
         //$serv = \Factory::getValidateService();
         $serv =  new Validate(); //org\gocdb\services\Validate();
-    	foreach($ngiData as $field => $value) {
-    		$valid = $serv->validate('ngi', $field, $value);
-    		if(!$valid) {
-    			$error = "$field contains an invalid value: $value";
-    			throw new \Exception($error);
-    		}
-    	}
+        foreach($ngiData as $field => $value) {
+            $valid = $serv->validate('ngi', $field, $value);
+            if(!$valid) {
+                $error = "$field contains an invalid value: $value";
+                throw new \Exception($error);
+            }
+        }
     }
     
     public function addNgi($valuesarray, \User $user = null) {
@@ -510,9 +510,9 @@ class NGI extends AbstractEntityService{
      */
     public function NGINameIsUnique($name){
         $dql = "SELECT n from NGI n
-    			WHERE n.name = :name";
-    	$query = $this->em->createQuery($dql);
-    	$result = $query->setParameter('name', $name)->getResult();
+                WHERE n.name = :name";
+        $query = $this->em->createQuery($dql);
+        $result = $query->setParameter('name', $name)->getResult();
 
         if(count($result)==0){
             return true;

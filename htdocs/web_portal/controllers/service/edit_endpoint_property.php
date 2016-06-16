@@ -79,14 +79,14 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     try {
-    	$newValues = getEndpointPropDataFromWeb();  
-    	$endpointID = $newValues['ENDPOINTPROPERTIES']['ENDPOINTID'];
-    	$propID = $newValues['ENDPOINTPROPERTIES']['PROP'];
-    	if($newValues['ENDPOINTPROPERTIES']['NAME'] == null || $newValues['ENDPOINTPROPERTIES']['VALUE'] == null){
-    	    show_view('error.php', "A property name and value must be provided.");
-    	    die();
-    	}
-    	$property = \Factory::getServiceService()->getEndpointProperty($propID);
+        $newValues = getEndpointPropDataFromWeb();  
+        $endpointID = $newValues['ENDPOINTPROPERTIES']['ENDPOINTID'];
+        $propID = $newValues['ENDPOINTPROPERTIES']['PROP'];
+        if($newValues['ENDPOINTPROPERTIES']['NAME'] == null || $newValues['ENDPOINTPROPERTIES']['VALUE'] == null){
+            show_view('error.php', "A property name and value must be provided.");
+            die();
+        }
+        $property = \Factory::getServiceService()->getEndpointProperty($propID);
         $service = $property->getParentEndpoint()->getService();  
         \Factory::getServiceService()->editEndpointProperty($service, $user, $property, $newValues);
         

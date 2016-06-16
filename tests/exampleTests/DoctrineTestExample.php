@@ -18,13 +18,13 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 class DoctrineTestExample extends PHPUnit_Extensions_Database_TestCase {
 
     private $em;
-	
-	 /**
+    
+     /**
      * Overridden. 
      */
     public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        parent::setUpBeforeClass();
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing Your Test Name. . .\n";
     }
 
@@ -36,7 +36,7 @@ class DoctrineTestExample extends PHPUnit_Extensions_Database_TestCase {
         require_once dirname(__FILE__) . '/bootstrap_pdo.php';
         return getConnectionToTestDB(); 
     }
-	
+    
     /**
      * Overridden. Returns the test dataset.  
      * Defines how the initial state of the database should look before each test is executed. 
@@ -107,44 +107,44 @@ class DoctrineTestExample extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-	* An example test showing the creation of a site and assertation of its data
+    * An example test showing the creation of a site and assertation of its data
     */
     public function testDoctrineExample() {
         print __METHOD__ . "\n";
-		
-		//Create a site
-    	$ourSite = TestUtil::createSampleSite("Our Example Site");
-		
-		//Set some details of the site
-		$ourSite->setEmail("myTest@email.com");
-		$ourSite->setTelephone("012345678910");
-		$ourSite->setLocation("United Kingdom");
-		
-		//Persist the site in memory
-		$this->em->persist($ourSite);
-		
-		//Get the site ID from the object
-		$siteId = $ourSite->getId();   
-		
-		//Get a PDO database connection	    	
-    	$con = $this->getConnection();
-		
-		//Search the database for this site
-	    $sql = "SELECT 1 FROM sites WHERE ID = '$siteId'";
-	    $result = $con->createQueryTable('', $sql);
-		
-		//We expect this query to return no rows as the site does not exist in the database yet
-	    $this->assertEquals(0, $result->getRowCount());
-		
-		//Commit the site to the database
-		$this->em->flush();
-				
-		//Search the database for this site again
-	    $sql = "SELECT 1 FROM sites WHERE ID = '$siteId'";
-	    $result = $con->createQueryTable('', $sql);
-		
-		//We expect this query to return 1 rows as the site now exists in the database
-	    $this->assertEquals(1, $result->getRowCount());		
+        
+        //Create a site
+        $ourSite = TestUtil::createSampleSite("Our Example Site");
+        
+        //Set some details of the site
+        $ourSite->setEmail("myTest@email.com");
+        $ourSite->setTelephone("012345678910");
+        $ourSite->setLocation("United Kingdom");
+        
+        //Persist the site in memory
+        $this->em->persist($ourSite);
+        
+        //Get the site ID from the object
+        $siteId = $ourSite->getId();   
+        
+        //Get a PDO database connection	    	
+        $con = $this->getConnection();
+        
+        //Search the database for this site
+        $sql = "SELECT 1 FROM sites WHERE ID = '$siteId'";
+        $result = $con->createQueryTable('', $sql);
+        
+        //We expect this query to return no rows as the site does not exist in the database yet
+        $this->assertEquals(0, $result->getRowCount());
+        
+        //Commit the site to the database
+        $this->em->flush();
+                
+        //Search the database for this site again
+        $sql = "SELECT 1 FROM sites WHERE ID = '$siteId'";
+        $result = $con->createQueryTable('', $sql);
+        
+        //We expect this query to return 1 rows as the site now exists in the database
+        $this->assertEquals(1, $result->getRowCount());		
     }
 
 }

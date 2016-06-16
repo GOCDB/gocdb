@@ -80,15 +80,15 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     try {
-    	$newValues = getSerGroupPropDataFromWeb();  
-    	$serviceGroupID = $newValues['SERVICEGROUPPROPERTIES']['SERVICEGROUP'];
-    	$propID = $newValues['SERVICEGROUPPROPERTIES']['PROP'];
-    	if($newValues['SERVICEGROUPPROPERTIES']['NAME'] == null || $newValues['SERVICEGROUPPROPERTIES']['VALUE'] == null){
-    	    show_view('error.php', "A property name and value must be provided.");
-    	    die();
-    	}
-    	$property = \Factory::getServiceGroupService()->getProperty($propID);
-    	$serviceGroup = \Factory::getServiceGroupService()->getServiceGroup($serviceGroupID);    	
+        $newValues = getSerGroupPropDataFromWeb();  
+        $serviceGroupID = $newValues['SERVICEGROUPPROPERTIES']['SERVICEGROUP'];
+        $propID = $newValues['SERVICEGROUPPROPERTIES']['PROP'];
+        if($newValues['SERVICEGROUPPROPERTIES']['NAME'] == null || $newValues['SERVICEGROUPPROPERTIES']['VALUE'] == null){
+            show_view('error.php', "A property name and value must be provided.");
+            die();
+        }
+        $property = \Factory::getServiceGroupService()->getProperty($propID);
+        $serviceGroup = \Factory::getServiceGroupService()->getServiceGroup($serviceGroupID);    	
         $serviceGroup = \Factory::getServiceGroupService()->editServiceGroupProperty($serviceGroup, $user, $property, $newValues);
         $params['serviceGroupId'] = $serviceGroupID;
         show_view('service_group/service_group_property_updated.php', $params);
