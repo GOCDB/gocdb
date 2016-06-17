@@ -304,7 +304,7 @@ For better performance, Doctrine automatically compiles the objects located
 in `lib/Doctrine/entities` and places these compiled objects into a directory.
 By default, these are compiled into the system's TMP dir. This is not recommended for production.
 For production deployments, you can specify where these proxy objects should be stored
-using `$config->setProxyDir('pathToYourProxyDir');` in your `bootstrap_doctrine.php` file.  
+using `$config->setProxyDir('pathToYourProxyDir');` in your `bootstrap_doctrine.php` file.
 If you specify the ProxyDir, then you also need to manually compile your proxy objects
 into the specified ProxyDir using the doctrine command line:  
 
@@ -314,7 +314,7 @@ $ mkdir compiledEntities
 $ doctrine orm:generate-proxies compiledEntities/   
 ```
 
-GocDB can then be deployed as a blank instance with only required lookup data or
+GocDB can then be deployed as a blank instance wit h only required lookup data or
 as a sample instance with a small amount of example data to demonstrate GocDB.
 
 ### Deploy Required Data<a id="deploy-required-data"></a>
