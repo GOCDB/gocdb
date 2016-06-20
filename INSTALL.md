@@ -304,7 +304,7 @@ For better performance, Doctrine automatically compiles the objects located
 in `lib/Doctrine/entities` and places these compiled objects into a directory.
 By default, these are compiled into the system's TMP dir. This is not recommended for production.
 For production deployments, you can specify where these proxy objects should be stored
-using `$config->setProxyDir('pathToYourProxyDir');` in your `bootstrap_doctrine.php` file.  
+using `$config->setProxyDir('pathToYourProxyDir');` in your `bootstrap_doctrine.php` file.
 If you specify the ProxyDir, then you also need to manually compile your proxy objects
 into the specified ProxyDir using the doctrine command line:  
 
@@ -314,7 +314,7 @@ $ mkdir compiledEntities
 $ doctrine orm:generate-proxies compiledEntities/   
 ```
 
-GocDB can then be deployed as a blank instance with only required lookup data or
+GocDB can then be deployed as a blank instance wit h only required lookup data or
 as a sample instance with a small amount of example data to demonstrate GocDB.
 
 ### Deploy Required Data<a id="deploy-required-data"></a>
@@ -337,38 +337,49 @@ $ cd lib/Doctrine
 $ php deploy/DeploySampleDataRunner.php sampleData
 ```
 
-###Deploy an existing DB .dmp file to populate your DB 
+### Deploy an existing DB .dmp file to populate your DB 
+
 You may want to deploy an existing dump/backup of the DB rather than deploying the 
 DDL and seeding the empty DB with required data and sample data. Oracle provides the 
 `expdp` and `impdp` command line tools to export and import a `.dmp` file. 
 The impdp tool requires a directory object to have already been created in the DB.
-This directory object is where the .dmp file is loaded from. 
+This directory object defines the directory where the .dmp file is loaded from.
 
-* Create a new directory object, as the sytem user: 
+* Create a new directory object, as the system user:
 
-```
-sqlplus system
-SQL> create or replace directory as 'dmpdir'; 
-SQL> grant read,write on directory dmpdir to gocdb5;
-SQL> SELECT owner, directory_name, directory_path FROM all_directories;
-SQL> select directory_path from dba_directories where upper(directory_name) = 'DMPDIR';
-SQL> exit
-```
+  ```
+  sqlplus system
+  SQL> create or replace DIRECTORY 'dmpdir' AS '<Directroy path>'; 
+  SQL> grant read,write on directory dmpdir to <user>;
+  SQL> SELECT owner, directory_name, directory_path FROM all_directories;
+  SQL> select directory_path from dba_directories where upper(directory_name) =  'DMPDIR';
+  SQL> exit
+  ```
 
-* Import your dmp file. Note, the example below assumes the 'gocdb5' user/schema does not exist 
-in the db - the import actually creates this user with all its permissions/roles. If you want to 
-use a different schema/username, then specify this in the value of the remap_schema arg on the right of the colon.
-You may need to change different args for your install such as modifying the remap_tablespace:
+* Import your dmp file. Note, the example below assumes the 'gocdb5' user/schema does not exist in the db - the import actually creates this user with all its permissions/roles. 
+If you want to use a different schema/username, then specify this in the value of the remap_schema argument on the right of the colon.
+You may need to change different arguments for your install such as modifying the remap_tablespace:
 
-```
-$impdp system/******** schemas=gocdb5 directory=dmpdir dumpfile=goc5dump.dmp REMAP_SCHEMA=gocdb5:gocdb5 remap_tablespace=GOCDB5:users table_exists_action=replace logfile=gocdbv5deploy.log
-```
+  ```
+  $impdp system/******** schemas=gocdb5 directory=dmpdir dumpfile=goc5dump.dmp  REMAP_SCHEMA=gocdb5:gocdb5 remap_tablespace=GOCDB5:users  table_exists_action=replace logfile=gocdbv5deploy.log
+  ```
 
-To generate statistics after importing the dmp file (this improves performance):  
+  Note: If you get the following error, there is a file permissionsissue of some kind.
+  Try creating a new directory for the dump-file, possibly within your Oracle directory.
+  
+  ```
+  ORA-39002: invalid operation
+  ORA-39070: Unable to open the log file.
+  ORA-29283: invalid file operation
+  ORA-06512: at "SYS.UTL_FILE", line 536
+  ORA-29283: invalid file operation
+  ``` 
 
-```
-SQL> EXEC DBMS_STATS.gather_schema_stats('GOCDB5');
-```
+* To generate statistics after importing the dmp file (this improves performance):  
+
+    ```
+    SQL> EXEC DBMS_STATS.gather_schema_stats('GOCDB5');
+    ```
 
 impdp can export the DDL of a dmp backup for you so you can inspect it, see schema name, table names etc. 
 For example: 
@@ -382,9 +393,6 @@ To export an existing DB to create the `.dmp` file:
 ```
 expdp system/****** schemas=gocdb5 dumpfile=gocdb5.dmp directory=dmpdir
 ```
-
-
-
 
 ## First Use Config <a id="firstuse"></a>
 
