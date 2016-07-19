@@ -22,31 +22,31 @@ if(isset($argv[1])) {
     die("Please specify your data directory (sampleData) \n");
 }
 
-print_r("Deploying Sample Data\n"); 
+print_r("Deploying Sample Data\n");
 
-require __DIR__."/AddProjects.php"; 
-echo "Added Projects OK\n"; 
+require __DIR__."/AddProjects.php";
+echo "Added Projects OK\n";
 
-require __DIR__."/AddScopes.php"; 
-echo "Added Scopes OK\n"; 
+require __DIR__."/AddScopes.php";
+echo "Added Scopes OK\n";
 
-require __DIR__."/AddNGIs.php"; 
-echo "Added NGIs OK\n"; 
+require __DIR__."/AddNGIs.php";
+echo "Added NGIs OK\n";
 
-require __DIR__."/AddSites.php"; 
-echo "Added Sites and JOINED to NGIs OK\n"; 
+require __DIR__."/AddSites.php";
+echo "Added Sites and JOINED to NGIs OK\n";
 
-require __DIR__."/AddServiceEndpoints.php"; 
-echo "Added Services, EndpointLocations and JOINED associations OK\n"; 
+require __DIR__."/AddServiceEndpoints.php";
+echo "Added Services, EndpointLocations and JOINED associations OK\n";
 
-require __DIR__."/AddUsers.php"; 
-echo "Added Users OK\n"; 
+require __DIR__."/AddUsers.php";
+echo "Added Users OK\n";
 
-require __DIR__."/AddSiteRoles.php"; 
-echo "Added Site level Roles OK\n"; 
+require __DIR__."/AddSiteRoles.php";
+echo "Added Site level Roles OK\n";
 
-require __DIR__."/AddGroupRoles.php"; 
-echo "Added NGI level Roles OK\n"; 
+require __DIR__."/AddGroupRoles.php";
+echo "Added NGI level Roles OK\n";
 
-require __DIR__."/AddEgiRoles.php"; 
-echo "Added EGI level Roles OK\n"; 
+require __DIR__."/AddEgiRoles.php";
+echo "Added EGI level Roles OK\n";

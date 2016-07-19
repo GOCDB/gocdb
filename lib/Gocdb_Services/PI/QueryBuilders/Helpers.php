@@ -21,48 +21,48 @@ namespace org\gocdb\services;
 class Helpers {
 
     /**
-     * Takes a pre-built Doctrine query containing positional bind parameter 
-     * placeholders e.g. ':?15', and a 2D array that contains values for binding each parameter, 
+     * Takes a pre-built Doctrine query containing positional bind parameter
+     * placeholders e.g. ':?15', and a 2D array that contains values for binding each parameter,
      * then binds all the positional bind parameters in the query.
      * <p>
-     * In the bindValues array, each nested element is a child array where:  
+     * In the bindValues array, each nested element is a child array where:
      * <ol>
      *   <li>1st element is an int used to select the positional param.</li>
      *   <li>2nd element is the value to bind, has a value of mixed. </li>
      * </ol>
      * <code>
      * array(
-     *    array(10, 'some value'), 
-     *    array(11, 'another value'), 
+     *    array(10, 'some value'),
+     *    array(11, 'another value'),
      *    array(12, 'a, third, value')
-     * ); 
-     * </code>  
+     * );
+     * </code>
      *
-     * @param array $bindIdValues 2D array, see description above 
-     * @param \Doctrine\ORM\QueryBuilder $query        	
+     * @param array $bindIdValues 2D array, see description above
+     * @param \Doctrine\ORM\QueryBuilder $query
      * @return \Doctrine\ORM\QueryBuilder Updated with bind params bound
      */
     public function bindValuesToQuery($bindIdValues, $query) {
 
     foreach ($bindIdValues as $bindIdValue) {
         $query->setParameter($bindIdValue[0], $bindIdValue[1]);
-        
+
         // Check value is string not time/date object
         /*if (is_string($bindIdValue[1])) {
 
-        // Presence of a 3rd element in the bind array means the bind 
-        // value has to be exploded using the string stored in the 3rd 
-        // element, e.g. for multiple scopes this is a comma: 'EGI,wlcg,scopex' 
+        // Presence of a 3rd element in the bind array means the bind
+        // value has to be exploded using the string stored in the 3rd
+        // element, e.g. for multiple scopes this is a comma: 'EGI,wlcg,scopex'
         //if (count($bindIdValue) == 3 && strpos($bindIdValue[1], ',')) {
         //if (count($bindIdValue) == 3) {
         //    $explodedValuesArray = explode($bindIdValue[2], $bindIdValue[1]);
         //    $query->setParameter($bindIdValue[0], $explodedValuesArray);
         //} else {
-            // No 3rd element in bind array means bind the raw value 
+            // No 3rd element in bind array means bind the raw value
             // echo "Binding at: ".$values[0]. " With: ".$values[1]. "\n\n";
             $query->setParameter($bindIdValue[0], $bindIdValue[1]);
         //}
-        //If value was object bind it as is	
+        //If value was object bind it as is
         } else {
         $query->setParameter($bindIdValue[0], $bindIdValue[1]);
         }*/
@@ -71,7 +71,7 @@ class Helpers {
     }
 
     /**
-     * Ensure that $testParams only contain array keys that are supported as 
+     * Ensure that $testParams only contain array keys that are supported as
      * listed in $supportedParams, and that parameter values don't contain any
      * of the following chars: "'`
      * If an unsupported parameter is detected, then die with a message.
@@ -84,7 +84,7 @@ class Helpers {
      */
     public function validateParams($supportedParams, $testParams) {
     if (!is_array($supportedParams) || !is_array($testParams)) {
-        throw new \InvalidArgumentException('Invalid parameters passed to PI query'); 
+        throw new \InvalidArgumentException('Invalid parameters passed to PI query');
     }
 
     // Check the parameter keys are supoported
@@ -111,7 +111,7 @@ class Helpers {
     /**
      * Adds a new tag $tagName to $xml if $value isn't ""
      *
-     * @param $xml SimpleXMLElement        	
+     * @param $xml SimpleXMLElement
      * @param $tagName String
      *        	Name of the tag
      * @param $value String

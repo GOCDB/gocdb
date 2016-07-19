@@ -37,7 +37,7 @@ class GetDowntime implements IPIQuery {
     private $nested;
     private $downtimes;
     private $renderMultipleEndpoints;
-    private $baseUrl; 
+    private $baseUrl;
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
@@ -45,14 +45,14 @@ class GetDowntime implements IPIQuery {
      * @param EntityManager $em
      * @param Boolean $nested when true this method will return the
      * nested rendering of the downtime data
-     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output.
      */
     public function __construct($em, $nested = false, $baseUrl = 'https://goc.egi.eu/portal') {
         $this->nested = $nested;
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
-        $this->baseUrl = $baseUrl; 
+        $this->baseUrl = $baseUrl;
     }
 
     /**

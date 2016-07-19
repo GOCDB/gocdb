@@ -9,22 +9,22 @@ require_once __DIR__ . "/AddUtils.php";
 $sitesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/Sites.xml";
 $sites = simplexml_load_file($sitesFileName);
 
-$xmlCertStatusChanges = simplexml_load_file( __DIR__ . "/" . $GLOBALS['dataDir'] . "/CertStatusChanges.xml"); 
-$xmlCertStatusLinkDates = simplexml_load_file(__DIR__ . "/" . $GLOBALS['dataDir'] . "/CertStatusDate.xml"); 
+$xmlCertStatusChanges = simplexml_load_file( __DIR__ . "/" . $GLOBALS['dataDir'] . "/CertStatusChanges.xml");
+$xmlCertStatusLinkDates = simplexml_load_file(__DIR__ . "/" . $GLOBALS['dataDir'] . "/CertStatusDate.xml");
 
-$largestV4SitePk = 0; 
+$largestV4SitePk = 0;
 foreach($sites as $xmlSite) {
 
     // Check whether this site has a larger v4 primary key
-    // than any other recorded so far 
-    $v4pkGO = trim((string) $xmlSite->PRIMARY_KEY); 
-    // isolate just the number part (slice the 'GO' off the end) 
-    $v4pk = (int)substr($v4pkGO, 0, strlen($v4pkGO)-2); 
+    // than any other recorded so far
+    $v4pkGO = trim((string) $xmlSite->PRIMARY_KEY);
+    // isolate just the number part (slice the 'GO' off the end)
+    $v4pk = (int)substr($v4pkGO, 0, strlen($v4pkGO)-2);
     if($v4pk > $largestV4SitePk){
-        $largestV4SitePk = $v4pk; 
+        $largestV4SitePk = $v4pk;
     }
-    
-    
+
+
     $doctrineSite = new Site();
     $doctrineSite->setPrimaryKey((string) $xmlSite->PRIMARY_KEY);
     $doctrineSite->setOfficialName((string) $xmlSite->OFFICIAL_NAME);
@@ -36,7 +36,7 @@ foreach($sites as $xmlSite) {
     $doctrineSite->setGiisUrl((string) $xmlSite->GIIS_URL);
     if(strlen((string)$xmlSite->LATITUDE) > 0){
         $doctrineSite->setLatitude((float)$xmlSite->LATITUDE);
-    } 
+    }
     if(strlen((string)$xmlSite->LONGITUDE) > 0){
         $doctrineSite->setLongitude((float)$xmlSite->LONGITUDE);
     }
@@ -164,62 +164,62 @@ foreach($sites as $xmlSite) {
     }
 
 
-        
+
     //set creation date
     $creationDate = new \DateTime("now", new DateTimeZone('UTC'));
-    
+
     $doctrineSite->setCreationDate($creationDate);
-    
-    
-    // The date of the CURRENT certStatus in v4 is recorded as 
-    // a link/linkType object using the dateOn property. For simplicity, we 
-    // store this date as an attribute on the Site. 
+
+
+    // The date of the CURRENT certStatus in v4 is recorded as
+    // a link/linkType object using the dateOn property. For simplicity, we
+    // store this date as an attribute on the Site.
     foreach($xmlCertStatusLinkDates as $xmlCertStatusLinkDate){
-       $targetSiteName = (string) $xmlCertStatusLinkDate->name;  
-       // only interested in the current site 
+       $targetSiteName = (string) $xmlCertStatusLinkDate->name;
+       // only interested in the current site
        if($targetSiteName == $doctrineSite->getShortName()){
-          // '01-JUL-13 11.09.10.000000 AM' which has the php datetime 
+          // '01-JUL-13 11.09.10.000000 AM' which has the php datetime
           // format of 'd-M-y H.i.s A' provided we trim off the '.000000' (millisecs)
-          // Note, '.000000' is present in all the <cert_date> elements. 
-          $xmlLinkDateString = (string) $xmlCertStatusLinkDate->cert_date; 
+          // Note, '.000000' is present in all the <cert_date> elements.
+          $xmlLinkDateString = (string) $xmlCertStatusLinkDate->cert_date;
           $xmlLinkDateString = preg_replace('/\.000000/', "", $xmlLinkDateString);
           $linkDate =  \DateTime::createFromFormat('d-M-y H.i.s A', $xmlLinkDateString, new \DateTimeZone('UTC'));
           if(!$linkDate) {
-              throw new Exception("Can't parse date/time  " . $xmlLinkDateString . " for site " . 
+              throw new Exception("Can't parse date/time  " . $xmlLinkDateString . " for site " .
                       $doctrineSite->getShortName() . ". Correct format: 27-JUL-11 02.02.03 PM" );
           }
-          
+
           $doctrineSite->setCertificationStatusChangeDate($linkDate);
-           
+
        }
     }
-    
 
-    // Add the Site's certification status history/log. 
-    // If the Site certStatus has never been updated from its initial state, 
-    // then no changes will have occurred and the log will be empty for that Site. 
-    // 
-    // Importantly, because the v4 certStatus change log was added AFTER some 
-    // sites were already added to GOCDB4, the LAST AddedDate does NOT  
-    // necessarily correspond with the date of the CURRENT certification status. 
-    // Rather, the date of the CURRENT certStatus in v4 is recorded as 
-    // a link/linkType object using the dateOn property. 
+
+    // Add the Site's certification status history/log.
+    // If the Site certStatus has never been updated from its initial state,
+    // then no changes will have occurred and the log will be empty for that Site.
+    //
+    // Importantly, because the v4 certStatus change log was added AFTER some
+    // sites were already added to GOCDB4, the LAST AddedDate does NOT
+    // necessarily correspond with the date of the CURRENT certification status.
+    // Rather, the date of the CURRENT certStatus in v4 is recorded as
+    // a link/linkType object using the dateOn property.
     foreach($xmlCertStatusChanges as $xmlCertStatusChange){
-       $targetSiteName = (string) $xmlCertStatusChange->SITE; 
-       // only interested in the current site 
+       $targetSiteName = (string) $xmlCertStatusChange->SITE;
+       // only interested in the current site
        if($targetSiteName == $doctrineSite->getShortName()){
-           $doctrineCertStatusChangeLog = new \CertificationStatusLog(); 
-           $doctrineCertStatusChangeLog->setAddedBy((string) $xmlCertStatusChange->CHANGED_BY);  
-           $doctrineCertStatusChangeLog->setOldStatus((string) $xmlCertStatusChange->OLD_STATUS); 
-           $doctrineCertStatusChangeLog->setNewStatus((string) $xmlCertStatusChange->NEW_STATUS); 
-           $doctrineCertStatusChangeLog->setReason((string) $xmlCertStatusChange->COMMENT); 
+           $doctrineCertStatusChangeLog = new \CertificationStatusLog();
+           $doctrineCertStatusChangeLog->setAddedBy((string) $xmlCertStatusChange->CHANGED_BY);
+           $doctrineCertStatusChangeLog->setOldStatus((string) $xmlCertStatusChange->OLD_STATUS);
+           $doctrineCertStatusChangeLog->setNewStatus((string) $xmlCertStatusChange->NEW_STATUS);
+           $doctrineCertStatusChangeLog->setReason((string) $xmlCertStatusChange->COMMENT);
            $insertDate = new DateTime("@" . (string) $xmlCertStatusChange->UNIX_TIME);
-           $doctrineCertStatusChangeLog->setAddedDate($insertDate); 
+           $doctrineCertStatusChangeLog->setAddedDate($insertDate);
            $entityManager->persist($doctrineCertStatusChangeLog);
            $doctrineSite->addCertificationStatusLog($doctrineCertStatusChangeLog);
        }
     }
-    
+
     $entityManager->persist($doctrineSite);
 
 }

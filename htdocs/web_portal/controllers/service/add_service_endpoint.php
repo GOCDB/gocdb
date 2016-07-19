@@ -22,7 +22,7 @@
 require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/../utils.php';
 require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
-    
+
 /**
  * Controller for a endpoint request
  * @global array $_POST only set if the browser has POSTed data
@@ -34,7 +34,7 @@ function add_service_endpoint() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     	// If we receive a POST request it's for a new endpoint
         submit($user);
     } else { 			// If there is no post data, draw the new endpoint form
@@ -48,7 +48,7 @@ function add_service_endpoint() {
  * @param \User $user current user
  * @return null */
 function submit(\User $user = null) {
-    $serv = \Factory::getServiceService();    
+    $serv = \Factory::getServiceService();
     $newValues = getEndpointDataFromWeb();
     $serviceid = $newValues['SERVICEENDPOINT']['SERVICE'];
     $serv->addEndpoint($newValues, $user);
@@ -57,7 +57,7 @@ function submit(\User $user = null) {
 
 /**
  * Draws a form to add a new service property
- * @param \User $user current user 
+ * @param \User $user current user
  * @return null
  */
 function draw(\User $user = null) {
@@ -68,16 +68,16 @@ function draw(\User $user = null) {
     if (!isset($_REQUEST['se']) || !is_numeric($_REQUEST['se']) ){
         throw new Exception("An id must be specified");
     }
-    
+
     $serv = \Factory::getServiceService();
     $service = $serv->getService($_REQUEST['se']); //get service by id
-    $seType = $service->getServiceType()->getName(); 
+    $seType = $service->getServiceType()->getName();
     //Check user has permissions to add service endpoint
     $serv->validateAddEditDeleteActions($user, $service);
-        
+
     $params['serviceid'] = $_REQUEST['se'];
     $params['se'] = $service;
-    $params['serviceType'] = $seType; 
+    $params['serviceType'] = $seType;
     $params['serviceTypes'] = $serv->getServiceTypes();
     show_view("service/add_service_endpoint.php", $params);
 

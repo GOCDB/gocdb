@@ -14,56 +14,56 @@ namespace org\gocdb\services;
 require_once __DIR__ . '/AbstractEntityService.php';
 
 /**
- * Service class that contain generic functions for working with doctrine 
- * database entities.   
+ * Service class that contain generic functions for working with doctrine
+ * database entities.
  *
- * @author David Meredith  
+ * @author David Meredith
  */
 class OwnedEntity  extends AbstractEntityService{
     /**
-     * Get the OwnedEntity that has the given id. 
-     * @param integer $id 
+     * Get the OwnedEntity that has the given id.
+     * @param integer $id
      * @return \OwnedEntity
      */
     public function getOwnedEntityById($id){
-        // will only load a lazy loading proxy until method on the proxy is called 
+        // will only load a lazy loading proxy until method on the proxy is called
         //$entity = $this->em->find('OwnedEntity', (int)$id);
-        //return $entity; 
-        $dql = "SELECT oe from OwnedEntity oe where oe.id = :id"; 
-        $oe = $this->em->createQuery($dql)->setParameter(":id", $id)->getSingleResult(); 
-        return $oe; 
+        //return $entity;
+        $dql = "SELECT oe from OwnedEntity oe where oe.id = :id";
+        $oe = $this->em->createQuery($dql)->setParameter(":id", $id)->getSingleResult();
+        return $oe;
     }
 
     /**
-     * Get the class name of the class that extends the given OwnedEntity, e.g. 
-     * NGI, Site, ServiceGroup, Project. 
+     * Get the class name of the class that extends the given OwnedEntity, e.g.
+     * NGI, Site, ServiceGroup, Project.
      * @param \OwnedEntity $entity
-     * @return string Class name 
-     * @throws LogicException if the OwnedEntity is not supported/configured 
+     * @return string Class name
+     * @throws LogicException if the OwnedEntity is not supported/configured
      */
     public function getOwnedEntityDerivedClassName(\OwnedEntity $entity){
-        // Would be better to use the get_class method to determine the instance 
+        // Would be better to use the get_class method to determine the instance
         // class name, however, there have been instances where this has returned
         // a class name of the following form: 'DoctrineProxies\__CG__\Site'
-        // which would cause issues. 
-        // 
+        // which would cause issues.
+        //
         //$entityClassName= get_class($entity);
-        
+
          if($entity instanceof \Site){
-           $entityClassName = 'Site';  
+           $entityClassName = 'Site';
         } else if($entity instanceof \NGI){
-            $entityClassName = 'NGI'; 
+            $entityClassName = 'NGI';
         } else if($entity instanceof \Project){
-            $entityClassName = 'Project'; 
+            $entityClassName = 'Project';
         } else if($entity instanceof \ServiceGroup){
-            $entityClassName = 'ServiceGroup'; 
+            $entityClassName = 'ServiceGroup';
         } else {
             throw new LogicException("Coding error - OwnedEntity type is not mapped");
         }
-        return $entityClassName; 
+        return $entityClassName;
     }
-    
-    
+
+
 
 }
 

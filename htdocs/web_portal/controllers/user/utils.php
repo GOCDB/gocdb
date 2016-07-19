@@ -40,7 +40,7 @@ function getUserDataFromWeb() {
 
 
 /**
- * Checks witht the config service if the portal is in read only mode and if 
+ * Checks witht the config service if the portal is in read only mode and if
  * it is throws an exception
  * @throws \Exception
  */

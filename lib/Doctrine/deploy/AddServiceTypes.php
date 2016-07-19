@@ -18,7 +18,7 @@ foreach($sts as $st) {
         if($key == "SERVICE_TYPE_NAME") {
             $name = (string) $value;
         }
-        
+
         if($key == "SERVICE_TYPE_DESC") {
             $desc = (string) $value;
         }

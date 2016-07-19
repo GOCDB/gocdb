@@ -6,7 +6,7 @@
         <input type="text" value="<?php xecho($params['Name']) ?>" name="Name" class="input_input_text">
         <span class="input_name">Description</span>
         <input type="text" value="<?php xecho($params['Description']) ?>" name="Description" class="input_input_text">
-        
+
         <br />
         <input class="input_input_hidden" type="hidden" name="Id" value="<?php echo $params['Id'] ?>" />
         <br />

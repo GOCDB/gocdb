@@ -1,5 +1,5 @@
 <?php
-function se_downtimes() {    
+function se_downtimes() {
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }

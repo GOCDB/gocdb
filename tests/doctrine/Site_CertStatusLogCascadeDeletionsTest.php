@@ -12,13 +12,13 @@ use Doctrine\ORM\EntityManager;
 require_once dirname(__FILE__) . '/bootstrap.php';
 
 /**
- * Test the CertStatusLog cascade delete functionality.    
- * 
+ * Test the CertStatusLog cascade delete functionality.
+ *
  * This test case truncates the test database (a clean insert with no seed data)
- * and performs subsequent CRUD operations using Doctrine ORM. 
- * Usage: 
+ * and performs subsequent CRUD operations using Doctrine ORM.
+ * Usage:
  * Run the recreate.sh to create the sample database first (create tables etc), then run:
- * '$phpunit TestSite_CertStatusLogCascadeDeletions.php' 
+ * '$phpunit TestSite_CertStatusLogCascadeDeletions.php'
  *
  * @author David Meredith
  */
@@ -26,12 +26,12 @@ class Site_CertStatusLogCascadeDeletionsTest extends PHPUnit_Extensions_Database
 
     private $em;
 
-    //private $egiScope; 
-    //private $localScope; 
-    //private $eudatScope; 
+    //private $egiScope;
+    //private $localScope;
+    //private $eudatScope;
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     public static function setUpBeforeClass() {
         parent::setUpBeforeClass();
@@ -49,8 +49,8 @@ class Site_CertStatusLogCascadeDeletionsTest extends PHPUnit_Extensions_Database
     }
 
     /**
-     * Overridden. Returns the test dataset.  
-     * Defines how the initial state of the database should look before each test is executed. 
+     * Overridden. Returns the test dataset.
+     * Defines how the initial state of the database should look before each test is executed.
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
     protected function getDataSet() {
@@ -60,7 +60,7 @@ class Site_CertStatusLogCascadeDeletionsTest extends PHPUnit_Extensions_Database
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getSetUpOperation() {
         // CLEAN_INSERT is default
@@ -68,14 +68,14 @@ class Site_CertStatusLogCascadeDeletionsTest extends PHPUnit_Extensions_Database
         //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
         //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
         //
-        // Issue a DELETE from <table> which is more portable than a 
-        // TRUNCATE table <table> (some DBs require high privileges for truncate statements 
+        // Issue a DELETE from <table> which is more portable than a
+        // TRUNCATE table <table> (some DBs require high privileges for truncate statements
         // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
         return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getTearDownOperation() {
         // NONE is default
@@ -92,7 +92,7 @@ class Site_CertStatusLogCascadeDeletionsTest extends PHPUnit_Extensions_Database
     }
 
     /**
-     * @todo Still need to setup connection to different databases. 
+     * @todo Still need to setup connection to different databases.
      * @return EntityManager
      */
     private function createEntityManager() {
@@ -114,7 +114,7 @@ class Site_CertStatusLogCascadeDeletionsTest extends PHPUnit_Extensions_Database
             //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM " . $tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
-            //echo 'row count: '.$result->getRowCount() ; 
+            //echo 'row count: '.$result->getRowCount() ;
             if ($result->getRowCount() != 0)
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
         }
@@ -132,7 +132,7 @@ class Site_CertStatusLogCascadeDeletionsTest extends PHPUnit_Extensions_Database
 
         $this->em->flush();
 
-        // Need to clear the identity map (all objects become detached) so that 
+        // Need to clear the identity map (all objects become detached) so that
         // when we re-fetch the user, it will be looked from db not served by entity map
         $this->em->clear();
 
@@ -143,7 +143,7 @@ class Site_CertStatusLogCascadeDeletionsTest extends PHPUnit_Extensions_Database
 
     }
 
-    
+
 }
 
 ?>

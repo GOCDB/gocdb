@@ -16,14 +16,14 @@
             </a>
         </span>
     </div>
-    
+
     <!--  Projects -->
     <div class="listContainer">
         <span class="header listHeader">
             <?php echo sizeof($params['Projects']) ?> Project<?php if(sizeof($params['Projects']) != 1) echo "s"?>
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
-    
+
         <table id="selectedProjTable" class="table table-striped table-condensed tablesorter">
         <thead>
             <tr>
@@ -31,7 +31,7 @@
                 <th>Description</th>
             </tr>
         </thead>
-            <?php           
+            <?php
             //$num = 2;
             foreach($params['Projects'] as $project) {
             ?>
@@ -41,13 +41,13 @@
             <?php xecho($project->getName()); ?>
             </a>
                 </td>
-                    
+
                 <td>
                     <?php xecho($project->getDescription()); ?>
                 </td>
-                
+
             </tr>
-            <?php  
+            <?php
                 //if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over Projs
             ?>

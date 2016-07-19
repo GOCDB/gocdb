@@ -4,12 +4,12 @@
     <a href="index.php?Page_Type=Project&id=<?php echo $params['ID']?>">
     <?php echo $params['Name'];?>
     </a> project:
-    <?php 
+    <?php
         foreach($params['NGIs'] as $ngi){
             echo "<br />"
                 . "<a href=\"index.php?Page_Type=NGI&id=" . $ngi->getId() ."\">"
                 .  $ngi->getName()
                 . "</a> ";
-        }	
+        }
     ?>
 </div>

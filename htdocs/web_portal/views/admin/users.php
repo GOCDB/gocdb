@@ -1,4 +1,4 @@
-<?php $users = $params["Users"] ?> 
+<?php $users = $params["Users"] ?>
 <?php $numUsers = sizeof($users) ?>
 
 <div class="rightPageContainer">
@@ -12,7 +12,7 @@
         All users in GOCDB
         <br />
     </span>
-    
+
     <!-- Filter -->
     <div class="siteContainer">
         <form action="index.php?Page_Type=Admin_Users" method="GET" class="inline">
@@ -21,13 +21,13 @@
             <span class="header leftFloat">
                 Filter <a href="index.php?Page_Type=Admin_Users">&nbsp;&nbsp;(clear)</a>
             </span>
-        
+
             <br />
-            
+
             <div class="topMargin leftFloat siteFilter">
                 <span class="middle" style="margin-right: 0.4em">Forename: </span>
-                <input class="middle" style="width: 5.5em;" type="text" name="Forename" 
-                    <?php if(isset($params['Forename'])) 
+                <input class="middle" style="width: 5.5em;" type="text" name="Forename"
+                    <?php if(isset($params['Forename']))
                         xecho("value=".$params['Forename']);
                     ?>
                 />
@@ -35,8 +35,8 @@
 
             <div class="topMargin leftFloat siteFilter">
                 <span class="middle" style="margin-right: 0.4em">Surname: </span>
-                <input class="middle" style="width: 5.5em;" type="text" name="Surname" 
-                    <?php if(isset($params['Surname'])) 
+                <input class="middle" style="width: 5.5em;" type="text" name="Surname"
+                    <?php if(isset($params['Surname']))
                        xecho("value=".$params['Surname']);
                     ?>
                 />
@@ -47,27 +47,27 @@
                 <select name="IsAdmin" onchange="form.submit()">
                     <option value=""<?php if($params['IsAdmin'] == null) echo " selected" ?>>(all)</option>
                     <option value="true"<?php if($params['IsAdmin'] == true) echo " selected" ?>>Yes</option>
-                    <option value="false"<?php if($params['IsAdmin'] == false and !is_null($params['IsAdmin'])) echo " selected" ?>>No</option> 
+                    <option value="false"<?php if($params['IsAdmin'] == false and !is_null($params['IsAdmin'])) echo " selected" ?>>No</option>
                 </select>
             </div>
-            
+
             <div class="topMargin leftFloat siteFilter">
                 <span class="middle" style="margin-right: 0.4em">Certificate DN: </span>
-                <input class="middle" style="width: 11em;" type="text" name="DN" 
-                    <?php if(isset($params['DN'])) 
+                <input class="middle" style="width: 11em;" type="text" name="DN"
+                    <?php if(isset($params['DN']))
                         xecho("value=".$params['DN']);
                     ?>
                 />
             </div>
- 
-            
+
+
             <div class="topMargin leftFloat siteFilter">
                 <input class="middle" type="image" src="<?php echo \GocContextPath::getPath()?>img/enter.png" name="image" width="20" height="20">
             </div>
 
         </form>
     </div>
-    
+
     <!--  Users -->
     <div class="listContainer">
         <span class="header listHeader">
@@ -83,7 +83,7 @@
                     <th class="site_table">Certificate DN</th>
                     <th class="site_table">GOCDB<br>Admin.?</th>
                 </tr>
-                <?php           
+                <?php
                 $num = 2;
                 if($numUsers > 0) {
                 foreach($users as $user) {
@@ -108,7 +108,7 @@
                                 </a>
                             </span>
                         </div>
-                    </td>  
+                    </td>
 
                     <td class="site_table">
                         <!--<a href="index.php?Page_Type=Admin_Change_User_Admin_Status&id=<?php echo $user->getId() ?>">-->
@@ -130,20 +130,20 @@
                     </td>
 
                 </tr>
-                <?php  
+                <?php
                     if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over sites
                 }
                 ?>
             </table>
-            
+
             <div style="margin-right: 0.4em">
                 <br>
                 &nbsp; Click on a user's name to view more details, or to edit or
                 delete them. Click on their DN to update it.
                 <!-- Click on the tick or cross to promote them to or demote them from GOCDB admin status-->
             </div>
-                
+
         <?php endif; ?>
-    </div>      
+    </div>
 </div>

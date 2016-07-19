@@ -23,8 +23,8 @@ $res = test_url(SERVER_BASE_URL);
 $test_statuses["GOCDB5 central portal availability"] = $res["status"];
 $test_messages["GOCDB5 central portal availability"] = $res["message"];
 
-            
-// DISPLAY RESULTS			
+
+// DISPLAY RESULTS
 echo("<H2>Service status overview</H2>");
 echo("<table border=1 cellspacing=0 cellpadding=5>");
 echo("<tr><td><b>Test</b></td><td><b>Status</b></td><td><b>Details</b></td><td><b>Doc/help</b></td></tr>");
@@ -35,7 +35,7 @@ foreach ($test_statuses as $test => $status){
             .$disp[$status]."<td><font size='1'>".
             $test_messages[$test]."</font></td><td><font size='1'>".
             $test_doc[$test]."</font></td></tr>");
-}			
+}
 echo("</table>");
 
 echo("<hr/><br/><br/>");

@@ -9,7 +9,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
 
 
 <div class="rightPageContainer">
-    
+
     <!--Headings-->
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;">Service Type: <?php echo $name?></h1>
@@ -40,13 +40,13 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
             </div>
         </div>
     <?php endif; ?>
-    
+
 
     <!--  Services -->
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-            There <?php if ($SEsCount ==0) {echo 'are no services';} 
-                        elseif ($SEsCount==1) {echo 'is one service';} 
+            There <?php if ($SEsCount ==0) {echo 'are no services';}
+                        elseif ($SEsCount==1) {echo 'is one service';}
                         else {echo 'are ' . $SEsCount . ' services';}?>
             with <?php echo $name ?> service type<?php if ($SEsCount == 0) {echo '.';} else {echo ':';}?>
         </span>
@@ -59,7 +59,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                     <th class="site_table">Monitored</th>
                     <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
                 </tr>
-            
+
 
                 <?php $num = 2;
 

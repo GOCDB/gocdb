@@ -14,14 +14,14 @@
  */
 
 /*
- * Script to query and update each user's EGI SSO user name value in the 
- * DB (User->username1). Note, the EGI SSO username is NOT used as a the 
- * user's unique principle string in the DB and so does not need to be unique. 
- * The transaction is committed only after updating 
- * all the username values in the DB (either all usernames are updated or none). 
+ * Script to query and update each user's EGI SSO user name value in the
+ * DB (User->username1). Note, the EGI SSO username is NOT used as a the
+ * user's unique principle string in the DB and so does not need to be unique.
+ * The transaction is committed only after updating
+ * all the username values in the DB (either all usernames are updated or none).
  * <p>
- * This script is usually ran from an external cron.hourly. 
- * 
+ * This script is usually ran from an external cron.hourly.
+ *
  * @author David Meredith
  */
 require_once dirname(__FILE__) . "/../lib/Doctrine/bootstrap.php";
@@ -33,7 +33,7 @@ $em = $entityManager;
 $dql = "SELECT u FROM User u";
 $users = $entityManager->createQuery($dql)->getResult();
 
-echo "Starting update of EGI SSO usernames at: ".date('D, d M Y H:i:s')."\n"; 
+echo "Starting update of EGI SSO usernames at: ".date('D, d M Y H:i:s')."\n";
 $count = 0;
 foreach ($users as $user) {
     ++$count;
@@ -47,7 +47,7 @@ foreach ($users as $user) {
         curl_setopt($ch, CURLOPT_PROXYPORT, 8080);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); //return result instead of outputting it
-        curl_setopt($ch, CURLOPT_TIMEOUT, 3); //3secs 
+        curl_setopt($ch, CURLOPT_TIMEOUT, 3); //3secs
         $ssousername = trim(curl_exec($ch));
         //if(curl_errno($ch)){ // error occured. //}
         //$info = curl_getinfo($ch);
@@ -59,16 +59,16 @@ foreach ($users as $user) {
             $ssousername = null;
         }
         //echo $count . ' ' . $user->getCertificateDn() . "  " . $ssousername . "\n";
-        //echo $count.",";   
+        //echo $count.",";
         if($ssousername != null){
-          $user->setUsername1($ssousername); 
-          $em->persist($user); 
+          $user->setUsername1($ssousername);
+          $em->persist($user);
           //$em->flush();
         }
     }
 }
 $em->flush();
-echo "Completed ok: ".date('D, d M Y H:i:s'); 
+echo "Completed ok: ".date('D, d M Y H:i:s');
 
 function cleanDN($dn) {
     return trim(str_replace(' ', '%20', $dn));

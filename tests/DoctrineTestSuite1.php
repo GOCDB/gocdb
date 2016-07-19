@@ -19,7 +19,7 @@ require_once __DIR__ . '/unit/lib/Gocdb_Services/ScopeServiceTest.php';
 
 /**
  * TestSuite designed to run the main doctrine tests
- * @author David Meredith <david.meredith@stfc.ac.uk> 
+ * @author David Meredith <david.meredith@stfc.ac.uk>
  */
 class DoctrineTestSuite1 {
     public static function suite() {

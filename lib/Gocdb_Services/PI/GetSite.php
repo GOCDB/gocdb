@@ -13,18 +13,18 @@ require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
 
 /**
- * Return an XML document that encodes the Site entities. 
- * Optionally provide an associative array of query parameters with values 
- * used to restrict the results. Only known parameters are honoured while 
+ * Return an XML document that encodes the Site entities.
+ * Optionally provide an associative array of query parameters with values
+ * used to restrict the results. Only known parameters are honoured while
  * unknown produce and error doc. Parmeter array keys include:
  * <pre>
- * 'sitename', 'roc', 'country', 'certification_status', 
+ * 'sitename', 'roc', 'country', 'certification_status',
  * 'exclude_certification_status', 'production_status', 'scope', 'scope_match', 'extensions'
- * (where scope refers to Site scope) 
+ * (where scope refers to Site scope)
  * </pre>
- * 
+ *
  * @author James McCarthy
- * @author David Meredith 
+ * @author David Meredith
  */
 class GetSite implements IPIQuery {
 
@@ -33,20 +33,20 @@ class GetSite implements IPIQuery {
     protected $em;
     private $helpers;
     private $sites;
-    private $baseUrl; 
+    private $baseUrl;
 
-    /** 
-     * Constructor takes entity manager which is then used by the query builder 
+    /**
+     * Constructor takes entity manager which is then used by the query builder
      * @param EntityManager $em
-     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output.
      */
     public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal') {
         $this->em = $em;
         $this->helpers = new Helpers();
-        $this->baseUrl = $baseUrl; 
+        $this->baseUrl = $baseUrl;
     }
 
-    /** 
+    /**
      * Validates parameters against array of pre-defined valid terms for this PI type
      * @param array $parameters
      */
@@ -105,8 +105,8 @@ class GetSite implements IPIQuery {
 
         //Run ScopeQueryBuilder regardless of if scope is set.
         $scopeQueryBuilder = new ScopeQueryBuilder(
-                (isset($parameters['scope'])) ? $parameters['scope'] : null, 
-                (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null, 
+                (isset($parameters['scope'])) ? $parameters['scope'] : null,
+                (isset($parameters['scope_match'])) ? $parameters['scope_match'] : null,
                 $qb, $this->em, $bc, 'Site', 's'
         );
 
@@ -162,7 +162,7 @@ class GetSite implements IPIQuery {
         return $this->sites;
     }
 
-    /** Returns proprietary GocDB rendering of the sites data 
+    /** Returns proprietary GocDB rendering of the sites data
      *  in an XML String
      * @return String
      */
@@ -212,12 +212,12 @@ class GetSite implements IPIQuery {
             $helpers->addIfNotEmpty($xmlSite, 'SITE_IP', $site->getIpRange());
             $helpers->addIfNotEmpty($xmlSite, 'SITE_IPV6', $site->getIpV6Range());
 
-            // scopes  
+            // scopes
             $xmlScopes = $xmlSite->addChild('SCOPES');
             foreach($site->getScopes() as $scope){
-               $xmlScope = $xmlScopes->addChild('SCOPE', xssafe($scope->getName())); 
+               $xmlScope = $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
             }
-            
+
             $xmlExtensions = $xmlSite->addChild('EXTENSIONS');
             foreach ($site->getSiteProperties() as $siteProp) {
                 //if ($siteProp != "") {
@@ -226,27 +226,27 @@ class GetSite implements IPIQuery {
                     $xmlSiteProperty->addChild('KEY', xssafe($siteProp->getKeyName()));
                     $xmlSiteProperty->addChild('VALUE', xssafe($siteProp->getKeyValue()));
 
-                    // If we want support any char in a property, then we will probably 
+                    // If we want support any char in a property, then we will probably
                     // need to support CDATA sections rather than escaping the
-                    // value using xsafe. Below shows how this can be done.  
-                    // this don't work for obvious reasons: 
+                    // value using xsafe. Below shows how this can be done.
+                    // this don't work for obvious reasons:
                     //$xmlSiteProperty->addChild ( 'VALUE', '<![CDATA[<dave>d</dave>]]>' );
                     //$xmlSiteProperty->addChild ( 'VALUE', '<dave>d</dave>' );
-                    // Both the samples below show how a CDATA section can be 
-                    // added to a SimpleXMLElement. The logic uses the DOM api 
-                    // because the SimpleXML api don't support adding CDATA. 
-                    // For performance reasons, it may be necessary to create the 
+                    // Both the samples below show how a CDATA section can be
+                    // added to a SimpleXMLElement. The logic uses the DOM api
+                    // because the SimpleXML api don't support adding CDATA.
+                    // For performance reasons, it may be necessary to create the
                     // whole doc using DOM rather than SimpleXML which would save
-                    // on expesnive conversion to/from the SimpleXML to/from DOM. 
+                    // on expesnive conversion to/from the SimpleXML to/from DOM.
 //                    $myextended = new SimpleXMLExtended('<mycdata/>');
 //                    $myextended->title = NULL; // VERY IMPORTANT! We need a node where to append
 //                    $myextended->title->addCData('<dave>d</dave>');
 //                    $myextended->title->addAttribute('lang', 'en');
-//                    $this->sxml_append($xmlSiteProperty, $myextended); 
+//                    $this->sxml_append($xmlSiteProperty, $myextended);
 //                    $myextended = new SimpleXMLExtended('<mycdata/>');
 //                    $myextended->addCData('<dave>https://dave.dl.ac.uk/query?a=b&c=d</dave>');
 //                    $myextended->addAttribute('lang', 'en');
-//                    $this->sxml_append($xmlSiteProperty, $myextended); 
+//                    $this->sxml_append($xmlSiteProperty, $myextended);
                 //}
             }
         }
@@ -262,7 +262,7 @@ class GetSite implements IPIQuery {
     }
 
     /**
-     * Append the $to element as a child to $from. 
+     * Append the $to element as a child to $from.
      * @param \SimpleXMLElement $to
      * @param \SimpleXMLElement $from
      */
@@ -273,7 +273,7 @@ class GetSite implements IPIQuery {
     }
 
     /** Returns the site data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
     public function getGlue2XML() {
@@ -361,7 +361,7 @@ class GetSite implements IPIQuery {
         return $xmlString;
     }
 
-    /** Not yet implemented, in future will return the sites 
+    /** Not yet implemented, in future will return the sites
      *  data in JSON format
      * @throws LogicException
      */

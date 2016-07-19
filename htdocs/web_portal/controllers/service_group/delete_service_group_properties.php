@@ -49,7 +49,7 @@ function submit(array $propertyArray, \ServiceGroup $serviceGroup, \User $user =
 
      $params['propArr'] = $propertyArray;
      $params['serviceGroup'] = $serviceGroup;
-     
+
      //remove service group property
      try {
         $serv = \Factory::getServiceGroupService();
@@ -57,9 +57,9 @@ function submit(array $propertyArray, \ServiceGroup $serviceGroup, \User $user =
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
-    }   
-    
-    
+    }
+
+
     show_view('/service_group/deleted_service_group_properties.php', $params);
 
 }

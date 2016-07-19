@@ -12,14 +12,14 @@
             <!--  Services -->
             <form class="inputForm" method="post" action="index.php?Page_Type=Remove_Project_NGIs" name="removeNGIs">
                 <span class="input_name">
-                    Please select the NGIs you wish to remove from the 
+                    Please select the NGIs you wish to remove from the
                     <?php xecho($params['Name'])?> project.
                 </span>
                 <select class="Downtime_Select" name="NGIs[]" size="20"  multiple id="NGIs" style="margin-left: 0em; width: 38em;">
                     <?php
                     foreach($params['NGIs'] as $ngi) {
                         echo "<option value=\"". $ngi->getId() . "\">"; xecho($ngi->getName()); echo "</option>";
-                    }	
+                    }
                     ?>
                 </select>
                 <br />
@@ -28,7 +28,7 @@
             </form>
             <br/>
             <br/>
-            Return to 
+            Return to
             <a href="index.php?Page_Type=Project&id=<?php echo $params['ID'] ?>">
                  <?php xecho($params['Name']) ?>
             </a>

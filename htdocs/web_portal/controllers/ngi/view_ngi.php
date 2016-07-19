@@ -24,7 +24,7 @@ function view_ngi() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
-    
+
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     }
@@ -33,19 +33,19 @@ function view_ngi() {
     //get user for case that portal is read only and user is admin, so they can still see edit links
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    
+
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
-    
+
     $params['UserIsAdmin']=false;
     if(!is_null($user)) {
         $params['UserIsAdmin']=$user->isAdmin();
     }
-    
-    $params['authenticated'] = false; 
+
+    $params['authenticated'] = false;
     if($user != null){
-        $params['authenticated'] = true; 
+        $params['authenticated'] = true;
     }
-    
+
     $ngiServ = \Factory::getNgiService();
     $siteServ = \Factory::getSiteService();
     $ngi = $ngiServ->getNgi($ngiId);
@@ -56,33 +56,33 @@ function view_ngi() {
     if (\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $ngi, $user)->getGrantAction())  {
         $params['ShowEdit'] = true;
     }
-      
-    // Add ngi to params 
+
+    // Add ngi to params
     $params['ngi'] = $ngi;
 
-    // Add all roles over ngi to params 
+    // Add all roles over ngi to params
     $allRoles = $ngi->getRoles();
-    $roles = array(); 
+    $roles = array();
     foreach ($allRoles as $role){
         if($role->getStatus() == \RoleStatus::GRANTED){
-            $roles[] = $role; 
+            $roles[] = $role;
         }
     }
     $params['roles'] = $roles;
 
-    // Add ngi's project to params 
+    // Add ngi's project to params
     $projects = $ngi->getProjects();
     $params['Projects']= $projects;
 
-    // Add sites and scopes to params 
+    // Add sites and scopes to params
     $params['SitesAndScopes']=array();
     foreach($ngi->getSites() as $site){
         $params['SitesAndScopes'][]=array('Site'=>$site, 'Scopes'=>$siteServ->getScopesWithParentScopeInfo($site));
     }
-   
-    // Add RoleActionRecords to params 
-    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($ngi->getId(), 'ngi'); 
-    
+
+    // Add RoleActionRecords to params
+    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($ngi->getId(), 'ngi');
+
     show_view('ngi/view_ngi.php', $params, $ngi->getName());
     die();
 }

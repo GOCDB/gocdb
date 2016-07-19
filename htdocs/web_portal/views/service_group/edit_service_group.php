@@ -16,12 +16,12 @@ $sg = $params['serviceGroup'];
 
         <br/>
         <br/>
-        
+
         <!-- Scope Tags-->
-        <?php 
-        $parentObjectTypeLabel = ''; 
+        <?php
+        $parentObjectTypeLabel = '';
         require_once __DIR__ . '/../fragments/editScopesFragment.php';
-        ?> 
+        ?>
 
         <input class="input_input_hidden" type="hidden" name="objectId" value="<?php echo $sg->getId(); ?>" />
         <br />
@@ -34,11 +34,11 @@ $sg = $params['serviceGroup'];
 
     $(document).ready(function () {
         var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
-        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
-          '#reservedScopeCheckBoxDIV', 
-          '#reservedOptionalScopeCheckBoxDIV', 
+        ScopeUtil.addScopeCheckBoxes(scopeJSON,
+          '#reservedScopeCheckBoxDIV',
+          '#reservedOptionalScopeCheckBoxDIV',
           '#reservedOptionalInhertiableScopeCheckBoxDIV',
-          '#optionalScopeCheckBoxDIV', 
+          '#optionalScopeCheckBoxDIV',
           true);
     });
-</script> 
+</script>

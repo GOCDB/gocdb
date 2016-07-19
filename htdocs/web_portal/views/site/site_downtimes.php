@@ -61,4 +61,4 @@ $downtimes = $params['downtimes'];
     $("#allSiteDowntimesTable").tablesorter();
     }
     );
-</script> 
+</script>

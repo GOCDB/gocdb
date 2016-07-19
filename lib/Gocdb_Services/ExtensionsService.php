@@ -19,43 +19,43 @@ require_once __DIR__ . '/AbstractEntityService.php';;
  * @author James McCarthy
  */
 class ExtensionsService extends AbstractEntityService{
-    
+
     /**
-     * This method will return all site extensions from the siteProperties 
+     * This method will return all site extensions from the siteProperties
      * table.
      */
     public function getSiteExtensionsKeynames() {
-                
+
         $qb = $this->em->createQueryBuilder();
         $qb ->select('DISTINCT sp')
             ->from('SiteProperty', 'sp');
-    
+
         return $qb->getQuery()->execute();
     }
-    
+
     /**
      * This method will return all service extensions from the serviceProperties
-     * table.     
+     * table.
      */
     public function getServiceExtensionsKeyNames() {
-    
+
         $qb = $this->em->createQueryBuilder();
         $qb ->select('DISTINCT sp')
             ->from('ServiceProperty', 'sp');
-    
+
         return $qb->getQuery()->execute();
     }
-    
+
     /**
      * This method will return all service group extensions from the serviceGroupProperties
      * table.
      */
     public function getServiceGroupExtensionsKeyNames() {
-    
+
         $qb = $this->em->createQueryBuilder();
         $qb ->select('DISTINCT sp')
         ->from('ServiceGroupProperty', 'sp');
-    
+
         return $qb->getQuery()->execute();
-    }    
+    }
 }

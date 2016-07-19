@@ -10,7 +10,7 @@
             Sites and groups from your roles
         </span>
     </div>
-    
+
     <!-- NGIs and Sites from My Roles -->
     <div style="float: left; width: 100%; margin-top: 2em;">
         <!--  Sites -->
@@ -19,7 +19,7 @@
             <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['sites_from_roles'])) {
-                        $num = 1; 
+                        $num = 1;
                         foreach($params['sites_from_roles'] as $site) { ?>
                         <tr class="site_table_row_<?php echo $num ?>">
                             <td class="site_table">
@@ -27,18 +27,18 @@
                             </td>
                         </tr>
                         <?php if($num == 1) { $num = 2; } else { $num = 1; } } ?>
-                    
+
                 <?php }?>
             </table>
         </div>
-        
+
         <!--  NGIs -->
         <div class="tableContainer" style="width: 42%; float: right;" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">NGIs From Your Roles</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['ngis_from_roles'])) {
-                        $num = 1; 
+                        $num = 1;
                         foreach($params['ngis_from_roles'] as $ngi) { ?>
                         <tr class="site_table_row_<?php echo $num ?>">
                             <td class="site_table">
@@ -46,12 +46,12 @@
                             </td>
                         </tr>
                         <?php if($num == 1) { $num = 2; } else { $num = 1; } } ?>
-                    
+
                 <?php } ?>
             </table>
         </div>
     </div>
-    
+
     <!-- Service Groups and projects from My Roles -->
     <div style="float: left; width: 100%; margin-top: 2em;">
         <!--  Service Groups -->
@@ -60,7 +60,7 @@
             <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['sgroups_from_roles'])) {
-                        $num = 1; 
+                        $num = 1;
                         foreach($params['sgroups_from_roles'] as $sg) { ?>
                         <tr class="site_table_row_<?php echo $num ?>">
                             <td class="site_table">
@@ -68,18 +68,18 @@
                             </td>
                         </tr>
                         <?php if($num == 1) { $num = 2; } else { $num = 1; } } ?>
-                    
+
                 <?php }?>
             </table>
         </div>
-    
+
         <!--  Projects -->
         <div class="tableContainer" style="width: 42%; float: right;" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Projects From Your Roles</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['projects_from_roles'])) {
-                        $num = 1; 
+                        $num = 1;
                         foreach($params['projects_from_roles'] as $project) { ?>
                         <tr class="site_table_row_<?php echo $num ?>">
                             <td class="site_table">
@@ -87,7 +87,7 @@
                             </td>
                         </tr>
                         <?php if($num == 1) { $num = 2; } else { $num = 1; } } ?>
-                    
+
                 <?php } ?>
             </table>
         </div>

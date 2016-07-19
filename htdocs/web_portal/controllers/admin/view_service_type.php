@@ -2,8 +2,8 @@
 /*______________________________________________________
  *======================================================
  * File: view_service_type.php
- * Author: George Ryall, David Meredith 
- * Description: Controller for displaying a service type and associated services 
+ * Author: George Ryall, David Meredith
+ * Description: Controller for displaying a service type and associated services
  *
  * License information
  *
@@ -22,7 +22,7 @@ require_once __DIR__ . '/../utils.php';
 require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
 
 function view_service_type(){
-     //Check the user has permission to see the page, will throw exception 
+     //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
@@ -30,17 +30,17 @@ function view_service_type(){
     }
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    
+
     $serv= \Factory::getServiceTypeService();
     $serviceType =$serv ->getServiceType($_REQUEST['id']);
-            
+
     $params['Name'] = $serviceType -> getName();
     $params['Description'] = $serviceType -> getDescription();
     $params['ID']= $serviceType ->getId();
     $params['Services'] = $serv ->getServices($params['ID']);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
-    
+
     show_view("admin/view_service_type.php", $params, $params['Name']);
-            
+
 }
 

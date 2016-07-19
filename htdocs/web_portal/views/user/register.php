@@ -4,10 +4,10 @@
         <h1>Register</h1>
         <br />
         Register Unique Identity: <b> <?php echo($params['dn']); ?> </b>
-        <br/> 
-        <br/> 
+        <br/>
+        <br/>
 
-        
+
     <div class="alert alert-warning" role="alert">
             <h3>Terms and Conditions of Account Registration</h3>
             <ul>
@@ -42,7 +42,7 @@
                 echo '<br>';
             }
             ?>
-        </div> 
+        </div>
         <br>
 
         <span class="input_name">

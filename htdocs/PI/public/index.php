@@ -2,7 +2,7 @@
     /*______________________________________________________
      *======================================================
      * File: index.php
-     * Author: John Casson, David Meredith 
+     * Author: John Casson, David Meredith
      * Description: Entry point for the programmatic interface
      *
      * License information
@@ -19,6 +19,6 @@
      * limitations under the License.
      *
     /*====================================================== */
-    
+
     include '../index.php';
 ?>

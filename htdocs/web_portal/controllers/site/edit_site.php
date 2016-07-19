@@ -33,7 +33,7 @@ function edit_site() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {
         submit($user);
     } else {
@@ -49,21 +49,21 @@ function edit_site() {
  */
 function draw(\User $user = null) {
     // can user assign reserved scopes to this site, even though site has not been created yet?
-    $disableReservedScopes = true; 
+    $disableReservedScopes = true;
     if($user->isAdmin()){
-    $disableReservedScopes = false; 
-    } 
-    
+    $disableReservedScopes = false;
+    }
+
     // URL mapping
     /*if(isset($_GET['getAllScopesForScopedEntity']) && is_numeric($_GET['getAllScopesForScopedEntity'])){
-        // Return all scopes for the Site with the specified Id as a JSON object 
-        // Used in ajax requests for generating UI checkboxes 
-        $site = \Factory::getSiteService()->getSite($_GET['getAllScopesForScopedEntity']); 
-        die(getEntityScopesAsJSON($site, $disableReservedScopes));  
-        
+        // Return all scopes for the Site with the specified Id as a JSON object
+        // Used in ajax requests for generating UI checkboxes
+        $site = \Factory::getSiteService()->getSite($_GET['getAllScopesForScopedEntity']);
+        die(getEntityScopesAsJSON($site, $disableReservedScopes));
+
     } else */
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
-        // Else to render the page, an id must be specified 
+        // Else to render the page, an id must be specified
         throw new Exception("An id must be specified");
     }
 
@@ -72,15 +72,15 @@ function draw(\User $user = null) {
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
             \Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE){
         throw new Exception('You do not have permission to edit this Site');
-    } 
+    }
 
 
     $countries = \Factory::getSiteService()->getCountries();
-    $timezones =  DateTimeZone::listIdentifiers(); // get the standard values 
-    
+    $timezones =  DateTimeZone::listIdentifiers(); // get the standard values
+
     //Remove SC and PPS infrastructures from drop down list (unless site has one of them). TODO: Delete this block once they no longer exist
     $SCInfrastructure = \Factory::getSiteService()->getProdStatusByName('SC');
-    $PPSInfrastructure = \Factory::getSiteService()->getProdStatusByName('PPS'); 
+    $PPSInfrastructure = \Factory::getSiteService()->getProdStatusByName('PPS');
     $hackprodStatuses=array();
     foreach(\Factory::getSiteService()->getProdStatuses() as $ps){
         if(($ps != $SCInfrastructure and $ps != $PPSInfrastructure) or $ps == $site->getInfrastructure()){
@@ -91,12 +91,12 @@ function draw(\User $user = null) {
 
     $numberOfScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('site');
     $scopeJson = getEntityScopesAsJSON2($site, $site->getNgi(), $disableReservedScopes);
-    //die($scopeJson); 
+    //die($scopeJson);
 
     $params = array("site" => $site, "timezones" => $timezones,
         "countries" => $countries, "prodStatuses" => $prodStatuses,
         "numberOfScopesRequired" =>$numberOfScopesRequired,
-        "disableReservedScopes"=>$disableReservedScopes, 
+        "disableReservedScopes"=>$disableReservedScopes,
         "scopejson"=> $scopeJson);
 
     show_view('site/edit_site.php', $params);
@@ -111,7 +111,7 @@ function submit(\User $user = null) {
     try {
         //print_r($_POST);
         $newValues = getSiteDataFromWeb();
-        //print_r($newValues); 
+        //print_r($newValues);
         $siteId = \Factory::getSiteService()->getSite($newValues['ID']);
         $site = \Factory::getSiteService()->editSite($siteId, $newValues, $user);
         $params = array('site' => $site);

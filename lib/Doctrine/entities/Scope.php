@@ -14,16 +14,16 @@
 //use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * A Scope is a tag that is joined to entities that define the 
- * {@see \IScopedEntity} interface. 
+ * A Scope is a tag that is joined to entities that define the
+ * {@see \IScopedEntity} interface.
  * <p>
- * Scopes are used for resource matching and filtering, e.g. find all Sites 
- * that have a Scope value of 'X'. 
- * The relationship between Scope and an {@see \IScopedEntity} is a 
- * uni-directional aggregation (IScopedEntities do not own scopes, they are 
- * only linked to Scope instances). 
- *  
- * @author David Meredith <david.meredith@stfc.ac.uk> 
+ * Scopes are used for resource matching and filtering, e.g. find all Sites
+ * that have a Scope value of 'X'.
+ * The relationship between Scope and an {@see \IScopedEntity} is a
+ * uni-directional aggregation (IScopedEntities do not own scopes, they are
+ * only linked to Scope instances).
+ *
+ * @author David Meredith <david.meredith@stfc.ac.uk>
  * @Entity @Table(name="Scopes")
  */
 class Scope {
@@ -45,7 +45,7 @@ class Scope {
     }
 
     /**
-     * Get the unique name of the scope. 
+     * Get the unique name of the scope.
      * @return string
      */
     public function getName() {
@@ -53,7 +53,7 @@ class Scope {
     }
 
     /**
-     * Get a human readable description of this scope. 
+     * Get a human readable description of this scope.
      * @return string or null
      */
     public function getDescription() {
@@ -61,7 +61,7 @@ class Scope {
     }
 
     /**
-     * Set the unique name of this Scope instance. 
+     * Set the unique name of this Scope instance.
      * @param string $name
      */
     public function setName($name) {
@@ -69,7 +69,7 @@ class Scope {
     }
 
     /**
-     * Set the human readable description of this scope. 
+     * Set the human readable description of this scope.
      * @param string $description
      */
     public function setDescription($description) {
@@ -77,7 +77,7 @@ class Scope {
     }
 
     /**
-     * Returns the unique name of this Scope instance. 
+     * Returns the unique name of this Scope instance.
      * @return string
      */
     public function __toString() {

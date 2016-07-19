@@ -12,7 +12,7 @@ namespace org\gocdb\services;
  * limitations under the License.
  */
 require_once __DIR__ . '/AbstractEntityService.php';
-require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
+require_once __DIR__ . '/RoleActionAuthorisationService.php';
 
 /**
  * GOCDB Stateless service facade (business routnes) for certification status entities.
@@ -31,7 +31,7 @@ class CertificationStatus extends AbstractEntityService{
     }
 
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
-        $this->roleActionAuthorisationService = $roleActionAuthService; 
+        $this->roleActionAuthorisationService = $roleActionAuthService;
     }
 
     /**
@@ -57,52 +57,52 @@ class CertificationStatus extends AbstractEntityService{
     }
 
     /**
-     * User attempts to update the given site's certification status. 
+     * User attempts to update the given site's certification status.
      * @param \Site $site
      * @param \CertificationStatus $newCertStatus
      * @param \User $user
-     * @param string $reason The reason for this change, max 300 char. 
+     * @param string $reason The reason for this change, max 300 char.
      * @throws \Exception If access is denied or the change is invalid
      */
     public function editCertificationStatus(\Site $site, \CertificationStatus $newCertStatus, \User $user, $reason) {
         //$this->editAuthorization($site, $user);
-        //require_once __DIR__ . '/Site.php'; 
-        //$siteService = new \org\gocdb\services\Site(); 
+        //require_once __DIR__ . '/Site.php';
+        //$siteService = new \org\gocdb\services\Site();
         //$siteService->setEntityManager($this->em);
         //if(count($siteService->authorize Action(\Action::SITE_EDIT_CERT_STATUS, $site, $user))==0 ){
-       if($this->roleActionAuthorisationService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site, $user)->getGrantAction()== FALSE){ 
-           throw new \Exception('You do not have permission to change site certification status'); 
+       if($this->roleActionAuthorisationService->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site, $user)->getGrantAction()== FALSE){
+           throw new \Exception('You do not have permission to change site certification status');
        }
-        // TODO use validate service 
+        // TODO use validate service
         if(empty($reason) ){
-           throw new \LogicException('A reason is required');     
+           throw new \LogicException('A reason is required');
         }
         if(strlen($reason) > 300){
-            throw new \LogicException('Invalid reason - 300 char max'); 
-        } 
+            throw new \LogicException('Invalid reason - 300 char max');
+        }
         // Admins can do any cert status change, e.g. to undo mistakes.
         if(!$user->isAdmin()){
           $this->isChangeValid($site, $newCertStatus);
         }
-        $oldStatusString = $site->getCertificationStatus()->getName(); 
+        $oldStatusString = $site->getCertificationStatus()->getName();
         try {
             $this->em->beginTransaction();
-            $now = new \DateTime('now', new \DateTimeZone('UTC')); 
-            
-            // create a new CertStatusLog 
-            $certLog = new \CertificationStatusLog(); 
-            $certLog->setAddedBy($user->getCertificateDn()); 
-            $certLog->setNewStatus($newCertStatus->getName()); 
-            $certLog->setOldStatus($oldStatusString); 
-            $certLog->setAddedDate($now); 
-            $certLog->setReason($reason); 
-            $this->em->persist($certLog); 
-            
-            // update our site  
-            $site->addCertificationStatusLog($certLog); 
+            $now = new \DateTime('now', new \DateTimeZone('UTC'));
+
+            // create a new CertStatusLog
+            $certLog = new \CertificationStatusLog();
+            $certLog->setAddedBy($user->getCertificateDn());
+            $certLog->setNewStatus($newCertStatus->getName());
+            $certLog->setOldStatus($oldStatusString);
+            $certLog->setAddedDate($now);
+            $certLog->setReason($reason);
+            $this->em->persist($certLog);
+
+            // update our site
+            $site->addCertificationStatusLog($certLog);
             $site->setCertificationStatus($newCertStatus);
-            $site->setCertificationStatusChangeDate($now); 
-            
+            $site->setCertificationStatusChangeDate($now);
+
             $this->em->merge($site);
             $this->em->flush();
             $this->em->getConnection()->commit();

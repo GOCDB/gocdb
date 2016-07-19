@@ -9,7 +9,7 @@ $siteScopes = $site->getScopes();
         <h1>Edit Site</h1>
         <br />
 
-        <!-- Countries -->    	
+        <!-- Countries -->
         <span class="input_name">Country</span>
         <select class="add_edit_form" name="Country">
             <?php foreach ($params['countries'] as $country) { ?>
@@ -43,7 +43,7 @@ $siteScopes = $site->getScopes();
         <input class="input_input_text" type="text" name="DOMAIN" value="<?php xecho($site->getDomain()) ?>" />
 
         <!-- Short Name -->
-        <span class="input_name">Short Name * 
+        <span class="input_name">Short Name *
             <span class="input_syntax" >
                 (Alphanumeric, dot dash and underscore)
             </span>
@@ -51,7 +51,7 @@ $siteScopes = $site->getScopes();
         <input class="input_input_text" type="text" name="SHORT_NAME" value="<?php xecho($site->getShortName()) ?>" />
 
         <!--  Official Name -->
-        <span class="input_name">Official Name 
+        <span class="input_name">Official Name
             <span class="input_syntax" >
                 (Alphanumeric and basic punctuation)
             </span>
@@ -60,7 +60,7 @@ $siteScopes = $site->getScopes();
 
         <!-- URL -->
         <span class="input_name">
-            Home URL 
+            Home URL
             <span class="input_syntax" >
                 (http(s)://url_format)
             </span>
@@ -85,11 +85,11 @@ $siteScopes = $site->getScopes();
         </span>
         <input class="input_input_text" type="text" name="IP_RANGE" value="<?php xecho($site->getIpRange()) ?>" />
 
-        <!-- IP v6 Range -->        
+        <!-- IP v6 Range -->
         <span class="input_name">
             IPv6 Range
             <span class="input_syntax" >(0000:0000:0000:0000:0000:0000:0000:0000[/int]) (optional [/int] range)</span>
-        </span>        
+        </span>
         <input class="input_input_text" type="text" name="IP_V6_RANGE" value="<?php xecho($site->getIpV6Range()) ?>" />
 
         <!-- Location -->
@@ -103,7 +103,7 @@ $siteScopes = $site->getScopes();
 
         <!-- Latitude -->
         <span class="input_name">
-            Latitude    
+            Latitude
             <span class="input_syntax" >(-90 <= number <= 90)</span>
         </span>
         <input class="input_input_text" type="text" name="LATITUDE" value="<?php xecho($site->getLatitude()) ?>" />
@@ -126,7 +126,7 @@ $siteScopes = $site->getScopes();
 
         <!-- E-Mail -->
         <span class="input_name">
-            E-Mail * 
+            E-Mail *
             <span class="input_syntax" >
                 (valid email format)
             </span>
@@ -142,7 +142,7 @@ $siteScopes = $site->getScopes();
         </span>
         <input class="input_input_text" type="text" name="CONTACTTEL" value="<?php xecho($site->getTelephone()) ?>" />
 
-        <!-- Emergency Telephone Number -->    
+        <!-- Emergency Telephone Number -->
         <span class="input_name">
             Emergency Telephone Number
             <span class="input_syntax" >
@@ -178,7 +178,7 @@ $siteScopes = $site->getScopes();
         </span>
         <input class="input_input_text" type="text" name="EMERGENCYEMAIL" value="<?php xecho($site->getAlarmEmail()) ?>" />
 
-        <!-- Helpdesk email -->        
+        <!-- Helpdesk email -->
         <span class="input_name">
             Helpdesk E-Mail
             <span class="input_syntax" >
@@ -190,16 +190,16 @@ $siteScopes = $site->getScopes();
 
         <br>
         <br>
-        
+
         <!-- Scope Tags-->
-        <?php 
-        $parentObjectTypeLabel = 'NGI'; 
+        <?php
+        $parentObjectTypeLabel = 'NGI';
         require_once __DIR__ . '/../fragments/editScopesFragment.php';
         ?>
-        
+
 
         <br>
-        
+
         <span class="input_name">
             Action to Take For All Child Service Scopes
         </span>
@@ -223,11 +223,11 @@ $siteScopes = $site->getScopes();
 
     $(document).ready(function () {
         var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
-        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
-        '#reservedScopeCheckBoxDIV', 
-        '#reservedOptionalScopeCheckBoxDIV', 
-        '#reservedOptionalInhertiableScopeCheckBoxDIV', 
-        '#optionalScopeCheckBoxDIV', 
+        ScopeUtil.addScopeCheckBoxes(scopeJSON,
+        '#reservedScopeCheckBoxDIV',
+        '#reservedOptionalScopeCheckBoxDIV',
+        '#reservedOptionalInhertiableScopeCheckBoxDIV',
+        '#optionalScopeCheckBoxDIV',
         true);
     });
-</script>    
+</script>

@@ -19,7 +19,7 @@
  * limitations under the License.
  /*======================================================*/
 require_once __DIR__ . '/../utils.php';
-require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php'; 
+require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
 
 /**
@@ -27,18 +27,18 @@ require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
  * @global array $_POST only set if the browser has POSTed data
  * @return null
  */
-function remove_ngis_project() {    
+function remove_ngis_project() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
-    ////Check the user has permission to see the page, will throw exception 
+
+    ////Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
-    
-    
+
+
     if($_POST) {     // If we receive a POST request it's to remove ngis
         submit();
     } else { // If there is no post data, draw the remove NGI page
@@ -57,53 +57,53 @@ function draw() {
     //Get project details
     $serv = \Factory::getProjectService();
     $project = $serv->getProject($_REQUEST['id']);
-    
+
     //Throw exception if not a valid project id
     if(is_null($project)) {
         throw new \Exception("A project with ID '".$_REQUEST['id']."' Can not be found");
-    }    
-    
+    }
+
     $params["Name"]=$project->getName();
     $params["ID"]=$project->getId();
-    $params["NGIs"]=$project->getNgis();  
-    
-    
+    $params["NGIs"]=$project->getNgis();
+
+
     //show the remove ngis view
     show_view("project/remove_ngis.php", $params, "Remove NGIS from". $params['Name']);
 }
 
 /**
  * Retrieves the NGIS to be removed and then removes them.
- * @return null 
+ * @return null
 */
 function submit() {
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
-    
+
     //Get user details (for the remove ngi function so it can check permissions)
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    
+
     //Get a project and NGI services
     $projectServ=  \Factory::getProjectService();
     $ngiServ= \Factory::getNgiService();
-    
+
     //Get the posted service type data
     $projectId =$_REQUEST['ID'];
     $ngiIds = $_REQUEST['NGIs'];
-    
+
     //turn ngiIds into NGIs
     $ngis = new Doctrine\Common\Collections\ArrayCollection;
     foreach ($ngiIds as $ngiId){
         $ngis[]=$ngiServ->getNgi($ngiId);
     }
-    
+
     //get the project
     $project = $projectServ->getProject($projectId);
 
     try {
         //function will throw error if user does not have the correct permissions
         $projectServ->removeNgisFromProject($project, $ngis, $user);
-        
+
         $params = array('Name' => $project->getName(),
                         'ID'=> $project->getId());
         show_view("project/removed_ngis.php", $params, "Success");

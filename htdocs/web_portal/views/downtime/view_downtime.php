@@ -129,7 +129,7 @@ $dt = $params['downtime'];
         <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
                 Affected Services&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <input type="checkbox" id="affectedEndpointsCheckBox" /> &nbsp;Show Affected Child Endpoints 
+                <input type="checkbox" id="affectedEndpointsCheckBox" /> &nbsp;Show Affected Child Endpoints
             </span>
             <img src="<?php echo \GocContextPath::getPath()?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table style="clear: both; width: 100%;">
@@ -144,11 +144,11 @@ $dt = $params['downtime'];
                 $num = 2;
                 foreach($dt->getServices() as $se) {
                     $alreadyRenderedSE = array();
-                                    
+
                     if(in_array($se->getId(), $alreadyRenderedSE)){
-                        continue; 
+                        continue;
                     } else {
-                        $alreadyRenderedSE[] = $se->getId(); 
+                        $alreadyRenderedSE[] = $se->getId();
                     }
                 ?>
 
@@ -183,50 +183,50 @@ $dt = $params['downtime'];
                     <?php xecho($se->getScopeNamesAsString()); ?>
                     </td>
                 </tr>
-                <!--&rdsh; --> 
+                <!--&rdsh; -->
                 <tr class="affectedendpointsrow site_table_row_<?php echo $num ?>">
                     <td class="site_table" colspan="4" style="padding-left:5em">
                         <table class="site_table" style="width: 100%; border: solid #D5D5D5 thin">
                             <tr>
-                                <th class="site_table">Affected Endpoints</th> 
-                                <th class="site_table">Url</th> 
-                                <th class="site_table">Interface Name</th> 
+                                <th class="site_table">Affected Endpoints</th>
+                                <th class="site_table">Url</th>
+                                <th class="site_table">Interface Name</th>
                             </tr>
-                            <?php 
+                            <?php
                             foreach($se->getEndpointLocations() as $el){
-                                echo '<tr>'; 
+                                echo '<tr>';
                                 if(in_array($el, $dt->getEndpointLocations()->toArray())){
-                                    echo '<td>&check; <a href="index.php?Page_Type=View_Service_Endpoint&id=' . $el->getId() . '">'.xssafe($el->getName()).'</a></td>'; 
-                                    echo '<td>'.xssafe($el->getUrl()).'</td>'; 
-                                    echo '<td>'.xssafe($el->getInterfaceName()).'</td>'; 
+                                    echo '<td>&check; <a href="index.php?Page_Type=View_Service_Endpoint&id=' . $el->getId() . '">'.xssafe($el->getName()).'</a></td>';
+                                    echo '<td>'.xssafe($el->getUrl()).'</td>';
+                                    echo '<td>'.xssafe($el->getInterfaceName()).'</td>';
                                 } else {
-                                    echo '<td><span style=\'color: grey\'>&cross; <a href="index.php?Page_Type=View_Service_Endpoint&id='.$el->getId().'">'.xssafe($el->getName()).'</span></td>'; 
-                                    echo "<td><span style='color: grey'>".xssafe($el->getUrl()).'</span></td>'; 
-                                    echo "<td><span style='color: grey'>".xssafe($el->getInterfaceName()).'</span></td>'; 
+                                    echo '<td><span style=\'color: grey\'>&cross; <a href="index.php?Page_Type=View_Service_Endpoint&id='.$el->getId().'">'.xssafe($el->getName()).'</span></td>';
+                                    echo "<td><span style='color: grey'>".xssafe($el->getUrl()).'</span></td>';
+                                    echo "<td><span style='color: grey'>".xssafe($el->getInterfaceName()).'</span></td>';
                                 }
-                                echo '</tr>'; 
+                                echo '</tr>';
                             }
                             ?>
-                        </table>    
-                    </td>    
-                </tr> 
-                
+                        </table>
+                    </td>
+                </tr>
+
                 <?php
                     if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
                 ?>
             </table>
         </div>
-       
+
     </div>
 </div>
 
 <script>
 $(document).ready(function(){
-    // hide all nested affected endpoints by default  
-    $(".affectedendpointsrow").hide(); 
-    
-    // toggle hide/show affected endpoints on click 
+    // hide all nested affected endpoints by default
+    $(".affectedendpointsrow").hide();
+
+    // toggle hide/show affected endpoints on click
     $("#affectedEndpointsCheckBox").click(function(){
         $(".affectedendpointsrow").toggle();
     });

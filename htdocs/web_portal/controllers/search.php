@@ -22,37 +22,37 @@
 
 function search() {
     require_once __DIR__.'/../../../lib/Gocdb_Services/Factory.php';
-    
-   
+
+
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
-    $params['authenticated'] = false; 
+    $params['authenticated'] = false;
     if($user != null){
-        $params['authenticated'] = true; 
+        $params['authenticated'] = true;
     }
-    
+
     $searchTerm = isset($_POST['SearchString']) ? $_POST['SearchString'] : '';
-    
+
     //strip leading and trailing whitespace off search term
     $searchTerm = strip_tags(trim($searchTerm));
-    if(1 === preg_match("/[';\"]/", $searchTerm)){ throw new Exception("Invalid char in search term"); } 
-    
-    /* Check to see if search string already has either a leading or trailing % 
+    if(1 === preg_match("/[';\"]/", $searchTerm)){ throw new Exception("Invalid char in search term"); }
+
+    /* Check to see if search string already has either a leading or trailing %
      * supplied by the user, if not then add them. This is to aid searching*/
-    
-    
+
+
     $params['searchTerm'] = $searchTerm;
     $params['siteResults'] = null;
     $params['serviceResults'] = null;
     $params['userResults'] = null;
     $params['ngiResults'] = null;
-    
+
     if($params['searchTerm'] == "") {
         show_view('search_results.php', $params, "Searching for {$params['searchTerm']}");
         die();
     }
-    
+
     $searchServ = \Factory::getSearchService();
     $siteResults = $searchServ->getSites($params['searchTerm']);
     $serviceResults = $searchServ->getServices($params['searchTerm']);
@@ -63,7 +63,7 @@ function search() {
     $params['serviceResults'] = $serviceResults;
     $params['userResults'] = $userResults;
     $params['ngiResults'] = $ngiResults;
-    
+
     show_view('search_results.php', $params, "Searching for \"{$params['searchTerm']}\"");
 }
 

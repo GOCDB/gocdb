@@ -1,4 +1,4 @@
-<?php 
+<?php
 $propertyArray = $params['propArr'];
 $serviceGroup = $params['serviceGroup'];
 ?>

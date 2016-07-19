@@ -11,7 +11,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
---> 
+-->
 
 <div class="rightPageContainer">
     <div style="float: left; text-align: center;">
@@ -28,35 +28,35 @@
         <li>A Role enables Actions on target objects (often, the target is the same as the domain object).</li>
         <li>Some Roles allow actions over different targets. </li>
         <li>The Role-Action mapping matrix is shown below.</li>
-        </ol> 
+        </ol>
     </span>
     </div>
     <?php /*
-    <div class="listContainer"> 
+    <div class="listContainer">
     <div style="float: left;">
-        <?php 
+        <?php
          $allActionsOverByRoleType = $params['allActionsOverByRoleType'];
          foreach($allActionsOverByRoleType as $actionsOverByRoleType => $actionsOverArray){
-         echo $actionsOverByRoleType.'<br>'; 
+         echo $actionsOverByRoleType.'<br>';
          foreach($actionsOverArray as $actionsOver){
-             echo $actionsOver[0].' '.$actionsOver[1].'<br>'; 
+             echo $actionsOver[0].' '.$actionsOver[1].'<br>';
          }
          }
         ?>
     </div>
     </div>
      */ ?>
-        
-    <div class="listContainer"> 
+
+    <div class="listContainer">
     <div>
 
         <?php
         $roleTypeActionTarget_byObjectType = $params['roleTypeActionTarget_byObjectType'];
-        $inc = 0; 
+        $inc = 0;
         foreach ($roleTypeActionTarget_byObjectType as $over => $roleActionTargetArray) {
-        ++$inc; 
+        ++$inc;
         ?>
-        <h3><?php echo $over; ?> Roles</h3> 
+        <h3><?php echo $over; ?> Roles</h3>
             <table id="roleActionMapTable<?php echo($inc)?>" class="table table-striped table-condensed tablesorter">
             <thead>
                 <tr>
@@ -71,7 +71,7 @@
                 <td><?php echo $roleActionTarget[0] ?></td>
                 <td><?php echo $roleActionTarget[1] ?></td>
                 <td><?php echo $roleActionTarget[2] ?></td>
-                </tr>	
+                </tr>
             <?php } ?>
             </tbody>
             </table>
@@ -80,18 +80,18 @@
     </div>
 
     </div>
- 
+
 </div>
 
 <script>
-   $(document).ready(function() 
-    { 
-        $("#roleActionMapTable1").tablesorter(); 
-     $("#roleActionMapTable2").tablesorter(); 
-      $("#roleActionMapTable3").tablesorter(); 
-       $("#roleActionMapTable4").tablesorter(); 
-    } 
-);  
-</script>    
-    
+   $(document).ready(function()
+    {
+        $("#roleActionMapTable1").tablesorter();
+     $("#roleActionMapTable2").tablesorter();
+      $("#roleActionMapTable3").tablesorter();
+       $("#roleActionMapTable4").tablesorter();
+    }
+);
+</script>
+
 

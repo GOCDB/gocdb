@@ -43,14 +43,14 @@ $serviceTypes = $params['serviceTypes'];
         </span>
         <input class="input_input_text" type="text" name="HOSTNAME" />
 
-        <span class="input_name">Host IP 
+        <span class="input_name">Host IP
             <span class="input_syntax" >a.b.c.d</span>
         </span>
         <input class="input_input_text" type="text" name="HOST_IP" />
 
-        <span class="input_name">Host IPv6 
+        <span class="input_name">Host IPv6
             <span class="input_syntax" >(0000:0000:0000:0000:0000:0000:0000:0000[/int]) (optional [/int] range)</span>
-        </span>    	
+        </span>
         <input class="input_input_text" type="text" name="HOST_IP_V6" />
 
         <span class="input_name">Host DN
@@ -98,8 +98,8 @@ $serviceTypes = $params['serviceTypes'];
 
 
         <!-- Scope Tags-->
-        <?php 
-        $parentObjectTypeLabel = 'Site'; 
+        <?php
+        $parentObjectTypeLabel = 'Site';
         require_once __DIR__ . '/../fragments/editScopesFragment.php';
         ?>
 
@@ -114,25 +114,25 @@ $serviceTypes = $params['serviceTypes'];
 
     $(document).ready(function () {
 
-        //console.log('defalutVal: '+$('#ngiSelectPullDown').val());  
+        //console.log('defalutVal: '+$('#ngiSelectPullDown').val());
         var entityId = $('#siteSelectPullDown').val();
-        ScopeUtil.queryForJsonScopesAddScopeCheckBoxes('Add_Service', entityId, 
-          '#reservedScopeCheckBoxDIV', 
-          '#reservedOptionalScopeCheckBoxDIV', 
+        ScopeUtil.queryForJsonScopesAddScopeCheckBoxes('Add_Service', entityId,
+          '#reservedScopeCheckBoxDIV',
+          '#reservedOptionalScopeCheckBoxDIV',
           '#reservedOptionalInhertiableScopeCheckBoxDIV',
-          '#optionalScopeCheckBoxDIV', 
+          '#optionalScopeCheckBoxDIV',
           true);
 
         $('#siteSelectPullDown').change(function () {
-            //console.log($('#ngiSelectPullDown').val());  
+            //console.log($('#ngiSelectPullDown').val());
             var entityId = $('#siteSelectPullDown').val();
-            ScopeUtil.queryForJsonScopesAddScopeCheckBoxes('Add_Service', entityId, 
+            ScopeUtil.queryForJsonScopesAddScopeCheckBoxes('Add_Service', entityId,
               '#reservedScopeCheckBoxDIV',
-              '#reservedOptionalScopeCheckBoxDIV', 
+              '#reservedOptionalScopeCheckBoxDIV',
               '#reservedOptionalInhertiableScopeCheckBoxDIV',
-              '#optionalScopeCheckBoxDIV', 
+              '#optionalScopeCheckBoxDIV',
               true);
         });
 
     });
-</script>   
+</script>

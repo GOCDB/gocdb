@@ -43,7 +43,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
     protected $query;
     protected $validParams;
     protected $em;
-    private $baseUrl; 
+    private $baseUrl;
     private $helpers;
     private $nested;
     private $downtimes;
@@ -57,13 +57,13 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
     private $defaultPaging = false;
 
 
-    /** 
+    /**
      * Constructor takes entity manager which is then used by the query builder
      *
      * @param EntityManager $em
-     * @param Boolean $nested When true the affected service endpoints are nested within each downtime element, 
-     *   when false the dowmtime element is repeated for each affected service endpoint (legacy) 
-     * @param string $baseUrl The base url string to prefix to urls generated in the query output.  
+     * @param Boolean $nested When true the affected service endpoints are nested within each downtime element,
+     *   when false the dowmtime element is repeated for each affected service endpoint (legacy)
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output.
      */
     public function __construct($em, $nested = false, $baseUrl = 'https://goc.egi.eu/portal')
     {
@@ -71,7 +71,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
-        $this->baseUrl = $baseUrl; 
+        $this->baseUrl = $baseUrl;
     }
 
     /**

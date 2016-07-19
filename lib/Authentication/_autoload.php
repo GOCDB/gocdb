@@ -16,19 +16,19 @@
 namespace org\gocdb\security\authentication;
 
 /**
- * Safe autoloader that a) registers any existing '__autoload' functions with 
- * the 'spl_autoload_register' (eg __autoloadS defined in other component),  
- * and b) registers an additional autoloader for this security component. 
- * 
- * Typically autoload code is included in a config file or some other file that 
+ * Safe autoloader that a) registers any existing '__autoload' functions with
+ * the 'spl_autoload_register' (eg __autoloadS defined in other component),
+ * and b) registers an additional autoloader for this security component.
+ *
+ * Typically autoload code is included in a config file or some other file that
  * is included with each pageload and contains common code required for the site to run.
- * 
- * @author David Meredith 
+ *
+ * @author David Meredith
  */
 
 if(false === spl_autoload_functions()){
     if(function_exists('__autoload')){
-        spl_autoload_register('__autoload', false); 
+        spl_autoload_register('__autoload', false);
     }
 }
 
@@ -36,41 +36,41 @@ if(false === spl_autoload_functions()){
 function securityLoader($className){
     // $className is namespace qualified, e.g. org\gocdb\security\authentication\GOCDBAuthProvider
     $parts = explode('\\', $className); //split out namespaces
-    $classNameNoNS = end($parts);//get classname (DONT lowercase className, the file won't be located on *nix)  
-    
+    $classNameNoNS = end($parts);//get classname (DONT lowercase className, the file won't be located on *nix)
+
     //Folder handling which returns classfile
     $file = __DIR__.'/'.$classNameNoNS.'.php';
     if(file_exists($file)){
-       require_once $file;  
-       return; 
+       require_once $file;
+       return;
     }
     $file = __DIR__.'/AuthProviders/'.$classNameNoNS.'.php';
     if(file_exists($file)){
-       require_once $file;  
-       return; 
-    } 
+       require_once $file;
+       return;
+    }
     $file = __DIR__.'/AuthTokens/'.$classNameNoNS.'.php';
     if(file_exists($file)){
-       require_once $file;  
-       return; 
-    } 
+       require_once $file;
+       return;
+    }
     $file = __DIR__.'/Exceptions/'.$classNameNoNS.'.php';
     if(file_exists($file)){
-       require_once $file;  
-       return; 
+       require_once $file;
+       return;
     }
     $file = __DIR__.'/UserDetails/'.$classNameNoNS.'.php';
     if(file_exists($file)){
-       require_once $file;  
-       return; 
+       require_once $file;
+       return;
     }
     $file = __DIR__.'/UserDetailsServices/'.$classNameNoNS.'.php';
     if(file_exists($file)){
-       require_once $file;  
-       return; 
+       require_once $file;
+       return;
     }
 }
- 
 
-spl_autoload_register(__NAMESPACE__ .'\securityLoader', false); 
+
+spl_autoload_register(__NAMESPACE__ .'\securityLoader', false);
 
