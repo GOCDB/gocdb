@@ -80,7 +80,7 @@ class PIRequest {
     // defaultPaging = true means that even if the 'page' URL param is 
     // not specified, then the query will be paged by default (true is 
     // the preference for large/production datasets). 
-    private $defaultPageSize = 500; 
+    private $defaultPageSize = 200; 
     private $defaultPaging = TRUE; //FALSE;
     
     public function __construct(){

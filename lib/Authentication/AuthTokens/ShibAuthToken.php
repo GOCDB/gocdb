@@ -84,7 +84,7 @@ class ShibAuthToken implements IAuthentication {
         $hostname = gethostname(); // gocdb-test.esc.rl.ac.uk, goc.egi.eu 
         // specify location of the Shib Logout handler 
         \Factory::$properties['LOGOUTURL'] = 'https://'.$hostname.'/Shibboleth.sso/Logout';
-        $idp = $_SERVER['Shib-Identity-Provider'];
+        $idp = isset($_SERVER['Shib-Identity-Provider']) ? $_SERVER['Shib-Identity-Provider'] : '';
         if ($idp == 'https://unity.eudat-aai.fz-juelich.de:8443/saml-idp/metadata' 
                 &&  $_SERVER['distinguishedName'] != null){
             $this->principal = $_SERVER['distinguishedName'];
@@ -96,6 +96,28 @@ class ShibAuthToken implements IAuthentication {
             $this->userDetails = array('AuthenticationRealm' => array('UK_ACCESS_FED'));
             return; 
         }
+        else if($idp == 'https://aai.egi.eu/proxy/saml2/idp/metadata.php'){
+            if( empty($_SERVER['epuid'])){// || empty($_SERVER['displayName']) ){
+                die('Did not recieve required attributes from the EGI Proxy Identity Provider to complete authentication, please contact gocdb-admins');
+            }
+            if(empty($_SERVER['assurance'])){
+                die('Did not recieve the required assurance attribute from the EGI Proxy IdP, please contact gocdb-admins');
+            }
+            if($_SERVER['assurance'] != 'https://aai.egi.eu/LoA#Substantial'){
+                 $HTML = '<ul><li>You authenticated to the EGI Identity Provider using a method that provides an inadequate Level of Assurance for GOCDB (weak user verification).</li><li>Login is required with an assurance level of [Substantial].</li><li>To gain access, you will need to login to the Proxy IdP using a scheme that provides [LoA#Substantial].</li><li>Please logout or restart your browser and attempt to login again.</li></ul>';
+                 $HTML .= "<div style='text-align: center;'>";
+                 $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
+                 $HTML .= "</div>";
+                 echo ($HTML);
+                 die();
+            }
+            $this->principal = $_SERVER['epuid'];
+            $this->userDetails = array('AuthenticationRealm' => array('EGI Proxy IdP'));
+            return;
+        }
+
+
+
 //        else {
 //            die('Now go configure this AuthToken file ['.__FILE__.']');   
 //        }

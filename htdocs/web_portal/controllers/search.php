@@ -32,7 +32,7 @@ function search() {
         $params['authenticated'] = true; 
     }
     
-    $searchTerm = $_POST['SearchString'];
+    $searchTerm = isset($_POST['SearchString']) ? $_POST['SearchString'] : '';
     
     //strip leading and trailing whitespace off search term
     $searchTerm = strip_tags(trim($searchTerm));
