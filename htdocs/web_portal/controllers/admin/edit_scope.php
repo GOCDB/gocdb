@@ -32,7 +32,7 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 function edit_scope() {
      //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's to edit a scope
         submit();
     } else { // If there is no post data, draw the edit scope form
@@ -45,8 +45,8 @@ function edit_scope() {
  * @return null
  */
 function draw() {
-  
-    //Check the user has permission to see the page, will throw exception 
+
+    //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
@@ -58,7 +58,7 @@ function draw() {
     $params = array('Name' => $scope->getName(),
                     'Id' => $scope->getId(),
                     'Description' => $scope->getDescription());
-    
+
     //show the add service type view
     show_view("admin/edit_scope.php", $params, "Edit Scope");
 }
@@ -72,12 +72,12 @@ function submit() {
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
 
     $serv =\Factory::getScopeService();
-    
+
     //Get the posted service type data
     $values = getScopeDataFromWeb();
-    
+
     $scope = $serv->getScope($values['Id']);
-    
+
     //get the user data for the add scope function (so it can check permissions)
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);

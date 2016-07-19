@@ -7,14 +7,14 @@
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <form action="javascript:void(0);">
-            <input  class="input_input_text vSiteSearch" type="text" 
-                    name="Search" value="Search" onclick="clearText()" 
+            <input  class="input_input_text vSiteSearch" type="text"
+                    name="Search" value="Search" onclick="clearText()"
                     id='filter' />
-            <input  class="input_button vSiteSearchButton" type="submit" 
+            <input  class="input_button vSiteSearchButton" type="submit"
                     value="Search" onclick="startSearch()" />
         </form>
-        
-        
+
+
         <div class="vSiteSearchResultContainer" id="resultsContainer">
         <span class="header listHeader vSite1emBottomMargin">
             Results:
@@ -30,7 +30,7 @@
         </table>
         </div>
     </div>
-    
+
     <!--  Selected Services -->
     <div class="listContainer">
         <span class="header listHeader">

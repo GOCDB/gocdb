@@ -2,21 +2,21 @@
 
 <div class="rightPageContainer">
     <h1 class="Success">Deletion Failed</h1><br />
-    The service type ' 
+    The service type '
     <a href="index.php?Page_Type=Admin_Service_Type&id=<?php echo $serviceType->getId();?>">
     <?php xecho($serviceType->getName());?>
-    </a>' 
+    </a>'
     can not be deleted as the following services are still of this type:
-    <?php 
+    <?php
         foreach($params['Services'] as $sep){
             echo "<br />"
                 . "<a href=\"index.php?Page_Type=Service&id=" . $sep->getId() ."\">"
                 .  xssafe($sep->getHostName())
                 . "</a> ";
-        }	
+        }
     ?>
     <br>
     <br>
-    These services will need their service type changing before the 
+    These services will need their service type changing before the
     service type can be deleted.
 </div>

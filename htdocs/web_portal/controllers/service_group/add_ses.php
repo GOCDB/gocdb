@@ -33,7 +33,7 @@ function add_ses() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's after form submission
         submit($user);
     } else { // If there is no post data, draw the add SEs form
@@ -64,7 +64,7 @@ function draw(\User $user = null) {
         show_view('error.php', 'You do not have permission to edit this ServiceGroup');
         die();
     }
-        
+
     // Check to see whether to show the link to "add a new SE to this virtual site"
     if(\Factory::getConfigService()
             ->IsOptionalFeatureSet("siteless_services")) {

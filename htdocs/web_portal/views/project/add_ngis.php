@@ -13,14 +13,14 @@
                 <!--  Services -->
                 <form class="inputForm" method="post" action="index.php?Page_Type=Add_Project_NGIs" name="addNGIs">
                     <span class="input_name">
-                        Please select the NGIs you wish to add to the 
+                        Please select the NGIs you wish to add to the
                         <?php xecho($params['Name'])?> project.
                     </span>
                     <select class="Downtime_Select" name="NGIs[]" size="20"  multiple id="NGIs" style="margin-left: 0em; width: 38em;">
                         <?php
                         foreach($params['NGIs'] as $ngi) {
                             echo "<option value=\"". $ngi->getId() . "\">"; xecho($ngi->getName()); echo "</option>";
-                        }	
+                        }
                         ?>
                     </select>
                     <br />
@@ -28,12 +28,12 @@
                     <input class="input_button" type="submit" value="Add selected NGIs">
                 </form>
             <?php else: ?>
-                There are either no NGIs in GOCDB or they are all a member of this project already.              
-            <?php endif; ?>                
-      
+                There are either no NGIs in GOCDB or they are all a member of this project already.
+            <?php endif; ?>
+
             <br />
             <br />
-            Return to 
+            Return to
             <a href="index.php?Page_Type=Project&id=<?php echo $params['ID'] ?>">
                  <?php xecho($params['Name']) ?>
             </a>

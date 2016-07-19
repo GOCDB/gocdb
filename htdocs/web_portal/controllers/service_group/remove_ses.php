@@ -33,7 +33,7 @@ function remove_ses() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) { // If we receive a POST request it's during form submission
         submit($user);
     } else { // If there is no post data, draw the remove ses form
@@ -61,8 +61,8 @@ function draw(\User $user = null) {
     //    show_view('error.php', $e->getMessage()); die(); }
     //if(count($serv->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
-       show_view('error.php', 'You do not have permission to edit this ServiceGroup'); 
-       die(); 
+       show_view('error.php', 'You do not have permission to edit this ServiceGroup');
+       die();
     }
 
     $params = array('sg' => $sg);
@@ -71,7 +71,7 @@ function draw(\User $user = null) {
 
 /**
  * Validates the user's input, removes the services and
- * returns the object ID of the removed service 
+ * returns the object ID of the removed service
  * @global array $_REQUEST only set if the browser has sent parameters
  * @param \User $user current User
  * @return null
@@ -85,7 +85,7 @@ function submit(\User $user = null) {
     if (!isset($_REQUEST['seId']) || !is_numeric($_REQUEST['seId']) ){
         throw new Exception("An id must be specified");
     }
-    
+
     // The service group to remove SEs from
     $sg =  $serv->getServiceGroup($_REQUEST['sgId']);
 

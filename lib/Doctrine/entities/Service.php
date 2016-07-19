@@ -16,19 +16,19 @@ use Doctrine\Common\Collections\ArrayCollection;
 require_once __DIR__ . '/IScopedEntity.php';
 
 /**
- * A Service defines an instance of an e-Infrastructure service that 
- * is linked to a service type, has endpoints and is owned by a parent Site. 
+ * A Service defines an instance of an e-Infrastructure service that
+ * is linked to a service type, has endpoints and is owned by a parent Site.
  * <p>
- * More formally: a logical view of actual software components that 
- * participate in the creation of an entity providing one or more 
- * functionalities useful in an e-infrastructure  environment (from GLUE2). 
- *  
- * @author David Meredith <david.meredithh@stfc.ac.uk> 
- * @author John Casson 
+ * More formally: a logical view of actual software components that
+ * participate in the creation of an entity providing one or more
+ * functionalities useful in an e-infrastructure  environment (from GLUE2).
+ *
+ * @author David Meredith <david.meredithh@stfc.ac.uk>
+ * @author John Casson
  * @Entity @Table(name="Services")
  */
 class Service implements IScopedEntity {
-    
+
     /** @Id @Column(type="integer") @GeneratedValue */
     protected $id;
 
@@ -52,10 +52,10 @@ class Service implements IScopedEntity {
 
     /** @Column(type="string", nullable=true) */
     protected $ipAddress;
-        
+
     /** @Column(type="string", nullable=true) */
     protected $ipV6Address;
-        
+
     /** @Column(type="string", nullable=true) */
     protected $operatingSystem;
 
@@ -88,7 +88,7 @@ class Service implements IScopedEntity {
      * @ManyToMany(targetEntity="Downtime", mappedBy="services" )
      */
     protected $downtimes;
-        
+
     /**
      * @OneToMany(targetEntity="EndpointLocation", mappedBy="service" )
      */
@@ -99,7 +99,7 @@ class Service implements IScopedEntity {
      * @OneToMany(targetEntity="ServiceProperty", mappedBy="parentService", cascade={"remove"})
      */
     protected $serviceProperties = null;
-        
+
     /**
      * Unidirectional - Scope tags associated with the service
      *
@@ -117,7 +117,7 @@ class Service implements IScopedEntity {
      * Create a new DateTime object and reference that for it to persist during an update.
      * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
      */
-    
+
     /** @Column(type="datetime", nullable=false) **/
     protected $creationDate;
 
@@ -140,11 +140,11 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * The main network URL of this service. Note, a Service can define 
+     * The main network URL of this service. Note, a Service can define
      * additional {@see EndpointLocation}s to define different contact endpoints
-     * as required. External monitoring will usually contact this URL to test 
-     * service state. 
-     *  
+     * as required. External monitoring will usually contact this URL to test
+     * service state.
+     *
      * @return string or null
      */
     public function getUrl(){
@@ -152,9 +152,9 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * The main hostname used for this service. 
-     * This is largely required for external monitoring that requires a distinct 
-     * host name to ping. 
+     * The main hostname used for this service.
+     * This is largely required for external monitoring that requires a distinct
+     * host name to ping.
      * @return string
      */
     public function getHostName() {
@@ -162,7 +162,7 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * A nullable human readable description of this service. 
+     * A nullable human readable description of this service.
      * @return string
      */
     public function getDescription() {
@@ -170,7 +170,7 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * Is this service considered production or not. 
+     * Is this service considered production or not.
      * @return boolean
      */
     public function getProduction() {
@@ -178,7 +178,7 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * Is this service considered beta or not. 
+     * Is this service considered beta or not.
      * @return boolean
      */
     public function getBeta() {
@@ -186,7 +186,7 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * Is this service monitored or not. 
+     * Is this service monitored or not.
      * @return boolean
      */
     public function getMonitored() {
@@ -194,15 +194,15 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * Defines the DN of the services x509 certificate. 
-     * @return string or null 
+     * Defines the DN of the services x509 certificate.
+     * @return string or null
      */
     public function getDn() {
         return $this->dn;
     }
 
     /**
-     * The IPv4 address of the service. 
+     * The IPv4 address of the service.
      * @return string or null
      */
     public function getIpAddress() {
@@ -210,7 +210,7 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * The IPv6 address of the service. 
+     * The IPv6 address of the service.
      * @return string or null
      */
     public function getIpV6Address() {
@@ -218,8 +218,8 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * A label for the service OS such as 'linux' or 'windows'. 
-     * Refer to the GLUE2 OSName_t Enum type.  
+     * A label for the service OS such as 'linux' or 'windows'.
+     * Refer to the GLUE2 OSName_t Enum type.
      * @return string or null
      */
     public function getOperatingSystem() {
@@ -261,44 +261,44 @@ class Service implements IScopedEntity {
     public function getServiceGroups() {
         return $this->serviceGroups;
     }
-    
+
     /**
-     * provides a string containg a list of the names of scopes with which the 
+     * provides a string containg a list of the names of scopes with which the
      * object been tagged.
-     * @return string  string containing ", " seperated list of the names 
+     * @return string  string containing ", " seperated list of the names
      */
     public function getScopeNamesAsString() {
         //Get the scopes for the service
         $scopes = $this->getScopes();
-        
+
         //Create an empty array to contain scope names
         $scopeNames= array();
-        
+
         //populate the array
         foreach ($scopes as $scope){
             $scopeNames[]=$scope->getName();
         }
-        
+
         sort($scopeNames);
 
         //Turn into a string
         $scopeNamesAsString = implode(", " , $scopeNames);
-        
+
         return $scopeNamesAsString;
     }
 
     public function getCreationDate() {
         return $this->creationDate;
     }
-    
+
     public function getDowntimes() {
         return $this->downtimes;
     }
-    
+
     public function setUrl($url){
         $this->url = $url;
     }
-        
+
     public function setHostName($hostName) {
         $this->hostName = $hostName;
     }
@@ -310,7 +310,7 @@ class Service implements IScopedEntity {
     public function setIpV6Address($ipAddress) {
         $this->ipV6Address = $ipAddress;
     }
-        
+
     public function setProduction($production) {
         $this->production = $production;
     }
@@ -354,10 +354,10 @@ class Service implements IScopedEntity {
     public function setCreationDate($creationDate) {
         $this->creationDate = $creationDate;
     }
-    
+
     /**
-     * Add a ServiceProperty entity to this Service's collection of properties. 
-     * This method also sets the ServiceProperty's parentService.  
+     * Add a ServiceProperty entity to this Service's collection of properties.
+     * This method also sets the ServiceProperty's parentService.
      * @param \ServiceProperty $serviceProperty
      */
     public function addServicePropertyDoJoin($serviceProperty) {
@@ -366,39 +366,39 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * Do not call in client code. 
-     * Instead call <code>$downtime->addService($service);</code> to keep 
-     * both sides of the bi-directional relationship consitent.  
+     * Do not call in client code.
+     * Instead call <code>$downtime->addService($service);</code> to keep
+     * both sides of the bi-directional relationship consitent.
      * @param Downtime $downtime
      */
-//    public function _addDowntime(Downtime $downtime) {                
+//    public function _addDowntime(Downtime $downtime) {
 //        $this->downtimes[] = $downtime;
-//        // adding below would cause a race condition 
-//        //$downtime->addService($this); 
+//        // adding below would cause a race condition
+//        //$downtime->addService($this);
 //    }
-        
+
 //    public function removeDowntime(Downtime $downtime) {
 //        $this->downtimes->removeElement($downtime);
 //    }
-        
+
     /**
-     * Add the given EL to the list. This method internally calls 
-     * <code>$endpointLocation->setServiceDoJoin($this)</code> to keep both  
-     * sides of the bidirectional relationship consistent (i.e. don't separately 
-     * call <code>$endpointLocation->setServiceDoJoin($this)</code>). 
+     * Add the given EL to the list. This method internally calls
+     * <code>$endpointLocation->setServiceDoJoin($this)</code> to keep both
+     * sides of the bidirectional relationship consistent (i.e. don't separately
+     * call <code>$endpointLocation->setServiceDoJoin($this)</code>).
      * <p>
-     * Service is the INVERSE side of the relation so the internal call to 
-     * <code>$endpointLocation->setServiceDoJoin($this)</code> actually establishes the relationship in the DB. 
-     * 
+     * Service is the INVERSE side of the relation so the internal call to
+     * <code>$endpointLocation->setServiceDoJoin($this)</code> actually establishes the relationship in the DB.
+     *
      * @param EndpointLocation $endpointLocation
      */
     public function addEndpointLocationDoJoin(EndpointLocation $endpointLocation) {
         $this->endpointLocations[] = $endpointLocation;
-        $endpointLocation->setServiceDoJoin($this);    
+        $endpointLocation->setServiceDoJoin($this);
     }
 
     /**
-     * Create a relationship between the given Scope and this Service. 
+     * Create a relationship between the given Scope and this Service.
      * @param Scope $scope
      */
     public function addScope(Scope $scope) {
@@ -406,10 +406,10 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * Adds the given ServiceGroup to this service's list of SGs. 
+     * Adds the given ServiceGroup to this service's list of SGs.
      * Do not call in client code, always use the opposite
-     * <code>$sg->addService($service)</code> instead which internally calls this 
-     * method to keep the bidirectional relationship consistent.  
+     * <code>$sg->addService($service)</code> instead which internally calls this
+     * method to keep the bidirectional relationship consistent.
      * @param ServiceGroup $sg
      */
     public function addServiceGroup(ServiceGroup $sg) {
@@ -427,11 +427,11 @@ class Service implements IScopedEntity {
 
 
     /**
-     * Returns a string of the form 'serviceTypeName hostname' 
+     * Returns a string of the form 'serviceTypeName hostname'
      * @return string
      */
     public function __toString() {
-        return $this->getServiceType()->getName() . " " . $this->getHostName();                
+        return $this->getServiceType()->getName() . " " . $this->getHostName();
     }
 
 }

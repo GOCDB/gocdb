@@ -59,9 +59,9 @@ function submit(array $propertyArray, \Site $site, \User $user = null) {
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
-    }   
-    
-    
+    }
+
+
     show_view('/site/deleted_site_properties.php', $params);
 
 }

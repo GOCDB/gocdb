@@ -13,39 +13,39 @@
  */
 
 /**
- * A scoped entity is one that can be tagged with a {@see Scope} tag 
- * for the purposes of filtering based on the object's related scopes. 
+ * A scoped entity is one that can be tagged with a {@see Scope} tag
+ * for the purposes of filtering based on the object's related scopes.
  * <p>
- * Implementations include {@see Site}, {@see Service}, {@see ServiceGroup} and 
- * {@see NGI}. These resources can then be selected according to the 
- * scopes they are joined with. 
- * 
- * @author David Meredith <david.meredithh@stfc.ac.uk> 
- * @author John Casson 
+ * Implementations include {@see Site}, {@see Service}, {@see ServiceGroup} and
+ * {@see NGI}. These resources can then be selected according to the
+ * scopes they are joined with.
+ *
+ * @author David Meredith <david.meredithh@stfc.ac.uk>
+ * @author John Casson
  */
 interface IScopedEntity {
-    
+
     /**
-     * @return Doctrine\Common\Collections\ArrayCollection List of {@see Scope} entities.  
+     * @return Doctrine\Common\Collections\ArrayCollection List of {@see Scope} entities.
      */
     public function getScopes();
 
     /**
-     * A string of comma-separated scope names which tag this object.   
-     * @return string  
+     * A string of comma-separated scope names which tag this object.
+     * @return string
      */
     public function getScopeNamesAsString();
 
     /**
-     * Create a relationship between this entity and the given scope object.    
+     * Create a relationship between this entity and the given scope object.
      * @param Scope $scope
      */
     public function addScope(Scope $scope);
 
     /**
-     * Remove the relationship between the given scope and this entity.  
+     * Remove the relationship between the given scope and this entity.
      * @param Scope $removeScope
      */
     public function removeScope(Scope $removeScope);
-            
+
 }

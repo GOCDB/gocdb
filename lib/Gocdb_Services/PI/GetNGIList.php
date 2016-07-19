@@ -12,36 +12,36 @@ require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
 
 
-/** 
+/**
  * Return an XML document that encodes the NGIs selected from the DB.
  * Optionally provide an associative array of query parameters with values to restrict the results.
- * Only known parameters are honoured while unknown params produce an error doc. 
+ * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
  * <pre>
  * 'roc'
  * </pre>
- * 
+ *
  * @author James McCarthy
- * @author David Meredith 
+ * @author David Meredith
  */
 class GetNGIList implements IPIQuery{
-    
+
 protected $query;
     protected $validParams;
     protected $em;
     private $helpers;
     private $ngis;
-    
+
     /** Constructor takes entity manager which is then used by the
      *  query builder
-     * 
+     *
      * @param EntityManager $em
      */
     public function __construct($em){
         $this->em = $em;
-        $this->helpers=new Helpers();		
+        $this->helpers=new Helpers();
     }
-    
+
     /** Validates parameters against array of pre-defined valid terms
      *  for this PI type
      * @param array $parameters
@@ -50,31 +50,31 @@ protected $query;
 
         // Define supported parameters and validate given params (die if an unsupported param is given)
         $supportedQueryParams = array (
-                'roc' 
+                'roc'
         );
-        
+
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
         $this->validParams = $parameters;
     }
-    
+
     /** Creates the query by building on a queryBuilder object as
-     *  required by the supplied parameters 
+     *  required by the supplied parameters
      */
     public function createQuery() {
         $parameters = $this->validParams;
         $binds= array();
         $bc=-1;
-    
+
         $qb = $this->em->createQueryBuilder();
-        
-        //Initialize base query		
+
+        //Initialize base query
         $qb	->select('n')
         ->from('NGI', 'n')
         ->orderBy('n.id', 'ASC');
-    
+
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
         * based on set parameters.
-        */	
+        */
         $parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
         //Get the result of the scope builder
         $qb = $parameterBuilder->getQB();
@@ -83,17 +83,17 @@ protected $query;
         foreach((array)$parameterBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-    
+
         //Bind all variables
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
-    
+
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
 
-        $this->query = $query;	
-         return $this->query; 
-    }	
-    
+        $this->query = $query;
+         return $this->query;
+    }
+
     /**
      * Executes the query that has been built and stores the returned data
      * so it can later be used to create XML, Glue2 XML or JSON.
@@ -102,8 +102,8 @@ protected $query;
         $this->ngis = $this->query->execute();
         return $this->ngis;
     }
-    
-    /** Returns proprietary GocDB rendering of the NGI data 
+
+    /** Returns proprietary GocDB rendering of the NGI data
      *  in an XML String
      * @return String
      */
@@ -111,15 +111,15 @@ protected $query;
         $helpers = $this->helpers;
 
         $ngis = $this->query->execute();
-        
+
         $xml = new \SimpleXMLElement ( "<results />" );
-        
+
         foreach ( $ngis as $ngi ) {
             $xmlNgi = $xml->addChild ( 'ROC' );
             $xmlNgi->addAttribute ( 'PRIMARY_KEY', $ngi->getId () . "G0" );
             $xmlNgi->addAttribute ( 'ROC_NAME', $ngi->getName () );
         }
-        
+
         $dom_sxe = dom_import_simplexml ( $xml );
         $dom = new \DOMDocument ( '1.0' );
         $dom->encoding = 'UTF-8';
@@ -129,45 +129,45 @@ protected $query;
         $xmlString = $dom->saveXML ();
         return $xmlString;
     }
-    
+
     /** Returns the NGI data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
     public function getGlue2XML(){
         $helpers = $this->helpers;
         $query = $this->query;
-        
+
         $ngis = $query->getResult();
 
         $xml = new \SimpleXMLElement("<Entities />");
-        
+
         foreach($ngis as $ngi) {
             $xmlNgi = $xml->addChild("AdminDomain");
             $xmlNgi->addAttribute("BaseType", "Domain");
-            $xmlNgi->addChild("ID", $ngi->getId());                                 
+            $xmlNgi->addChild("ID", $ngi->getId());
             $xmlNgi->addChild("Name", $ngi->getName());
-            
+
             $xmlNgiExtParent = $xmlNgi->addChild("Extensions");
-            
-            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Email', $ngi->getEmail());           
-            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Object_ID', $ngi->getId());           
-            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'GGUS_SU', $ngi->getGgus_Su());           
-            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Rod_Email', $ngi->getRodEmail());  
-            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Helpdesk_Email', $ngi->getHelpdeskEmail());  
-            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Security_Email', $ngi->getSecurityEmail());  
-            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Site_Count', count($ngi->getSites()));  
-         
+
+            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Email', $ngi->getEmail());
+            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Object_ID', $ngi->getId());
+            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'GGUS_SU', $ngi->getGgus_Su());
+            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Rod_Email', $ngi->getRodEmail());
+            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Helpdesk_Email', $ngi->getHelpdeskEmail());
+            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Security_Email', $ngi->getSecurityEmail());
+            $helpers->addExtIfNotEmpty($xmlNgiExtParent, 'Site_Count', count($ngi->getSites()));
+
             $xmlNgi->addChild("Description", $ngi->getDescription());
             $xmlNgi->addChild("Distributed", "true");
-            
+
             $xmlNgiAsoc = $xmlNgi->addChild("Associations");
-            
+
             $sites = $ngi->getSites();
             foreach($sites as $site) {
                 $xmlNgiAsoc->addChild("ChildDomainID", $site->getPrimaryKey());
             }
-            
+
         }
 
         $dom_sxe = dom_import_simplexml($xml);
@@ -181,13 +181,13 @@ protected $query;
 
         return $xmlString;
     }
-    
-    /** Not yet implemented, in future will return the NGI 
+
+    /** Not yet implemented, in future will return the NGI
      *  data in JSON format
      * @throws LogicException
      */
     public function getJSON(){
-        $query = $this->query;		
+        $query = $this->query;
         throw new LogicException("Not implemented yet");
     }
 }

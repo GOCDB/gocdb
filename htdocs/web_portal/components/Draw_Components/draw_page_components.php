@@ -49,15 +49,15 @@
 
         // right side of the page
         $HTML .= "<div class=\"right_box\">";
-        
-        // logout button (if set - does not always need to be rendered)  
+
+        // logout button (if set - does not always need to be rendered)
         if(!empty(\Factory::$properties['LOGOUTURL'])){
-            $HTML .= "<div style='text-align: right;'>"; 
+            $HTML .= "<div style='text-align: right;'>";
             //$HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
             $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font class="btn btn-danger btn-xs">Logout</font></b></a>';
-            $HTML .= "</div>"; 
+            $HTML .= "</div>";
         }
-       
+
 
         return $HTML;
     }
@@ -128,7 +128,7 @@
         $HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="'.\GocContextPath::getPath().'img/egi_logo.jpg" height="25"/></a>';
         $HTML .= '</div>';
         $HTML .= '<br>';
-        $HTML .= 'GOCDB is an EGI service provided by <a href="http://stfc.ac.uk">STFC</a> co-funded by <a href="http://egi.eu">EGI.eu</a> and <a href="http://go.egi.eu/eng">EGI-Engage</a>'; 
+        $HTML .= 'GOCDB is an EGI service provided by <a href="http://stfc.ac.uk">STFC</a> co-funded by <a href="http://egi.eu">EGI.eu</a> and <a href="http://go.egi.eu/eng">EGI-Engage</a>';
         $HTML .= '</div>';
 
         return $HTML;

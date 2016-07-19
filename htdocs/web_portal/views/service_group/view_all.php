@@ -16,7 +16,7 @@
         </span>
         <!-- <span style="clear: both; float: left;">Intentionally Blank</span>  -->
     </div>
-    
+
     <!-- Filter -->
     <div class="siteContainer">
         <form action="index.php?Page_Type=Service_Groups" method="GET" class="inline">
@@ -25,18 +25,18 @@
         <span class="header leftFloat">
         Filter <a href="index.php?Page_Type=Service_Groups">&nbsp;&nbsp;(clear)</a>
         </span>
-        
+
         <div class="topMargin leftFloat siteFilter clearLeft">
         <span class=""><a href="index.php?Page_Type=Scope_Help">Scopes:</a> </span>
         <select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
             <?php foreach ($params['scopes'] as $scope) { ?>
-            <option value="<?php xecho($scope->getName()); ?>" 
+            <option value="<?php xecho($scope->getName()); ?>"
                 <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
                 <?php xecho($scope->getName()); ?>
             </option>
             <?php } ?>
         </select>
-        </div>                 
+        </div>
 
         <div class="topMargin leftFloat siteFilter">
         <span class="">Extension Name:</span>
@@ -46,16 +46,16 @@
                 <option value="<?php echo $extensions; ?>"
             <?php if ($params['selectedExtKeyName'] == $extensions){ echo " selected";} ?>>
                 <?php echo $extensions; ?>
-            </option> 
-            <?php } ?>                  
+            </option>
+            <?php } ?>
                 </select>
-        </div> 
+        </div>
 
             <div class="topMargin leftFloat siteFilter">
                     <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
-                    <input class="middle" type="text" name="selectedExtKeyValue" 
+                    <input class="middle" type="text" name="selectedExtKeyValue"
             <?php if (isset($params['selectedExtKeyValue'])){ echo "value=\"{$params['selectedExtKeyValue']}\""; } ?>/>
-            </div>        	
+            </div>
 
         <div class="topMargin leftFloat siteFilter clearLeft">
         <input type="submit" value="Filter ServiceGroups">
@@ -78,7 +78,7 @@
             </tr>
         </thead>
         <tbody>
-            <?php           
+            <?php
             //$num = 2;
             foreach($params['sGroups'] as $sGroup) {
             ?>
@@ -88,16 +88,16 @@
             <?php xecho($sGroup->getName()); ?>
             </a>
                 </td>
-                    
+
                 <td>
                     <?php xecho($sGroup->getDescription()); ?>
                 </td>
-                
+
                 <td>
            <textarea readonly="true" style="height: 25px;"><?php xecho($sGroup->getScopeNamesAsString()); ?></textarea>
                 </td>
             </tr>
-            <?php  
+            <?php
                 //if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
             ?>
@@ -117,13 +117,13 @@
 <script type="text/javascript" src="<?php GocContextPath::getPath()?>javascript/jquery.multiple.select.js"></script>
 
 <script>
-    $(document).ready(function() 
+    $(document).ready(function()
     {
-    $("#selectedSgTable").tablesorter(); 
-    
+    $("#selectedSgTable").tablesorter();
+
     $('#scopeSelect').multipleSelect({
         filter: true,
             placeholder: "SG Scopes"
         });
-    }); 
+    });
 </script>

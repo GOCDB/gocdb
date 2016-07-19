@@ -3,12 +3,12 @@
 require_once __DIR__."/../bootstrap.php";
 require_once __DIR__."/AddUtils.php";
 
-/** 
+/**
  * AddEgiRoles.php: Loads a list of roles from the get_user PI
  * query output (XML), finds the EGI roles and inserts them into
  * the doctrine prototype.
  * XML format is the output from get_roc_list PI query, e.g:
- 
+
 
  <EGEE_USER USER_ID=" " PRIMARY_KEY="63777G0">
         <FORENAME>Patricia</FORENAME>
@@ -48,17 +48,17 @@ foreach($usersRoles as $user) {
         if((string) $role->USER_ROLE == "") {
             continue;
         }
-        
+
         // Skip all non-site roles
         if((string) $role->ENTITY_TYPE !== "group") {
             continue;
         }
-        
+
         // Skip all non-EGI level roles
         if((string) $role->ON_ENTITY != "EGI") {
             continue;
         }
-        
+
         // get roletype entity
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleType";
         $roleTypes = $entityManager->createQuery($dql)
@@ -67,14 +67,14 @@ foreach($usersRoles as $user) {
         // /* Error checking: ensure each role type refers to exactly
          // * one role type*/
         if(count($roleTypes) !== 1) {
-            throw new Exception(count($roleTypes) . " role types found with name: " . 
+            throw new Exception(count($roleTypes) . " role types found with name: " .
                 $role->USER_ROLE);
         }
         foreach($roleTypes as $result) {
             $roleType = $result;
         }
-        
-        
+
+
         // get user entity
         $dql = "SELECT u FROM User u WHERE u.certificateDn = ?1";
         $users = $entityManager->createQuery($dql)
@@ -86,14 +86,14 @@ foreach($usersRoles as $user) {
             foreach($users as $u) {
                 echo "Certificate DN is " . $u->getCertificateDn() . "-------";
             }
-            throw new Exception(count($users) . " users found with DN: " . 
+            throw new Exception(count($users) . " users found with DN: " .
                 $user->CERTDN);
         }
         foreach($users as $doctrineUser) {
             $doctrineUser = $doctrineUser;
         }
-        
-        $doctrineRole = new Role($roleType, $doctrineUser, $egi, 'STATUS_GRANTED'); 
+
+        $doctrineRole = new Role($roleType, $doctrineUser, $egi, 'STATUS_GRANTED');
         $entityManager->persist($doctrineRole);
     }
 }

@@ -24,7 +24,7 @@
 require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/../utils.php';
 require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
-    
+
 /**
  * Controller for a new_property request
  * @global array $_POST only set if the browser has POSTed data

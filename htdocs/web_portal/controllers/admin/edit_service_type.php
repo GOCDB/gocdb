@@ -32,7 +32,7 @@ require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 function edit_type() {
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's for a service type edit
         submit();
     } else { // If there is no post data, draw the service type edit
@@ -45,7 +45,7 @@ function edit_type() {
  * @return null
  */
 function draw() {
-    //Check the user has permission to see the page, will throw exception 
+    //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
@@ -71,15 +71,15 @@ function submit() {
 
     //Get the posted service type data
     $newValues = getSTDataFromWeb();
-    
+
     //get the user data for the add site function (so it can check permissions)
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    
+
     //get the service type service and the service type being edited
     $serv = \Factory::getServiceTypeService();
     $unalteredServiceType = $serv->getServiceType($newValues['ID']);
-    
+
     try {
         //function will throw error if user does not have the correct permissions
         $alteredServiceType =$serv->editServiceType($unalteredServiceType, $newValues, $user);

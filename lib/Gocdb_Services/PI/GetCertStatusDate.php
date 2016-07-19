@@ -20,28 +20,28 @@ require_once __DIR__ . '/IPIQuery.php';
  * <pre>
  * 'roc', 'certification_status'
  * </pre>
- * 
+ *
  * @author James McCarthy
  * @author David Meredith
  */
 class GetCertStatusDate implements IPIQuery{
-    
+
     protected $query;
     protected $validParams;
     protected $em;
     private $helpers;
     private $allSites;
-    
+
     /** Constructor takes entity manager which is then used by the
      *  query builder
-     * 
+     *
      * @param EntityManager $em
      */
     public function __construct($em){
         $this->em = $em;
-        $this->helpers=new Helpers();		
+        $this->helpers=new Helpers();
     }
-    
+
     /** Validates parameters against array of pre-defined valid terms
      *  for this PI type
      * @param array $parameters
@@ -51,42 +51,42 @@ class GetCertStatusDate implements IPIQuery{
         // Define supported parameters and validate given params (die if an unsupported param is given)
         $supportedQueryParams = array (
                 'certification_status',
-                'roc' 
+                'roc'
         );
-        
+
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
         $this->validParams = $parameters;
     }
-    
+
     /** Creates the query by building on a queryBuilder object as
-     *  required by the supplied parameters 
+     *  required by the supplied parameters
      */
     public function createQuery() {
         $parameters = $this->validParams;
         $binds= array();
         $bc=-1;
-    
+
         $qb = $this->em->createQueryBuilder();
-        
-        //Initialize base query		
+
+        //Initialize base query
         $qb	->select('s')
-            ->from('Site', 's')		
+            ->from('Site', 's')
             ->join('s.certificationStatus', 'cs')
             ->join('s.ngi', 'n')
             ->leftJoin('s.scopes', 'sc')
             ->join('s.infrastructure', 'i')
             ->andWhere($qb->expr()->like('i.name', '?'.++$bc))
             ->orderBy('s.id', 'ASC');
-        
-            
+
+
             $binds[] = array($bc, 'Production');
-            
-            
-            
-    
+
+
+
+
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.
-        */	
+        */
         $parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
         //Get the result of the scope builder
         $qb = $parameterBuilder->getQB();
@@ -95,40 +95,40 @@ class GetCertStatusDate implements IPIQuery{
         foreach((array)$parameterBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-            
+
         //Bind all variables
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
-    
+
         $dql = $qb->getDql(); //for testing
-    
+
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
-        
-        $this->query = $query;	
-         return $this->query; 
-    }	
-    
+
+        $this->query = $query;
+         return $this->query;
+    }
+
     /**
      * Executes the query that has been built and stores the returned data
      * so it can later be used to create XML, Glue2 XML or JSON.
      */
     public function executeQuery(){
         $this->allSites = $this->query->execute();
-        return $this->allSites;	     
+        return $this->allSites;
     }
-    
-    /** 
-     * Returns proprietary GocDB rendering of the downtime data 
+
+    /**
+     * Returns proprietary GocDB rendering of the downtime data
      *  in an XML String
-     *  
+     *
      * @return String
      */
     public function getXML(){
         $helpers = $this->helpers;
-        
+
         $allSites = $this->allSites;
-        
-        
+
+
         $xml = new \SimpleXMLElement ( "<results />" );
         foreach ( $allSites as $site ) {
 
@@ -136,7 +136,7 @@ class GetCertStatusDate implements IPIQuery{
                 $xmlSite->addChild ( 'name', $site->getShortName () );
                 $xmlSite->addChild ( 'cert_status', $site->getCertificationStatus ()->getName () );
                 //Some V4 data was imported without dates. This stops those sites being displayed
-                if ($site->getCertificationStatusChangeDate () != null) {            		
+                if ($site->getCertificationStatusChangeDate () != null) {
                 // e.g. <cert_date>29-JAN-13 05.13.08 PM</cert_date>
                 $xmlSite->addChild ( 'cert_date', $site->getCertificationStatusChangeDate ()->format ( 'd-M-y H.i.s A' ) );
             }
@@ -150,19 +150,19 @@ class GetCertStatusDate implements IPIQuery{
         $xmlString = $dom->saveXML ();
         return $xmlString;
     }
-    
-    /** Returns the site data in Glue2 XML string. 
+
+    /** Returns the site data in Glue2 XML string.
      * @return String
      */
-    public function getGlue2XML(){	
+    public function getGlue2XML(){
         throw new LogicException("Not implemented yet");
     }
-    
-    /** Not yet implemented, in future will return the sites 
+
+    /** Not yet implemented, in future will return the sites
      *  data in JSON format
      * @throws LogicException
      */
-    public function getJSON(){		
+    public function getJSON(){
         throw new LogicException("Not implemented yet");
     }
 }

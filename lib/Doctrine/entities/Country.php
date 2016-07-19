@@ -17,11 +17,11 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Defines lookup values for countries and joins all {@see Site}s that have
- * the same country value.   
- * 
+ * the same country value.
+ *
  * @author John Casson
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * 
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ *
  * @Entity @Table(name="Countries")
  */
 class Country {
@@ -39,18 +39,18 @@ class Country {
     protected $sites = null;
 
     public function __construct() {
-       $this->sites = new ArrayCollection();        
+       $this->sites = new ArrayCollection();
     }
 
     /**
-     * @return int The PK of this entity or null if not persisted. 
+     * @return int The PK of this entity or null if not persisted.
      */
     public function getId() {
         return $this->id;
     }
 
     /**
-     * The unique name of the country. 
+     * The unique name of the country.
      * @return string
      */
     public function getName() {
@@ -58,7 +58,7 @@ class Country {
     }
 
     /**
-     * The unique code for this country. 
+     * The unique code for this country.
      * @return string
      */
     public function getCode() {
@@ -66,7 +66,7 @@ class Country {
     }
 
     /**
-     * A unique country name. 
+     * A unique country name.
      * @param string $name
      */
     public function setName($name) {
@@ -74,7 +74,7 @@ class Country {
     }
 
     /**
-     * Set the unique country code. 
+     * Set the unique country code.
      * @param string $code
      */
     public function setCode($code) {
@@ -82,7 +82,7 @@ class Country {
     }
 
     /**
-     * Get all the sites that have this country value. 
+     * Get all the sites that have this country value.
      * @return ArrayCollection of {@see Site}s
      */
     public function getSites() {
@@ -90,9 +90,9 @@ class Country {
     }
 
     /**
-     * Add the given Site to this entities list of Sites. 
-     * Note, this method calls <code>$site->setCountry($this);</code> to 
-     * establish the join on both sides of the relationship. 
+     * Add the given Site to this entities list of Sites.
+     * Note, this method calls <code>$site->setCountry($this);</code> to
+     * establish the join on both sides of the relationship.
      * @param Site $site
      */
     public function addSiteDoJoin($site) {

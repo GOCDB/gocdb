@@ -14,19 +14,19 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * A single Downtime instance is linked to a single {@see Service} and to 
- * zero-or-more of the Service's {@see EndpointLocation}s. This allows selected 
- * endpoints of a service to be put into downtime - consider different types of 
- * endpoint that all belong to the same service which may/may-not be affected by the DT. 
+ * A single Downtime instance is linked to a single {@see Service} and to
+ * zero-or-more of the Service's {@see EndpointLocation}s. This allows selected
+ * endpoints of a service to be put into downtime - consider different types of
+ * endpoint that all belong to the same service which may/may-not be affected by the DT.
  * <p>
- * Note, the DB constraints actually allow multiple services to be joined with a 
- * single downtime, creating a many-to-many relationship between Service and 
+ * Note, the DB constraints actually allow multiple services to be joined with a
+ * single downtime, creating a many-to-many relationship between Service and
  * Downtime. The overlying business logic however currently limits the Downtime to a single
- * Service; linking a single Downtime to multiple Services may be needed in the 
- * future and so the DB was designed this way to cater for this requirement.   
- * 
- * @author David Meredith <david.meredithh@stfc.ac.uk> 
- * @author John Casson 
+ * Service; linking a single Downtime to multiple Services may be needed in the
+ * future and so the DB was designed this way to cater for this requirement.
+ *
+ * @author David Meredith <david.meredithh@stfc.ac.uk>
+ * @author John Casson
  * @Entity @Table(name="Downtimes")
  */
 class Downtime {
@@ -69,15 +69,15 @@ class Downtime {
     protected $services = null;
 
     /**
-     * Bidirectional - Many Downtimes (OWNING SIDE) can link to many ELs. 
-     * 
-     * The data model allows a Downtime to be linked to many ELs of a Service. 
-     * IF required, this allows selected ELs of a Service to be put into 
-     * downtime as per GLUE2. Alternatively, higher level business logic can 
-     * be used to limit the number of ELs per service to 1. In doing this, 
+     * Bidirectional - Many Downtimes (OWNING SIDE) can link to many ELs.
+     *
+     * The data model allows a Downtime to be linked to many ELs of a Service.
+     * IF required, this allows selected ELs of a Service to be put into
+     * downtime as per GLUE2. Alternatively, higher level business logic can
+     * be used to limit the number of ELs per service to 1. In doing this,
      * the whole Service can then be put into downtime. This multiplicity choice
-     * is left to the implementation.   
-     * 
+     * is left to the implementation.
+     *
      * @ManyToMany(targetEntity="EndpointLocation", inversedBy="downtimes")
      * @JoinTable(name="Downtimes_EndpointLocations",
      *      joinColumns={@JoinColumn(name="downtime_id", referencedColumnName="id")},
@@ -90,8 +90,8 @@ class Downtime {
      * The legacy Downtime primary key carried over from GOCDB4.
      * Other operational tools use this as the unique identifier for a Downtime.
      * For new Downtimes created in v5 this value is programmatically generated.
-     * 
-     * @Column(type="string", unique=true, nullable=true) 
+     *
+     * @Column(type="string", unique=true, nullable=true)
      */
     protected $primaryKey;
 
@@ -110,7 +110,7 @@ class Downtime {
     }
 
     /**
-     * Human readable description of downtime, 4000 chars max. 
+     * Human readable description of downtime, 4000 chars max.
      * @return string
      */
     public function getDescription() {
@@ -118,17 +118,17 @@ class Downtime {
     }
 
     /**
-     * The Severity string, either WARNING or OUTAGE. 
-     * @return string 
+     * The Severity string, either WARNING or OUTAGE.
+     * @return string
      */
     public function getSeverity() {
         return $this->severity;
     }
 
     /**
-     * A label to classify the downtime, either SCHEDULED or UNSCHEDULED. 
-     * SCHEDULED if the insertDate is 24 hours before startDate.  
-     * UNSCHEDULED if the insertDate is <24 hours before startDate.  
+     * A label to classify the downtime, either SCHEDULED or UNSCHEDULED.
+     * SCHEDULED if the insertDate is 24 hours before startDate.
+     * UNSCHEDULED if the insertDate is <24 hours before startDate.
      * @return string
      */
     public function getClassification() {
@@ -137,16 +137,16 @@ class Downtime {
 
     /**
      * Downtime insert date in server's default timezone (which may not be UTC).
-     * <p> 
-     * You will almost certainly need to set the returned DateTime's timezone to 
-     * UTC. This is not done here to allow calling code to either set the tz individually 
-     * per DateTime instance, or globally via <code>date_default_timezone_set("UTC");</code> 
-     * which is more performant for processing large result sets (e.g. as in the PI).  
-     * 
+     * <p>
+     * You will almost certainly need to set the returned DateTime's timezone to
+     * UTC. This is not done here to allow calling code to either set the tz individually
+     * per DateTime instance, or globally via <code>date_default_timezone_set("UTC");</code>
+     * which is more performant for processing large result sets (e.g. as in the PI).
+     *
      * @return \DateTime or null
      */
     public function getInsertDate() {
-        // Adds overhead when processing large result-sets. 
+        // Adds overhead when processing large result-sets.
 //        if($this->insertDate != NULL){
 //               $this->insertDate->setTimezone(new \DateTimeZone('UTC'));
 //        }
@@ -155,16 +155,16 @@ class Downtime {
 
     /**
      * Get downtime start date in server's default timezone (which may not be UTC).
-     * <p> 
-     * You will almost certainly need to set the returned DateTime's timezone to 
-     * UTC. This is not done here to allow calling code to either set the tz individually 
-     * per DateTime instance, or globally via <code>date_default_timezone_set("UTC");</code> 
-     * which is more performant for processing large result sets (e.g. as in the PI).  
-     * 
+     * <p>
+     * You will almost certainly need to set the returned DateTime's timezone to
+     * UTC. This is not done here to allow calling code to either set the tz individually
+     * per DateTime instance, or globally via <code>date_default_timezone_set("UTC");</code>
+     * which is more performant for processing large result sets (e.g. as in the PI).
+     *
      * @return \DateTime or null
      */
     public function getStartDate() {
-        // Adds overhead when processing large result-sets. 
+        // Adds overhead when processing large result-sets.
 //        if($this->startDate != NULL){
 //                   $this->startDate->setTimezone(new \DateTimeZone('UTC'));
 //        }
@@ -173,16 +173,16 @@ class Downtime {
 
     /**
      * Get downtime end date in server's default timezone (which may not be UTC).
-     * <p> 
-     * You will almost certainly need to set the returned DateTime's timezone to 
-     * UTC. This is not done here to allow calling code to either set the tz individually 
-     * per DateTime instance, or globally via <code>date_default_timezone_set("UTC");</code> 
-     * which is more performant for processing large result sets (e.g. as in the PI).  
-     * 
+     * <p>
+     * You will almost certainly need to set the returned DateTime's timezone to
+     * UTC. This is not done here to allow calling code to either set the tz individually
+     * per DateTime instance, or globally via <code>date_default_timezone_set("UTC");</code>
+     * which is more performant for processing large result sets (e.g. as in the PI).
+     *
      * @return \DateTime or null
      */
     public function getEndDate() {
-        // Adds overhead when processing large result-sets. 
+        // Adds overhead when processing large result-sets.
 //        if($this->endDate != NULL){
 //                   $this->endDate->setTimezone(new \DateTimeZone('UTC'));
 //        }
@@ -190,11 +190,11 @@ class Downtime {
     }
 
     /**
-     * Get the date that this downtime should be announced. 
-     * For SCHEDULED downtimes, this is 24hrs before the startDate.  
-     * For UNSCHEDULED downtimes, this is the insertDate.  
+     * Get the date that this downtime should be announced.
+     * For SCHEDULED downtimes, this is 24hrs before the startDate.
+     * For UNSCHEDULED downtimes, this is the insertDate.
      * @return \DateTime or null
-     */ 
+     */
     public function getAnnounceDate() {
         if ($this->getClassification() == "UNSCHEDULED") {
             return $this->insertDate;
@@ -206,7 +206,7 @@ class Downtime {
     }
 
     /**
-     * Get the list of {@see Service}s that this Downtime instance is linked to. 
+     * Get the list of {@see Service}s that this Downtime instance is linked to.
      * @return Doctrine\Common\Collections\ArrayCollection Of {@see Service}s
      */
     public function getServices() {
@@ -214,8 +214,8 @@ class Downtime {
     }
 
     /**
-     * Get the list of {@see EndpointLocation}s that this Downtime is linked to. 
-     * @return Doctrine\Common\Collections\ArrayCollection Of {@see EndpointLocation}s 
+     * Get the list of {@see EndpointLocation}s that this Downtime is linked to.
+     * @return Doctrine\Common\Collections\ArrayCollection Of {@see EndpointLocation}s
      */
     public function getEndpointLocations() {
         return $this->endpointLocations;
@@ -224,15 +224,15 @@ class Downtime {
     /**
      * The legacy Downtime primary key carried over from GOCDB4.
      * Other operational tools use this as the unique identifier for a Downtime.
-     * For new Downtimes created in v5 this value is programmatically generated. 
-     * @return string 
+     * For new Downtimes created in v5 this value is programmatically generated.
+     * @return string
      */
     public function getPrimaryKey() {
         return $this->primaryKey;
     }
 
     /**
-     * Provide the reasons for this downtime, 4000chars max. 
+     * Provide the reasons for this downtime, 4000chars max.
      * @param string $description
      */
     public function setDescription($description) {
@@ -240,7 +240,7 @@ class Downtime {
     }
 
     /**
-     * Flag to indicate the severity of the downtime, either OUTAGE or WARNING. 
+     * Flag to indicate the severity of the downtime, either OUTAGE or WARNING.
      * @param string $severity
      */
     public function setSeverity($severity) {
@@ -253,9 +253,9 @@ class Downtime {
     }
 
     /**
-     * A label to classify the downtime, either SCHEDULED or UNSCHEDULED. 
-     * SCHEDULED if the insertDate is 24 hours before startDate.  
-     * UNSCHEDULED if the insertDate is <24 hours before startDate.   
+     * A label to classify the downtime, either SCHEDULED or UNSCHEDULED.
+     * SCHEDULED if the insertDate is 24 hours before startDate.
+     * UNSCHEDULED if the insertDate is <24 hours before startDate.
      * @param string $classification
      */
     public function setClassification($classification) {
@@ -263,7 +263,7 @@ class Downtime {
     }
 
     /**
-     * The UTC DateTime when this Downtime was created/inserted.  
+     * The UTC DateTime when this Downtime was created/inserted.
      * @param \DateTime $insertDate
      */
     public function setInsertDate($insertDate) {
@@ -271,7 +271,7 @@ class Downtime {
     }
 
     /**
-     * The UTC DateTime when this downtime starts. 
+     * The UTC DateTime when this downtime starts.
      * @param \DateTime $startDate
      */
     public function setStartDate($startDate) {
@@ -279,7 +279,7 @@ class Downtime {
     }
 
     /**
-     * The UTC DateTime when this downtime ends. 
+     * The UTC DateTime when this downtime ends.
      * @param \DateTime $endDate
      */
     public function setEndDate($endDate) {
@@ -287,11 +287,11 @@ class Downtime {
     }
 
     /**
-     * The legacy Downtime primary key carried over from GOCDB4. 
-     * Other operational tools use this as the unique identifier for a Downtime. 
+     * The legacy Downtime primary key carried over from GOCDB4.
+     * Other operational tools use this as the unique identifier for a Downtime.
      * For new Downtimes created in v5 this value is programmatically generated
      * using the {@see \PrimaryKey} ID property with 'G0' appended.
-     * 
+     *
      * @param string $primaryKey
      */
     public function setPrimaryKey($primaryKey) {
@@ -299,18 +299,18 @@ class Downtime {
     }
 
     /**
-     * Add a service to this downtime's collection. 
-     * This method will establish the relationship on both sides by internally 
-     * calling <code>$service->_addDowntime($this);</code>. 
-     * Downtime is the OWNING side so this method WILL establish the relationship 
+     * Add a service to this downtime's collection.
+     * This method will establish the relationship on both sides by internally
+     * calling <code>$service->_addDowntime($this);</code>.
+     * Downtime is the OWNING side so this method WILL establish the relationship
      * in the database.
-     * 
+     *
      * @param Service $service
-     * @throws \AlreadyLinkedException If this downtime is already linked to the service. 
+     * @throws \AlreadyLinkedException If this downtime is already linked to the service.
      */
     public function addService($service) {
         require_once __DIR__ . '/AlreadyLinkedException.php';
-        // Check this SE isn't already registered (not sure we strictly need this) 
+        // Check this SE isn't already registered (not sure we strictly need this)
         foreach ($this->services as $existingSe) {
             if ($existingSe == $service) {
                 throw new AlreadyLinkedException("Downtime {$this->getId()} is already "
@@ -318,56 +318,56 @@ class Downtime {
             }
         }
         $this->services[] = $service;
-        //$service->_add Downtime($this); 
+        //$service->_add Downtime($this);
         $dts = $service->getDowntimes();
         $dts[] = $this;
     }
 
     /**
-     * Remove given service from $this services list and remove 
-     * $this instance from the given service's downtime list.  
+     * Remove given service from $this services list and remove
+     * $this instance from the given service's downtime list.
      * Downtime is the OWNING side so this method WILL remove the relationship from
      * the database.
-     * 
+     *
      * @param Service $service service for removal
      */
     public function removeService(Service $service) {
-        //$service->remove Downtime($this); 
+        //$service->remove Downtime($this);
         $service->getDowntimes()->removeElement($this);
         $this->services->removeElement($service);
     }
 
     /**
-     * Add the given EL to this downtime's EL list and then  
-     * calls <code>$endpointLocation->_addDowntime($this)</code> to 
-     * keep both sides of the relationship consistent.  
+     * Add the given EL to this downtime's EL list and then
+     * calls <code>$endpointLocation->_addDowntime($this)</code> to
+     * keep both sides of the relationship consistent.
      * <p>
      * This is the OWNING side so this method WILL establish the relationship in the database.
-     * 
+     *
      * @param EndpointLocation $endpointLocation
      */
     public function addEndpointLocation(EndpointLocation $endpointLocation) {
         $this->endpointLocations[] = $endpointLocation;
-        //$endpointLocation->_add Downtime($this); 
+        //$endpointLocation->_add Downtime($this);
         $dts = $endpointLocation->getDowntimes();
         $dts[] = $this;
     }
 
     /**
-     * Remove the downtime from the specified ELs list of downtimes and 
-     * then remoeve it from this downtime's EL list.  
-     * calls to <code>$endpointLocation->_removeDowntime($this)</code> to 
-     * keep both sides of the relationship consistent (i.e. no need to 
-     * call <code>$endpointLocation->removeDowntime($this)</code> in client code).  
+     * Remove the downtime from the specified ELs list of downtimes and
+     * then remoeve it from this downtime's EL list.
+     * calls to <code>$endpointLocation->_removeDowntime($this)</code> to
+     * keep both sides of the relationship consistent (i.e. no need to
+     * call <code>$endpointLocation->removeDowntime($this)</code> in client code).
      * <p>
      * This is the OWNING side so this method WILL remove the relationship from
      * the database.
-     * 
+     *
      * @param EndpointLocation $endpointLocation endpoint location for removal
      */
     public function removeEndpointLocation(EndpointLocation $endpointLocation) {
         $endpointLocation->getDowntimes()->removeElement($this);
-        //$endpointLocation->_remove Downtime($this); 
+        //$endpointLocation->_remove Downtime($this);
         $this->endpointLocations->removeElement($endpointLocation);
     }
 

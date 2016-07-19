@@ -18,8 +18,8 @@ require_once __DIR__ . '/Site.php';
 require_once __DIR__ . '/NGI.php';
 require_once __DIR__ . '/ServiceGroup.php';
 require_once __DIR__ . '/Project.php';
-require_once __DIR__ . '/RoleActionAuthorisationService.php'; 
-require_once __DIR__ . '/RoleActionMappingService.php'; 
+require_once __DIR__ . '/RoleActionAuthorisationService.php';
+require_once __DIR__ . '/RoleActionMappingService.php';
 
 
 /**
@@ -30,138 +30,138 @@ require_once __DIR__ . '/RoleActionMappingService.php';
  * @author David Meredith
  */
 class Role extends AbstractEntityService{
-    private $downtimeService; 
-    private $roleActionAuthorisationService; 
-    private $roleActionMappingService; 
+    private $downtimeService;
+    private $roleActionAuthorisationService;
+    private $roleActionMappingService;
 
 
     public function __construct() {
         parent::__construct();
-        $this->roleActionMappingService = new RoleActionMappingService(); 
+        $this->roleActionMappingService = new RoleActionMappingService();
     }
-    
-    
+
+
     /**
      * Set the Downtime service
      * @param \org\gocdb\services\Downtime $downtimeService
      */
     public function setDowntimeService(\org\gocdb\services\Downtime $downtimeService){
-       $this->downtimeService = $downtimeService;  
+       $this->downtimeService = $downtimeService;
     }
 
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
-        $this->roleActionAuthorisationService = $roleActionAuthService; 
+        $this->roleActionAuthorisationService = $roleActionAuthService;
     }
 
     public function setRoleActionMappingService(RoleActionMappingService $roleActionMappingService){
-        $this->roleActionMappingService = $roleActionMappingService; 
+        $this->roleActionMappingService = $roleActionMappingService;
     }
 
 
     /**
-     * Get all {@see \Project}s that are reachable from the given ownedEntity 
-     * when moving up the domain model, e.g. Site->Ngi->Project. 
+     * Get all {@see \Project}s that are reachable from the given ownedEntity
+     * when moving up the domain model, e.g. Site->Ngi->Project.
      * <p>
-     * The ownedEntity therefore comes under the 'remit' of the returned projects. 
-     * 
-     * @param \OwnedEntity $ownedEntity Search up the domain graph from this entity 
-     * @return array of \Project entities 
+     * The ownedEntity therefore comes under the 'remit' of the returned projects.
+     *
+     * @param \OwnedEntity $ownedEntity Search up the domain graph from this entity
+     * @return array of \Project entities
      */
     public function getReachableProjectsFromOwnedEntity(\OwnedEntity $ownedEntity){
         if ($ownedEntity instanceof \Site) {
-            /* @var $ownedEntity \Site */ 
-            $projects = $ownedEntity->getNgi()->getProjects()->toArray(); 
-            
+            /* @var $ownedEntity \Site */
+            $projects = $ownedEntity->getNgi()->getProjects()->toArray();
+
         } else if($ownedEntity instanceof \NGI) {
             /* @var $ownedEntity NGI */
-            $projects = $ownedEntity->getProjects()->toArray(); 
-            
+            $projects = $ownedEntity->getProjects()->toArray();
+
         } else if($ownedEntity instanceof \Project){
            $projects = array($ownedEntity);
-           
+
         } else {
             //throw new \LogicException('ownedEntity type is not a descendant '
-            //        . 'of Project ['.$ownedEntity->getType().']'); 
-            return array(); 
+            //        . 'of Project ['.$ownedEntity->getType().']');
+            return array();
         }
-        return $projects; 
+        return $projects;
     }
 
-    
+
     /**
-     * Get all the user's granted {@see \Role}s over {@see \OwnedEntity} objects 
-     * that are descendants of the specified targetProject. 
+     * Get all the user's granted {@see \Role}s over {@see \OwnedEntity} objects
+     * that are descendants of the specified targetProject.
      * <p>
-     * The returned roles will be over: {@see \Site}, {@see \NGI}s and {@see \Project}s, 
-     * note (no {@see \ServiceGroup}s as they are not children of a project.   
-     * 
+     * The returned roles will be over: {@see \Site}, {@see \NGI}s and {@see \Project}s,
+     * note (no {@see \ServiceGroup}s as they are not children of a project.
+     *
      * @param \User $user
-     * @param \Project $targetProject Only roles over entities under the targetProject are returned. 
-     * @return array Return the granted {@see \Role}s that the user owns 
-     * over entities in the given project. 
+     * @param \Project $targetProject Only roles over entities under the targetProject are returned.
+     * @return array Return the granted {@see \Role}s that the user owns
+     * over entities in the given project.
      */
     public function getUserRolesByProject(\User $user, \Project $targetProject){
         //fail early
         if($targetProject->getId() == null){
-            throw new \LogicException('Project does not exist in the DB'); 
+            throw new \LogicException('Project does not exist in the DB');
         }
         if($user->getId() == null){
-            throw new \LogicException('User does not exist in the DB'); 
+            throw new \LogicException('User does not exist in the DB');
         }
-        // get all the user's granted roles 
-        //$userRoles = $user->getRoles(); 
-        $userRoles = $this->getUserRoles($user, \RoleStatus::GRANTED);  
-        $rolesInProject = array(); 
-        
-        // foreach role, get the ownedEntity, and navigate up the domain model 
-        // to reach the entity's owning project. If this project is the 
-        // same as the targetProject, then the role is collected/returned. 
+        // get all the user's granted roles
+        //$userRoles = $user->getRoles();
+        $userRoles = $this->getUserRoles($user, \RoleStatus::GRANTED);
+        $rolesInProject = array();
+
+        // foreach role, get the ownedEntity, and navigate up the domain model
+        // to reach the entity's owning project. If this project is the
+        // same as the targetProject, then the role is collected/returned.
         /* @var $role \Role */
         foreach($userRoles as $role){
             if($role->getStatus() != \RoleStatus::GRANTED){
-                continue;    
+                continue;
             }
-            
-            $ownedEntity = $role->getOwnedEntity(); 
+
+            $ownedEntity = $role->getOwnedEntity();
             if ($ownedEntity instanceof \Site) {
-                // query may be better performance? 
-               
+                // query may be better performance?
+
                 if($ownedEntity->getNgi() != null){
-                    $projects = $ownedEntity->getNgi()->getProjects(); 
+                    $projects = $ownedEntity->getNgi()->getProjects();
                     foreach($projects as $proj){
                         if($proj->getId() == $targetProject->getId()){
                         //if($proj == $targetProject){
-                            $rolesInProject[] = $role; 
+                            $rolesInProject[] = $role;
                         }
                     }
                 }
             } else if ($ownedEntity instanceof \NGI) {
-                  $projects = $ownedEntity->getProjects();  
+                  $projects = $ownedEntity->getProjects();
                   foreach($projects as $proj){
                     if($proj->getId() == $targetProject->getId()){
                     //if($proj == $targetProject ){
-                        $rolesInProject[] = $role; 
+                        $rolesInProject[] = $role;
                     }
                 }
             } else if ($ownedEntity instanceof \Project) {
                 if( $ownedEntity->getId() == $targetProject->getId()){
                 //if( $ownedEntity == $targetProject){
-                    $rolesInProject[] = $role; 
+                    $rolesInProject[] = $role;
                 }
             }
-            // note, dont include \ServiceGroup because a sg is not under 
-            // a project in terms of domain model hierarchy 
-        } 
-        return $rolesInProject; 
+            // note, dont include \ServiceGroup because a sg is not under
+            // a project in terms of domain model hierarchy
+        }
+        return $rolesInProject;
     }
 
 
     /**
-     * Get all the RoleType names that the user has DIRECTLY over the given entity,   
-     * and optionally limit the returned RoleType names to those with the specified  
+     * Get all the RoleType names that the user has DIRECTLY over the given entity,
+     * and optionally limit the returned RoleType names to those with the specified
      * RoleStatus (GRANTED by default).
      *
-     * @param \OwnedEntity $entity An entity that extends OwnedEntity (Site, NGI, ServiceGroup, Project) 
+     * @param \OwnedEntity $entity An entity that extends OwnedEntity (Site, NGI, ServiceGroup, Project)
      * @param \User $user
      * @param string RoleStatus value
      * @return array of RoleType names or an empty array
@@ -170,21 +170,21 @@ class Role extends AbstractEntityService{
     public function getUserRoleNamesOverEntity(\OwnedEntity $entity, \User $user,
             /*$classifications = null,*/ $roleStatus = \RoleStatus::GRANTED) {
         //This method replaces userHasSiteRole, userHasNgiRole, userHasSGroupRole
-        
+
         if($user->getId() == null || $entity->getId() == null){
-            return array(); 
+            return array();
         }
-        
-        // Would be better to use the get_class method to determine the instance 
+
+        // Would be better to use the get_class method to determine the instance
         // class name, however, there have been instances where this has returned
         // a class name of the following form: 'DoctrineProxies\__CG__\Site'
-        // which would cause an issue with dql query below. 
-        // 
+        // which would cause an issue with dql query below.
+        //
         //$entityClassName= get_class($entity);
         require_once __DIR__.'/OwnedEntity.php';
         $OwnedEntityService = new \org\gocdb\services\OwnedEntity();
-        $entityClassName = $OwnedEntityService->getOwnedEntityDerivedClassName($entity); 
-        
+        $entityClassName = $OwnedEntityService->getOwnedEntityDerivedClassName($entity);
+
         $dql = "SELECT rt.name
             FROM Role r
             JOIN r.roleType rt
@@ -204,20 +204,20 @@ class Role extends AbstractEntityService{
         /*if ($classifications != null) {
             $query->setParameter('classifications', $classifications);
         }*/
-        $roleNames = $query->getScalarResult(); 
-        //print_r($roleNames); 
+        $roleNames = $query->getScalarResult();
+        //print_r($roleNames);
         $transform = function($item) {
            return $item['name'];
         };
         $retArray = array_map($transform, $roleNames);
-        return $retArray; 
+        return $retArray;
     }
 
 
     /**
-     * Get all Pending Role requests (Role objects with RoleStatus::PENDING) 
-     * that the user has permission to grant. 
-     * @todo - check and finish  
+     * Get all Pending Role requests (Role objects with RoleStatus::PENDING)
+     * that the user has permission to grant.
+     * @todo - check and finish
      * @param \User $user
      * @return array of Pending Role array
      */
@@ -228,27 +228,27 @@ class Role extends AbstractEntityService{
         if ($user->isAdmin()) {
             return $this->getAllRolesByStatus(\RoleStatus::PENDING);
         }
-        // Get all PENDNG ROLES 
-        $allPendingRoles = $this->getAllRolesByStatus(\RoleStatus::PENDING); 
-        // Iterate each PENDING Role request and determine 
-        // if the user has GRANT_ROLE permission over each OwnedEntity 
-        $grantablePendingRoles = array(); 
+        // Get all PENDNG ROLES
+        $allPendingRoles = $this->getAllRolesByStatus(\RoleStatus::PENDING);
+        // Iterate each PENDING Role request and determine
+        // if the user has GRANT_ROLE permission over each OwnedEntity
+        $grantablePendingRoles = array();
         /* @var $role \Role */
         foreach ($allPendingRoles as $role) {
             $targetEntity = $role->getOwnedEntity();
             if($this->roleActionAuthorisationService->authoriseAction(\Action::GRANT_ROLE, $targetEntity, $user)->getGrantAction() ){
-               $grantablePendingRoles[] = $role;   
+               $grantablePendingRoles[] = $role;
             }
         }
-        return $grantablePendingRoles; 
+        return $grantablePendingRoles;
      }
 
     /**
-     * Returns an array of sites where the user has a GRANTED role over a 
-     * parent OwnedObject including Site and NGI, but not Project.  
-     * Important: This does <b>NOT</b> grant permissions over the returned sites, 
-     * it simply means that the user has a Role over one of the owning OwnedObjects. 
-     * 
+     * Returns an array of sites where the user has a GRANTED role over a
+     * parent OwnedObject including Site and NGI, but not Project.
+     * Important: This does <b>NOT</b> grant permissions over the returned sites,
+     * it simply means that the user has a Role over one of the owning OwnedObjects.
+     *
      * @param \User $user
      * @return array Of \Site objects
      */
@@ -281,13 +281,13 @@ class Role extends AbstractEntityService{
 
 
     /**
-     * Returns an array of services where the user has a GRANTED role over a 
-     * parent OwnedObject including Site and NGI, but not Project.  
-     * Important: This does <b>NOT</b> grant permissions over the returned services, 
-     * it simply means that the user has a Role over one of the owning OwnedObjects. 
-     * 
+     * Returns an array of services where the user has a GRANTED role over a
+     * parent OwnedObject including Site and NGI, but not Project.
+     * Important: This does <b>NOT</b> grant permissions over the returned services,
+     * it simply means that the user has a Role over one of the owning OwnedObjects.
+     *
      * @param \User $user
-     * @return array of \Service entities 
+     * @return array of \Service entities
      */
     public function getReachableServicesFromOwnedObjectRoles(\User $user) {
         $ses = array();
@@ -335,64 +335,64 @@ class Role extends AbstractEntityService{
 
 
    /**
-    * Get the role type names configured for the given owned entity type.   
+    * Get the role type names configured for the given owned entity type.
     * <p>
-    * The method consults the role action mapping xml file that defines which 
-    * role types are defined for the entity type.  
-    * @param \OwnedEntity $ownedEntity Get roles type names for this entity 
-    * @return array Role type names for entity  
+    * The method consults the role action mapping xml file that defines which
+    * role types are defined for the entity type.
+    * @param \OwnedEntity $ownedEntity Get roles type names for this entity
+    * @return array Role type names for entity
     */
     public function getRoleTypeNamesForOwnedEntity(\OwnedEntity $ownedEntity) {
         $roleTypeNamesForOE = array();
     $projRoleMappings = $this->roleActionMappingService->getRoleTypeNamesForProject(null);
     foreach ($projRoleMappings as $keyRoleTypeName => $valOwnedObjectType) {
         if(strtoupper($ownedEntity->getType()) == strtoupper($valOwnedObjectType)) {
-        $roleTypeNamesForOE[] =  $keyRoleTypeName; 
+        $roleTypeNamesForOE[] =  $keyRoleTypeName;
         }
     }
         return $roleTypeNamesForOE;
     }
 
     /**
-    * Get the role type names configured for the given owned entity type. 
+    * Get the role type names configured for the given owned entity type.
     * @see \RoleTypeName
-    * @param \OwnedEntity $ownedEntity 
-    * @return array of role type name strings 
+    * @param \OwnedEntity $ownedEntity
+    * @return array of role type name strings
     */
 //    public function getRoleTypeNamesForOwnedEntity(\OwnedEntity $ownedEntity){
-//        $roles = array(); 
+//        $roles = array();
 //        if($ownedEntity instanceof \Site){
-//            $roles[] = \RoleTypeName::SITE_ADMIN; 
-//            $roles[] = \RoleTypeName::SITE_OPS_DEP_MAN; 
-//            $roles[] = \RoleTypeName::SITE_OPS_MAN; 
-//            $roles[] = \RoleTypeName::SITE_SECOFFICER; 
-//            
+//            $roles[] = \RoleTypeName::SITE_ADMIN;
+//            $roles[] = \RoleTypeName::SITE_OPS_DEP_MAN;
+//            $roles[] = \RoleTypeName::SITE_OPS_MAN;
+//            $roles[] = \RoleTypeName::SITE_SECOFFICER;
+//
 //        } else if($ownedEntity instanceof \NGI){
-//            $roles[] = \RoleTypeName::NGI_OPS_DEP_MAN; 
-//            $roles[] = \RoleTypeName::NGI_OPS_MAN; 
-//            $roles[] = \RoleTypeName::NGI_SEC_OFFICER;  
-//            $roles[] = \RoleTypeName::REG_FIRST_LINE_SUPPORT; 
-//            $roles[] = \RoleTypeName::REG_STAFF_ROD; 
+//            $roles[] = \RoleTypeName::NGI_OPS_DEP_MAN;
+//            $roles[] = \RoleTypeName::NGI_OPS_MAN;
+//            $roles[] = \RoleTypeName::NGI_SEC_OFFICER;
+//            $roles[] = \RoleTypeName::REG_FIRST_LINE_SUPPORT;
+//            $roles[] = \RoleTypeName::REG_STAFF_ROD;
 //            //\RoleTypeName::CIC_STAFF;  // not used
-//            //\RoleTypeName::REG_STAFF;  // not used  
-//            
+//            //\RoleTypeName::REG_STAFF;  // not used
+//
 //        } else if($ownedEntity instanceof \Project){
-//            $roles[] = \RoleTypeName::COD_ADMIN; 
-//            $roles[] = \RoleTypeName::COD_STAFF; 
-//            $roles[] = \RoleTypeName::EGI_CSIRT_OFFICER; 
-//            $roles[] = \RoleTypeName::COO; 
-//            
+//            $roles[] = \RoleTypeName::COD_ADMIN;
+//            $roles[] = \RoleTypeName::COD_STAFF;
+//            $roles[] = \RoleTypeName::EGI_CSIRT_OFFICER;
+//            $roles[] = \RoleTypeName::COO;
+//
 //        } else if($ownedEntity instanceof \ServiceGroup){
-//            $roles[] = \RoleTypeName::SERVICEGROUP_ADMIN; 
-//        } 
-//        return $roles; 
-//    } 
+//            $roles[] = \RoleTypeName::SERVICEGROUP_ADMIN;
+//        }
+//        return $roles;
+//    }
 
     /**
      * Get the given User's roles that have the specified role status.
-     * For valid role status values, see RoleStatus class. 
-     * \RoleStatus::GRANTED is default.  
-     * 
+     * For valid role status values, see RoleStatus class.
+     * \RoleStatus::GRANTED is default.
+     *
      * @see \RoleStatus
      * @param \User $user Get roles for this user
      * @param string $roleStatus A role status defined in RoleStatus
@@ -401,7 +401,7 @@ class Role extends AbstractEntityService{
      */
     public function getUserRoles(\User $user, $roleStatus = NULL) {
         if($roleStatus == null){
-            $roleStatus = \RoleStatus::GRANTED; 
+            $roleStatus = \RoleStatus::GRANTED;
         }
         if(!$this->isValidRoleStatus($roleStatus)){
             throw new \LogicException('Coding error - Invalid roleStatus');
@@ -412,49 +412,49 @@ class Role extends AbstractEntityService{
         $dql = "SELECT r FROM Role r
                 JOIN r.user u
                 WHERE u.id = :id
-                AND r.status = :status 
+                AND r.status = :status
                 ORDER BY r.id
                 ";
          $roles = $this->em->createQuery($dql)
             ->setParameter("id", $user->getId())
             ->setParameter("status", $roleStatus)
             ->getResult();
-        return $roles; 
+        return $roles;
     }
-   
+
     /**
-     * Get all the Role objects with the specified status. 
+     * Get all the Role objects with the specified status.
      * @param string $roleStatus Must be a valid \RoleStatus
-     * @return array of Role objects 
+     * @return array of Role objects
      * @throws \LogicException
      */
     private function getAllRolesByStatus($roleStatus){
         if(!$this->isValidRoleStatus($roleStatus)){
             throw new \LogicException('Coding error - Invalid roleStatus');
-        } 
+        }
          $dql = "SELECT r FROM Role r WHERE r.status = :status ORDER BY r.id";
          $roles = $this->em->createQuery($dql)
             ->setParameter("status", $roleStatus)
             ->getResult();
-        return $roles; 
+        return $roles;
     }
 
     /**
-     * Get the \RoleType instance with the specified name.  
+     * Get the \RoleType instance with the specified name.
      * @param string $roleTypeName
-     * @return \RoleType  
-     * @throws \Doctrine\ORM\NoResultException 
+     * @return \RoleType
+     * @throws \Doctrine\ORM\NoResultException
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
     private function getRoleTypeByName($roleTypeName){
         //if(!$this->isValidRoleTypeName($roleTypeName)){
-        //    throw new \LogicException('Coding error - Invalid roleTypeName'); 
+        //    throw new \LogicException('Coding error - Invalid roleTypeName');
         //}
-        $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleTypeName"; 
+        $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleTypeName";
         $roleType = $this->em->createQuery($dql)
                 ->setParameter("roleTypeName", $roleTypeName)
-                ->getSingleResult(); 
-        return $roleType; 
+                ->getSingleResult();
+        return $roleType;
     }
 
 
@@ -463,48 +463,48 @@ class Role extends AbstractEntityService{
      * @return \Role
      */
     public function getRoleById($id){
-        // will only load a lazy loading proxy until method on the proxy is called 
+        // will only load a lazy loading proxy until method on the proxy is called
         //$entity = $this->em->find('Role', (int)$id);
-        //return $entity; 
-        $dql = "SELECT r from Role r where r.id = :id"; 
-        $role = $this->em->createQuery($dql)->setParameter(":id", $id)->getSingleResult(); 
-        return $role; 
+        //return $entity;
+        $dql = "SELECT r from Role r where r.id = :id";
+        $role = $this->em->createQuery($dql)->setParameter(":id", $id)->getSingleResult();
+        return $role;
     }
 
 
     /**
-     * Create and return a new \Role instance linking the given user and entity. 
+     * Create and return a new \Role instance linking the given user and entity.
      * The function performs validation of the requested role including
      * <ul>
      * <li>is the given roleTypeName valid</li>
      * <li> is the requested role type valid for the given entity </li>
      * <li> does the user already have the requested role over the entity </li>
      * <li> does the user already have the requested role pending over the entity</li>
-     * </ul> 
-     * 
+     * </ul>
+     *
      * @param string $roleTypeName @see \RoleTypeName
      * @param \User $user
      * @param \OwnedEntity $entity
-     * @return \Role managed instance  
-     * @throws \Exception if the user already has the requested role over the entity (role status GRANTED or PENDING) 
+     * @return \Role managed instance
+     * @throws \Exception if the user already has the requested role over the entity (role status GRANTED or PENDING)
      * @throws \LogicException
      */
     public function addRole($roleTypeName, \User $user, \OwnedEntity $entity){
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-        $roleStatus = \RoleStatus::PENDING; 
-        
+        $roleStatus = \RoleStatus::PENDING;
+
         // Check the given roleName is a valid role
         if (!$this->isValidRoleStatus($roleStatus)) {
             throw new \LogicException('Coding error - invalid roleStatus');
         }
-        // Check the requested roleName is suitable for the ownedEntity 
-        $roleTypeNamesForOE = $this->getRoleTypeNamesForOwnedEntity($entity); 
-        
+        // Check the requested roleName is suitable for the ownedEntity
+        $roleTypeNamesForOE = $this->getRoleTypeNamesForOwnedEntity($entity);
+
         if (!in_array($roleTypeName, $roleTypeNamesForOE) ) {
             throw new \LogicException("Role requested [$roleTypeName] is not valid for this OwnedEntity");
         }
-        // Check to see if user already has the same type of role GRANTED over entity 
+        // Check to see if user already has the same type of role GRANTED over entity
         if (in_array($roleTypeName, $this->getUserRoleNamesOverEntity($entity, $user, \RoleStatus::GRANTED))) {
             throw new \Exception("You already have the role [$roleTypeName] over " . $entity->getName());
         }
@@ -512,19 +512,19 @@ class Role extends AbstractEntityService{
         if (in_array($roleTypeName, $this->getUserRoleNamesOverEntity($entity, $user, \RoleStatus::PENDING))) {
             throw new \Exception("You already have a [$roleTypeName] role request pending over " . $entity->getName());
         }
-         
+
         $this->em->getConnection()->beginTransaction();
         try {
             // getRoleTypeName throws a NoResultException if the roleType with the
-            // specfied name don't exist in in the DB. 
-            $roleType = $this->getRoleTypeByName($roleTypeName); 
-            $r = new \Role($roleType, $user, $entity, $roleStatus);  
-            $this->em->persist($r); 
+            // specfied name don't exist in in the DB.
+            $roleType = $this->getRoleTypeByName($roleTypeName);
+            $r = new \Role($roleType, $user, $entity, $roleStatus);
+            $this->em->persist($r);
 
-            // create a RoleActionRecord after role has been persisted (to get id) 
-            $rar = \RoleActionRecord::construct($user, $r, \RoleStatus::PENDING); 
-            $this->em->persist($rar); 
-           
+            // create a RoleActionRecord after role has been persisted (to get id)
+            $rar = \RoleActionRecord::construct($user, $r, \RoleStatus::PENDING);
+            $this->em->persist($rar);
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -532,20 +532,20 @@ class Role extends AbstractEntityService{
             $this->em->close();
             throw $e;
         }
-        return $r; 
+        return $r;
     }
 
 
     /**
-     * Calling user attempts to grant the given Role request.  
+     * Calling user attempts to grant the given Role request.
      * <p>
-     * The callingUser's permissions are checked before the Role is granted. 
+     * The callingUser's permissions are checked before the Role is granted.
      * Exception is thrown if callingUser does not have permission to grant.
-     *   
+     *
      * @param \Role $role Role must be {@link \RoleStatus::PENDING}
      * @param \User $callingUser
      * @throws \LogicException
-     * @throws \Exception 
+     * @throws \Exception
      */
     public function grantRole(\Role $role, \User $callingUser) {
         if ($callingUser == null) {
@@ -553,30 +553,30 @@ class Role extends AbstractEntityService{
         }
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($callingUser);
-        // Santity check that it has pending status 
+        // Santity check that it has pending status
         if ($role->getStatus() != \RoleStatus::PENDING) {
             throw new \LogicException("Invalid role request - does not have status of PENDING");
         }
-        $entity = $role->getOwnedEntity(); 
+        $entity = $role->getOwnedEntity();
         if($entity == null){
-           throw new \LogicException('Error - target entity of role is null');    
+           throw new \LogicException('Error - target entity of role is null');
         }
-        // check calling user has permission to grant this role  
-        //$grantingRoles = $this->authorize Action(\Action::GRANT_ROLE, $entity, $callingUser); 
+        // check calling user has permission to grant this role
+        //$grantingRoles = $this->authorize Action(\Action::GRANT_ROLE, $entity, $callingUser);
         if ($this->roleActionAuthorisationService->authoriseAction(\Action::GRANT_ROLE, $entity, $callingUser)->getGrantAction() == FALSE) {
             throw new \Exception('You do not have permission to grant this role');
         }
 
         $this->em->getConnection()->beginTransaction();
         try {
-            // Create roleActionRecord before its status is updated (to get its existing status) 
-            $rar = \RoleActionRecord::construct($callingUser, $role, \RoleStatus::GRANTED); 
-            $this->em->persist($rar); 
+            // Create roleActionRecord before its status is updated (to get its existing status)
+            $rar = \RoleActionRecord::construct($callingUser, $role, \RoleStatus::GRANTED);
+            $this->em->persist($rar);
 
-            // Update the role status 
-            $role->setStatus(\RoleStatus::GRANTED); 
-            //$roleRequest->setLastUpdatedByUserId($user->getId()); 
-            
+            // Update the role status
+            $role->setStatus(\RoleStatus::GRANTED);
+            //$roleRequest->setLastUpdatedByUserId($user->getId());
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
@@ -587,19 +587,19 @@ class Role extends AbstractEntityService{
     }
 
     /**
-     * Calling user attempts to revoke the given Role. 
-     * Role rejection is slightly different revoking a role: a rejected role is 
-     * not previously granted while a revoked role may have been.  
+     * Calling user attempts to revoke the given Role.
+     * Role rejection is slightly different revoking a role: a rejected role is
+     * not previously granted while a revoked role may have been.
      * <p>
      * If the callingUser owns the given Role, then the role can be revoked otherwise
-     * the callingUser's permissions are checked before the Role is revoked. 
-     * Successful revocation deletes the Role from the DB. 
+     * the callingUser's permissions are checked before the Role is revoked.
+     * Successful revocation deletes the Role from the DB.
      * Exception is thrown if callingUser does not have permission to revoke.
-     * 
+     *
      * @param \Role $role
      * @param \User $callingUser
-     * @throws \Exception If the callingUser does not have permission to revoke 
-     * @throws \LogicException If the Role's OwnedEntity is null 
+     * @throws \Exception If the callingUser does not have permission to revoke
+     * @throws \LogicException If the Role's OwnedEntity is null
      */
     public function revokeRole(\Role $role, \User $callingUser){
         if ($callingUser == null) {
@@ -613,10 +613,10 @@ class Role extends AbstractEntityService{
             throw new \LogicException('Error - target entity of role is null');
         }
 
-        // if calling user is not the same person, need to check permissions 
+        // if calling user is not the same person, need to check permissions
         if ($role->getUser() != $callingUser) {
-            // Revocation by 2nd party 
-            //$grantingRoles = $this->authorize Action(\Action::REVOKE_ROLE, $entity, $callingUser); 
+            // Revocation by 2nd party
+            //$grantingRoles = $this->authorize Action(\Action::REVOKE_ROLE, $entity, $callingUser);
             if($this->roleActionAuthorisationService->authoriseAction(\Action::REVOKE_ROLE, $entity, $callingUser)->getGrantAction() == FALSE){
                 throw new \Exception('You do not have permission to revoke this role');
             }
@@ -626,19 +626,19 @@ class Role extends AbstractEntityService{
 
         if($role->getStatus() == \RoleStatus::PENDING){
             // if this role has not yet been granted, then new status is REJECTION
-            $newStatus = \RoleStatus::REJECTED;  
+            $newStatus = \RoleStatus::REJECTED;
         } else {
-            $newStatus = \RoleStatus::REVOKED;  
+            $newStatus = \RoleStatus::REVOKED;
         }
-        
+
         // ok, lets delete the role
-        //$this->deleteRole($role);  
+        //$this->deleteRole($role);
         $this->em->getConnection()->beginTransaction();
         try {
-            // Create a RoleActionRecord before we delete the role  
-            $rar = \RoleActionRecord::construct($callingUser, $role, $newStatus); 
-            $this->em->persist($rar); 
-            
+            // Create a RoleActionRecord before we delete the role
+            $rar = \RoleActionRecord::construct($callingUser, $role, $newStatus);
+            $this->em->persist($rar);
+
             $this->em->remove($role);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -647,21 +647,21 @@ class Role extends AbstractEntityService{
             $this->em->close();
             throw $e;
         }
-        
+
     }
 
     /**
      * Calling user attempts to reject the given Role request.
-     * Role rejection is slightly different revoking a role: a rejected is not 
-     * previously granted while a revoked role may have already been granted.    
+     * Role rejection is slightly different revoking a role: a rejected is not
+     * previously granted while a revoked role may have already been granted.
      * <p>
-     * The callingUser's permissions are checked before the Role is rejected. 
-     * Successful rejection deletes the Role from the DB. 
-     * Exception is thrown if callingUser does not have permission to reject. 
-     * 
+     * The callingUser's permissions are checked before the Role is rejected.
+     * Successful rejection deletes the Role from the DB.
+     * Exception is thrown if callingUser does not have permission to reject.
+     *
      * @param \Role $role Role must be {@link \RoleStatus::PENDING}
      * @param \User $callingUser
-     * @throws Exception If the callingUser does not have permission to revoke 
+     * @throws Exception If the callingUser does not have permission to revoke
      * @throws LogicException If Role does not have a status of RoleStatus::PENDING
      */
     public function rejectRoleRequest(\Role $role, \User $callingUser) {
@@ -686,10 +686,10 @@ class Role extends AbstractEntityService{
         //$this->deleteRole($role);
         $this->em->getConnection()->beginTransaction();
         try {
-            // Create a RoleActionRecord before we remove the role  
-            $rar = \RoleActionRecord::construct($callingUser, $role, \RoleStatus::REJECTED); 
-            $this->em->persist($rar);  
-            
+            // Create a RoleActionRecord before we remove the role
+            $rar = \RoleActionRecord::construct($callingUser, $role, \RoleStatus::REJECTED);
+            $this->em->persist($rar);
+
             $this->em->remove($role);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -701,14 +701,14 @@ class Role extends AbstractEntityService{
     }
 
     /**
-     * Get an array of {@link \RoleActionRecord}s for the {@link \OwnedEntity} 
-     * that has the given id and type.  
+     * Get an array of {@link \RoleActionRecord}s for the {@link \OwnedEntity}
+     * that has the given id and type.
      * @param integer $id
      * @param string $ownedEntityType One of ngi, site, service, project, servicegroup
-     * @return array of {@link \RoleActionRecord}s 
+     * @return array of {@link \RoleActionRecord}s
      */
     public function getRoleActionRecordsById_Type($id, $ownedEntityType){
-        
+
         $dql = "SELECT ra FROM RoleActionRecord ra
                 WHERE ra.roleTargetOwnedEntityId = :id
                 AND ra.roleTargetOwnedEntityType = :type
@@ -717,26 +717,26 @@ class Role extends AbstractEntityService{
             ->setParameter("id", $id)
             ->setParameter("type", $ownedEntityType)
             ->getResult();
-        return $roleActionRecords;  
+        return $roleActionRecords;
     }
-    
+
 
     /**
-     * Get the RoleActionRecords (if any exist) that have the specified roleId. 
-     * Note, it is possible that some Role instances may NOT have an associated 
-     * RoleActionRecord returning an empty array. 
+     * Get the RoleActionRecords (if any exist) that have the specified roleId.
+     * Note, it is possible that some Role instances may NOT have an associated
+     * RoleActionRecord returning an empty array.
      * @param integer $roleId
-     * @return array of {@link \RoleActionRecord}s or empty array 
+     * @return array of {@link \RoleActionRecord}s or empty array
      */
     public function getRoleActionRecordByRoleId($roleId){
-       $dql = "SELECT ra FROM RoleActionRecord ra 
-               WHERE ra.roleId = :roleId";  
-       $rar = $this->em->createQuery($dql)->setParameter(":roleId", $roleId)->getResult(); 
-       return $rar; 
+       $dql = "SELECT ra FROM RoleActionRecord ra
+               WHERE ra.roleId = :roleId";
+       $rar = $this->em->createQuery($dql)->setParameter(":roleId", $roleId)->getResult();
+       return $rar;
     }
 
     /**
-     * Delete the given role in a TX. Rollback on error. 
+     * Delete the given role in a TX. Rollback on error.
      * @param \Role $role
      * @throws \Exception
      */
@@ -754,16 +754,16 @@ class Role extends AbstractEntityService{
     }*/
 
     /**
-     * Get an array of Role names granted to the user that permit the requested 
-     * action on the given OwnedEntity. If the user has no roles that 
-     * permit the requested action, then return an empty array. 
+     * Get an array of Role names granted to the user that permit the requested
+     * action on the given OwnedEntity. If the user has no roles that
+     * permit the requested action, then return an empty array.
      * <p>
-     * Supported actions: EDIT_OBJECT, NGI_ADD_SITE, GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE 
-     * 
+     * Supported actions: EDIT_OBJECT, NGI_ADD_SITE, GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE
+     *
      * @param string $action
      * @param \OwnedEntity $entity
      * @param \User $callingUser
-     * @return array of RoleName values 
+     * @return array of RoleName values
      * @throws LogicException If unsupported enitity type or action is passed
      */
     /*public function authorize Action($action, \OwnedEntity $entity, \User $callingUser) {

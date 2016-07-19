@@ -28,38 +28,38 @@ require_once __DIR__ . '/RoleConstants.php';
 require_once __DIR__ . '/RoleActionAuthorisationService.php';
 require_once __DIR__.  '/Scope.php';
 require_once __DIR__.  '/Config.php';
-use Doctrine\ORM\QueryBuilder; 
+use Doctrine\ORM\QueryBuilder;
 
 class NGI extends AbstractEntityService{
 
     private $roleActionAuthorisationService;
-    private $scopeService; 
-    private $configService; 
+    private $scopeService;
+    private $configService;
 
     function __construct(/*$roleActionAuthorisationService*/) {
         parent::__construct();
         //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
-        $this->configService = new Config(); 
+        $this->configService = new Config();
     }
 
     /**
-     * Set class dependency (REQUIRED). 
-     * @todo Mandatory objects should be injected via constructor. 
+     * Set class dependency (REQUIRED).
+     * @todo Mandatory objects should be injected via constructor.
      * @param \org\gocdb\services\Scope $scopeService
      */
     public function setScopeService(Scope $scopeService){
-        $this->scopeService = $scopeService; 
+        $this->scopeService = $scopeService;
     }
 
     /**
-     * Set class dependency (REQUIRED). 
-     * @todo Mandatory objects should be injected via constructor. 
+     * Set class dependency (REQUIRED).
+     * @todo Mandatory objects should be injected via constructor.
      * @param \org\gocdb\services\RoleActionAuthorisationService $roleActionAuthService
      */
     public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService){
-        $this->roleActionAuthorisationService = $roleActionAuthService; 
+        $this->roleActionAuthorisationService = $roleActionAuthService;
     }
-   
+
     /*
      * All the public service methods in a service facade are typically atomic -
      * they demarcate the tx boundary at the start and end of the method
@@ -88,7 +88,7 @@ class NGI extends AbstractEntityService{
                    ->getSingleResult();
         return $ngi;
     }
-    
+
     /**
      * Return all {@see \NGI}s that satisfy the specfied filter parameters.
      *
@@ -112,7 +112,7 @@ class NGI extends AbstractEntityService{
         $ngis = $getNgi->executeQuery();
         return $ngis;
     }
-    
+
     /**
      * Get all NGIs as an object array with joined scopes.
      *
@@ -122,7 +122,7 @@ class NGI extends AbstractEntityService{
     public function getNGIs($scope = NULL) {
         $qb = $this->em->createQueryBuilder();
         $qb->select( 'n', 'sc' )->from( 'NGI', 'n' )->leftjoin( 'n.scopes', 'sc' )->orderBy( 'n.name', 'ASC' );
-        
+
         if ($scope != null && $scope != '%%') {
             $qb->andWhere( $qb->expr()->like( 'sc.name', ':scope' ) )->setParameter( ':scope', $scope );
         }
@@ -132,18 +132,18 @@ class NGI extends AbstractEntityService{
     }
 
     /**
-     * Return all of the NGIs that the user has permission to execute the  
-     * specified action on. 
-     * 
+     * Return all of the NGIs that the user has permission to execute the
+     * specified action on.
+     *
      * @param type $action
      * @param \User $user
      * @return \org\gocdb\services\NGI
      * @throws \LogicException
      */
     public function getNGIsBySupportedAction($action, \User $user=null) {
-        //throw new \LogicException('not implemented yet'); 
+        //throw new \LogicException('not implemented yet');
         if ($user == null) {
-            return array(); 
+            return array();
         }
         if (!in_array($action, \Action::getAsArray())) {
             throw new \LogicException('Coding Error - Invalid action');
@@ -151,79 +151,79 @@ class NGI extends AbstractEntityService{
         $roleService = new Role(); // to inject
         $roleService->setEntityManager($this->em);
         $grantedUserRoles = $roleService->getUserRoles($user, \RoleStatus::GRANTED);
-        $ngiArray = array(); 
+        $ngiArray = array();
         foreach ($grantedUserRoles as $grantedUserRole) {
-            $entity = $grantedUserRole->getOwnedEntity(); 
+            $entity = $grantedUserRole->getOwnedEntity();
             if ($entity instanceof \NGI) {
                 //$enablingRoles = $this->authorize Action($action, $entity, $user);
                 if($this->roleActionAuthorisationService->authoriseAction($action, $entity, $user)->getGrantAction()){
-                    //print_r($enablingRoles); 
+                    //print_r($enablingRoles);
                     if(!in_array($entity, $ngiArray)){
-                        $ngiArray[] = $entity; 
+                        $ngiArray[] = $entity;
                     }
                 }
             }
         }
-        return $ngiArray; 
+        return $ngiArray;
     }
 
 
     /**
-     * Get an array of Role names granted to the user that permit the requested 
-     * action on the given NGI. If the user has no roles that 
-     * permit the requested action, then return an empty array. 
+     * Get an array of Role names granted to the user that permit the requested
+     * action on the given NGI. If the user has no roles that
+     * permit the requested action, then return an empty array.
      * <p>
-     * Supported actions: EDIT_OBJECT, NGI_ADD_SITE, 
-     * GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE 
-     * 
-     * @see \Action  
+     * Supported actions: EDIT_OBJECT, NGI_ADD_SITE,
+     * GRANT_ROLE, REJECT_ROLE, REVOKE_ROLE
+     *
+     * @see \Action
      * @param string $action suppored action
      * @param \NGI $ngi
-     * @param \User $user 
-     * @return array of RoleName values 
+     * @param \User $user
+     * @return array of RoleName values
      * @throws \LogicException
      */
     /*public function authorize Action($action, \NGI $ngi, \User $user = null){
         if(is_null($user)){
-            return array(); // return empty array 
+            return array(); // return empty array
         }
         if(!in_array($action, \Action::getAsArray())){
-            throw new \LogicException('Coding Error - Invalid action not known'); 
-        } 
+            throw new \LogicException('Coding Error - Invalid action not known');
+        }
         $roleService = new Role(); // to inject
         $roleService->setEntityManager($this->em);
-        
+
         if($action == \Action::EDIT_OBJECT) {
-            // D and D' can edit an NGI 
+            // D and D' can edit an NGI
             $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($ngi, $user);
             $requiredRoles = array(
                 \RoleTypeName::REG_FIRST_LINE_SUPPORT,
                 \RoleTypeName::REG_STAFF_ROD,
                 \RoleTypeName::NGI_SEC_OFFICER,
                 \RoleTypeName::NGI_OPS_DEP_MAN,
-                \RoleTypeName::NGI_OPS_MAN); 
+                \RoleTypeName::NGI_OPS_MAN);
              $enablingRoles = array_intersect($requiredRoles, array_unique($usersActualRoleNames));
-             
+
         } else if($action == \Action::NGI_ADD_SITE) {
-            // Only D' can add a site to an owned group/ngi 
+            // Only D' can add a site to an owned group/ngi
             $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($ngi, $user);
             $requiredRoles = array(
                 \RoleTypeName::NGI_SEC_OFFICER,
                 \RoleTypeName::NGI_OPS_DEP_MAN,
-                \RoleTypeName::NGI_OPS_MAN); 
+                \RoleTypeName::NGI_OPS_MAN);
              $enablingRoles = array_intersect($requiredRoles, array_unique($usersActualRoleNames));
-             
+
         } else if($action == \Action::GRANT_ROLE ||
                 $action == \Action::REJECT_ROLE || $action == \Action::REVOKE_ROLE){
-            // NGI (D') roles can manage roles on an owned group/ngi 
+            // NGI (D') roles can manage roles on an owned group/ngi
             $requiredNgiRoles = array(
                 \RoleTypeName::NGI_SEC_OFFICER,
                 \RoleTypeName::NGI_OPS_DEP_MAN,
                 \RoleTypeName::NGI_OPS_MAN);
             $usersActualRoleNames = $roleService->getUserRoleNamesOverEntity($ngi, $user);
-            
-            // Project (E) level roles required to approve-reject/revoke role 
-            // requests over the owned NGI (to bootstrap) 
+
+            // Project (E) level roles required to approve-reject/revoke role
+            // requests over the owned NGI (to bootstrap)
             $requiredProjectRoles = array(
                 //\RoleTypeName::CIC_STAFF, // not sure this role should be used to manage roles over ngi
                 \RoleTypeName::COD_STAFF,
@@ -233,11 +233,11 @@ class NGI extends AbstractEntityService{
             // Get all user's project level roles for all the projects that group the site's ngi
             if(count($ngi->getProjects()) > 0){
                 foreach ($ngi->getProjects() as $parentProject){
-                  $usersActualRoleNames = array_merge($usersActualRoleNames, 
-                          $roleService->getUserRoleNamesOverEntity($parentProject, $user));                         
+                  $usersActualRoleNames = array_merge($usersActualRoleNames,
+                          $roleService->getUserRoleNamesOverEntity($parentProject, $user));
                 }
             }
-            // rather than below that queries for all user roles and extracts ANY project role: 
+            // rather than below that queries for all user roles and extracts ANY project role:
             //$allUserRoles = $roleService->getUserRoles($user, \RoleStatus::GRANTED);
             //foreach ($allUserRoles as $role) {
             //    if (in_array($role->getRoleType()->getName(), $requiredProjectRoles)) {
@@ -246,11 +246,11 @@ class NGI extends AbstractEntityService{
             //}
             $enablingRoles = array_intersect(array_merge($requiredNgiRoles, $requiredProjectRoles), array_unique($usersActualRoleNames));
         } else {
-            throw new \LogicException('Unsupported Action');  
+            throw new \LogicException('Unsupported Action');
         }
         // finally add the gocdb admin role
         if($user->isAdmin()){
-           $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;  
+           $enablingRoles[] = \RoleTypeName::GOCDB_ADMIN;
         }
         return array_unique($enablingRoles);
     }*/
@@ -268,7 +268,7 @@ class NGI extends AbstractEntityService{
         if(is_null($user)) {
             throw new \Exception("Unregistered users can't edit an NGI.");
         }
-        
+
         // see if the user has a D or D' role over the NGI
         $classifications = array("D", "D'");
         if (\Factory::getRoleService()
@@ -315,40 +315,40 @@ class NGI extends AbstractEntityService{
         }
         $this->validate($newValues['NGI']);
 
-        // EDIT SCOPE TAGS: 
+        // EDIT SCOPE TAGS:
         // collate selected scopeIds (reserved and non-reserved)
-        $scopeIdsToApply = array(); 
+        $scopeIdsToApply = array();
         foreach($newValues['Scope_ids'] as $sid){
-            $scopeIdsToApply[] = $sid; 
+            $scopeIdsToApply[] = $sid;
         }
         foreach($newValues['ReservedScope_ids'] as $sid){
-            $scopeIdsToApply[] = $sid; 
+            $scopeIdsToApply[] = $sid;
         }
-        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
-        
-        // If not admin, Check user edits to the ngi's Reserved scopes: 
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply);
+
+        // If not admin, Check user edits to the ngi's Reserved scopes:
         // Required to prevent users manually crafting a POST request in an attempt
-        // to select reserved scopes, this is unlikely but it is a possible hack. 
+        // to select reserved scopes, this is unlikely but it is a possible hack.
         if (!$user->isAdmin()) {
             $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), $selectedScopesToApply);  
-            
+                    array('excludeNonReserved' => true), $selectedScopesToApply);
+
             $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
-                    array('excludeNonReserved' => true), $ngi->getScopes()->toArray()); 
-            
+                    array('excludeNonReserved' => true), $ngi->getScopes()->toArray());
+
             foreach($selectedReservedScopes as $sc){
-                // Reserved scopes must already be assigned to site or parent 
+                // Reserved scopes must already be assigned to site or parent
                 if(in_array($sc, $existingReservedScopes)){
-                    continue; 
+                    continue;
                 }
-                throw new \Exception("A reserved Scope Tag was selected that is not assigned to the NGI");  
+                throw new \Exception("A reserved Scope Tag was selected that is not assigned to the NGI");
             }
         }
-        
+
         //check there are the required number of optional scopes specified
         $this->checkNumberOfScopes($this->scopeService->getScopesFilterByParams(
                array('excludeReserved' => true), $selectedScopesToApply));
-        
+
         //Explicity demarcate our tx boundary
         $this->em->getConnection()->beginTransaction();
         try {
@@ -357,9 +357,9 @@ class NGI extends AbstractEntityService{
             $ngi->setHelpdeskEmail($newValues['NGI']['HELPDESK_EMAIL']);
             $ngi->setRodEmail($newValues['NGI']['ROD_EMAIL']);
             $ngi->setSecurityEmail($newValues['NGI']['SECURITY_EMAIL']);
-            $ngi->setGgus_Su($newValues['NGI']['GGUS_SU']); 
-            
-            
+            $ngi->setGgus_Su($newValues['NGI']['GGUS_SU']);
+
+
             // update the NGIs scopes
             // firstly remove all existing scope links
             $scopes = $ngi->getScopes();
@@ -376,9 +376,9 @@ class NGI extends AbstractEntityService{
 //                $ngi->addScope($scope);
 //            }
             foreach($selectedScopesToApply as $scope){
-                $ngi->addScope($scope); 
+                $ngi->addScope($scope);
             }
-            
+
             $this->em->merge($ngi);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -411,7 +411,7 @@ class NGI extends AbstractEntityService{
             }
         }
     }
-    
+
     public function addNgi($valuesarray, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
@@ -428,17 +428,17 @@ class NGI extends AbstractEntityService{
 
         //seperate values and scope arrays
         $values = $valuesarray['NGI'];
-        
-        // Add SCOPE TAGS: 
+
+        // Add SCOPE TAGS:
         // collate selected scopeIds (reserved and non-reserved)
-        $scopeIdsToApply = array(); 
+        $scopeIdsToApply = array();
         foreach($valuesarray['Scope_ids'] as $sid){
-            $scopeIdsToApply[] = $sid; 
+            $scopeIdsToApply[] = $sid;
         }
         foreach($valuesarray['ReservedScope_ids'] as $sid){
-            $scopeIdsToApply[] = $sid; 
+            $scopeIdsToApply[] = $sid;
         }
-        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply); 
+        $selectedScopesToApply = $this->scopeService->getScopes($scopeIdsToApply);
 
         //check values are there
         if (!((array_key_exists('NAME', $values))
@@ -487,7 +487,7 @@ class NGI extends AbstractEntityService{
 //                $ngi->addScope($scope);
 //            }
             foreach($selectedScopesToApply as $scope){
-                $ngi->addScope($scope); 
+                $ngi->addScope($scope);
             }
 
             $this->em->persist($ngi);
@@ -519,7 +519,7 @@ class NGI extends AbstractEntityService{
             return false;
         }
     }
-    
+
     private function checkNumberOfScopes($scopeIds){
         require_once __DIR__ . '/Config.php';
         $configService = new \org\gocdb\services\Config();
@@ -528,19 +528,19 @@ class NGI extends AbstractEntityService{
             throw new \Exception("A NGI must have at least " . $minumNumberOfScopes . " scope(s) assigned to it.");
         }
     }
-    
+
    /**
-    * Delete the given NGI and cascade delete all of the NGI's child entities. 
-    * These include Sites, Services, EndpointLocations, Downtimes that will be 
-    * orphaned, CertificationStatusLogs and Roles that previously linked to the 
-    * deleted owned entities. 
-    *  
+    * Delete the given NGI and cascade delete all of the NGI's child entities.
+    * These include Sites, Services, EndpointLocations, Downtimes that will be
+    * orphaned, CertificationStatusLogs and Roles that previously linked to the
+    * deleted owned entities.
+    *
     * @param \NGI $ngi
-    * @param \User $user - must be an admin user 
-    * @param boolean $logNgiSiteServiceInArchives Record the deletion of the ngi, 
-    * its child sites and services in the archive tables. 
+    * @param \User $user - must be an admin user
+    * @param boolean $logNgiSiteServiceInArchives Record the deletion of the ngi,
+    * its child sites and services in the archive tables.
     * @throws \org\gocdb\services\Exception
-    */ 
+    */
     public function deleteNgi(\NGI $ngi, \User $user = null, $logNgiSiteServiceInArchives = true) {
         require_once __DIR__ . '/../DAOs/SiteDAO.php';
         require_once __DIR__ . '/../DAOs/ServiceDAO.php';
@@ -548,10 +548,10 @@ class NGI extends AbstractEntityService{
         require_once __DIR__ . '/ServiceService.php';
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-        
+
         //Throws exception if user is not an administrator
         $this->checkUserIsAdmin($user);
-        
+
         $this->em->getConnection()->beginTransaction();
         try {
             $ngiDAO = new \NGIDAO;
@@ -560,12 +560,12 @@ class NGI extends AbstractEntityService{
             $siteDAO->setEntityManager($this->em);
             $serviceDAO = new \ServiceDAO;
             $serviceDAO->setEntityManager($this->em);
-            
+
             //Archive ngi
             if($logNgiSiteServiceInArchives){
               $ngiDAO->addNGIToArchive($ngi, $user);
             }
-            
+
             //delete each child site
             foreach ($ngi->getSites() as $site){
                 //Archive site
@@ -586,10 +586,10 @@ class NGI extends AbstractEntityService{
                 //remove the site
                 $siteDAO->removeSite($site);
             }
-            
+
             //remove the NGI
             $ngiDAO->removeNGI($ngi);
-                
+
             $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {

@@ -31,11 +31,11 @@
         <br>
         <br>
         <!-- Scope Tags-->
-        <?php 
-        $parentObjectTypeLabel = ''; 
+        <?php
+        $parentObjectTypeLabel = '';
         require_once __DIR__ . '/../fragments/editScopesFragment.php';
         ?>
-          
+
 
         <input class="input_button" type="submit" value="Add Service Group" />
     </form>
@@ -46,11 +46,11 @@
 
     $(document).ready(function () {
         var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
-        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
-          '#reservedScopeCheckBoxDIV', 
-          '#reservedOptionalScopeCheckBoxDIV', 
+        ScopeUtil.addScopeCheckBoxes(scopeJSON,
+          '#reservedScopeCheckBoxDIV',
+          '#reservedOptionalScopeCheckBoxDIV',
           '#reservedOptionalInhertiableScopeCheckBoxDIV',
-          '#optionalScopeCheckBoxDIV', 
+          '#optionalScopeCheckBoxDIV',
           true);
     });
-</script>  
+</script>

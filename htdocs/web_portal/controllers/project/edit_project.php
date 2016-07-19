@@ -36,7 +36,7 @@ function edit_project() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's for a projecte edit
         submit($user);
     } else { // If there is no post data, draw the edit project view
@@ -48,17 +48,17 @@ function edit_project() {
  * Draws the edit project form
  * @return null
  */
-function draw() {              
+function draw() {
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
     // Get the project
     $project = \Factory::getProjectService()->getProject($_REQUEST['id']);
 
-    //Check the user has permission to edit the project (and so view the page, 
+    //Check the user has permission to edit the project (and so view the page,
     //will throw exception if correct permissions are lacking
     CheckCurrentUserCanEditProject($project);
-  
+
     //show view
     $params = array('Name' => $project->getName(),
                     'ID' => $project->getId(),
@@ -75,24 +75,24 @@ function draw() {
  */
 function submit(\User $user = null) {
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
-    
+
     //get the post data
     $newValues = getProjectDataFromWeb();
 
-    
+
     //get the project service and the project being edited
     $serv = \Factory::getProjectService();
     $unalteredProject = $serv->getProject($newValues['ID']);
-           
+
     try {
         //function will throw error if user does not have the correct permissions
         $alteredProject= $serv->editProject($unalteredProject, $newValues, $user);
-        
+
         $params = array('Name' => $alteredProject->getName(),
                         'Description'=> $alteredProject->getDescription(),
                         'ID'=> $alteredProject->getId());
         show_view("project/edited_project.php", $params);
-    
+
     } catch (Exception $e) {
          show_view('error.php', $e->getMessage());
          die();

@@ -55,7 +55,7 @@ function xml_to_menu($menu_name, $menus_xml)
 
 function add_menu_item($menu_item)
 {
-    //Get user in order to correctly display GOCDB admin menu Items 
+    //Get user in order to correctly display GOCDB admin menu Items
     include_once __DIR__ . '/../Get_User_Principle.php';
     $dn = Get_User_Principle();
     $userserv = \Factory::getUserService();
@@ -66,10 +66,10 @@ function add_menu_item($menu_item)
     else {
         $userisadmin = $user->isAdmin();
     }
-    
+
     //Find out if the portal is currently read only from local_info.xml
     $portalIsReadOnly = \Factory::getConfigService()->IsPortalReadOnly();
- 
+
     foreach($menu_item->children() as $key => $value)
     {
         $html = "";

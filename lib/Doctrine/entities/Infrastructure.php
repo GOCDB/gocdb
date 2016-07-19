@@ -14,12 +14,12 @@
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Defines a named e-Infrastructure such as 'TEST' or 'Production' and 
- * joins all the {@see Site}s that are linked to this infrastructure. 
- *  
+ * Defines a named e-Infrastructure such as 'TEST' or 'Production' and
+ * joins all the {@see Site}s that are linked to this infrastructure.
+ *
  * @author John Casson
- * @author David Meredith <david.meredith@stfc.ac.uk> 
- * 
+ * @author David Meredith <david.meredith@stfc.ac.uk>
+ *
  * @Entity @Table(name="Infrastructures")
  */
 class Infrastructure {
@@ -45,15 +45,15 @@ class Infrastructure {
     }
 
     /**
-     * Defines a unique name for the infrastructure, e.g. 'Test' or 'PPS' 
-     * @return string 
+     * Defines a unique name for the infrastructure, e.g. 'Test' or 'PPS'
+     * @return string
      */
     public function getName() {
         return $this->name;
     }
 
     /**
-     * Set the unique name for the infrastructure. Required. 
+     * Set the unique name for the infrastructure. Required.
      * @param string $name
      */
     public function setName($name) {
@@ -61,7 +61,7 @@ class Infrastructure {
     }
 
     /**
-     * Get all the {@see Site}s that define (are joined to) this infrastructure. 
+     * Get all the {@see Site}s that define (are joined to) this infrastructure.
      * @return ArrayCollection
      */
     public function getSites() {
@@ -69,9 +69,9 @@ class Infrastructure {
     }
 
     /**
-     * Add the given Site to this objects list of sites. 
-     * Note, this method calls <code>$site->setInfrastructure($this);</code> to 
-     * set the join on both sides of the relationship. 
+     * Add the given Site to this objects list of sites.
+     * Note, this method calls <code>$site->setInfrastructure($this);</code> to
+     * set the join on both sides of the relationship.
      * @param \Site $site
      */
     public function addSiteDoJoin($site) {

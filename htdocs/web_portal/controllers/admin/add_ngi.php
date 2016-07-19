@@ -23,16 +23,16 @@
  /*======================================================*/
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/../utils.php';
-    
+
 /**
- * Controller for an add NGI request. Is only used by gocdb admin. 
+ * Controller for an add NGI request. Is only used by gocdb admin.
  * @global array $_POST only set if the browser has POSTed data
  * @return null
  */
 function add_ngi() {
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's to add a NGI
         submit();
     } else { // If there is no post data, draw the add NGI form
@@ -46,17 +46,17 @@ function add_ngi() {
  */
 function draw() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
-    
-    //Check the user has permission to see the page, will throw exception 
+
+    //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
-   
-    // pass 2 nulls because we haven't created the ngi yet and we don't yet 
-    // support cascading of project scopes (not sure this is needed) 
-    $scopejsonStr = getEntityScopesAsJSON2(null, null, false); 
+
+    // pass 2 nulls because we haven't created the ngi yet and we don't yet
+    // support cascading of project scopes (not sure this is needed)
+    $scopejsonStr = getEntityScopesAsJSON2(null, null, false);
     $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('ngi');
-    $params['scopejson'] = $scopejsonStr; 
-    
+    $params['scopejson'] = $scopejsonStr;
+
     //show the add NGI view
     show_view("admin/add_ngi.php", $params, "Add NGI");
 }
@@ -71,7 +71,7 @@ function submit() {
 
     //Get the posted NGI data
     $newValues = getNGIDataFromWeb();
-    
+
     //get the user data for the add NGI function (so it can check permissions)
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);

@@ -54,7 +54,7 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/entities"
     // );
     /////////////////////////////////////////////////////////////////////////////////////////////
 
-     
+
     ///////////////////////ORACLE CONNECTION DETAILS////////////////////////////////////////////
     //	$conn = array(
     //		'driver' => 'oci8',
@@ -67,10 +67,10 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/entities"
     //	);
     //  // Need to explicitly set the Oracle session date format [1]
     //  $evm = new EventManager();
-    //  $evm->addEventSubscriber(new OracleSessionInit(array('NLS_TIME_FORMAT' => 'HH24:MI:SS')));	
+    //  $evm->addEventSubscriber(new OracleSessionInit(array('NLS_TIME_FORMAT' => 'HH24:MI:SS')));
     /////////////////////////////////////////////////////////////////////////////////////////////
 
-    
+
     ///////////////////////MYSQL CONNECTION DETAILS////////////////////////////////////////////
     //$conn = array(
     //	'driver' => 'pdo_mysql',
@@ -80,7 +80,7 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/entities"
     //	'dbname' => 'doctrine'
     //);
     /////////////////////////////////////////////////////////////////////////////////////////////
-    
+
 
 
 

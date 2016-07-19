@@ -4,9 +4,9 @@
  * File: delete_service_type_denied.php
  * Author: George Ryall
  * Description: Displays a page explaining a service type delition has failed
- *              this happens when there are still services of that 
+ *              this happens when there are still services of that
  *              service type in the database
- * 
+ *
  * License information
  *
  * Copyright 2013 STFC
@@ -23,19 +23,19 @@
 require_once __DIR__ . '/../utils.php';
 
 function deny_delete_type(){
-     //Check the user has permission to see the page, will throw exception 
+     //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
-    
+
     //Get a service type service and then the service type to be deleted
     $serv= \Factory::getServiceTypeService();
     $serviceType =$serv ->getServiceType($_REQUEST['id']);
-    
+
     //Get the services for that service and pass them to the denied view
     $params['ServiceType'] = $serviceType;
     $params['Services'] = $serv ->getServices($serviceType->getId());
-    
+
     //display the deletion denied view
     show_view("admin/delete_service_type_denied.php", $params, 'Deletion Failed');
-            
+
 }

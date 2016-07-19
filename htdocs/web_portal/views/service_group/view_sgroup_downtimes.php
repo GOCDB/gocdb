@@ -2,14 +2,14 @@
     <div style="overflow: hidden">
         <div style="float: left;">
             <h1 style="float: left; margin-left: 0em;">
-                Downtimes for 
-                <a  style="font-family: inherit; font-size: inherit; font-weight: inherit; text-decoration: underline; padding-bottom: inherit; " 
+                Downtimes for
+                <a  style="font-family: inherit; font-size: inherit; font-weight: inherit; text-decoration: underline; padding-bottom: inherit; "
                     href="index.php?Page_Type=Service_Group&id=<?php echo $params['sGroup']->getId(); ?>">
                     <?php xecho($params['sGroup']->getName())?>
                 </a>
             </h1>
         </div>
-        
+
         <!--  Downtimes -->
         <div class="listContainer">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">All Downtimes (Year-Month-Day Time in UTC)</span>
@@ -27,7 +27,7 @@
                     //$num = 2;
                     foreach($params['downtimes'] as $d) {
                 ?>
-                
+
                 <tr>
                     <td>
                         <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
@@ -37,7 +37,7 @@
                     <td style="width: 20%"><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/); ?></td>
                     <td style="width: 20%"><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/); ?></td>
                 </tr>
-                <?php 
+                <?php
                     //if($num == 1) { $num = 2; } else { $num = 1; }
                 }
                 ?>
@@ -53,4 +53,4 @@
     $("#allSgDowntimesTable").tablesorter();
     }
     );
-</script> 
+</script>

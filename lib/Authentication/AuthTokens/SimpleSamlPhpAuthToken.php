@@ -1,6 +1,6 @@
 <?php
 namespace org\gocdb\security\authentication;
-require_once __DIR__.'/../IAuthentication.php'; 
+require_once __DIR__.'/../IAuthentication.php';
 
 /*
  * Copyright (C) 2012 STFC
@@ -16,37 +16,37 @@ require_once __DIR__.'/../IAuthentication.php';
  */
 
 /**
- * AuthToken that supports SAML2. 
+ * AuthToken that supports SAML2.
  * <p>
- * Requires installation of SimpleSamlPhp lib before use. 
- * You will almost certainly need to modify this class to request the necessary 
- * SAML attribute from the IdP that is used as the principle string. 
+ * Requires installation of SimpleSamlPhp lib before use.
+ * You will almost certainly need to modify this class to request the necessary
+ * SAML attribute from the IdP that is used as the principle string.
  * <p>
- * The token is stateless because it relies on the SSPhp session and simply 
- * reads the attributes stored in the SSPhp session. 
+ * The token is stateless because it relies on the SSPhp session and simply
+ * reads the attributes stored in the SSPhp session.
  *
- * @see IAuthentication 
- * @author David Meredith 
+ * @see IAuthentication
+ * @author David Meredith
  */
 class SimpleSamlPhpAuthToken implements IAuthentication {
- 
+
     private $userDetails = null;
     private $authorities = array();
-    private $principal; 
-  
+    private $principal;
+
     /*
-     * Implementation note:  
-     * There is a bug with SimpleSamlPhp in that it throws an exception if 
-     * an IdP does not return a NameID in the Subject (of a response). 
+     * Implementation note:
+     * There is a bug with SimpleSamlPhp in that it throws an exception if
+     * an IdP does not return a NameID in the Subject (of a response).
      * "Missing saml:NameID or saml:EncryptedID in saml:Subject".
-     * 
-     * IdpS only have to set a NameID in the Subject if it supports the Browser Single Logout 
-     * Profile, otherwise its optional (although recommended). I have therefore reported this to 
-     * the SSPhp project and have used the following hack to get around this issue:  
+     *
+     * IdpS only have to set a NameID in the Subject if it supports the Browser Single Logout
+     * Profile, otherwise its optional (although recommended). I have therefore reported this to
+     * the SSPhp project and have used the following hack to get around this issue:
      * https://github.com/simplesamlphp/simplesamlphp/issues/143
      */
-/*    
-// '/var/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/Assertion.php'   
+/*
+// '/var/simplesamlphp/vendor/simplesamlphp/saml2/src/SAML2/Assertion.php'
 // DMHack: orignal:
 //        if (empty($nameId)) {
 //            throw new Exception('Missing <saml:NameID> or <saml:EncryptedID> in <saml:Subject>.');
@@ -81,38 +81,38 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
  */
 
     public function __construct() {
-       $this->getAttributesInitToken();   
+       $this->getAttributesInitToken();
     }
 
     /**
      * {@see IAuthentication::eraseCredentials()}
-     */ 
+     */
     public function eraseCredentials() {
-        
+
     }
 
     /**
-     * {@see IAuthentication::getAuthorities()} 
+     * {@see IAuthentication::getAuthorities()}
      */
     public function getAuthorities() {
-       return $this->authorities;  
+       return $this->authorities;
     }
 
     /**
      * {@see IAuthentication::getCredentials()}
-     * @return string An empty string as passwords are not used by this token. 
+     * @return string An empty string as passwords are not used by this token.
      */
     public function getCredentials() {
-        return ""; // none used in this token, handled by SSO/SAML 
+        return ""; // none used in this token, handled by SSO/SAML
     }
 
     /**
-     * A custom object used to store additional user details.  
-     * Allows non-security related user information (such as email addresses, 
-     * telephone numbers etc) to be stored in a convenient location. 
+     * A custom object used to store additional user details.
+     * Allows non-security related user information (such as email addresses,
+     * telephone numbers etc) to be stored in a convenient location.
      * {@see IAuthentication::getDetails()}
-     * 
-     * @return Object or null if not used 
+     *
+     * @return Object or null if not used
      */
     public function getDetails() {
         return $this->userDetails;
@@ -120,10 +120,10 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
 
     /**
      * {@see IAuthentication::getPrinciple()}
-     * @return string unique principle string of user  
+     * @return string unique principle string of user
      */
     public function getPrinciple() {
-       return $this->principal;  
+       return $this->principal;
     }
 
     private function getAttributesInitToken(){
@@ -134,7 +134,7 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
         $attributes = $auth->getAttributes();
         if (!empty($attributes)) {
             $idp = $auth->getAuthData('saml:sp:IdP');
-            if($idp == 'https://www.egi.eu/idp/shibboleth'){ // EGI IdP 
+            if($idp == 'https://www.egi.eu/idp/shibboleth'){ // EGI IdP
                 $nameID = $auth->getAuthData('saml:sp:NameID');
                 $this->principal = $nameID['Value'];
                 $this->userDetails = array('AuthenticationRealm' => array('EGI_SSO_IDP'));
@@ -145,13 +145,13 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
                 //    $this->userDetails = array('AuthenticationRealm' => array('EGI_SSO_IDP'));
                 //}
                 // iterate the attributes and store in the userDetails
-                // Each attribute name can be used as an index into $attributes to obtain the value. 
+                // Each attribute name can be used as an index into $attributes to obtain the value.
                 // Every attribute value is an array - a single-valued attribute is an array of a single element.
                 foreach($attributes as $key => $valArray){
-                   $this->userDetails[$key] = $valArray;  
+                   $this->userDetails[$key] = $valArray;
                 }
             }
-            // EUDAT IdP 
+            // EUDAT IdP
             else if($idp == 'https://unity.eudat-aai.fz-juelich.de:8443/saml-idp/metadata'){
                 // For EUDAT federated id:
                 //$dnAttribute = $attributes['urn:oid:2.5.4.49'][0];
@@ -161,20 +161,20 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
                 $this->principal = $nameID['Value'];
                 $this->userDetails = array('AuthenticationRealm' => array('EUDAT_SSO_IDP'));
                 // iterate the attributes and store in the userDetails
-                // Each attribute name can be used as an index into $attributes to obtain the value. 
+                // Each attribute name can be used as an index into $attributes to obtain the value.
                 // Every attribute value is an array - a single-valued attribute is an array of a single element.
                 foreach($attributes as $key => $valArray){
-                   $this->userDetails[$key] = $valArray;  
+                   $this->userDetails[$key] = $valArray;
                 }
             }
         }
     }
 
     /**
-     * {@see IAuthentication::setAuthorities($authorities)} 
+     * {@see IAuthentication::setAuthorities($authorities)}
      */
     public function setAuthorities($authorities) {
-       $this->authorities = $authorities;  
+       $this->authorities = $authorities;
     }
 
     /**
@@ -184,28 +184,28 @@ class SimpleSamlPhpAuthToken implements IAuthentication {
     public function setDetails($userDetails) {
         $this->userDetails = $userDetails;
     }
- 
+
     /**
      * {@see IAuthentication::validate()}
      */
     public function validate() {
-        
+
     }
 
     /**
      * {@see IAuthentication::isPreAuthenticating()}
      */
     public static function isPreAuthenticating() {
-        return true;         
+        return true;
     }
 
     /**
-     * Returns true, this token reads the SSPhp session attributes and so 
-     * does not need to be stateful itself.  
-     * {@see IAuthentication::isStateless()} 
+     * Returns true, this token reads the SSPhp session attributes and so
+     * does not need to be stateful itself.
+     * {@see IAuthentication::isStateless()}
      */
     public static function isStateless() {
-        return true;         
+        return true;
     }
 
 }

@@ -58,9 +58,9 @@ function submit(array $propertyArray, \Service $service, \User $user = null) {
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
-    }   
-    
-    
+    }
+
+
     show_view('/service/deleted_service_properties.php', $params);
 
 }

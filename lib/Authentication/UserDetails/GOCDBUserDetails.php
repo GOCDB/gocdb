@@ -1,40 +1,40 @@
 <?php
 namespace org\gocdb\security\authentication;
 
-require_once __DIR__ . '/../IUserDetails.php'; 
+require_once __DIR__ . '/../IUserDetails.php';
 
 /**
- * A custom Implementation of {@link IUserDetails.php} 
+ * A custom Implementation of {@link IUserDetails.php}
  *
- * @author David Meredith  
+ * @author David Meredith
  */
 class GOCDBUserDetails implements IUserDetails {
 
-    private $username; 
+    private $username;
     private $isEnabled;
-    private $password = ""; 
-    private $roles; 
-    private $val; 
+    private $password = "";
+    private $roles;
+    private $val;
 
 
     public function __construct($username, $isEnabled, $roles, $val, $password="" ) {
         $this->username = $username;
-        $this->isEnabled = $isEnabled; 
-        $this->password = $password; 
-        $this->roles = $roles; 
-        $this->val = $val; 
+        $this->isEnabled = $isEnabled;
+        $this->password = $password;
+        $this->roles = $roles;
+        $this->val = $val;
     }
-    
+
     public function getUsername() {
-        return $this->username;     
+        return $this->username;
     }
 
     public function isEnabled() {
-        return $this->isEnabled;         
+        return $this->isEnabled;
     }
 
-    public function getPassword() { 
-        return $this->password; 
+    public function getPassword() {
+        return $this->password;
     }
 
     public function eraseCredentials() {
@@ -42,11 +42,11 @@ class GOCDBUserDetails implements IUserDetails {
     }
 
     public function getAuthorities(){
-        return $this->roles; 
+        return $this->roles;
     }
 
     public function getGOCDBCustomVal(){
-        return $this->val; 
+        return $this->val;
     }
 }
 

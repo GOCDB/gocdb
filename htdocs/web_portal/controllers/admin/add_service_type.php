@@ -23,7 +23,7 @@
  /*======================================================*/
 require_once __DIR__ . '/../utils.php';
 require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
-    
+
 /**
  * Controller for an add service type request
  * @global array $_POST only set if the browser has POSTed data
@@ -32,7 +32,7 @@ require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 function add_type() {
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's to add a service type
         submit();
     } else { // If there is no post data, draw the add service type form
@@ -44,11 +44,11 @@ function add_type() {
  * Draws the add service type form
  * @return null
  */
-function draw() {    
-    //Check the user has permission to see the page, will throw exception 
+function draw() {
+    //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
-      
+
     //show the add service type view
     show_view("admin/add_service_type.php", null, "Add Service Type");
 }
@@ -63,7 +63,7 @@ function submit() {
 
     //Get the posted service type data
     $newValues = getSTDataFromWeb();
-    
+
     //get the user data for the add service type function (so it can check permissions)
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
@@ -71,7 +71,7 @@ function submit() {
     try {
         //function will through error if user does not have the correct permissions
         $serviceType = \Factory::getServiceTypeService()->addServiceType($newValues, $user);
-        $params = array('Name' => $serviceType->getName(), 
+        $params = array('Name' => $serviceType->getName(),
                         'Description'=> $serviceType->getDescription(),
                         'ID'=> $serviceType->getId());
         show_view("admin/added_service_type.php", $params, "Successfuly added new service type");

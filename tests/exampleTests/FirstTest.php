@@ -27,9 +27,9 @@
 /**
  * Demo class to show different examples of unit testing.
  * Class modified from tutorial by Sylvain.
- * 
+ *
  * Usage: /<GOCDBHOME>/htdocs/web_portal$ phpunit UnitTest ../../tests/sampleTests/FirstTest.php
- * 
+ *
  * @link http://www.sylvainartois.fr.nf/PHP/Unit-testing-with-PHPUnit-part-one
  * @copyright 2010 STFC
  * @todo Has not been fully implemented yet.
@@ -107,68 +107,68 @@ class FirstTest extends PHPUnit_Framework_TestCase {
 
 
     public function testQuickTest(){
-       print __METHOD__ . "\n"; 
-       $res[1] = $this->returnArray(); // store returned associative array in 1st element of  
-       print_r($res[1]); 
+       print __METHOD__ . "\n";
+       $res[1] = $this->returnArray(); // store returned associative array in 1st element of
+       print_r($res[1]);
 
        $counts=array("ok" => 0, "warn" => 0, "error" => 0);
 
         foreach ($res as $r){
             $counts[$r["status"]]++;
         }
-        print_r($counts); 
+        print_r($counts);
 
-       echo "done"; 
+       echo "done";
     }
     private function returnArray(){
         //$retval["status"] = "ok";
         //$retval["message"] = "everything is well";
         $retval["status"] = "error";
         $retval["message"] = "everything is not well";
-        return $retval; 
+        return $retval;
     }
-    
+
     public function testExtactPKNumber(){
          print __METHOD__ . "\n";
          $v4pks = array('1GO', '20GO', '300GO');
-         $largestV4Pk = 0; 
+         $largestV4Pk = 0;
          foreach ($v4pks as $v4pkGO) {
-             $v4pk = (int)substr($v4pkGO, 0, strlen($v4pkGO)-2);  
+             $v4pk = (int)substr($v4pkGO, 0, strlen($v4pkGO)-2);
              if($v4pk > $largestV4Pk){
-                $largestV4Pk = $v4pk; 
+                $largestV4Pk = $v4pk;
              }
-             echo $v4pk; 
+             echo $v4pk;
          }
-         $this->assertEquals(300, $largestV4Pk);  
+         $this->assertEquals(300, $largestV4Pk);
     }
-    
-    
+
+
     public function testBitwiseAnd(){
         print __METHOD__ . "\n";
         if(3 & 1){
-            print '3 & 1 true'; 
+            print '3 & 1 true';
         }
         if(3 & 2){
-            print '3 & 2 true'; 
+            print '3 & 2 true';
         }
         if(3 & 4){
-            fail('3 & 4 should not be true'); 
+            fail('3 & 4 should not be true');
         }
         if(3 & 8){
-            fail('3 & 8 should not be true'); 
+            fail('3 & 8 should not be true');
         }
-        
+
         if(4 & 1){
-            fail('4 & 1 should not be true'); 
+            fail('4 & 1 should not be true');
         }
         if(4 & 2){
-            fail('4 & 2 should not be true'); 
+            fail('4 & 2 should not be true');
         }
         if(4 & 4){
-            print '4 & 4 true'; 
+            print '4 & 4 true';
         }
         if(4 & 8){
-            fail('4 & 8 should not be true'); 
+            fail('4 & 8 should not be true');
         }
     }
 
@@ -246,7 +246,7 @@ class FirstTest extends PHPUnit_Framework_TestCase {
     /**
      * This method is used as a provider for tests.
      * @see testDataProvider
-     * @return array Data used in tests. 
+     * @return array Data used in tests.
      */
     public function provider() {
         return array(
@@ -280,7 +280,7 @@ class FirstTest extends PHPUnit_Framework_TestCase {
         $this->assertStringEqualsFile(__DIR__.'/fixture.txt', 'Fake content');
 
         // didn't find this Test.xml file, so i return above (TODO).
-        if(true)return; 
+        if(true)return;
 
         // didn't find this Test.xml file, so i return above.
         $this->assertXmlStringEqualsXmlFile( 'Test.xml', $this->xXML );

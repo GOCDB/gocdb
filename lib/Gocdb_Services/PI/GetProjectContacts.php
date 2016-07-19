@@ -14,30 +14,30 @@ require_once __DIR__ . '/IPIQuery.php';
 
 /**
  * Return an XML document that encodes the project contacts selected from the DB.
- * Supported params: 
- * <pre>'project'</pre> 
- *  
+ * Supported params:
+ * <pre>'project'</pre>
+ *
  * @author James McCarthy
- * @author David Meredith 
+ * @author David Meredith
  */
 class GetProjectContacts implements IPIQuery{
-    
+
     protected $query;
     protected $validParams;
     protected $em;
     private $helpers;
     private $projects;
-    
+
     /** Constructor takes entity manager which is then used by the
      *  query builder
-     * 
+     *
      * @param EntityManager $em
      */
     public function __construct($em){
         $this->em = $em;
-        $this->helpers=new Helpers();		
+        $this->helpers=new Helpers();
     }
-    
+
     /** Validates parameters against array of pre-defined valid terms
      *  for this PI type
      * @param array $parameters
@@ -48,29 +48,29 @@ class GetProjectContacts implements IPIQuery{
         $supportedQueryParams = array (
                 'project'
         );
-        
+
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
         $this->validParams = $parameters;
     }
-    
+
     /** Creates the query by building on a queryBuilder object as
-     *  required by the supplied parameters 
+     *  required by the supplied parameters
      */
     public function createQuery() {
         $parameters = $this->validParams;
         $binds= array();
         $bc=-1;
-    
+
         $qb = $this->em->createQueryBuilder();
-        
-        //Initialize base query	
+
+        //Initialize base query
         $qb = $this->em->createQueryBuilder();
         $qb->select('p')
            ->from('project', 'p');
-        
+
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
         * based on set parameters.
-        */	
+        */
         $parameterBuilder = new ParameterBuilder($parameters, $qb, $this->em, $bc);
         //Get the result of the scope builder
         $qb = $parameterBuilder->getQB();
@@ -79,15 +79,15 @@ class GetProjectContacts implements IPIQuery{
         foreach((array)$parameterBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-    
+
         //Bind all variables
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
-        
-        $this->query = $query;	
-    }	
-    
+
+        $this->query = $query;
+    }
+
     /**
      * Executes the query that has been built and stores the returned data
      * so it can later be used to create XML, Glue2 XML or JSON.
@@ -96,27 +96,27 @@ class GetProjectContacts implements IPIQuery{
         $this->projects = $this->query->execute();
         return $this->projects;
     }
-    
-    /** Returns proprietary GocDB rendering of the sites data 
+
+    /** Returns proprietary GocDB rendering of the sites data
      *  in an XML String
      * @return String
      */
     public function getXML(){
         $helpers = $this->helpers;
         $query = $this->query;
-        
+
         $projects = $this->projects;
 
         $xml = new \SimpleXMLElement ( "<results />" );
 
-        foreach($projects as $project){			
+        foreach($projects as $project){
             $xmlProjUser = $xml->addChild('Project');
             $xmlProjUser->addAttribute('NAME', $project->getName());
-            
+
             foreach($project->getRoles() as $role){
                 if($role->getStatus() == \RoleStatus::GRANTED &&
                 $role->getRoleType()->getName() != \RoleTypeName::CIC_STAFF){
-            
+
                         //$rtype = $role->getRoleType()->getName();
                         $user = $role->getUser();
                         $xmlContact = $xmlProjUser->addChild('CONTACT');
@@ -130,14 +130,14 @@ class GetProjectContacts implements IPIQuery{
                         $xmlContact->addChild ( 'WORKING_HOURS_START', $user->getWorkingHoursStart () );
                         $xmlContact->addChild ( 'WORKING_HOURS_END', $user->getWorkingHoursEnd () );
                         $xmlContact->addChild('CERTDN', $user->getCertificateDn());
-                         
+
                         $roleName = $role->getRoleType()->getName();
                         $xmlContact->addChild('ROLE_NAME', $roleName);
-                    
+
                 }
             }
         }
-        
+
         $dom_sxe = dom_import_simplexml ( $xml );
         $dom = new \DOMDocument ( '1.0' );
         $dom->encoding = 'UTF-8';
@@ -145,23 +145,23 @@ class GetProjectContacts implements IPIQuery{
         $dom_sxe = $dom->appendChild ( $dom_sxe );
         $dom->formatOutput = true;
         $xmlString = $dom->saveXML ();
-        
+
         return $xmlString;
     }
-    
+
     /** Returns the project contact data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
-    public function getGlue2XML(){	
+    public function getGlue2XML(){
         throw new LogicException("Not implemented yet");
     }
-    
-    /** Not yet implemented, in future will return the project contact  
+
+    /** Not yet implemented, in future will return the project contact
      *  data in JSON format
      * @throws LogicException
      */
-    public function getJSON(){		
+    public function getJSON(){
         throw new LogicException("Not implemented yet");
     }
 }

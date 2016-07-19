@@ -33,7 +33,7 @@ function edit_property() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {
         submit($user);
     } else {
@@ -57,19 +57,19 @@ function draw(\User $user = null) {
     if (!isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid']) ){
         throw new Exception("A propertyid must be specified");
     }
-    $serv = \Factory::getServiceService(); 
+    $serv = \Factory::getServiceService();
     $service = $serv->getService($_REQUEST['id']);
     $property = $serv->getProperty($_REQUEST['propertyid']);
-    
+
     //Check user has permissions to add site property
     $serv->validateAddEditDeleteActions($user, $service);
-    
-    
+
+
     $params['prop'] = $property;
     $params['service'] = $service;
-    
-    show_view("service/edit_service_property.php", $params);     
-    
+
+    show_view("service/edit_service_property.php", $params);
+
 
 }
 
@@ -80,7 +80,7 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     try {
-        $newValues = getSerPropDataFromWeb();  
+        $newValues = getSerPropDataFromWeb();
         $serviceID = $newValues['SERVICEPROPERTIES']['SERVICE'];
         $propID = $newValues['SERVICEPROPERTIES']['PROP'];
         if($newValues['SERVICEPROPERTIES']['NAME'] == null || $newValues['SERVICEPROPERTIES']['VALUE'] == null){
@@ -88,7 +88,7 @@ function submit(\User $user = null) {
             die();
         }
         $property = \Factory::getServiceService()->getProperty($propID);
-        $service = \Factory::getServiceService()->getService($serviceID);    	
+        $service = \Factory::getServiceService()->getService($serviceID);
         $service = \Factory::getServiceService()->editServiceProperty($service, $user, $property, $newValues);
         $params['serviceid'] = $serviceID;
         show_view('service/service_property_updated.php', $params);

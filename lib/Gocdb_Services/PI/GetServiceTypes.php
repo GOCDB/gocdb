@@ -12,14 +12,14 @@ require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
 
 
-/** 
+/**
  * Return an XML document that encodes the NGI contacts selected from the DB.
  * Optionally provide an associative array of query parameters with values used to restrict the results.
  * Only known parameters are honoured while unknown params are ignored.
  * <pre>
- * </pre> 
+ * </pre>
  * @author James McCarthy
- * @author David Meredith 
+ * @author David Meredith
  */
 class GetServiceTypes implements IPIQuery{
     protected $query;
@@ -27,7 +27,7 @@ class GetServiceTypes implements IPIQuery{
     protected $em;
     private $helpers;
     private $sts;
-    
+
     /** Constructor takes entity manager which is then used by the
      *  query builder
      *
@@ -37,20 +37,20 @@ class GetServiceTypes implements IPIQuery{
         $this->em = $em;
         $this->helpers=new Helpers();
     }
-    
+
     /** Validates parameters against array of pre-defined valid terms
      *  for this PI type
      * @param array $parameters
      */
     public function validateParameters($parameters){
-    
+
         // Define supported parameters and validate given params (die if an unsupported param is given)
         $supportedQueryParams = array ();
-    
+
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
         $this->validParams = $parameters;
     }
-    
+
     /** Creates the query by building on a queryBuilder object as
      *  required by the supplied parameters
      */
@@ -58,13 +58,13 @@ class GetServiceTypes implements IPIQuery{
         $parameters = $this->validParams;
         $binds= array();
         $bc=-1;
-    
+
         $qb = $this->em->createQueryBuilder();
-    
+
         //Initialize base query
         $qb	->select('st')
         ->from('ServiceType', 'st');
-    
+
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.
         */
@@ -76,17 +76,17 @@ class GetServiceTypes implements IPIQuery{
         foreach((array)$parameterBuilder->getBinds() as $bind){
             $binds[] = $bind;
         }
-            
+
         //Bind all variables
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
-    
+
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
-    
+
         $this->query = $query;
         return $this->query;
     }
-    
+
     /**
      * Executes the query that has been built and stores the returned data
      * so it can later be used to create XML, Glue2 XML or JSON.
@@ -95,19 +95,19 @@ class GetServiceTypes implements IPIQuery{
         $this->sts = $this->query->execute();
         return $this->sts;
     }
-    
-    
-    /** Returns proprietary GocDB rendering of the SerivceType data 
+
+
+    /** Returns proprietary GocDB rendering of the SerivceType data
      *  in an XML String
      * @return String
      */
     public function getXML(){
         $helpers = $this->helpers;
-    
+
         $sts = $this->sts;
 
         $xml = new \SimpleXMLElement ( "<results />" );
-                    
+
         foreach($sts as $st) {
             $xmlServiceType = $xml->addChild('SERVICE_TYPE');
             $xmlServiceType->addAttribute('TYPE_ID', $st->getId() . "G0");
@@ -115,7 +115,7 @@ class GetServiceTypes implements IPIQuery{
             $xmlServiceType->addChild('SERVICE_TYPE_NAME', $st->getName());
             $xmlServiceType->addChild('SERVICE_TYPE_DESC', $st->getDescription());
         }
-        
+
         $dom_sxe = dom_import_simplexml ( $xml );
         $dom = new \DOMDocument ( '1.0' );
         $dom->encoding = 'UTF-8';
@@ -125,21 +125,21 @@ class GetServiceTypes implements IPIQuery{
         $xmlString = $dom->saveXML ();
         return $xmlString;
     }
-    
+
     /** Returns the SerivceType data in Glue2 XML string.
-     * 
+     *
      * @return String
      */
     public function getGlue2XML(){
-        throw new LogicException("Not implemented yet");	     
+        throw new LogicException("Not implemented yet");
     }
-    
-    /** Not yet implemented, in future will return the SerivceType 
+
+    /** Not yet implemented, in future will return the SerivceType
      *  data in JSON format
      * @throws LogicException
      */
     public function getJSON(){
-        $query = $this->query;		
+        $query = $this->query;
         throw new LogicException("Not implemented yet");
     }
 }

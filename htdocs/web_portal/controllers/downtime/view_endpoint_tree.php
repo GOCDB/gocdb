@@ -22,11 +22,11 @@
 function getServiceandEndpointList() {
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
-    
+
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
-    
+
     if (!isset($_REQUEST['site_id']) || !is_numeric($_REQUEST['site_id']) ){
         throw new Exception("An id must be specified");
     }
@@ -44,7 +44,7 @@ function editDowntimePopulateEndpointTree() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
-    
+
     if (!isset($_REQUEST['site_id']) || !is_numeric($_REQUEST['site_id']) ){
         throw new Exception("A site id must be specified");
     }
@@ -54,9 +54,9 @@ function editDowntimePopulateEndpointTree() {
     $site = \Factory::getSiteService()->getSite($_REQUEST['site_id']);
     $services = $site->getServices();
     $params['services'] = $services;
-     
+
     $downtime = \Factory::getDowntimeService()->getDowntime($_REQUEST['dt_id']);
     $params['downtime'] = $downtime;
-   
+
     show_view("downtime/downtime_edit_view_nested_endpoints_list.php", $params, null, true);
 }

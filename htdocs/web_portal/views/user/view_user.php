@@ -91,11 +91,11 @@
                     <td class="site_table">EGI SSO Username</td>
                     <td class="site_table">
                         <div style="word-wrap: break-word;">
-                            <?php 
+                            <?php
                             //if($params['user']->getusername1() != null){
-                            //    echo  'Should this be shown? - TBC'; //$params['user']->getusername1(); 
+                            //    echo  'Should this be shown? - TBC'; //$params['user']->getusername1();
                             //} else {
-                            //    echo 'Not known'; 
+                            //    echo 'Not known';
                             //}
                             ?>
                         </div>
@@ -116,7 +116,7 @@
     </div>
 
 
-    
+
     <div class="listContainer">
         <b>Authentication Attributes:</b>
         <br>
@@ -141,7 +141,7 @@
     <?php foreach($params['projectNamesIds'] as $projId => $projName){ ?>
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 1em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-        Roles in Project 
+        Roles in Project
         <a href="index.php?Page_Type=Project&id=<?php echo $projId ?>">
         [<?php xecho($projName) ?>]
         </a>
@@ -160,8 +160,8 @@
             <?php
             $num = 2;
             foreach($params['role_ProjIds'] as $role_ProjIds ) { // foreach role
-        $role = $role_ProjIds[0]; 
-        $projIds = $role_ProjIds[1]; 
+        $role = $role_ProjIds[0];
+        $projIds = $role_ProjIds[1];
 
         if(in_array($projId, $projIds)){ // if projId in array
             ?>
@@ -203,18 +203,18 @@
                 </td>
                 <td class="site_table">
                     <?php if(!$params['portalIsReadOnly'] && $role->getDecoratorObject() != null):?>
-                        <form action="index.php?Page_Type=Revoke_Role" method="post"> 
-                            <input type="hidden" name="id" value="<?php echo $role->getId()?>" /> 
-                            <input id="revokeButton" type="submit" value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()" 
+                        <form action="index.php?Page_Type=Revoke_Role" method="post">
+                            <input type="hidden" name="id" value="<?php echo $role->getId()?>" />
+                            <input id="revokeButton" type="submit" value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()"
                                    title="Your roles allowing revoke: <?php xecho($role->getDecoratorObject()); ?>" >
-                        </form> 
+                        </form>
                     <?php endif;?>
                 </td>
-                    
+
             </tr>
             <?php
               if($num == 1) { $num = 2; } else { $num = 1; }
-          
+
           } // if projId in array
         } // foreach role
             ?>
@@ -227,7 +227,7 @@
     <!-- Roles NOT in Project, e.g. ServiceGroup roles -->
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-        Project Agnostic Roles (Selected roles may be over objects with no ancestor Project, e.g. ServiceGroups) 
+        Project Agnostic Roles (Selected roles may be over objects with no ancestor Project, e.g. ServiceGroups)
     </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
 
@@ -243,8 +243,8 @@
             <?php
             $num = 2;
             foreach($params['role_ProjIds'] as $role_ProjIds ) { // foreach role
-        $role = $role_ProjIds[0]; 
-        $projIds = $role_ProjIds[1]; 
+        $role = $role_ProjIds[0];
+        $projIds = $role_ProjIds[1];
 
         if(count($projIds) == 0){ // role with no owning proj
             ?>
@@ -286,18 +286,18 @@
                 </td>
                 <td class="site_table">
                     <?php if(!$params['portalIsReadOnly'] && $role->getDecoratorObject() != null):?>
-                        <form action="index.php?Page_Type=Revoke_Role" method="post"> 
-                            <input type="hidden" name="id" value="<?php echo $role->getId()?>" /> 
-                            <input id="revokeButton" type="submit" value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()" 
+                        <form action="index.php?Page_Type=Revoke_Role" method="post">
+                            <input type="hidden" name="id" value="<?php echo $role->getId()?>" />
+                            <input id="revokeButton" type="submit" value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()"
                                    title="Your roles allowing revoke: <?php xecho($role->getDecoratorObject()); ?>" >
-                        </form> 
+                        </form>
                     <?php endif;?>
                 </td>
-                    
+
             </tr>
             <?php
               if($num == 1) { $num = 2; } else { $num = 1; }
-          
+
           } // end role with no owning proj
         } // end foreach role
             ?>
@@ -308,6 +308,6 @@
 
  <script type="text/javascript">
     //$(document).ready(function() {
-    //    $('#revokeButton').tooltip(); 
-    //}); 
+    //    $('#revokeButton').tooltip();
+    //});
 </script>
