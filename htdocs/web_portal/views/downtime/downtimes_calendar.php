@@ -342,7 +342,6 @@
             <div class="loader" style="vertical-align: middle;">Loading...</div>
 
         </div>
-        <div
     </div>
 
 </div>
