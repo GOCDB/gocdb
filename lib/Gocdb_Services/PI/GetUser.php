@@ -19,6 +19,9 @@ require_once __DIR__ . '/QueryBuilders/ParameterBuilder.php';
 require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
 require_once __DIR__ . '/../OwnedEntity.php';
+require_once __DIR__ . '/IPIQueryPageable.php';
+
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
  * Return an XML document that encodes the users.
@@ -26,14 +29,14 @@ require_once __DIR__ . '/../OwnedEntity.php';
  * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
  * <pre>
- * 'dn', 'dnlike', 'forename', 'surname', 'roletype'
+ * 'dn', 'dnlike', 'forename', 'surname', 'roletype', 'page'
  * </pre>
  * Implemented with Doctrine.
  *
  * @author James McCarthy
  * @author David Meredith
  */
-class GetUser implements IPIQuery {
+class GetUser implements IPIQuery, IPIQueryPageable {
 
     protected $query;
     protected $validParams;
@@ -42,6 +45,14 @@ class GetUser implements IPIQuery {
     private $users;
     private $roleAuthorisationService;
     private $baseUrl;
+    
+    private $page;  // specifies the requested page number - must be null if not paging
+    private $maxResults = 500; //default, set via setPageSize(int);
+    private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
+    private $queryBuilder2;
+    private $query2;
+    private $userCountTotal;
+    private $urlAuthority;
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
@@ -49,12 +60,16 @@ class GetUser implements IPIQuery {
      * @param EntityManager $em
      * @param $roleAuthorisationService org\gocdb\services\RoleActionAuthorisationService
      * @param string $baseUrl The base url string to prefix to urls generated in the query output.
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'. 
      */
-    public function __construct($em, $roleAuthorisationService, $baseUrl = 'https://goc.egi.eu/portal') {
+    public function __construct($em, $roleAuthorisationService, $baseUrl = 'https://goc.egi.eu/portal', $urlAuthority='') {
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->roleAuthorisationService = $roleAuthorisationService;
         $this->baseUrl = $baseUrl;
+        $this->urlAuthority = $urlAuthority;
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -69,7 +84,8 @@ class GetUser implements IPIQuery {
             'dnlike',
             'forename',
             'surname',
-            'roletype'
+            'roletype', 
+            'page'
         );
 
         $this->helpers->validateParams($supportedQueryParams, $parameters);
@@ -91,6 +107,20 @@ class GetUser implements IPIQuery {
                 ->from('User', 'u')
                 ->leftJoin('u.roles', 'r')
                 ->orderBy('u.id', 'ASC');
+        
+        // Validate page parameter
+        if (isset($parameters['page'])) {
+            if( ((string)(int)$parameters['page'] == $parameters['page']) && (int)$parameters['page'] > 0) {
+                $this->page = (int) $parameters['page'];
+            } else {
+                echo "<error>Invalid 'page' parameter - must be a whole number greater than zero</error>";
+                die();
+            }
+        } else {
+            if($this->defaultPaging){
+                $this->page = 1;
+            }
+        }
 
         if (isset($parameters ['roletype']) && isset($parameters ['roletypeAND'])) {
             echo '<error>Only use either roletype or roletypeAND not both</error>';
@@ -136,6 +166,29 @@ class GetUser implements IPIQuery {
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
+        
+        
+        if($this->page != null){
+        
+            // In order to properly support paging, we need to count the
+            // total number of results that can be returned:
+        
+            //start by cloning the query
+            $this->queryBuilder2 = clone $qb;
+            //alter the clone so it only returns the count of objects
+            $this->queryBuilder2->select('count(DISTINCT u)');
+            $this->query2 = $this->queryBuilder2->getQuery();
+            //then we don't use setFirst/MaxResult on this query
+            //so all sites will be returned and counted, but without all the additional info
+        
+            // offset is zero offset (starts from zero)
+            $offset = (($this->page - 1) * $this->maxResults);
+            // sets the position of the first result to retrieve (the "offset")
+            $query->setFirstResult($offset);
+            // Sets the maximum number of results to retrieve (the "limit")
+            $query->setMaxResults($this->maxResults);
+        
+        }
 
         $this->query = $query;
         return $this->query;
@@ -146,7 +199,19 @@ class GetUser implements IPIQuery {
      * so it can later be used to create XML, Glue2 XML or JSON.
      */
     public function executeQuery() {
-        $this->users = $this->query->execute();
+        //$this->users = $this->query->execute();
+        //return $this->users;
+        
+        // if page is not null, then either the user has specified a 'page' url param,
+        // or defaultPaging is true and this has been set to 1
+        if ($this->page != null) {
+            $this->users = new Paginator($this->query, $fetchJoinCollection = true);
+            $this->userCountTotal = $this->query2->getSingleScalarResult();
+        
+        } else {
+            $this->users = $this->query->execute();
+        }
+        
         return $this->users;
     }
 
@@ -155,8 +220,24 @@ class GetUser implements IPIQuery {
      * @return String
      */
     public function getXML() {
+        $helpers = $this->helpers;
         $users = $this->users;
         $xml = new \SimpleXMLElement("<results />");
+        
+        // Calculate and add paging info
+        // if page is not null, then either the user has specified a 'page' url param,
+        // or defaultPaging is true and this has been set to 1
+        if ($this->page != null) {
+            $last = ceil($this->userCountTotal / $this->maxResults); // can be zero
+            $next = $this->page + 1;
+            if($last == 0){
+                $last = 1;
+            }
+             
+            $metaXml = $xml->addChild("meta");
+            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);
+        }
+        
         foreach ($users as $user) {
             $xmlUser = $xml->addChild('EGEE_USER');
             $xmlUser->addAttribute("ID", $user->getId() . "G0");
@@ -279,6 +360,46 @@ class GetUser implements IPIQuery {
 
     private function cleanDN($dn) {
         return trim(str_replace(' ', '%20', $dn));
+    }
+    
+    /**
+     * This query does not page by default.
+     * If set to true, the query will return the first page of results even if the
+     * the <pre>page</page> URL param is not provided.
+     *
+     * @return bool
+     */
+    public function getDefaultPaging(){
+        return $this->defaultPaging;
+    }
+    
+    /**
+     * @param boolean $pageTrueOrFalse Set if this query pages by default
+     */
+    public function setDefaultPaging($pageTrueOrFalse){
+        if(!is_bool($pageTrueOrFalse)){
+            throw new \InvalidArgumentException('Invalid pageTrueOrFalse, requried bool');
+        }
+        $this->defaultPaging = $pageTrueOrFalse;
+    }
+    
+    /**
+     * Set the default page size (100 by default if not set)
+     * @return int The page size (number of results per page)
+     */
+    public function getPageSize(){
+        return $this->maxResults;
+    }
+    
+    /**
+     * Set the size of a single page.
+     * @param int $pageSize
+     */
+    public function setPageSize($pageSize){
+        if(!is_int($pageSize)){
+            throw new \InvalidArgumentException('Invalid pageSize, required int');
+        }
+        $this->maxResults = $pageSize;
     }
 
 }

@@ -23,7 +23,8 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * Parmeter array keys include:
  * <pre>
  * 'hostname', 'sitename', 'roc', 'country', 'service_type', 'monitored',
- * 'scope', 'scope_match', 'properties', page (where scope refers to Service scope)
+ * 'scope', 'scope_match', 'properties', 'page' 
+ * (where scope refers to Service scope)
  * </pre>
  *
  * @author James McCarthy
@@ -39,26 +40,33 @@ class GetService implements IPIQuery, IPIQueryPageable {
     private $helpers;
     private $serviceEndpoints;
     private $renderMultipleEndpoints;
-    private $baseUrl;
+    private $portalContextUrl;
+    private $urlAuthority; 
 
     private $page;  // specifies the requested page number - must be null if not paging
-    private $maxResults = 500; //1000;
+    private $maxResults = 500; //default, set via setPageSize(int);
     private $seCountTotal;
     private $queryBuilder2;
     private $query2;
-    private $defaultPaging = false;
+    private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
 
     /**
      * Constructor takes entity manager which is then used by the query builder.
      *
      * @param EntityManager $em
-     * @param string $baseUrl The base url string to prefix to urls generated in the query output.
+     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal') 
+     *   - used as a prefix to build absolute PORTAL URLs that are rendered in the query output.
+     *   Should not end with '/'. 
+     * @param string $urlAuthority Authority part of URL (e.g. 'scheme://host:port') 
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'. 
      */
-    public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal') {
+    public function __construct($em, $portalContextUrl = 'https://goc.egi.eu/portal', $urlAuthority = '') {
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
-        $this->baseUrl = $baseUrl;
+        $this->portalContextUrl = $portalContextUrl;
+        $this->urlAuthority = $urlAuthority; 
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -227,6 +235,8 @@ class GetService implements IPIQuery, IPIQueryPageable {
         //$this->serviceEndpoints = $this->query->execute();
         //return $this->serviceEndpoints;
 
+        // if page is not null, then either the user has specified a 'page' url param, 
+        // or defaultPaging is true and this has been set to 1 
         if ($this->page != null) {
             $this->serviceEndpoints = new Paginator($this->query, $fetchJoinCollection = true);
             //put the total number of SE's into $this->seCountTotal
@@ -247,16 +257,24 @@ class GetService implements IPIQuery, IPIQueryPageable {
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results />");
 
-        //calculate and add paging info attributes
+        // Calculate and add paging info
+        // if page is not null, then either the user has specified a 'page' url param, 
+        // or defaultPaging is true and this has been set to 1 
         if ($this->page != null) {
             $last = ceil($this->seCountTotal / $this->maxResults);
             $next = $this->page + 1;
-
-            $xml->addAttribute("page", $this->page);
-            if ($next <= $last) {
-                $xml->addAttribute("next", $next);
+            if($last == 0){
+                $last = 1;
             }
-            $xml->addAttribute("last", $last);
+
+            //$xml->addAttribute("page", $this->page);
+            //if ($next <= $last) {
+            //    $xml->addAttribute("next", $next);
+            //}
+            //$xml->addAttribute("last", $last);
+
+            $metaXml = $xml->addChild("meta");
+            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);   
         }
 
 
@@ -268,7 +286,7 @@ class GetService implements IPIQuery, IPIQueryPageable {
             $xmlSe->addAttribute("PRIMARY_KEY", $se->getId() . "G0");
             $helpers->addIfNotEmpty($xmlSe, 'PRIMARY_KEY', $se->getId() . "G0");
             $helpers->addIfNotEmpty($xmlSe, 'HOSTNAME', $se->getHostName());
-            $portalUrl = htmlspecialchars($this->baseUrl.'/index.php?Page_Type=Service&id=' . $se->getId());
+            $portalUrl = htmlspecialchars($this->portalContextUrl.'/index.php?Page_Type=Service&id=' . $se->getId());
             $helpers->addIfNotEmpty($xmlSe, 'GOCDB_PORTAL_URL', $portalUrl);
             $helpers->addIfNotEmpty($xmlSe, 'HOSTDN', $se->getDn());
             $helpers->addIfNotEmpty($xmlSe, 'HOST_OS', $se->getOperatingSystem());

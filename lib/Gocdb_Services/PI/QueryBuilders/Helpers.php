@@ -83,29 +83,29 @@ class Helpers {
      * @throws \InvalidArgumentException if either of the given args are not arrays.
      */
     public function validateParams($supportedParams, $testParams) {
-    if (!is_array($supportedParams) || !is_array($testParams)) {
-        throw new \InvalidArgumentException('Invalid parameters passed to PI query');
-    }
-
-    // Check the parameter keys are supoported
-    $testParamKeys = array_keys($testParams);
-    foreach ($testParamKeys as $key) {
-        // if givenkey is not defined in supportedkeys it is unsupported
-        if (!in_array($key, $supportedParams)) {
-        echo '<error>Unsupported parameter: ' . $key . '</error>';
-        die();
+        if (!is_array($supportedParams) || !is_array($testParams)) {
+            throw new \InvalidArgumentException('Invalid parameters passed to PI query');
         }
-    }
 
-    // Check that the paramater does not contain invalid chracters
-    $testParamValues = array_values($testParams);
-    foreach ($testParamValues as $value) {
-        // whole string anchored left and right, allow any char except "'`
-        if (!preg_match("/^[^\"'`]*$/", $value)) {
-        echo '<error>Unsuported chracter in value: ' . $value . '</error>';
-        die();
+        // Check the parameter keys are supoported
+        $testParamKeys = array_keys($testParams);
+        foreach ($testParamKeys as $key) {
+            // if givenkey is not defined in supportedkeys it is unsupported
+            if (!in_array($key, $supportedParams)) {
+            echo '<error>Unsupported parameter: ' . $key . '</error>';
+            die();
+            }
         }
-    }
+
+        // Check that the paramater does not contain invalid chracters
+        $testParamValues = array_values($testParams);
+        foreach ($testParamValues as $value) {
+            // whole string anchored left and right, allow any char except "'`
+            if (!preg_match("/^[^\"'`]*$/", $value)) {
+            echo '<error>Unsuported chracter in value: ' . $value . '</error>';
+            die();
+            }
+        }
     }
 
     /**
@@ -120,9 +120,9 @@ class Helpers {
      * @throws \Exception
      */
     public function addIfNotEmpty($xml, $tagName, $value) {
-    if ($value != null && $value != "") {
-        $xml->addChild($tagName, $value);
-    }
+        if ($value != null && $value != "") {
+            $xml->addChild($tagName, $value);
+        }
     }
 
     /**
@@ -134,12 +134,89 @@ class Helpers {
      * @return string XML result string
      */
     public function addExtIfNotEmpty($xmlParent, $tagName, $value) {
-    if ($value != "") {
-        $extension = $xmlParent->addChild("Extension");
-        $extension->addChild("LocalID", $tagName);
-        $extension->addChild("Key", $tagName);
-        $extension->addChild("Value", $value);
+        if ($value != "") {
+            $extension = $xmlParent->addChild("Extension");
+            $extension->addChild("LocalID", $tagName);
+            $extension->addChild("Key", $tagName);
+            $extension->addChild("Value", $value);
+        }
     }
+
+    /**
+     * Adds 'link' child elements to the given parent xml element to build links for paging. 
+     * <p>
+     * <ul>
+     *   <li>The parent xml element should normally be the 'meta' element following HATEOAS.</li>  
+     *   <li>The 'next' link is only added if $next <= $last.</li>
+     *   <li>The 'prev' link is only added if there is a page previous to the current page.</li>  
+     *   <li>The 'href' hyperlink value defines a link which is constructed 
+     * from the current request URI.</li> 
+     *   <li>The 'page' url parameter is added to the value of the href attributes.</li>   
+     * </li>
+     * </ul>
+     * For example, the following links would be added as child elements to the given metaXml: 
+     * <pre>
+     *    link rel="self" href="/gocdbpi/public/?method=get_service" 
+     *    link rel="next" href="/gocdbpi/public/?method=get_service&amp;page=2" 
+     *    link rel="prev" href="/gocdbpi/public/?method=get_service&amp;page=1" 
+     *    link rel="first" href="/gocdbpi/public/?method=get_service&amp;page=1"
+     *    link rel="last" href="/gocdbpi/public/?method=get_service&amp;page=42"
+     * </pre>
+     * @see http://restcookbook.com/Resources/pagination/ 
+     * 
+     * @param \SimpleXMLElement $metaXml Parent xml tag, normally the 'meta' tag from HATEOAS
+     * @param int $next 
+     * @param int $last
+     * @param string $urlAuthority Is prefixed to each 'href' attribute value in order  
+     *   to specify an optional 'scheme://host:port' for absolute URL values (href values are relative 
+     *   URLs by default, i.e. starting with '/'). 
+     */
+    public function addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $urlAuthority=''){
+        // HATEOAS meta element as per: http://restcookbook.com/Resources/pagination/
+        $urlParts = parse_url($_SERVER['REQUEST_URI']);
+
+        $urlBase = $urlAuthority.$urlParts['path'].'?';
+        $urlParamStr = $urlParts['query']; // get only the url query parameter string
+        parse_str($urlParamStr, $urlQueryParamsArray); // parse urlParamString into array
+
+        // add self link (don't modify the query)
+        $selfLink = $metaXml->addChild("link");
+        $selfLink->addAttribute("rel", "self");
+        $selfLink->addAttribute("href", $urlBase.$urlParts['query']);
+
+        // add next link
+        if ($next <= $last) {
+            $urlQueryParamsArray['page'] = $next; // reset or add the 'page' parameter
+            $nextQueryUrl = http_build_query($urlQueryParamsArray);
+            //$escapedNextQueryUrl = htmlspecialchars( $nextQueryUrl, ENT_QUOTES, 'UTF-8' );
+            $nextLink = $metaXml->addChild("link");
+            $nextLink->addAttribute("rel", "next");
+            $nextLink->addAttribute("href", $urlBase.$nextQueryUrl);
+        }
+
+        // add prev  link
+        if ($next - 2 > 0) {
+            $urlQueryParamsArray['page'] = $next-2;
+            $prevQueryUrl = http_build_query($urlQueryParamsArray);
+            //$escapedNextQueryUrl = htmlspecialchars( $nextQueryUrl, ENT_QUOTES, 'UTF-8' );
+            $prevLink = $metaXml->addChild("link");
+            $prevLink->addAttribute("rel", "prev");
+            $prevLink->addAttribute("href", $urlBase.$prevQueryUrl);
+        }
+
+        // add first link
+        $urlQueryParamsArray['page'] = 1;
+        $firstQueryUrl = http_build_query($urlQueryParamsArray);
+        $firstLink = $metaXml->addChild("link");
+        $firstLink->addAttribute("rel", "first");
+        $firstLink->addAttribute("href", $urlBase.$firstQueryUrl);
+
+        // add last link
+        $urlQueryParamsArray['page'] = $last;
+        $lastQueryUrl = http_build_query($urlQueryParamsArray);
+        $lastLink = $metaXml->addChild("link");
+        $lastLink->addAttribute("rel", "last");
+        $lastLink->addAttribute("href", $urlBase.$lastQueryUrl);
     }
 
 }

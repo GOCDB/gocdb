@@ -134,6 +134,16 @@ class Config {
         $url = $localInfo->local_info->web_portal_url;
         return strval($url);
     }
+    
+    /**
+     * The base server URL as recorded in local_info.xml. This URL is used with the 
+     * PI query output, e.g. for building paging/HATEOAS links. 
+     */
+    public function getServerBaseUrl(){
+        $localInfo = $this->GetLocalInfoXML();
+        $url = $localInfo->local_info->server_base_url;
+        return strval($url);
+    }
 
     public function getDefaultScopeName(){
         $scopeName = $this->GetLocalInfoXML()->local_info->default_scope->name;

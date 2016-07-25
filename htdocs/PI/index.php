@@ -74,6 +74,7 @@ class PIRequest {
     private $params = array();
     private $dn = null;
     private $baseUrl;
+    private $baseApiUrl; 
 
     // params used to set the default behaviour of all paging queries,
     // these vals can be overidden per query if needed.
@@ -86,6 +87,7 @@ class PIRequest {
     public function __construct(){
         // returns the base portal URL as defined in conf file
         $this->baseUrl = \Factory::getConfigService()->GetPortalURL();
+        $this->baseApiUrl = \Factory::getConfigService()->getServerBaseUrl(); 
     }
 
     function process() {
@@ -133,7 +135,11 @@ class PIRequest {
                 case "get_site":
                     require_once($directory . 'GetSite.php');
                     $this->authAnyCert();
-                    $getSite = new GetSite($em, $this->baseUrl);
+                    $getSite = new GetSite($em, $this->baseUrl, $this->baseApiUrl);
+                    if($getSite instanceof IPIQueryPageable){
+                        $getSite->setDefaultPaging($this->defaultPaging);
+                        $getSite->setPageSize($this->defaultPageSize);
+                    }
                     $getSite->validateParameters($this->params);
                     $getSite->createQuery();
                     $getSite->executeQuery();
@@ -150,7 +156,11 @@ class PIRequest {
                 case "get_site_contacts":
                     require_once($directory . 'GetSiteContacts.php');
                     $this->authAnyCert();
-                    $getSiteContacts = new GetSiteContacts($em);
+                    $getSiteContacts = new GetSiteContacts($em, $this->baseApiUrl);
+                    if($getSiteContacts instanceof IPIQueryPageable){
+                        $getSiteContacts->setDefaultPaging($this->defaultPaging);
+                        $getSiteContacts->setPageSize($this->defaultPageSize);
+                    }
                     $getSiteContacts->validateParameters($this->params);
                     $getSiteContacts->createQuery();
                     $getSiteContacts->executeQuery();
@@ -160,7 +170,11 @@ class PIRequest {
                     require_once($directory . 'GetSiteSecurityInfo.php');
                     //$this->authAcl();
                     $this->authAnyCert();
-                    $getSiteSecurityInfo = new GetSiteSecurityInfo($em);
+                    $getSiteSecurityInfo = new GetSiteSecurityInfo($em, $this->baseApiUrl);
+                    if($getSiteSecurityInfo instanceof IPIQueryPageable){
+                        $getSiteSecurityInfo->setDefaultPaging($this->defaultPaging);
+                        $getSiteSecurityInfo->setPageSize($this->defaultPageSize);
+                    }
                     $getSiteSecurityInfo->validateParameters($this->params);
                     $getSiteSecurityInfo->createQuery();
                     $getSiteSecurityInfo->executeQuery();
@@ -193,7 +207,7 @@ class PIRequest {
                     break;
                 case "get_service":
                     require_once($directory . 'GetService.php');
-                    $getSE = new GetService($em, $this->baseUrl);
+                    $getSE = new GetService($em, $this->baseUrl, $this->baseApiUrl);
                     if($getSE instanceof IPIQueryPageable){
                         $getSE->setDefaultPaging($this->defaultPaging);
                         $getSE->setPageSize($this->defaultPageSize);
@@ -205,7 +219,7 @@ class PIRequest {
                     break;
                 case "get_service_endpoint":
                     require_once($directory . 'GetService.php');
-                    $getSE = new GetService($em, $this->baseUrl);
+                    $getSE = new GetService($em, $this->baseUrl, $this->baseApiUrl);
                     if($getSE instanceof IPIQueryPageable){
                         $getSE->setDefaultPaging($this->defaultPaging);
                         $getSE->setPageSize($this->defaultPageSize);
@@ -225,7 +239,11 @@ class PIRequest {
                     break;
                 case "get_downtime_to_broadcast":
                     require_once($directory . 'GetDowntimesToBroadcast.php');
-                    $getDTTBroadcast = new GetDowntimeToBroadcast($em, $this->baseUrl);
+                    $getDTTBroadcast = new GetDowntimeToBroadcast($em, $this->baseUrl, $this->baseApiUrl);
+                    if($getDTTBroadcast instanceof IPIQueryPageable){
+                        $getDTTBroadcast->setDefaultPaging($this->defaultPaging); 
+                        $getDTTBroadcast->setPageSize($this->defaultPageSize); 
+                    }
                     $getDTTBroadcast->validateParameters($this->params);
                     $getDTTBroadcast->createQuery();
                     $getDTTBroadcast->executeQuery();
@@ -234,7 +252,7 @@ class PIRequest {
                 case "get_downtime":
                     //require_once($directory . 'GetDowntimeFallback.php');
                     require_once($directory . 'GetDowntime.php');
-                    $getDowntime = new GetDowntime($em, false, $this->baseUrl);
+                    $getDowntime = new GetDowntime($em, false, $this->baseUrl, $this->baseApiUrl);
                     if($getDowntime instanceof IPIQueryPageable){
                         $getDowntime->setDefaultPaging($this->defaultPaging);
                         $getDowntime->setPageSize($this->defaultPageSize);
@@ -247,7 +265,7 @@ class PIRequest {
                 case "get_downtime_nested_services":
                     //require_once($directory . 'GetDowntimeFallback.php');
                     require_once($directory . 'GetDowntime.php');
-                    $getDowntime = new GetDowntime($em, true, $this->baseUrl);
+                    $getDowntime = new GetDowntime($em, true, $this->baseUrl, $this->baseApiUrl);
                     if($getDowntime instanceof IPIQueryPageable){
                         $getDowntime->setDefaultPaging($this->defaultPaging);
                         $getDowntime->setPageSize($this->defaultPageSize);
@@ -260,7 +278,11 @@ class PIRequest {
                 case "get_user":
                     require_once($directory . 'GetUser.php');
                     $this->authAnyCert();
-                    $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService(), $this->baseUrl);
+                    $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService(), $this->baseUrl, $this->baseApiUrl);
+                    if($getUser instanceof IPIQueryPageable){
+                        $getUser->setDefaultPaging($this->defaultPaging);
+                        $getUser->setPageSize($this->defaultPageSize);
+                    }
                     $getUser->validateParameters($this->params);
                     $getUser->createQuery();
                     $getUser->executeQuery();
@@ -287,7 +309,11 @@ class PIRequest {
                 case "get_service_group" :
                     require_once($directory . 'GetServiceGroup.php');
                     $this->authAnyCert();
-                    $getServiceGroup = new GetServiceGroup($em, $this->baseUrl);
+                    $getServiceGroup = new GetServiceGroup($em, $this->baseUrl, $this->baseApiUrl);
+                    if($getServiceGroup instanceof IPIQueryPageable){
+                        $getServiceGroup->setDefaultPaging($this->defaultPaging);
+                        $getServiceGroup->setPageSize($this->defaultPageSize);
+                    }
                     $getServiceGroup->validateParameters($this->params);
                     $getServiceGroup->createQuery();
                     $getServiceGroup->executeQuery();
@@ -296,7 +322,11 @@ class PIRequest {
                 case "get_service_group_role" :
                     require_once($directory . 'GetServiceGroupRole.php');
                     $this->authAnyCert();
-                    $getServiceGroupRole = new GetServiceGroupRole($em, $this->baseUrl);
+                    $getServiceGroupRole = new GetServiceGroupRole($em, $this->baseUrl, $this->baseApiUrl);
+                    if($getServiceGroupRole instanceof IPIQueryPageable){
+                        $getServiceGroupRole->setDefaultPaging($this->defaultPaging);
+                        $getServiceGroupRole->setPageSize($this->defaultPageSize);
+                    }
                     $getServiceGroupRole->validateParameters($this->params);
                     $getServiceGroupRole->createQuery();
                     $getServiceGroupRole->executeQuery();
@@ -305,7 +335,11 @@ class PIRequest {
                 case "get_cert_status_date" :
                     require_once($directory . 'GetCertStatusDate.php');
                     $this->authAnyCert();
-                    $getCertStatusDate = new GetCertStatusDate($em);
+                    $getCertStatusDate = new GetCertStatusDate($em, $this->baseApiUrl);
+                    if($getCertStatusDate instanceof IPIQueryPageable){
+                        $getCertStatusDate->setDefaultPaging($this->defaultPaging);
+                        $getCertStatusDate->setPageSize($this->defaultPageSize);
+                    }
                     $getCertStatusDate->validateParameters($this->params);
                     $getCertStatusDate->createQuery();
                     $getCertStatusDate->executeQuery();
@@ -314,7 +348,11 @@ class PIRequest {
                 case "get_cert_status_changes":
                     require_once($directory . 'GetCertStatusChanges.php');
                     $this->authAnyCert();
-                    $getCertStatusChanges = new GetCertStatusChanges($em);
+                    $getCertStatusChanges = new GetCertStatusChanges($em, $this->baseApiUrl);
+                    if($getCertStatusChanges instanceof IPIQueryPageable){
+                        $getCertStatusChanges->setDefaultPaging($this->defaultPaging);
+                        $getCertStatusChanges->setPageSize($this->defaultPageSize);
+                    }
                     $getCertStatusChanges->validateParameters($this->params);
                     $getCertStatusChanges->createQuery();
                     $getCertStatusChanges->executeQuery();
