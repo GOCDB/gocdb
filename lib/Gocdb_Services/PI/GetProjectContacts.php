@@ -10,32 +10,47 @@ require_once __DIR__ . '/QueryBuilders/ScopeQueryBuilder.php';
 require_once __DIR__ . '/QueryBuilders/ParameterBuilder.php';
 require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
+require_once __DIR__ . '/IPIQueryPageable.php';
+
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 
 /**
  * Return an XML document that encodes the project contacts selected from the DB.
  * Supported params:
- * <pre>'project'</pre>
+ * 'project', 'page'
  *
  * @author James McCarthy
  * @author David Meredith
  */
-class GetProjectContacts implements IPIQuery{
+class GetProjectContacts implements IPIQuery, IPIQueryPageable{
 
     protected $query;
     protected $validParams;
     protected $em;
     private $helpers;
     private $projects;
+    
+    private $page;  // specifies the requested page number - must be null if not paging
+    private $maxResults = 500; //default, set via setPageSize(int);
+    private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
+    private $queryBuilder2;
+    private $query2;
+    private $projCountTotal;
+    private $urlAuthority;
 
-    /** Constructor takes entity manager which is then used by the
-     *  query builder
+    /** 
+     * Constructor takes entity manager which is then used by the query builder
      *
      * @param EntityManager $em
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'. 
      */
-    public function __construct($em){
+    public function __construct($em, $urlAuthority=''){
         $this->em = $em;
         $this->helpers=new Helpers();
+        $this->urlAuthority = $urlAuthority; 
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -46,7 +61,8 @@ class GetProjectContacts implements IPIQuery{
 
         // Define supported parameters and validate given params (die if an unsupported param is given)
         $supportedQueryParams = array (
-                'project'
+                'project', 
+                'page'
         );
 
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
@@ -67,6 +83,20 @@ class GetProjectContacts implements IPIQuery{
         $qb = $this->em->createQueryBuilder();
         $qb->select('p')
            ->from('project', 'p');
+        
+           // Validate page parameter
+           if (isset($parameters['page'])) {
+               if( ((string)(int)$parameters['page'] == $parameters['page']) && (int)$parameters['page'] > 0) {
+                   $this->page = (int) $parameters['page'];
+               } else {
+                   echo "<error>Invalid 'page' parameter - must be a whole number greater than zero</error>";
+                   die();
+               }
+           } else {
+               if($this->defaultPaging){
+                   $this->page = 1;
+               }
+           }
 
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
         * based on set parameters.
@@ -84,6 +114,28 @@ class GetProjectContacts implements IPIQuery{
         $qb = $this->helpers->bindValuesToQuery($binds, $qb);
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
+        
+        if($this->page != null){
+        
+            // In order to properly support paging, we need to count the
+            // total number of results that can be returned:
+        
+            //start by cloning the query
+            $this->queryBuilder2 = clone $qb;
+            //alter the clone so it only returns the count of objects
+            $this->queryBuilder2->select('count(DISTINCT p)');
+            $this->query2 = $this->queryBuilder2->getQuery();
+            //then we don't use setFirst/MaxResult on this query
+            //so all sites will be returned and counted, but without all the additional info
+        
+            // offset is zero offset (starts from zero)
+            $offset = (($this->page - 1) * $this->maxResults);
+            // sets the position of the first result to retrieve (the "offset")
+            $query->setFirstResult($offset);
+            // Sets the maximum number of results to retrieve (the "limit")
+            $query->setMaxResults($this->maxResults);
+        
+        }
 
         $this->query = $query;
     }
@@ -93,7 +145,19 @@ class GetProjectContacts implements IPIQuery{
      * so it can later be used to create XML, Glue2 XML or JSON.
      */
     public function executeQuery(){
-        $this->projects = $this->query->execute();
+        //$this->projects = $this->query->execute();
+        //return $this->projects;
+        
+        // if page is not null, then either the user has specified a 'page' url param,
+        // or defaultPaging is true and this has been set to 1
+        if ($this->page != null) {
+            $this->projects = new Paginator($this->query, $fetchJoinCollection = true);
+            $this->projCountTotal = $this->query2->getSingleScalarResult();
+        
+        } else {
+            $this->projects = $this->query->execute();
+        }
+        
         return $this->projects;
     }
 
@@ -108,6 +172,20 @@ class GetProjectContacts implements IPIQuery{
         $projects = $this->projects;
 
         $xml = new \SimpleXMLElement ( "<results />" );
+        
+        // Calculate and add paging info
+        // if page is not null, then either the user has specified a 'page' url param,
+        // or defaultPaging is true and this has been set to 1
+        if ($this->page != null) {
+            $last = ceil($this->projCountTotal / $this->maxResults); // can be zero
+            $next = $this->page + 1;
+            if($last == 0){
+                $last = 1;
+            }
+        
+            $metaXml = $xml->addChild("meta");
+            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);
+        }
 
         foreach($projects as $project){
             $xmlProjUser = $xml->addChild('Project');
@@ -163,5 +241,45 @@ class GetProjectContacts implements IPIQuery{
      */
     public function getJSON(){
         throw new LogicException("Not implemented yet");
+    }
+    
+    /**
+     * This query does not page by default.
+     * If set to true, the query will return the first page of results even if the
+     * the <pre>page</page> URL param is not provided.
+     *
+     * @return bool
+     */
+    public function getDefaultPaging(){
+        return $this->defaultPaging;
+    }
+    
+    /**
+     * @param boolean $pageTrueOrFalse Set if this query pages by default
+     */
+    public function setDefaultPaging($pageTrueOrFalse){
+        if(!is_bool($pageTrueOrFalse)){
+            throw new \InvalidArgumentException('Invalid pageTrueOrFalse, requried bool');
+        }
+        $this->defaultPaging = $pageTrueOrFalse;
+    }
+    
+    /**
+     * Set the default page size (100 by default if not set)
+     * @return int The page size (number of results per page)
+     */
+    public function getPageSize(){
+        return $this->maxResults;
+    }
+    
+    /**
+     * Set the size of a single page.
+     * @param int $pageSize
+     */
+    public function setPageSize($pageSize){
+        if(!is_int($pageSize)){
+            throw new \InvalidArgumentException('Invalid pageSize, required int');
+        }
+        $this->maxResults = $pageSize;
     }
 }

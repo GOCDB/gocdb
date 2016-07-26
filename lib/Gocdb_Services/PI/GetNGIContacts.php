@@ -10,6 +10,9 @@ require_once __DIR__ . '/QueryBuilders/ScopeQueryBuilder.php';
 require_once __DIR__ . '/QueryBuilders/ParameterBuilder.php';
 require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
+require_once __DIR__ . '/IPIQueryPageable.php';
+
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 
 /**
@@ -17,14 +20,12 @@ require_once __DIR__ . '/IPIQuery.php';
  * Optionally provide an associative array of query parameters with values to restrict the results.
  * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
- * <pre>
- * 'roc', 'roletype'
- * </pre>
+ * 'roc', 'roletype', 'page'
  *
  * @author James McCarthy
  * @author David Meredith
  */
-class GetNGIContacts implements IPIQuery {
+class GetNGIContacts implements IPIQuery, IPIQueryPageable {
 
     protected $query;
     protected $validParams;
@@ -33,17 +34,29 @@ class GetNGIContacts implements IPIQuery {
     private $roleT;
     private $ngis;
     private $baseUrl;
+    
+    private $page;  // specifies the requested page number - must be null if not paging
+    private $maxResults = 500; //default, set via setPageSize(int);
+    private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
+    private $queryBuilder2;
+    private $query2;
+    private $ngiCountTotal;
+    private $urlAuthority;
 
     /** Constructor takes entity manager to be passed to method using the
      *  query builder
      *
      * @param EntityManager $em
      * @param string $baseUrl The base url string to prefix to urls generated in the query output.
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'. 
      */
-    public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal'){
+    public function __construct($em, $baseUrl = 'https://goc.egi.eu/portal', $urlAuthority=''){
         $this->em = $em;
         $this->helpers=new Helpers();
         $this->baseUrl = $baseUrl;
+        $this->urlAuthority = $urlAuthority; 
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -56,6 +69,7 @@ class GetNGIContacts implements IPIQuery {
         $supportedQueryParams = array (
                 'roc',
                 'roletype',
+                'page'
         );
 
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
@@ -76,6 +90,20 @@ class GetNGIContacts implements IPIQuery {
         $qb	->select('n')
         ->from('NGI', 'n')
         ->orderBy('n.id', 'ASC');
+        
+        // Validate page parameter
+        if (isset($parameters['page'])) {
+            if( ((string)(int)$parameters['page'] == $parameters['page']) && (int)$parameters['page'] > 0) {
+                $this->page = (int) $parameters['page'];
+            } else {
+                echo "<error>Invalid 'page' parameter - must be a whole number greater than zero</error>";
+                die();
+            }
+        } else {
+            if($this->defaultPaging){
+                $this->page = 1;
+            }
+        }
 
         /**This is used to filter the reults at the point
          * of building the XML to only show the correct roletypes.
@@ -104,6 +132,28 @@ class GetNGIContacts implements IPIQuery {
 
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
+        
+        if($this->page != null){
+        
+            // In order to properly support paging, we need to count the
+            // total number of results that can be returned:
+        
+            //start by cloning the query
+            $this->queryBuilder2 = clone $qb;
+            //alter the clone so it only returns the count of objects
+            $this->queryBuilder2->select('count(DISTINCT n)');
+            $this->query2 = $this->queryBuilder2->getQuery();
+            //then we don't use setFirst/MaxResult on this query
+            //so all sites will be returned and counted, but without all the additional info
+        
+            // offset is zero offset (starts from zero)
+            $offset = (($this->page - 1) * $this->maxResults);
+            // sets the position of the first result to retrieve (the "offset")
+            $query->setFirstResult($offset);
+            // Sets the maximum number of results to retrieve (the "limit")
+            $query->setMaxResults($this->maxResults);
+        
+        }
 
         $this->query = $query;
         return $this->query;
@@ -114,8 +164,20 @@ class GetNGIContacts implements IPIQuery {
     * so it can later be used to create XML, Glue2 XML or JSON.
     */
     public function executeQuery(){
-    $this->ngis = $this->query->execute();
-    return $this->ngis;
+        //$this->ngis = $this->query->execute();
+        //return $this->ngis;
+        
+        // if page is not null, then either the user has specified a 'page' url param,
+        // or defaultPaging is true and this has been set to 1
+        if ($this->page != null) {
+            $this->ngis = new Paginator($this->query, $fetchJoinCollection = true);
+            $this->ngiCountTotal = $this->query2->getSingleScalarResult();
+        
+        } else {
+            $this->ngis = $this->query->execute();
+        }
+        
+        return $this->ngis;
     }
 
 
@@ -129,6 +191,20 @@ class GetNGIContacts implements IPIQuery {
         $ngis = $this->ngis;
 
         $xml = new \SimpleXMLElement ( "<results />" );
+        
+        // Calculate and add paging info
+        // if page is not null, then either the user has specified a 'page' url param,
+        // or defaultPaging is true and this has been set to 1
+        if ($this->page != null) {
+            $last = ceil($this->ngiCountTotal / $this->maxResults); // can be zero
+            $next = $this->page + 1;
+            if($last == 0){
+                $last = 1;
+            }
+        
+            $metaXml = $xml->addChild("meta");
+            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);
+        }
 
        foreach($ngis as $ngi) {
             $xmlNgi = $xml->addChild('ROC');
@@ -185,5 +261,45 @@ class GetNGIContacts implements IPIQuery {
     public function getJSON(){
         $query = $this->query;
         throw new LogicException("Not implemented yet");
+    }
+    
+    /**
+     * This query does not page by default.
+     * If set to true, the query will return the first page of results even if the
+     * the <pre>page</page> URL param is not provided.
+     *
+     * @return bool
+     */
+    public function getDefaultPaging(){
+        return $this->defaultPaging;
+    }
+    
+    /**
+     * @param boolean $pageTrueOrFalse Set if this query pages by default
+     */
+    public function setDefaultPaging($pageTrueOrFalse){
+        if(!is_bool($pageTrueOrFalse)){
+            throw new \InvalidArgumentException('Invalid pageTrueOrFalse, requried bool');
+        }
+        $this->defaultPaging = $pageTrueOrFalse;
+    }
+    
+    /**
+     * Set the default page size (100 by default if not set)
+     * @return int The page size (number of results per page)
+     */
+    public function getPageSize(){
+        return $this->maxResults;
+    }
+    
+    /**
+     * Set the size of a single page.
+     * @param int $pageSize
+     */
+    public function setPageSize($pageSize){
+        if(!is_int($pageSize)){
+            throw new \InvalidArgumentException('Invalid pageSize, required int');
+        }
+        $this->maxResults = $pageSize;
     }
 }

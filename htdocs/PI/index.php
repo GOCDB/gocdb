@@ -199,7 +199,11 @@ class PIRequest {
                 case "get_roc_contacts":
                     require_once($directory . 'GetNGIContacts.php');
                     $this->authAnyCert();
-                    $getNGIContacts = new GetNGIContacts($em, $this->baseUrl);
+                    $getNGIContacts = new GetNGIContacts($em, $this->baseUrl, $this->baseApiUrl);
+                    if($getNGIContacts instanceof IPIQueryPageable){
+                        $getNGIContacts->setDefaultPaging($this->defaultPaging);
+                        $getNGIContacts->setPageSize($this->defaultPageSize);
+                    }
                     $getNGIContacts->validateParameters($this->params);
                     $getNGIContacts->createQuery();
                     $getNGIContacts->executeQuery();
@@ -291,7 +295,11 @@ class PIRequest {
                 case "get_project_contacts":
                     require_once($directory . 'GetProjectContacts.php');
                     $this->authAnyCert();
-                    $getProjCon = new GetProjectContacts($em);
+                    $getProjCon = new GetProjectContacts($em, $this->baseApiUrl);
+                    if($getProjCon instanceof IPIQueryPageable){
+                        $getProjCon->setDefaultPaging($this->defaultPaging);
+                        $getProjCon->setPageSize($this->defaultPageSize);
+                    }
                     $getProjCon->validateParameters($this->params);
                     $getProjCon->createQuery();
                     $getProjCon->executeQuery();
@@ -300,7 +308,11 @@ class PIRequest {
                 case "get_ngi":
                     require_once($directory . 'GetNGI.php');
                     $this->authAnyCert();
-                    $getNGI = new GetNGI($em);
+                    $getNGI = new GetNGI($em, $this->baseApiUrl);
+                    if($getNGI instanceof IPIQueryPageable){
+                        $getNGI->setDefaultPaging($this->defaultPaging);
+                        $getNGI->setPageSize($this->defaultPageSize);
+                    }
                     $getNGI->validateParameters($this->params);
                     $getNGI->createQuery();
                     $getNGI->executeQuery();

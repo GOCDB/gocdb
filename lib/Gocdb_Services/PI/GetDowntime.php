@@ -21,17 +21,15 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * Optionally provide an associative array of query parameters with values to restrict the results.
  * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
- * <pre>
  * 'topentity', 'ongoing_only' , 'startdate', 'enddate', 'windowstart', 'windowend',
- * 'scope', 'scope_match', 'page', 'all_lastmonth', 'id' (where scope refers to Service scope)
+ * 'scope', 'scope_match', 'page', 'all_lastmonth', 'id' 
+ * (where scope refers to Service scope)
  *
- * Note: the following parameters are for the downtime calendar, and are not documented for PI use.
+ * Note: the following parameters are also available (added for the downtime calendar), and are not yet documented for PI use.
  * (they will work fine though)
  *
  * 'sitelist', 'servicelist', 'ngilist', 'severity', 'classification', 'production' (service production status),
  * 'monitored' (service monitored?), 'certification_status' (site cert status), 'service_type_list'
- *
- * </pre>
  *
  * @author James McCarthy
  * @author David Meredith
