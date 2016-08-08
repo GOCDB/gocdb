@@ -523,10 +523,11 @@ function getDtDataFromWeb() {
        $dt ['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] = $_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE']; // 'utc' or 'site'
     }
 
-    $dt ['IMPACTED_IDS'] = $_REQUEST ['IMPACTED_IDS'];
     if (! isset($_REQUEST ['IMPACTED_IDS'])){
         throw new Exception('Error - No endpoints or services selected, downtime must affect at least one endpoint');
     }
+    $dt ['IMPACTED_IDS'] = $_REQUEST ['IMPACTED_IDS'];
+    
 
     //Get the previous downtimes ID if we are doing an edit
     if(isset($_REQUEST['DOWNTIME_ID'])){

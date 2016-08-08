@@ -81,8 +81,8 @@ class PIRequest {
     // defaultPaging = true means that even if the 'page' URL param is
     // not specified, then the query will be paged by default (true is
     // the preference for large/production datasets).
-    private $defaultPageSize = 200;
-    private $defaultPaging = TRUE; //FALSE;
+    private $defaultPageSize = 400;
+    private $defaultPaging = true; //FALSE;
 
     public function __construct(){
         // returns the base portal URL as defined in conf file
@@ -143,7 +143,8 @@ class PIRequest {
                     $getSite->validateParameters($this->params);
                     $getSite->createQuery();
                     $getSite->executeQuery();
-                    $xml = $getSite->getXML();
+                    $getSite->setSelectedRendering("GOCDB_XML");
+                    $xml = $getSite->getRenderingOutput();
                     break;
                 case "get_site_list":
                     require_once($directory . 'GetSite.php');
@@ -151,7 +152,8 @@ class PIRequest {
                     $getSite->validateParameters($this->params);
                     $getSite->createQuery();
                     $getSite->executeQuery();
-                    $xml = $getSite->getXMLShort();
+                    $getSite->setSelectedRendering("GOCDB_XML_LIST");
+                    $xml = $getSite->getRenderingOutput();
                     break;
                 case "get_site_contacts":
                     require_once($directory . 'GetSiteContacts.php');
@@ -164,7 +166,7 @@ class PIRequest {
                     $getSiteContacts->validateParameters($this->params);
                     $getSiteContacts->createQuery();
                     $getSiteContacts->executeQuery();
-                    $xml = $getSiteContacts->getXML();
+                    $xml = $getSiteContacts->getRenderingOutput();
                     break;
                 case "get_site_security_info":
                     require_once($directory . 'GetSiteSecurityInfo.php');
@@ -178,7 +180,7 @@ class PIRequest {
                     $getSiteSecurityInfo->validateParameters($this->params);
                     $getSiteSecurityInfo->createQuery();
                     $getSiteSecurityInfo->executeQuery();
-                    $xml = $getSiteSecurityInfo->getXML();
+                    $xml = $getSiteSecurityInfo->getRenderingOutput();
                     break;
                 case "get_roc_list":
                     require_once($directory . 'GetNGIList.php');
@@ -207,7 +209,7 @@ class PIRequest {
                     $getNGIContacts->validateParameters($this->params);
                     $getNGIContacts->createQuery();
                     $getNGIContacts->executeQuery();
-                    $xml = $getNGIContacts->getXML();
+                    $xml = $getNGIContacts->getRenderingOutput(); 
                     break;
                 case "get_service":
                     require_once($directory . 'GetService.php');
@@ -219,7 +221,7 @@ class PIRequest {
                     $getSE->validateParameters($this->params);
                     $getSE->createQuery();
                     $getSE->executeQuery();
-                    $xml = $getSE->getXML();
+                    $xml = $getSE->getRenderingOutput(); 
                     break;
                 case "get_service_endpoint":
                     require_once($directory . 'GetService.php');
@@ -231,7 +233,7 @@ class PIRequest {
                     $getSE->validateParameters($this->params);
                     $getSE->createQuery();
                     $getSE->executeQuery();
-                    $xml = $getSE->getXML();
+                    $xml = $getSE->getRenderingOutput();
                     break;
                 case "get_service_types":
                     require_once($directory . 'GetServiceTypes.php');
@@ -251,9 +253,9 @@ class PIRequest {
                     $getDTTBroadcast->validateParameters($this->params);
                     $getDTTBroadcast->createQuery();
                     $getDTTBroadcast->executeQuery();
-                    $xml = $getDTTBroadcast->getXML();
+                    $xml = $getDTTBroadcast->getRenderingOutput(); 
                     break;
-                case "get_downtime":
+                case "get_downtime": 
                     //require_once($directory . 'GetDowntimeFallback.php');
                     require_once($directory . 'GetDowntime.php');
                     $getDowntime = new GetDowntime($em, false, $this->baseUrl, $this->baseApiUrl);
@@ -264,7 +266,7 @@ class PIRequest {
                     $getDowntime->validateParameters($this->params);
                     $getDowntime->createQuery();
                     $getDowntime->executeQuery();
-                    $xml = $getDowntime->getXML();
+                    $xml = $getDowntime->getRenderingOutput();  
                     break;
                 case "get_downtime_nested_services":
                     //require_once($directory . 'GetDowntimeFallback.php');
@@ -277,8 +279,8 @@ class PIRequest {
                     $getDowntime->validateParameters($this->params);
                     $getDowntime->createQuery();
                     $getDowntime->executeQuery();
-                    $xml = $getDowntime->getXML();
-                    break;
+                    $xml = $getDowntime->getRenderingOutput(); 
+                    break; 
                 case "get_user":
                     require_once($directory . 'GetUser.php');
                     $this->authAnyCert();
@@ -290,7 +292,7 @@ class PIRequest {
                     $getUser->validateParameters($this->params);
                     $getUser->createQuery();
                     $getUser->executeQuery();
-                    $xml = $getUser->getXML();
+                    $xml = $getUser->getRenderingOutput();
                     break;
                 case "get_project_contacts":
                     require_once($directory . 'GetProjectContacts.php');
@@ -303,7 +305,7 @@ class PIRequest {
                     $getProjCon->validateParameters($this->params);
                     $getProjCon->createQuery();
                     $getProjCon->executeQuery();
-                    $xml = $getProjCon->getXML();
+                    $xml = $getProjCon->getRenderingOutput(); 
                     break;
                 case "get_ngi":
                     require_once($directory . 'GetNGI.php');
@@ -316,7 +318,7 @@ class PIRequest {
                     $getNGI->validateParameters($this->params);
                     $getNGI->createQuery();
                     $getNGI->executeQuery();
-                    $xml = $getNGI->getXML();
+                    $xml = $getNGI->getRenderingOutput(); 
                     break;
                 case "get_service_group" :
                     require_once($directory . 'GetServiceGroup.php');
@@ -329,7 +331,7 @@ class PIRequest {
                     $getServiceGroup->validateParameters($this->params);
                     $getServiceGroup->createQuery();
                     $getServiceGroup->executeQuery();
-                    $xml = $getServiceGroup->getXML();
+                    $xml = $getServiceGroup->getRenderingOutput(); 
                     break;
                 case "get_service_group_role" :
                     require_once($directory . 'GetServiceGroupRole.php');
@@ -342,7 +344,7 @@ class PIRequest {
                     $getServiceGroupRole->validateParameters($this->params);
                     $getServiceGroupRole->createQuery();
                     $getServiceGroupRole->executeQuery();
-                    $xml = $getServiceGroupRole->getXML();
+                    $xml = $getServiceGroupRole->getRenderingOutput();
                     break;
                 case "get_cert_status_date" :
                     require_once($directory . 'GetCertStatusDate.php');
@@ -355,7 +357,7 @@ class PIRequest {
                     $getCertStatusDate->validateParameters($this->params);
                     $getCertStatusDate->createQuery();
                     $getCertStatusDate->executeQuery();
-                    $xml = $getCertStatusDate->getXML();
+                    $xml = $getCertStatusDate->getRenderingOutput();
                     break;
                 case "get_cert_status_changes":
                     require_once($directory . 'GetCertStatusChanges.php');
@@ -368,7 +370,7 @@ class PIRequest {
                     $getCertStatusChanges->validateParameters($this->params);
                     $getCertStatusChanges->createQuery();
                     $getCertStatusChanges->executeQuery();
-                    $xml = $getCertStatusChanges->getXML();
+                    $xml = $getCertStatusChanges->getRenderingOutput();
                     break;
                 case "get_site_count_per_country":
                     require_once($directory . 'GetSiteCountPerCountry.php');

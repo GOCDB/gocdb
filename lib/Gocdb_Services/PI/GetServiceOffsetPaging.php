@@ -21,23 +21,26 @@ require_once __DIR__ . '/IPIQuery.php';
 require_once __DIR__ . '/IPIQueryPageable.php';
 require_once __DIR__ . '/IPIQueryRenderable.php';
 
-//use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\ORM\Tools\Pagination\Paginator;
 
 
 /**
- * Return an XML document that encodes the services with optional cursor-based paging.
+ * Return an XML document that encodes the services.
  * Optionally provide an associative array of query parameters with values to restrict the results.
  * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
+ * <pre>
  * 'hostname', 'sitename', 'roc', 'country', 'service_type', 'monitored',
- * 'scope', 'scope_match', 'properties', 'next_cursor', 'prev_cursor'  
+ * 'scope', 'scope_match', 'properties', 'page' 
  * (where scope refers to Service scope)
- *
+ * </pre>
+ * @deprecated - Do not use, use GetService.php which implements cursor paging instead. 
+ * 
  * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author James McCarthy
  * @author Tom Byrne
  */
-class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
+class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
     protected $query;
     protected $validParams;
@@ -45,26 +48,17 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     protected $queryBuilder;
     private $selectedRenderingStyle = 'GOCDB_XML';
     private $helpers;
-    private $serviceEndpoints; // A Doctrine Paginator or ArrayCollection 
+    private $serviceEndpoints;
     private $renderMultipleEndpoints;
     private $portalContextUrl;
+    private $urlAuthority; 
 
-    //private $page;  // specifies the requested page number - must be null if not paging
-    //private $seCountTotal;
-    //private $queryBuilder2;
-    //private $query2;
-    private $maxResults = 500; //default page size, set via setPageSize(int);
+    private $page;  // specifies the requested page number - must be null if not paging
+    private $maxResults = 500; //default, set via setPageSize(int);
+    private $seCountTotal;
+    private $queryBuilder2;
+    private $query2;
     private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
-    private $isPaging = false;   // is true if default paging is t OR if a cursor URL param has been specified for paging.  
-   
-    // following members are needed for paging 
-    private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
-    private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter  
-    private $direction;       // ASC or DESC depending on if this query pages forward or back 
-    private $resultSetSize=0; // used to build the <count> HATEOAS link 
-    private $lastCursorId=null;  // Used to build the <next> page HATEOAS link  
-    private $firstCursorId=null; // Used to build the <prev> page HATEOAS link 
-    private $urlAuthority;  
 
     /**
      * Constructor takes entity manager which is then used by the query builder.
@@ -102,8 +96,7 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             'scope',
             'scope_match',
             'extensions',
-            'next_cursor', 
-            'prev_cursor'
+            'page'
         );
 
         $this->helpers->validateParams($supportedQueryParams, $parameters);
@@ -117,18 +110,7 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $parameters = $this->validParams;
         $binds = array();
         $bc = -1;
-        
-        $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters);
-        $this->prev_cursor = $cursorParams['prev_cursor'];
-        $this->next_cursor = $cursorParams['next_cursor'];
-        $this->isPaging = $cursorParams['isPaging'];
-        
-        // if we are enforcing paging, force isPaging to true
-        if($this->defaultPaging){
-            $this->isPaging = true;
-        }
 
-        
         $qb = $this->em->createQueryBuilder();
 
         //Initialize base query
@@ -144,57 +126,25 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
                 ->leftjoin('s.country', 'c')
                 ->leftjoin('s.ngi', 'n')
                 ->leftjoin('se.serviceType', 'st')
-                ->andWhere($qb->expr()->neq('cs.name', '?' . ++$bc)) // certstatus is not 'Closed'
-                ; 
+                ->andWhere($qb->expr()->neq('cs.name', '?' . ++$bc))
+                ->orderBy('se.id', 'ASC');  // oldest first 
 
-        //Add 'Closed' certStatus parameter to binds
-        $binds[] = array($bc, 'Closed');
-        
-        
-        // Order by ASC (oldest first: 1, 2, 3, 4)
-        $this->direction = 'ASC'; 
-                
-        // Cursor where clause: 
-        // Select rows *FROM* the current cursor position  
-        // by selecting rows either ABOVE or BELOW the current cursor position
-        if($this->isPaging){ 
-            if($this->next_cursor !== null){
-                // MOVING DOWN/FORWARD:  
-                // 'select ... where id > next_cursor(50) order by ASC' =>
-                // 51 
-                // 52
-                // 53
-                $qb->andWhere('se.id  > ?'.++$bc);
-                $binds[] = array($bc, $this->next_cursor);
-                $this->direction = 'ASC'; 
-                $this->prev_cursor = null;
-            } 
-            else if($this->prev_cursor !== null){
-                // MOVING UP/BACKWARD: 
-                // 'select ... where id < prev_cursor(50) order by DESC' => 
-                // 49
-                // 48
-                // 47
-                // When rendering results, we need to revese the ordering 
-                // to be consistent with ASC.   
-                $qb->andWhere('se.id  < ?'.++$bc);
-                $binds[] = array($bc, $this->prev_cursor);
-                $this->direction = 'DESC'; 
-                $this->next_cursor = null;
+        // Validate page parameter
+        if (isset($parameters['page'])) {
+            if( ((string)(int)$parameters['page'] == $parameters['page']) && (int)$parameters['page'] > 0) {
+                $this->page = (int) $parameters['page'];
             } else {
-                // no cursor specified
-                $this->direction = 'ASC';
-                $this->next_cursor = null;
-                $this->prev_cursor = null;
+                echo "<error>Invalid 'page' parameter - must be a whole number greater than zero</error>";
+                die();
             }
-            // sets the position of the first result to retrieve (the "offset" - 0 by default)
-            //$qb->setFirstResult(0);
-            // Sets the maximum number of results to retrieve (the "limit")
-            $qb->setMaxResults($this->maxResults);
+        } else {
+            if($this->defaultPaging){
+                $this->page = 1;
+            }
         }
-        
-        $qb->orderBy('se.id', $this->direction);   
-            
+
+        //Add closed parameter to binds
+        $binds[] = array($bc, 'Closed');
 
         /* Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.
@@ -207,6 +157,7 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         foreach ((array) $parameterBuilder->getBinds() as $bind) {
             $binds[] = $bind;
         }
+
 
 
         //Run ScopeQueryBuilder regardless of if scope is set.
@@ -255,6 +206,24 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
 
+        if($this->page != null){
+            // In order to properly support paging, we need to count the
+            // total number of results that can be returned:
+            //start by cloning the query
+            $this->queryBuilder2 = clone $qb;
+            //alter the clone so it only returns the count of SE objects
+            $this->queryBuilder2->select('count(DISTINCT se)');
+            $this->query2 = $this->queryBuilder2->getQuery();
+            //then we don't use setFirst/MaxResult on this query
+            //so all SE's will be returned and counted, but without all the additional info
+            // offset is zero offset (starts from zero)
+            $offset = (($this->page - 1) * $this->maxResults);
+            // sets the position of the first result to retrieve (the "offset")
+            $query->setFirstResult($offset);
+            // Sets the maximum number of results to retrieve (the "limit")
+            $query->setMaxResults($this->maxResults);
+        }
+
         $this->queryBuilder = $qb;
         $this->query = $query;
         return $this->query;
@@ -269,15 +238,23 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
      * so it can later be used to create XML, Glue2 XML or JSON.
      */
     public function executeQuery() {
-        $cursorPageResults = $this->helpers->cursorPagingExecutorHelper(
-                $this->isPaging, $this->query, $this->next_cursor, $this->prev_cursor, $this->direction);
-        $this->serviceEndpoints = $cursorPageResults['resultSet']; 
-        $this->resultSetSize = $cursorPageResults['resultSetSize']; 
-        $this->firstCursorId = $cursorPageResults['firstCursorId']; 
-        $this->lastCursorId = $cursorPageResults['lastCursorId']; 
-        return $this->serviceEndpoints; 
+        //$this->serviceEndpoints = $this->query->execute();
+        //return $this->serviceEndpoints;
+
+        // if page is not null, then either the user has specified a 'page' url param, 
+        // or defaultPaging is true and this has been set to 1 
+        if ($this->page != null) {
+            $this->serviceEndpoints = new Paginator($this->query, $fetchJoinCollection = true);
+            //put the total number of SE's into $this->seCountTotal
+            $this->seCountTotal = $this->query2->getSingleScalarResult();
+
+        } else {
+            $this->serviceEndpoints = $this->query->execute();
+        }
+
+        return $this->serviceEndpoints;
     }
-    
+
     
     /**
      * Gets the current or default rendering output style.
@@ -320,7 +297,7 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         return $array;
     }
     
-
+    
     /** Returns proprietary GocDB rendering of the service endpoint data
      *  in an XML String
      * @return String
@@ -330,11 +307,23 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $xml = new \SimpleXMLElement("<results />");
 
         // Calculate and add paging info
-        if ($this->isPaging) {
+        // if page is not null, then either the user has specified a 'page' url param, 
+        // or defaultPaging is true and this has been set to 1 
+        if ($this->page != null) {
+            $last = ceil($this->seCountTotal / $this->maxResults);
+            $next = $this->page + 1;
+            if($last == 0){
+                $last = 1;
+            }
+
+            //$xml->addAttribute("page", $this->page);
+            //if ($next <= $last) {
+            //    $xml->addAttribute("next", $next);
+            //}
+            //$xml->addAttribute("last", $last);
+
             $metaXml = $xml->addChild("meta");
-            $helpers->addHateoasCursorPagingLinksToMetaElem($metaXml, $this->firstCursorId, $this->lastCursorId, $this->urlAuthority); 
-            $metaXml->addChild("count", $this->resultSetSize); 
-            $metaXml->addChild("max_page_size", $this->maxResults); 
+            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);   
         }
 
 
@@ -382,7 +371,6 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             $helpers->addIfNotEmpty($xmlSe, "COUNTRY_NAME", $site->getCountry()->getName());
             $helpers->addIfNotEmpty($xmlSe, "COUNTRY_CODE", $site->getCountry()->getCode());
             $helpers->addIfNotEmpty($xmlSe, "ROC_NAME", $site->getNGI()->getName());
-    //$helpers->addIfNotEmpty($xmlSe, "siteCertStatus", $site->getCertificationStatus()->getName() );
             $xmlSe->addChild("URL", xssafe($se->getUrl()));
 
             if ($this->renderMultipleEndpoints) {
@@ -480,19 +468,21 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         }
         $this->maxResults = $pageSize;
     }
-    
+
     /**
-     * See inteface doc.
+     * Return the number of results returned in the current page of results ('count').
+     * Format of returned array is:
+     * <code>
+     * $array = (
+     *   'count' => int or null,
+     * </code>
      * {@inheritDoc}
      * @see \org\gocdb\services\IPIQueryPageable::getPostExecutionPageInfo()
      */
     public function getPostExecutionPageInfo(){
         $pageInfo = array();
-        $pageInfo['prev_cursor'] = $this->firstCursorId;
-        $pageInfo['next_cursor'] = $this->lastCursorId;
-        $pageInfo['count'] = $this->resultSetSize;
+        $pageInfo['count'] = $this->seCountTotal;
         return $pageInfo;
     }
-
 
 }

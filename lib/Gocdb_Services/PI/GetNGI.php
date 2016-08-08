@@ -3,7 +3,14 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at: 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * Unless required by applicable law or agreed to in writing, 
+ * software distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
 require_once __DIR__ . '/QueryBuilders/ExtensionsParser.php';
@@ -12,34 +19,41 @@ require_once __DIR__ . '/QueryBuilders/ParameterBuilder.php';
 require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
 require_once __DIR__ . '/IPIQueryPageable.php';
+require_once __DIR__ . '/IPIQueryRenderable.php';
 
-use Doctrine\ORM\Tools\Pagination\Paginator;
+//use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
- * Return an XML document that encodes the NGIs selected from the DB.
+ * Return an XML document that encodes the NGIs selected from the DB with optional cursor paging.
  * Optionally provide an associative array of query parameters with values to restrict the results.
  * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
- * 'roc', 'scope', 'scope_match', 'page' (where scope refers to NGI scope)
+ * 'roc', 'scope', 'scope_match', 'next_cursor', 'prev_cursor' (where scope refers to NGI scope)
  *
+ * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author James McCarthy
- * @author David Meredith
  */
-class GetNGI implements IPIQuery, IPIQueryPageable {
+class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
     protected $query;
     protected $validParams;
     protected $em;
+    private $selectedRenderingStyle = 'GOCDB_XML'; 
     private $helpers;
     private $ngis;
-    
-    private $page;  // specifies the requested page number - must be null if not paging
-    private $maxResults = 500; //default, set via setPageSize(int);
-    private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
-    private $queryBuilder2;
-    private $query2;
-    private $ngiCountTotal;
     private $urlAuthority;
+    
+    private $maxResults = 500; //default page size, set via setPageSize(int);
+    private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
+    private $isPaging = false;   // is true if default paging is t OR if a cursor URL param has been specified for paging.
+     
+    // following members are needed for paging
+    private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
+    private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter
+    private $direction;       // ASC or DESC depending on if this query pages forward or back
+    private $resultSetSize=0; // used to build the <count> HATEOAS link
+    private $lastCursorId=null;  // Used to build the <next> page HATEOAS link
+    private $firstCursorId=null; // Used to build the <prev> page HATEOAS link
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
@@ -66,7 +80,8 @@ class GetNGI implements IPIQuery, IPIQueryPageable {
         'roc',
         'scope',
         'scope_match', 
-        'page'
+        'next_cursor', 
+        'prev_cursor'
     );
 
     $this->helpers->validateParams($supportedQueryParams, $parameters);
@@ -80,6 +95,17 @@ class GetNGI implements IPIQuery, IPIQueryPageable {
         $parameters = $this->validParams;
         $binds = array();
         $bc = -1;
+        
+        $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters);
+        $this->prev_cursor = $cursorParams['prev_cursor'];
+        $this->next_cursor = $cursorParams['next_cursor'];
+        $this->isPaging = $cursorParams['isPaging'];
+        
+        // if we are enforcing paging, force isPaging to true
+        if($this->defaultPaging){
+            $this->isPaging = true;
+        }
+        
 
         $qb = $this->em->createQueryBuilder();
 
@@ -87,21 +113,41 @@ class GetNGI implements IPIQuery, IPIQueryPageable {
         $qb->select('n')
             ->from('NGI', 'n')
             ->leftJoin('n.scopes', 'sc')
-            ->orderBy('n.id', 'ASC');
+            //->orderBy('n.id', 'ASC')
+            ;
 
-        // Validate page parameter
-        if (isset($parameters['page'])) {
-            if( ((string)(int)$parameters['page'] == $parameters['page']) && (int)$parameters['page'] > 0) {
-                $this->page = (int) $parameters['page'];
+        // Order by ASC (oldest first: 1, 2, 3, 4)
+        $this->direction = 'ASC';
+        
+        // Cursor where clause:
+        // Select rows *FROM* the current cursor position
+        // by selecting rows either ABOVE or BELOW the current cursor position
+        if($this->isPaging){
+            if($this->next_cursor !== null){
+                $qb->andWhere('n.id  > ?'.++$bc);
+                $binds[] = array($bc, $this->next_cursor);
+                $this->direction = 'ASC';
+                $this->prev_cursor = null;
+            }
+            else if($this->prev_cursor !== null){
+                $qb->andWhere('n.id  < ?'.++$bc);
+                $binds[] = array($bc, $this->prev_cursor);
+                $this->direction = 'DESC';
+                $this->next_cursor = null;
             } else {
-                echo "<error>Invalid 'page' parameter - must be a whole number greater than zero</error>";
-                die();
+                // no cursor specified
+                $this->direction = 'ASC';
+                $this->next_cursor = null;
+                $this->prev_cursor = null;
             }
-        } else {
-            if($this->defaultPaging){
-                $this->page = 1;
-            }
+            // sets the position of the first result to retrieve (the "offset" - 0 by default)
+            //$qb->setFirstResult(0);
+            // Sets the maximum number of results to retrieve (the "limit")
+            $qb->setMaxResults($this->maxResults);
         }
+        
+        $qb->orderBy('n.id', $this->direction);
+            
         
         /* Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.
@@ -138,28 +184,6 @@ class GetNGI implements IPIQuery, IPIQueryPageable {
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
         
-        if($this->page != null){
-        
-            // In order to properly support paging, we need to count the
-            // total number of results that can be returned:
-        
-            //start by cloning the query
-            $this->queryBuilder2 = clone $qb;
-            //alter the clone so it only returns the count of objects
-            $this->queryBuilder2->select('count(DISTINCT n)');
-            $this->query2 = $this->queryBuilder2->getQuery();
-            //then we don't use setFirst/MaxResult on this query
-            //so all sites will be returned and counted, but without all the additional info
-        
-            // offset is zero offset (starts from zero)
-            $offset = (($this->page - 1) * $this->maxResults);
-            // sets the position of the first result to retrieve (the "offset")
-            $query->setFirstResult($offset);
-            // Sets the maximum number of results to retrieve (the "limit")
-            $query->setMaxResults($this->maxResults);
-        
-        }
-
         $this->query = $query;
         return $this->query;
     }
@@ -169,48 +193,86 @@ class GetNGI implements IPIQuery, IPIQueryPageable {
      * so it can later be used to create XML, Glue2 XML or JSON.
      */
     public function executeQuery() {
-        //$this->ngis = $this->query->execute();
-        //return $this->ngis;
+        $cursorPageResults = $this->helpers->cursorPagingExecutorHelper(
+                $this->isPaging, $this->query, $this->next_cursor, $this->prev_cursor, $this->direction);
+        $this->ngis = $cursorPageResults['resultSet']; 
+        $this->resultSetSize = $cursorPageResults['resultSetSize']; 
+        $this->firstCursorId = $cursorPageResults['firstCursorId']; 
+        $this->lastCursorId = $cursorPageResults['lastCursorId']; 
         
-        // if page is not null, then either the user has specified a 'page' url param,
-        // or defaultPaging is true and this has been set to 1
-        if ($this->page != null) {
-            $this->ngis = new Paginator($this->query, $fetchJoinCollection = true);
-            $this->ngiCountTotal = $this->query2->getSingleScalarResult();
-        
-        } else {
-            $this->ngis = $this->query->execute();
-        }
-        
-        return $this->ngis;
+        return $this->ngis; 
     }
+    
+    
+    /**
+     * Gets the current or default rendering output style.
+     */
+    public function getSelectedRendering(){
+        return $this->$selectedRenderingStyle; 
+    }
+    
+    /**
+     * Set the required rendering output style.
+     * @param string $renderingStyle
+     * @throws \InvalidArgumentException If the requested rendering style is not 'GOCDB_XML' or 'GLUE2_XML'
+     */
+    public function setSelectedRendering($renderingStyle){
+        if($renderingStyle != 'GOCDB_XML' || $renderingStyle != 'GLUE2_XML'){
+            throw new \InvalidArgumentException('Requested rendering is not supported');
+        }
+        $this->selectedRenderingStyle = $renderingStyle; 
+    }
+    
+    /**
+     * @return string Query output as a string according to the current rendering style.
+     */
+    public function getRenderingOutput(){
+        if($this->selectedRenderingStyle == 'GOCDB_XML'){
+            return $this->getXml(); 
+        } else if($this->selectedRenderingStyle == 'GLUE2_XML'){
+            return $this->getGlue2XML(); 
+        } else {
+            throw new \LogicException('Invalid rendering style internal state');
+        }
+    }
+    
+    /**
+     * Returns array with 'GOCDB_XML' and 'GLUE2_XML' values. 
+     * {@inheritDoc}
+     * @see \org\gocdb\services\IPIQueryRenderable::getSupportedRenderings()
+     */
+    public function getSupportedRenderings(){
+        $array = array(); 
+        $array[] = ('GOCDB_XML'); 
+        $array[] = ('GLUE2_XML'); 
+        return $array;
+    }
+    
+    
+    
 
-    /** Returns proprietary GocDB rendering of the NGI data
+    /** 
+     * Returns proprietary GocDB rendering of the NGI data
      *  in an XML String
      * @return String
      */
-    public function getXML() {
+    private function getXml() {
         $helpers = $this->helpers;
         $ngis = $this->ngis;
 
         $xml = new \SimpleXMLElement("<results />");
         
         // Calculate and add paging info
-        // if page is not null, then either the user has specified a 'page' url param,
-        // or defaultPaging is true and this has been set to 1
-        if ($this->page != null) {
-            $last = ceil($this->ngiCountTotal / $this->maxResults); // can be zero
-            $next = $this->page + 1;
-            if($last == 0){
-                $last = 1;
-            }
-        
+        if ($this->isPaging) {
             $metaXml = $xml->addChild("meta");
-            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);
+            $helpers->addHateoasCursorPagingLinksToMetaElem($metaXml, $this->firstCursorId, $this->lastCursorId, $this->urlAuthority);
+            $metaXml->addChild("count", $this->resultSetSize);
+            $metaXml->addChild("max_page_size", $this->maxResults);
         }
 
         foreach ($ngis as $ngi) {
             $xmlNgi = $xml->addChild('NGI');
+            $xmlNgi->addAttribute("ID", $ngi->getId()); 
             $xmlNgi->addAttribute("NAME", $ngi->getName());
             $xmlNgi->addChild("PRIMARY_KEY", $ngi->getId());
             $xmlNgi->addChild("NAME", $ngi->getName());
@@ -243,7 +305,7 @@ class GetNGI implements IPIQuery, IPIQueryPageable {
      *
      * @return String
      */
-    public function getGlue2XML() {
+    private function getGlue2XML() {
         $helpers = $this->helpers;
         $query = $this->query;
 
@@ -251,19 +313,13 @@ class GetNGI implements IPIQuery, IPIQueryPageable {
 
         $xml = new \SimpleXMLElement("<Entities />");
         
-        // Calculate and add paging info
-        // if page is not null, then either the user has specified a 'page' url param,
-        // or defaultPaging is true and this has been set to 1
-        if ($this->page != null) {
-            $last = ceil($this->ngiCountTotal / $this->maxResults); // can be zero
-            $next = $this->page + 1;
-            if($last == 0){
-                $last = 1;
-            }
-        
+        if ($this->isPaging) {
             $metaXml = $xml->addChild("meta");
-            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);
+            $helpers->addHateoasCursorPagingLinksToMetaElem($metaXml, $this->firstCursorId, $this->lastCursorId, $this->urlAuthority);
+            $metaXml->addChild("count", $this->resultSetSize);
+            $metaXml->addChild("max_page_size", $this->maxResults);
         }
+        
 
         foreach ($ngis as $ngi) {
             $xmlNgi = $xml->addChild("AdminDomain");
@@ -304,14 +360,7 @@ class GetNGI implements IPIQuery, IPIQueryPageable {
         return $xmlString;
     }
 
-    /** Not yet implemented, in future will return the NGI
-     *  data in JSON format
-     * @throws LogicException
-     */
-    public function getJSON() {
-        $query = $this->query;
-        throw new LogicException("Not implemented yet");
-    }
+    
     
     /**
      * This query does not page by default.
@@ -353,4 +402,16 @@ class GetNGI implements IPIQuery, IPIQueryPageable {
         $this->maxResults = $pageSize;
     }
 
+    /**
+     * See inteface doc.
+     * {@inheritDoc}
+     * @see \org\gocdb\services\IPIQueryPageable::getPostExecutionPageInfo()
+     */
+    public function getPostExecutionPageInfo(){
+        $pageInfo = array();
+        $pageInfo['prev_cursor'] = $this->firstCursorId;
+        $pageInfo['next_cursor'] = $this->lastCursorId;
+        $pageInfo['count'] = $this->resultSetSize;
+        return $pageInfo;
+    }
 }

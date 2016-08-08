@@ -9,11 +9,10 @@ namespace org\gocdb\services;
  *  $query->validateParameters($params);
  *  $query->createQuery();
  *  $results = $query->executeQuery();
- *  $xml = $query->getXML();
  * </code>
  *
+ * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author James McCarthy
- * @author David Meredith
  */
 interface IPIQuery {
 
@@ -37,28 +36,17 @@ interface IPIQuery {
      * <p>
      * Important: Typically the results are stored/cached in the class
      * for subsequent re-use without repeating a call to the database.
-     * This is not enforced, and different implementations may differ (refer
+     * This is not enforced, and implementations may differ (refer
      * to implementation docs).
+     * <p>
+     * Unless otherwise specified by the implementation, the returned array 
+     * is normally populated using Doctrine's HYDRATE_OBJECT. It is possible that 
+     * implementations return an array graph using HYDRATE_ARRAY.  
+     * @see http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html#query-result-formats  
      *
-     * @return DoctrineResultSet or ArrayResults
+     * @return array Either an object graph populated using HYDRATE_OBJECT or and array graph populated with HYDRATE_ARRAY 
      */
     public function executeQuery();
+    
 
-    /**
-     * Not yet implemented, will return JSON data for query results
-     * @return JSON
-     */
-    public function getJSON();
-
-    /**
-     * Returns XML of the query results
-     * @return XMLString
-     */
-    public function getXML();
-
-    /**
-     * Returns XML in Glue2 format for the query results
-     * @return XMLString
-     */
-    public function getGlue2XML();
 }

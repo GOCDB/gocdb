@@ -2,8 +2,15 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 Unless required by applicable law or agreed to in writing, software distributed under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
-*/
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
+ * you may not use this file except in compliance with the License. 
+ * You may obtain a copy of the License at: 
+ * http://www.apache.org/licenses/LICENSE-2.0 
+ * Unless required by applicable law or agreed to in writing, 
+ * software distributed under the License is distributed on an "AS IS" BASIS, 
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * See the License for the specific language governing permissions and limitations under the License.
+ */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
 require_once __DIR__ . '/QueryBuilders/ExtensionsParser.php';
 require_once __DIR__ . '/QueryBuilders/ScopeQueryBuilder.php';
@@ -11,41 +18,48 @@ require_once __DIR__ . '/QueryBuilders/ParameterBuilder.php';
 require_once __DIR__ . '/QueryBuilders/Helpers.php';
 require_once __DIR__ . '/IPIQuery.php';
 require_once __DIR__ . '/IPIQueryPageable.php';
+require_once __DIR__ . '/IPIQueryRenderable.php';
 
-use Doctrine\ORM\Tools\Pagination\Paginator;
+//use Doctrine\ORM\Tools\Pagination\Paginator;
 
 
 /**
  * PI Method that takes query parameters and returns the list of downtimes recently declared with
- * Return an XML document that encodes the downtimes selected from the DB.
+ * Return an XML document that encodes the downtimes selected from the DB. Supports optional cursor paging. 
  * Optionally provide an associative array of query parameters with values used to restrict the results.
  * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
  * <pre>
- * 'interval', 'scope', 'scope_match', 'id', 'page' 
+ * 'interval', 'scope', 'scope_match', 'id', 'next_cursor', 'prev_cursor' 
  * (where scope refers to Service scope)
  * </pre>
  *
+ * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author James McCarthy
- * @author David Meredith
  */
-class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable{
+class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
     protected $query;
     protected $validParams;
     protected $em;
+    private $selectedRenderingStyle = 'GOCDB_XML';
     private $helpers;
     private $downtimes;
     private $renderMultipleEndpoints;
     private $portalContextUrl;
+    private $urlAuthority;
 
-    private $page;  // specifies the requested page number - must be null if not paging
-    private $maxResults = 500; //default, set via setPageSize(int);
+    private $maxResults = 500; //default page size, set via setPageSize(int);
     private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
-    private $queryBuilder2;
-    private $query2;
-    private $dtCountTotal;
-    private $urlAuthority; 
+    private $isPaging = false;   // is true if default paging is t OR if a cursor URL param has been specified for paging.
+     
+    // following members are needed for paging
+    private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
+    private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter
+    private $direction;       // ASC or DESC depending on if this query pages forward or back
+    private $resultSetSize=0; // used to build the <count> HATEOAS link
+    private $lastCursorId=null;  // Used to build the <next> page HATEOAS link
+    private $firstCursorId=null; // Used to build the <prev> page HATEOAS link
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
@@ -80,7 +94,8 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable{
                 'scope',
                 'scope_match',
                 'id', 
-                'page'
+                'next_cursor', 
+                'prev_cursor'
         );
 
         $this->helpers->validateParams ( $supportedQueryParams, $parameters );
@@ -114,6 +129,16 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable{
 
         $nowMinusIntervalDays = new \DateTime();
         $nowMinusIntervalDays->sub(new \DateInterval('P'.$interval.'D'));
+        
+        $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters); 
+        $this->prev_cursor = $cursorParams['prev_cursor']; 
+        $this->next_cursor = $cursorParams['next_cursor']; 
+        $this->isPaging = $cursorParams['isPaging']; 
+        
+        // if we are enforcing paging, force isPaging to true
+        if($this->defaultPaging){
+            $this->isPaging = true;
+        }
 
         $qb = $this->em->createQueryBuilder();
 
@@ -128,25 +153,46 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable{
             ->join('s.ngi', 'n')
             ->join('s.country', 'c')
             ->andWhere($qb->expr()->gt('d.insertDate', '?'.++$bc))
-            ->orderBy('d.startDate', 'DESC');
-            //->orderBy('se.id', 'DESC');
-
-        // Validate page parameter
-        if (isset($parameters['page'])) {
-            if( ((string)(int)$parameters['page'] == $parameters['page']) && (int)$parameters['page'] > 0) {
-                $this->page = (int) $parameters['page'];
-            } else {
-                echo "<error>Invalid 'page' parameter - must be a whole number greater than zero</error>";
-                die();
-            }
-        } else {
-            if($this->defaultPaging){
-                $this->page = 1;
-            }
-        }
+            //->orderBy('d.startDate', 'DESC')
+          ;
 
         //Bind interval days
         $binds[] = array($bc,  $nowMinusIntervalDays);
+        
+        
+        // Order by ASC (oldest first: 1, 2, 3, 4)
+        $this->direction = 'ASC';
+        
+        // Cursor where clause:
+        // Select rows *FROM* the current cursor position
+        // by selecting rows either ABOVE or BELOW the current cursor position
+        if($this->isPaging){
+            if($this->next_cursor !== null){
+                $qb->andWhere('d.id  > ?'.++$bc);
+                $binds[] = array($bc, $this->next_cursor);
+                $this->direction = 'ASC';
+                $this->prev_cursor = null;
+            }
+            else if($this->prev_cursor !== null){
+                $qb->andWhere('d.id  < ?'.++$bc);
+                $binds[] = array($bc, $this->prev_cursor);
+                $this->direction = 'DESC';
+                $this->next_cursor = null;
+            } else {
+                // no cursor specified
+                $this->direction = 'ASC';
+                $this->next_cursor = null;
+                $this->prev_cursor = null;
+            }
+            // sets the position of the first result to retrieve (the "offset" - 0 by default)
+            //$qb->setFirstResult(0);
+            // Sets the maximum number of results to retrieve (the "limit")
+            $qb->setMaxResults($this->maxResults);
+        }
+        
+        $qb->orderBy('d.id', $this->direction);
+        
+        
 
         if(isset($parameters['id'])){
            $qb->andWhere($qb->expr()->eq('d.id', '?'.++$bc));
@@ -194,29 +240,6 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable{
 
         $query = $qb->getQuery();
 
-        if($this->page != null){
-
-            // In order to properly support paging, we need to count the
-            // total number of results that can be returned:
-
-            //start by cloning the query
-            $this->queryBuilder2 = clone $qb;
-            //alter the clone so it only returns the count of Site objects
-            $this->queryBuilder2->select('count(DISTINCT d)');
-            $this->query2 = $this->queryBuilder2->getQuery();
-            //then we don't use setFirst/MaxResult on this query
-            //so all SE's will be returned and counted, but without all the additional info
-
-            // offset is zero offset (starts from zero)
-            $offset = (($this->page - 1) * $this->maxResults);
-            // sets the position of the first result to retrieve (the "offset")
-            $query->setFirstResult($offset);
-            // Sets the maximum number of results to retrieve (the "limit")
-            $query->setMaxResults($this->maxResults);
-
-        }
-
-
         $this->query = $query;
         return $this->query;
     }
@@ -227,44 +250,75 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable{
      * so it can later be used to create XML, Glue2 XML or JSON.
      */
     public function executeQuery() {
-        // if page is not null, then either the user has specified a 'page' url param,
-        // or defaultPaging is true and this has been set to 1
-        if ($this->page != null) {
-            $this->downtimes = new Paginator($this->query, $fetchJoinCollection = true);
-            $this->dtCountTotal = $this->query2->getSingleScalarResult();
-
-        } else {
-            $this->downtimes = $this->query->execute();
-        }
-
+        $cursorPageResults = $this->helpers->cursorPagingExecutorHelper(
+                $this->isPaging, $this->query, $this->next_cursor, $this->prev_cursor, $this->direction);
+        $this->downtimes = $cursorPageResults['resultSet'];
+        $this->resultSetSize = $cursorPageResults['resultSetSize'];
+        $this->firstCursorId = $cursorPageResults['firstCursorId'];
+        $this->lastCursorId = $cursorPageResults['lastCursorId'];
         return $this->downtimes;
     }
 
 
+    
+    /**
+     * Gets the current or default rendering output style.
+     */
+    public function getSelectedRendering(){
+        return $this->$selectedRenderingStyle;
+    }
+    
+    /**
+     * Set the required rendering output style.
+     * @param string $renderingStyle
+     * @throws \InvalidArgumentException If the requested rendering style is not 'GOCDB_XML'
+     */
+    public function setSelectedRendering($renderingStyle){
+        if($renderingStyle != 'GOCDB_XML'){
+            throw new \InvalidArgumentException('Requested rendering is not supported');
+        }
+        $this->selectedRenderingStyle = $renderingStyle;
+    }
+    
+    /**
+     * @return string Query output as a string according to the current rendering style.
+     */
+    public function getRenderingOutput(){
+        if($this->selectedRenderingStyle == 'GOCDB_XML'){
+            return $this->getXml();
+        }  else {
+            throw new \LogicException('Invalid rendering style internal state');
+        }
+    }
+    
+    /**
+     * Returns array with 'GOCDB_XML' values.
+     * {@inheritDoc}
+     * @see \org\gocdb\services\IPIQueryRenderable::getSupportedRenderings()
+     */
+    public function getSupportedRenderings(){
+        $array = array();
+        $array[] = ('GOCDB_XML');
+        return $array;
+    }
 
 
     /** Returns proprietary GocDB rendering of the downtime data
      *  in an XML String
      * @return String
      */
-    public function getXML(){
+    private function getXML(){
         $helpers = $this->helpers;
         $query = $this->query;
 
         $xml = new \SimpleXMLElement ( "<results />" );
 
         // Calculate and add paging info
-        // if page is not null, then either the user has specified a 'page' url param,
-        // or defaultPaging is true and this has been set to 1
-        if ($this->page != null) {
-            $last = ceil($this->dtCountTotal / $this->maxResults); // can be zero 
-            $next = $this->page + 1;
-            if($last == 0){
-                $last = 1; 
-            }
-
+        if ($this->isPaging) {
             $metaXml = $xml->addChild("meta");
-            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);
+            $helpers->addHateoasCursorPagingLinksToMetaElem($metaXml, $this->firstCursorId, $this->lastCursorId, $this->urlAuthority);
+            $metaXml->addChild("count", $this->resultSetSize);
+            $metaXml->addChild("max_page_size", $this->maxResults);
         }
 
         $downtimes = $this->downtimes;
@@ -319,20 +373,6 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable{
 
     }
 
-    /** Not yet implemented, in future will return the downtime data in Glue2 XML string.
-     * @return String
-     */
-    public function getGlue2XML(){
-        throw new LogicException("Not implemented yet");
-    }
-
-    /** Not yet implemented, in future will return the downtime
-     *  data in JSON format
-     * @throws LogicException
-     */
-    public function getJSON(){
-        throw new LogicException("Not implemented yet");
-    }
 
     /**
      * Choose to render the multiple endpoints of a service (or not)
@@ -381,6 +421,19 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable{
             throw new \InvalidArgumentException('Invalid pageSize, required int');
         }
         $this->maxResults = $pageSize;
+    }
+    
+    /**
+     * See inteface doc.
+     * {@inheritDoc}
+     * @see \org\gocdb\services\IPIQueryPageable::getPostExecutionPageInfo()
+     */
+    public function getPostExecutionPageInfo(){
+        $pageInfo = array();
+        $pageInfo['prev_cursor'] = $this->firstCursorId;
+        $pageInfo['next_cursor'] = $this->lastCursorId;
+        $pageInfo['count'] = $this->resultSetSize;
+        return $pageInfo;
     }
 
 }
