@@ -188,7 +188,7 @@ class PIRequest {
                     $getNGIList->validateParameters($this->params);
                     $getNGIList->createQuery();
                     $getNGIList->executeQuery();
-                    $xml = $getNGIList->getXML();
+                    $xml = $getNGIList->getRenderingOutput();
                     break;
                 case "get_subgrid_list":
                     require_once($directory . 'GetSubGridList.php');
@@ -196,7 +196,7 @@ class PIRequest {
                     $getSubGrid->validateParameters($this->params);
                     $getSubGrid->createQuery();
                     $getSubGrid->executeQuery();
-                    $xml = $getSubGrid->getXML();
+                    $xml = $getSubGrid->getRenderingOutput();
                     break;
                 case "get_roc_contacts":
                     require_once($directory . 'GetNGIContacts.php');
@@ -241,7 +241,7 @@ class PIRequest {
                     $getST->validateParameters($this->params);
                     $getST->createQuery();
                     $getST->executeQuery();
-                    $xml = $getST->getXML();
+                    $xml = $getST->getRenderingOutput();
                     break;
                 case "get_downtime_to_broadcast":
                     require_once($directory . 'GetDowntimesToBroadcast.php');
@@ -378,7 +378,7 @@ class PIRequest {
                     $GetSiteCountPerCountry->validateParameters($this->params);
                     $GetSiteCountPerCountry->createQuery();
                     $GetSiteCountPerCountry->executeQuery();
-                    $xml = $GetSiteCountPerCountry->getXML();
+                    $xml = $GetSiteCountPerCountry->getRenderingOutput();
                     break;
                 //case "get_role_action_mappings":
                 default:
