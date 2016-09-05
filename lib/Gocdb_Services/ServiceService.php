@@ -1236,26 +1236,15 @@ class ServiceService extends AbstractEntityService {
      * @param \User $user
      * @param array $propArr
      */
-    public function deleteEndpointProperties(\User $user, array $propArr) {
+    public function deleteEndpointProperties(\Service $service, \User $user, array $propArr) {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
 
-        /**
-        * TODO:refactor codebase so that this function takes $service as a variable,
-        * like all the other extension properties functions. For now we iterate
-        * over all props (as this maintains the functional equivalance - there
-        * is an outside chance that somthing could be feeding this properties
-        * from multiple services)
-        */
-        foreach ( $propArr as $prop ) {
-            $endpoint = $prop->getParentEndpoint ();
-            // check user has permissions over the service associated with the endpoint
-            $service = $endpoint->getService ();
-            $this->validateAddEditDeleteActions ( $user, $service );
-        }
+        //Check the user has the rquisite permissions
+        $this->validateAddEditDeleteActions ($user, $service);
 
         // Carry out the change
-        $this->deleteEndpointPropertiesLogic($propArr);
+        $this->deleteEndpointPropertiesLogic($service, $propArr);
     }
 
     /**
@@ -1267,7 +1256,7 @@ class ServiceService extends AbstractEntityService {
      * @param \User $user
      * @param array $propArr
      */
-    protected function deleteEndpointPropertiesLogic(array $propArr) {
+    protected function deleteEndpointPropertiesLogic(\Service $service, array $propArr) {
         $this->em->getConnection ()->beginTransaction ();
 
         try {
@@ -1278,6 +1267,13 @@ class ServiceService extends AbstractEntityService {
                 if ($endpoint == null) {
                     $id = $prop->getId ();
                     throw new \Exception ( "Property {$id} does not have a parent endpoint" );
+                }
+
+                if ($endpoint->getService() != $service) {
+                    $id = $prop->getId ();
+                    throw new \Exception (
+                        "Property {$id} does not belong to an endpoint of the specified service"
+                    );
                 }
 
                 // Endoint is the owning side so remove elements from endpoint.

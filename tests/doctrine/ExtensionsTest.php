@@ -451,7 +451,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $roleActionAuthService->setEntityManager($this->em);
     $serviceService->setRoleActionAuthorisationService($roleActionAuthService);
 
-    $serviceService->deleteEndpointProperties($adminUser, array($prop1));
+    $serviceService->deleteEndpointProperties($service, $adminUser, array($prop1));
 
     //Check that the service endpoint now only has 2 properties
     $properties = $endpoint->getEndpointProperties();

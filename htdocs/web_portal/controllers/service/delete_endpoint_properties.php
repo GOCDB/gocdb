@@ -57,7 +57,7 @@ function submit(array $propertyArray, \Service $service, \EndpointLocation $endp
 
     //remove property
     try {
-        $serv->deleteEndpointProperties($user, $propertyArray);
+        $serv->deleteEndpointProperties($service, $user, $propertyArray);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
