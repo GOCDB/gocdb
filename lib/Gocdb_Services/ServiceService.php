@@ -1027,16 +1027,6 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * TODO
-     * Before adding or editing a key pair check that the keyname is not a reserved keyname
-     *
-     * @param String $keyname
-     */
-    private function checkNotReserved(\User $user, \Service $service, $keyname) {
-        // TODO Function: This function is called but not yet filled out with an action
-    }
-
-    /**
      * Adds key value pairs to a service
      *
      * @param \Service $service
@@ -1076,8 +1066,6 @@ class ServiceService extends AbstractEntityService {
                         }
                     }
                 }
-
-                $this->checkNotReserved ( $user, $service, $key );
 
                 // validate key value
                 $validateArray ['NAME'] = $key;
@@ -1141,8 +1129,6 @@ class ServiceService extends AbstractEntityService {
                         }
                     }
                 }
-
-                $this->checkNotReserved ( $user, $endpoint->getService (), $key );
 
                 // validate key value
                 $validateArray ['NAME'] = $key;
@@ -1263,7 +1249,6 @@ class ServiceService extends AbstractEntityService {
         $this->validateAddEditDeleteActions ( $user, $service );
         $keyname = $newValues ['SERVICEPROPERTIES'] ['NAME'];
         $keyvalue = $newValues ['SERVICEPROPERTIES'] ['VALUE'];
-        $this->checkNotReserved ( $user, $service, $keyname );
 
         $this->em->getConnection ()->beginTransaction ();
         try {
@@ -1305,7 +1290,6 @@ class ServiceService extends AbstractEntityService {
         $this->validate ( $newValues ['ENDPOINTPROPERTIES'], 'endpointproperty' );
         $keyname = $newValues ['ENDPOINTPROPERTIES'] ['NAME'];
         $keyvalue = $newValues ['ENDPOINTPROPERTIES'] ['VALUE'];
-        $this->checkNotReserved ( $user, $service, $keyname );
 
         $this->em->getConnection ()->beginTransaction ();
         try {
