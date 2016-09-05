@@ -1000,7 +1000,7 @@ class ServiceService extends AbstractEntityService {
 
     /**
      *
-     * @return a single service property or null if not foud
+     * @return a single service endpoint property or null if not foud
      */
     public function getEndpointProperty($id) {
         $dql = "SELECT p FROM EndpointProperty p WHERE p.id = :ID";
@@ -1087,7 +1087,6 @@ class ServiceService extends AbstractEntityService {
                 $serviceProperty = new \ServiceProperty ();
                 $serviceProperty->setKeyName ( $key );
                 $serviceProperty->setKeyValue ( $value );
-                // $service = $this->em->find("Service", $serviceID);
                 $service->addServicePropertyDoJoin ( $serviceProperty );
                 $this->em->persist ( $serviceProperty );
             }
@@ -1220,7 +1219,7 @@ class ServiceService extends AbstractEntityService {
         try {
             foreach ( $propArr as $prop ) {
 
-                // check endpoint property has an parent endpoint
+                // check endpoint property has a parent endpoint
                 $endpoint = $prop->getParentEndpoint ();
                 if ($endpoint == null) {
                     $id = $prop->getId ();
@@ -1231,7 +1230,7 @@ class ServiceService extends AbstractEntityService {
                 $service = $endpoint->getService ();
                 $this->validateAddEditDeleteActions ( $user, $service );
 
-                // EndointLocation is the owning side so remove elements from endpoint.
+                // Endoint is the owning side so remove elements from endpoint.
                 $endpoint->getEndpointProperties ()->removeElement ( $prop );
                 // Once relationship is removed delete the actual element
                 $this->em->remove ( $prop );
@@ -1315,7 +1314,7 @@ class ServiceService extends AbstractEntityService {
                 throw new \Exception ( "Property {$id} does not belong to the specified service endpoint" );
             }
 
-            // Set the service propertys new member variables
+            // Set the endpoints propertys new member variables
             $prop->setKeyName ( $keyname );
             $prop->setKeyValue ( $keyvalue );
 

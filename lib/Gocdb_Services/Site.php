@@ -1008,7 +1008,6 @@ class Site extends AbstractEntityService{
                 $property = new \SiteProperty();
                 $property->setKeyName($key);
                 $property->setKeyValue($value);
-                //$service = $this->em->find("Service", $serviceID);
                 $site->addSitePropertyDoJoin($property);
                 $this->em->persist($property);
 
@@ -1047,7 +1046,7 @@ class Site extends AbstractEntityService{
                     $id = $prop->getId();
                     throw new \Exception("Property {$id} does not belong to the specified site");
                 }
-                // Service is the owning side so remove elements from service.
+                // Site is the owning side so remove elements from the site
                 $site->getSiteProperties()->removeElement($prop);
                 // Once relationship is removed delete the actual element
                 $this->em->remove($prop);
@@ -1083,8 +1082,6 @@ class Site extends AbstractEntityService{
 
         $keyname=$newValues ['SITEPROPERTIES'] ['NAME'];
         $keyvalue=$newValues ['SITEPROPERTIES'] ['VALUE'];
-
-        //$this->checkNotReserved($user, $site, $keyname);
 
         $this->em->getConnection()->beginTransaction();
 
