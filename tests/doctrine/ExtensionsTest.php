@@ -405,7 +405,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $site = TestUtil::createSampleSite("TestSite");
     $endpoint = TestUtil::createSampleEndpointLocation();
 
-    //Join service to site, and site to NGI.
+    //Join Service endpoint to site, service to site, and site to NGI.
     $ngi->addSiteDoJoin($site);
     $site->addServiceDoJoin($service);
     $service->addEndpointLocationDoJoin($endpoint);
@@ -451,19 +451,18 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $roleActionAuthService->setEntityManager($this->em);
     $serviceService->setRoleActionAuthorisationService($roleActionAuthService);
 
-    //$serviceService->deleteEndpointProperty($adminUser, $prop1);
-    $serviceService->deleteEndpointProperties($adminUser, array($prop1));
+    $serviceService->deleteEndpointProperties($service, $adminUser, array($prop1));
 
-    //Check that the service now only has 2 properties
+    //Check that the service endpoint now only has 2 properties
     $properties = $endpoint->getEndpointProperties();
     $this->assertTrue(count($properties) == 2);
     $this->em->flush();
 
     //Print names of properties
-    foreach ($properties as $prop) {
-        print($prop->getKeyName() . "-");
-        print($prop->getKeyValue() . "\n");
-    }
+    //foreach ($properties as $prop) {
+    //    print($prop->getKeyName() . "-");
+    //    print($prop->getKeyValue() . "\n");
+    //}
 
     //Check this via the database
     $con = $this->getConnection();

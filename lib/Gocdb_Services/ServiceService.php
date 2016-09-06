@@ -1027,7 +1027,7 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * Adds key value pairs to a service
+     * Adds extension properties to a service
      *
      * @param \Service $service
      * @param \User $user
@@ -1037,11 +1037,24 @@ class ServiceService extends AbstractEntityService {
      */
     public function addProperties(\Service $service, \User $user, array $propArr, $preventOverwrite = false) {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        // throw new \Exception(var_dump($propArr));
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        $this->validateAddEditDeleteActions ( $user, $service );
+        //Check that the user has the requisite permissions
+        $this->validateAddEditDeleteActions ($user,$service);
 
+        //Make the change
+        $this->addPropertiesLogic($service,$propArr,$preventOverwrite);
+    }
+
+    /**
+     * Logic to add extension properties to a service
+     *
+     * @param \Service $service
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @throws \Exception
+     */
+    protected function addPropertiesLogic(\Service $service, array $propArr, $preventOverwrite = false) {
         $existingProperties = $service->getServiceProperties ();
 
         // Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
@@ -1089,7 +1102,7 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * Adds a key value pair to a service endpoint
+     * Adds extension properties to a service endpoint
      *
      * @param \EndpointLocation $endpoint
      * @param \User $user
@@ -1099,11 +1112,24 @@ class ServiceService extends AbstractEntityService {
      */
     public function addEndpointProperties(\EndpointLocation $endpoint, \User $user, array $propArr, $preventOverwrite = false) {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        // throw new \Exception(var_dump($propArr));
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ($user);
 
-        $this->validateAddEditDeleteActions ( $user, $endpoint->getService () );
+        //Check the user has the requisite permissions
+        $this->validateAddEditDeleteActions ($user, $endpoint->getService());
 
+        //Make the change
+        $this->addEndpointPropertiesLogic($endpoint,$propArr,$preventOverwrite);
+    }
+
+    /**
+     * Logic to add extension properties to a service endpoint
+     *
+     * @param \EndpointLocation $endpoint
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @throws \Exception
+     */
+    protected function addEndpointPropertiesLogic(\EndpointLocation $endpoint, array $propArr, $preventOverwrite = false) {
         $existingProperties = $endpoint->getEndpointProperties ();
 
         // Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
@@ -1154,6 +1180,8 @@ class ServiceService extends AbstractEntityService {
     /**
      * Deletes service properties
      *
+     * Checks user permissions and then calls required logic
+     *
      * @param \Service $service
      * @param \User $user
      * @param array $propArr
@@ -1161,8 +1189,21 @@ class ServiceService extends AbstractEntityService {
     public function deleteServiceProperties(\Service $service, \User $user, array $propArr) {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+
+        //Ensure the user has the requisite permissions
         $this->validateAddEditDeleteActions ( $user, $service );
 
+        //Make the change
+        $this->deleteServicePropertiesLogic($service, $propArr);
+    }
+
+    /**
+     * Logic to delete service properties
+     *
+     * @param \Service $service
+     * @param array $propArr
+     */
+    protected function deleteServicePropertiesLogic(\Service $service, array $propArr) {
         $this->em->getConnection ()->beginTransaction ();
         try {
             foreach ( $propArr as $prop ) {
@@ -1189,6 +1230,25 @@ class ServiceService extends AbstractEntityService {
 
     /**
      * Deletes the given EndpointProperties in the array from their parent Endpoints (if set).
+     *
+     * First the users permissions are checked
+     *
+     * @param \User $user
+     * @param array $propArr
+     */
+    public function deleteEndpointProperties(\Service $service, \User $user, array $propArr) {
+        // Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+
+        //Check the user has the rquisite permissions
+        $this->validateAddEditDeleteActions ($user, $service);
+
+        // Carry out the change
+        $this->deleteEndpointPropertiesLogic($service, $propArr);
+    }
+
+    /**
+     * Logic to delete the given EndpointProperties in the array from their parent Endpoints (if set).
      * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null
      * then the function throws an exception because the user permissions to delete
      * the EP can't be determined on a null Endpoint.
@@ -1196,10 +1256,7 @@ class ServiceService extends AbstractEntityService {
      * @param \User $user
      * @param array $propArr
      */
-    public function deleteEndpointProperties(\User $user, array $propArr) {
-        // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-
+    protected function deleteEndpointPropertiesLogic(\Service $service, array $propArr) {
         $this->em->getConnection ()->beginTransaction ();
 
         try {
@@ -1212,9 +1269,12 @@ class ServiceService extends AbstractEntityService {
                     throw new \Exception ( "Property {$id} does not have a parent endpoint" );
                 }
 
-                // check user has permissions over the service associated with the endpoint
-                $service = $endpoint->getService ();
-                $this->validateAddEditDeleteActions ( $user, $service );
+                if ($endpoint->getService() != $service) {
+                    $id = $prop->getId ();
+                    throw new \Exception (
+                        "Property {$id} does not belong to an endpoint of the specified service"
+                    );
+                }
 
                 // Endoint is the owning side so remove elements from endpoint.
                 $endpoint->getEndpointProperties ()->removeElement ( $prop );
@@ -1233,8 +1293,8 @@ class ServiceService extends AbstractEntityService {
     /**
      * Edits an existing service property that already belongs to the service.
      *
-     * A check is performed to confirm the given property is from the parent
-     * service, and an exception is thrown if not.
+     * A check is made to ensure the user has the requred permissions then the
+     * required logic is called.
      *
      * @param \Service $service
      * @param \User $user
@@ -1244,8 +1304,26 @@ class ServiceService extends AbstractEntityService {
     public function editServiceProperty(\Service $service, \User $user, \ServiceProperty $prop, $newValues) {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        $this->validate ( $newValues ['SERVICEPROPERTIES'], 'serviceproperty' );
+
+        // Validate the user has permission to edit properties
         $this->validateAddEditDeleteActions ( $user, $service );
+
+        //Make the change
+        $this->editServicePropertyLogic($service, $prop, $newValues);
+    }
+
+    /**
+     * Logic to edit an existing service property that already belongs to the service.
+     *
+     * A check is performed to confirm the given property is from the parent
+     * service, and an exception is thrown if not.
+     *
+     * @param \Service $service
+     * @param \ServiceProperty $prop
+     * @param array $newValues
+     */
+    protected function editServicePropertyLogic(\Service $service, \ServiceProperty $prop, $newValues) {
+        $this->validate ( $newValues ['SERVICEPROPERTIES'], 'serviceproperty' );
         $keyname = $newValues ['SERVICEPROPERTIES'] ['NAME'];
         $keyvalue = $newValues ['SERVICEPROPERTIES'] ['VALUE'];
 
@@ -1273,8 +1351,8 @@ class ServiceService extends AbstractEntityService {
     /**
      * Edits an existing endpoint property that already belongs to the endpoint.
      *
-     * A check is performed to confirm the given property is from the endpoint's
-     * parent service, and an exception is thrown if not.
+     * A check is made to ensure the user has the requred permissions then the
+     * required logic is called.
      *
      * @param \Service $service
      * @param \User $user
@@ -1284,8 +1362,27 @@ class ServiceService extends AbstractEntityService {
      */
     public function editEndpointProperty(\Service $service, \User $user, \EndpointProperty $prop, $newValues) {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        $this->validateAddEditDeleteActions ( $user, $service );
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ($user);
+
+        // Validate the user has permission to edit properties
+        $this->validateAddEditDeleteActions ($user, $service);
+
+        //Make the change
+        $this->editEndpointPropertyLogic($service, $prop, $newValues);
+    }
+
+    /**
+     * Logic to edit an existing endpoint property that already belongs to the endpoint.
+     *
+     * A check is performed to confirm the given property is from the endpoint's
+     * parent service, and an exception is thrown if not.
+     *
+     * @param \Service $service
+     * @param \EndpointProperty $prop
+     * @param array $newValues
+     * @throws \Exception
+     */
+    protected function editEndpointPropertyLogic(\Service $service, \EndpointProperty $prop, $newValues) {
         $this->validate ( $newValues ['ENDPOINTPROPERTIES'], 'endpointproperty' );
         $keyname = $newValues ['ENDPOINTPROPERTIES'] ['NAME'];
         $keyvalue = $newValues ['ENDPOINTPROPERTIES'] ['VALUE'];

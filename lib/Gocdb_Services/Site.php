@@ -960,7 +960,7 @@ class Site extends AbstractEntityService{
     }
 
     /**
-     * Adds a key value pair to a site
+     * Adds sets of extension property key/value pairs to a site.
      * @param \Site $site
      * @param \User $user
      * @param array $propArr
@@ -970,10 +970,22 @@ class Site extends AbstractEntityService{
     public function addProperties(\Site $site, \User $user, array $propArr, $preventOverwrite = false) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-        //throw new \Exception(var_dump($propArr));
 
+        // Validate the user has permission to add properties
         $this->validatePropertyActions($user, $site);
 
+        //Add the properties
+        $this->addPropertiesLogic($site, $propArr, $preventOverwrite);
+    }
+
+    /**
+     * Logic to sets of extension property key/value pairs to a site.
+     * @param \Site $site
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @throws \Exception
+     */
+    protected function addPropertiesLogic(\Site $site, array $propArr, $preventOverwrite = false) {
         $existingProperties = $site->getSiteProperties();
 
         //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
@@ -1024,9 +1036,8 @@ class Site extends AbstractEntityService{
     }
 
     /**
-     * Deletes site properties, before deletion a check is done to confirm the property
-     * is from the parent site specified by the request, and an exception is thrown if this is
-     * not the case
+     * Deletes site properties: validates the user has permission then calls the
+     * required logic
      * @param \Site $site
      * @param \User $user
      * @param array $propArr
@@ -1038,6 +1049,18 @@ class Site extends AbstractEntityService{
         // Validate the user has permission to delete a property
         $this->validatePropertyActions($user, $site);
 
+        //Make the change
+        $this->deleteSitePropertiesLogic($site, $propArr);
+    }
+
+    /**
+     * All the logic to delete a site's properties, before deletion a check is done to confirm the property
+     * is from the parent site specified by the request, and an exception is thrown if this is
+     * not the case
+     * @param \Site $site
+     * @param array $propArr
+     */
+    protected function deleteSitePropertiesLogic(\Site $site, array $propArr) {
         $this->em->getConnection()->beginTransaction();
         try {
             foreach ($propArr as $prop) {
@@ -1061,9 +1084,8 @@ class Site extends AbstractEntityService{
     }
 
     /**
-     * Edit a site's property. A check is performed to confirm the given property
-     * is from the parent site specified by the request, and an exception is thrown if this is
-     * not the case.
+     * Edit a site's property. The user is validated then the logic to make the
+     * change called
      *
      * @param \Site $site
      * @param \User $user
@@ -1077,6 +1099,22 @@ class Site extends AbstractEntityService{
 
         //Validate User to perform this action
         $this->validatePropertyActions($user, $site);
+
+        //Make the change
+        $this->editSitePropertyLogic($site, $prop, $newValues);
+    }
+
+    /**
+     * All the logic to edit a site's property, without the user validation.
+     * A check is performed to confirm the given property is from the parent site
+     * specified by the request, and an exception is thrown if this is not the case.
+     *
+     * @param \Site $site
+     * @param \SiteProperty $prop
+     * @param array $newValues
+     * @throws \Exception
+     */
+    protected function editSitePropertyLogic(\Site $site,\SiteProperty $prop, $newValues) {
 
         $this->validate($newValues['SITEPROPERTIES'], 'siteproperty');
 
