@@ -41,7 +41,6 @@ function draw_menu($menu_name)
 function xml_to_menu($menu_name, $menus_xml)
 {
     $html = "";
-    $html .= "<hr style=\"clear: both;\"/>";
     $html .= "<ul class=\"Smaller_Left_Padding Smaller_Top_Margin\">";
     foreach($menus_xml->$menu_name->children() as $key => $value)
     {

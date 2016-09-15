@@ -31,21 +31,17 @@
         // container for the page
         $HTML .= "<div class=\"page_container\">";
 
+        //Logo box and version
+        $HTML .= Get_top_logos_Box_HTML();
+
         // menu bar
         $HTML .= "<div class=\"left_box_menu\">";
-        $HTML .= Get_File_Contents(__DIR__."/../../static_html/goc5_logo.html");
-        //Insert a portal is in read only warning message, if it is
-        if(\Factory::getConfigService()->IsPortalReadOnly()){
-            $HTML.= Get_File_Contents(__DIR__."/../../static_html/read_only_warning.html");
-        }
         require_once "menu.php";
         $HTML .= draw_menu("main_menu");
         $HTML .= "</div>";
-        //$HTML .= "<h3 class=\"spacer\">Test</h3>";
 
         $HTML .= Get_Search_Box_HTML();
         $HTML .= Get_User_Info_Box_HTML();
-        $HTML .= Get_bottom_logos_Box_HTML();
 
         // right side of the page
         $HTML .= "<div class=\"right_box\">";
@@ -118,10 +114,17 @@
     }
 
     /* Draws a box showing the EGI and other logos */
-    function Get_bottom_logos_Box_HTML()
+    function Get_top_logos_Box_HTML()
     {
         $HTML = "";
         $HTML .= '<div class="Left_Logo_Box left_box_menu">';
+        $HTML .= Get_File_Contents(__DIR__."/../../static_html/goc5_logo.html");
+        //Insert a portal is in read only warning message, if it is
+        if(\Factory::getConfigService()->IsPortalReadOnly()){
+            $HTML.= Get_File_Contents(__DIR__."/../../static_html/read_only_warning.html");
+        }
+        $HTML .= '<br>';
+        $HTML .= "<hr style=\"clear: both;\"/>";
         $HTML .= '<div align="center"><a href="http://www.stfc.ac.uk" target="_blank"><img src="'.\GocContextPath::getPath().'img/STFC.jpg" height="25"/></a>&nbsp;&nbsp;';
         $HTML .= '<a href="http://europa.eu" target="_blank"><img src="'.\GocContextPath::getPath().'img/eu.jpg" height="25"/></a>&nbsp;&nbsp;';
         //$HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="img/egi.gif" height="25"/></a></div>';

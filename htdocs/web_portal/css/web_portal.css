@@ -111,14 +111,14 @@ h1 {
 }
 
 
- 
+
 /*
     *	Containing DIV's
 	*	Page Container is the whole page
 	*	Left Box is the menu
 	*	Right Box is the smaller page contents
 	*/
-.page_container { 
+.page_container {
 	position: relative;
 	margin-left: auto;
 	margin-right: auto;
@@ -133,12 +133,13 @@ h1 {
 /* Credit for this section of CSS goes to Matt Lira of STFC, 2009 */
 .left_box_menu {
 	float: left;
+    clear: left;
 	margin: 0.5em 0.5em 0.5em 0.5em;
 	padding: 0.5em 0.5em 0.5em 0.5em;
 	border: 1px solid #b4b4b4;
 	width: 13em;
 	box-shadow: 2px 2px 1px 0px #c5d0e3;
-	
+
 	background-color: #fcfcfc;
 	border-radius: 0.4em;
 }
@@ -166,7 +167,6 @@ div.Left_User_Status_Box {
 
 div.Left_Logo_Box {
 	float: left;
-	clear: left;
 }
 
 div.Indented {
@@ -522,8 +522,8 @@ img.decoration {
 
 img.titleIcon{
 	height:25px;
-	float: right; 
-	margin:2% 1% 1% 0%; 
+	float: right;
+	margin:2% 1% 1% 0%;
 }
 
 input.vSiteSearch {
@@ -586,7 +586,7 @@ img.centered {
 
 span.topMargin {
     margin-top: 1em;
-}	
+}
 
 span.block {
     display: block;
@@ -658,7 +658,7 @@ div.rightPageContainer {
     padding: 1em;
     box-shadow: 2px 2px 1px 0px #c5d0e3;
     border-radius: 0.4em;
-    
+
 }
 
 div.tableContainer {
@@ -684,8 +684,8 @@ div.tableContainer {
 
 .smallLabelText{
 	margin-left:8px;
-	font-size:11px; 
-	font-weight: normal; 
+	font-size:11px;
+	font-weight: normal;
 	font-style:italic;
 	display:inline-block;
 }
@@ -699,9 +699,8 @@ label.error {
 }
 
 .selectService{
-background-color: #D5D5D5;	
+background-color: #D5D5D5;
 }
 
 .selectEndpoint{
 }
-
