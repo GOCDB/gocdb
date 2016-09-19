@@ -550,4 +550,18 @@
 	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
     </entity>
+    <!-- ==========================================================  -->
+    <entity>
+        <name>APIAUTHENTICATION</name>
+        <field>
+            <fname>IDENTIFIER</fname>
+            <length>255</length>
+            <regex>/^.+$/</regex>
+        </field>
+        <field>
+            <fname>TYPE</fname>
+            <length>255</length>
+            <regex>/^X509$/</regex>
+        </field>
+    </entity>
 </schema>
