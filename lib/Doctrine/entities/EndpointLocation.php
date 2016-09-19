@@ -45,6 +45,9 @@ class EndpointLocation {
     /** @Column(type="string", length=2000, nullable=true)  */
     protected $description;
 
+    /** @Column(type="boolean", options={"default": false}) */
+    protected $monitored = false;
+
     /**
      * Bidirectional - An EndpointLocation (OWNING ORM SIDE) can have many properties
      * @OneToMany(targetEntity="EndpointProperty", mappedBy="parentEndpoint", cascade={"remove"})
@@ -151,6 +154,14 @@ class EndpointLocation {
         return $this->description;
     }
 
+    /**
+     * Wether the SE is monitored
+     * @return boolean
+     */
+    public function getMonitored() {
+        return $this->monitored;
+    }
+
     //Setters
 
     /**
@@ -204,32 +215,6 @@ class EndpointLocation {
         //$endpointProperty->getParentEndpoint() = $this;
     }
 
-    /*
-     * Do not call in client code, always use the opposite
-     * <code>$downtime->addEndpointLocation($thisEl)</code> instead which internally
-     * calls this method to keep the bidirectional relationship consistent.
-     * <p>
-     * This is the INVERSE side so this method will NOT establish the relationship in the database.
-     *
-     * @param Downtime $downtime
-     */
-//    public function _addDowntime(Downtime $downtime) {
-//            $this->downtimes[] = $downtime;
-//    }
-
-    /*
-     * Do not call in client code, always use the opposite
-     * <code>$downtime->removeEndpointLocation($thisEl)</code> instead which internally
-     * calls this method to keep the bidirectional relationship consistent.
-     * <p>
-     * This is the INVERSE side so this method will NOT remove the relationship in the database.
-     *
-     * @param Downtime $downtime downtime to be removed
-     */
-//    public function _removeDowntime(Downtime $downtime) {
-//            $this->downtimes->removeElement($downtime);
-//    }
-
     /**
      * Set the human readable description for this EL, max 2000 chars.
      * @param string $description
@@ -237,5 +222,14 @@ class EndpointLocation {
     public function setDescription($description) {
         $this->description = $description;
     }
+
+    /**
+     * Set the monitored paremeter for the EL
+     * @param boolean $monitored
+     */
+    public function setMonitored($monitored) {
+        $this->monitored = $monitored;
+    }
+
 
 }
