@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema>
-    
+
     <!--
 	This file defines the validation necessary for each entity's fields.
     -->
@@ -71,7 +71,7 @@
 	    <fname>DESCRIPTION</fname>
 	    <length>2000</length>
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
 	<field>
 	    <fname>CREATION_DATE</fname>
@@ -117,7 +117,7 @@
 	    <regex>/^([a-zA-Z_-]+(\/[a-zA-Z_-]+)*)+$/</regex>
 	</field>
     </entity>
-	
+
     <!-- ==========================================================  -->
     <entity>
 	<name>service</name>
@@ -156,8 +156,8 @@
 	    <fname>DESCRIPTION</fname>
 	    <length>255</length>
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
-	</field>        
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+	</field>
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
@@ -180,7 +180,7 @@
 	    <fname>DESCRIPTION</fname>
 	    <length>4000</length>
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'\s]+$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
 	<field>
 	    <fname>DECLARATION_TIMESTAMP</fname>
@@ -244,7 +244,7 @@
 	    <regex>/^(\+?[0-9\-\.\s\)\(]+)?$/</regex>
 	</field>
     </entity>
-	
+
     <!-- ==========================================================  -->
     <entity>
 	<name>ngi</name>
@@ -257,7 +257,7 @@
 	    <fname>DESCRIPTION</fname>
 	    <length>255</length>
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
 	<field>
 	    <fname>EMAIL</fname>
@@ -308,9 +308,9 @@
 	    <fname>CONFIRMATION_CODE</fname>
 	</field>
     </entity>
-	
-    <!-- ====================================================  
-    This can be deleted once add service form is redone. 
+
+    <!-- ====================================================
+    This can be deleted once add service form is redone.
     -->
     <entity>
 	<name>endpoint_location</name>
@@ -337,9 +337,9 @@
 	</field>
 	<field>
 	    <fname>DESCRIPTION</fname>
-	    <length>2000</length>
+	    <length>255</length>
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
+	    <regex>/^[^`'\";&lt;&gt;]*$/</regex>
 	</field>
 	<field>
 	    <fname>URL</fname>
@@ -351,14 +351,14 @@
 	    <fname>INTERFACENAME</fname>
 	    <length>255</length>
 	    <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>
-	</field>	
+	</field>
 	<field>
 	    <fname>ENDPOINTID</fname>
 	    <length>255</length>
 	    <regex>/^[0-9]+$/</regex>
 	</field>
     </entity>
-    
+
     <!-- ==========================================================  -->
     <entity>
 	<name>service_group</name>
@@ -370,7 +370,7 @@
 	<field>
 	    <fname>DESCRIPTION</fname>
 	    <length>255</length>
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
 	<field>
 	    <fname>EMAIL</fname>
@@ -390,7 +390,7 @@
 	    <fname>DESCRIPTION</fname>
 	    <length>2000</length>
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
     </entity>
     <!-- ==========================================================  -->
@@ -405,7 +405,7 @@
 	    <fname>DESCRIPTION</fname>
 	    <length>255</length>
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
     </entity>
     <!-- ==========================================================  -->
@@ -420,7 +420,7 @@
 	    <fname>DESCRIPTION</fname>
 	    <length>255</length>
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
     </entity>
     <!-- ==========================================================  -->
@@ -452,9 +452,9 @@
 	    <fname>PROP</fname>
 	    <length>255</length>
 	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>		
+	</field>
     </entity>
-    <!-- ==========================================================  -->	
+    <!-- ==========================================================  -->
     <entity>
 	<name>serviceproperty</name>
 	<field>
@@ -479,7 +479,7 @@
 	    <fname>PROP</fname>
 	    <length>255</length>
 	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>		
+	</field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
@@ -533,8 +533,8 @@
 	    <fname>PROP</fname>
 	    <length>255</length>
 	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>		
-    </entity>		
+	</field>
+    </entity>
     <!-- ==========================================================  -->
     <entity>
 	<name>cert_status_change</name>
@@ -542,8 +542,7 @@
 	    <fname>REASON</fname>
 	    <length>300</length>
 	    <!--<regex>/^[a-zA-Z0-9è\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex> 
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
     </entity>
 </schema>
-
