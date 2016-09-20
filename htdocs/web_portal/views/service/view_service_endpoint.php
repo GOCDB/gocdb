@@ -74,12 +74,15 @@ $seId = $se->getId();
                     <td class="site_table">Name</td><td class="site_table"><?php xecho($endpoint->getName()) ?></td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">Url</td><td class="site_table"><?php xecho($endpoint->getUrl()) ?></td>
+                    <td class="site_table">Description</td><td class="site_table"><?php xecho($endpoint->getDescription()) ?></td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">Interface Name</td><td class="site_table"><?php xecho($endpoint->getInterfaceName()) ?></td>
+                    <td class="site_table">Url</td><td class="site_table"><?php xecho($endpoint->getUrl()) ?></td>
                 </tr>
                 <tr class="site_table_row_2">
+                    <td class="site_table">Interface Name</td><td class="site_table"><?php xecho($endpoint->getInterfaceName()) ?></td>
+                </tr>
+                <tr class="site_table_row_1">
                     <td class="site_table">Id</td><td class="site_table"><?php echo $endpoint->getId() ?></td>
                 </tr>
 
