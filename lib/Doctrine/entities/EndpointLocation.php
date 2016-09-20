@@ -48,6 +48,9 @@ class EndpointLocation {
     /** @Column(type="boolean", options={"default": false}) */
     protected $monitored = false;
 
+    /** @Column(type="string", nullable=true) */
+    protected $email = null;
+
     /**
      * Bidirectional - An EndpointLocation (OWNING ORM SIDE) can have many properties
      * @OneToMany(targetEntity="EndpointProperty", mappedBy="parentEndpoint", cascade={"remove"})
@@ -162,6 +165,14 @@ class EndpointLocation {
         return $this->monitored;
     }
 
+    /**
+     * SE email parameter
+     * @return string or null
+     */
+    public function getEmail() {
+        return $this->email;
+    }
+
     //Setters
 
     /**
@@ -229,6 +240,14 @@ class EndpointLocation {
      */
     public function setMonitored($monitored) {
         $this->monitored = $monitored;
+    }
+
+    /**
+     * Set the email paremeter for the EL
+     * @param string or null $monitored
+     */
+    public function setEmail($email) {
+        $this->email = $email;
     }
 
 
