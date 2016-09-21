@@ -44,6 +44,19 @@ $serviceType = $params['serviceType'];
         </div>
 
         <div class="form-group">
+            <label class="control-label">Contact E-mail</label>
+            <br/>
+            <input class="form-control" style="width: 50%; display: inline;" type="text"
+                   name="EMAIL" id="EMAIL" />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Monitored</label>
+            <br/>
+            <input type="checkbox" name="IS_MONITORED" id="IS_MONITORED"/>
+        </div>
+
+        <div class="form-group">
             <label class="control-label">
                 *Endpoint Interface Name
                 <span class="text-muted">

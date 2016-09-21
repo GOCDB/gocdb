@@ -51,6 +51,21 @@ $serviceTypes = $params['serviceTypes'];
                    value="<?php xecho($endpoint->getUrl()) ?>" />
         </div>
 
+
+        <div class="form-group">
+            <label class="control-label">Contact E-mail</label>
+            <br/>
+            <input class="form-control" style="width: 50%; display: inline;" type="text"
+                   name="EMAIL" id="EMAIL"
+                   value="<?php xecho($endpoint->getEmail()) ?>" />
+        </div>
+
+        <div class="form-group">
+            <label class="control-label">Monitored</label>
+            <br/>
+            <input type="checkbox" name="IS_MONITORED" id="IS_MONITORED"<?php if ($endpoint->getMonitored() == true) echo " checked"?>/>
+        </div>
+
         <div class="form-group">
             <label class="control-label">
                 *Endpoint Interface Name

@@ -1527,12 +1527,19 @@ class ServiceService extends AbstractEntityService {
         $name = $values ['SERVICEENDPOINT'] ['NAME'];
         $url = $values ['SERVICEENDPOINT'] ['URL'];
         $description = $values ['SERVICEENDPOINT'] ['DESCRIPTION'];
+        $email = $values['SERVICEENDPOINT']['EMAIL'];
 
 
         if ($values ['SERVICEENDPOINT'] ['INTERFACENAME'] != '') {
             $interfaceName = $values ['SERVICEENDPOINT'] ['INTERFACENAME'];
         } else {
             $interfaceName = ( string ) $service->getServiceType ();
+        }
+
+        if($values['IS_MONITORED']) {
+            $monitored = true;
+        } else {
+            $monitored = false;
         }
 
         if (empty ( $name )) {
@@ -1555,6 +1562,8 @@ class ServiceService extends AbstractEntityService {
             $endpoint->setUrl ( $url );
             $endpoint->setInterfaceName ( $interfaceName );
             $endpoint->setDescription ( $description );
+            $endpoint->setEmail($email);
+            $endpoint->setMonitored($monitored);
             $service->addEndpointLocationDoJoin ( $endpoint );
             $this->em->persist ( $endpoint );
 
@@ -1586,6 +1595,7 @@ class ServiceService extends AbstractEntityService {
         $name = $newValues ['SERVICEENDPOINT'] ['NAME'];
         $url = $newValues ['SERVICEENDPOINT'] ['URL'];
         $description = $newValues ['SERVICEENDPOINT'] ['DESCRIPTION'];
+        $email = $newValues['SERVICEENDPOINT']['EMAIL'];
 
         if ($newValues ['SERVICEENDPOINT'] ['INTERFACENAME'] != '') {
             $interfaceName = $newValues ['SERVICEENDPOINT'] ['INTERFACENAME'];
@@ -1593,6 +1603,11 @@ class ServiceService extends AbstractEntityService {
             $interfaceName = ( string ) $service->getServiceType ();
         }
 
+        if($newValues['IS_MONITORED']) {
+            $monitored = true;
+        } else {
+            $monitored = false;
+        }
 
         if (empty ( $name )) {
             throw new \Exception ( "An endpoint must have a name." );
@@ -1617,6 +1632,8 @@ class ServiceService extends AbstractEntityService {
             $endpoint->setUrl ( $url );
             $endpoint->setInterfaceName ( $interfaceName );
             $endpoint->setDescription ( $description );
+            $endpoint->setEmail($email);
+            $endpoint->setMonitored($monitored);
             $this->em->merge ( $endpoint );
             $this->em->flush ();
             $this->em->getConnection ()->commit ();

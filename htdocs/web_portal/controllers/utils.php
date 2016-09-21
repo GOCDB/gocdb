@@ -408,9 +408,11 @@ function getSeDataFromWeb() {
     $se_data ['SE'] ['EMAIL'] = $_REQUEST ['EMAIL'];
     $se_data ['BETA'] = $_REQUEST ['HOST_BETA'];
     $se_data ['PRODUCTION_LEVEL'] = $_REQUEST ['PRODUCTION_LEVEL'];
-    $se_data ['IS_MONITORED'] = $_REQUEST ['IS_MONITORED']; /*
-                                                           * If the user is updating a service the optional cobjectid parameter will be set. If it is set we return it as part of the array
-                                                           */
+    $se_data ['IS_MONITORED'] = $_REQUEST ['IS_MONITORED'];
+
+    /*
+    * If the user is updating a service the optional cobjectid parameter will be set. If it is set we return it as part of the array
+    */
     if (! empty($_REQUEST ['ID'])){
         $se_data ['ID'] = $_REQUEST ['ID'];
     }
@@ -527,7 +529,7 @@ function getDtDataFromWeb() {
         throw new Exception('Error - No endpoints or services selected, downtime must affect at least one endpoint');
     }
     $dt ['IMPACTED_IDS'] = $_REQUEST ['IMPACTED_IDS'];
-    
+
 
     //Get the previous downtimes ID if we are doing an edit
     if(isset($_REQUEST['DOWNTIME_ID'])){
@@ -644,6 +646,14 @@ function getEndpointDataFromWeb() {
     if (isset($_REQUEST ['ENDPOINTID'])){
         $endpoint ['SERVICEENDPOINT'] ['ENDPOINTID'] = trim($_REQUEST ['ENDPOINTID']);
     }
+    $endpoint['SERVICEENDPOINT']['EMAIL'] = $_REQUEST ['EMAIL'];
+    //The value comes from a checkbox, which wiill  not return a value when unchecked
+    if(isset($_REQUEST['IS_MONITORED'])) {
+        $endpoint['IS_MONITORED'] = $_REQUEST ['IS_MONITORED'];
+    } else {
+        $endpoint['IS_MONITORED'] =false;
+    }
+
     return $endpoint;
 }
 
