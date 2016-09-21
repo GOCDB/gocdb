@@ -1521,10 +1521,13 @@ class ServiceService extends AbstractEntityService {
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
         $this->validate ( $values ['SERVICEENDPOINT'], 'endpoint' );
 
-        $name = $values ['SERVICEENDPOINT'] ['NAME'];
-        $url = $values ['SERVICEENDPOINT'] ['URL'];
         $serviceID = $values ['SERVICEENDPOINT'] ['SERVICE'];
         $service = $this->getService ( $serviceID );
+
+        $name = $values ['SERVICEENDPOINT'] ['NAME'];
+        $url = $values ['SERVICEENDPOINT'] ['URL'];
+        $description = $values ['SERVICEENDPOINT'] ['DESCRIPTION'];
+
 
         if ($values ['SERVICEENDPOINT'] ['INTERFACENAME'] != '') {
             $interfaceName = $values ['SERVICEENDPOINT'] ['INTERFACENAME'];
@@ -1551,7 +1554,7 @@ class ServiceService extends AbstractEntityService {
             $endpoint->setName ( $name );
             $endpoint->setUrl ( $url );
             $endpoint->setInterfaceName ( $interfaceName );
-            $service = $this->em->find ( "Service", $serviceID );
+            $endpoint->setDescription ( $description );
             $service->addEndpointLocationDoJoin ( $endpoint );
             $this->em->persist ( $endpoint );
 
@@ -1578,17 +1581,18 @@ class ServiceService extends AbstractEntityService {
     public function editEndpoint(\Service $service, \User $user, \EndpointLocation $endpoint, $newValues) {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+        $this->validate ( $newValues ['SERVICEENDPOINT'], 'endpoint' );
 
         $name = $newValues ['SERVICEENDPOINT'] ['NAME'];
         $url = $newValues ['SERVICEENDPOINT'] ['URL'];
+        $description = $newValues ['SERVICEENDPOINT'] ['DESCRIPTION'];
+
         if ($newValues ['SERVICEENDPOINT'] ['INTERFACENAME'] != '') {
             $interfaceName = $newValues ['SERVICEENDPOINT'] ['INTERFACENAME'];
         } else {
             $interfaceName = ( string ) $service->getServiceType ();
         }
-        $description = $newValues ['SERVICEENDPOINT'] ['DESCRIPTION'];
 
-        $this->validate ( $newValues ['SERVICEENDPOINT'], 'endpoint' );
 
         if (empty ( $name )) {
             throw new \Exception ( "An endpoint must have a name." );

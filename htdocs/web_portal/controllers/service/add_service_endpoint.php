@@ -2,7 +2,7 @@
 /*______________________________________________________
  *======================================================
  * File: add_service_endpoint.php
- * Author: James McCarthy
+ * Author: James McCarthy, George Ryall
  * Description: Adds a new endpoint to a service
  *
  * License information
@@ -18,7 +18,6 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  /*======================================================*/
-
 require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/../utils.php';
 require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
@@ -48,11 +47,19 @@ function add_service_endpoint() {
  * @param \User $user current user
  * @return null */
 function submit(\User $user = null) {
-    $serv = \Factory::getServiceService();
-    $newValues = getEndpointDataFromWeb();
-    $serviceid = $newValues['SERVICEENDPOINT']['SERVICE'];
-    $serv->addEndpoint($newValues, $user);
-    show_view("service/added_service_endpoint.php", $serviceid);
+    try {
+        $serv = \Factory::getServiceService();
+        $newValues = getEndpointDataFromWeb();
+        $endpoint = $serv->addEndpoint($newValues, $user);
+
+        $params['endpointID'] = $endpoint->getID();
+        $params['serviceID'] = $newValues['SERVICEENDPOINT']['SERVICE'];
+        show_view("service/added_service_endpoint.php", $params);
+
+    } catch(Exception $e) {
+        show_view('error.php', $e->getMessage());
+        die();
+    }
 }
 
 /**
