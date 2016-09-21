@@ -403,6 +403,13 @@ class GetDowntime implements IPIQuery {
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
                             $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                            if ($endpoint->getMonitored()) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                         }
                     }
                 }
@@ -448,6 +455,13 @@ class GetDowntime implements IPIQuery {
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
                             $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                            if ($endpoint->getMonitored()) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                         }
                     }
                 }
@@ -525,6 +539,13 @@ class GetDowntime implements IPIQuery {
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($dtEndpoint['url']));
                             $xmlEndpoint->addChild('INTERFACENAME', $dtEndpoint['interfaceName']);
+                            if ($dtEndpoint['monitored']) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $dtEndpoint['email']);
                         }
                     }
                 }
@@ -591,6 +612,13 @@ class GetDowntime implements IPIQuery {
                             // Extensions ?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($dtEndpoint['url']));
                             $xmlEndpoint->addChild('INTERFACENAME', $dtEndpoint['interfaceName']);
+                            if ($dtEndpoint['monitored']) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $dtEndpoint['email']);
                         }
                     }
                 }

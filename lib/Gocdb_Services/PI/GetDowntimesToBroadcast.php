@@ -2,13 +2,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at: 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -25,12 +25,12 @@ require_once __DIR__ . '/IPIQueryRenderable.php';
 
 /**
  * PI Method that takes query parameters and returns the list of downtimes recently declared with
- * Return an XML document that encodes the downtimes selected from the DB. Supports optional cursor paging. 
+ * Return an XML document that encodes the downtimes selected from the DB. Supports optional cursor paging.
  * Optionally provide an associative array of query parameters with values used to restrict the results.
  * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
  * <pre>
- * 'interval', 'scope', 'scope_match', 'id', 'next_cursor', 'prev_cursor' 
+ * 'interval', 'scope', 'scope_match', 'id', 'next_cursor', 'prev_cursor'
  * (where scope refers to Service scope)
  * </pre>
  *
@@ -52,7 +52,7 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
     private $maxResults = 500; //default page size, set via setPageSize(int);
     private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
     private $isPaging = false;   // is true if default paging is t OR if a cursor URL param has been specified for paging.
-     
+
     // following members are needed for paging
     private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
     private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter
@@ -65,12 +65,12 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
      *  query builder
      *
      * @param EntityManager $em
-     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal') 
+     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal')
      *   - used as a prefix to build absolute PORTAL URLs that are rendered in the query output.
-     *   Should not end with '/'. 
-     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
-     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
-     *  (e.g. for HATEOAS links/paging). Should not end with '/'.  
+     *   Should not end with '/'.
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port')
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'.
      */
     public function __construct($em, $portalContextUrl = 'https://goc.egi.eu/portal', $urlAuthority = ''){
         $this->em = $em;
@@ -93,8 +93,8 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
                 'interval',
                 'scope',
                 'scope_match',
-                'id', 
-                'next_cursor', 
+                'id',
+                'next_cursor',
                 'prev_cursor'
         );
 
@@ -129,12 +129,12 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
 
         $nowMinusIntervalDays = new \DateTime();
         $nowMinusIntervalDays->sub(new \DateInterval('P'.$interval.'D'));
-        
-        $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters); 
-        $this->prev_cursor = $cursorParams['prev_cursor']; 
-        $this->next_cursor = $cursorParams['next_cursor']; 
-        $this->isPaging = $cursorParams['isPaging']; 
-        
+
+        $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters);
+        $this->prev_cursor = $cursorParams['prev_cursor'];
+        $this->next_cursor = $cursorParams['next_cursor'];
+        $this->isPaging = $cursorParams['isPaging'];
+
         // if we are enforcing paging, force isPaging to true
         if($this->defaultPaging){
             $this->isPaging = true;
@@ -158,11 +158,11 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
 
         //Bind interval days
         $binds[] = array($bc,  $nowMinusIntervalDays);
-        
-        
+
+
         // Order by ASC (oldest first: 1, 2, 3, 4)
         $this->direction = 'ASC';
-        
+
         // Cursor where clause:
         // Select rows *FROM* the current cursor position
         // by selecting rows either ABOVE or BELOW the current cursor position
@@ -189,10 +189,10 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
             // Sets the maximum number of results to retrieve (the "limit")
             $qb->setMaxResults($this->maxResults);
         }
-        
+
         $qb->orderBy('d.id', $this->direction);
-        
-        
+
+
 
         if(isset($parameters['id'])){
            $qb->andWhere($qb->expr()->eq('d.id', '?'.++$bc));
@@ -260,14 +260,14 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
     }
 
 
-    
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -279,7 +279,7 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
         }
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -290,7 +290,7 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -349,6 +349,13 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
                         // Extensions?
                         $xmlEndpoint->addChild ( 'URL', htmlspecialchars($endpoint->getUrl()));
                         $xmlEndpoint->addChild ( 'INTERFACENAME', $endpoint->getInterfaceName());
+                        if ($endpoint->getMonitored()) {
+                            $mon = "Y";
+                        } else {
+                            $mon = "N";
+                        }
+                        $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                        //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                     }
                 }
                 $xmlDowntime->addChild('SEVERITY', $downtime->getSeverity());
@@ -422,7 +429,7 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
         }
         $this->maxResults = $pageSize;
     }
-    
+
     /**
      * See inteface doc.
      * {@inheritDoc}
