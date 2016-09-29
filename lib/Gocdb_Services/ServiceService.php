@@ -1043,7 +1043,16 @@ class ServiceService extends AbstractEntityService {
         $this->validateAddEditDeleteActions ($user,$service);
 
         //Make the change
-        $this->addPropertiesLogic($service,$propArr,$preventOverwrite);
+        $this->em->getConnection ()->beginTransaction ();
+        try {
+            $this->addPropertiesLogic($service,$propArr,$preventOverwrite);
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $e ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $e;
+        }
     }
 
     /**
@@ -1063,41 +1072,31 @@ class ServiceService extends AbstractEntityService {
             throw new \Exception ( "Property(s) could not be added due to the property limit of $extensionLimit" );
         }
 
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            foreach ( $propArr as $i => $prop ) {
-                $key = $prop [0];
-                $value = $prop [1];
-                // Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+        foreach ( $propArr as $i => $prop ) {
+            $key = $prop [0];
+            $value = $prop [1];
+            // Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
-                foreach ( $existingProperties as $existProp ) {
-                    if ($existProp->getKeyName () == $key && $existProp->getKeyValue () == $value) {
-                        if ($preventOverwrite == false) {
-                            continue 2;
-                        } else {
-                            throw new \Exception ( "A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added." );
-                        }
+            foreach ( $existingProperties as $existProp ) {
+                if ($existProp->getKeyName () == $key && $existProp->getKeyValue () == $value) {
+                    if ($preventOverwrite == false) {
+                        continue 2;
+                    } else {
+                        throw new \Exception ( "A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added." );
                     }
                 }
-
-                // validate key value
-                $validateArray ['NAME'] = $key;
-                $validateArray ['VALUE'] = $value;
-                $this->validate ( $validateArray, 'serviceproperty' );
-
-                $serviceProperty = new \ServiceProperty ();
-                $serviceProperty->setKeyName ( $key );
-                $serviceProperty->setKeyValue ( $value );
-                $service->addServicePropertyDoJoin ( $serviceProperty );
-                $this->em->persist ( $serviceProperty );
             }
 
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
+            // validate key value
+            $validateArray ['NAME'] = $key;
+            $validateArray ['VALUE'] = $value;
+            $this->validate ( $validateArray, 'serviceproperty' );
+
+            $serviceProperty = new \ServiceProperty ();
+            $serviceProperty->setKeyName ( $key );
+            $serviceProperty->setKeyValue ( $value );
+            $service->addServicePropertyDoJoin ( $serviceProperty );
+            $this->em->persist ( $serviceProperty );
         }
     }
 
@@ -1118,7 +1117,16 @@ class ServiceService extends AbstractEntityService {
         $this->validateAddEditDeleteActions ($user, $endpoint->getService());
 
         //Make the change
-        $this->addEndpointPropertiesLogic($endpoint,$propArr,$preventOverwrite);
+        $this->em->getConnection ()->beginTransaction ();
+        try {
+            $this->addEndpointPropertiesLogic($endpoint,$propArr,$preventOverwrite);
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $e ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $e;
+        }
     }
 
     /**
@@ -1138,42 +1146,32 @@ class ServiceService extends AbstractEntityService {
             throw new \Exception ( "Property(s) could not be added due to the property limit of $extensionLimit" );
         }
 
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            foreach ( $propArr as $i => $prop ) {
-                $key = $prop [0];
-                $value = $prop [1];
-                // Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+        foreach ( $propArr as $i => $prop ) {
+            $key = $prop [0];
+            $value = $prop [1];
+            // Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
-                foreach ( $existingProperties as $existProp ) {
-                    if ($existProp->getKeyName () == $key && $existProp->getKeyValue () == $value) {
-                        if ($preventOverwrite == false) {
-                            continue 2;
-                        } else {
-                            throw new \Exception ( "A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added." );
-                        }
+            foreach ( $existingProperties as $existProp ) {
+                if ($existProp->getKeyName () == $key && $existProp->getKeyValue () == $value) {
+                    if ($preventOverwrite == false) {
+                        continue 2;
+                    } else {
+                        throw new \Exception ( "A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added." );
                     }
                 }
-
-                // validate key value
-                $validateArray ['NAME'] = $key;
-                $validateArray ['VALUE'] = $value;
-                $validateArray ['ENDPOINTID'] = $endpoint->getId ();
-                $this->validate ( $validateArray, 'endpointproperty' );
-
-                $property = new \EndpointProperty ();
-                $property->setKeyName ( $key );
-                $property->setKeyValue ( $value );
-                $endpoint->addEndpointPropertyDoJoin ( $property );
-                $this->em->persist ( $property );
             }
 
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
+            // validate key value
+            $validateArray ['NAME'] = $key;
+            $validateArray ['VALUE'] = $value;
+            $validateArray ['ENDPOINTID'] = $endpoint->getId ();
+            $this->validate ( $validateArray, 'endpointproperty' );
+
+            $property = new \EndpointProperty ();
+            $property->setKeyName ( $key );
+            $property->setKeyValue ( $value );
+            $endpoint->addEndpointPropertyDoJoin ( $property );
+            $this->em->persist ( $property );
         }
     }
 
@@ -1194,7 +1192,16 @@ class ServiceService extends AbstractEntityService {
         $this->validateAddEditDeleteActions ( $user, $service );
 
         //Make the change
-        $this->deleteServicePropertiesLogic($service, $propArr);
+        $this->em->getConnection ()->beginTransaction ();
+        try {
+            $this->deleteServicePropertiesLogic($service, $propArr);
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $e ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $e;
+        }
     }
 
     /**
@@ -1204,27 +1211,18 @@ class ServiceService extends AbstractEntityService {
      * @param array $propArr
      */
     protected function deleteServicePropertiesLogic(\Service $service, array $propArr) {
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            foreach ( $propArr as $prop ) {
-                // throw new \Exception(var_dump($prop));
-                // check property is in service
-                if ($prop->getParentService () != $service) {
-                    $id = $prop->getId ();
-                    throw new \Exception ( "Property {$id} does not belong to the specified service" );
-                }
-
-                // Service is the owning side so remove elements from service.
-                $service->getServiceProperties ()->removeElement ( $prop );
-                // Once relationship is removed delete the actual element
-                $this->em->remove ( $prop );
+        foreach ( $propArr as $prop ) {
+            // throw new \Exception(var_dump($prop));
+            // check property is in service
+            if ($prop->getParentService () != $service) {
+                $id = $prop->getId ();
+                throw new \Exception ( "Property {$id} does not belong to the specified service" );
             }
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
+
+            // Service is the owning side so remove elements from service.
+            $service->getServiceProperties ()->removeElement ( $prop );
+            // Once relationship is removed delete the actual element
+            $this->em->remove ( $prop );
         }
     }
 
@@ -1244,7 +1242,16 @@ class ServiceService extends AbstractEntityService {
         $this->validateAddEditDeleteActions ($user, $service);
 
         // Carry out the change
-        $this->deleteEndpointPropertiesLogic($service, $propArr);
+        $this->em->getConnection ()->beginTransaction ();
+        try {
+            $this->deleteEndpointPropertiesLogic($service, $propArr);
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $e ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $e;
+        }
     }
 
     /**
@@ -1257,36 +1264,26 @@ class ServiceService extends AbstractEntityService {
      * @param array $propArr
      */
     protected function deleteEndpointPropertiesLogic(\Service $service, array $propArr) {
-        $this->em->getConnection ()->beginTransaction ();
+        foreach ( $propArr as $prop ) {
 
-        try {
-            foreach ( $propArr as $prop ) {
-
-                // check endpoint property has a parent endpoint
-                $endpoint = $prop->getParentEndpoint ();
-                if ($endpoint == null) {
-                    $id = $prop->getId ();
-                    throw new \Exception ( "Property {$id} does not have a parent endpoint" );
-                }
-
-                if ($endpoint->getService() != $service) {
-                    $id = $prop->getId ();
-                    throw new \Exception (
-                        "Property {$id} does not belong to an endpoint of the specified service"
-                    );
-                }
-
-                // Endoint is the owning side so remove elements from endpoint.
-                $endpoint->getEndpointProperties ()->removeElement ( $prop );
-                // Once relationship is removed delete the actual element
-                $this->em->remove ( $prop );
+            // check endpoint property has a parent endpoint
+            $endpoint = $prop->getParentEndpoint ();
+            if ($endpoint == null) {
+                $id = $prop->getId ();
+                throw new \Exception ( "Property {$id} does not have a parent endpoint" );
             }
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
+
+            if ($endpoint->getService() != $service) {
+                $id = $prop->getId ();
+                throw new \Exception (
+                    "Property {$id} does not belong to an endpoint of the specified service"
+                );
+            }
+
+            // Endoint is the owning side so remove elements from endpoint.
+            $endpoint->getEndpointProperties ()->removeElement ( $prop );
+            // Once relationship is removed delete the actual element
+            $this->em->remove ( $prop );
         }
     }
 
@@ -1309,7 +1306,16 @@ class ServiceService extends AbstractEntityService {
         $this->validateAddEditDeleteActions ( $user, $service );
 
         //Make the change
-        $this->editServicePropertyLogic($service, $prop, $newValues);
+        $this->em->getConnection ()->beginTransaction ();
+        try {
+            $this->editServicePropertyLogic($service, $prop, $newValues);
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $ex ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $ex;
+        }
     }
 
     /**
@@ -1327,25 +1333,16 @@ class ServiceService extends AbstractEntityService {
         $keyname = $newValues ['SERVICEPROPERTIES'] ['NAME'];
         $keyvalue = $newValues ['SERVICEPROPERTIES'] ['VALUE'];
 
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            // Check that the prop is from the service
-            if ($prop->getParentService () != $service) {
-                $id = $prop->getId ();
-                throw new \Exception ( "Property {$id} does not belong to the specified service" );
-            }
-            // Set the service propertys new member variables
-            $prop->setKeyName ( $keyname );
-            $prop->setKeyValue ( $keyvalue );
-
-            $this->em->merge ( $prop );
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $ex ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $ex;
+        // Check that the prop is from the service
+        if ($prop->getParentService () != $service) {
+            $id = $prop->getId ();
+            throw new \Exception ( "Property {$id} does not belong to the specified service" );
         }
+        // Set the service propertys new member variables
+        $prop->setKeyName ( $keyname );
+        $prop->setKeyValue ( $keyvalue );
+
+        $this->em->merge ( $prop );
     }
 
     /**
@@ -1368,7 +1365,16 @@ class ServiceService extends AbstractEntityService {
         $this->validateAddEditDeleteActions ($user, $service);
 
         //Make the change
-        $this->editEndpointPropertyLogic($service, $prop, $newValues);
+        $this->em->getConnection ()->beginTransaction ();
+        try {
+            $this->editEndpointPropertyLogic($service, $prop, $newValues);
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $ex ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $ex;
+        }
     }
 
     /**
@@ -1387,26 +1393,17 @@ class ServiceService extends AbstractEntityService {
         $keyname = $newValues ['ENDPOINTPROPERTIES'] ['NAME'];
         $keyvalue = $newValues ['ENDPOINTPROPERTIES'] ['VALUE'];
 
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            // Check that the prop is from the endpoint
-            if ($prop->getParentEndpoint ()->getService () != $service) {
-                $id = $prop->getId ();
-                throw new \Exception ( "Property {$id} does not belong to the specified service endpoint" );
-            }
-
-            // Set the endpoints propertys new member variables
-            $prop->setKeyName ( $keyname );
-            $prop->setKeyValue ( $keyvalue );
-
-            $this->em->merge ( $prop );
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $ex ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $ex;
+        // Check that the prop is from the endpoint
+        if ($prop->getParentEndpoint ()->getService () != $service) {
+            $id = $prop->getId ();
+            throw new \Exception ( "Property {$id} does not belong to the specified service endpoint" );
         }
+
+        // Set the endpoints propertys new member variables
+        $prop->setKeyName ( $keyname );
+        $prop->setKeyValue ( $keyvalue );
+
+        $this->em->merge ( $prop );
     }
 
     /**

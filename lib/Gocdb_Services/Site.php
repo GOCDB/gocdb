@@ -975,7 +975,16 @@ class Site extends AbstractEntityService{
         $this->validatePropertyActions($user, $site);
 
         //Add the properties
-        $this->addPropertiesLogic($site, $propArr, $preventOverwrite);
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->addPropertiesLogic($site, $propArr, $preventOverwrite);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
     }
 
     /**
@@ -994,44 +1003,32 @@ class Site extends AbstractEntityService{
             throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
         }
 
-        $this->em->getConnection()->beginTransaction();
-        try {
-            foreach ($propArr as $i => $prop) {
-                $key = $prop[0];
-                $value = $prop[1];
-                //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
+        foreach ($propArr as $i => $prop) {
+            $key = $prop[0];
+            $value = $prop[1];
+            //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
-                foreach ($existingProperties as $existProp) {
-                    if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
-                        if ($preventOverwrite == false) {
-                            continue 2;
-                        } else {
-                            throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
-                        }
+            foreach ($existingProperties as $existProp) {
+                if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
+                    if ($preventOverwrite == false) {
+                        continue 2;
+                    } else {
+                        throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
                     }
                 }
-
-                //validate key value
-                $validateArray['NAME'] = $key;
-                $validateArray['VALUE'] = $value;
-                $validateArray['SITE'] = $site->getId();
-                $this->validate($validateArray, 'siteproperty');
-
-                $property = new \SiteProperty();
-                $property->setKeyName($key);
-                $property->setKeyValue($value);
-                $site->addSitePropertyDoJoin($property);
-                $this->em->persist($property);
-
             }
 
+            //validate key value
+            $validateArray['NAME'] = $key;
+            $validateArray['VALUE'] = $value;
+            $validateArray['SITE'] = $site->getId();
+            $this->validate($validateArray, 'siteproperty');
 
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
-            $this->em->close();
-            throw $e;
+            $property = new \SiteProperty();
+            $property->setKeyName($key);
+            $property->setKeyValue($value);
+            $site->addSitePropertyDoJoin($property);
+            $this->em->persist($property);
         }
     }
 
@@ -1050,7 +1047,16 @@ class Site extends AbstractEntityService{
         $this->validatePropertyActions($user, $site);
 
         //Make the change
-        $this->deleteSitePropertiesLogic($site, $propArr);
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->deleteSitePropertiesLogic($site, $propArr);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
     }
 
     /**
@@ -1061,25 +1067,16 @@ class Site extends AbstractEntityService{
      * @param array $propArr
      */
     protected function deleteSitePropertiesLogic(\Site $site, array $propArr) {
-        $this->em->getConnection()->beginTransaction();
-        try {
-            foreach ($propArr as $prop) {
-                //Check that the properties parent site the same as the one given
-                if ($prop->getParentSite() != $site){
-                    $id = $prop->getId();
-                    throw new \Exception("Property {$id} does not belong to the specified site");
-                }
-                // Site is the owning side so remove elements from the site
-                $site->getSiteProperties()->removeElement($prop);
-                // Once relationship is removed delete the actual element
-                $this->em->remove($prop);
+        foreach ($propArr as $prop) {
+            //Check that the properties parent site the same as the one given
+            if ($prop->getParentSite() != $site){
+                $id = $prop->getId();
+                throw new \Exception("Property {$id} does not belong to the specified site");
             }
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
-            $this->em->close();
-            throw $e;
+            // Site is the owning side so remove elements from the site
+            $site->getSiteProperties()->removeElement($prop);
+            // Once relationship is removed delete the actual element
+            $this->em->remove($prop);
         }
     }
 
@@ -1101,7 +1098,16 @@ class Site extends AbstractEntityService{
         $this->validatePropertyActions($user, $site);
 
         //Make the change
-        $this->editSitePropertyLogic($site, $prop, $newValues);
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->editSitePropertyLogic($site, $prop, $newValues);
+            $this->em->flush ();
+            $this->em->getConnection ()->commit ();
+        } catch ( \Exception $ex ) {
+            $this->em->getConnection ()->rollback ();
+            $this->em->close ();
+            throw $ex;
+        }
     }
 
     /**
@@ -1121,27 +1127,17 @@ class Site extends AbstractEntityService{
         $keyname=$newValues ['SITEPROPERTIES'] ['NAME'];
         $keyvalue=$newValues ['SITEPROPERTIES'] ['VALUE'];
 
-        $this->em->getConnection()->beginTransaction();
-
-        try {
-            //Check that the prop is from the site
-            if ($prop->getParentSite() != $site){
-                $id = $prop->getId();
-                throw new \Exception("Property {$id} does not belong to the specified site");
-            }
-
-            // Set the site propertys new member variables
-            $prop->setKeyName ( $keyname );
-            $prop->setKeyValue ( $keyvalue );
-
-            $this->em->merge ( $prop );
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $ex ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $ex;
+        //Check that the prop is from the site
+        if ($prop->getParentSite() != $site){
+            $id = $prop->getId();
+            throw new \Exception("Property {$id} does not belong to the specified site");
         }
+
+        // Set the site propertys new member variables
+        $prop->setKeyName ( $keyname );
+        $prop->setKeyValue ( $keyvalue );
+
+        $this->em->merge ( $prop );
     }
 
     /**
