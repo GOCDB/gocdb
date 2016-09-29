@@ -689,6 +689,8 @@ class ServiceGroup extends AbstractEntityService{
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
 
+        $this->validatePropertyActions($user, $serviceGroup);
+
         $this->validate($newValues['SERVICEGROUPPROPERTIES'], 'servicegroupproperty');
 
         $keyname = $newValues ['SERVICEGROUPPROPERTIES'] ['NAME'];
