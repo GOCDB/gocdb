@@ -1072,31 +1072,56 @@ class ServiceService extends AbstractEntityService {
             throw new \Exception ( "Property(s) could not be added due to the property limit of $extensionLimit" );
         }
 
+        //We will use this variable to track the keys as we go along, this will be used check they are all unique later
+        $keys=array();
+
         foreach ( $propArr as $i => $prop ) {
             $key = $prop [0];
             $value = $prop [1];
-            // Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
+            /**
+            *Find out if a property with the provided key already exists, if
+            *we are preventing overwrites, this will be a problem. If we are not,
+            *we will want to edit the existing property later, rather than create it.
+            */
+            $property = null;
             foreach ( $existingProperties as $existProp ) {
-                if ($existProp->getKeyName () == $key && $existProp->getKeyValue () == $value) {
-                    if ($preventOverwrite == false) {
-                        continue 2;
-                    } else {
-                        throw new \Exception ( "A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added." );
-                    }
+                if ($existProp->getKeyName () == $key) {
+                    $property=$existProp;
                 }
             }
 
-            // validate key value
-            $validateArray ['NAME'] = $key;
-            $validateArray ['VALUE'] = $value;
-            $this->validate ( $validateArray, 'serviceproperty' );
+            /*If the property key doesn't already exist, we add it. If it exists
+            *and we are not preventing overwrites, we edit the existing one.
+            *If it exists and we are preventing overwrites, we throw an exception
+            */
+            if (is_null($property)) {
+                // validate key value
+                $validateArray ['NAME'] = $key;
+                $validateArray ['VALUE'] = $value;
+                $this->validate ( $validateArray, 'serviceproperty' );
 
-            $serviceProperty = new \ServiceProperty ();
-            $serviceProperty->setKeyName ( $key );
-            $serviceProperty->setKeyValue ( $value );
-            $service->addServicePropertyDoJoin ( $serviceProperty );
-            $this->em->persist ( $serviceProperty );
+                $serviceProperty = new \ServiceProperty ();
+                $serviceProperty->setKeyName ( $key );
+                $serviceProperty->setKeyValue ( $value );
+                $service->addServicePropertyDoJoin ( $serviceProperty );
+                $this->em->persist ( $serviceProperty );
+            } elseif (!$preventOverwrite) {
+                $this->editServicePropertyLogic($service, $property, array('SERVICEPROPERTIES'=>array('NAME'=>$key,'VALUE'=>$value)));
+            } else {
+                throw new \Exception("A property with name \"$key\" already exists for this object, no properties were added.");
+            }
+
+            //Add the key to the keys array, to enable unique check
+            $keys[]=$key;
+        }
+
+
+        //Keys should be unique, create an exception if they are not
+        if(count(array_unique($keys))!=count($keys)) {
+            throw new \Exception(
+                "Property names should be unique. The requested new properties include multiple properties with the same name"
+            );
         }
     }
 
@@ -1146,32 +1171,57 @@ class ServiceService extends AbstractEntityService {
             throw new \Exception ( "Property(s) could not be added due to the property limit of $extensionLimit" );
         }
 
+        //We will use this variable to track the keys as we go along, this will be used check they are all unique later
+        $keys=array();
+
         foreach ( $propArr as $i => $prop ) {
             $key = $prop [0];
             $value = $prop [1];
-            // Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
+            /**
+            *Find out if a property with the provided key already exists, if
+            *we are preventing overwrites, this will be a problem. If we are not,
+            *we will want to edit the existing property later, rather than create it.
+            */
+            $property = null;
             foreach ( $existingProperties as $existProp ) {
-                if ($existProp->getKeyName () == $key && $existProp->getKeyValue () == $value) {
-                    if ($preventOverwrite == false) {
-                        continue 2;
-                    } else {
-                        throw new \Exception ( "A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added." );
-                    }
+                if ($existProp->getKeyName () == $key) {
+                    $property = $existProp;
                 }
             }
 
-            // validate key value
-            $validateArray ['NAME'] = $key;
-            $validateArray ['VALUE'] = $value;
-            $validateArray ['ENDPOINTID'] = $endpoint->getId ();
-            $this->validate ( $validateArray, 'endpointproperty' );
+            /*If the property doesn't already exist, we add it. If it exists
+            *and we are not preventing overwrites, we edit the existing one.
+            *If it exists and we are preventing overwrites, we throw an exception
+            */
+            if (is_null($property)) {
+                // validate key value
+                $validateArray ['NAME'] = $key;
+                $validateArray ['VALUE'] = $value;
+                $validateArray ['ENDPOINTID'] = $endpoint->getId ();
+                $this->validate ( $validateArray, 'endpointproperty' );
 
-            $property = new \EndpointProperty ();
-            $property->setKeyName ( $key );
-            $property->setKeyValue ( $value );
-            $endpoint->addEndpointPropertyDoJoin ( $property );
-            $this->em->persist ( $property );
+                $property = new \EndpointProperty ();
+                $property->setKeyName ( $key );
+                $property->setKeyValue ( $value );
+                $endpoint->addEndpointPropertyDoJoin ( $property );
+                $this->em->persist ( $property );
+            } elseif (!$preventOverwrite) {
+                $this->editEndpointPropertyLogic($endpoint->getService(), $property, array('ENDPOINTPROPERTIES'=>array('NAME'=>$key,'VALUE'=>$value)));
+            } else {
+                throw new \Exception("A property with name \"$key\" already exists for this object, no properties were added.");
+            }
+
+            //Add the key to the keys array, to enable unique check
+            $keys[]=$key;
+        }
+
+
+        //Keys should be unique, create an exception if they are not
+        if(count(array_unique($keys))!=count($keys)) {
+            throw new \Exception(
+                "Property names should be unique. The requested new properties include multiple properties with the same name"
+            );
         }
     }
 
@@ -1338,6 +1388,17 @@ class ServiceService extends AbstractEntityService {
             $id = $prop->getId ();
             throw new \Exception ( "Property {$id} does not belong to the specified service" );
         }
+
+        //If the properties key has changed, check there isn't an existing property with that key
+        if ($keyname != $prop->getKeyName()){
+            $existingProperties = $service->getServiceProperties();
+            foreach ($existingProperties as $existingProp) {
+                if ($existingProp->getKeyName() == $keyname) {
+                    throw new \Exception("A property with that name already exists for this object");
+                }
+            }
+        }
+
         // Set the service propertys new member variables
         $prop->setKeyName ( $keyname );
         $prop->setKeyValue ( $keyvalue );
@@ -1397,6 +1458,16 @@ class ServiceService extends AbstractEntityService {
         if ($prop->getParentEndpoint ()->getService () != $service) {
             $id = $prop->getId ();
             throw new \Exception ( "Property {$id} does not belong to the specified service endpoint" );
+        }
+
+        //If the properties key has changed, check there isn't an existing property with that key
+        if ($keyname != $prop->getKeyName()){
+            $existingProperties = $prop->getParentEndpoint()->getEndpointProperties();
+            foreach ($existingProperties as $existingProp) {
+                if ($existingProp->getKeyName() == $keyname) {
+                    throw new \Exception("A property with that name already exists for this object");
+                }
+            }
         }
 
         // Set the endpoints propertys new member variables

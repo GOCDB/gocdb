@@ -1003,32 +1003,57 @@ class Site extends AbstractEntityService{
             throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
         }
 
+        //We will use this variable to track the keys as we go along, this will be used check they are all unique later
+        $keys=array();
+
         foreach ($propArr as $i => $prop) {
             $key = $prop[0];
             $value = $prop[1];
-            //Check that we are not trying to add an existing key, and skip if we are, unless the user has selected the prevent overwrite mode
 
+            /**
+            *Find out if a property with the provided key already exists, if
+            *we are preventing overwrites, this will be a problem. If we are not,
+            *we will want to edit the existing property later, rather than create it.
+            */
+            $property = null;
             foreach ($existingProperties as $existProp) {
-                if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
-                    if ($preventOverwrite == false) {
-                        continue 2;
-                    } else {
-                        throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
-                    }
+                if ($existProp->getKeyName() == $key) {
+                    $property = $existProp;
                 }
             }
 
-            //validate key value
-            $validateArray['NAME'] = $key;
-            $validateArray['VALUE'] = $value;
-            $validateArray['SITE'] = $site->getId();
-            $this->validate($validateArray, 'siteproperty');
+            /*If the property doesn't already exist, we add it. If it exists
+            *and we are not preventing overwrites, we edit the existing one.
+            *If it exists and we are preventing overwrites, we throw an exception
+            */
+            if (is_null($property)) {
+                //validate key value
+                $validateArray['NAME'] = $key;
+                $validateArray['VALUE'] = $value;
+                $validateArray['SITE'] = $site->getId();
+                $this->validate($validateArray, 'siteproperty');
 
-            $property = new \SiteProperty();
-            $property->setKeyName($key);
-            $property->setKeyValue($value);
-            $site->addSitePropertyDoJoin($property);
-            $this->em->persist($property);
+                $property = new \SiteProperty();
+                $property->setKeyName($key);
+                $property->setKeyValue($value);
+                $site->addSitePropertyDoJoin($property);
+                $this->em->persist($property);
+            } elseif (!$preventOverwrite) {
+                $this->editSitePropertyLogic($site, $property, array('SITEPROPERTIES'=>array('NAME'=>$key,'VALUE'=>$value)));
+            } else {
+                throw new \Exception("A property with name \"$key\" already exists for this object, no properties were added.");
+            }
+
+            //Add the key to the keys array, to enable unique check
+            $keys[]=$key;
+        }
+
+
+        //Keys should be unique, create an exception if they are not
+        if(count(array_unique($keys))!=count($keys)) {
+            throw new \Exception(
+                "Property names should be unique. The requested new properties include multiple properties with the same name"
+            );
         }
     }
 
@@ -1131,6 +1156,16 @@ class Site extends AbstractEntityService{
         if ($prop->getParentSite() != $site){
             $id = $prop->getId();
             throw new \Exception("Property {$id} does not belong to the specified site");
+        }
+
+        //If the properties key has changed, check there isn't an existing property with that key
+        if ($keyname != $prop->getKeyName()){
+            $existingProperties = $site->getSiteProperties();
+            foreach ($existingProperties as $existingProp) {
+                if ($existingProp->getKeyName() == $keyname) {
+                    throw new \Exception("A property with that name already exists for this object");
+                }
+            }
         }
 
         // Set the site propertys new member variables

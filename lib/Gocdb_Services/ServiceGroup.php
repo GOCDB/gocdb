@@ -571,15 +571,6 @@ class ServiceGroup extends AbstractEntityService{
         }
     }
 
-    /** TODO
-     * Before adding or editing a key pair check that the keyname is not a reserved keyname
-     *
-     * @param String $keyname
-     */
-    private function checkNotReserved(\User $user, \ServiceGroup $serviceGroup, $keyname){
-        //TODO Function: This function is called but not yet filled out with an action
-    }
-
     /**
      * @param \ServiceGroup $serviceGroup
      * @param \User $user
@@ -602,38 +593,59 @@ class ServiceGroup extends AbstractEntityService{
             throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
         }
 
+        //We will use this variable to track the keys as we go along, this will be used check they are all unique later
+        $keys=array();
+
         $this->em->getConnection()->beginTransaction();
         try {
             foreach ($propArr as $i => $prop) {
                 $key = $prop[0];
                 $value = $prop[1];
-                //Check that we are not trying to add an existing key, and skip if we are,
-                //unless the user has selected the prevent overwrite mode
 
+                /**
+                *Find out if a property with the provided key already exists, if
+                *we are preventing overwrites, this will be a problem. If we are not,
+                *we will want to edit the existing property later, rather than create it.
+                */
+                $property = null;
                 foreach ($existingProperties as $existProp) {
-                    if ($existProp->getKeyName() == $key && $existProp->getKeyValue() == $value) {
-                        if ($preventOverwrite == false) {
-                            continue 2;
-                        } else {
-                            throw new \Exception("A property with name \"$key\" and value \"$value\" already exists for this object, no properties were added.");
-                        }
+                    if ($existProp->getKeyName() == $key) {
+                        $property = $existProp;
                     }
                 }
 
-                //validate key value
-                $validateArray['NAME'] = $key;
-                $validateArray['VALUE'] = $value;
-                $validateArray['SERVICEGROUP'] = $serviceGroup->getId();
-                $this->validate($validateArray, 'servicegroupproperty');
+                /*If the property doesn't already exist, we add it. If it exists
+                *and we are not preventing overwrites, we edit the existing one.
+                *If it exists and we are preventing overwrites, we throw an exception
+                */
+                if (is_null($property)) {
+                    //validate key value
+                    $validateArray['NAME'] = $key;
+                    $validateArray['VALUE'] = $value;
+                    $validateArray['SERVICEGROUP'] = $serviceGroup->getId();
+                    $this->validate($validateArray, 'servicegroupproperty');
 
-                $property = new \ServiceGroupProperty();
-                $property->setKeyName($key);
-                $property->setKeyValue($value);
-                $serviceGroup->addServiceGroupPropertyDoJoin($property);
-                $this->em->persist($property);
+                    $property = new \ServiceGroupProperty();
+                    $property->setKeyName($key);
+                    $property->setKeyValue($value);
+                    $serviceGroup->addServiceGroupPropertyDoJoin($property);
+                    $this->em->persist($property);
+                } elseif (!$preventOverwrite) {
+                    $this->editServiceGroupProperty($serviceGroup, $user, $property, array('SERVICEGROUPPROPERTIES'=>array('NAME'=>$key,'VALUE'=>$value)));
+                } else {
+                    throw new \Exception("A property with name \"$key\" already exists for this object, no properties were added.");
+                }
 
+                //Add the key to the keys array, to enable unique check
+                $keys[]=$key;
             }
 
+            //Keys should be unique, create an exception if they are not
+            if(count(array_unique($keys))!=count($keys)) {
+                throw new \Exception(
+                    "Property names should be unique. The requested new properties include multiple properties with the same name"
+                );
+            }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -644,6 +656,13 @@ class ServiceGroup extends AbstractEntityService{
         }
     }
 
+    /**
+     * Deletes site properties: validates the user has permission then calls the
+     * required logic
+     * @param \ServiceGroup $serviceGroup
+     * @param \User $user
+     * @param array $propArr
+     */
     public function deleteServiceGroupProperties(\ServiceGroup $serviceGroup,\User $user = null, array $propArr) {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
@@ -676,8 +695,7 @@ class ServiceGroup extends AbstractEntityService{
 
     /**
      * Edits a service group property.
-     * A check is performed to confirm the given property is from the parent
-     * serviceGroup, and an exception is thrown if not.
+     * The User is validated, and then the logic is carried out in a try catch block
      *
      * @param \ServiceGroup $serviceGroup
      * @param \User $user
@@ -691,26 +709,12 @@ class ServiceGroup extends AbstractEntityService{
 
         $this->validatePropertyActions($user, $serviceGroup);
 
-        $this->validate($newValues['SERVICEGROUPPROPERTIES'], 'servicegroupproperty');
-
-        $keyname = $newValues ['SERVICEGROUPPROPERTIES'] ['NAME'];
-        $keyvalue = $newValues ['SERVICEGROUPPROPERTIES'] ['VALUE'];
-
-        $this->checkNotReserved($user, $serviceGroup, $keyname);
-
         $this->em->getConnection ()->beginTransaction ();
 
         try {
-            //Check that the prop is from the sg
-            if ($prop->getParentServiceGroup() != $serviceGroup) {
-                $id = $prop->getId();
-                throw new \Exception("Property {$id} does not belong to the specified ServiceGroup");
-            }
-            // Set the site propertys new member variables
-            $prop->setKeyName ($keyname);
-            $prop->setKeyValue ($keyvalue);
+            //Make the change
+            $this->editServiceGroupPropertyLogic($serviceGroup, $prop, $newValues);
 
-            $this->em->merge ( $prop );
             $this->em->flush ();
             $this->em->getConnection ()->commit ();
         } catch ( \Exception $ex ) {
@@ -718,6 +722,45 @@ class ServiceGroup extends AbstractEntityService{
             $this->em->close ();
             throw $ex;
         }
+    }
+
+    /**
+     * All the logic to edit a service group property, without the user validation
+     * or database connections
+     * @param \ServiceGroup $serviceGroup
+     * @param \ServiceGroupProperty $prop
+     * @param array $newValues
+     *
+     */
+    protected function editServiceGroupPropertyLogic(\ServiceGroup $serviceGroup, \ServiceGroupProperty $prop, $newValues) {
+
+        $this->validate($newValues['SERVICEGROUPPROPERTIES'], 'servicegroupproperty');
+
+        $keyname = $newValues ['SERVICEGROUPPROPERTIES'] ['NAME'];
+        $keyvalue = $newValues ['SERVICEGROUPPROPERTIES'] ['VALUE'];
+
+        //Check that the prop is from the sg
+        if ($prop->getParentServiceGroup() != $serviceGroup) {
+            $id = $prop->getId();
+            throw new \Exception("Property {$id} does not belong to the specified ServiceGroup");
+        }
+
+        //If the properties key has changed, check there isn't an existing property with that key
+        if ($keyname != $prop->getKeyName()){
+            $existingProperties = $serviceGroup->getServiceGroupProperties();
+            foreach ($existingProperties as $existingProp) {
+                if ($existingProp->getKeyName() == $keyname) {
+                    throw new \Exception("A property with that name already exists for this object");
+                }
+            }
+        }
+
+        // Set the site propertys new member variables
+        $prop->setKeyName ($keyname);
+        $prop->setKeyValue ($keyvalue);
+
+        $this->em->merge ( $prop );
+
     }
 
 }

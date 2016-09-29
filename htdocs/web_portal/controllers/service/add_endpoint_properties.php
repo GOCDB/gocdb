@@ -43,7 +43,7 @@ function add_endpoint_properties() {
     if($_POST) {     	// If we receive a POST request it's for new properties
 
         //COMMENT
-        $preventOverwrite = false;
+        $preventOverwrite = true;
 
         //Get the parent service we want to add properties to.
         //I'm trying to use "parent" rather than "service" wherever possible to make this code more generic.
@@ -87,7 +87,7 @@ function add_endpoint_properties() {
         }
 
         if(isset($_REQUEST['PREVENTOVERWRITE'])){
-            $preventOverwrite = true;
+            $preventOverwrite = false;
         }
 
         //quick sanity check, are we actually adding any properties?
