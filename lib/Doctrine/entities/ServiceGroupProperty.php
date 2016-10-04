@@ -18,16 +18,17 @@
  * object with additional attributes. These properties can also be used for
  * the purposes of resource matching.
  * <p>
- * A unique constraint is defined on the DB preventing key=value duplicates.
- * Note, duplicate key names with different values are allowed for the purpose
- * of defning multi-valued properties.
+ * A unique constraint is defined on the DB preventing duplicate keys for a given service.
+ * Pairs with duplicate pkeys were intiially permitted, but are no longer.
+ * This allows the pairs to be upadated based enitrely on the key name and entity
+ * unique identifier, rather than needing the custom property id.
  * <p>
  * When the owning parent ServiceGroup is deleted, its ServiceGroupProperties
  * are also cascade-deleted.
  *
  * @author James McCarthy
  * @author David Meredith <david.meredith@stfc.ac.uk>
- * @Entity @Table(name="ServiceGroup_Properties", uniqueConstraints={@UniqueConstraint(name="sgroup_keypairs", columns={"parentServiceGroup_id", "keyName", "keyValue"})})
+ * @Entity @Table(name="ServiceGroup_Properties", uniqueConstraints={@UniqueConstraint(name="sgroup_keypairs", columns={"parentServiceGroup_id", "keyName"})})
  */
 class ServiceGroupProperty {
 

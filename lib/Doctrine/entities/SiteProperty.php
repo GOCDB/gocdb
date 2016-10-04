@@ -14,20 +14,21 @@
 //use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Custom Key=Value pairs (extension properties) used to augment a {@see Site}
+ * A custom Key=Value pair (extension property) used to augment a {@see Site}
  * object with additional attributes. These properties can also be used for
  * the purposes of resource matching.
  * <p>
- * A unique constraint is defined on the DB preventing key=value duplicates.
- * Note, duplicate key names with different values are allowed for the purpose
- * of defning multi-valued properties.
+ * A unique constraint is defined on the DB preventing duplicate keys for a given site.
+ * Pairs with duplicate pkeys were intiially permitted, but are no longer.
+ * This allows the pairs to be upadated based enitrely on the key name and entity
+ * unique identifier, rather than needing the custom property id.
  * <p>
  * When the owning parent Site is deleted, its SiteProperties
  * are also cascade-deleted.
  *
  * @author James McCarthy
  * @author David Meredith
- * @Entity @Table(name="Site_Properties",uniqueConstraints={@UniqueConstraint(name="site_keypairs", columns={"parentSite_id", "keyName", "keyValue"})})
+ * @Entity @Table(name="Site_Properties",uniqueConstraints={@UniqueConstraint(name="site_keypairs", columns={"parentSite_id", "keyName"})})
  */
 class SiteProperty {
 

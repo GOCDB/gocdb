@@ -42,7 +42,7 @@ function add_service_group_properties() {
 
     if($_POST) {     	// If we receive a POST request it's for new properties
 
-        $preventOverwrite = false;
+        $preventOverwrite = true;
 
         //Get the parent service we want to add properties to.
         //I'm trying to use "parent" rather than "service" wherever possible to make this code more generic.
@@ -80,7 +80,7 @@ function add_service_group_properties() {
             //will go straight to submit()
             $_REQUEST['UserConfirmed'] = "true";
             //since the user is only adding a single property, warn them if it already exists
-            $preventOverwrite = true;
+            $preventOverwrite = false;
         } else {
             //you really shouldn't end up here unless you are mangling your post requests
             throw new Exception("Properties could not be parsed");
