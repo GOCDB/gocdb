@@ -3,13 +3,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at: 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -25,13 +25,13 @@ require_once __DIR__ . '/IPIQueryRenderable.php';
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
- * Deprecated - do not use. 
+ * Deprecated - do not use.
  * Return an XML document that encodes the downtimes with optional offset based paging.
  * Optionally provide an associative array of query parameters with values to restrict the results.
  * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
  * 'topentity', 'ongoing_only' , 'startdate', 'enddate', 'windowstart', 'windowend',
- * 'scope', 'scope_match', 'page', 'all_lastmonth', 'id' 
+ * 'scope', 'scope_match', 'page', 'all_lastmonth', 'id'
  * (where scope refers to Service scope)
  *
  * Note: the following parameters are also available (added for the downtime calendar), and are not yet documented for PI use.
@@ -40,7 +40,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * 'sitelist', 'servicelist', 'ngilist', 'severity', 'classification', 'production' (service production status),
  * 'monitored' (service monitored?), 'certification_status' (site cert status), 'service_type_list'
  *
- * @deprecated Use GetDowntime.php instead that uses cursor based paging 
+ * @deprecated Use GetDowntime.php instead that uses cursor based paging
  * @author James McCarthy
  * @author David Meredith
  * @author Tom Byrne
@@ -73,12 +73,12 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
      * @param EntityManager $em
      * @param Boolean $nested When true the affected service endpoints are nested within each downtime element,
      *   when false the dowmtime element is repeated for each affected service endpoint (legacy)
-     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal') 
+     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal')
      *   - used as a prefix to build absolute PORTAL URLs that are rendered in the query output.
-     *   Should not end with '/'. 
-     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
-     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
-     *  (e.g. for HATEOAS links/paging). Should not end with '/'.  
+     *   Should not end with '/'.
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port')
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'.
      */
     public function __construct($em, $nested = false, $portalContextUrl = 'https://goc.egi.eu/portal', $urlAuthority='')
     {
@@ -86,13 +86,13 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
         if($this->nested){
             $this->selectedRenderingStyle = 'GOCDB_XML_NESTED_SE';
         } else {
-            $this->selectedRenderingStyle = 'GOCDB_XML_DUPLICATE_BY_SE'; 
+            $this->selectedRenderingStyle = 'GOCDB_XML_DUPLICATE_BY_SE';
         }
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
         $this->portalContextUrl = $portalContextUrl;
-        $this->urlAuthority = $urlAuthority; 
+        $this->urlAuthority = $urlAuthority;
     }
 
     /**
@@ -146,7 +146,7 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
             ->join('se.serviceType', 'st')
             ->orderBy('d.startDate', 'DESC')
     //->orderBy('d.id', 'ASC')
-            ; 
+            ;
 
         //try just joins!
 
@@ -468,15 +468,15 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
         }
         return $this->downtimes;
     }
-    
-    
+
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -490,10 +490,10 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
         } else {
             throw new \InvalidArgumentException('Requested rendering is not supported');
         }
-    
+
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -504,7 +504,7 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -516,7 +516,7 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
         $array[] = ('GOCDB_XML_NESTED_SE');
         return $array;
     }
-    
+
 
     /** Downtime data can be returned with a page parameter. When this parameter is set
      * we must use getResult type of fetch. When it is not set we can use getArrayResult.
@@ -570,7 +570,7 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
         $last = ceil($this->dtCountTotal / $this->maxResults);
         $next = $this->page + 1;
         if($last == 0){
-            $last = 1; 
+            $last = 1;
         }
 
         //$xml->addAttribute("page", $this->page);
@@ -620,6 +620,13 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
                             $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                            if ($endpoint->getMonitored()) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                         }
                     }
                 }
@@ -680,6 +687,13 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
                             $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                            if ($endpoint->getMonitored()) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                         }
                     }
                 }
@@ -758,6 +772,13 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($dtEndpoint['url']));
                             $xmlEndpoint->addChild('INTERFACENAME', $dtEndpoint['interfaceName']);
+                            if ($dtEndpoint['monitored']) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $dtEndpoint['email']);
                         }
                     }
                 }
@@ -825,6 +846,13 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
                             // Extensions ?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($dtEndpoint['url']));
                             $xmlEndpoint->addChild('INTERFACENAME', $dtEndpoint['interfaceName']);
+                            if ($dtEndpoint['monitored']) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $dtEndpoint['email']);
                         }
                     }
                 }
@@ -888,14 +916,14 @@ class GetDowntimeOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRen
         }
         $this->maxResults = $pageSize;
     }
-    
-    
+
+
     /**
      * Return the number of results returned in the current page of results ('count').
-     * Format of returned array is:  
+     * Format of returned array is:
      * <code>
      * $array = (
-     *   'count' => int or null, 
+     *   'count' => int or null,
      * </code>
      * {@inheritDoc}
      * @see \org\gocdb\services\IPIQueryPageable::getPostExecutionPageInfo()

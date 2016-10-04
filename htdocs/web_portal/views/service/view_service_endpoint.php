@@ -14,7 +14,7 @@ $seId = $se->getId();
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;"><?php xecho('Service Endpoint: ' . $endpoint->getName()) ?> </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-        Description: <?php xecho($endpoint->getDescription()) ?>
+        <?php xecho($endpoint->getDescription()) ?>
         </span>
     </div>
 
@@ -84,6 +84,25 @@ $seId = $se->getId();
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Id</td><td class="site_table"><?php echo $endpoint->getId() ?></td>
+                </tr>
+                <tr class="site_table_row_2">
+                    <td class="site_table">Contact E-mail</td><td class="site_table"><?php echo $endpoint->getEmail() ?></td>
+                </tr>
+                <tr class="site_table_row_1">
+                    <td class="site_table">Monitored</td>
+                    <td class="site_table">
+                        <?php
+                        if($endpoint->getMonitored()) {
+                        ?>
+                            <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                        <?php
+                        } else {
+                        ?>
+                            <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                        <?php
+                        }
+                        ?>
+                    </td>
                 </tr>
 
             </table>

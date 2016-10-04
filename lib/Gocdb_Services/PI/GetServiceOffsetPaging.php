@@ -3,13 +3,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at: 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -31,11 +31,11 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * Parmeter array keys include:
  * <pre>
  * 'hostname', 'sitename', 'roc', 'country', 'service_type', 'monitored',
- * 'scope', 'scope_match', 'properties', 'page' 
+ * 'scope', 'scope_match', 'properties', 'page'
  * (where scope refers to Service scope)
  * </pre>
- * @deprecated - Do not use, use GetService.php which implements cursor paging instead. 
- * 
+ * @deprecated - Do not use, use GetService.php which implements cursor paging instead.
+ *
  * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author James McCarthy
  * @author Tom Byrne
@@ -51,7 +51,7 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
     private $serviceEndpoints;
     private $renderMultipleEndpoints;
     private $portalContextUrl;
-    private $urlAuthority; 
+    private $urlAuthority;
 
     private $page;  // specifies the requested page number - must be null if not paging
     private $maxResults = 500; //default, set via setPageSize(int);
@@ -64,19 +64,19 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
      * Constructor takes entity manager which is then used by the query builder.
      *
      * @param EntityManager $em
-     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal') 
+     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal')
      *   - used as a prefix to build absolute PORTAL URLs that are rendered in the query output.
-     *   Should not end with '/'. 
-     * @param string $urlAuthority Authority part of URL (e.g. 'scheme://host:port') 
-     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
-     *  (e.g. for HATEOAS links/paging). Should not end with '/'. 
+     *   Should not end with '/'.
+     * @param string $urlAuthority Authority part of URL (e.g. 'scheme://host:port')
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'.
      */
     public function __construct($em, $portalContextUrl = 'https://goc.egi.eu/portal', $urlAuthority = '') {
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
         $this->portalContextUrl = $portalContextUrl;
-        $this->urlAuthority = $urlAuthority; 
+        $this->urlAuthority = $urlAuthority;
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -127,7 +127,7 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
                 ->leftjoin('s.ngi', 'n')
                 ->leftjoin('se.serviceType', 'st')
                 ->andWhere($qb->expr()->neq('cs.name', '?' . ++$bc))
-                ->orderBy('se.id', 'ASC');  // oldest first 
+                ->orderBy('se.id', 'ASC');  // oldest first
 
         // Validate page parameter
         if (isset($parameters['page'])) {
@@ -241,8 +241,8 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
         //$this->serviceEndpoints = $this->query->execute();
         //return $this->serviceEndpoints;
 
-        // if page is not null, then either the user has specified a 'page' url param, 
-        // or defaultPaging is true and this has been set to 1 
+        // if page is not null, then either the user has specified a 'page' url param,
+        // or defaultPaging is true and this has been set to 1
         if ($this->page != null) {
             $this->serviceEndpoints = new Paginator($this->query, $fetchJoinCollection = true);
             //put the total number of SE's into $this->seCountTotal
@@ -255,14 +255,14 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
         return $this->serviceEndpoints;
     }
 
-    
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -274,7 +274,7 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
         }
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -285,7 +285,7 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -296,8 +296,8 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
         $array[] = ('GOCDB_XML');
         return $array;
     }
-    
-    
+
+
     /** Returns proprietary GocDB rendering of the service endpoint data
      *  in an XML String
      * @return String
@@ -307,8 +307,8 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
         $xml = new \SimpleXMLElement("<results />");
 
         // Calculate and add paging info
-        // if page is not null, then either the user has specified a 'page' url param, 
-        // or defaultPaging is true and this has been set to 1 
+        // if page is not null, then either the user has specified a 'page' url param,
+        // or defaultPaging is true and this has been set to 1
         if ($this->page != null) {
             $last = ceil($this->seCountTotal / $this->maxResults);
             $next = $this->page + 1;
@@ -323,7 +323,7 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
             //$xml->addAttribute("last", $last);
 
             $metaXml = $xml->addChild("meta");
-            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);   
+            $helpers->addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $this->urlAuthority);
         }
 
 
@@ -389,6 +389,13 @@ class GetServiceOffsetPaging implements IPIQuery, IPIQueryPageable, IPIQueryRend
                     }
                     $xmlEndpoint->addChild('URL', xssafe($endpoint->getUrl()));
                     $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                    if ($endpoint->getMonitored()) {
+                        $mon = "Y";
+                    } else {
+                        $mon = "N";
+                    }
+                    $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                    //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                 }
             }
 

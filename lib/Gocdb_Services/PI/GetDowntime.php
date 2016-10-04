@@ -3,13 +3,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at: 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -30,7 +30,7 @@ use Doctrine\ORM\Tools\Pagination\Paginator;
  * Only known parameters are honoured while unknown params produce an error doc.
  * Parmeter array keys include:
  * 'topentity', 'ongoing_only' , 'startdate', 'enddate', 'windowstart', 'windowend',
- * 'scope', 'scope_match', 'page', 'all_lastmonth', 'id', 'next_cursor', 'prev_cursor'   
+ * 'scope', 'scope_match', 'page', 'all_lastmonth', 'id', 'next_cursor', 'prev_cursor'
  * (where scope refers to Service scope)
  *
  * Note: the following parameters are also available (added for the downtime calendar), and are not yet documented for PI use.
@@ -59,8 +59,8 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
     //private $page;
     private $maxResults = 500; //1000;
     private $defaultPaging = false;
-    private $isPaging = FALSE; 
-    
+    private $isPaging = FALSE;
+
     // following members are needed for paging
     private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
     private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter
@@ -69,7 +69,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
     private $lastCursorId=null;  // Used to build the <next> page HATEOAS link
     private $firstCursorId=null; // Used to build the <prev> page HATEOAS link
     private $urlAuthority;
-   
+
     // Controls DT result set ordering
     // DESC = youngest first (5,4,3,2,1)
     // ASC = oldest first (1,2,3,4,1)
@@ -86,12 +86,12 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
      * @param EntityManager $em
      * @param Boolean $nested When true the affected service endpoints are nested within each downtime element,
      *   when false the dowmtime element is repeated for each affected service endpoint (legacy)
-     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal') 
+     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal')
      *   - used as a prefix to build absolute PORTAL URLs that are rendered in the query output.
-     *   Should not end with '/'. 
-     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
-     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
-     *  (e.g. for HATEOAS links/paging). Should not end with '/'.  
+     *   Should not end with '/'.
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port')
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'.
      */
     public function __construct($em, $nested = false, $portalContextUrl = 'https://goc.egi.eu/portal', $urlAuthority='')
     {
@@ -99,13 +99,13 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
         if($this->nested){
             $this->selectedRenderingStyle = 'GOCDB_XML_NESTED_SE';
         } else {
-            $this->selectedRenderingStyle = 'GOCDB_XML_DUPLICATE_BY_SE'; 
+            $this->selectedRenderingStyle = 'GOCDB_XML_DUPLICATE_BY_SE';
         }
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
         $this->portalContextUrl = $portalContextUrl;
-        $this->urlAuthority = $urlAuthority; 
+        $this->urlAuthority = $urlAuthority;
     }
 
     /**
@@ -123,9 +123,9 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
             'windowend', 'scope', 'scope_match', 'all_lastmonth',
             'site_extensions', 'service_extensions', 'id', 'sitelist',
             'servicelist', 'ngilist', 'severity', 'classification', 'production',
-            'monitored', 'certification_status', 'service_type_list',            
-            'next_cursor', 
-            'prev_cursor' 
+            'monitored', 'certification_status', 'service_type_list',
+            'next_cursor',
+            'prev_cursor'
         );
 
         $this->helpers->validateParams($supportedQueryParams, $parameters);
@@ -141,17 +141,17 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
         $binds = array();
         $bc = -1;
         define('DATE_FORMAT', 'Y-m-d H:i');
-        
+
         $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters);
         $this->prev_cursor = $cursorParams['prev_cursor'];
         $this->next_cursor = $cursorParams['next_cursor'];
         $this->isPaging = $cursorParams['isPaging'];
-        
+
         // if we are enforcing paging, force isPaging to true
         if($this->defaultPaging){
             $this->isPaging = true;
-        } 
- 
+        }
+
 
         $qb = $this->em->createQueryBuilder();
 
@@ -170,32 +170,32 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
             ->join('se.serviceType', 'st')
             //->orderBy('d.startDate', 'DESC')
             ; //try just joins!
-        
-         
+
+
         $this->direction = $this->orderByAscDesc;
-        
-        // Cursor where clause: 
-        // Select rows *FROM* the current cursor position  
+
+        // Cursor where clause:
+        // Select rows *FROM* the current cursor position
         // by selecting rows either ABOVE or BELOW the current cursor position
-        // (this depends on the orderByAscDesc setting)  
+        // (this depends on the orderByAscDesc setting)
         if($this->isPaging){
             if($this->next_cursor !== null){
                 // MOVING DOWN/FWD:
-                if($this->orderByAscDesc == 'DESC'){    
+                if($this->orderByAscDesc == 'DESC'){
                     $qb->andWhere('d.id  < ?'.++$bc);   // (orderByAscDesc == DESC requires '<')
-                    
-                } else {   
-                    $qb->andWhere('d.id  > ?'.++$bc);   
+
+                } else {
+                    $qb->andWhere('d.id  > ?'.++$bc);
                 }
                 $binds[] = array($bc, $this->next_cursor);
                 $this->prev_cursor = null;
             }
             else if($this->prev_cursor !== null){
-                // MOVING UP/BACK: 
-                // We need to order the results in order to move AWAY *FROM* 
-                // the current cursor position (e.g. 50).  
-                // We later revese the ordering in the rendering/output to list results 
-                // as specified by $this->orderByAscDesc.  
+                // MOVING UP/BACK:
+                // We need to order the results in order to move AWAY *FROM*
+                // the current cursor position (e.g. 50).
+                // We later revese the ordering in the rendering/output to list results
+                // as specified by $this->orderByAscDesc.
                 if($this->orderByAscDesc == 'DESC'){
                     $qb->andWhere('d.id  > ?'.++$bc);   // (orderByAscDesc == DESC requires '>' )
                     $this->direction = 'ASC';
@@ -204,7 +204,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                     // 52
                     // 53
                 } else {
-                    $qb->andWhere('d.id  < ?'.++$bc);  
+                    $qb->andWhere('d.id  < ?'.++$bc);
                     $this->direction = 'DESC';
                     // moving backward: 'select ... where id < prev_cursor(50) orderBy DESC' =>
                     // 49
@@ -214,7 +214,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                 $binds[] = array($bc, $this->prev_cursor);
                 $this->next_cursor = null;
             } else {
-                $this->next_cursor = null;  
+                $this->next_cursor = null;
                 $this->prev_cursor = null;
             }
             // sets the position of the first result to retrieve (the "offset" - 0 by default)
@@ -222,9 +222,9 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
             // Sets the maximum number of results to retrieve (the "limit")
             $qb->setMaxResults($this->maxResults);
         }
-        
+
         $qb->orderBy('d.id', $this->direction);
-        
+
 
 
         //These following parameters are for the downtime calendar and are not documented for use in PI.
@@ -321,7 +321,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
         if (isset($parameters['ongoing_only'])) {
             $onGoingOnly = $parameters['ongoing_only'];
 
-            // where d.startDate < now and d.endDate > now 
+            // where d.startDate < now and d.endDate > now
             $qb->andWhere($qb->expr()->andX(
                 $qb->expr()->lt('d.startDate', '?' . ++$bc), $qb->expr()->gt('d.endDate', '?' . $bc)
             ));
@@ -469,11 +469,11 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
      * Executes the query that has been built and stores the returned data
      * so it can later be used to create XML, Glue2 XML or JSON.
      * <p>
-     * WARNING - The returned array will be populated using Doctrine's HYDRATE_OBJECT if the query 
-     * performed (cursor) paging and HYDRATE_ARRAY if not. You MUST be 
-     * aware of this when processing the returned array. 
-     * @see http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html#query-result-formats  
-     * 
+     * WARNING - The returned array will be populated using Doctrine's HYDRATE_OBJECT if the query
+     * performed (cursor) paging and HYDRATE_ARRAY if not. You MUST be
+     * aware of this when processing the returned array.
+     * @see http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html#query-result-formats
+     *
      * @return array An array populated using either HYDRATE_OBJECT or HYDRATE_ARRAY
      */
     public function executeQuery() {
@@ -485,7 +485,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
             foreach ($paginator as $downtime) {
                 $this->downtimes[] = $downtime;
             }
-    
+
             if($this->orderByAscDesc == 'DESC'){
                 if($this->direction == 'ASC'){
                     $this->downtimes = array_reverse($this->downtimes);
@@ -495,11 +495,11 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                     $this->downtimes = array_reverse($this->downtimes);
                 }
             }
-                 
-            // The paginator returns an array of Downtime objects (HYDRATE_OBJECT), see: 
+
+            // The paginator returns an array of Downtime objects (HYDRATE_OBJECT), see:
             //   http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html#query-result-formats
             // Therefore, the xml rendering methods that DO page (getXMLNestedPage() + getXMLNotNestedPage())
-            // require an object hydrated array, i.e.  
+            // require an object hydrated array, i.e.
 //             Array (
 //                     [0] => Downtime Object (
 //                             [id:protected] => 2284
@@ -508,26 +508,26 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
 //                     )
 //                     [1] => Downtime Object (
 //                             [id:protected] => 1234
-//                             [description:protected] => blah 
+//                             [description:protected] => blah
 //                             [severity:protected] => WARNING
 //                     )
-            
-    
+
+
         } else {
-            // The Downtime calendar AND the xml rendering methods that DONT page (getXMLNestedNoPage() + getXMLNotNestedNoPage()) 
-            // require an array hydrated array (HYDRATE_ARRAY). If I were to use: 
-            // $this->downtimes= $this->query->execute(); // Alias for execute(null, HYDRATE_OBJECT) to return array of Downtime objects 
+            // The Downtime calendar AND the xml rendering methods that DONT page (getXMLNestedNoPage() + getXMLNotNestedNoPage())
+            // require an array hydrated array (HYDRATE_ARRAY). If I were to use:
+            // $this->downtimes= $this->query->execute(); // Alias for execute(null, HYDRATE_OBJECT) to return array of Downtime objects
             // i get (expectedly) the following errors:
-            // 
-            // Invoked from the Downtime calendar: 
-            // PHP Fatal error:  Cannot use object of type Downtime as array 
+            //
+            // Invoked from the Downtime calendar:
+            // PHP Fatal error:  Cannot use object of type Downtime as array
             // in C:\Users\djm76\Documents\programming-vcs\php\gocdb\gocdb\htdocs\web_portal\controllers\downtime\downtimes_calendar.php on line 114
-            // 
-            // Invoked from a PI query: 
-            // PHP Fatal error: Cannot use object of type Downtime as array 
+            //
+            // Invoked from a PI query:
+            // PHP Fatal error: Cannot use object of type Downtime as array
             // in C:\Users\djm76\Documents\programming-vcs\php\gocdb\gocdb\lib\Gocdb_Services\PI\GetDowntime.php on line 847
-            // 
-            // Therefore we need to ensure HYDRATE_ARRAY with: 
+            //
+            // Therefore we need to ensure HYDRATE_ARRAY with:
             $this->downtimes= $this->query->getArrayResult(); // Alias for execute(null, HYDRATE_ARRAY).
 //          $this->downtimes =  Array(
 //                     [0] => Array (
@@ -542,26 +542,26 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
 //                             [severity] => WARNING
 //                             ...
 //                     )
-//             )     
+//             )
         }
-    
+
         $this->resultSetSize = count($this->downtimes);
-        
+
         // Set the first/last Cursor Ids from the FIRST/TOP and LAST/BOTTOM records listed in the result set
         // (needed for building cursor-pagination links).
         if($this->isPaging){
             if($this->resultSetSize > 0){
                 $this->lastCursorId = $this->downtimes[$this->resultSetSize - 1]->getId();
                 $this->firstCursorId = $this->downtimes[0]->getId();
-                
+
             } else if ($this->resultSetSize == 0 && $this->next_cursor !==null && $this->next_cursor >= 0){
-                // The next_cursor has overshot the last available record,  
-                // so use the current next_cursor in order to build the 'cursor_prev' link.  
-                // If the user has been using the next/prev links only and not manually 
+                // The next_cursor has overshot the last available record,
+                // so use the current next_cursor in order to build the 'cursor_prev' link.
+                // If the user has been using the next/prev links only and not manually
                 // entering the cursor URL param values, then the first occurence of
-                // this 'if' condition should mean that the current 'next_cursor' value   
+                // this 'if' condition should mean that the current 'next_cursor' value
                 // is the ID of the last record from the previous page (e.g. 20).
-                // We +1 to include the last record (e.g. 20) in the previous page i.e. 'where id < 21'. 
+                // We +1 to include the last record (e.g. 20) in the previous page i.e. 'where id < 21'.
                 if($this->orderByAscDesc == 'DESC'){
                     $this->firstCursorId = $this->next_cursor - 1;     // subtract 1 for DESC
                 } else {
@@ -570,34 +570,34 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                 $this->lastCursorId = null; // if we have overshot, there is no last/next cursor Id
             }
             else if ($this->resultSetSize == 0 && $this->prev_cursor !==null && $this->prev_cursor >= 0){
-                // The prev_cursor has undershot the first available record, 
-                // so use 'prev_cursor - 1' in order to build the 'cursor_next' link. 
+                // The prev_cursor has undershot the first available record,
+                // so use 'prev_cursor - 1' in order to build the 'cursor_next' link.
                 if($this->orderByAscDesc == 'DESC'){
                     $this->lastCursorId = $this->prev_cursor + 1;      // add 1 for DESC
                 } else {
-                    $this->lastCursorId = $this->prev_cursor - 1;      // subtract one for DESC 
+                    $this->lastCursorId = $this->prev_cursor - 1;      // subtract one for DESC
                 }
                 $this->firstCursorId = null; // if we have undershot, there is no first/prev cursor Id
             }
-            
+
             if($this->lastCursorId !==null && $this->lastCursorId < 0) $this->lastCursorId = 0;
             if($this->firstCursorId !==null && $this->firstCursorId < 0) $this->firstCursorId = 0;
-            
-            
+
+
         }
-        
-        
+
+
         return $this->downtimes;
     }
 
-    
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -605,16 +605,16 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
      */
     public function setSelectedRendering($renderingStyle){
         if($renderingStyle = 'GOCDB_XML_DUPLICATE_BY_SE') {
-            $this->nested = false; 
+            $this->nested = false;
         } else if($renderingStyle = 'GOCDB_XML_NESTED_SE'){
-            $this->nested = true; 
+            $this->nested = true;
         } else {
             throw new \InvalidArgumentException('Requested rendering is not supported');
         }
-                    
+
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -625,7 +625,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -637,8 +637,8 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
         $array[] = ('GOCDB_XML_NESTED_SE');
         return $array;
     }
-    
-    
+
+
     /** Downtime data can be returned with a page parameter. When this parameter is set
      * we must use getResult type of fetch. When it is not set we can use getArrayResult.
      * This method will call the correct XML rendering based on whether a page parameter is
@@ -677,15 +677,15 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
 
 
     /**
-     * @param array $downtimes An array of Downtime objects - requires Doctrine HYDRATE_OBJECT 
+     * @param array $downtimes An array of Downtime objects - requires Doctrine HYDRATE_OBJECT
      * @return \SimpleXMLElement
      */
     private function getXMLNestedPage($downtimes)
     {
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results />");
-        
-        
+
+
         // Calculate and add paging info
         if ($this->isPaging) {
             $metaXml = $xml->addChild("meta");
@@ -693,7 +693,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
             $metaXml->addChild("count", $this->resultSetSize);
             $metaXml->addChild("max_page_size", $this->maxResults);
         }
-        
+
 
         foreach ($downtimes as $downtime) {
             $xmlDowntime = $xml->addChild('DOWNTIME');
@@ -734,6 +734,13 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
                             $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                            if ($endpoint->getMonitored()) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                         }
                     }
                 }
@@ -743,7 +750,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
     }
 
     /**
-     * @param array $downtimes An array of Downtime objects - requires Doctrine HYDRATE_OBJECT 
+     * @param array $downtimes An array of Downtime objects - requires Doctrine HYDRATE_OBJECT
      * @return \SimpleXMLElement
      */
     private function getXMLNotNestedPage($downtimes)
@@ -787,6 +794,13 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
                             $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                            if ($endpoint->getMonitored()) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                         }
                     }
                 }
@@ -865,6 +879,13 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($dtEndpoint['url']));
                             $xmlEndpoint->addChild('INTERFACENAME', $dtEndpoint['interfaceName']);
+                            if ($dtEndpoint['monitored']) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $dtEndpoint['email']);
                         }
                     }
                 }
@@ -932,6 +953,13 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                             // Extensions ?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($dtEndpoint['url']));
                             $xmlEndpoint->addChild('INTERFACENAME', $dtEndpoint['interfaceName']);
+                            if ($dtEndpoint['monitored']) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $dtEndpoint['email']);
                         }
                     }
                 }
@@ -976,7 +1004,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
         }
         $this->defaultPaging = $pageTrueOrFalse;
     }
-    
+
     /**
      * Set the default page size (100 by default if not set)
      * @return int The page size (number of results per page)
@@ -984,7 +1012,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
     public function getPageSize(){
         return $this->maxResults;
     }
-    
+
     /**
      * Set the size of a single page.
      * @param int $pageSize
@@ -995,7 +1023,7 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
         }
         $this->maxResults = $pageSize;
     }
-    
+
     /**
      * See inteface doc.
      * {@inheritDoc}
@@ -1008,5 +1036,5 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
         $pageInfo['count'] = $this->resultSetSize;
         return $pageInfo;
     }
-    
+
 }
