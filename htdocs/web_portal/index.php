@@ -610,6 +610,21 @@ function Draw_Page($Page_Type) {
             require_once __DIR__ . '/controllers/service/edit_service_endpoint.php';
             edit_endpoint();
             break;
+        case "Add_API_Authentication_Entity" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/add_api_auth.php';
+            add_entity();
+            break;
+        case "Edit_API_Authentication_Entity" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/edit_api_auth.php';
+            edit_entity();
+            break;
+        case "Delete_API_Authentication_Entity" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/delete_api_auth.php';
+            delete_entity();
+            break;
         default:
             // require auth by default
             rejectIfNotAuthenticated();

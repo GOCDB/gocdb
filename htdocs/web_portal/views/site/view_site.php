@@ -522,7 +522,7 @@ $extensionProperties = $site->getSiteProperties();
         ?>
         </table>
 
-        <!--  only show this link if we're in read / write mode -->
+    <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
         <!-- Add new Downtime Link -->
         <a href="index.php?Page_Type=Add_Downtime&site=<?php echo($site->getId()); ?>">
@@ -537,9 +537,68 @@ $extensionProperties = $site->getSiteProperties();
     <!-- Show RoleActionRecords if user has permissions over this object -->
     <?php
     if ($params['ShowEdit']) {
-    require_once __DIR__ . '/../fragments/viewRoleActionsTable.php';
+        require_once __DIR__ . '/../fragments/viewRoleActionsTable.php';
     }
     ?>
+
+    <!-- Display API Authentication entities for this site -->
+    <?php if($params['ShowEdit']):?>
+        <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                Credentials authorised to use the GOCDB write API (Only shown if you have the relevant permissions)
+            </span>
+            <table id="AuthenticatedEntities" class="table table-striped table-condensed tablesorter">
+                <thead>
+                    <tr>
+                        <th>Type</th>
+                        <th>Identifier</th>
+                        <th>Edit</th>
+                        <th>Delete</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach ($params['APIAuthenticationEntities'] as $authEnt) {
+                    ?>
+                    <tr>
+                        <td>
+                            <?php xecho($authEnt->getType())?>
+                        </td>
+                        <td>
+                            <?php xecho($authEnt->getIdentifier())?>
+                        </td>
+                        <td style="width: 10%;"align = "center">
+                            <?php if(!$portalIsReadOnly):?>
+                                <a href="index.php?Page_Type=Edit_API_Authentication_Entity&authentityid=<?php echo $authEnt->getId();?>">
+                                    <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
+                                </a>
+                            <?php endif;?>
+                        </td>
+                        <td style="width: 10%;"align = "center">
+                            <?php if(!$portalIsReadOnly):?>
+                                <a href="index.php?Page_Type=Delete_API_Authentication_Entity&authentityid=<?php echo $authEnt->getId();?>">
+                                    <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/>
+                                </a>
+                            <?php endif;?>
+                        </td>
+                    </tr>
+                    <?php }?>
+                </tbody>
+            </table>
+
+            <?php if (!$portalIsReadOnly): ?>
+                <!-- Add new Downtime Link -->
+                <a href="index.php?Page_Type=Add_API_Authentication_Entity&parentid=<?php echo $site->getId()?>">
+                    <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                    <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+                        Add new API credential
+                    </span>
+                </a>
+            <?php endif; ?>
+
+        </div>
+    <?php endif;?>
+
 
 </div>
 

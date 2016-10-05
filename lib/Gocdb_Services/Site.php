@@ -954,8 +954,23 @@ class Site extends AbstractEntityService{
     public function validatePropertyActions(\User $user, \Site $site) {
         // Check to see whether the user has a role that covers this site
         //if(count($this->authorize Action(\Action::EDIT_OBJECT, $site, $user))==0){
-        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE) {
+        if (!$this->userCanEditSite($user, $site)) {
             throw new \Exception("You don't have permission over " . $site->getShortName());
+        }
+    }
+
+    /**
+    * Returns true if the user has permission to edit the Site
+    *
+    * @param \User $user
+    * @param \Site $Site
+    * @return boolian
+    */
+    public function userCanEditSite(\User $user, \Site $site) {
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE) {
+            return false;
+        } else {
+            return true;
         }
     }
 
@@ -1273,5 +1288,163 @@ class Site extends AbstractEntityService{
                 $xmlString = $dom->saveXML();
 
         return $xmlString;
+    }
+
+    private function uniqueAPIAuthEnt(\Site $site, $identifier, $type) {
+        //TODO: This would probably be more effecient as a DQL query
+        $existingAuthEnts = $site->getAPIAuthenticationEntities();
+
+        foreach ($existingAuthEnts as $authEnt) {
+            if($authEnt->getIdentifier()==$identifier && $authEnt->getType() == $type) {
+                throw new \Exception(
+                    "An authentication object of type \"$type\" and with identifier " .
+                    "\"$identifier\" already exists for" . $site->getName()
+                );
+            }
+        }
+    }
+
+    /**
+     * Finds a single API authentication entity by ID and returns its entity
+     * @param int $id the authentication entity ID
+     * @return APIAuthentication an API authentcation entity
+     */
+    public function getAPIAuthenticationEntity($id) {
+        $dql = "SELECT a FROM APIAuthentication a WHERE a.id = :id";
+        $authEnt = $this->em
+                ->createQuery($dql)
+                ->setParameter('id', $id)
+                ->getSingleResult();
+        return $authEnt;
+    }
+
+    public function addAPIAuthEntity(\Site $site, \User $user, $newValues) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        // Validate the user has permission to add properties
+        if (!$this->userCanEditSite($user, $site)) {
+            throw new \Exception("You don't have permission to add authentication entties to " . $site->getShortName());
+        }
+
+        $identifier = $newValues['IDENTIFIER'];
+        $type = $newValues['TYPE'];
+
+        //Check that an identifier ha been provided
+        if(empty($identifier)){
+            throw new \Exception("A value must be provided for the identifier");
+        }
+
+        //validate the values against the schema
+        $this->validate($newValues,'APIAUTHENTICATION');
+
+        //If the entity is of type X509, do a more thorough check than the validate service (as we know the type)
+        //Note that we are allowing ':' as they can appear in robot DN's
+        if ($type == 'X509' && !preg_match("/^(\/[A-Za-z]+=[a-zA-Z0-9\/\-\_\s\.,'@:\/]+)*$/", $identifier)) {
+            throw new \Exception("Invalid x509 DN");
+        }
+
+        //Check there isn't already a identifier of that type with that identifier for that Site
+        $this->uniqueAPIAuthEnt($site, $identifier, $type);
+
+        //Add the properties
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $authEnt = new \APIAuthentication();
+            $authEnt->setIdentifier($identifier);
+            $authEnt->setType($type);
+            $site->addAPIAuthenticationEntitiesDoJoin($authEnt);
+            $this->em->persist($authEnt);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+
+        return $authEnt;
+    }
+
+    public function deleteAPIAuthEntity(\APIAuthentication $authEntity, \User $user) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        // Validate the user has permission to delete properties
+        if (!$this->userCanEditSite($user, $authEntity->getParentSite())) {
+            throw new \Exception("You don't have permission to add authentication entties to " . $site->getShortName());
+        }
+
+        //delete the entity
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $parentSite = $authEntity->getParentSite();
+
+            //Remove the authentication entity from the site then remove the entity
+            $parentSite->getAPIAuthenticationEntities()->removeElement($authEntity);
+            $this->em->remove($authEntity);
+
+            $this->em->persist($parentSite);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+    public function editAPIAuthEntity(\APIAuthentication $authEntity, \User $user, $newValues) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        $site = $authEntity->getParentSite();
+
+        // Validate the user has permission to edit properties
+        if (!$this->userCanEditSite($user, $site)) {
+            throw new \Exception("You don't have permission to add authentication entties to " . $site->getShortName());
+        }
+
+        $identifier = $newValues['IDENTIFIER'];
+        $type = $newValues['TYPE'];
+
+        //Check that an identifier ha been provided
+        if(empty($identifier)){
+            throw new \Exception("A value must be provided for the identifier");
+        }
+
+        //validate the values against the schema
+        $this->validate($newValues,'APIAUTHENTICATION');
+
+
+        //If the entity is of type X509, do a more thorough check than the validate service (as we know the type)
+        //Note that we are allowing ':' as they can appear in robot DN's
+        if ($type == 'X509' && !preg_match("/^(\/[A-Za-z]+=[a-zA-Z0-9\/\-\_\s\.,'@:\/]+)*$/", $identifier)) {
+            throw new \Exception("Invalid x509 DN");
+        }
+
+        /**
+        * As long as something has changed, check there isn't already a
+        * identifier of that type with that identifier for that Site
+        */
+        if (!($authEntity->getIdentifier()==$identifier && $authEntity->getType() == $type)) {
+            $this->uniqueAPIAuthEnt($site, $identifier, $type);
+        }
+
+        //Edit the property
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $authEntity->setIdentifier($identifier);
+            $authEntity->setType($type);
+            $this->em->persist($authEntity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+
+        return $authEntity;
     }
 }
