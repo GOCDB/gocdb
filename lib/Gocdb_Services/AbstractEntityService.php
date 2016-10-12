@@ -53,8 +53,6 @@ abstract class AbstractEntityService {
      * @throws \Exception
      */
     protected function checkPortalIsNotReadOnlyOrUserIsAdmin(\User $user = NULL){
-        require_once __DIR__ . '/Config.php';
-
         //this block is required to deal with unregistered users (where $user is null)
         $userIsAdmin = false;
         if(!is_null($user)){
@@ -63,9 +61,32 @@ abstract class AbstractEntityService {
             }
         }
 
-        $configServ = new \org\gocdb\services\Config();
-        if ($configServ->IsPortalReadOnly() and !$userIsAdmin){
+        if ($this->portalIsReadOnly() and !$userIsAdmin){
             throw new \Exception("The portal is currently in read only mode, so this action is not permitted");
+        }
+    }
+
+    /**
+    *Returns true if portal is read only portal is read only
+    *
+    * @return boolean
+    */
+    private function portalIsReadOnly() {
+        require_once __DIR__ . '/Config.php';
+
+        $configServ = new \org\gocdb\services\Config();
+        return $configServ->IsPortalReadOnly();
+    }
+
+    /**
+    * Checks witht the config service if the portal is in read only mode and if
+    * it is throws an exception unless the user is a GOCDB admin
+    *
+    * @throws \Exception
+    */
+    protected function checkGOCDBIsNotReadOnly(){
+        if ($this->portalIsReadOnly() and !$userIsAdmin){
+            throw new \Exception("GOCDB is currently in read only mode, so this action is not permitted");
         }
     }
 

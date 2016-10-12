@@ -1009,6 +1009,36 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
+     * @return \ServiceProperty a single service property
+     */
+    public function getServicePropertyByKeyAndParent($key, $parentService) {
+        $parentServiceID = $parentService->getId();
+
+        $dql = "SELECT p FROM ServiceProperty p WHERE p.keyName = :KEY AND p.parentService = :PARENTSERVICEID";
+        $property = $this->em
+                    ->createQuery ($dql)
+                    ->setParameter ('KEY', $key)
+                    ->setParameter ('PARENTSERVICEID', $parentServiceID)
+                    ->getOneOrNullResult ();
+        return $property;
+    }
+
+    /**
+     * @return \SiteProperty a single site property
+     */
+    public function getEndpointPropertyByKeyAndParent($key, $parentEndpoint) {
+        $parentEndpointID = $parentEndpoint->getId();
+
+        $dql = "SELECT p FROM EndpointProperty p WHERE p.keyName = :KEY AND p.parentEndpoint = :PARENTENDPOINTID";
+        $property = $this->em
+                    ->createQuery ($dql)
+                    ->setParameter ('KEY', $key)
+                    ->setParameter ('PARENTENDPOINTID', $parentEndpointID)
+                    ->getOneOrNullResult ();
+        return $property;
+    }
+
+    /**
      * This method will check that a user has edit permissions over a service before allowing a user to add, edit or delete
      * any service information.
      *
@@ -1051,6 +1081,42 @@ class ServiceService extends AbstractEntityService {
         } catch ( \Exception $e ) {
             $this->em->getConnection ()->rollback ();
             $this->em->close ();
+            throw $e;
+        }
+    }
+
+    /**
+     * Adds sets of extension property key/value pairs to a service, following a request through the API
+     * @param \Service $service
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @param string $authenticationType
+     * @param string $authenticationIdentifier
+     * @throws \Exception
+     */
+    public function addServicePropertiesAPI(\Service $service, array $propKVArr, $preventOverwrite, $authenticationType, $authenticationIdentifier) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkGOCDBIsNotReadOnly();
+
+        // Validate the user has permission to add properties
+        \Factory::getSiteService()->checkAuthroisedAPIIDentifier($service->getParentSite(), $authenticationIdentifier, $authenticationType);
+
+        //Convert the property array into the format used by the webportal logic
+        #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
+        $propArr=array();
+        foreach ($propKVArr as $key => $value) {
+            $propArr[]= array(0=>$key,1=>$value);
+        }
+
+        //Add the properties
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->addPropertiesLogic($service, $propArr, $preventOverwrite);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
@@ -1150,6 +1216,42 @@ class ServiceService extends AbstractEntityService {
         } catch ( \Exception $e ) {
             $this->em->getConnection ()->rollback ();
             $this->em->close ();
+            throw $e;
+        }
+    }
+
+    /**
+     * Adds sets of extension property key/value pairs to a service, following a request through the API
+     * @param \EndpointLocation $service
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @param string $authenticationType
+     * @param string $authenticationIdentifier
+     * @throws \Exception
+     */
+    public function addEndpointPropertiesAPI(\EndpointLocation $endpoint, array $propKVArr, $preventOverwrite, $authenticationType, $authenticationIdentifier) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkGOCDBIsNotReadOnly();
+
+        // Validate the user has permission to add properties
+        \Factory::getSiteService()->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $authenticationIdentifier, $authenticationType);
+
+        //Convert the property array into the format used by the webportal logic
+        #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
+        $propArr=array();
+        foreach ($propKVArr as $key => $value) {
+            $propArr[]= array(0=>$key,1=>$value);
+        }
+
+        //Add the properties
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->addEndpointPropertiesLogic($endpoint, $propArr, $preventOverwrite);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
@@ -1255,6 +1357,38 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
+     * Deletes service properties: validates the user has permission then calls the
+     * required logic
+     * @param \Service $service
+     * @param \User $user
+     * @param array $propArr
+     */
+    public function deleteServicePropertiesAPI(\Service $service, array $propArr, $authIdentifierType, $authIdentifier) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkGOCDBIsNotReadOnly();
+
+        // Validate the user has permission to delete a property
+        foreach ($propArr as $prop) {
+            if ($prop->getParentService() != $service) {
+                throw new \Exception("Internal error: property parent service and service do not match.");
+            }
+        }
+        \Factory::getSiteService()->checkAuthroisedAPIIDentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+
+        //Make the change
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->deleteServicePropertiesLogic($service, $propArr);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+    /**
      * Logic to delete service properties
      *
      * @param \Service $service
@@ -1305,12 +1439,46 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
+     * Deletes endpoint properties: validates the user has permission then calls the
+     * required logic
+     * @param \EndpointLocation $endpoint
+     * @param \User $user
+     * @param array $propArr
+     */
+    public function deleteEndpointPropertiesAPI(\EndpointLocation $endpoint, array $propArr, $authIdentifierType, $authIdentifier) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkGOCDBIsNotReadOnly();
+
+        $parentService = $endpoint->getService();
+
+        // Validate the user has permission to delete a property
+        foreach ($propArr as $prop) {
+            if ($prop->getParentEndpoint() != $endpoint) {
+                throw new \Exception("Internal error: property endpoint and endpoint do not match");
+            }
+        }
+        \Factory::getSiteService()->checkAuthroisedAPIIDentifier($parentService->getParentSite(), $authIdentifier, $authIdentifierType);
+
+        //Make the change
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->deleteEndpointPropertiesLogic($parentService, $propArr);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+    /**
      * Logic to delete the given EndpointProperties in the array from their parent Endpoints (if set).
      * If the parent Endpoint has not been set (<code>$prop->getParentEndpoint()</code> returns null
      * then the function throws an exception because the user permissions to delete
      * the EP can't be determined on a null Endpoint.
      *
-     * @param \User $user
+     * @param \Service $service
      * @param array $propArr
      */
     protected function deleteEndpointPropertiesLogic(\Service $service, array $propArr) {

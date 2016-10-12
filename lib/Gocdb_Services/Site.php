@@ -495,6 +495,21 @@ class Site extends AbstractEntityService{
     }
 
     /**
+     * @return \SiteProperty a single site property
+     */
+    public function getPropertyByKeyAndParent($key, $parentSite) {
+        $parentSiteID = $parentSite->getId();
+
+        $dql = "SELECT p FROM SiteProperty p WHERE p.keyName = :KEY AND p.parentSite = :PARENTSITEID";
+        $property = $this->em
+                    ->createQuery ($dql)
+                    ->setParameter ('KEY', $key)
+                    ->setParameter ('PARENTSITEID', $parentSiteID)
+                    ->getOneOrNullResult ();
+        return $property;
+    }
+
+    /**
      *  @return array of NGIs
      */
     public function getNGIs() {
@@ -1003,6 +1018,44 @@ class Site extends AbstractEntityService{
     }
 
     /**
+     * Adds sets of extension property key/value pairs to a site, following a request through the API
+     * @param \Site $site
+     * @param array $propArr
+     * @param bool $preventOverwrite
+     * @param string $authenticationType
+     * @param string $authenticationIdentifier
+     * @throws \Exception
+     */
+    public function addPropertiesAPI(\Site $site, array $propKVArr, $preventOverwrite, $authenticationType, $authenticationIdentifier) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkGOCDBIsNotReadOnly();
+
+        // Validate the user has permission to add properties
+        $this->checkAuthroisedAPIIDentifier($site, $authenticationIdentifier, $authenticationType);
+
+        //Convert the property array into the format used by the webportal logic
+        #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
+        $propArr=array();
+        foreach ($propKVArr as $key => $value) {
+            $propArr[]= array(0=>$key,1=>$value);
+        }
+
+        //Add the properties
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->addPropertiesLogic($site, $propArr, $preventOverwrite);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+
+
+    /**
      * Logic to sets of extension property key/value pairs to a site.
      * @param \Site $site
      * @param array $propArr
@@ -1085,6 +1138,38 @@ class Site extends AbstractEntityService{
 
         // Validate the user has permission to delete a property
         $this->validatePropertyActions($user, $site);
+
+        //Make the change
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->deleteSitePropertiesLogic($site, $propArr);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+    /**
+     * Deletes site properties: validates the user has permission then calls the
+     * required logic
+     * @param \Site $site
+     * @param \User $user
+     * @param array $propArr
+     */
+    public function deleteSitePropertiesAPI(\Site $site, array $propArr, $authIdentifierType, $authIdentifier) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkGOCDBIsNotReadOnly();
+
+        // Validate the user has permission to delete a property
+        foreach ($propArr as $prop) {
+            if ($prop->getParentSite() != $site) {
+                throw new \Exception("Internal error: property parent site and site do not match.");
+            }
+        }
+        $this->checkAuthroisedAPIIDentifier($site, $authIdentifier, $authIdentifierType);
 
         //Make the change
         $this->em->getConnection()->beginTransaction();
@@ -1288,6 +1373,39 @@ class Site extends AbstractEntityService{
                 $xmlString = $dom->saveXML();
 
         return $xmlString;
+    }
+
+    /**
+    * Returns true if the identifier/type combination is a valid API
+    * authentication entity for the provided site.
+    * @param Site site
+    * @param string $identifier
+    * @param string $type
+    * @return boolean
+    */
+    public function authorisedAPIIdentifier (\Site $site, $identifier, $type) {
+        #TODO: this may be more effecient as a DQL query
+        foreach($site->getAPIAuthenticationEntities() as $authEnt) {
+            if ($authEnt->getType() == $type && $authEnt->getIdentifier() == $identifier) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+    * Returns true if the identifier/type combination is a valid API
+    * authentication entity for the provided site.
+    * @param Site site
+    * @param string $identifier
+    * @param string $type
+    * @throws \Exception
+    */
+    public function checkAuthroisedAPIIDentifier (\Site $site, $identifier, $type) {
+        if (!$this->authorisedAPIIdentifier($site, $identifier, $type)) {
+            throw new \Exception("The $type identifier \"$identifier\" is not authorised to alter the " . $site->getName() . " site");
+        }
     }
 
     private function uniqueAPIAuthEnt(\Site $site, $identifier, $type) {
