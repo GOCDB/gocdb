@@ -56,9 +56,5 @@
                 ?>
             </tbody>
         </table>
-
-    <?php if (sizeof($params['RoleActionRecords']) > 5): ?>
     </div>
-    <?php endif; ?>
 </div>
-
