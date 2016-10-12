@@ -12,15 +12,15 @@
         <span class="header listHeader">
             Role Request Log (Only shown if you have the necessary permissions)
         </span>
-        <table class="table table-striped table-condensed" id="roleActionTable">
+        <table class="table table-striped table-condensed tablesorter" id="roleActionTable">
             <thead>
                 <tr>
-                    <th class="site_table">Requested</th>
-                    <th class="site_table">By</th>
-                    <th class="site_table">Occurred On</th>
-                    <th class="site_table">OldStatus</th>
-                    <th class="site_table">NewStatus</th>
-                    <th class="site_table">Updated By</th>
+                    <th>Requested</th>
+                    <th>By</th>
+                    <th>Occurred On</th>
+                    <th>OldStatus</th>
+                    <th>NewStatus</th>
+                    <th>Updated By</th>
                 </tr>
             </thead>
             <tbody>
