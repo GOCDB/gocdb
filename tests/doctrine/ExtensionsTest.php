@@ -118,9 +118,9 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     //Create a site
     $site = TestUtil::createSampleSite("TestSite");
     //Create site property
-    $prop1 = TestUtil::createSampleSiteProperty("VO", "Atlas");
-    $prop2 = TestUtil::createSampleSiteProperty("VO", "CMS");
-    $prop3 = TestUtil::createSampleSiteProperty("VO", "Alice");
+    $prop1 = TestUtil::createSampleSiteProperty("VO-ATLAS", "true");
+    $prop2 = TestUtil::createSampleSiteProperty("VO-CMS", "true");
+    $prop3 = TestUtil::createSampleSiteProperty("VO-ALICE", "true");
 
     $site->addSitePropertyDoJoin($prop1);
     $site->addSitePropertyDoJoin($prop2);
@@ -214,9 +214,9 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $site->addServiceDoJoin($service);
 
     //Create service property
-    $prop1 = TestUtil::createSampleServiceProperty("VO", "Atlas");
-    $prop2 = TestUtil::createSampleServiceProperty("VO", "CMS");
-    $prop3 = TestUtil::createSampleServiceProperty("VO", "Alice");
+    $prop1 = TestUtil::createSampleServiceProperty("VO-Atlas", "true");
+    $prop2 = TestUtil::createSampleServiceProperty("VO-CMS", "true");
+    $prop3 = TestUtil::createSampleServiceProperty("VO-Alice", "true");
 
     $service->addServicePropertyDoJoin($prop1);
     $service->addServicePropertyDoJoin($prop2);
@@ -314,9 +314,9 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $sg->addService($service);
 
     //Create service group properties
-    $prop1 = TestUtil::createSampleServiceGroupProperty("VO", "Atlas");
-    $prop2 = TestUtil::createSampleServiceGroupProperty("VO", "CMS");
-    $prop3 = TestUtil::createSampleServiceGroupProperty("VO", "Alice");
+    $prop1 = TestUtil::createSampleServiceGroupProperty("VO-Atlas", "true");
+    $prop2 = TestUtil::createSampleServiceGroupProperty("VO-CMS", "true");
+    $prop3 = TestUtil::createSampleServiceGroupProperty("VO-Alice", "true");
 
     $sg->addServiceGroupPropertyDoJoin($prop1);
     $sg->addServiceGroupPropertyDoJoin($prop2);
@@ -411,9 +411,9 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $service->addEndpointLocationDoJoin($endpoint);
 
     //Create properties
-    $prop1 = TestUtil::createSampleEndpointProperty("VO", "Atlas");
-    $prop2 = TestUtil::createSampleEndpointProperty("VO", "CMS");
-    $prop3 = TestUtil::createSampleEndpointProperty("VO", "Alice");
+    $prop1 = TestUtil::createSampleEndpointProperty("VO-Atlas", "true");
+    $prop2 = TestUtil::createSampleEndpointProperty("VO-CMS", "true");
+    $prop3 = TestUtil::createSampleEndpointProperty("VO-Alice", "true");
 
     $endpoint->addEndpointPropertyDoJoin($prop1);
     $endpoint->addEndpointPropertyDoJoin($prop2);
