@@ -695,3 +695,17 @@ function getSTDataFromWeb() {
 
     return $serviceTypeData;
 }
+
+/**
+ * Gets the submitted post data for the addition or editing of API Authentication Entities
+ *
+ * @global array $_REQUEST array containg the post data
+ * @return array
+ */
+function getAPIAuthenticationFromWeb() {
+    $authEntityData['TYPE'] = $_REQUEST['TYPE'];
+    $authEntityData['IDENTIFIER'] = $_REQUEST['IDENTIFIER'];
+
+    return $authEntityData;
+
+}

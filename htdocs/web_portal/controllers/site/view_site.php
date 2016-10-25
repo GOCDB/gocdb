@@ -44,8 +44,10 @@ function view_site() {
     $params['Scopes']= $serv->getScopesWithParentScopeInfo($site);
     $params['ServicesAndScopes']=array();
     foreach($site->getServices() as $service){
-        $params['ServicesAndScopes'][]=array('Service'=>$service,
-                                             'Scopes'=>$servServ->getScopesWithParentScopeInfo($service));
+        $params['ServicesAndScopes'][]=array(
+            'Service'=>$service,
+            'Scopes'=>$servServ->getScopesWithParentScopeInfo($service)
+        );
     }
 
     $params['Downtimes'] = $serv->getDowntimes($site->getId(), 31);
@@ -53,6 +55,8 @@ function view_site() {
     $title = $site->getShortName();
     $params['site'] = $site;
     $params['roles'] = $roles;
+
+    $params['APIAuthenticationEntities'] = $site->getAPIAuthenticationEntities();
 
     // Add RoleActionRecords to params
     $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($site->getId(), 'site');

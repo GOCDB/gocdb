@@ -181,6 +181,12 @@ class Site extends OwnedEntity implements IScopedEntity{
     /** @Column(type="datetime", nullable=false) **/
     protected $creationDate;
 
+    /**
+     * Bidirectional - A Site can have many APIAuthenication Entities.
+     * @OneToMany(targetEntity="APIAuthentication", mappedBy="parentSite", cascade={"remove"})
+     */
+    protected $APIAuthenticationEntities = null;
+
     public function __construct() {
         parent::__construct();
         $this->creationDate =  new \DateTime("now");
@@ -324,6 +330,14 @@ class Site extends OwnedEntity implements IScopedEntity{
      */
     public function getSiteProperties(){
         return $this->siteProperties;
+    }
+
+    /**
+     * The Site's list of {@see APIAuthenication} entities.
+     * @return ArrayCollection
+     */
+    public function getAPIAuthenticationEntities(){
+        return $this->APIAuthenticationEntities;
     }
 
     /**
@@ -557,6 +571,15 @@ class Site extends OwnedEntity implements IScopedEntity{
         $siteProperty->_setParentSite($this);
     }
 
+    /**
+     * Add an API authentication entity to this Site's collection of autherntication
+     * entities. This method also sets the authentication entity's parentSite.
+     * @param \APIAuthentication $authenticationEntity
+     */
+    public function addAPIAuthenticationEntitiesDoJoin(\APIAuthentication $authenticationEntity) {
+        $this->APIAuthenticationEntities[] = $authenticationEntity;
+        $authenticationEntity->_setParentSite($this);
+    }
 
     /**
      * Sets this site's parent ngi.
