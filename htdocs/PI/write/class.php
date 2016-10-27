@@ -170,7 +170,7 @@ class PIWriteRequest {
         $this->entityProperty = strtolower($requestArray[3]);
 
         #entityPropertyKey - note that this is optional
-        if(isset($requestArray[ 4])) {
+        if(isset($requestArray[4])) {
             $this->entityPropertyKey = $requestArray[4];
         }
 
@@ -191,6 +191,7 @@ class PIWriteRequest {
             );
         }
     }
+
 
     function getRequestContent() {
         $genericError = "For more information on correctly formatting your request, see $this->docsURL";
@@ -255,7 +256,7 @@ class PIWriteRequest {
         #The second is that there is no key, and a single value has been provided
         #The third is that a series of key/value pairs have been provided
         #The fourth is a delete where no array or value has been specified, this is only currently supported for extension properties
-        #The final statement deals witht he case where a key has been specified as well as multiple values or where botha  single value and an array are set. Neither should happen.
+        #The final statement deals with the case where a key has been specified as well as multiple values or where both a single value and an array are set. Neither should happen.
         if (!is_null($this->entityPropertyKey) && !is_null($this->entityPropertyValue) && is_null($this->entityPropertyKVArray)) {
             #only currently supported for extension properties
             if ($this->entityProperty == 'extensionproperties') {
@@ -334,7 +335,7 @@ class PIWriteRequest {
 
         /*
         * We don't currently allow any access to unauthenticated users, so for now
-        * we can simply refuse anauthenticated users. In the future we could look
+        * we can simply refuse unauthenticated users. In the future we could look
         * to authenticate everything except 'GET' requests and then process 'GETs'
         * on a case by case basis.
         */
