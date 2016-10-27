@@ -21,7 +21,7 @@
 /*====================================================== */
 namespace org\gocdb\services;
 
-require_once __DIR__ . '/class.php';
+require_once __DIR__ . '/PIWriteRequest.php';
 
 $piReq = new PIWriteRequest();
 $piReq->processChange();
