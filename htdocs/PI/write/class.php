@@ -115,9 +115,9 @@ class PIWriteRequest {
             "For more details see: $this->docsURL";
 
         #If the request isn't set then no url parameters have been used
-        if (isset($_GET['request'])) {
+        if (isset($_REQUEST['request'])) {
             #Note that apache will collapse multiple /'s into a single /
-            $this->requestURL = $_GET['request'];
+            $this->requestURL = $_REQUEST['request'];
         }
         else {
             $this->httpResponseCode=400;
