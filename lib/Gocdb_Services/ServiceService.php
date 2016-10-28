@@ -1781,9 +1781,6 @@ class ServiceService extends AbstractEntityService {
         if (empty ( $name )) {
             throw new \Exception ( "An endpoint must have a name." );
         }
-        if (filter_var ( $url, FILTER_VALIDATE_URL ) === FALSE) {
-            throw new \Exception ( "An endpoint must have a valid url." );
-        }
         // check endpoint's name is unique under the service
         foreach ( $service->getEndpointLocations () as $endpointL ) {
             if ($endpointL->getName () == $name) {
@@ -1847,9 +1844,6 @@ class ServiceService extends AbstractEntityService {
 
         if (empty ( $name )) {
             throw new \Exception ( "An endpoint must have a name." );
-        }
-        if (filter_var ( $url, FILTER_VALIDATE_URL ) === FALSE) {
-            throw new \Exception ( "An endpoint must have a valid url." );
         }
 
         // check endpoint's name is unique under the service
