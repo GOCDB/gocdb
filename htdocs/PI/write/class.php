@@ -21,8 +21,8 @@
 /*====================================================== */
 namespace org\gocdb\services;
 
-require_once __DIR__ . '/../../../lib/Gocdb_Services/config.php';
-require_once __DIR__ . '/../../../lib/Gocdb_Services/validate.php';
+require_once __DIR__ . '/../../../lib/Gocdb_Services/Config.php';
+require_once __DIR__ . '/../../../lib/Gocdb_Services/Validate.php';
 require_once __DIR__ . '/../../../lib/Doctrine/bootstrap.php';
 require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
