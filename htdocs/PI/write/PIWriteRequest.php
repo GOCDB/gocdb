@@ -205,7 +205,13 @@ class PIWriteRequest {
                     $this->entityPropertyValue=$requestArray['value'];
                 } elseif(!isset($requestArray['value'])) {
                     $this->httpResponseCode=400;
-                    throw new \Exception("A value for \"$this->entityProperty\" should be provided. " . $genericError );
+                    throw new \Exception(
+                        "A value for \"$this->entityProperty\" should be provided. " .
+                        "This should be provided in a JSON string {\"value\":\"<value for " .
+                        "\"$this->entityProperty\">\"}, with no other pairs present." .
+                        " If you believe \"$this->entityProperty\" should take multiple key/value ".
+                        "pairs, check your spelling of \"$this->entityProperty\"" . $genericError
+                    );
                 } else {
                     $this->httpResponseCode=400;
                     throw new \Exception("Request message cotnained more than one object. " . $genericError );
