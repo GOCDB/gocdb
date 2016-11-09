@@ -82,7 +82,7 @@ class PIRequest {
     // not specified, then the query will be paged by default (true is
     // the preference for large/production datasets).
     private $defaultPageSize = 400;
-    private $defaultPaging = true; //FALSE;
+    private $defaultPaging = FALSE; // specify true to enforce paging
 
     public function __construct(){
         // returns the base portal URL as defined in conf file

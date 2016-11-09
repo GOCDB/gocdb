@@ -24,9 +24,10 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 * Database server, Oracle 11g+ or MySQL
   * (note: the free Oracle 11g XE Express Editions which comes with a free license is perfectly suitable)
 
-* [Doctrine](#doctrine)
-  * 2.4.8 (newer versions should be fine but are untested)
+* [Doctrine and DBAL](#doctrine)
+  * doctrine 2.4.8 (newer versions should be fine but are untested)
   * Note, for doctine 2.3.3 and older there is a bug in the paging code, which affects the GetDowntime API result. The fix is detailed [below](#doctrineFix)
+  * dbal 2.5.4 - a DB abstraction layer that doctine depends on (newer versions should be fine but are untested)
 
 * PhpUnit and PDO driver for selected DB (optional, required for running DBUnit tests only, see `tests/INSTALL.md` for more info)
 
@@ -121,17 +122,20 @@ endpoints. See the sample config file for details.
 
 ### Doctrine <a id="doctrine"></a>   
 
-Install Doctrine ORM 2.4.8+ and make sure doctrine is available on the command
+Install Doctrine ORM and DBAL using one of the methods below and make sure doctrine is available on the command
 line. Note, Doctrine can be installed either globally using PEAR or as a project
 specific dependency using composer. Either way, ensure your `$PATH` environment
 variable is updated to run the doctrine command line client:
 
 ```bash
 $ export PATH=$PATH:/home/djm76/programming/php/gocdb5_mep/gocdb/vendor/bin
+$ cd lib/Doctrine
 $ doctrine --version
 Doctrine Command Line Interface version 2.4.8
+$ doctrine-dbal --version
+Doctrine Command Line Interface version 2.5.4
 ```
-Note: you will need to run `$doctrine --version` from within the <gocDBSrcHome>/lib/Doctrine directory.
+Note: you will need to run `$doctrine --version` from within the `gocDBSrcHome/lib/Doctrine` directory.
 
 #### Install Doctrine Via Composer (Recommended)
 
