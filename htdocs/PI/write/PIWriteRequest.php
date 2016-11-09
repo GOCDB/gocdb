@@ -655,8 +655,7 @@ class PIWriteRequest {
     function returnResult() {
         #TODO: return the entity that's been changed or created, for now just
         #return the no content http code (delete operations should return nothing and a 204)
-        #$this->httpResponseCode = 204;
-        $this->httpResponseCode=200;
+        $this->httpResponseCode = 204;
 
         #Set the HTTP response code
         http_response_code($this->httpResponseCode);
