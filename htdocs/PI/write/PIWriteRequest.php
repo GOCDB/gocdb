@@ -39,7 +39,7 @@ class PIWriteRequest {
     private $baseUrl;
     #TODO add correct url for documentation (also write it!)
     #TODO: move the docs url to the local_info.xml
-    private $docsURL="https://wiki.egi.eu/wiki/GOCDB/PI/Technical_Documentation";
+    private $docsURL=null;
     private $apiVersion=null;
     private $entityType=null;
     private $entityID=null;
@@ -68,7 +68,10 @@ class PIWriteRequest {
     public function __construct() {
         # returns the base portal URL as defined in conf file
         $configServ = new config();
-        $this->baseUrl = $configServ->getServerBaseUrl() . "/writeDev"; #TODO: This will need to be the correct url once the location of the write API is settled
+        $this->baseUrl = $configServ->getServerBaseUrl() . "/gocdbpi";
+        $this->docsURL = $configServ->getWriteApiDocsUrl();
+
+
     }
 
     /**

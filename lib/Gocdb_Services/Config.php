@@ -134,14 +134,24 @@ class Config {
         $url = $localInfo->local_info->web_portal_url;
         return strval($url);
     }
-    
+
     /**
-     * The base server URL as recorded in local_info.xml. This URL is used with the 
-     * PI query output, e.g. for building paging/HATEOAS links. 
+     * The base server URL as recorded in local_info.xml. This URL is used with the
+     * PI query output, e.g. for building paging/HATEOAS links.
      */
     public function getServerBaseUrl(){
         $localInfo = $this->GetLocalInfoXML();
         $url = $localInfo->local_info->server_base_url;
+        return strval($url);
+    }
+
+    /**
+     * The wtite API documentation URL as recorded in local_info.xml.
+     * This URL is given to users of the write API in error messages
+     */
+    public function getWriteApiDocsUrl(){
+        $localInfo = $this->GetLocalInfoXML();
+        $url = $localInfo->local_info->write_api_user_docs_url;
         return strval($url);
     }
 
