@@ -192,6 +192,15 @@ see: [pear installation](http://pear.php.net/manual/en/installation.getting.php)
   $ pear channel-discover pear.doctrine-project.org
   $ pear channel-discover pear.symfony.com
   $ pear install --alldeps doctrine/DoctrineORM
+  $
+  $ echo 'to list channels'
+  $ pear list-channels
+  $
+  $ echo 'to list packages installed in a particular channel:'
+  $ pear list -c pear.doctrine-project.org
+  $ 
+  $ echo 'to uninstall a package'
+  $ pear uninstall pear.doctrine-project.org/DoctrineORM
   ```
 
 #### Paginator fix <a id="doctrineFix"></a>
