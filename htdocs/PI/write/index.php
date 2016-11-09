@@ -23,6 +23,7 @@ namespace org\gocdb\services;
 
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/PIWriteRequest.php';
+require_once __DIR__ . '/resultReturnFunctions.php';
 
 #services for request
 $siteServ = \Factory::getSiteService();
@@ -46,6 +47,10 @@ else {
 #see http://php.net/manual/en/wrappers.php.php
 $requestContents = file_get_contents('php://input');
 
+#Run the request
 $piReq = new PIWriteRequest();
 $piReq->setServiceService($serviceServ);
-$piReq->processChange($requestMethod, $baseUrl, $requestContents, $siteServ);
+$returnArray = $piReq->processRequest($requestMethod, $baseUrl, $requestContents, $siteServ);
+
+#Return the object to the user
+returnJsonWriteAPIResult($returnArray['httpResponseCode'],$returnArray['returnObject']);

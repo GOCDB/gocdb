@@ -32,17 +32,6 @@ require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
 // value will be according to the server's default timezone (e.g. GMT).
 date_default_timezone_set("UTC");
 
-/*
-* http_response_code() is implemented in php from php 5.4.0 onwards, when we
-* upgrade, this block (and the associated file) can be deleted (having checked that  http_response_code
-* implments all the status codes that we may wish to use).
-* See http://stackoverflow.com/questions/3258634/php-how-to-send-http-response-code
-* and http://php.net/http_response_code#107261
-*/
-if (!function_exists('http_response_code')) {
-    require_once __DIR__ . '/responseCode.php';
-}
-
 #TODO php errors return a  200 code! see: http://stackoverflow.com/questions/2331582/catch-php-fatal-error & https://bugs.php.net/bug.php?id=50921
 
 class PIWriteRequest {
@@ -73,6 +62,9 @@ class PIWriteRequest {
     private $supportedAPIVersions= array("v5");
     private $supportedRequestMethods= array("POST","PUT","DELETE");
 
+    #An array that will ultimately be returned to the user
+    private $returnObject=null;
+
     public function __construct() {
         # returns the base portal URL as defined in conf file
         $configServ = new config();
@@ -83,7 +75,7 @@ class PIWriteRequest {
     * Process the API request
     *@throws \Exception
     */
-    function processChange($method, $requestUrl, $requestContents, Site $siteService) {
+    function processRequest($method, $requestUrl, $requestContents, Site $siteService) {
         try {
             $this->getAndProcessURL($method, $requestUrl);
             $this->getRequestContent($requestContents);
@@ -91,19 +83,15 @@ class PIWriteRequest {
             $this->updateEntity($siteService);
 
         } catch (\Exception $e) {
-
-            #Set the HTTP response code
-            http_response_code($this->httpResponseCode);
-
-            #Set the content type
-            header("Content-Type:application/json");
-
-            #echo the error as JSON
+            #Return the error as the return object
             $errorArray['Error']= array('Code' => $this->httpResponseCode, 'Message' => utf8_encode($e->getMessage()), 'API-Documentation'=>$this->docsURL);
-            echo json_encode($errorArray);
-
-            die();
+            $this->returnObject = $errorArray;
         }
+
+        return array(
+            'httpResponseCode' => $this->httpResponseCode,
+            'returnObject' => $this->returnObject
+        );
     }
 
     /**
@@ -656,17 +644,6 @@ class PIWriteRequest {
         #TODO: return the entity that's been changed or created, for now just
         #return the no content http code (delete operations should return nothing and a 204)
         $this->httpResponseCode = 204;
-
-        #Set the HTTP response code
-        http_response_code($this->httpResponseCode);
-
-        #Set the Content-type in the header (204 response should have no content)
-        if($this->httpResponseCode == 204) {
-            #This removes the content-type from the header
-            header("Content-Type:");
-        } else {
-            header("Content-Type:application/json");
-        }
     }
 
     public function setServiceService (ServiceService $serviceService) {
