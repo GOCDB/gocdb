@@ -1132,14 +1132,11 @@ class ServiceService extends AbstractEntityService {
     protected function addPropertiesLogic(\Service $service, array $propArr, $preventOverwrite = false) {
         $existingProperties = $service->getServiceProperties ();
 
-        // Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
-        $extensionLimit = \Factory::getConfigService ()->getExtensionsLimit ();
-        if (sizeof ( $existingProperties ) + sizeof ( $propArr ) > $extensionLimit) {
-            throw new \Exception ( "Property(s) could not be added due to the property limit of $extensionLimit" );
-        }
-
         //We will use this variable to track the keys as we go along, this will be used check they are all unique later
         $keys=array();
+
+        //We will use this variable to track teh final number of properties and ensure we do not exceede the specified limit
+        $propertyCount = sizeof($existingProperties);
 
         foreach ( $propArr as $i => $prop ) {
             $key = $prop [0];
@@ -1172,6 +1169,9 @@ class ServiceService extends AbstractEntityService {
                 $serviceProperty->setKeyValue ( $value );
                 $service->addServicePropertyDoJoin ( $serviceProperty );
                 $this->em->persist ( $serviceProperty );
+
+                //increment the property counter to enable check against property limit
+                $propertyCount++;
             } elseif (!$preventOverwrite) {
                 $this->editServicePropertyLogic($service, $property, array('SERVICEPROPERTIES'=>array('NAME'=>$key,'VALUE'=>$value)));
             } else {
@@ -1188,6 +1188,12 @@ class ServiceService extends AbstractEntityService {
             throw new \Exception(
                 "Property names should be unique. The requested new properties include multiple properties with the same name."
             );
+        }
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if ($propertyCount > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
         }
     }
 
@@ -1267,14 +1273,11 @@ class ServiceService extends AbstractEntityService {
     protected function addEndpointPropertiesLogic(\EndpointLocation $endpoint, array $propArr, $preventOverwrite = false) {
         $existingProperties = $endpoint->getEndpointProperties ();
 
-        // Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
-        $extensionLimit = \Factory::getConfigService ()->getExtensionsLimit ();
-        if (sizeof ( $existingProperties ) + sizeof ( $propArr ) > $extensionLimit) {
-            throw new \Exception ( "Property(s) could not be added due to the property limit of $extensionLimit" );
-        }
-
         //We will use this variable to track the keys as we go along, this will be used check they are all unique later
         $keys=array();
+
+        //We will use this variable to track teh final number of properties and ensure we do not exceede the specified limit
+        $propertyCount = sizeof($existingProperties);
 
         foreach ( $propArr as $i => $prop ) {
             $key = $prop [0];
@@ -1308,6 +1311,9 @@ class ServiceService extends AbstractEntityService {
                 $property->setKeyValue ( $value );
                 $endpoint->addEndpointPropertyDoJoin ( $property );
                 $this->em->persist ( $property );
+
+                //increment the property counter to enable check against property limit
+                $propertyCount++;
             } elseif (!$preventOverwrite) {
                 $this->editEndpointPropertyLogic($endpoint->getService(), $property, array('ENDPOINTPROPERTIES'=>array('NAME'=>$key,'VALUE'=>$value)));
             } else {
@@ -1324,6 +1330,12 @@ class ServiceService extends AbstractEntityService {
             throw new \Exception(
                 "Property names should be unique. The requested new properties include multiple properties with the same name."
             );
+        }
+
+        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if ($propertyCount > $extensionLimit){
+            throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
         }
     }
 

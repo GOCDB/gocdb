@@ -387,18 +387,25 @@ class PIWriteRequest {
                         #Based on Request types run either an add with or without overwritebv or a remove.
                         switch ($this->requestMethod) {
                             case 'POST':{
-                                #Post requests will fail if the property with that value already exists
-                                #TODO:This will return the wrong error code if somethign else goes wrong
+                                #Post requests will fail if the property with that value already exists or the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
                                 try {
                                     $siteService->addPropertiesAPI($site, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
-                                    break;
                                 } catch(\Exception $e) {
                                     $this->httpResponseCode=409;
                                     throw $e;
                                 }
+                                break;
                             }
                             case 'PUT':{
-                                $siteService->addPropertiesAPI($site, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                #Put requests will fail if the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
+                                try {
+                                    $siteService->addPropertiesAPI($site, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                } catch(\Exception $e) {
+                                    $this->httpResponseCode=409;
+                                    throw $e;
+                                }
                                 break;
                             }
                             case 'DELETE':{
@@ -482,18 +489,25 @@ class PIWriteRequest {
                         #Based on Request types run either an add with or without overwritebv or a remove.
                         switch ($this->requestMethod) {
                             case 'POST':{
-                                #Post requests will fail if the property with that value already exists
-                                #TODO:This will return the wrong error code if somethign else goes wrong
+                                #Post requests will fail if the property with that value already exists or the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
                                 try {
                                     $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
-                                    break;
                                 } catch(\Exception $e) {
                                     $this->httpResponseCode=409;
                                     throw $e;
                                 }
+                                break;
                             }
                             case 'PUT':{
-                                $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                #Put requests will fail if the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
+                                try {
+                                    $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                } catch(\Exception $e) {
+                                    $this->httpResponseCode=409;
+                                    throw $e;
+                                }
                                 break;
                             }
                             case 'DELETE':{
@@ -577,18 +591,25 @@ class PIWriteRequest {
                         #Based on Request types run either an add with or without overwritebv or a remove.
                         switch ($this->requestMethod) {
                             case 'POST':{
-                                #Post requests will fail if the property with that value already exists
-                                #TODO:This will return the wrong error code if somethign else goes wrong
+                                #Post requests will fail if the property with that value already exists or the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
                                 try {
                                     $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
-                                    break;
                                 } catch(\Exception $e) {
                                     $this->httpResponseCode=409;
                                     throw $e;
                                 }
+                                break;
                             }
                             case 'PUT':{
-                                $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                #Put requests will fail if the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
+                                try {
+                                    $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                } catch(\Exception $e) {
+                                    $this->httpResponseCode=409;
+                                    throw $e;
+                                }
                                 break;
                             }
                             case 'DELETE':{
