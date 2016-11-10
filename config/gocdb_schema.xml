@@ -441,14 +441,14 @@
 	    <!-- property key name-->
 	    <fname>NAME</fname>
 	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\s@_\-\[\]\+\.]+$/</regex>
+	    <regex>/^(\s*[a-zA-Z0-9@_\-\[\]\+\.]+\s*)+$/</regex>
 	</field>
 	<field>
 	    <!-- property key value -->
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated -->
-	    <regex>/^[^`'\"&lt;&gt;]+$/</regex>
+	    <regex>/^(\s*[^`'\"&lt;&gt;>\s]+\s*)+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
@@ -470,13 +470,13 @@
 	<field>
 	    <fname>NAME</fname>
 	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\s@_\-\[\]\+\.]+$/</regex>
+	    <regex>/^(\s*[a-zA-Z0-9@_\-\[\]\+\.]+\s*)+$/</regex>
 	</field>
 	<field>
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-	    <regex>/^[^`'\"&lt;&gt;]+$/</regex>
+        <regex>/^(\s*[^`'\"&lt;&gt;>\s]+\s*)+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
@@ -497,13 +497,13 @@
 	<field>
 	    <fname>NAME</fname>
 	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\s@_\-\[\]\+\.]+$/</regex>
+	    <regex>/^(\s*[a-zA-Z0-9@_\-\[\]\+\.]+\s*)+$/</regex>
 	</field>
 	<field>
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-	    <regex>/^[^`'\"&lt;&gt;]+$/</regex>
+        <regex>/^(\s*[^`'\"&lt;&gt;>\s]+\s*)+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
@@ -524,13 +524,13 @@
 	<field>
 	    <fname>NAME</fname>
 	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\s@_\-\[\]\+\.]+$/</regex>
+	    <regex>/^(\s*[a-zA-Z0-9@_\-\[\]\+\.]+\s*)+$/</regex>
 	</field>
 	<field>
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-	    <regex>/^[^`'\"&lt;&gt;]+$/</regex>
+        <regex>/^(\s*[^`'\"&lt;&gt;>\s]+\s*)+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>

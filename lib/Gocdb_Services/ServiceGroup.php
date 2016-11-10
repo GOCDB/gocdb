@@ -643,7 +643,7 @@ class ServiceGroup extends AbstractEntityService{
             //Keys should be unique, create an exception if they are not
             if(count(array_unique($keys))!=count($keys)) {
                 throw new \Exception(
-                    "Property names should be unique. The requested new properties include multiple properties with the same name"
+                    "Property names should be unique. The requested new properties include multiple properties with the same name."
                 );
             }
 
