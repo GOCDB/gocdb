@@ -35,10 +35,11 @@ date_default_timezone_set("UTC");
 #TODO php errors return a  200 code! see: http://stackoverflow.com/questions/2331582/catch-php-fatal-error & https://bugs.php.net/bug.php?id=50921
 
 class PIWriteRequest {
-    private $requestURL=null;
+    #Note: $supportedAPIVersions are defined in lower case
+    private $supportedAPIVersions= array("v5");
+    private $supportedRequestMethods= array("POST","PUT","DELETE");
+
     private $baseUrl;
-    #TODO add correct url for documentation (also write it!)
-    #TODO: move the docs url to the local_info.xml
     private $docsURL=null;
     private $apiVersion=null;
     private $entityType=null;
@@ -53,14 +54,11 @@ class PIWriteRequest {
     private $entityPropertyValue=null;
     private $entityPropertyKVArray=null;
 
+    #Default response is 500, as this will be overwritten in every other case
     private $httpResponseCode=500;
 
     #The following services are only required for some methods and so have their own setters
     private $serviceService = null;
-
-    #Note: $supportedAPIVersions are defined in lower case
-    private $supportedAPIVersions= array("v5");
-    private $supportedRequestMethods= array("POST","PUT","DELETE");
 
     #An array that will ultimately be returned to the user
     private $returnObject=null;
@@ -76,7 +74,7 @@ class PIWriteRequest {
     * Process the API request
     *@throws \Exception
     */
-    function processRequest($method, $requestUrl, $requestContents, Site $siteService) {
+    public function processRequest($method, $requestUrl, $requestContents, Site $siteService) {
         try {
             $this->getAndProcessURL($method, $requestUrl);
             $this->getRequestContent($requestContents);
@@ -106,23 +104,20 @@ class PIWriteRequest {
     *Takes the URL of the API request and processes it into variables
     *@throws \Exception
     */
-    function getAndProcessURL($method, $requestUrl) {
+    private function getAndProcessURL($method, $requestUrl) {
         $genericURLFormatErrorMessage = "API requests should take the form $this->baseUrl" .
             "/APIVERSION/ENTITYTYPE/ENTITYID/ENTITYPROPERTY/[ENTITYPROPERTYKEY]. " .
             "For more details see: $this->docsURL";
 
         #If the request isn't set then no url parameters have been used
-        if (!is_null($requestUrl)) {
-            #Note that apache will collapse multiple /'s into a single /
-            $this->requestURL = $requestUrl;
-        }
-        else {
+        if (is_null($requestUrl)) {
             $this->httpResponseCode=400;
             throw new \Exception($genericURLFormatErrorMessage);
         }
 
         #Split the request into seperate parts, with the slash as a seperator
-        $requestArray = explode("/",$this->requestURL);
+        #Note that apache will collapse multiple /'s into a single /)
+        $requestArray = explode("/",$requestUrl);
 
         #We should probably ignore trailing slashes, which will generate an empty array element
         #Using strlen so that '0' is not removed
@@ -190,7 +185,7 @@ class PIWriteRequest {
     }
 
 
-    function getRequestContent($requestContents) {
+    private function getRequestContent($requestContents) {
         $genericError = "For more information on correctly formatting your request, see $this->docsURL";
 
         #Convert the request to JSON - note depth of 2, as current, and expected,
@@ -240,7 +235,7 @@ class PIWriteRequest {
     * Carries out the business logic around using the validate service to check the
     * entity Property and property value are valid.
     */
-    function validateEntityTypePropertyAndPropValue() {
+    private function validateEntityTypePropertyAndPropValue() {
         $validateServ = new validate();
 
         #Because of how extension properties appear in the schema (as a seperate entity), we need to change the entity name
@@ -305,7 +300,7 @@ class PIWriteRequest {
     * Uses the validate service to check the object type, property, and property value
     * using the validate service.
     */
-    function validateWithService($objectType,$objectProperty,$propertyValue,$validateService) {
+    private function validateWithService($objectType,$objectProperty,$propertyValue,$validateService) {
         $genericError = ". For more information see $this->docsURL.";
 
         try {
@@ -323,14 +318,16 @@ class PIWriteRequest {
         }
     }
 
-    function updateEntity(Site $siteService) {
+    private function updateEntity(Site $siteService) {
 
         #Authentication
         #$this->userIdentifier will be empty if the unser doesn't provide a credential
         #If in the future we implement API keys, then I suggest we only look for
         #the DN if the API key isn't presented.
-        $this->userIdentifier = Get_User_Principle_PI();
-        $this->userIdentifierType = 'X509';
+        if(is_null($this->userIdentifier)){
+            $this->userIdentifier = Get_User_Principle_PI();
+            $this->userIdentifierType = 'X509';
+        }
 
         /*
         * We don't currently allow any access to unauthenticated users, so for now
@@ -675,7 +672,7 @@ class PIWriteRequest {
         $this->returnResult();
     }
 
-    function returnResult() {
+    private function returnResult() {
         #TODO: return the entity that's been changed or created, for now just
         #return the no content http code (delete operations should return nothing and a 204)
         $this->httpResponseCode = 204;
