@@ -70,8 +70,6 @@ class PIWriteRequest {
         $configServ = new config();
         $this->baseUrl = $configServ->getServerBaseUrl() . "/gocdbpi";
         $this->docsURL = $configServ->getWriteApiDocsUrl();
-
-
     }
 
     /**
@@ -86,8 +84,15 @@ class PIWriteRequest {
             $this->updateEntity($siteService);
 
         } catch (\Exception $e) {
+            #For 500 errors, make it explicit it's an internal errors
+            if ($this->httpResponseCode==500) {
+                $message = "Internal error. Please contact the GOCDB asministrators. Message: " . $e->getMessage();
+            } else {
+                $message = $e->getMessage();
+            }
+
             #Return the error as the return object
-            $errorArray['Error']= array('Code' => $this->httpResponseCode, 'Message' => utf8_encode($e->getMessage()), 'API-Documentation'=>$this->docsURL);
+            $errorArray['Error']= array('Code' => $this->httpResponseCode, 'Message' => utf8_encode($message), 'API-Documentation'=>$this->docsURL);
             $this->returnObject = $errorArray;
         }
 
