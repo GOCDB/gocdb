@@ -34,6 +34,17 @@ date_default_timezone_set("UTC");
 
 #TODO php errors return a  200 code! see: http://stackoverflow.com/questions/2331582/catch-php-fatal-error & https://bugs.php.net/bug.php?id=50921
 
+/**
+ * Class to process write API requests.
+ *
+ * Once an instance of the class is intiated, the function processRequest() should
+ * be called. This will need the request method (e.g. POST), teh request URL, the
+ * request contents (if provided, in a JSON format, if not then pass null), and an
+ * instance of the site service. An array containing a http response code and an
+ * object to be returned to the user (which may be null).
+ *
+ * @author George Ryall <github.com/GRyall>
+ */
 class PIWriteRequest {
     #Note: $supportedAPIVersions are defined in lower case
     private $supportedAPIVersions= array("v5");
@@ -63,6 +74,12 @@ class PIWriteRequest {
     #An array that will ultimately be returned to the user
     private $returnObject=null;
 
+    /**
+     * construct function for PIWriteREquest class.
+     *
+     * Uses the config service to set some member variables ($this->baseUrl and
+     * $this->docsURL)
+     */
     public function __construct() {
         # returns the base portal URL as defined in conf file
         $configServ = new config();
@@ -71,9 +88,21 @@ class PIWriteRequest {
     }
 
     /**
-    * Process the API request
-    *@throws \Exception
-    */
+     * Function called externally in order to process a PI request.
+     *
+     * Calls a series of privatre functions that process the inputs, then updates
+     * the required entities, before finally returning an array containing a http
+     * response code and (sometimes) an object for rendering to the user.
+     *
+     * Catches exceptions and returns them as an object for rendering to the user
+     * in an appropriate format.
+     *
+     * @param  string $method request method (e.g. GET or POST)
+     * @param  string $requestUrl url used to access API, only the last section
+     * @param  string|null $requestContents contents of the request (JSON String or null)
+     * @param  Site $siteService Site Service
+     * @return array ('httpResponseCode'=><code>,'returnObject'=><object to return to user>)
+     */
     public function processRequest($method, $requestUrl, $requestContents, Site $siteService) {
         try {
             $this->getAndProcessURL($method, $requestUrl);
@@ -101,9 +130,16 @@ class PIWriteRequest {
     }
 
     /**
-    *Takes the URL of the API request and processes it into variables
-    *@throws \Exception
-    */
+     * Processes the url and method of the request.
+     *
+     * Takes the URL and Method of a request and process them into the member
+     * variables $this->httpResponseCode, $this->entityID, $this->entityType,
+     * $this->entityProperty, $this->entityPropertyKey, and $this->requestMethod
+     * It depends on the member variables $this->supportedAPIVersions and $this->supportedRequestMethods.
+     * @param  string $method HTTP method used to access API, e.g. POST
+     * @param  string $requestUrl url used to access API, only the last section
+     * @throws \Exception
+     */
     private function getAndProcessURL($method, $requestUrl) {
         $genericURLFormatErrorMessage = "API requests should take the form $this->baseUrl" .
             "/APIVERSION/ENTITYTYPE/ENTITYID/ENTITYPROPERTY/[ENTITYPROPERTYKEY]. " .
@@ -184,7 +220,17 @@ class PIWriteRequest {
         }
     }
 
-
+    /**
+     * Process the contents of the request provided by the client.
+     *
+     * Process the contents of the JSON provided by the client (and checks that
+     * the client has provided some if it should have). Sets the member vaariables
+     * $this->entityPropertyValue or $this->entityPropertyKVArray. Relies on the
+     * member variables $this->entityProperty, $this->entityPropertyKey.
+     *
+     * @param  string $requestContents json string provided by client
+     * @throws \Exception
+     */
     private function getRequestContent($requestContents) {
         $genericError = "For more information on correctly formatting your request, see $this->docsURL";
 
@@ -200,7 +246,7 @@ class PIWriteRequest {
             * key/value pairs. We use $this->entityPropertyValue and $this->entityPropertyKVArray
             * frespectivly for these cases.
             */
-            if($this->entityProperty<>'extensionproperties'||!is_null($this->entityPropertyKey)) {
+            if($this->entityProperty!='extensionproperties'||!is_null($this->entityPropertyKey)) {
                 if (isset($requestArray['value']) && count($requestArray)==1) {
                     $this->entityPropertyValue=$requestArray['value'];
                 } elseif(!isset($requestArray['value'])) {
@@ -234,6 +280,14 @@ class PIWriteRequest {
     /**
     * Carries out the business logic around using the validate service to check the
     * entity Property and property value are valid.
+    *
+    * Relies on the member variables $this->entityProperty, $this->entityType,
+    * $this->entityPropertyKey, $this->entityPropertyValue, $this->entityPropertyKVArray,
+    * $this->requestMethod.
+    *
+    * Changes the member variables .
+    *
+    * @throws \Exception
     */
     private function validateEntityTypePropertyAndPropValue() {
         $validateServ = new validate();
@@ -297,8 +351,13 @@ class PIWriteRequest {
     }
 
     /**
-    * Uses the validate service to check the object type, property, and property value
-    * using the validate service.
+    * Uses the validate service to check the object type, property, and property
+    * value using the validate service.
+    * @param  string $objectType      the type of the object being validated
+    * @param  string $objectProperty  The property being validated
+    * @param  string $propertyValue   the value being validated
+    * @param  validate service $validateService instance of the validate service
+    * @throws \Exception
     */
     private function validateWithService($objectType,$objectProperty,$propertyValue,$validateService) {
         $genericError = ". For more information see $this->docsURL.";
@@ -318,6 +377,15 @@ class PIWriteRequest {
         }
     }
 
+    /**
+     * Function to make the change requested my the API in the DB
+     *
+     * This function uses the range of member variables set by previous functions (
+     * in some instances including additional services) and the site site service
+     * in order to make the change that was actually requested.
+     * @param  Site   $siteService instance of the site service
+     * @throws \Exception
+     */
     private function updateEntity(Site $siteService) {
 
         #Authentication
@@ -668,20 +736,30 @@ class PIWriteRequest {
             }
         }
 
-        #TODO: add this into the logic above and feed it the entities and return the entities
-        $this->returnResult();
-    }
-
-    private function returnResult() {
-        #TODO: return the entity that's been changed or created, for now just
-        #return the no content http code (delete operations should return nothing and a 204)
+        #TODO: return the entity that's been changed or created as $this->returnObject,
+        # for now just return the no content http code (delete operations should
+        #  return nothing and a 204, others should return the changed object and a 200)
         $this->httpResponseCode = 204;
     }
 
+    /**
+     * Function to allow a serviceService to be set.
+     *
+     * The service service is only required for calls that change services or
+     * endpoints, so we allow it to not be set and provide a setter.
+     * @param ServiceService $serviceService Instance of service service
+     */
     public function setServiceService (ServiceService $serviceService) {
         $this->serviceService = $serviceService;
     }
 
+    /**
+     * Function to check the service servicex is set and throw error if not.
+     *
+     * The service service is only required for calls that change services or
+     * endpoints, so we allow it to not be set and provide a setter.
+     * @throws \Exception
+     */
     private function checkServiceServiceSet () {
         if(is_null($this->serviceService)) {
             $this->httpResponseCode=500;
