@@ -33,7 +33,7 @@ function remove_ses() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) { // If we receive a POST request it's during form submission
         submit($user);
     } else { // If there is no post data, draw the remove ses form
@@ -48,21 +48,21 @@ function remove_ses() {
  * @return null
  */
 function draw(\User $user = null) {
-	$serv = \Factory::getServiceGroupService();
+    $serv = \Factory::getServiceGroupService();
 
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
-	// The service group to remove SEs from
-	$sg =  $serv->getServiceGroup($_REQUEST['id']);
+    // The service group to remove SEs from
+    $sg =  $serv->getServiceGroup($_REQUEST['id']);
 
-	// Check the user is authorized to perform this operation
-	//try { $serv->editAuthorization($sg, $user); } catch(Exception $e) {
-	//    show_view('error.php', $e->getMessage()); die(); }
+    // Check the user is authorized to perform this operation
+    //try { $serv->editAuthorization($sg, $user); } catch(Exception $e) {
+    //    show_view('error.php', $e->getMessage()); die(); }
     //if(count($serv->authorize Action(\Action::EDIT_OBJECT, $sg, $user))==0){
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $sg, $user)->getGrantAction() == FALSE){
-       show_view('error.php', 'You do not have permission to edit this ServiceGroup'); 
-       die(); 
+       show_view('error.php', 'You do not have permission to edit this ServiceGroup');
+       die();
     }
 
     $params = array('sg' => $sg);
@@ -71,7 +71,7 @@ function draw(\User $user = null) {
 
 /**
  * Validates the user's input, removes the services and
- * returns the object ID of the removed service 
+ * returns the object ID of the removed service
  * @global array $_REQUEST only set if the browser has sent parameters
  * @param \User $user current User
  * @return null
@@ -85,18 +85,18 @@ function submit(\User $user = null) {
     if (!isset($_REQUEST['seId']) || !is_numeric($_REQUEST['seId']) ){
         throw new Exception("An id must be specified");
     }
-    
+
     // The service group to remove SEs from
     $sg =  $serv->getServiceGroup($_REQUEST['sgId']);
 
     $se = \Factory::getServiceService()
-    		->getService($_REQUEST['seId']);
+            ->getService($_REQUEST['seId']);
 
     try {
         /* If the service is siteless and was created under this
          * service group then we delete it */
-    	if(is_null($se->getParentSite())) {
-    		// TODO: v5 implementation
+        if(is_null($se->getParentSite())) {
+            // TODO: v5 implementation
             // If 0 was returned above then the SE doesn't have a hosting site
 //             $hostingVSite = \Factory::getServiceService()->
 //                 getHostVirtualSite($endpointId, $gridId);

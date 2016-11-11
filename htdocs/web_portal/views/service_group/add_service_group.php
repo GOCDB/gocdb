@@ -2,10 +2,10 @@
     <!--<script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/vsites/add_ses_to_vsite.js"></script>-->
     <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/ajax.js"></script>
     <form name="New_Site" action="index.php?Page_Type=Add_Service_Group" method="post" class="inputForm">
-    	<h1>New Service Group</h1>
-    	<br />
+        <h1>New Service Group</h1>
+        <br />
 
-    	<span class="input_name">
+        <span class="input_name">
             Name
             <span class="input_syntax" >(Preferably all upper case, underscores for spaces, short and easily identifiable)</span>
         </span>
@@ -31,13 +31,13 @@
         <br>
         <br>
         <!-- Scope Tags-->
-        <?php 
-        $parentObjectTypeLabel = ''; 
+        <?php
+        $parentObjectTypeLabel = '';
         require_once __DIR__ . '/../fragments/editScopesFragment.php';
         ?>
-          
 
-    	<input class="input_button" type="submit" value="Add Service Group" />
+
+        <input class="input_button" type="submit" value="Add Service Group" />
     </form>
 </div>
 
@@ -46,11 +46,11 @@
 
     $(document).ready(function () {
         var scopeJSON = JSON.parse('<?php echo($params["scopejson"]) ?>');
-        ScopeUtil.addScopeCheckBoxes(scopeJSON, 
-          '#reservedScopeCheckBoxDIV', 
-          '#reservedOptionalScopeCheckBoxDIV', 
+        ScopeUtil.addScopeCheckBoxes(scopeJSON,
+          '#reservedScopeCheckBoxDIV',
+          '#reservedOptionalScopeCheckBoxDIV',
           '#reservedOptionalInhertiableScopeCheckBoxDIV',
-          '#optionalScopeCheckBoxDIV', 
+          '#optionalScopeCheckBoxDIV',
           true);
     });
-</script>  
+</script>

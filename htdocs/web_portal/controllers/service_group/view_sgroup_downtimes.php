@@ -18,7 +18,7 @@ function view_sgroup_downtimes() {
     $params['downtimes'] = $downtimes;
     $params['sGroup'] = $sGroup;
 
-	$title = "Downtimes for " . $sGroup->getName();
+    $title = "Downtimes for " . $sGroup->getName();
     show_view('service_group/view_sgroup_downtimes.php', $params, $title);
     return;
 }

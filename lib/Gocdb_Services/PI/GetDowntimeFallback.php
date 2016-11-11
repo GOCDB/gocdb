@@ -37,7 +37,7 @@ class GetDowntime implements IPIQuery {
     private $nested;
     private $downtimes;
     private $renderMultipleEndpoints;
-    private $baseUrl; 
+    private $baseUrl;
 
     /** Constructor takes entity manager which is then used by the
      *  query builder
@@ -45,14 +45,14 @@ class GetDowntime implements IPIQuery {
      * @param EntityManager $em
      * @param Boolean $nested when true this method will return the
      * nested rendering of the downtime data
-     * @param string $baseUrl The base url string to prefix to urls generated in the query output. 
+     * @param string $baseUrl The base url string to prefix to urls generated in the query output.
      */
     public function __construct($em, $nested = false, $baseUrl = 'https://goc.egi.eu/portal') {
         $this->nested = $nested;
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->renderMultipleEndpoints = true;
-        $this->baseUrl = $baseUrl; 
+        $this->baseUrl = $baseUrl;
     }
 
     /**
@@ -403,6 +403,13 @@ class GetDowntime implements IPIQuery {
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
                             $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                            if ($endpoint->getMonitored()) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                         }
                     }
                 }
@@ -448,6 +455,13 @@ class GetDowntime implements IPIQuery {
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($endpoint->getUrl()));
                             $xmlEndpoint->addChild('INTERFACENAME', $endpoint->getInterfaceName());
+                            if ($endpoint->getMonitored()) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $endpoint->getEmail());
                         }
                     }
                 }
@@ -525,6 +539,13 @@ class GetDowntime implements IPIQuery {
                             // Extensions?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($dtEndpoint['url']));
                             $xmlEndpoint->addChild('INTERFACENAME', $dtEndpoint['interfaceName']);
+                            if ($dtEndpoint['monitored']) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $dtEndpoint['email']);
                         }
                     }
                 }
@@ -591,6 +612,13 @@ class GetDowntime implements IPIQuery {
                             // Extensions ?
                             $xmlEndpoint->addChild('URL', htmlspecialchars($dtEndpoint['url']));
                             $xmlEndpoint->addChild('INTERFACENAME', $dtEndpoint['interfaceName']);
+                            if ($dtEndpoint['monitored']) {
+                                $mon = "Y";
+                            } else {
+                                $mon = "N";
+                            }
+                            $xmlEndpoint->addChild('ENDPOINT_MONITORED', $mon);
+                            //$xmlEndpoint->addChild('CONTACT_EMAIL', $dtEndpoint['email']);
                         }
                     }
                 }

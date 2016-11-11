@@ -1,5 +1,10 @@
 
-## Todo (https://rt.egi.eu/rt/Dashboards/5541/GOCDB-Requirements) 
+## Todo 
+* The list below includes some todos for mostly 'internal' issues/cleanup. 
+* Documented requirements are entered into the EGI request tracker: 
+  * EGI RT <https://rt.egi.eu/rt/Dashboards/5541/GOCDB-Requirements> 
+  * Also see Github issues (records issues/bugs not new requirements): <https://github.com/GOCDB/gocdb/issues>
+###Cleanup/todos
 * Add a unique constraint on the Doctrine annotation for the ServiceGroup name attribute. 
 * Refactor page view/template logic and remove NASTY menu/header/footer php 
   rendering logic (an inherited legacy). A real MVC framework for the view 
@@ -32,13 +37,13 @@
   especially objects in the 'lib/Doctrine/entities' and 'lib/Gocdb_Services'. 
   Instead, constructor injection should be used for required dependencies so that
   objects can't be created in an inconsistent state. 
-* Better interface segregation needed in places - the IPIQuery.php interface 
+* <strike>Better interface segregation needed in places - the IPIQuery.php interface 
   violates the single-responsibility principle by combining methods such as 'getXML()' 
   and 'getJSON()' with the other methods for creating/issuing a query. 
-  This interface should probably be segregated into two.  
+  This interface should probably be segregated into two.</strike>  
 * Add a new view to display the list of service types and their descriptions. 
 * Allow multiple serviceTypes to be specified when filtering services (GUI+PI). 
-* When filtering sites/services/SGs via the GUI, add a new GUI component to
+* Maybe: When filtering sites/services/SGs via the GUI, add a new GUI component to
   select zero or more custom properties and allow a value to be optionally 
   specified for the property with an AND/NOT selection pull-down.  
   Using the multi-select pull-down, when a custom prop is selected, a new row is entered into a table
@@ -49,8 +54,10 @@
 * Automatic freshness of data check: https://rt.egi.eu/rt/Ticket/Display.html?id=8240  
 * Introduce automatic paging in the PI queries so that a PI call without filter params won't timeout 
   due to an excessive result-set size (esp get_service_endpoint() and get_service()).
-  Introduce a configurable default page size, for some useful background see: 
-  https://developer.github.com/guides/traversing-with-pagination/   
+  * Update: with v5.7, paging is optional on all queries. To enforce default paging, 
+  specify defaultPaging = true in htdocs\PI\index.php. 
+  * Done:<strike>Introduce a configurable default page size, for some useful background see: 
+  https://developer.github.com/guides/traversing-with-pagination/</strike>   
 
 
 ## Maybe Todo 

@@ -33,7 +33,7 @@ function edit_property() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {
         submit($user);
     } else {
@@ -57,19 +57,19 @@ function draw(\User $user = null) {
     if (!isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid']) ){
         throw new Exception("An id must be specified");
     }
-    
-    $serv = \Factory::getServiceGroupService(); 
+
+    $serv = \Factory::getServiceGroupService();
     $serviceGroup = $serv->getServiceGroup($_REQUEST['id']);
     $property = $serv->getProperty($_REQUEST['propertyid']);
-    
+
     //Check user has permissions to add site property
     $serv->validatePropertyActions($user, $serviceGroup);
-    
+
     $params['prop'] = $property;
     $params['serviceGroup'] = $serviceGroup;
-    
-    show_view("service_group/edit_service_group_property.php", $params);     
-    
+
+    show_view("service_group/edit_service_group_property.php", $params);
+
 
 }
 
@@ -80,15 +80,15 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     try {
-    	$newValues = getSerGroupPropDataFromWeb();  
-    	$serviceGroupID = $newValues['SERVICEGROUPPROPERTIES']['SERVICEGROUP'];
-    	$propID = $newValues['SERVICEGROUPPROPERTIES']['PROP'];
-    	if($newValues['SERVICEGROUPPROPERTIES']['NAME'] == null || $newValues['SERVICEGROUPPROPERTIES']['VALUE'] == null){
-    	    show_view('error.php', "A property name and value must be provided.");
-    	    die();
-    	}
-    	$property = \Factory::getServiceGroupService()->getProperty($propID);
-    	$serviceGroup = \Factory::getServiceGroupService()->getServiceGroup($serviceGroupID);    	
+        $newValues = getSerGroupPropDataFromWeb();
+        $serviceGroupID = $newValues['SERVICEGROUPPROPERTIES']['SERVICEGROUP'];
+        $propID = $newValues['SERVICEGROUPPROPERTIES']['PROP'];
+        if($newValues['SERVICEGROUPPROPERTIES']['NAME'] == null || $newValues['SERVICEGROUPPROPERTIES']['VALUE'] == null){
+            show_view('error.php', "A property name and value must be provided.");
+            die();
+        }
+        $property = \Factory::getServiceGroupService()->getProperty($propID);
+        $serviceGroup = \Factory::getServiceGroupService()->getServiceGroup($serviceGroupID);
         $serviceGroup = \Factory::getServiceGroupService()->editServiceGroupProperty($serviceGroup, $user, $property, $newValues);
         $params['serviceGroupId'] = $serviceGroupID;
         show_view('service_group/service_group_property_updated.php', $params);

@@ -30,7 +30,7 @@ require_once __DIR__.'/utils.php';
 function register() {
     //Check the portal is not in read only mode, returns exception if it is
     checkPortalIsNotReadOnly();
-    
+
     if($_POST) { // If we receive a POST request it's to update a user
         submit();
     } else { // If there is no post data, draw the edit user form
@@ -47,19 +47,19 @@ function draw() {
     $dn = Get_User_Principle();
     if(empty($dn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	die(); 
+    die();
     }
     $user = $serv->getUserByPrinciple($dn);
 
     if(!is_null($user)) {
-	show_view('error.php', "Only unregistered users can register");
-	die();
+    show_view('error.php', "Only unregistered users can register");
+    die();
     }
 
     /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
     $authToken = Get_User_AuthToken();
     $params['authAttributes'] = $authToken->getDetails();
-    
+
     $params['dn'] = $dn;
     show_view('user/register.php', $params);
 }
@@ -70,12 +70,12 @@ function submit() {
     $dn = Get_User_Principle();
     if(empty($dn)){
         show_view('error.php', "Could not authenticate user - null user principle");
-	die(); 
+    die();
     }
     $values['CERTIFICATE_DN'] = $dn;
 
-    // todo: on registering, we also want to persist the authAttributes, this 
-    // will require new UserProperty records owned by the User.php entity. 
+    // todo: on registering, we also want to persist the authAttributes, this
+    // will require new UserProperty records owned by the User.php entity.
     /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
     //$authToken = Get_User_AuthToken();
     //$params['authAttributes'] = $authToken->getDetails();

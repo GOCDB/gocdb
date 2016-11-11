@@ -15,8 +15,8 @@
 namespace org\gocdb\security\authentication;
 
 /**
- * Get/set an IAuthentication token for current thread of execution. 
- * @author David Meredith 
+ * Get/set an IAuthentication token for current thread of execution.
+ * @author David Meredith
  */
 interface ISecurityContext {
 
@@ -27,7 +27,7 @@ interface ISecurityContext {
      * @param IAuthentication $auth The new Authentication token,
      *   or null if http sessino token should be cleared.
      */
-    public function setAuthentication($auth = null); 
+    public function setAuthentication($auth = null);
 
     /**
      * Invoke the token resolution process to obtain the auth token for the
@@ -46,5 +46,5 @@ interface ISecurityContext {
      *
      * @return IAuthentication or null if not authenticated
      */
-    public function getAuthentication(); 
+    public function getAuthentication();
 }

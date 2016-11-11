@@ -38,7 +38,7 @@
         <input class="input_input_hidden" type="hidden" name="UserConfirmed" value="true" />
         <input class="input_input_text" type="hidden" name ="PARENT" value="<?php echo $parent->getId();?>" />
         <input type="checkbox" id="preventOverwriteCheckbox" name="PREVENTOVERWRITE" style="padding-top: 50px"/>
-        Fail on duplicate property
+        Overwrite values for existing keys (if left unchecked pre-existing keys will prevent all of the properties selected above from being added)
         <br/>
         <br/>
 

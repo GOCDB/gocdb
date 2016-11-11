@@ -16,11 +16,11 @@
 
 /**
  * Used to create the PRIMARY_KEY field exposed through the PI.
- * This maintains backwards compatiblity with the v4 PRIMARY_KEY FIELDS. 
- * This sequence can be used when required to get the next primary key by 
- * creating and persisting an instance of PrimarKey and calling the getId() 
- * method. This value can then be used to programatically set the legacy 
- * PRIMARY_KEY fields when persisting new entities. 
+ * This maintains backwards compatiblity with the v4 PRIMARY_KEY FIELDS.
+ * This sequence can be used when required to get the next primary key by
+ * creating and persisting an instance of PrimarKey and calling the getId()
+ * method. This value can then be used to programatically set the legacy
+ * PRIMARY_KEY fields when persisting new entities.
  *
  * @author John Casson
  *
@@ -39,7 +39,7 @@ class PrimaryKey {
     }
 
     /**
-     * Get the Id value. 
+     * Get the Id value.
      * @return string
      */
     public function __toString() {

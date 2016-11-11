@@ -54,14 +54,14 @@ function submit(array $propertyArray, \Site $site, \User $user = null) {
 
     //remove site property
     try {
-     	$serv = \Factory::getSiteService();
-       	$serv->deleteSiteProperties($site, $user, $propertyArray);
+        $serv = \Factory::getSiteService();
+        $serv->deleteSiteProperties($site, $user, $propertyArray);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
-    }   
-    
-    
+    }
+
+
     show_view('/site/deleted_site_properties.php', $params);
 
 }

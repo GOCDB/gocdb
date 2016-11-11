@@ -15,24 +15,24 @@
 namespace org\gocdb\security\authentication;
 
 /**
- * Defines a top-level class intended to be used by client code to authenticate 
- * HTTP requests by invoking the 'Token Resolution Process' 
- * or to authenticate/change the currently authenticated principal.  
+ * Defines a top-level class intended to be used by client code to authenticate
+ * HTTP requests by invoking the 'Token Resolution Process'
+ * or to authenticate/change the currently authenticated principal.
  * <p>
- * Multiple instances may be needed each with their own configuration 
- * to cater for different deployment scenarios.   
- *    
- * @see IAuthenticationManager 
- * @see ISecurityContext  
+ * Multiple instances may be needed each with their own configuration
+ * to cater for different deployment scenarios.
+ *
+ * @see IAuthenticationManager
+ * @see ISecurityContext
  * @author David Meredith
  */
 interface IFirewallComponent extends IAuthenticationManager, ISecurityContext {
-  
+
     /**
-     * Does this compoenent support the given authentication token. 
+     * Does this compoenent support the given authentication token.
      * @param \org\gocdb\security\authentication\IAuthentication $auth
-     * @return boolean true or false 
+     * @return boolean true or false
      */
-    public function supports(IAuthentication $auth); 
-    
+    public function supports(IAuthentication $auth);
+
 }

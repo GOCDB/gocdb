@@ -2,7 +2,7 @@
 
 require_once __DIR__."/../bootstrap.php";
 require_once __DIR__."/AddUtils.php";
-        
+
 $usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);
 // Used to check for duplicates
@@ -34,8 +34,8 @@ foreach($usersRoles as $user) {
 //     }
 //     $rightWhiteDNs[rtrim($dn)] = true;
 
-	$doctrineUser = new User();
-	$doctrineUser->setForename((string) $user->FORENAME);
+    $doctrineUser = new User();
+    $doctrineUser->setForename((string) $user->FORENAME);
     $doctrineUser->setSurname((string) $user->SURNAME);
     $doctrineUser->setTitle((string) $user->TITLE);
     $doctrineUser->setEmail((string) $user->EMAIL);
@@ -46,8 +46,8 @@ foreach($usersRoles as $user) {
     $doctrineUser->setCertificateDn($dn);
     $doctrineUser->setAdmin(false);
 //  echo "DN is " . (string) $doctrineUser->getCertificateDn() . ".\r\n";
-    
-	// Roughly half of users don't have a home site set
+
+    // Roughly half of users don't have a home site set
     if($user->HOMESITE != "" &&  !isBad($user->HOMESITE)) {
         // get the home site entity
         $dql = "SELECT s from Site s WHERE s.shortName = ?1";
@@ -66,12 +66,12 @@ foreach($usersRoles as $user) {
         }
         $doctrineUser->setHomeSiteDoJoin($homeSite);
     }
-    
+
     //Make Dave an admin
     if ($doctrineUser->getCertificateDn()=="/C=UK/O=eScience/OU=CLRC/L=DL/CN=david meredith"){
-    	$doctrineUser->setAdmin(true);
+        $doctrineUser->setAdmin(true);
     }
-    
+
     $entityManager->persist($doctrineUser);
 
 }

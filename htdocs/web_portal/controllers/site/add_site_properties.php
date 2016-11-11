@@ -24,7 +24,7 @@
 require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/../utils.php';
 require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
-    
+
 /**
  * Controller for a new_property request
  * @global array $_POST only set if the browser has POSTed data
@@ -43,7 +43,7 @@ function add_site_properties() {
     if($_POST) {     	// If we receive a POST request it's for new properties
 
         //COMMENT
-        $preventOverwrite = false;
+        $preventOverwrite = true;
 
         //Get the parent service we want to add properties to.
         //I'm trying to use "parent" rather than "service" wherever possible to make this code more generic.
@@ -88,7 +88,7 @@ function add_site_properties() {
         }
 
         if(isset($_REQUEST['PREVENTOVERWRITE'])){
-            $preventOverwrite = true;
+            $preventOverwrite = false;
         }
 
         //quick sanity check, are we actually adding any properties?

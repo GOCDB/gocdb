@@ -1,4 +1,4 @@
-<?php 
+<?php
 $propertyArray = $params['proparr'];
 $parent = $params['endpoint'];
 $addPropertiesPage = "Add_Endpoint_Properties";

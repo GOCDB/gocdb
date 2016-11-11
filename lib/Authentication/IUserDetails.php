@@ -1,19 +1,19 @@
 <?php
 namespace org\gocdb\security\authentication;
 /**
- * Provides core user information. 
+ * Provides core user information.
  * <p>
- * Stores user information which is later encapsulated 
+ * Stores user information which is later encapsulated
  * into {@link IAuthentication.php} objects. This allows non-security related user
  * information (such as email addresses, telephone numbers etc) to be stored
  * in a convenient location.
  * <p>
  * Concrete implementations must take particular care to ensure the non-null
  * contract detailed for each method is enforced.
- * 
- * Largely based on Spring Security. 
- * @link http://static.springsource.org/spring-security Spring Security 
- * @author David Meredith  
+ *
+ * Largely based on Spring Security.
+ * @link http://static.springsource.org/spring-security Spring Security
+ * @author David Meredith
  */
 interface IUserDetails {
 
@@ -24,8 +24,8 @@ interface IUserDetails {
     public function getUsername();
 
     /**
-     * Returns the password used to authenticate the user. Cannot return <code>null</code>. 
-     * If a password is not required by the given auth mechanism, return an empty string. 
+     * Returns the password used to authenticate the user. Cannot return <code>null</code>.
+     * If a password is not required by the given auth mechanism, return an empty string.
      * @return String The password (never <code>null</code>)
      */
     public function getPassword();
@@ -37,7 +37,7 @@ interface IUserDetails {
     public function isEnabled();
 
     /**
-     * Set the credentials (usually a password) to an empty string. 
+     * Set the credentials (usually a password) to an empty string.
      */
     public function eraseCredentials();
 

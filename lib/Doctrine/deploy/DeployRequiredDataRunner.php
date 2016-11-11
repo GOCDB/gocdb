@@ -16,30 +16,30 @@
 require_once __DIR__."/AddUtils.php";
 
 if(isset($argv[1])) {
-	$GLOBALS['dataDir'] = $argv[1];
+    $GLOBALS['dataDir'] = $argv[1];
 } else {
-	die("Please specify your data directory (requiredData) \n");
+    die("Please specify your data directory (requiredData) \n");
 }
 
-print_r("Deploying Required Lookup Data\n"); 
+print_r("Deploying Required Lookup Data\n");
 
-require __DIR__."/AddInfrastructures.php"; 
-echo "Added Infrastructures OK\n"; 
+require __DIR__."/AddInfrastructures.php";
+echo "Added Infrastructures OK\n";
 
-require __DIR__."/AddCountries.php"; 
-echo "Added Countries OK\n"; 
+require __DIR__."/AddCountries.php";
+echo "Added Countries OK\n";
 
-//require __DIR__."/AddTimezones.php"; 
-//echo "Added Timezones OK\n"; 
+//require __DIR__."/AddTimezones.php";
+//echo "Added Timezones OK\n";
 
-require __DIR__."/AddTiers.php"; 
-echo "Added Tiers OK\n"; 
+require __DIR__."/AddTiers.php";
+echo "Added Tiers OK\n";
 
-require __DIR__."/AddRoleTypes.php"; 
-echo "Added Roles OK\n"; 
+require __DIR__."/AddRoleTypes.php";
+echo "Added Roles OK\n";
 
-require __DIR__."/AddCertificationStatuses.php"; 
-echo "Added Certification Statuses OK\n"; 
+require __DIR__."/AddCertificationStatuses.php";
+echo "Added Certification Statuses OK\n";
 
-require __DIR__."/AddServiceTypes.php"; 
-echo "Added Service Types OK\n"; 
+require __DIR__."/AddServiceTypes.php";
+echo "Added Service Types OK\n";

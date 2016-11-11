@@ -14,7 +14,7 @@ namespace org\gocdb\services;
  */
 
 /**
- * Parent class to those service classes that deal with entities, containing 
+ * Parent class to those service classes that deal with entities, containing
  * those methods required by all classes.
  *
  * @author John Casson
@@ -31,30 +31,28 @@ abstract class AbstractEntityService {
     }
 
     /**
-     * Set the EntityManager instance used by all service methods. 
+     * Set the EntityManager instance used by all service methods.
      * @param \Doctrine\ORM\EntityManager $em
      */
     public function setEntityManager(\Doctrine\ORM\EntityManager $em){
-        $this->em = $em;  
+        $this->em = $em;
     }
-    
+
     /**
-     * @return \Doctrine\ORM\EntityManager 
+     * @return \Doctrine\ORM\EntityManager
      */
     public function getEntityManager(){
-        return $this->em; 
+        return $this->em;
     }
-    
+
      /**
-     * Checks witht the config service if the portal is in read only mode and if 
+     * Checks witht the config service if the portal is in read only mode and if
      * it is throws an exception unless the user is a GOCDB admin
-     * 
+     *
      * @param \User $user user
      * @throws \Exception
      */
     protected function checkPortalIsNotReadOnlyOrUserIsAdmin(\User $user = NULL){
-        require_once __DIR__ . '/Config.php';
-        
         //this block is required to deal with unregistered users (where $user is null)
         $userIsAdmin = false;
         if(!is_null($user)){
@@ -62,18 +60,41 @@ abstract class AbstractEntityService {
                 $userIsAdmin = true;
             }
         }
-        
-        $configServ = new \org\gocdb\services\Config();     
-        if ($configServ->IsPortalReadOnly() and !$userIsAdmin){
+
+        if ($this->portalIsReadOnly() and !$userIsAdmin){
             throw new \Exception("The portal is currently in read only mode, so this action is not permitted");
         }
     }
-    
+
     /**
-     * Checks if a user is an administrator and throws an exception if they are 
+    *Returns true if portal is read only portal is read only
+    *
+    * @return boolean
+    */
+    private function portalIsReadOnly() {
+        require_once __DIR__ . '/Config.php';
+
+        $configServ = new \org\gocdb\services\Config();
+        return $configServ->IsPortalReadOnly();
+    }
+
+    /**
+    * Checks witht the config service if the portal is in read only mode and if
+    * it is throws an exception unless the user is a GOCDB admin
+    *
+    * @throws \Exception
+    */
+    protected function checkGOCDBIsNotReadOnly(){
+        if ($this->portalIsReadOnly() and !$userIsAdmin){
+            throw new \Exception("GOCDB is currently in read only mode, so this action is not permitted");
+        }
+    }
+
+    /**
+     * Checks if a user is an administrator and throws an exception if they are
      * not. Used in functions that make changes that only GOCDB admins should be
      * able to make
-     * 
+     *
      * @param \User $user User making the change
      * @throws \Exception
      */

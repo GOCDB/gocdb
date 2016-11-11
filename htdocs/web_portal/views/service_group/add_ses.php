@@ -20,9 +20,9 @@
                 </a>
             </span>
         </div>
-        
+
         <?php require_once __DIR__.'/add_ses_body.php';?>
-    
+
         <?php if($params['siteLessServices']) { ?>
         <div class="leftFloat topMargin2 leftMargin">
             <a href="index.php?Page_Type=Add_New_SE_To_Service_Group&id=<?php echo $params['sg']->getId() ?>">
@@ -33,7 +33,7 @@
             </a>
         </div>
         <?php } ?>
-    
+
     <form id="sesToAdd" action="index.php?Page_Type=Add_Service_Group_SEs" method="POST" class="empty" style="margin-top: 1em; float: left;">
         <input class="input_button leftFloat topMargin2" type="submit" value="Add SEs to Service Group"  />
         <input type="hidden" name="id" value="<?php echo $params['sg']->getId(); ?>" />

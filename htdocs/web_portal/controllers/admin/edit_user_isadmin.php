@@ -18,9 +18,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  /*======================================================*/
-require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php'; 
+require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/../utils.php';
-    
+
 /**
  * Controller for promoting/demoting administrators using isAdmin property
  * @global array $_POST only set if the browser has POSTed data
@@ -29,7 +29,7 @@ require_once __DIR__ . '/../utils.php';
 function make_admin() {
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's to change an admin status
         submit();
     } else { // If there is no post data, draw the edit isAdmin page
@@ -42,7 +42,7 @@ function make_admin() {
  * @return null
  */
 function draw() {
-    //Check the user has permission to see the page, will throw exception 
+    //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
@@ -51,25 +51,25 @@ function draw() {
     //Get user details
     $serv = \Factory::getUserService();
     $user = $serv->getUser($_REQUEST['id']);
-    
+
     //Throw exception if not a valid user
     if(is_null($user)) {
         throw new \Exception("A user with ID '".$_REQUEST['id']."' Can not be found");
-    }    
-    
+    }
+
     $params["ID"]=$user->getId();
-    $params["Forename"]=$user->getForename();  
-    $params["Surname"]=$user->getSurname();     
+    $params["Forename"]=$user->getForename();
+    $params["Surname"]=$user->getSurname();
     $params["CertDN"]=$user->getCertificateDn();
     $params["IsAdmin"]=$user->isAdmin();
-    
+
     if($params["IsAdmin"]){
         $title = "Demote ".$params["IsAdmin"]." ".$params["Surname"];
     }
     else{
         $title = "Promote ".$params["IsAdmin"]." ".$params["Surname"];
     }
-    
+
     //show the edit user Admin view
     show_view("admin/edit_user_isadmin.php", $params, $title);
 }
@@ -77,24 +77,24 @@ function draw() {
 /**
  * Retrieves the new isadmin value from a portal request and submit it to the
  * services layer's user functions.
- * @return null 
+ * @return null
 */
 function submit() {
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
     if(true){
-        throw new Exception("Disabled in controller"); 
-    } 
-    //Check the user has permission, will throw exception 
+        throw new Exception("Disabled in controller");
+    }
+    //Check the user has permission, will throw exception
     //if correct permissions are lacking
     /*checkUserIsAdmin();
-    
+
     //Get a user service
     $serv = \Factory::getUserService();
-    
+
     //Get the posted user data
    $userID =$_REQUEST['ID'];
    $user = $serv->getUser($userID);
-   
+
    //Note that a string is recived from post and must be converted to boolean
    if($_REQUEST['IsAdmin']=="true"){
        $isAdmin=true;
@@ -110,7 +110,7 @@ function submit() {
     try {
         //function will through error if user does not have the correct permissions
         $serv->setUserIsAdmin($user, $currentUser, $isAdmin);
-        
+
         $params = array('Name' => $user->getForename()." ".$user->getSurname(),
                         'IsAdmin'=> $user->isAdmin(),
                         'ID'=> $user->getId());

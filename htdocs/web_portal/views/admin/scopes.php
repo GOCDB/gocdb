@@ -21,7 +21,7 @@
         </div>
    <?php endif; ?>
 
-    <?php $numberOfScopes = sizeof($params['Scopes'])?>  
+    <?php $numberOfScopes = sizeof($params['Scopes'])?>
     <div class="listContainer">
         <span class="header listHeader">
             <?php echo $numberOfScopes ?> Scope<?php if($numberOfScopes) echo "s"?>
@@ -33,7 +33,7 @@
                     <th class="site_table">Remove</th>
                 <?php endif; ?>
             </tr>
-            <?php           
+            <?php
             $num = 2;
             if(sizeof($numberOfScopes > 0)) {
                 foreach($params['Scopes'] as $scope) {
@@ -42,7 +42,7 @@
                     <td class="site_table" style="width: 90%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Admin_Scope&id=<?php echo $scope->getId() ?>">                            
+                                <a href="index.php?Page_Type=Admin_Scope&id=<?php echo $scope->getId() ?>">
                                     <?php xecho($scope->getName()); ?>
                                 </a>
                             </span>
@@ -54,10 +54,10 @@
                              <a onclick="return confirmSubmit()" href="index.php?Page_Type=Admin_Remove_Scope&id=<?php echo $scope->getId() ?>">
                                 <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
                             </a>
-                        </td> 
+                        </td>
                     <?php endif ?>
                 </tr>
-                <?php  
+                <?php
                     if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over scopes
             }

@@ -11,15 +11,15 @@ $infrastructureFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/Infrastructure
 $infs = simplexml_load_file($infrastructureFileName);
 
 foreach($infs as $xmlInf) {
-	$doctrineInf = new Infrastructure();
-	$name = "";
-	foreach($xmlInf as $key => $value) {
-		if($key == "name") {
-			$name = (string) $value;
-		}
-	}
-	$doctrineInf->setName($name);
-	$entityManager->persist($doctrineInf);
+    $doctrineInf = new Infrastructure();
+    $name = "";
+    foreach($xmlInf as $key => $value) {
+        if($key == "name") {
+            $name = (string) $value;
+        }
+    }
+    $doctrineInf->setName($name);
+    $entityManager->persist($doctrineInf);
 }
 
 $entityManager->flush();

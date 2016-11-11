@@ -5,7 +5,7 @@ function showServiceGroup() {
 
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
-    } 
+    }
     $sGroupId = $_GET['id'];
 
     $sGroup = \Factory::getServiceGroupService()->getServiceGroup($sGroupId);
@@ -15,36 +15,36 @@ function showServiceGroup() {
     // 31 = the number of days worth of historical downtimes to show
     $downtimes = \Factory::getServiceGroupService()->getDowntimes($sGroupId, 31);
     $params['downtimes'] = $downtimes;
-    
+
     //get user for case that portal is read only and user is admin, so they can still see edit links
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    
+
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
 
-    $params['authenticated'] = false; 
+    $params['authenticated'] = false;
     if($user != null){
-        $params['authenticated'] = true; 
+        $params['authenticated'] = true;
     }
 
-    $allRoles = $sGroup->getRoles(); 
-    $roles = array(); 
+    $allRoles = $sGroup->getRoles();
+    $roles = array();
     foreach ($allRoles as $role){
         if($role->getStatus() == \RoleStatus::GRANTED){
-            $roles[] = $role; 
+            $roles[] = $role;
         }
     }
-    $params['Roles'] = $roles; 
+    $params['Roles'] = $roles;
 
     // Does current viewer have edit permissions over object ?
-    $params['ShowEdit'] = false;  
+    $params['ShowEdit'] = false;
     //if(count( \Factory::getServiceGroupService()->authorize Action(\Action::EDIT_OBJECT, $sGroup, $user))>=1){
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $sGroup, $user)->getGrantAction()){
-       $params['ShowEdit'] = true;  
-    } 
+       $params['ShowEdit'] = true;
+    }
 
-    // Add RoleActionRecords to params 
-    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($sGroup->getId(), 'servicegroup'); 
+    // Add RoleActionRecords to params
+    $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($sGroup->getId(), 'servicegroup');
 
     $title = $sGroup->getName();
 

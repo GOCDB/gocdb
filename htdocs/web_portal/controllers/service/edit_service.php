@@ -32,16 +32,16 @@ function edit_service() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's for a new site
-		submit($user);
-	} else { // If there is no post data, draw the edit site form
-		draw($user);
-	}
+        submit($user);
+    } else { // If there is no post data, draw the edit site form
+        draw($user);
+    }
 }
 
 /**
- * Processes an edit service request. 
+ * Processes an edit service request.
  * @param \User $user Current user
  * @return null
  */
@@ -54,44 +54,44 @@ function submit(\User $user = null) {
 }
 
 /**
- * Draw the edit site form. 
+ * Draw the edit site form.
  * @param \User $user
  * @throws \Exception
  */
 function draw(\User $user = null) {
     // can user assign reserved scopes to this site?
-    $disableReservedScopes = true; 
+    $disableReservedScopes = true;
     if($user->isAdmin()){
-	$disableReservedScopes = false; 
+    $disableReservedScopes = false;
     }
-    
+
     // URL mapping
-    // Return all scopes for the Site with the specified Id as a JSON object 
+    // Return all scopes for the Site with the specified Id as a JSON object
     // Used in ajax requests for display purposes
     /*if(isset($_GET['getAllScopesForScopedEntity']) && is_numeric($_GET['getAllScopesForScopedEntity'])){
-        $service = \Factory::getServiceService()->getService($_GET['getAllScopesForScopedEntity']); 
-        die(getEntityScopesAsJSON($service, $disableReservedScopes));  
-        
-    } else*/ 
+        $service = \Factory::getServiceService()->getService($_GET['getAllScopesForScopedEntity']);
+        die(getEntityScopesAsJSON($service, $disableReservedScopes));
+
+    } else*/
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
-    
+
     $id = $_REQUEST['id'];
     /* @var $se \Service */
     $se = \Factory::getServiceService()->getService($id);
 
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
             \Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction()==FALSE){
-       throw new \Exception("You do not have permission over this service.");  
+       throw new \Exception("You do not have permission over this service.");
     }
-    
+
 
     $params['se'] = $se;
     $params['serviceTypes'] = \Factory::getServiceService()->getServiceTypes();
     $params['numberOfScopesRequired'] = \Factory::getConfigService()->getMinimumScopesRequired('service');
     $params["disableReservedScopes"]=$disableReservedScopes;
-    $params['scopejson'] = getEntityScopesAsJSON2($se, $se->getParentSite(), $disableReservedScopes); 
+    $params['scopejson'] = getEntityScopesAsJSON2($se, $se->getParentSite(), $disableReservedScopes);
     show_view('service/edit_service.php', $params);
 }
 

@@ -35,7 +35,7 @@ class Validate {
     {
         //Check the length of the field value, if too long, throws exception
         $this->checkFieldLength($Object_Name, $Field_Name, $Field_Value);
-        
+
         $RegEx = $this->Get_Field_value($Object_Name, $Field_Name, 'regex');
         // If there are no checks to perform then $Field_Value must be valid
         if(count($RegEx) == 0)
@@ -47,7 +47,7 @@ class Validate {
 
         return true;
     }
-    
+
     /**
      * Checks the length of inputs against the length specified in the schema.
      * @throws \Exception
@@ -84,8 +84,8 @@ class Validate {
             if ((string) $entity->name == $Object_Name) {
                 return $entity;
             }
-    	}
-    	throw new \Exception("Object type: $Object_Name not found in schema XML");
+        }
+        throw new \Exception("Object type: $Object_Name not found in schema XML");
     }
 
 

@@ -53,16 +53,16 @@ function submit(array $propertyArray, \Service $service, \EndpointLocation $endp
 
     $params['propArr'] = $propertyArray;
     $params['service'] = $service;
-    $params['endpoint'] = $endpoint; 
-    
+    $params['endpoint'] = $endpoint;
+
     //remove property
     try {
-       	$serv->deleteEndpointProperties($user, $propertyArray);
+        $serv->deleteEndpointProperties($service, $user, $propertyArray);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
-    }   
-    
+    }
+
     show_view('/service/deleted_endpoint_properties.php', $params);
 
 }

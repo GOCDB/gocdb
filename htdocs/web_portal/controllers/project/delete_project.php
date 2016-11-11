@@ -22,9 +22,8 @@ require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 require_once __DIR__ . '/../utils.php';
 
 function delete_project(){
-    if(true){
-        throw new Exception("Project deletion is disabled - see controller to enable"); 
-    }
+    die("Safguard disabled delete - remove this line to enable in [".__FILE__."]");
+    
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
@@ -33,26 +32,26 @@ function delete_project(){
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
-    
+
+
     //Get the project from the id
     $serv= \Factory::getProjectService();
     $project =$serv ->getProject($_REQUEST['id']);
-    
+
     //keep the name to display later
     $params['Name'] = $project -> getName();
-     
-    // Delete the project. This fuction will check the user is allowed to 
+
+    // Delete the project. This fuction will check the user is allowed to
     // perform this action and throw an error if not (only gocdb admins allowed).
-    // Project deletion does not delete child NGIs and automatically cascade 
-    // deletes the user Roles over the OwnedEntity. 
+    // Project deletion does not delete child NGIs and automatically cascade
+    // deletes the user Roles over the OwnedEntity.
     try {
         $serv->deleteProject($project, $user);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
     }
-    
+
     show_view("project/deleted_project.php", $params, $params['Name'].'deleted');
-            
+
 }

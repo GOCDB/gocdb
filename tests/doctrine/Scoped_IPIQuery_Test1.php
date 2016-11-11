@@ -19,12 +19,12 @@ require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/PI/QueryBuilders/Ext
 
 
 /**
- * Creates selected <code>IPIQuery</code> objects that perform scoped queries on 
- * <code>IScopedEntity</code> objects, and assert that the query objects return 
- * the expected number of scoped entities when querying against known fixture data. 
+ * Creates selected <code>IPIQuery</code> objects that perform scoped queries on
+ * <code>IScopedEntity</code> objects, and assert that the query objects return
+ * the expected number of scoped entities when querying against known fixture data.
  * <p>
  * Covers the following IPIQuery objects: GetNGI, GetSite, GetServiceEndpoint, GetServiceGroup
- * 
+ *
  * @author David Meredith
  */
 class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
@@ -32,7 +32,7 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
     private $em;
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     public static function setUpBeforeClass() {
         parent::setUpBeforeClass();
@@ -50,8 +50,8 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * Overridden. Returns the test dataset.  
-     * Defines how the initial state of the database should look before each test is executed. 
+     * Overridden. Returns the test dataset.
+     * Defines how the initial state of the database should look before each test is executed.
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
     protected function getDataSet() {
@@ -61,7 +61,7 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getSetUpOperation() {
         // CLEAN_INSERT is default
@@ -69,14 +69,14 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
         //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
         //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
         //
-        // Issue a DELETE from <table> which is more portable than a 
-        // TRUNCATE table <table> (some DBs require high privileges for truncate statements 
+        // Issue a DELETE from <table> which is more portable than a
+        // TRUNCATE table <table> (some DBs require high privileges for truncate statements
         // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
         return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getTearDownOperation() {
         // NONE is default
@@ -113,14 +113,14 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
             //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM " . $tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
-            //echo 'row count: '.$result->getRowCount() ; 
+            //echo 'row count: '.$result->getRowCount() ;
             if ($result->getRowCount() != 0)
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
         }
     }
 
    /**
-     * See class doc. 
+     * See class doc.
      */
     public function testGet_Scoped_IPIQuery() {
         print __METHOD__ . "\n";
@@ -145,53 +145,53 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
 
     private function doScopedQueryCalls(\org\gocdb\services\IPIQuery $query) {
 
-        // empty scope string is a wildcard for 'any' value (i.e. scope can be any value) 
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all'), 5); 
-        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'any'), 5); 
+        // empty scope string is a wildcard for 'any' value (i.e. scope can be any value)
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'all'), 5);
+        $this->queryForIScopedEntity($query, array('scope' => '', 'scope_match' => 'any'), 5);
         try {
-            $this->queryForIScopedEntity($query, null, 5);  
-            $this->fail("Expected and InvalidArgumentException"); 
+            $this->queryForIScopedEntity($query, null, 5);
+            $this->fail("Expected and InvalidArgumentException");
         } catch(InvalidArgumentException $ex){
-            // ok, we expected this so continue on below 
+            // ok, we expected this so continue on below
         }
-        // TODO - All Tests below involve missing/empty/null 'scope' and 'scope_match' 
-        // values. This causes the IPIQuery object to invoke the Factory::getConfigService() 
-        // to get the default 'scope' and 'scope_match' values. 
-        // If we were being strict OO practitioners, then the IPIQuery 
-        // objects shouldn't really depend on the Factory or ConfigService. 
-        // Instead, these defaults could be injected from calling/client code 
-        // (with an additional a hardwired fallback of 'scope_match = all' and 
-        // 'no' default scope defined within the IPIQuery).  
-        // 
-        // 5 queries below use the default scope and default scope_match values  
-        $this->queryForIScopedEntity($query, array('scope_match' => 'all'), 0); // no scope (uses default) 
+        // TODO - All Tests below involve missing/empty/null 'scope' and 'scope_match'
+        // values. This causes the IPIQuery object to invoke the Factory::getConfigService()
+        // to get the default 'scope' and 'scope_match' values.
+        // If we were being strict OO practitioners, then the IPIQuery
+        // objects shouldn't really depend on the Factory or ConfigService.
+        // Instead, these defaults could be injected from calling/client code
+        // (with an additional a hardwired fallback of 'scope_match = all' and
+        // 'no' default scope defined within the IPIQuery).
+        //
+        // 5 queries below use the default scope and default scope_match values
+        $this->queryForIScopedEntity($query, array('scope_match' => 'all'), 0); // no scope (uses default)
         $this->queryForIScopedEntity($query, array('scope_match' => ''), 0); // no scope and empty scope_match
-        $this->queryForIScopedEntity($query, array(), 0); // no scope, no scope_match (uses defaults)  
-        $this->queryForIScopedEntity($query, array('scope' => null, 'scope_match' => 'any'), 0); // no scope (uses default) 
-        $this->queryForIScopedEntity($query, array('scope' => null, 'scope_match' => 'all'), 0);// no scope (uses default)  
+        $this->queryForIScopedEntity($query, array(), 0); // no scope, no scope_match (uses defaults)
+        $this->queryForIScopedEntity($query, array('scope' => null, 'scope_match' => 'any'), 0); // no scope (uses default)
+        $this->queryForIScopedEntity($query, array('scope' => null, 'scope_match' => 'all'), 0);// no scope (uses default)
 
-        // Test with scope_match = all  
+        // Test with scope_match = all
         $this->queryForIScopedEntity($query, array('scope' => 'Scope0', 'scope_match' => 'all'), 4);
         $this->queryForIScopedEntity($query, array('scope' => 'Scope0,Scope1', 'scope_match' => 'all'), 3);
         $this->queryForIScopedEntity($query, array('scope' => 'Scope2', 'scope_match' => 'all'), 2);
         $this->queryForIScopedEntity($query, array('scope' => 'Scope3,Scope4,Scope5', 'scope_match' => 'all'), 1);
         $this->queryForIScopedEntity($query, array('scope' => 'Scope0,Scope1,ScopeX', 'scope_match' => 'all'), 0);
-        // Test with scope_match = any 
+        // Test with scope_match = any
         $this->queryForIScopedEntity($query, array('scope' => 'Scope0', 'scope_match' => 'any'), 4);
         $this->queryForIScopedEntity($query, array('scope' => 'Scope1', 'scope_match' => 'any'), 3);
         $this->queryForIScopedEntity($query, array('scope' => 'ScopeX0,ScopeX1,ScopeX1', 'scope_match' => 'any'), 0);
 
-//	$query->validateParameters(array('scope' => 'Scope0,Scope1,ScopeX', 'scope_match' => 'any')); 
+//	$query->validateParameters(array('scope' => 'Scope0,Scope1,ScopeX', 'scope_match' => 'any'));
 //	$query->createQuery();
 //      $results = $query->executeQuery();
-//	print_r(count($results)); 
+//	print_r(count($results));
 //      $this->assertTrue(4 == count($results));
-	
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope0,Scope1,ScopeX', 'scope_match' => 'any'), 4);
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope1,ScopeX,ScopeXX', 'scope_match' => 'any'), 3);
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope1,Scope2', 'scope_match' => 'any'), 3);
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope2,Scope3,Scope4', 'scope_match' => 'any'), 2);
-	$this->queryForIScopedEntity($query, array('scope' => 'Scope5,ScopeX,ScopeXX', 'scope_match' => 'any'), 1);
+
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope0,Scope1,ScopeX', 'scope_match' => 'any'), 4);
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope1,ScopeX,ScopeXX', 'scope_match' => 'any'), 3);
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope1,Scope2', 'scope_match' => 'any'), 3);
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope2,Scope3,Scope4', 'scope_match' => 'any'), 2);
+    $this->queryForIScopedEntity($query, array('scope' => 'Scope5,ScopeX,ScopeXX', 'scope_match' => 'any'), 1);
     }
 
     private function queryForIScopedEntity(\org\gocdb\services\IPIQuery $query, $params, $expectedCount) {
@@ -199,7 +199,7 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
         $query->createQuery();
         $results = $query->executeQuery();
         $this->assertTrue($expectedCount == count($results));
-        return $results; 
+        return $results;
     }
 
 }

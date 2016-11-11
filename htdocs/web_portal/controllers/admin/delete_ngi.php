@@ -24,7 +24,7 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 
 function delete_ngi() {
     checkUserIsAdmin();
-       
+
     if($_POST) {
         submit();
     }
@@ -43,7 +43,7 @@ function draw() {
      else {
          throw new \Exception("A NGI must be specified in the url");
      }
-     
+
      $params['NGI']= $ngi;
      $sites = $ngi->getSites();
      $params['Sites'] = $sites;
@@ -53,10 +53,10 @@ function draw() {
              $params['Services'][]=$service;
          }
      }
-      
-     
+
+
      show_view('/admin/delete_ngi.php', $params);
-     
+
 }
 
 function submit() {
@@ -71,21 +71,23 @@ function submit() {
      else {
          throw new \Exception("A NGI must be specified in the url");
      }
-     
+
      //save name to display later
      $params['Name'] = $ngi->getName();
-    
+
      $dn = Get_User_Principle();
      $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    
+
+     die("Safguard disabled delete - remove this line to enable in [".__FILE__."]");
+     
      //remove ngi
      try {
        \Factory::getNgiService()->deleteNgi($ngi, $user);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
-    }   
-    
+    }
+
     show_view('/site/deleted_site.php', $params);
 
 }

@@ -1,5 +1,5 @@
 <?php
-function se_downtimes() {    
+function se_downtimes() {
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
@@ -10,7 +10,7 @@ function se_downtimes() {
     $params['se'] = $se;
     $params['downtimes'] = $downtimes;
 
-	$title = "Downtimes for " . $se->getHostName();
+    $title = "Downtimes for " . $se->getHostName();
     show_view('service/se_downtimes.php', $params, $title);
     return;
 }

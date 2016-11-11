@@ -36,7 +36,7 @@ function add_site() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {     // If we receive a POST request it's for a new site
         submit($user);
     } else { // If there is no post data, draw the new site form
@@ -52,7 +52,7 @@ function add_site() {
  */
 function submit(\User $user = null) {
     $newValues = getSiteDataFromWeb();
-    
+
     $serv = \Factory::getSiteService();
     try {
         $site = $serv->addSite($newValues, $user);
@@ -62,65 +62,65 @@ function submit(\User $user = null) {
     }
     $params['site'] = $site;
     show_view("site/submit_new_site.php", $params);
-    die(); 
+    die();
 }
 
 
 /**
  * Draws a form to add a new site
- * @param \User $user current user 
+ * @param \User $user current user
  * @return null
  */
 function draw(\User $user = null) {
     if(is_null($user)){
-        throw new Exception("Unregistered users can't add a new site"); 
+        throw new Exception("Unregistered users can't add a new site");
     }
 
     $siteService = \Factory::getSiteService();
 
     if($user->isAdmin()){
         // can user assign reserved scopes to this site, even though site has not been created yet?
-        $disableReservedScopes = false; 
+        $disableReservedScopes = false;
         // if user is admin, then get all NGIs
-        $userNGIs = \Factory::getNgiService()->getNGIs(); 
+        $userNGIs = \Factory::getNgiService()->getNGIs();
     } else {
-        $disableReservedScopes = true; 
+        $disableReservedScopes = true;
         // otherwise, get only the NGIs the non-admin user has roles over that support add_site
-        $userNGIs = \Factory::getNgiService()->getNGIsBySupportedAction(Action::NGI_ADD_SITE, $user); 
+        $userNGIs = \Factory::getNgiService()->getNGIsBySupportedAction(Action::NGI_ADD_SITE, $user);
         if(count($userNGIs) == 0){
            show_view('error.php', "You do not have permission to add a new site."
-                        ." To add a new site you require a managing role over an NGI"); 
-           die(); 
+                        ." To add a new site you require a managing role over an NGI");
+           die();
         }
     }
-//   // todo - site will be created under one of the user's ngis, so we can 
-//   // create a temporary site and add it to those ngis in order to apply role model. 
-//    $site = new \Site(); 
-//    foreach($userNGIs as $ngis){ $ngis->addSiteDoJoin($site); } 
+//   // todo - site will be created under one of the user's ngis, so we can
+//   // create a temporary site and add it to those ngis in order to apply role model.
+//    $site = new \Site();
+//    foreach($userNGIs as $ngis){ $ngis->addSiteDoJoin($site); }
 //    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(
 //        "ACTION_APPLY_RESERVED_SCOPE_TAG", $site , $user)->getGrantAction()){
-//       $disableReservedScopes = false;  
-//    } 
+//       $disableReservedScopes = false;
+//    }
 
     // URL mapping
     if(isset($_GET['getAllScopesForScopedEntity']) && is_numeric($_GET['getAllScopesForScopedEntity'])){
-        // Return all scopes for the parent NGI with the specified Id as a JSON object.  
-        // Used in ajax requests for generating UI checkboxes. 
-        // AJAX is needed here because the parent NGI is not known until the user selects 
-        // which parent NGI in the pull-down which then fires the AJAX request. 
-        $scopedEntityId = $_GET['getAllScopesForScopedEntity']; 
-        $ngiScopedEntity =  \Factory::getNgiService()->getNgi($scopedEntityId); 
-        $jsonScopes = getEntityScopesAsJSON2(null, $ngiScopedEntity, $disableReservedScopes, true); 
+        // Return all scopes for the parent NGI with the specified Id as a JSON object.
+        // Used in ajax requests for generating UI checkboxes.
+        // AJAX is needed here because the parent NGI is not known until the user selects
+        // which parent NGI in the pull-down which then fires the AJAX request.
+        $scopedEntityId = $_GET['getAllScopesForScopedEntity'];
+        $ngiScopedEntity =  \Factory::getNgiService()->getNgi($scopedEntityId);
+        $jsonScopes = getEntityScopesAsJSON2(null, $ngiScopedEntity, $disableReservedScopes, true);
         header('Content-type: application/json');
-        die($jsonScopes);  
-    } 
-   
+        die($jsonScopes);
+    }
+
     $countries = $siteService->getCountries();
-    $timezones = DateTimeZone::listIdentifiers(); 
-    
+    $timezones = DateTimeZone::listIdentifiers();
+
     //Remove SC and PPS infrastructures from drop down list. TODO: Delete this block once they no longer exist
     $SCInfrastructure = $siteService->getProdStatusByName('SC');
-    $PPSInfrastructure = $siteService->getProdStatusByName('PPS'); 
+    $PPSInfrastructure = $siteService->getProdStatusByName('PPS');
     $hackprodStatuses=array();
     foreach($siteService->getProdStatuses() as $ps){
         if($ps != $SCInfrastructure and $ps != $PPSInfrastructure){
@@ -132,18 +132,18 @@ function draw(\User $user = null) {
     $certStatuses = $siteService->getCertStatuses();
     $numberOfScopesRequired = \Factory::getConfigService()->getMinimumScopesRequired('site');
 
-    $params = array('ngis' => $userNGIs, 'countries' => $countries, 'timezones' => $timezones, 
-        'prodStatuses' => $prodStatuses, 'certStatuses' => $certStatuses, 
-        'numberOfScopesRequired' => $numberOfScopesRequired, 
+    $params = array('ngis' => $userNGIs, 'countries' => $countries, 'timezones' => $timezones,
+        'prodStatuses' => $prodStatuses, 'certStatuses' => $certStatuses,
+        'numberOfScopesRequired' => $numberOfScopesRequired,
         'disableReservedScopes' => $disableReservedScopes);
 
-    //Check that there is at least one NGI available before allowing an add site. 
+    //Check that there is at least one NGI available before allowing an add site.
     if($params['ngis'] == null){
         show_view('error.php', "GocDB requires one or more NGI's to be able to add a site.");
     }
-    
+
     show_view("site/add_site.php", $params);
-    die(); 
+    die();
 }
 
 ?>

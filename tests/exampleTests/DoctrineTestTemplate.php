@@ -10,20 +10,20 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 
 /**
  * A template that includes all the setup and tear down functions for writting
- * a PHPUnit test to test doctrine.  
- * 
+ * a PHPUnit test to test doctrine.
+ *
  * @author David Meredith
  */
 class DoctrineTestTemplate extends PHPUnit_Extensions_Database_TestCase {
 
     private $em;
-	
-	 /**
-     * Overridden. 
+
+     /**
+     * Overridden.
      */
     public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        parent::setUpBeforeClass();
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing Your Test Name. . .\n";
     }
 
@@ -37,8 +37,8 @@ class DoctrineTestTemplate extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * Overridden. Returns the test dataset.  
-     * Defines how the initial state of the database should look before each test is executed. 
+     * Overridden. Returns the test dataset.
+     * Defines how the initial state of the database should look before each test is executed.
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
     protected function getDataSet() {
@@ -46,7 +46,7 @@ class DoctrineTestTemplate extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getSetUpOperation() {
         // CLEAN_INSERT is default
@@ -54,14 +54,14 @@ class DoctrineTestTemplate extends PHPUnit_Extensions_Database_TestCase {
         //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
         //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
         //
-        // Issue a DELETE from <table> which is more portable than a 
-        // TRUNCATE table <table> (some DBs require high privileges for truncate statements 
+        // Issue a DELETE from <table> which is more portable than a
+        // TRUNCATE table <table> (some DBs require high privileges for truncate statements
         // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
         return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getTearDownOperation() {
         // NONE is default
@@ -78,7 +78,7 @@ class DoctrineTestTemplate extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * @todo Still need to setup connection to different databases. 
+     * @todo Still need to setup connection to different databases.
      * @return EntityManager
      */
     private function createEntityManager() {
@@ -99,19 +99,19 @@ class DoctrineTestTemplate extends PHPUnit_Extensions_Database_TestCase {
             //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM " . $tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
-            //echo 'row count: '.$result->getRowCount() ; 
+            //echo 'row count: '.$result->getRowCount() ;
             if ($result->getRowCount() != 0)
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
         }
     }
 
     /**
-     * Any function with test at the start of the name will execute with PHPUnit  
+     * Any function with test at the start of the name will execute with PHPUnit
      */
     public function testYourTest() {
         print __METHOD__ . "\n";
-		
-		// Your test here
+
+        // Your test here
 
     }
 

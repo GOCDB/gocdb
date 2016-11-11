@@ -33,7 +33,7 @@ function edit_endpoint() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {
         submit($user);
     } else {
@@ -57,17 +57,17 @@ function draw(\User $user = null) {
     if (!isset($_REQUEST['endpointid']) || !is_numeric($_REQUEST['endpointid']) ){
         throw new Exception("An endpointid must be specified");
     }
-    $serv = \Factory::getServiceService(); 
+    $serv = \Factory::getServiceService();
     $service = $serv->getService($_REQUEST['serviceid']);
-    $endpoint = $serv->getEndpoint($_REQUEST['endpointid']);    
+    $endpoint = $serv->getEndpoint($_REQUEST['endpointid']);
     //Check user has permissions to edit endpoints
     $serv->validateAddEditDeleteActions($user, $service);
-    
-    
+
+
     $params['endpoint'] = $endpoint;
     $params['service'] = $service;
-    $params['serviceTypes'] = $serv->getServiceTypes(); 
-    show_view("service/edit_service_endpoint.php", $params); 
+    $params['serviceTypes'] = $serv->getServiceTypes();
+    show_view("service/edit_service_endpoint.php", $params);
 }
 
 /**
@@ -78,15 +78,15 @@ function draw(\User $user = null) {
 function submit(\User $user = null) {
     try {
         $newValues = getEndpointDataFromWeb();
-        $serviceID = $newValues['SERVICEENDPOINT']['SERVICE']; 
+        $serviceID = $newValues['SERVICEENDPOINT']['SERVICE'];
         $endpointID = $newValues['SERVICEENDPOINT']['ENDPOINTID'];
 
         $serv = \Factory::getServiceService();
-    	$endpoint = $serv->getEndpoint($endpointID);
-    	$service = $serv->getService($serviceID);    	
+        $endpoint = $serv->getEndpoint($endpointID);
+        $service = $serv->getService($serviceID);
         $serv->editEndpoint($service, $user, $endpoint, $newValues);
         $params['serviceid'] = $serviceID;
-        $params['endpointid'] = $endpointID; 
+        $params['endpointid'] = $endpointID;
         show_view('service/service_endpoint_updated.php', $params);
     } catch(Exception $e) {
         show_view('error.php', $e->getMessage());

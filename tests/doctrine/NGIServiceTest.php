@@ -10,9 +10,9 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/NGI.php';
 
 /**
- * Test the NGI service, in particular the cascade delete behaviour when  
- * deleting an ngi (i.e. cascading to Service, EndpointLocation, Downtime, Roles etc). 
- * 
+ * Test the NGI service, in particular the cascade delete behaviour when
+ * deleting an ngi (i.e. cascading to Service, EndpointLocation, Downtime, Roles etc).
+ *
  * @author David Meredith
  */
 class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
@@ -24,11 +24,11 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
     //private $eudatScope;
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     public static function setUpBeforeClass() {
-		parent::setUpBeforeClass();
-		echo "\n\n-------------------------------------------------\n";
+        parent::setUpBeforeClass();
+        echo "\n\n-------------------------------------------------\n";
         echo "Executing NGIServiceTest. . .\n";
     }
 
@@ -42,8 +42,8 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * Overridden. Returns the test dataset.  
-     * Defines how the initial state of the database should look before each test is executed. 
+     * Overridden. Returns the test dataset.
+     * Defines how the initial state of the database should look before each test is executed.
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
     protected function getDataSet() {
@@ -53,7 +53,7 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getSetUpOperation() {
         // CLEAN_INSERT is default
@@ -61,14 +61,14 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
         //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
         //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
         //
-        // Issue a DELETE from <table> which is more portable than a 
-        // TRUNCATE table <table> (some DBs require high privileges for truncate statements 
+        // Issue a DELETE from <table> which is more portable than a
+        // TRUNCATE table <table> (some DBs require high privileges for truncate statements
         // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
         return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
     }
 
     /**
-     * Overridden. 
+     * Overridden.
      */
     protected function getTearDownOperation() {
         // NONE is default
@@ -85,7 +85,7 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
     }
 
     /**
-     * @todo Still need to setup connection to different databases. 
+     * @todo Still need to setup connection to different databases.
      * @return EntityManager
      */
     private function createEntityManager() {
@@ -107,38 +107,38 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
             //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM " . $tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
-            //echo 'row count: '.$result->getRowCount() ; 
+            //echo 'row count: '.$result->getRowCount() ;
             if ($result->getRowCount() != 0)
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
         }
     }
 
     /**
-     * Test the NGI service deleteNGI() method which recursively deletes child 
-     * sites and services, roles etc.  
+     * Test the NGI service deleteNGI() method which recursively deletes child
+     * sites and services, roles etc.
      */
     public function testNgiService_deleteNgi() {
         print __METHOD__ . "\n";
         include __DIR__ . '/resources/sampleFixtureData1.php';
 
-        // create an admin user (required to call the NGI service) 
+        // create an admin user (required to call the NGI service)
         $adminUser = TestUtil::createSampleUser('some', 'admin', '/some/admin');
         $adminUser->setAdmin(TRUE);
         $this->em->persist($adminUser);
 
-        // Now delete the ngi using the NGI service. 
+        // Now delete the ngi using the NGI service.
         $ngiService = new org\gocdb\services\NGI();
         $ngiService->setEntityManager($this->em);
         $ngiService->deleteNgi($ngi, $adminUser, FALSE);
 
 
-        // since we deleted the NGI, we expect an empty DB ! 
+        // since we deleted the NGI, we expect an empty DB !
         $result = $testConn->createQueryTable('results_table', "SELECT * FROM Roles");
         $this->assertTrue($result->getRowCount() == 0);
-        
+
         $result = $testConn->createQueryTable('results_table', "SELECT * FROM NGIs");
         $this->assertTrue($result->getRowCount() == 0);
-        
+
         $result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
         $this->assertTrue($result->getRowCount() == 0);
 
@@ -150,7 +150,7 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
 
         $result = $testConn->createQueryTable('results_table', "SELECT * FROM EndpointLocations");
         $this->assertTrue($result->getRowCount() == 0);
-        
+
         $result = $testConn->createQueryTable('results_table', "SELECT * FROM CertificationStatusLogs");
         $this->assertTrue($result->getRowCount() == 0);
     }

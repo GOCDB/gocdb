@@ -27,7 +27,7 @@ function delete() {
     require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
     require_once __DIR__ . '/../utils.php';
-    
+
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     if(is_null($user)) {
@@ -36,7 +36,7 @@ function delete() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }

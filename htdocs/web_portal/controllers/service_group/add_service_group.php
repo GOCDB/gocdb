@@ -73,7 +73,7 @@ function draw($user) {
         if (is_null($user)) {
             throw new \Exception("Unregistered users can't create service groups.");
         }
-        
+
         // can user assign reserved scopes ?
         $disableReservedScopes = true;
         if ($user->isAdmin()) {
@@ -83,10 +83,10 @@ function draw($user) {
         $configService = \Factory::getConfigService();
         //$scopes = \Factory::getScopeService()->getAllScopesMarkDefault();
         $numberScopesRequired = $configService->getMinimumScopesRequired('service_group');
-        $scopejsonStr = getEntityScopesAsJSON2(null, null, $disableReservedScopes); 
+        $scopejsonStr = getEntityScopesAsJSON2(null, null, $disableReservedScopes);
 
         $params = array(
-            //'scopes' => $scopes, 
+            //'scopes' => $scopes,
             'numberOfScopesRequired' => $numberScopesRequired,
             'scopejson' => $scopejsonStr);
 

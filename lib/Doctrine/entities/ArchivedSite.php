@@ -13,128 +13,128 @@
  */
 
 /**
- * Keeps a record of deleted Sites and selected information about the deletion 
- * and deleted {@see Site}. This is a standalone table that has no relationships, 
+ * Keeps a record of deleted Sites and selected information about the deletion
+ * and deleted {@see Site}. This is a standalone table that has no relationships,
  * therefore these records will persist even when the Site is deleted.
  *
  * @author George Ryall
- * @author David Meredith <david.meredith@stfc.ac.uk>  
+ * @author David Meredith <david.meredith@stfc.ac.uk>
  * @Entity @Table(name="ArchivedSites")
  */
 class ArchivedSite {
-   
+
     /** @Id @Column(type="integer") @GeneratedValue **/
     protected $id;
 
     /*
-     * Note, we record various site attributes and information about the Site's 
-     * relations as simple types (e.g. recording the country value as a string). 
-     *  
-     * We can't link ArchivedSite to 'live' entities (e.g. linking AchivedSite to Country) 
-     * because we need to record a snapshot of historical information at the 
-     * point of deletion (while the live data is subject to change/deletion). 
-     * 
-     * For example, we don't want to link ArchivedSite to the 'Country' entity 
-     * because the Country entity may be deleted in the future. 
-     *  
-     * This is why we record the name name of the parent NGI rather than its id. 
-     * Similary, we record the user's DN rather than linking to the User object as 
-     * that User may be deleted in future.  
+     * Note, we record various site attributes and information about the Site's
+     * relations as simple types (e.g. recording the country value as a string).
+     *
+     * We can't link ArchivedSite to 'live' entities (e.g. linking AchivedSite to Country)
+     * because we need to record a snapshot of historical information at the
+     * point of deletion (while the live data is subject to change/deletion).
+     *
+     * For example, we don't want to link ArchivedSite to the 'Country' entity
+     * because the Country entity may be deleted in the future.
+     *
+     * This is why we record the name name of the parent NGI rather than its id.
+     * Similary, we record the user's DN rather than linking to the User object as
+     * that User may be deleted in future.
      */
-    
+
     /**
-     * DN of deleting user 
+     * DN of deleting user
      * @Column(type="string", nullable=false) */
-    protected $deletedBy; 
- 
+    protected $deletedBy;
+
     /* DATETIME NOTE:
      * Doctrine checks whether a date's been updated by doing a byreference comparison.
      * If you just update an existing DateTime object, Doctrine won't persist it!
      * Create a new DateTime object and reference that for it to persist during an update.
      * http://docs.doctrine-project.org/en/2.0.x/cookbook/working-with-datetime.html
      */
-    
-    /** 
-     * @Column(type="datetime", nullable=false) 
-     */
-    protected $deletedDate; 
 
     /**
-     * Name of Site 
-     * @Column(type="string", nullable=false) 
+     * @Column(type="datetime", nullable=false)
      */
-    protected $name; 
-    
+    protected $deletedDate;
+
+    /**
+     * Name of Site
+     * @Column(type="string", nullable=false)
+     */
+    protected $name;
+
     /**
      * Scopes applied to the NGI at the time it was deleted
-     * @Column(type="string", nullable=true) 
+     * @Column(type="string", nullable=true)
      */
     protected $scopes = null;
-    
+
     /**
      * Certification status value of the site at the time it was deleted
-     * @Column(type="string", nullable=true) 
+     * @Column(type="string", nullable=true)
      */
     protected $CertStatus = null;
-    
+
     /**
      * Version 4 'Primary Key'
-     * @Column(type="string", nullable=true) 
+     * @Column(type="string", nullable=true)
      */
     protected $V4PrimaryKey = null;
-    
+
     /**
      * Country on deletion
-     * @Column(type="string", nullable=true) 
+     * @Column(type="string", nullable=true)
      */
     protected $Country = null;
-    
+
     /**
      * Name of parent NGI
-     * @Column(type="string", nullable=true) 
+     * @Column(type="string", nullable=true)
      */
     protected $parentNgi = null;
-    
+
     /**
      * Infrastructure value (i.e. Production status value) at point of deletion
-     * @Column(type="string", nullable=true) 
+     * @Column(type="string", nullable=true)
      */
     protected $Infrastructure = null;
-    
-    /** 
-     * @Column(type="datetime", nullable=false) 
+
+    /**
+     * @Column(type="datetime", nullable=false)
      */
-    protected $originalCreationDate; 
+    protected $originalCreationDate;
 
     public function __construct() {
-        $this->deletedDate =  new \DateTime(null, new \DateTimeZone('UTC')); 
+        $this->deletedDate =  new \DateTime(null, new \DateTimeZone('UTC'));
     }
-   
+
     /**
-     * @return int The PK of this entity or null if not persisted. 
+     * @return int The PK of this entity or null if not persisted.
      */
     public function getId() {
         return $this->id;
     }
 
     /**
-     * ID/DN of deleting user.  
-     * @return String 
+     * ID/DN of deleting user.
+     * @return String
      */
     public function getDeletedBy() {
         return $this->deletedBy;
     }
 
     /**
-     * The Date Time the site was deleted. 
-     * @return \DateTime 
+     * The Date Time the site was deleted.
+     * @return \DateTime
      */
     public function getDeletedDate() {
         return $this->deletedDate;
     }
 
     /**
-     * The name of the site.  
+     * The name of the site.
      * @return string
      */
     public function getName() {
@@ -142,7 +142,7 @@ class ArchivedSite {
     }
 
     /**
-     * Comma separated list of scope names applied to the SG at the time it was deleted. 
+     * Comma separated list of scope names applied to the SG at the time it was deleted.
      * @return String or null
      */
     public function getScopes() {
@@ -150,23 +150,23 @@ class ArchivedSite {
     }
 
     /**
-     * The Certification status of the site when it was deleted, e.g. 'Uncertified' 
-     * @return string or null 
+     * The Certification status of the site when it was deleted, e.g. 'Uncertified'
+     * @return string or null
      */
     public function getCertStatus() {
         return $this->CertStatus;
     }
 
     /**
-     * The legacy v4 PK string of the deleted site.  
-     * @return string or null 
+     * The legacy v4 PK string of the deleted site.
+     * @return string or null
      */
     public function getV4PrimaryKey() {
         return $this->V4PrimaryKey;
     }
 
     /**
-     * The country code for the deleted site. 
+     * The country code for the deleted site.
      * @return string or null
      */
     public function getCountry() {
@@ -174,7 +174,7 @@ class ArchivedSite {
     }
 
     /**
-     * The name of the owning parent NGI. 
+     * The name of the owning parent NGI.
      * @return string or null
      */
     public function getParentNgi() {
@@ -182,23 +182,23 @@ class ArchivedSite {
     }
 
     /**
-     * The date time when site was originally created.  
+     * The date time when site was originally created.
      * @return \DateTime
      */
     public function getOriginalCreationDate() {
         return $this->originalCreationDate;
     }
-   
+
     /**
      * The infrastructure of the Site.
-     * @return string or null 
+     * @return string or null
      */
     public function getInfrastructure() {
         return $this->Infrastructure;
     }
 
     /**
-     * The DN/ID of the user who deleted the site. Required. 
+     * The DN/ID of the user who deleted the site. Required.
      * @param string $deletedBy
      */
     public function setDeletedBy($deletedBy) {
@@ -206,7 +206,7 @@ class ArchivedSite {
     }
 
     /**
-     * The name of the deleted site. Required. 
+     * The name of the deleted site. Required.
      * @param string $name
      */
     public function setName($name) {
@@ -214,7 +214,7 @@ class ArchivedSite {
     }
 
     /**
-     * Scopes applied to the site at the time it was deleted.  
+     * Scopes applied to the site at the time it was deleted.
      * @param string $scopesOnDeletion
      */
     public function setScopes($scopesOnDeletion) {
@@ -222,7 +222,7 @@ class ArchivedSite {
     }
 
     /**
-     * The certification status of the site when it was deleted, e.g. 'Uncertified'. 
+     * The certification status of the site when it was deleted, e.g. 'Uncertified'.
      * @param string $CertStatus
      */
     public function setCertStatus($CertStatus) {
@@ -230,7 +230,7 @@ class ArchivedSite {
     }
 
     /**
-     * The legacy v4 GOCDB PK string. 
+     * The legacy v4 GOCDB PK string.
      * @param string $V4PrimaryKey
      */
     public function setV4PrimaryKey($V4PrimaryKey) {
@@ -238,7 +238,7 @@ class ArchivedSite {
     }
 
     /**
-     * The country of the deleted site. 
+     * The country of the deleted site.
      * @param string $Country
      */
     public function setCountry($Country) {
@@ -246,7 +246,7 @@ class ArchivedSite {
     }
 
     /**
-     * The name of the parent NGI. 
+     * The name of the parent NGI.
      * @param string $parentNgi
      */
     public function setParentNgi($parentNgi) {
@@ -254,7 +254,7 @@ class ArchivedSite {
     }
 
     /**
-     * The DateTime when the site was originally created. Required. 
+     * The DateTime when the site was originally created. Required.
      * @param \DateTime $originalCreationDate
      */
     public function setOriginalCreationDate($originalCreationDate) {
@@ -262,7 +262,7 @@ class ArchivedSite {
     }
 
     /**
-     * The infrastructure name of the deleted site. 
+     * The infrastructure name of the deleted site.
      * @param string $Infrastructure
      */
     public function setInfrastructure($Infrastructure) {

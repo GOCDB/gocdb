@@ -1,6 +1,6 @@
 <div class="rightPageContainer">
     <h1 class="Success">Success</h1>
-    Service Property updated.<br />    
+    Service Property updated.<br />
     <a href="index.php?Page_Type=Service&id=<?php echo $params['serviceid']; ?>">
     View service</a>
 </div>

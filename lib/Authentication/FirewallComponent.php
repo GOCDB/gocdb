@@ -18,44 +18,44 @@ namespace org\gocdb\security\authentication;
  * @author David Meredith
  */
 class FirewallComponent implements IFirewallComponent {
-    private $authManager; 
-    private $securityContext; 
-    private $config; 
-            
+    private $authManager;
+    private $securityContext;
+    private $config;
+
     function __construct(
-            IAuthenticationManager $authManager, 
-            ISecurityContext $securityContext, 
+            IAuthenticationManager $authManager,
+            ISecurityContext $securityContext,
             IConfigFirewallComponent $config) {
-        
+
         $this->authManager = $authManager;
         $this->securityContext = $securityContext;
         $this->config = $config;
     }
 
     /**
-     * @see ISecurityContext::getAuthentication() 
+     * @see ISecurityContext::getAuthentication()
      */
     public function getAuthentication(){
-        return $this->securityContext->getAuthentication(); 
+        return $this->securityContext->getAuthentication();
     }
 
     /**
-     * @see ISecurityContext::setAuthentication($auth) 
+     * @see ISecurityContext::setAuthentication($auth)
      */
     public function setAuthentication($auth = null){
         return $this->securityContext->setAuthentication($auth);
     }
 
     /**
-     * @see IAuthenticationManager::authenticate($auth)   
+     * @see IAuthenticationManager::authenticate($auth)
      */
     public function authenticate(IAuthentication $auth){
-        return $this->authManager->authenticate($auth);  
+        return $this->authManager->authenticate($auth);
     }
 
     /**
-     * @see IFirewallComponent  
-     * @throws \LogicException if no providers configured 
+     * @see IFirewallComponent
+     * @throws \LogicException if no providers configured
      */
     public function supports(IAuthentication $auth) {
         $providers = $this->config->getAuthProviders();

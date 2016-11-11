@@ -23,15 +23,15 @@ require_once __DIR__ . '/../utils.php';
 require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
 
 function show_all(){
-    //Check the user has permission to see the page, will throw exception 
+    //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
-    
+
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    
+
     $serviceTypes = \Factory::getServiceTypeService()->getServiceTypes();
     $params['ServiceTypes']= $serviceTypes;
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
-    show_view('admin/view_service_types.php', $params, 'Service Types'); 
+    show_view('admin/view_service_types.php', $params, 'Service Types');
 }

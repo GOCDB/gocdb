@@ -33,7 +33,7 @@ function edit_property() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {
         submit($user);
     } else {
@@ -48,16 +48,16 @@ function edit_property() {
  * @return null
  */
 function draw(\User $user = null) {
-    $serv = \Factory::getSiteService(); 
+    $serv = \Factory::getSiteService();
     $site = $serv->getSite($_REQUEST['id']);
     $property = $serv->getProperty($_REQUEST['propertyid']);
     $serv->validatePropertyActions($user, $site);
-    
+
     $params['prop'] = $property;
     $params['site'] = $site;
-    
-    show_view("site/edit_site_property.php", $params);     
-    
+
+    show_view("site/edit_site_property.php", $params);
+
 
 }
 
@@ -68,15 +68,15 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     try {
-    	$newValues = getSpDataFromWeb();  
-    	$siteID = $newValues['SITEPROPERTIES']['SITE'];
-    	$propID = $newValues['SITEPROPERTIES']['PROP'];
-    	if($newValues['SITEPROPERTIES']['NAME'] == null || $newValues['SITEPROPERTIES']['VALUE'] == null){
-    	    show_view('error.php', "A property name and value must be provided.");
-    	    die();
-    	}
-    	$property = \Factory::getSiteService()->getProperty($propID);
-    	$site = \Factory::getSiteService()->getSite($siteID);    	
+        $newValues = getSpDataFromWeb();
+        $siteID = $newValues['SITEPROPERTIES']['SITE'];
+        $propID = $newValues['SITEPROPERTIES']['PROP'];
+        if($newValues['SITEPROPERTIES']['NAME'] == null || $newValues['SITEPROPERTIES']['VALUE'] == null){
+            show_view('error.php', "A property name and value must be provided.");
+            die();
+        }
+        $property = \Factory::getSiteService()->getProperty($propID);
+        $site = \Factory::getSiteService()->getSite($siteID);
         $site = \Factory::getSiteService()->editSiteProperty($site, $user, $property, $newValues);
         $params['siteid'] = $siteID;
         show_view('site/site_property_updated.php', $params);

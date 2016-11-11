@@ -53,14 +53,14 @@ function submit(array $propertyArray, \Service $service, \User $user = null) {
 
     //remove site property
     try {
-     	$serv = \Factory::getServiceService();
-       	$serv->deleteServiceProperties($service, $user, $propertyArray);
+        $serv = \Factory::getServiceService();
+        $serv->deleteServiceProperties($service, $user, $propertyArray);
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
-    }   
-    
-    
+    }
+
+
     show_view('/service/deleted_service_properties.php', $params);
 
 }

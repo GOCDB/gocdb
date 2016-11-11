@@ -33,7 +33,7 @@ function edit_property() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {
         submit($user);
     } else {
@@ -54,21 +54,21 @@ function draw(\User $user = null) {
     if (!isset($_REQUEST['propertyid']) || !is_numeric($_REQUEST['propertyid']) ){
         throw new Exception("An id must be specified");
     }
-    $serv = \Factory::getServiceService(); 
+    $serv = \Factory::getServiceService();
     //$service = $serv->getService($_REQUEST['serviceid']);
     $property = $serv->getEndpointProperty($_REQUEST['propertyid']);
-    $endpoint = $property->getParentEndpoint();  
-    $service = $endpoint->getService(); 
-    
+    $endpoint = $property->getParentEndpoint();
+    $service = $endpoint->getService();
+
     //Check user has permissions to edit endpoint property
     $serv->validateAddEditDeleteActions($user, $service);
-    
+
     $params['prop'] = $property;
     $params['service'] = $service;
-    $params['endpoint'] = $endpoint; 
-    
-    show_view("service/edit_endpoint_property.php", $params);     
-    
+    $params['endpoint'] = $endpoint;
+
+    show_view("service/edit_endpoint_property.php", $params);
+
 
 }
 
@@ -79,17 +79,17 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     try {
-    	$newValues = getEndpointPropDataFromWeb();  
-    	$endpointID = $newValues['ENDPOINTPROPERTIES']['ENDPOINTID'];
-    	$propID = $newValues['ENDPOINTPROPERTIES']['PROP'];
-    	if($newValues['ENDPOINTPROPERTIES']['NAME'] == null || $newValues['ENDPOINTPROPERTIES']['VALUE'] == null){
-    	    show_view('error.php', "A property name and value must be provided.");
-    	    die();
-    	}
-    	$property = \Factory::getServiceService()->getEndpointProperty($propID);
-        $service = $property->getParentEndpoint()->getService();  
+        $newValues = getEndpointPropDataFromWeb();
+        $endpointID = $newValues['ENDPOINTPROPERTIES']['ENDPOINTID'];
+        $propID = $newValues['ENDPOINTPROPERTIES']['PROP'];
+        if($newValues['ENDPOINTPROPERTIES']['NAME'] == null || $newValues['ENDPOINTPROPERTIES']['VALUE'] == null){
+            show_view('error.php', "A property name and value must be provided.");
+            die();
+        }
+        $property = \Factory::getServiceService()->getEndpointProperty($propID);
+        $service = $property->getParentEndpoint()->getService();
         \Factory::getServiceService()->editEndpointProperty($service, $user, $property, $newValues);
-        
+
         $params['endpointid'] = $endpointID;
         show_view('service/endpoint_property_updated.php', $params);
     } catch(Exception $e) {

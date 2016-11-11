@@ -5,7 +5,7 @@ namespace org\gocdb\services;
 /* ______________________________________________________
  * ======================================================
  * File: index.php
- * Author: John Casson, David Meredith 
+ * Author: John Casson, David Meredith
  * Description: Entry point for the programmatic interface
  *
  * License information
@@ -31,21 +31,21 @@ require_once __DIR__ . '/../web_portal/components/Get_User_Principle.php';
 #foreach ($files as $file) {
 #        require_once($file);
 #}
-// The default is 30secs, but some queries can take longer so we may need to 
-// up the limit. This should only be necessary for certain PI queries such as 
-// get_downtime and should not be used in the GUI/portal scripts. 
-set_time_limit(60); 
-// Set the timezone to UTC for rendering all times/dates in PI.  
-// The date-times stored in the DB are in UTC, however, we still need to 
-// set the TZ to utc when re-readig those date-times for subsequent 
-// getTimestamp() calls; without setting the TZ to UTC, the calculated timestamp 
-// value will be according to the server's default timezone (e.g. GMT). 
+// The default is 30secs, but some queries can take longer so we may need to
+// up the limit. This should only be necessary for certain PI queries such as
+// get_downtime and should not be used in the GUI/portal scripts.
+set_time_limit(60);
+// Set the timezone to UTC for rendering all times/dates in PI.
+// The date-times stored in the DB are in UTC, however, we still need to
+// set the TZ to utc when re-readig those date-times for subsequent
+// getTimestamp() calls; without setting the TZ to UTC, the calculated timestamp
+// value will be according to the server's default timezone (e.g. GMT).
 date_default_timezone_set("UTC");
 
 /**
- * Safely escape and return the data string (xss mitigation function). 
- * The string is esacped using htmlspecialchars.  
- * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet  
+ * Safely escape and return the data string (xss mitigation function).
+ * The string is esacped using htmlspecialchars.
+ * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
  * @param string $data to encode
  * @param string $encoding
  * @return string
@@ -56,8 +56,8 @@ function xssafe($data, $encoding = 'UTF-8') {
 }
 
 /**
- * Safely escape then echo the given string (xss mitigation function).  
- * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet  
+ * Safely escape then echo the given string (xss mitigation function).
+ * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
  * @param string $data to encode
  */
 function xecho($data) {
@@ -73,19 +73,21 @@ class PIRequest {
     private $output = null;
     private $params = array();
     private $dn = null;
-    private $baseUrl; 
-    
-    // params used to set the default behaviour of all paging queries, 
-    // these vals can be overidden per query if needed. 
-    // defaultPaging = true means that even if the 'page' URL param is 
-    // not specified, then the query will be paged by default (true is 
-    // the preference for large/production datasets). 
-    private $defaultPageSize = 500; 
-    private $defaultPaging = FALSE;
-    
+    private $baseUrl;
+    private $baseApiUrl; 
+
+    // params used to set the default behaviour of all paging queries,
+    // these vals can be overidden per query if needed.
+    // defaultPaging = true means that even if the 'page' URL param is
+    // not specified, then the query will be paged by default (true is
+    // the preference for large/production datasets).
+    private $defaultPageSize = 400;
+    private $defaultPaging = FALSE; // specify true to enforce paging
+
     public function __construct(){
-        // returns the base portal URL as defined in conf file 
+        // returns the base portal URL as defined in conf file
         $this->baseUrl = \Factory::getConfigService()->GetPortalURL();
+        $this->baseApiUrl = \Factory::getConfigService()->getServerBaseUrl(); 
     }
 
     function process() {
@@ -94,7 +96,7 @@ class PIRequest {
         $this->parseGET();
         $xml = $this->getXml();
         // don't do search/replace on large XML docs => mem-hungry/expensive!
-        //$xml = str_replace("#GOCDB_BASE_PORTAL_URL#", $this->portal_url, $xml); 
+        //$xml = str_replace("#GOCDB_BASE_PORTAL_URL#", $this->portal_url, $xml);
         echo($xml);
         //echo('<test>val</test>');
     }
@@ -133,11 +135,14 @@ class PIRequest {
                 case "get_site":
                     require_once($directory . 'GetSite.php');
                     $this->authAnyCert();
-                    $getSite = new GetSite($em, $this->baseUrl);
+                    $getSite = new GetSite($em, $this->baseUrl, $this->baseApiUrl);
+                    $getSite->setDefaultPaging($this->defaultPaging);
+                    $getSite->setPageSize($this->defaultPageSize);
                     $getSite->validateParameters($this->params);
                     $getSite->createQuery();
                     $getSite->executeQuery();
-                    $xml = $getSite->getXML();
+                    $getSite->setSelectedRendering("GOCDB_XML");
+                    $xml = $getSite->getRenderingOutput();
                     break;
                 case "get_site_list":
                     require_once($directory . 'GetSite.php');
@@ -145,26 +150,31 @@ class PIRequest {
                     $getSite->validateParameters($this->params);
                     $getSite->createQuery();
                     $getSite->executeQuery();
-                    $xml = $getSite->getXMLShort();
+                    $getSite->setSelectedRendering("GOCDB_XML_LIST");
+                    $xml = $getSite->getRenderingOutput();
                     break;
                 case "get_site_contacts":
                     require_once($directory . 'GetSiteContacts.php');
                     $this->authAnyCert();
-                    $getSiteContacts = new GetSiteContacts($em);
+                    $getSiteContacts = new GetSiteContacts($em, $this->baseApiUrl);
+                    $getSiteContacts->setDefaultPaging($this->defaultPaging);
+                    $getSiteContacts->setPageSize($this->defaultPageSize);
                     $getSiteContacts->validateParameters($this->params);
                     $getSiteContacts->createQuery();
                     $getSiteContacts->executeQuery();
-                    $xml = $getSiteContacts->getXML();
+                    $xml = $getSiteContacts->getRenderingOutput();
                     break;
                 case "get_site_security_info":
                     require_once($directory . 'GetSiteSecurityInfo.php');
                     //$this->authAcl();
                     $this->authAnyCert();
-                    $getSiteSecurityInfo = new GetSiteSecurityInfo($em);
+                    $getSiteSecurityInfo = new GetSiteSecurityInfo($em, $this->baseApiUrl);
+                    $getSiteSecurityInfo->setDefaultPaging($this->defaultPaging);
+                    $getSiteSecurityInfo->setPageSize($this->defaultPageSize);
                     $getSiteSecurityInfo->validateParameters($this->params);
                     $getSiteSecurityInfo->createQuery();
                     $getSiteSecurityInfo->executeQuery();
-                    $xml = $getSiteSecurityInfo->getXML();
+                    $xml = $getSiteSecurityInfo->getRenderingOutput();
                     break;
                 case "get_roc_list":
                     require_once($directory . 'GetNGIList.php');
@@ -172,7 +182,7 @@ class PIRequest {
                     $getNGIList->validateParameters($this->params);
                     $getNGIList->createQuery();
                     $getNGIList->executeQuery();
-                    $xml = $getNGIList->getXML();
+                    $xml = $getNGIList->getRenderingOutput();
                     break;
                 case "get_subgrid_list":
                     require_once($directory . 'GetSubGridList.php');
@@ -180,40 +190,38 @@ class PIRequest {
                     $getSubGrid->validateParameters($this->params);
                     $getSubGrid->createQuery();
                     $getSubGrid->executeQuery();
-                    $xml = $getSubGrid->getXML();
+                    $xml = $getSubGrid->getRenderingOutput();
                     break;
                 case "get_roc_contacts":
                     require_once($directory . 'GetNGIContacts.php');
                     $this->authAnyCert();
-                    $getNGIContacts = new GetNGIContacts($em, $this->baseUrl);
+                    $getNGIContacts = new GetNGIContacts($em, $this->baseUrl, $this->baseApiUrl);
+                    $getNGIContacts->setDefaultPaging($this->defaultPaging);
+                    $getNGIContacts->setPageSize($this->defaultPageSize);
                     $getNGIContacts->validateParameters($this->params);
                     $getNGIContacts->createQuery();
                     $getNGIContacts->executeQuery();
-                    $xml = $getNGIContacts->getXML();
+                    $xml = $getNGIContacts->getRenderingOutput(); 
                     break;
                 case "get_service":
                     require_once($directory . 'GetService.php');
-                    $getSE = new GetService($em, $this->baseUrl);
-                    if($getSE instanceof IPIQueryPageable){
-                        $getSE->setDefaultPaging($this->defaultPaging); 
-                        $getSE->setPageSize($this->defaultPageSize); 
-                    }
+                    $getSE = new GetService($em, $this->baseUrl, $this->baseApiUrl);
+                    $getSE->setDefaultPaging($this->defaultPaging);
+                    $getSE->setPageSize($this->defaultPageSize);
                     $getSE->validateParameters($this->params);
                     $getSE->createQuery();
                     $getSE->executeQuery();
-                    $xml = $getSE->getXML();
+                    $xml = $getSE->getRenderingOutput(); 
                     break;
                 case "get_service_endpoint":
                     require_once($directory . 'GetService.php');
-                    $getSE = new GetService($em, $this->baseUrl);
-                    if($getSE instanceof IPIQueryPageable){
-                        $getSE->setDefaultPaging($this->defaultPaging);
-                        $getSE->setPageSize($this->defaultPageSize);
-                    }
+                    $getSE = new GetService($em, $this->baseUrl, $this->baseApiUrl);
+                    $getSE->setDefaultPaging($this->defaultPaging);
+                    $getSE->setPageSize($this->defaultPageSize);
                     $getSE->validateParameters($this->params);
                     $getSE->createQuery();
                     $getSE->executeQuery();
-                    $xml = $getSE->getXML();
+                    $xml = $getSE->getRenderingOutput();
                     break;
                 case "get_service_types":
                     require_once($directory . 'GetServiceTypes.php');
@@ -221,104 +229,116 @@ class PIRequest {
                     $getST->validateParameters($this->params);
                     $getST->createQuery();
                     $getST->executeQuery();
-                    $xml = $getST->getXML();
+                    $xml = $getST->getRenderingOutput();
                     break;
                 case "get_downtime_to_broadcast":
                     require_once($directory . 'GetDowntimesToBroadcast.php');
-                    $getDTTBroadcast = new GetDowntimeToBroadcast($em, $this->baseUrl);
+                    $getDTTBroadcast = new GetDowntimeToBroadcast($em, $this->baseUrl, $this->baseApiUrl);
+                    $getDTTBroadcast->setDefaultPaging($this->defaultPaging); 
+                    $getDTTBroadcast->setPageSize($this->defaultPageSize); 
                     $getDTTBroadcast->validateParameters($this->params);
                     $getDTTBroadcast->createQuery();
                     $getDTTBroadcast->executeQuery();
-                    $xml = $getDTTBroadcast->getXML();
+                    $xml = $getDTTBroadcast->getRenderingOutput(); 
                     break;
-                case "get_downtime":
+                case "get_downtime": 
                     //require_once($directory . 'GetDowntimeFallback.php');
                     require_once($directory . 'GetDowntime.php');
-                    $getDowntime = new GetDowntime($em, false, $this->baseUrl);
-                    if($getDowntime instanceof IPIQueryPageable){
-                        $getDowntime->setDefaultPaging($this->defaultPaging);
-                        $getDowntime->setPageSize($this->defaultPageSize);
-                    }
+                    $getDowntime = new GetDowntime($em, false, $this->baseUrl, $this->baseApiUrl);
+                    $getDowntime->setDefaultPaging($this->defaultPaging);
+                    $getDowntime->setPageSize($this->defaultPageSize);
                     $getDowntime->validateParameters($this->params);
                     $getDowntime->createQuery();
                     $getDowntime->executeQuery();
-                    $xml = $getDowntime->getXML();
+                    $xml = $getDowntime->getRenderingOutput();  
                     break;
                 case "get_downtime_nested_services":
                     //require_once($directory . 'GetDowntimeFallback.php');
                     require_once($directory . 'GetDowntime.php');
-                    $getDowntime = new GetDowntime($em, true, $this->baseUrl);
-                    if($getDowntime instanceof IPIQueryPageable){
-                        $getDowntime->setDefaultPaging($this->defaultPaging);
-                        $getDowntime->setPageSize($this->defaultPageSize);
-                    }
+                    $getDowntime = new GetDowntime($em, true, $this->baseUrl, $this->baseApiUrl);
+                    $getDowntime->setDefaultPaging($this->defaultPaging);
+                    $getDowntime->setPageSize($this->defaultPageSize);
                     $getDowntime->validateParameters($this->params);
                     $getDowntime->createQuery();
                     $getDowntime->executeQuery();
-                    $xml = $getDowntime->getXML();
-                    break;
+                    $xml = $getDowntime->getRenderingOutput(); 
+                    break; 
                 case "get_user":
                     require_once($directory . 'GetUser.php');
                     $this->authAnyCert();
-                    $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService(), $this->baseUrl);
+                    $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService(), $this->baseUrl, $this->baseApiUrl);
+                    $getUser->setDefaultPaging($this->defaultPaging);
+                    $getUser->setPageSize($this->defaultPageSize);
                     $getUser->validateParameters($this->params);
                     $getUser->createQuery();
                     $getUser->executeQuery();
-                    $xml = $getUser->getXML();
+                    $xml = $getUser->getRenderingOutput();
                     break;
                 case "get_project_contacts":
                     require_once($directory . 'GetProjectContacts.php');
                     $this->authAnyCert();
-                    $getProjCon = new GetProjectContacts($em);
+                    $getProjCon = new GetProjectContacts($em, $this->baseApiUrl);
+                    $getProjCon->setDefaultPaging($this->defaultPaging);
+                    $getProjCon->setPageSize($this->defaultPageSize);
                     $getProjCon->validateParameters($this->params);
                     $getProjCon->createQuery();
                     $getProjCon->executeQuery();
-                    $xml = $getProjCon->getXML();
+                    $xml = $getProjCon->getRenderingOutput(); 
                     break;
                 case "get_ngi":
                     require_once($directory . 'GetNGI.php');
                     $this->authAnyCert();
-                    $getNGI = new GetNGI($em);
+                    $getNGI = new GetNGI($em, $this->baseApiUrl);
+                    $getNGI->setDefaultPaging($this->defaultPaging);
+                    $getNGI->setPageSize($this->defaultPageSize);
                     $getNGI->validateParameters($this->params);
                     $getNGI->createQuery();
                     $getNGI->executeQuery();
-                    $xml = $getNGI->getXML();
+                    $xml = $getNGI->getRenderingOutput(); 
                     break;
                 case "get_service_group" :
                     require_once($directory . 'GetServiceGroup.php');
                     $this->authAnyCert();
-                    $getServiceGroup = new GetServiceGroup($em, $this->baseUrl);
+                    $getServiceGroup = new GetServiceGroup($em, $this->baseUrl, $this->baseApiUrl);
+                    $getServiceGroup->setDefaultPaging($this->defaultPaging);
+                    $getServiceGroup->setPageSize($this->defaultPageSize);
                     $getServiceGroup->validateParameters($this->params);
                     $getServiceGroup->createQuery();
                     $getServiceGroup->executeQuery();
-                    $xml = $getServiceGroup->getXML();
+                    $xml = $getServiceGroup->getRenderingOutput(); 
                     break;
                 case "get_service_group_role" :
                     require_once($directory . 'GetServiceGroupRole.php');
                     $this->authAnyCert();
-                    $getServiceGroupRole = new GetServiceGroupRole($em, $this->baseUrl);
+                    $getServiceGroupRole = new GetServiceGroupRole($em, $this->baseUrl, $this->baseApiUrl);
+                    $getServiceGroupRole->setDefaultPaging($this->defaultPaging);
+                    $getServiceGroupRole->setPageSize($this->defaultPageSize);
                     $getServiceGroupRole->validateParameters($this->params);
                     $getServiceGroupRole->createQuery();
                     $getServiceGroupRole->executeQuery();
-                    $xml = $getServiceGroupRole->getXML();
+                    $xml = $getServiceGroupRole->getRenderingOutput();
                     break;
                 case "get_cert_status_date" :
                     require_once($directory . 'GetCertStatusDate.php');
                     $this->authAnyCert();
-                    $getCertStatusDate = new GetCertStatusDate($em);
+                    $getCertStatusDate = new GetCertStatusDate($em, $this->baseApiUrl);
+                    $getCertStatusDate->setDefaultPaging($this->defaultPaging);
+                    $getCertStatusDate->setPageSize($this->defaultPageSize);
                     $getCertStatusDate->validateParameters($this->params);
                     $getCertStatusDate->createQuery();
                     $getCertStatusDate->executeQuery();
-                    $xml = $getCertStatusDate->getXML();
+                    $xml = $getCertStatusDate->getRenderingOutput();
                     break;
                 case "get_cert_status_changes":
                     require_once($directory . 'GetCertStatusChanges.php');
                     $this->authAnyCert();
-                    $getCertStatusChanges = new GetCertStatusChanges($em);
+                    $getCertStatusChanges = new GetCertStatusChanges($em, $this->baseApiUrl);
+                    $getCertStatusChanges->setDefaultPaging($this->defaultPaging);
+                    $getCertStatusChanges->setPageSize($this->defaultPageSize);
                     $getCertStatusChanges->validateParameters($this->params);
                     $getCertStatusChanges->createQuery();
                     $getCertStatusChanges->executeQuery();
-                    $xml = $getCertStatusChanges->getXML();
+                    $xml = $getCertStatusChanges->getRenderingOutput();
                     break;
                 case "get_site_count_per_country":
                     require_once($directory . 'GetSiteCountPerCountry.php');
@@ -326,7 +346,7 @@ class PIRequest {
                     $GetSiteCountPerCountry->validateParameters($this->params);
                     $GetSiteCountPerCountry->createQuery();
                     $GetSiteCountPerCountry->executeQuery();
-                    $xml = $GetSiteCountPerCountry->getXML();
+                    $xml = $GetSiteCountPerCountry->getRenderingOutput();
                     break;
                 //case "get_role_action_mappings":
                 default:

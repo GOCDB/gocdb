@@ -14,68 +14,69 @@
 //use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Custom Key=Value pairs (extension properties) used to augment a {@see Service}
- * object with additional attributes. These properties can also be used for 
+ * A custom Key=Value pair (extension property) used to augment a {@see Service}
+ * object with additional attributes. These properties can also be used for
  * the purposes of resource matching.
  * <p>
- * A unique constraint is defined on the DB preventing key=value duplicates. 
- * Note, duplicate key names with different values are allowed for the purpose 
- * of defning multi-valued properties. 
+ * A unique constraint is defined on the DB preventing duplicate keys for a given service.
+ * Pairs with duplicate pkeys were intiially permitted, but are no longer.
+ * This allows the pairs to be upadated based enitrely on the key name and entity
+ * unique identifier, rather than needing the custom property id.
  * <p>
- * When the owning parent Service is deleted, its ServiceProperties 
- * are also cascade-deleted. 
- * 
- * @author James McCarthy 
+ * When the owning parent Service is deleted, its ServiceProperties
+ * are also cascade-deleted.
+ *
+ * @author James McCarthy
  * @author David Meredith
- * @Entity @Table(name="Service_Properties", uniqueConstraints={@UniqueConstraint(name="serv_keypairs", columns={"parentService_id", "keyName", "keyValue"})}) 
+ * @Entity @Table(name="Service_Properties", uniqueConstraints={@UniqueConstraint(name="serv_keypairs", columns={"parentService_id", "keyName"})})
  */
 class ServiceProperty {
-   
+
     /** @Id @Column(type="integer") @GeneratedValue */
     protected $id;
 
     /**
-     * Bidirectional - Many ServiceProperties (SIDE THAT OWNS FK) can be 
-     * linked to one Service (OWNING ORM SIDE). 
-     *   
-     * @ManyToOne(targetEntity="Service", inversedBy="serviceProperties") 
+     * Bidirectional - Many ServiceProperties (SIDE THAT OWNS FK) can be
+     * linked to one Service (OWNING ORM SIDE).
+     *
+     * @ManyToOne(targetEntity="Service", inversedBy="serviceProperties")
      * @JoinColumn(name="parentService_id", referencedColumnName="id", onDelete="CASCADE")
      */
-    protected $parentService = null; 
-    
+    protected $parentService = null;
+
     /** @Column(type="string", nullable=false) */
-    protected $keyName = null; 
-    
+    protected $keyName = null;
+
     /** @Column(type="string", nullable=true) */
-    protected $keyValue = null; 
-   
+    protected $keyValue = null;
+
     public function __construct() {
     }
 
     /**
-     * Get the owning {@see Service} entity. When the service is deleted, 
-     * the ServiceProperties are also cascade-deleted. 
+     * Get the owning {@see Service} entity. When the service is deleted,
+     * the ServiceProperties are also cascade-deleted.
      * @return \Service
      */
     public function getParentService(){
-        return $this->parentService; 
+        return $this->parentService;
     }
 
     /**
-     * Get the key name, usually a simple alphaNumeric name, but this is not 
-     * enforced by the entity. 
+     * Get the key name, usually a simple alphaNumeric name, but this is not
+     * enforced by the entity.
      * @return string
      */
     public function getKeyName(){
-        return $this->keyName; 
+        return $this->keyName;
     }
 
     /**
-     * Get the key value, can contain any char. 
+     * Get the key value, can contain any char.
      * @return String
      */
     public function getKeyValue(){
-        return $this->keyValue; 
+        return $this->keyValue;
     }
 
     /**
@@ -84,41 +85,41 @@ class ServiceProperty {
     public function getId() {
         return $this->id;
     }
-    
+
     /**
      * Do not call in client code, always use the opposite
      * <code>$site->addServicePropertyDoJoin($serviceProperty)</code>
-     * instead which internally calls this method to keep the bidirectional 
-     * relationship consistent.  
+     * instead which internally calls this method to keep the bidirectional
+     * relationship consistent.
      * <p>
-     * This is the OWNING side of the ORM relationship so this method WILL 
-     * establish the relationship in the database. 
-     * 
+     * This is the OWNING side of the ORM relationship so this method WILL
+     * establish the relationship in the database.
+     *
      * @param \Service $service
      */
     public function _setParentService(\Service $service){
-        $this->parentService = $service; 
+        $this->parentService = $service;
     }
 
     /**
-     * The custom keyname of this key=value pair. 
-     * This value should be a simple alphanumeric name without special chars, but 
-     * this is not enforced here by the entity.   
+     * The custom keyname of this key=value pair.
+     * This value should be a simple alphanumeric name without special chars, but
+     * this is not enforced here by the entity.
      * @param string $keyName
      */
     public function setKeyName($keyName){
-        $this->keyName = $keyName; 
+        $this->keyName = $keyName;
     }
 
     /**
-     * The custom value of this key=value pair. 
-     * This value can contain any chars. 
+     * The custom value of this key=value pair.
+     * This value can contain any chars.
      * @param string $keyValue
      */
     public function setKeyValue($keyValue){
-        $this->keyValue = $keyValue; 
+        $this->keyValue = $keyValue;
     }
-    
+
 }
 
 ?>

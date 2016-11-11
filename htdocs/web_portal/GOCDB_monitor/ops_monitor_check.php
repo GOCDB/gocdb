@@ -1,13 +1,13 @@
 <?php
 require_once "tests.php";
 
-// function returns associative array 
-$res[1] = test_db_connection(); 
+// function returns associative array
+$res[1] = test_db_connection();
 $res[2] = test_url(PI_URL);
 //$res[3] = test_url(PORTAL_URL);
 $res[3] = test_url(SERVER_BASE_URL);
 
-$counts=array(	
+$counts=array(
         "ok" => 0,
         "warn" => 0,
         "error" => 0
@@ -17,13 +17,13 @@ foreach ($res as $r){
     $counts[$r["status"]]++;
 }
 /*
-If there is an error, counts["error"] is incremented, e.g. 
+If there is an error, counts["error"] is incremented, e.g.
 Array
 (
     [ok] => 0
     [warn] => 0
     [error] => 1
-) 
+)
  */
 
 

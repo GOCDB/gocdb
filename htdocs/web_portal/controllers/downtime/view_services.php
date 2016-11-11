@@ -22,11 +22,11 @@
 function getSitesServices() {
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
-    
+
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
-    
+
     if (!isset($_REQUEST['site_id']) || !is_numeric($_REQUEST['site_id']) ){
         throw new Exception("A site_id must be specified");
     }

@@ -32,7 +32,7 @@ function edit() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     if($_POST) {
         submit($user);
     } else {
@@ -52,7 +52,7 @@ function draw(\User $user = null) {
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
-    
+
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $site = \Factory::getSiteService()->getSite($_REQUEST['id']);
@@ -62,8 +62,8 @@ function draw(\User $user = null) {
     //if(count(\Factory::getSiteService()->authorize Action(Action::SITE_EDIT_CERT_STATUS, $site, $user))==0 ){
     if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::SITE_EDIT_CERT_STATUS, $site, $user)->getGrantAction() == FALSE){
        show_view('error.php', 'You do not have permission to change site certification status.'
-               ." Either an NGI level role on the parent NGI, or a Project level role on one of the parent NGIs owning projects is required."); 
-       die(); 
+               ." Either an NGI level role on the parent NGI, or a Project level role on one of the parent NGIs owning projects is required.");
+       die();
     }
 
     $statuses = \Factory::getCertStatusService()->getCertificationStatuses();
@@ -79,21 +79,21 @@ function draw(\User $user = null) {
  */
 function submit(\User $user = null) {
     // TODO use validate service
-    $reason = $_REQUEST['COMMENT']; 
+    $reason = $_REQUEST['COMMENT'];
     if(empty($reason) ){
-       throw new Exception('A reason is required');     
+       throw new Exception('A reason is required');
     }
     if(strlen($reason) > 300){
-        throw new Exception('Invalid reason - 300 char max'); 
+        throw new Exception('Invalid reason - 300 char max');
     }
     try {
         require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
-        
+
         try {
             $site = \Factory::getSiteService()->getSite($_REQUEST['SITEID']);
-           
+
             $certStatus = \Factory::getCertStatusService()->getCertificationStatus($_REQUEST['CERTSTATUSID']);
-            \Factory::getCertStatusService()->editCertificationStatus($site, $certStatus, $user, $reason); 
+            \Factory::getCertStatusService()->editCertificationStatus($site, $certStatus, $user, $reason);
         } catch (\Exception $e) {
             show_view('error.php', $e->getMessage());
             die();

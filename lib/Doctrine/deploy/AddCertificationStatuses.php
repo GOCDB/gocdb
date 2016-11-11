@@ -10,15 +10,15 @@ $certStatsFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/CertificationStatus
 $certStats = simplexml_load_file($certStatsFileName);
 
 foreach($certStats as $certStat) {
-	$doctrineCertStat = new CertificationStatus();
-	$name = "";
-	foreach($certStat as $key => $value) {
-		if($key == "name") {
-			$name = (string) $value;
-		}
-	}
-	$doctrineCertStat->setName($name);
-	$entityManager->persist($doctrineCertStat);
+    $doctrineCertStat = new CertificationStatus();
+    $name = "";
+    foreach($certStat as $key => $value) {
+        if($key == "name") {
+            $name = (string) $value;
+        }
+    }
+    $doctrineCertStat->setName($name);
+    $entityManager->persist($doctrineCertStat);
 }
 
 $entityManager->flush();

@@ -38,7 +38,7 @@ function delete() {
 
     //Check the portal is not in read only mode, returns exception if it is and user is not an admin
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
-    
+
     try {
         $serv->deleteServiceGroup($sg, $user);
     } catch(\Exception $e) {

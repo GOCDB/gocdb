@@ -1,6 +1,6 @@
 <?php
 // bootstrap_test.php
-$entitiesPath = dirname(__FILE__)."/../../lib/Doctrine/entities"; 
+$entitiesPath = dirname(__FILE__)."/../../lib/Doctrine/entities";
 
 require_once $entitiesPath."/OwnedEntity.php";
 require_once $entitiesPath."/Site.php";
@@ -31,8 +31,9 @@ require_once $entitiesPath."/ArchivedNGI.php";
 require_once $entitiesPath."/ArchivedService.php";
 require_once $entitiesPath."/ArchivedServiceGroup.php";
 require_once $entitiesPath."/ArchivedSite.php";
-require_once $entitiesPath."/EndpointProperty.php"; 
-require_once $entitiesPath."/RoleActionRecord.php"; 
+require_once $entitiesPath."/EndpointProperty.php";
+require_once $entitiesPath."/RoleActionRecord.php";
+require_once $entitiesPath."/APIAuthentication.php";
 
 //if (!class_exists("Doctrine\Common\Version", false)) {
 //    require_once dirname(__FILE__)."/bootstrap_doctrine.php";

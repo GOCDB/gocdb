@@ -11,21 +11,21 @@ $stFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/ServiceTypes.xml";
 $sts = simplexml_load_file($stFileName);
 
 foreach($sts as $st) {
-	$doctrineSt = new ServiceType();
-	$name = "";
-	$desc = "";
-	foreach($st as $key => $value) {
-		if($key == "SERVICE_TYPE_NAME") {
-			$name = (string) $value;
-		}
-		
-		if($key == "SERVICE_TYPE_DESC") {
-			$desc = (string) $value;
-		}
-	}
-	$doctrineSt->setName($name);
-	$doctrineSt->setDescription($desc);
-	$entityManager->persist($doctrineSt);
+    $doctrineSt = new ServiceType();
+    $name = "";
+    $desc = "";
+    foreach($st as $key => $value) {
+        if($key == "SERVICE_TYPE_NAME") {
+            $name = (string) $value;
+        }
+
+        if($key == "SERVICE_TYPE_DESC") {
+            $desc = (string) $value;
+        }
+    }
+    $doctrineSt->setName($name);
+    $doctrineSt->setDescription($desc);
+    $entityManager->persist($doctrineSt);
 }
 
 $entityManager->flush();

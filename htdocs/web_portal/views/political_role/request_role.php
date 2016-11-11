@@ -11,13 +11,13 @@
         </span><br/>
     </div>
 
-    <form   style="clear: both; float: left; margin-top: 1em;" 
-            action="index.php?Page_Type=Request_Role" method="post" class="inputForm">    
-        <select name="Role_Name_Value">        
+    <form   style="clear: both; float: left; margin-top: 1em;"
+            action="index.php?Page_Type=Request_Role" method="post" class="inputForm">
+        <select name="Role_Name_Value">
         <?php foreach($params['roles'] as $roleName) { ?>
             <option value="<?php xecho($roleName) ?>"><?php xecho($roleName) ?></option>
         <?php } ?>
-        </select> : [RoleTypeName] 
+        </select> : [RoleTypeName]
         <br/><br/>
         <input type="hidden" name="Object_ID" value="<?php echo $params['objectId'] ?>"/>
         <input type="submit" />
