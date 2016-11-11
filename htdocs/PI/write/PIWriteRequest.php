@@ -23,10 +23,7 @@ namespace org\gocdb\services;
 
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Config.php';
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Validate.php';
-require_once __DIR__ . '/../../../lib/Doctrine/bootstrap.php';
 require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
-require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
-
 
 // Set the timezone to UTC for rendering all times/dates in PI.
 // The date-times stored in the DB are in UTC, however, we still need to
@@ -35,25 +32,26 @@ require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 // value will be according to the server's default timezone (e.g. GMT).
 date_default_timezone_set("UTC");
 
-/*
-* http_response_code() is implemented in php from php 5.4.0 onwards, when we
-* upgrade, this block (and the associated file) can be deleted (having checked that  http_response_code
-* implments all the status codes that we may wish to use).
-* See http://stackoverflow.com/questions/3258634/php-how-to-send-http-response-code
-* and http://php.net/http_response_code#107261
-*/
-if (!function_exists('http_response_code')) {
-    require_once __DIR__ . '/responseCode.php';
-}
-
 #TODO php errors return a  200 code! see: http://stackoverflow.com/questions/2331582/catch-php-fatal-error & https://bugs.php.net/bug.php?id=50921
 
+/**
+ * Class to process write API requests.
+ *
+ * Once an instance of the class is intiated, the function processRequest() should
+ * be called. This will need the request method (e.g. POST), teh request URL, the
+ * request contents (if provided, in a JSON format, if not then pass null), and an
+ * instance of the site service. An array containing a http response code and an
+ * object to be returned to the user (which may be null).
+ *
+ * @author George Ryall <github.com/GRyall>
+ */
 class PIWriteRequest {
-    private $requestURL=null;
+    #Note: $supportedAPIVersions are defined in lower case
+    private $supportedAPIVersions= array("v5");
+    private $supportedRequestMethods= array("POST","PUT","DELETE");
+
     private $baseUrl;
-    #TODO add correct url for documentation (also write it!)
-    #TODO: move the docs url to the local_info.xml
-    private $docsURL="https://wiki.egi.eu/wiki/GOCDB/PI/Technical_Documentation";
+    private $docsURL=null;
     private $apiVersion=null;
     private $entityType=null;
     private $entityID=null;
@@ -67,65 +65,95 @@ class PIWriteRequest {
     private $entityPropertyValue=null;
     private $entityPropertyKVArray=null;
 
+    #Default response is 500, as this will be overwritten in every other case
     private $httpResponseCode=500;
-    #Note: $supportedAPIVersions are defined in lower case
-    private $supportedAPIVersions= array("v5");
-    private $supportedRequestMethods= array("POST","PUT","DELETE");
 
+    #The following services are only required for some methods and so have their own setters
+    private $serviceService = null;
+
+    #An array that will ultimately be returned to the user
+    private $returnObject=null;
+
+    /**
+     * construct function for PIWriteREquest class.
+     *
+     * Uses the config service to set some member variables ($this->baseUrl and
+     * $this->docsURL)
+     */
     public function __construct() {
         # returns the base portal URL as defined in conf file
         $configServ = new config();
-        $this->baseUrl = $configServ->getServerBaseUrl() . "/writeDev"; #TODO: This will need to be the correct url once the location of the write API is settled
+        $this->baseUrl = $configServ->getServerBaseUrl() . "/gocdbpi";
+        $this->docsURL = $configServ->getWriteApiDocsUrl();
     }
 
     /**
-    * Process the API request
-    *@throws \Exception
-    */
-    function processChange() {
+     * Function called externally in order to process a PI request.
+     *
+     * Calls a series of privatre functions that process the inputs, then updates
+     * the required entities, before finally returning an array containing a http
+     * response code and (sometimes) an object for rendering to the user.
+     *
+     * Catches exceptions and returns them as an object for rendering to the user
+     * in an appropriate format.
+     *
+     * @param  string $method request method (e.g. GET or POST)
+     * @param  string $requestUrl url used to access API, only the last section
+     * @param  string|null $requestContents contents of the request (JSON String or null)
+     * @param  Site $siteService Site Service
+     * @return array ('httpResponseCode'=><code>,'returnObject'=><object to return to user>)
+     */
+    public function processRequest($method, $requestUrl, $requestContents, Site $siteService) {
         try {
-            $this->getAndProcessURL();
-            $this->getRequestContent();
+            $this->getAndProcessURL($method, $requestUrl);
+            $this->getRequestContent($requestContents);
             $this->validateEntityTypePropertyAndPropValue();
-            $this->updateEntity();
+            $this->updateEntity($siteService);
 
         } catch (\Exception $e) {
+            #For 500 errors, make it explicit it's an internal errors
+            if ($this->httpResponseCode==500) {
+                $message = "Internal error. Please contact the GOCDB asministrators. Message: " . $e->getMessage();
+            } else {
+                $message = $e->getMessage();
+            }
 
-            #Set the HTTP response code
-            http_response_code($this->httpResponseCode);
-
-            #Set the content type
-            header("Content-Type:application/json");
-
-            #echo the error as JSON
-            $errorArray['Error']= array('Code' => $this->httpResponseCode, 'Message' => utf8_encode($e->getMessage()), 'API-Documentation'=>$this->docsURL);
-            echo json_encode($errorArray);
-
-            die();
+            #Return the error as the return object
+            $errorArray['Error']= array('Code' => $this->httpResponseCode, 'Message' => utf8_encode($message), 'API-Documentation'=>$this->docsURL);
+            $this->returnObject = $errorArray;
         }
+
+        return array(
+            'httpResponseCode' => $this->httpResponseCode,
+            'returnObject' => $this->returnObject
+        );
     }
 
     /**
-    *Takes the URL of the API request and processes it into variables
-    *@throws \Exception
-    */
-    function getAndProcessURL() {
+     * Processes the url and method of the request.
+     *
+     * Takes the URL and Method of a request and process them into the member
+     * variables $this->httpResponseCode, $this->entityID, $this->entityType,
+     * $this->entityProperty, $this->entityPropertyKey, and $this->requestMethod
+     * It depends on the member variables $this->supportedAPIVersions and $this->supportedRequestMethods.
+     * @param  string $method HTTP method used to access API, e.g. POST
+     * @param  string $requestUrl url used to access API, only the last section
+     * @throws \Exception
+     */
+    private function getAndProcessURL($method, $requestUrl) {
         $genericURLFormatErrorMessage = "API requests should take the form $this->baseUrl" .
             "/APIVERSION/ENTITYTYPE/ENTITYID/ENTITYPROPERTY/[ENTITYPROPERTYKEY]. " .
             "For more details see: $this->docsURL";
 
         #If the request isn't set then no url parameters have been used
-        if (isset($_GET['request'])) {
-            #Note that apache will collapse multiple /'s into a single /
-            $this->requestURL = $_GET['request'];
-        }
-        else {
+        if (is_null($requestUrl)) {
             $this->httpResponseCode=400;
             throw new \Exception($genericURLFormatErrorMessage);
         }
 
         #Split the request into seperate parts, with the slash as a seperator
-        $requestArray = explode("/",$this->requestURL);
+        #Note that apache will collapse multiple /'s into a single /)
+        $requestArray = explode("/",$requestUrl);
 
         #We should probably ignore trailing slashes, which will generate an empty array element
         #Using strlen so that '0' is not removed
@@ -170,14 +198,14 @@ class PIWriteRequest {
         $this->entityProperty = strtolower($requestArray[3]);
 
         #entityPropertyKey - note that this is optional
-        if(isset($requestArray[ 4])) {
+        if(isset($requestArray[4])) {
             $this->entityPropertyKey = $requestArray[4];
         }
 
         #RequestMethod
-        if(in_array(strtoupper($_SERVER['REQUEST_METHOD']),$this->supportedRequestMethods)) {
-            $this->requestMethod=strtoupper($_SERVER['REQUEST_METHOD']);
-        } elseif (strtoupper($_SERVER['REQUEST_METHOD'])=="GET") {
+        if(in_array(strtoupper($method),$this->supportedRequestMethods)) {
+            $this->requestMethod=strtoupper($method);
+        } elseif (strtoupper($method)=="GET") {
             $this->httpResponseCode=405;
             throw new \Exception(
                 "\"GET\" is not currently a supported request method. " .
@@ -186,18 +214,25 @@ class PIWriteRequest {
         }else {
             $this->httpResponseCode=405;
             throw new \Exception(
-                "\"" . $_SERVER['REQUEST_METHOD'] .
+                "\"" . $method .
                 "\" is not currently a supported request method. For more details see: $this->docsURL"
             );
         }
     }
 
-    function getRequestContent() {
+    /**
+     * Process the contents of the request provided by the client.
+     *
+     * Process the contents of the JSON provided by the client (and checks that
+     * the client has provided some if it should have). Sets the member vaariables
+     * $this->entityPropertyValue or $this->entityPropertyKVArray. Relies on the
+     * member variables $this->entityProperty, $this->entityPropertyKey.
+     *
+     * @param  string $requestContents json string provided by client
+     * @throws \Exception
+     */
+    private function getRequestContent($requestContents) {
         $genericError = "For more information on correctly formatting your request, see $this->docsURL";
-
-        #Get the contents of the Request
-        #see http://php.net/manual/en/wrappers.php.php
-        $requestContents = file_get_contents('php://input');
 
         #Convert the request to JSON - note depth of 2, as current, and expected,
         #use cases don't contain any nested properties
@@ -211,12 +246,18 @@ class PIWriteRequest {
             * key/value pairs. We use $this->entityPropertyValue and $this->entityPropertyKVArray
             * frespectivly for these cases.
             */
-            if($this->entityProperty<>'extensionproperties'||!is_null($this->entityPropertyKey)) {
+            if($this->entityProperty!='extensionproperties'||!is_null($this->entityPropertyKey)) {
                 if (isset($requestArray['value']) && count($requestArray)==1) {
                     $this->entityPropertyValue=$requestArray['value'];
                 } elseif(!isset($requestArray['value'])) {
                     $this->httpResponseCode=400;
-                    throw new \Exception("A value for \"$this->entityProperty\" should be provided. " . $genericError );
+                    throw new \Exception(
+                        "A value for \"$this->entityProperty\" should be provided. " .
+                        "This should be provided in a JSON string {\"value\":\"<value for " .
+                        "\"$this->entityProperty\">\"}, with no other pairs present." .
+                        " If you believe \"$this->entityProperty\" should take multiple key/value ".
+                        "pairs, check your spelling of \"$this->entityProperty\"" . $genericError
+                    );
                 } else {
                     $this->httpResponseCode=400;
                     throw new \Exception("Request message cotnained more than one object. " . $genericError );
@@ -239,8 +280,16 @@ class PIWriteRequest {
     /**
     * Carries out the business logic around using the validate service to check the
     * entity Property and property value are valid.
+    *
+    * Relies on the member variables $this->entityProperty, $this->entityType,
+    * $this->entityPropertyKey, $this->entityPropertyValue, $this->entityPropertyKVArray,
+    * $this->requestMethod.
+    *
+    * Changes the member variables .
+    *
+    * @throws \Exception
     */
-    function validateEntityTypePropertyAndPropValue() {
+    private function validateEntityTypePropertyAndPropValue() {
         $validateServ = new validate();
 
         #Because of how extension properties appear in the schema (as a seperate entity), we need to change the entity name
@@ -255,7 +304,7 @@ class PIWriteRequest {
         #The second is that there is no key, and a single value has been provided
         #The third is that a series of key/value pairs have been provided
         #The fourth is a delete where no array or value has been specified, this is only currently supported for extension properties
-        #The final statement deals witht he case where a key has been specified as well as multiple values or where botha  single value and an array are set. Neither should happen.
+        #The final statement deals with the case where a key has been specified as well as multiple values or where both a single value and an array are set. Neither should happen.
         if (!is_null($this->entityPropertyKey) && !is_null($this->entityPropertyValue) && is_null($this->entityPropertyKVArray)) {
             #only currently supported for extension properties
             if ($this->entityProperty == 'extensionproperties') {
@@ -302,10 +351,15 @@ class PIWriteRequest {
     }
 
     /**
-    * Uses the validate service to check the object type, property, and property value
-    * using the validate service.
+    * Uses the validate service to check the object type, property, and property
+    * value using the validate service.
+    * @param  string $objectType      the type of the object being validated
+    * @param  string $objectProperty  The property being validated
+    * @param  string $propertyValue   the value being validated
+    * @param  validate service $validateService instance of the validate service
+    * @throws \Exception
     */
-    function validateWithService($objectType,$objectProperty,$propertyValue,$validateService) {
+    private function validateWithService($objectType,$objectProperty,$propertyValue,$validateService) {
         $genericError = ". For more information see $this->docsURL.";
 
         try {
@@ -323,18 +377,29 @@ class PIWriteRequest {
         }
     }
 
-    function updateEntity() {
+    /**
+     * Function to make the change requested my the API in the DB
+     *
+     * This function uses the range of member variables set by previous functions (
+     * in some instances including additional services) and the site site service
+     * in order to make the change that was actually requested.
+     * @param  Site   $siteService instance of the site service
+     * @throws \Exception
+     */
+    private function updateEntity(Site $siteService) {
 
         #Authentication
         #$this->userIdentifier will be empty if the unser doesn't provide a credential
         #If in the future we implement API keys, then I suggest we only look for
         #the DN if the API key isn't presented.
-        $this->userIdentifier = Get_User_Principle_PI();
-        $this->userIdentifierType = 'X509';
+        if(is_null($this->userIdentifier)){
+            $this->userIdentifier = Get_User_Principle_PI();
+            $this->userIdentifierType = 'X509';
+        }
 
         /*
         * We don't currently allow any access to unauthenticated users, so for now
-        * we can simply refuse anauthenticated users. In the future we could look
+        * we can simply refuse unauthenticated users. In the future we could look
         * to authenticate everything except 'GET' requests and then process 'GETs'
         * on a case by case basis.
         */
@@ -352,19 +417,16 @@ class PIWriteRequest {
             "the currently supported methods see: $this->docsURL";
 
         $entityTypePropertyMethodNotSupportedText =
-            "\"" . $_SERVER['REQUEST_METHOD'] . "\" is not currently a supported " .
+            "\"" . $this->requestMethod . "\" is not currently a supported " .
             "request method for altering" . $this->entityType. "'s " .
             $this->entityProperty . " . For more details see: $this->docsURL";
-
-        #We will need a site service in every case - in order to carry out authoristion
-        $siteServ = \Factory::getSiteService();
 
         switch($this->entityType) {
             case 'site': {
 
                 #Identify the site
                 try {
-                    $site = $siteServ->getSite($this->entityID);
+                    $site = $siteService->getSite($this->entityID);
                 } catch(\Exception $e){
                     $this->httpResponseCode=404;
                     throw new \Exception("A site with the specified id could not be found");
@@ -372,7 +434,7 @@ class PIWriteRequest {
 
                 #Authorisation
                 try {
-                    $siteServ->checkAuthroisedAPIIDentifier($site, $this->userIdentifier, $this->userIdentifierType);
+                    $siteService->checkAuthroisedAPIIDentifier($site, $this->userIdentifier, $this->userIdentifierType);
                 } catch(\Exception $e){
                     $this->httpResponseCode=403;
                     throw $e;
@@ -390,18 +452,25 @@ class PIWriteRequest {
                         #Based on Request types run either an add with or without overwritebv or a remove.
                         switch ($this->requestMethod) {
                             case 'POST':{
-                                #Post requests will fail if the property with that value already exists
-                                #TODO:This will return the wrong error code if somethign else goes wrong
+                                #Post requests will fail if the property with that value already exists or the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
                                 try {
-                                    $siteServ->addPropertiesAPI($site, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
-                                    break;
+                                    $siteService->addPropertiesAPI($site, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
                                 } catch(\Exception $e) {
                                     $this->httpResponseCode=409;
                                     throw $e;
                                 }
+                                break;
                             }
                             case 'PUT':{
-                                $siteServ->addPropertiesAPI($site, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                #Put requests will fail if the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
+                                try {
+                                    $siteService->addPropertiesAPI($site, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                } catch(\Exception $e) {
+                                    $this->httpResponseCode=409;
+                                    throw $e;
+                                }
                                 break;
                             }
                             case 'DELETE':{
@@ -412,7 +481,7 @@ class PIWriteRequest {
                                     $extensionPropArray = array();
                                     foreach ($extensionPropKVArray as $key => $value) {
 
-                                        $extensionProp = $siteServ->getPropertyByKeyAndParent($key, $site);
+                                        $extensionProp = $siteService->getPropertyByKeyAndParent($key, $site);
                                         if (is_null($extensionProp)) {
                                             $this->httpResponseCode=404;
                                             throw new \Exception(
@@ -434,7 +503,7 @@ class PIWriteRequest {
                                     }
                                 }
 
-                                $siteServ->deleteSitePropertiesAPI($site, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
+                                $siteService->deleteSitePropertiesAPI($site, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
 
                                 break;
                             }
@@ -454,12 +523,12 @@ class PIWriteRequest {
                 break;
             }
             case 'service': {
-                require_once __DIR__ . '/../../../lib/Gocdb_Services/ServiceService.php';
-                $serviceServ = \Factory::getServiceService();
+                #This case requires the serviceService
+                $this->checkServiceServiceSet();
 
                 #Identify the service
                 try {
-                    $service = $serviceServ->getService($this->entityID);
+                    $service = $this->serviceService->getService($this->entityID);
                 } catch (\Exception $e) {
                     $this->httpResponseCode=404;
                     throw new \Exception("A service with the specified id could not be found");
@@ -467,7 +536,7 @@ class PIWriteRequest {
 
                 #Authorisation
                 try {
-                    $siteServ->checkAuthroisedAPIIDentifier($service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
+                    $siteService->checkAuthroisedAPIIDentifier($service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
                 } catch(\Exception $e){
                     $this->httpResponseCode=403;
                     throw $e;
@@ -485,18 +554,25 @@ class PIWriteRequest {
                         #Based on Request types run either an add with or without overwritebv or a remove.
                         switch ($this->requestMethod) {
                             case 'POST':{
-                                #Post requests will fail if the property with that value already exists
-                                #TODO:This will return the wrong error code if somethign else goes wrong
+                                #Post requests will fail if the property with that value already exists or the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
                                 try {
-                                    $serviceServ->addServicePropertiesAPI($service, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
-                                    break;
+                                    $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
                                 } catch(\Exception $e) {
                                     $this->httpResponseCode=409;
                                     throw $e;
                                 }
+                                break;
                             }
                             case 'PUT':{
-                                $serviceServ->addServicePropertiesAPI($service, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                #Put requests will fail if the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
+                                try {
+                                    $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                } catch(\Exception $e) {
+                                    $this->httpResponseCode=409;
+                                    throw $e;
+                                }
                                 break;
                             }
                             case 'DELETE':{
@@ -507,7 +583,7 @@ class PIWriteRequest {
                                     $extensionPropArray = array();
                                     foreach ($extensionPropKVArray as $key => $value) {
 
-                                        $extensionProp = $serviceServ->getServicePropertyByKeyAndParent($key, $service);
+                                        $extensionProp = $this->serviceService->getServicePropertyByKeyAndParent($key, $service);
                                         if (is_null($extensionProp)) {
                                             $this->httpResponseCode=404;
                                             throw new \Exception(
@@ -529,7 +605,7 @@ class PIWriteRequest {
                                     }
                                 }
 
-                                $serviceServ->deleteServicePropertiesAPI($service, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
+                                $this->serviceService->deleteServicePropertiesAPI($service, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
 
                                 break;
                             }
@@ -549,12 +625,12 @@ class PIWriteRequest {
                 break;
             }
             case 'endpoint': {
-                require_once __DIR__ . '/../../../lib/Gocdb_Services/ServiceService.php';
-                $serviceServ = \Factory::getServiceService();
+                #This case requires the serviceService
+                $this->checkServiceServiceSet();
 
                 #Identify the SE
                 try {
-                    $endpoint = $serviceServ->getEndpoint($this->entityID);
+                    $endpoint = $this->serviceService->getEndpoint($this->entityID);
                 } catch (\Exception $e) {
                     $this->httpResponseCode=404;
                     throw new \Exception("A endpoint with the specified id could not be found");
@@ -562,7 +638,7 @@ class PIWriteRequest {
 
                 #Authorisation
                 try {
-                    $siteServ->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
+                    $siteService->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
                 } catch(\Exception $e){
                     $this->httpResponseCode=403;
                     throw $e;
@@ -580,18 +656,25 @@ class PIWriteRequest {
                         #Based on Request types run either an add with or without overwritebv or a remove.
                         switch ($this->requestMethod) {
                             case 'POST':{
-                                #Post requests will fail if the property with that value already exists
-                                #TODO:This will return the wrong error code if somethign else goes wrong
+                                #Post requests will fail if the property with that value already exists or the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
                                 try {
-                                    $serviceServ->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
-                                    break;
+                                    $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
                                 } catch(\Exception $e) {
                                     $this->httpResponseCode=409;
                                     throw $e;
                                 }
+                                break;
                             }
                             case 'PUT':{
-                                $serviceServ->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                #Put requests will fail if the property limit has been reached
+                                #TODO:This will return the wrong error code if something else goes wrong
+                                try {
+                                    $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+                                } catch(\Exception $e) {
+                                    $this->httpResponseCode=409;
+                                    throw $e;
+                                }
                                 break;
                             }
                             case 'DELETE':{
@@ -602,7 +685,7 @@ class PIWriteRequest {
                                     $extensionPropArray = array();
                                     foreach ($extensionPropKVArray as $key => $value) {
 
-                                        $extensionProp = $serviceServ->getEndpointPropertyByKeyAndParent($key, $endpoint);
+                                        $extensionProp = $this->serviceService->getEndpointPropertyByKeyAndParent($key, $endpoint);
                                         if (is_null($extensionProp)) {
                                             $this->httpResponseCode=404;
                                             throw new \Exception(
@@ -624,7 +707,7 @@ class PIWriteRequest {
                                     }
                                 }
 
-                                $serviceServ->deleteendpointPropertiesAPI($endpoint, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
+                                $this->serviceService->deleteendpointPropertiesAPI($endpoint, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
 
                                 break;
                             }
@@ -653,25 +736,34 @@ class PIWriteRequest {
             }
         }
 
-        #TODO: add this into the logic above and feed it the entities and return the entities
-        $this->returnResult();
+        #TODO: return the entity that's been changed or created as $this->returnObject,
+        # for now just return the no content http code (delete operations should
+        #  return nothing and a 204, others should return the changed object and a 200)
+        $this->httpResponseCode = 204;
     }
 
-    function returnResult() {
-        #TODO: return the entity that's been changed or created, for now just
-        #return the no content http code (delete operations should return nothing and a 204)
-        #$this->httpResponseCode = 204;
-        $this->httpResponseCode=200;
+    /**
+     * Function to allow a serviceService to be set.
+     *
+     * The service service is only required for calls that change services or
+     * endpoints, so we allow it to not be set and provide a setter.
+     * @param ServiceService $serviceService Instance of service service
+     */
+    public function setServiceService (ServiceService $serviceService) {
+        $this->serviceService = $serviceService;
+    }
 
-        #Set the HTTP response code
-        http_response_code($this->httpResponseCode);
-
-        #Set the Content-type in the header (204 response should have no content)
-        if($this->httpResponseCode == 204) {
-            #This removes the content-type from the header
-            header("Content-Type:");
-        } else {
-            header("Content-Type:application/json");
+    /**
+     * Function to check the service servicex is set and throw error if not.
+     *
+     * The service service is only required for calls that change services or
+     * endpoints, so we allow it to not be set and provide a setter.
+     * @throws \Exception
+     */
+    private function checkServiceServiceSet () {
+        if(is_null($this->serviceService)) {
+            $this->httpResponseCode=500;
+            throw new \Exception("Internal error: The service service has not been set. Please contact a GOCDB administrator and report this error.");
         }
     }
 }

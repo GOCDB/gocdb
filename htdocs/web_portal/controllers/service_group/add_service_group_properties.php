@@ -80,14 +80,14 @@ function add_service_group_properties() {
             //will go straight to submit()
             $_REQUEST['UserConfirmed'] = "true";
             //since the user is only adding a single property, warn them if it already exists
-            $preventOverwrite = false;
+            $preventOverwrite = true;
         } else {
             //you really shouldn't end up here unless you are mangling your post requests
             throw new Exception("Properties could not be parsed");
         }
 
         if(isset($_REQUEST['PREVENTOVERWRITE'])){
-            $preventOverwrite = true;
+            $preventOverwrite = false;
         }
 
         //quick sanity check, are we actually adding any properties?
