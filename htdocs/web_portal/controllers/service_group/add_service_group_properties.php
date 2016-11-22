@@ -74,7 +74,7 @@ function add_service_group_properties() {
         elseif (isset($_REQUEST['KEYPAIRNAME']) && isset($_REQUEST['KEYPAIRVALUE'])) {
             $propertyArray = array(
                 array(
-                    trim($_REQUEST['KEYPAIRNAME']), trim($_REQUEST['KEYPAIRVALUE'])
+                    $_REQUEST['KEYPAIRNAME'], $_REQUEST['KEYPAIRVALUE']
                 )
             );
             //will go straight to submit()

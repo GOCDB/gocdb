@@ -1072,11 +1072,13 @@ class Site extends AbstractEntityService{
         $propertyCount = sizeof($existingProperties);
 
         foreach ($propArr as $i => $prop) {
-            $key = $prop[0];
-            $value = $prop[1];
+            /*Trim off trailing and leading whitspace - as we currently don't want this.
+            *The input array is awkwardly formatted as keys didn't use to have to be unique.
+            */
+            $key = trim($prop[0]);
+            $value = trim($prop[1]);
 
-            /**
-            *Find out if a property with the provided key already exists, if
+            /*Find out if a property with the provided key already exists, if
             *we are preventing overwrites, this will be a problem. If we are not,
             *we will want to edit the existing property later, rather than create it.
             */
@@ -1255,8 +1257,9 @@ class Site extends AbstractEntityService{
 
         $this->validate($newValues['SITEPROPERTIES'], 'siteproperty');
 
-        $keyname=$newValues ['SITEPROPERTIES'] ['NAME'];
-        $keyvalue=$newValues ['SITEPROPERTIES'] ['VALUE'];
+        //We don't currently want trailing or leading whitespace, so we trim it
+        $keyname = trim($newValues['SITEPROPERTIES']['NAME']);
+        $keyvalue = trim($newValues ['SITEPROPERTIES'] ['VALUE']);
 
         //Check that the prop is from the site
         if ($prop->getParentSite() != $site){
