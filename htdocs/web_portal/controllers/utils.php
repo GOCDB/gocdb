@@ -16,12 +16,12 @@ function parse_properties($txtProperties) {
 
         $isWaitingOtherLine = false;
         foreach($lines as $i=>$line) {
-            $line = trim($line);
-            if(empty($line) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
+            $trimedLine = trim($line);
+            if(empty($trimedLine) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
 
             if(!$isWaitingOtherLine) {
-                $key = trim(substr($line,0,strpos($line,'=')));
-                $value = trim(substr($line,strpos($line,'=') + 1, strlen($line)));
+                $key = substr($line,0,strpos($line,'='));
+                $value = substr($line,strpos($line,'=') + 1, strlen($line));
             }
             else {
                 $value .= $line;
@@ -45,8 +45,8 @@ function parse_properties($txtProperties) {
                 throw new \Exception("Property value on line {$line} is null");
             }
 
-            //we can't use the prop key as the key due to key duplicates being allowed
-            //we are using an indexed array of indexed arrays
+            //we can't use the prop key as the key due to key duplicates [PREVIOUSLY] being allowed
+            //we are using an indexed array of indexed arrays TODO: use prop key as array key
             $result[] = array($key, $value);
 
             unset($lines[$i]);
@@ -572,10 +572,10 @@ function getSpDataFromWeb() {
     }
 
         if(isset($sp['SITEPROPERTIES']['NAME'])){
-        $sp['SITEPROPERTIES']['NAME'] = trim($sp['SITEPROPERTIES']['NAME']);
+        $sp['SITEPROPERTIES']['NAME'] = $sp['SITEPROPERTIES']['NAME'];
     }
     if(isset($sp['SITEPROPERTIES']['VALUE'])){
-        $sp['SITEPROPERTIES']['VALUE'] = trim($sp['SITEPROPERTIES']['VALUE']);
+        $sp['SITEPROPERTIES']['VALUE'] = $sp['SITEPROPERTIES']['VALUE'];
     }
     return $sp;
 }
@@ -591,10 +591,10 @@ function getSerPropDataFromWeb() {
         $sp ['SERVICEPROPERTIES'] ['PROP'] = trim($_REQUEST ['PROP']);
     }
     if(isset($sp['SERVICEPROPERTIES']['NAME'])){
-        $sp['SERVICEPROPERTIES']['NAME'] = trim($sp['SERVICEPROPERTIES']['NAME']);
+        $sp['SERVICEPROPERTIES']['NAME'] = $sp['SERVICEPROPERTIES']['NAME'];
     }
     if(isset($sp['SERVICEPROPERTIES']['VALUE'])){
-         $sp['SERVICEPROPERTIES']['VALUE'] = trim($sp['SERVICEPROPERTIES']['VALUE']);
+         $sp['SERVICEPROPERTIES']['VALUE'] = $sp['SERVICEPROPERTIES']['VALUE'];
     }
     return $sp;
 }
@@ -611,10 +611,10 @@ function getEndpointPropDataFromWeb() {
         $sp['ENDPOINTPROPERTIES']['ENDPOINTID'] = trim($_REQUEST ['ENDPOINTID']);
     }
     if(isset($_REQUEST ['KEYPAIRNAME'])){
-        $sp['ENDPOINTPROPERTIES']['NAME'] = trim($_REQUEST ['KEYPAIRNAME']);
+        $sp['ENDPOINTPROPERTIES']['NAME'] = $_REQUEST ['KEYPAIRNAME'];
     }
     if(isset($_REQUEST ['KEYPAIRVALUE'])){
-         $sp['ENDPOINTPROPERTIES']['VALUE'] = trim($_REQUEST ['KEYPAIRVALUE']);
+         $sp['ENDPOINTPROPERTIES']['VALUE'] = $_REQUEST ['KEYPAIRVALUE'];
     }
     return $sp;
 }
