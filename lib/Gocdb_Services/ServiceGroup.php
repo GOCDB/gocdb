@@ -595,8 +595,11 @@ class ServiceGroup extends AbstractEntityService{
         $this->em->getConnection()->beginTransaction();
         try {
             foreach ($propArr as $i => $prop) {
-                $key = $prop[0];
-                $value = $prop[1];
+                /*Trim off trailing and leading whitspace - as we currently don't want this.
+                *The input array is awkwardly formatted as keys didn't use to have to be unique.
+                */
+                $key = trim($prop[0]);
+                $value = trim($prop[1]);
 
                 /**
                 *Find out if a property with the provided key already exists, if
@@ -741,8 +744,9 @@ class ServiceGroup extends AbstractEntityService{
 
         $this->validate($newValues['SERVICEGROUPPROPERTIES'], 'servicegroupproperty');
 
-        $keyname = $newValues ['SERVICEGROUPPROPERTIES'] ['NAME'];
-        $keyvalue = $newValues ['SERVICEGROUPPROPERTIES'] ['VALUE'];
+        //We don't currently want trailing or leading whitespace, so we trim it
+        $keyname = trim($newValues['SERVICEGROUPPROPERTIES']['NAME']);
+        $keyvalue = trim($newValues['SERVICEGROUPPROPERTIES']['VALUE']);
 
         //Check that the prop is from the sg
         if ($prop->getParentServiceGroup() != $serviceGroup) {

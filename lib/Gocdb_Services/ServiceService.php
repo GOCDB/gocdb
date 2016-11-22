@@ -1139,8 +1139,11 @@ class ServiceService extends AbstractEntityService {
         $propertyCount = sizeof($existingProperties);
 
         foreach ( $propArr as $i => $prop ) {
-            $key = $prop [0];
-            $value = $prop [1];
+            /*Trim off trailing and leading whitspace - as we currently don't want this.
+            *The input array is awkwardly formatted as keys didn't use to have to be unique.
+            */
+            $key = trim($prop[0]);
+            $value = trim($prop[1]);
 
             /**
             *Find out if a property with the provided key already exists, if
@@ -1280,8 +1283,11 @@ class ServiceService extends AbstractEntityService {
         $propertyCount = sizeof($existingProperties);
 
         foreach ( $propArr as $i => $prop ) {
-            $key = $prop [0];
-            $value = $prop [1];
+            /*Trim off trailing and leading whitspace - as we currently don't want this.
+            *The input array is awkwardly formatted as keys didn't use to have to be unique.
+            */
+            $key = trim($prop[0]);
+            $value = trim($prop[1]);
 
             /**
             *Find out if a property with the provided key already exists, if
@@ -1559,9 +1565,12 @@ class ServiceService extends AbstractEntityService {
      * @param array $newValues
      */
     protected function editServicePropertyLogic(\Service $service, \ServiceProperty $prop, $newValues) {
+
         $this->validate ( $newValues ['SERVICEPROPERTIES'], 'serviceproperty' );
-        $keyname = $newValues ['SERVICEPROPERTIES'] ['NAME'];
-        $keyvalue = $newValues ['SERVICEPROPERTIES'] ['VALUE'];
+
+        //We don't currently want trailing or leading whitespace, so we trim it
+        $keyname = trim($newValues['SERVICEPROPERTIES']['NAME']);
+        $keyvalue = trim($newValues['SERVICEPROPERTIES']['VALUE']);
 
         // Check that the prop is from the service
         if ($prop->getParentService () != $service) {
@@ -1630,9 +1639,12 @@ class ServiceService extends AbstractEntityService {
      * @throws \Exception
      */
     protected function editEndpointPropertyLogic(\Service $service, \EndpointProperty $prop, $newValues) {
+
         $this->validate ( $newValues ['ENDPOINTPROPERTIES'], 'endpointproperty' );
-        $keyname = $newValues ['ENDPOINTPROPERTIES'] ['NAME'];
-        $keyvalue = $newValues ['ENDPOINTPROPERTIES'] ['VALUE'];
+
+        //We don't currently want trailing or leading whitespace, so we trim it
+        $keyname = trim($newValues['ENDPOINTPROPERTIES']['NAME']);
+        $keyvalue = trim($newValues['ENDPOINTPROPERTIES']['VALUE']);
 
         // Check that the prop is from the endpoint
         if ($prop->getParentEndpoint ()->getService () != $service) {
