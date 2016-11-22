@@ -441,14 +441,16 @@
 	    <!-- property key name-->
 	    <fname>NAME</fname>
 	    <length>255</length>
-	    <regex>/^(\s*[a-zA-Z0-9@_\-\[\]\+\.]+\s*)+$/</regex>
+        <!-- Allows whitespace in the key, but not trailing or leading -->
+        <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
 	</field>
 	<field>
 	    <!-- property key value -->
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated -->
-	    <regex>/^(\s*[^`'\"&lt;&gt;>\s]+\s*)+$/</regex>
+        <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
+        <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
@@ -470,13 +472,15 @@
 	<field>
 	    <fname>NAME</fname>
 	    <length>255</length>
-	    <regex>/^(\s*[a-zA-Z0-9@_\-\[\]\+\.]+\s*)+$/</regex>
+        <!-- Allows whitespace in the key, but not trailing or leading -->
+        <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
 	</field>
 	<field>
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-        <regex>/^(\s*[^`'\"&lt;&gt;>\s]+\s*)+$/</regex>
+        <!--Allows most chracters, leading and trailing white space, but rewuires at least one non-whitespace chracter -->
+        <regex>/^(\s*[^`'\"&lt;&gt;\s]+\s*)+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
@@ -497,13 +501,15 @@
 	<field>
 	    <fname>NAME</fname>
 	    <length>255</length>
-	    <regex>/^(\s*[a-zA-Z0-9@_\-\[\]\+\.]+\s*)+$/</regex>
+        <!-- Allows whitespace in the key, but not trailing or leading -->
+        <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
 	</field>
 	<field>
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-        <regex>/^(\s*[^`'\"&lt;&gt;>\s]+\s*)+$/</regex>
+        <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
+        <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
@@ -524,13 +530,15 @@
 	<field>
 	    <fname>NAME</fname>
 	    <length>255</length>
-	    <regex>/^(\s*[a-zA-Z0-9@_\-\[\]\+\.]+\s*)+$/</regex>
+        <!-- Allows whitespace in the key, but not trailing or leading -->
+        <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
 	</field>
 	<field>
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-        <regex>/^(\s*[^`'\"&lt;&gt;>\s]+\s*)+$/</regex>
+        <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
+        <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>
