@@ -94,8 +94,20 @@ function Get_Page_Type() {
     }
 }
 
+function testForHtmlSpecialChars($value, $key){
+    if(is_string($key) && strcmp($key, htmlspecialchars($key)) !== 0) {
+        throw new \Exception("Invalid chars detected in URL parameter keys");
+    }
+    if(is_string($value) && strcmp($value, htmlspecialchars($value)) !== 0) {
+        throw new \Exception("Invalid chars detected in URL parameter values");
+    }
+}
+
 /* Decides which type of page to draw based on the passed $Page_Type */
 function Draw_Page($Page_Type) {
+
+    // We call this to account for URL params that have an array for the value
+    array_walk_recursive($_GET, 'testForHtmlSpecialChars');
 
     // Read only pages - these pages don't strictly require user authentication.
     // Therefore, to enable permit-all page viewing, comment out the call
