@@ -1,3 +1,23 @@
+GOCDB-5.7 Release (07/12/2016). Includes DB schema changes.  
+  - New RESTful write API for managing custom properties defined on Sites, Services and Endpoints.
+    Allows Site admins to regsiter a list of cert DNs that defines an ACL of authorised certificates that
+    are authorised to invoke the write API.
+  - Optional cursor paging now available on the majority of read-only API methods via the next_cursor and prev_cursor URL params.
+    Replaces the previous OFFSET-based paging that was available on the ‘get_downtime*’ methods. This is because
+    offset paging introduces possible data inconsistency issues when paging over real-time data.
+    The following methods do not support paging: get_site_list, get_roc_list, get_service_types, get_site_count_per_country
+  - All read-API results are now ordered by ascending ID (NB, this changes the 'get_downtime*' methods
+    which previously ordered downtimes by descending start date.
+  - New attributes added on ServiceEndpoint;
+    Boolean 'monitored' flag which adds the 'ENDPOINT_MONITORED' element to the XML output of each endpoint in the 
+    get_service method, and a new 'email' field for adding contact details for a specific service. 
+    Note, the email field is NOT currently rendered in the output of the get_service method because this
+    method has Level 1 protection level which is considered a pubilc method containing no critical info and no
+    personal emails. If emails are needed, can either: a) Elevate the protection level of the get_service method
+    to Level 2 (which means a certificate would be needed to query the method), or b) Relax EGI/GOCDB protection level
+    rules so that Level 1 can include site/service emails but no personal emails, note however there would still be a
+    risk that personal emails would still be added.
+
 GOCDB-5.6 Release (07/03/2016). Includes DB schema changes.  
   - Reserved/Protected scope tags used to control the tagging of resources using 
     cascading/inheritance rules that limit which tags NGIs->Sites->Services->Downtimes 
