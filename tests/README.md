@@ -23,6 +23,18 @@ DBUnit extensions or the phpunit on the path does not have the DBUnit extensions
 Fatal error: Class 'PHPUnit_Extensions_Database_TestCase' not found in ...<a test class file>...
 ```
 
+Install PDO Driver for your test DB
+------------------------------------
+The tests require installation of the correct php PDO driver, see: http://php.net/manual/en/pdo.installation.php 
+PDO is used to assert that Doctrine performs the GocDB logic against your
+DB in the expected way. It uses Php Data Objects (PDO) to connect to your DB
+and runs plain SQL to perform assertions. 
+
+### OCIPDO for Oracle
+For unix derivative systems, the PDO driver for Oracle (normally) requires compiling into php, see: http://php.net/manual/en/ref.pdo-oci.php
+This is inconvenient and so the 'pdooci' util lib (https://github.com/taq/pdooci) is provided as a 'require-dev' dependency in the composer.json file (see INSTALL.md).  
+This util lib means you don't need to compile the driver --with-pdo-oci 
+
 
 Deploy A Database For Testing
 --------------------------
@@ -41,6 +53,7 @@ Configure Doctrine and PDO for your Test DB
   file is used to assert that Doctrine performs the GocDB logic against your
   DB in the expected way. It uses Php Data Objects (PDO) to connect to your DB
   and runs plain SQL to perform assertions.     
+
 
 Deploy Tables/Schema via Doctrine
 ---------------------------------------

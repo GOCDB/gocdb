@@ -21,7 +21,8 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
   * Version 2.2 or higher
   * X509 host certificate.
 
-* Database server, Oracle 11g+ or MySQL
+* [Database server](#rdbms) 
+  * Oracle 11g+ or MySQL
   * (note: the free Oracle 11g XE Express Editions which comes with a free license is perfectly suitable)
 
 * [Doctrine and DBAL](#doctrine)
@@ -91,7 +92,24 @@ update your php.ini by adding `extension=[php_]timezonedb.so|dll` (note, Win pre
 * If you are planning to use Oracle, you need the php oci8 extension, which must be compiled. ([php oci8](http://php.net/manual/en/book.oci8.php))  
 * Do not forget to configure your timezone settings correctly.
 
-### Compiling OCI8
+### Apache and x509 Host cert
+
+* A sample Apache config file is provided `config/gocdbssl.conf`. This file
+defines a sample apache virtual host for serving your GocDB portal, including
+URL mappings/aliases and SSL settings.
+For GocDB, three URL alias/directory-mappings are needed, one for the portal GUI
+page-controller, one for the public REST endpoints and one for the private REST
+endpoints. See the sample config file for details.
+
+### Database Server <a id="rdbms"></a>
+GOCDB uses a DB abstraction layer (Doctrine) and with some configuration should be deployable on different RDBMS platforms that are supported for Doctrine. Instructions are provided here for Oracle (the free Oracle 11g is perfectly suitable) and MySQL/MariaDB comming soon. 
+
+#### Oracle 11g
+The free to use XE/11g Oracle DB can be used to host run GOCDB on Win/nix. To use Oracle on nix systems, the OCI8 extension/driver needs to be compiled and installed.  
+
+##### Compiling/Installing OCI8
+The OCI8 extension/driver for php needs to be installed, see: http://php.net/oci8
+This can be most easily installed with the free Oracle Instant Client libs which can be installed in a number of ways (http://php.net/manual/en/oci8.installation.php), but the most easy is via PECL as descibed below: 
 
 Install the basic and devel instantclient rpms from Oracle (http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html) and install GCC, PHP dev and pear packages:
 
@@ -111,14 +129,7 @@ This will download and compile the module, and place it in your php extension di
 
 Add the ```extension=oci8.so``` line to your php.ini. Confirm it is working with ```php -i | grep -i oci8```
 
-### Apache and x509 Host cert
 
-* A sample Apache config file is provided `config/gocdbssl.conf`. This file
-defines a sample apache virtual host for serving your GocDB portal, including
-URL mappings/aliases and SSL settings.
-For GocDB, three URL alias/directory-mappings are needed, one for the portal GUI
-page-controller, one for the public REST endpoints and one for the private REST
-endpoints. See the sample config file for details.
 
 ### Doctrine <a id="doctrine"></a>   
 
@@ -475,7 +486,7 @@ schemes can be configured using the abstractions in this package such as SAML2
 for integration with Federated Identity Management.
 See `lib/Authentication/README.md` for details.
 
-### DBUnit Tests
+## DBUnit Tests
 
 A comprehensive test suite is provided and can be used to assert that the GocDB
 runs as expected against your chosen DB. It is therefore recommended you run the DBUnit tests
