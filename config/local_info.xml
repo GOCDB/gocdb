@@ -91,6 +91,7 @@
             <scope>cms</scope>
             <scope>lhcb</scope>
             <scope>elixir</scope>
+            <scope>FedCloud</scope>
         </reserved_scopes>
 
         <!-- Define the max amount of extensions a user can define when using the extensions feature -->
