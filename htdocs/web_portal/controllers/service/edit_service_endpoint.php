@@ -78,14 +78,12 @@ function draw(\User $user = null) {
 function submit(\User $user = null) {
     try {
         $newValues = getEndpointDataFromWeb();
-        $serviceID = $newValues['SERVICEENDPOINT']['SERVICE'];
         $endpointID = $newValues['SERVICEENDPOINT']['ENDPOINTID'];
 
         $serv = \Factory::getServiceService();
         $endpoint = $serv->getEndpoint($endpointID);
-        $service = $serv->getService($serviceID);
-        $serv->editEndpoint($service, $user, $endpoint, $newValues);
-        $params['serviceid'] = $serviceID;
+        $serv->editEndpoint($user, $endpoint, $newValues);
+        $params['serviceid'] = $endpoint->getService()->getId();
         $params['endpointid'] = $endpointID;
         show_view('service/service_endpoint_updated.php', $params);
     } catch(Exception $e) {

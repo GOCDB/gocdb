@@ -1847,7 +1847,7 @@ class ServiceService extends AbstractEntityService {
      * @throws \Exception
      * @throws Exception
      */
-    public function editEndpoint(\Service $service, \User $user, \EndpointLocation $endpoint, $newValues) {
+    public function editEndpoint(\User $user, \EndpointLocation $endpoint, $newValues) {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
         $this->validate ( $newValues ['SERVICEENDPOINT'], 'endpoint' );
