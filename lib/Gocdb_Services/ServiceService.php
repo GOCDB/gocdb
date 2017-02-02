@@ -1784,6 +1784,9 @@ class ServiceService extends AbstractEntityService {
         $serviceID = $values ['SERVICEENDPOINT'] ['SERVICE'];
         $service = $this->getService ( $serviceID );
 
+        // check user has permission to edit endpoint's service
+        $this->validateAddEditDeleteActions ( $user, $service );
+
         $name = $values ['SERVICEENDPOINT'] ['NAME'];
         $url = $values ['SERVICEENDPOINT'] ['URL'];
         $description = $values ['SERVICEENDPOINT'] ['DESCRIPTION'];
@@ -1849,6 +1852,13 @@ class ServiceService extends AbstractEntityService {
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
         $this->validate ( $newValues ['SERVICEENDPOINT'], 'endpoint' );
 
+        //We shouldn't rely on the service being given to the function - this allows bugs to be introduced that feed the wrong service
+        //TODO: remove the $service from the endpoint parameters
+        $service = $endpoint->getService ();
+
+        // check user has permission to edit endpoint's service
+        $this->validateAddEditDeleteActions ( $user, $service );
+
         $name = $newValues ['SERVICEENDPOINT'] ['NAME'];
         $url = $newValues ['SERVICEENDPOINT'] ['URL'];
         $description = $newValues ['SERVICEENDPOINT'] ['DESCRIPTION'];
@@ -1907,9 +1917,12 @@ class ServiceService extends AbstractEntityService {
      */
     public function deleteEndpoint(\EndpointLocation $endpoint, \User $user) {
         require_once __DIR__ . '/../DAOs/ServiceDAO.php';
+
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+
         $service = $endpoint->getService ();
+
         // check user has permission to edit endpoint's service
         $this->validateAddEditDeleteActions ( $user, $service );
 
