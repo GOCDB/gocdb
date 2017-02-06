@@ -1,0 +1,7 @@
+language: php
+before_script: .travis/setup
+script: vendor/bin/phpunit tests/DoctrineTestSuite1.php
+php:
+  - '5.3'
+env:
+  - DB=sqlite
