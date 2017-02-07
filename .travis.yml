@@ -1,7 +1,18 @@
 language: php
+before_install:
+    - mysql -e 'CREATE DATABASE doctrine;'
 before_script: .travis/setup
 script: vendor/bin/phpunit tests/DoctrineTestSuite1.php
+services:
+    - mysql
 php:
-  - '5.3'
+    - '5.3'
+    - '5.4'
+    - '5.5'
 env:
-  - DB=sqlite
+    - DB=sqlite
+    - DB=mysql
+matrix:
+    allow_failures:
+    - env: DB=sqlite
+    fast_finish: true
