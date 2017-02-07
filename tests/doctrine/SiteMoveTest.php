@@ -166,12 +166,12 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
              * Check both that each NGI is present and that the ID matches the doctrine one
              */
             $N1_ID = $N1->getId();
-            $sql = "SELECT 1 FROM ngis WHERE name = 'NGI1' AND ID = '$N1_ID'";
+            $sql = "SELECT 1 FROM NGIs WHERE name = 'NGI1' AND ID = '$N1_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
             $N2_ID = $N2->getId();
-            $sql = "SELECT 1 FROM ngis WHERE name = 'NGI2' AND ID = '$N2_ID'";
+            $sql = "SELECT 1 FROM NGIs WHERE name = 'NGI2' AND ID = '$N2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
@@ -179,22 +179,22 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
              * Check each site is: present, has the right ID & parent NGI
              */
             $S1_id= $S1->getId();
-            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_id' AND NGI_ID = '$N1_ID'";
+            $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site1' AND ID = '$S1_id' AND NGI_ID = '$N1_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
             $S2_id= $S2->getId();
-            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_id' AND NGI_ID = '$N2_ID'";
+            $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site2' AND ID = '$S2_id' AND NGI_ID = '$N2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
             $S3_id= $S3->getId();
-            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
+            $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
             //Check the SEP has correct id and Site
-            $sql = "SELECT 1 FROM services WHERE hostname = 'SEP1' AND parentsite_id = '$S1_id'";
+            $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP1' AND parentsite_id = '$S1_id'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
@@ -235,39 +235,39 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
             $con = $this->getConnection();
 
             //Check NGIs are still present and their ID is unchanged
-            $sql = "SELECT 1 FROM ngis WHERE name = 'NGI1' AND ID = '$N1_ID'";
+            $sql = "SELECT 1 FROM NGIs WHERE name = 'NGI1' AND ID = '$N1_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
-            $sql = "SELECT 1 FROM ngis WHERE name = 'NGI2' AND ID = '$N2_ID'";
+            $sql = "SELECT 1 FROM NGIs WHERE name = 'NGI2' AND ID = '$N2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
 
             //Check each NGI has the correct number of sites
                 //NGI1
-                $sql = "SELECT 1 FROM sites WHERE NGI_ID = '$N1_ID'";
+                $sql = "SELECT 1 FROM Sites WHERE NGI_ID = '$N1_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(1, $result->getRowCount());
 
                 //NGI2
-                $sql = "SELECT 1 FROM sites WHERE NGI_ID = '$N2_ID'";
+                $sql = "SELECT 1 FROM Sites WHERE NGI_ID = '$N2_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(2, $result->getRowCount());
 
             //check Site IDs are unchanged and they are assigned to the correct NGI
                 //Site 1
-                $sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_id' AND NGI_ID = '$N2_ID'";
+                $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site1' AND ID = '$S1_id' AND NGI_ID = '$N2_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(1, $result->getRowCount());
 
                 //Site 2
-                $sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_id' AND NGI_ID = '$N1_ID'";
+                $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site2' AND ID = '$S2_id' AND NGI_ID = '$N1_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(1, $result->getRowCount());
 
                 //Site 3
-                $sql = "SELECT 1 FROM sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
+                $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(1, $result->getRowCount());
 

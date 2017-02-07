@@ -157,12 +157,12 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase {
              * Check both that each Site is present and that the ID matches the doctrine one
              */
             $S1_ID = $S1->getId();
-            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
+            $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
             $S2_ID = $S2->getId();
-            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
+            $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
@@ -170,17 +170,17 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase {
              * Check each service endpoint is: present, has the right ID & parent Site
              */
             $SE1_id= $SE1->getId();
-            $sql = "SELECT 1 FROM services WHERE hostname = 'SEP1' AND ID = '$SE1_id' AND PARENTSITE_ID = '$S1_ID'";
+            $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP1' AND ID = '$SE1_id' AND PARENTSITE_ID = '$S1_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
             $SE2_id= $SE2->getId();
-            $sql = "SELECT 1 FROM services WHERE hostname = 'SEP2' AND ID = '$SE2_id' AND PARENTSITE_ID = '$S2_ID'";
+            $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP2' AND ID = '$SE2_id' AND PARENTSITE_ID = '$S2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
             $SE3_id= $SE3->getId();
-            $sql = "SELECT 1 FROM services WHERE hostname = 'SEP3' AND ID = '$SE3_id' AND PARENTSITE_ID = '$S2_ID'";
+            $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP3' AND ID = '$SE3_id' AND PARENTSITE_ID = '$S2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
@@ -220,39 +220,39 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase {
             $con = $this->getConnection();
 
             //Check Sites are still present and their ID is unchanged
-            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
+            $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
-            $sql = "SELECT 1 FROM sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
+            $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
 
             //Check each Site has the correct number of service endpoints
                 //Site 1
-                $sql = "SELECT 1 FROM services WHERE parentsite_id = '$S1_ID'";
+                $sql = "SELECT 1 FROM Services WHERE parentsite_id = '$S1_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(1, $result->getRowCount());
 
                 //Site 2
-                $sql = "SELECT 1 FROM services WHERE parentsite_id = '$S2_ID'";
+                $sql = "SELECT 1 FROM Services WHERE parentsite_id = '$S2_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(2, $result->getRowCount());
 
             //check Site IDs are unchanged and they are assigned to the correct NGI
                 //Site 1
-                $sql = "SELECT 1 FROM services WHERE hostname = 'SEP1' AND id = '$SE1_id' AND parentsite_id = '$S2_ID'";
+                $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP1' AND id = '$SE1_id' AND parentsite_id = '$S2_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(1, $result->getRowCount());
 
                 //Site 2
-                $sql = "SELECT 1 FROM services WHERE hostname = 'SEP2' AND id = '$SE2_id' AND parentsite_id = '$S1_ID'";
+                $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP2' AND id = '$SE2_id' AND parentsite_id = '$S1_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(1, $result->getRowCount());
 
                 //Site 3
-                $sql = "SELECT 1 FROM services WHERE hostname = 'SEP3' AND id = '$SE3_id' AND parentsite_id = '$S2_ID'";
+                $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP3' AND id = '$SE3_id' AND parentsite_id = '$S2_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(1, $result->getRowCount());
 

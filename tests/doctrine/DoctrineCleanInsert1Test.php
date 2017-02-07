@@ -368,11 +368,11 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
 
         $testConn = $this->getConnection();
         $result = $testConn->createQueryTable('results_table',
-                "SELECT sites.id FROM sites
-                    inner join sites_scopes
-                    on sites.id = sites_scopes.site_id
-                    inner join scopes
-                    on scopes.id = sites_scopes.scope_id");
+                "SELECT Sites.id FROM Sites
+                    inner join Sites_Scopes
+                    on Sites.id = Sites_Scopes.site_id
+                    inner join Scopes
+                    on Scopes.id = Sites_Scopes.scope_id");
         $this->assertTrue($result->getRowCount() == $n);
     }
 

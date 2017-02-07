@@ -184,7 +184,7 @@
         $result = $testConn->createQueryTable('results_table', "SELECT * FROM Scopes");
         $this->assertTrue($result->getRowCount() == $scopeCount);
 
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Ngis");
+        $result = $testConn->createQueryTable('results_table', "SELECT * FROM NGIs");
         $this->assertTrue($result->getRowCount() == 5);
 
         $result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
