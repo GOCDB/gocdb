@@ -173,7 +173,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     //Get site id to use in sql statements
     $siteId = $site->getId();
 
-    $result = $con->createQueryTable('results', "SELECT * FROM site_properties WHERE PARENTSITE_ID = '$siteId'");
+    $result = $con->createQueryTable('results', "SELECT * FROM Site_Properties WHERE PARENTSITE_ID = '$siteId'");
     //Assert that only 2 site properties exist in the database for this site
     $this->assertEquals(2, $result->getRowCount());
 
@@ -186,7 +186,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $this->assertEquals(0, $result->getRowCount());
 
     //Check properties are gone
-    $result = $con->createQueryTable('results', "SELECT * FROM site_properties WHERE PARENTSITE_ID = '$siteId'");
+    $result = $con->createQueryTable('results', "SELECT * FROM Site_Properties WHERE PARENTSITE_ID = '$siteId'");
     $this->assertEquals(0, $result->getRowCount());
     }
 
@@ -271,7 +271,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     //Get service id to use in sql statements
     $servId = $service->getId();
 
-    $result = $con->createQueryTable('results', "SELECT * FROM service_properties WHERE PARENTSERVICE_ID = '$servId'");
+    $result = $con->createQueryTable('results', "SELECT * FROM Service_Properties WHERE PARENTSERVICE_ID = '$servId'");
     //Assert that only 2 service properties exist in the database for this service
     $this->assertEquals(2, $result->getRowCount());
 
@@ -284,7 +284,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $this->assertEquals(0, $result->getRowCount());
 
     //Check properties are gone
-    $result = $con->createQueryTable('results', "SELECT * FROM service_properties WHERE PARENTSERVICE_ID = '$servId'");
+    $result = $con->createQueryTable('results', "SELECT * FROM Service_Properties WHERE PARENTSERVICE_ID = '$servId'");
     $this->assertEquals(0, $result->getRowCount());
     }
 
@@ -378,7 +378,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     //Get servicegroup id to use in sql statements
     $sgId = $sg->getId();
 
-    $result = $con->createQueryTable('results', "SELECT * FROM servicegroup_properties WHERE PARENTSERVICEGROUP_ID = '$sgId'");
+    $result = $con->createQueryTable('results', "SELECT * FROM ServiceGroup_Properties WHERE PARENTSERVICEGROUP_ID = '$sgId'");
     //Assert that only 2 service group properties exist in the database for this service
     $this->assertEquals(2, $result->getRowCount());
 
@@ -391,7 +391,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $this->assertEquals(0, $result->getRowCount());
 
     //Check properties are gone
-    $result = $con->createQueryTable('results', "SELECT * FROM servicegroup_properties WHERE PARENTSERVICEGROUP_ID = '$sgId'");
+    $result = $con->createQueryTable('results', "SELECT * FROM ServiceGroup_Properties WHERE PARENTSERVICEGROUP_ID = '$sgId'");
     $this->assertEquals(0, $result->getRowCount());
     }
 
@@ -475,7 +475,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     //Get service id to use in sql statements
     $endpointId = $endpoint->getId();
 
-    $result = $con->createQueryTable('results', "SELECT * FROM endpoint_properties WHERE PARENTENDPOINT_ID = '$endpointId'");
+    $result = $con->createQueryTable('results', "SELECT * FROM Endpoint_Properties WHERE PARENTENDPOINT_ID = '$endpointId'");
     //Assert that only 2 service properties exist in the database for this service
     $this->assertEquals(2, $result->getRowCount());
 
@@ -489,7 +489,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $this->assertEquals(0, $result->getRowCount());
 
     //Check properties are gone
-    $result = $con->createQueryTable('results', "SELECT * FROM endpoint_properties WHERE PARENTENDPOINT_ID = '$endpointId'");
+    $result = $con->createQueryTable('results', "SELECT * FROM Endpoint_Properties WHERE PARENTENDPOINT_ID = '$endpointId'");
     $this->assertEquals(0, $result->getRowCount());
     }
 
