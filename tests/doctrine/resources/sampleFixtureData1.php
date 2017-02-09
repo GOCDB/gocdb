@@ -21,7 +21,6 @@
         // Create a user
         $userWithRoles = TestUtil::createSampleUser("Test", "Testing", "/c=test");
         $this->em->persist($userWithRoles);
-        $userId = $userWithRoles->getId();
 
         // Create an NGI, site and services
         $ngi = TestUtil::createSampleNGI("MYNGI");
@@ -80,6 +79,8 @@
         $this->em->persist($site2Role2);
         $this->em->flush();
 
+        // The userWithRolesmust be flushed before we can gaurentee that the ID is available
+        $userId = $userWithRoles->getId();
 
 
         // Assert fixture data is setup correctly in the DB.

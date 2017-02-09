@@ -150,6 +150,9 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $adminUser->setAdmin(TRUE);
     $this->em->persist($adminUser);
 
+    //flush the user to the DB - so that the RoleAuthorisationService can find it in the DB
+    $this->em->flush();
+
     //Delete the property from the site
     $siteService = new org\gocdb\services\Site();
     $siteService->setEntityManager($this->em);
@@ -157,7 +160,6 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $roleActionAuthService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService);
     $roleActionAuthService->setEntityManager($this->em);
     $siteService->setRoleActionAuthorisationService($roleActionAuthService);
-    //$siteService->deleteSiteProperty($site, $adminUser, $prop1);
     $siteService->deleteSiteProperties($site, $adminUser, array($prop1));
 
     //Check that the site now only has 2 properties
@@ -165,11 +167,6 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $this->assertTrue(count($properties) == 2);
     $this->em->flush();
 
-    //Print names of properties
-    //foreach($properties as $prop){
-    //	print($prop->getKeyName()."-");
-    //	print($prop->getKeyValue()."\n");
-    //}
     //Check this via the database
     $con = $this->getConnection();
 
@@ -244,6 +241,9 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $adminUser = TestUtil::createSampleUser('my', 'admin', '/my/admin');
     $adminUser->setAdmin(TRUE);
     $this->em->persist($adminUser);
+
+    //flush the user to the DB - so that the RoleAuthorisationService can find it in the DB
+    $this->em->flush();
 
     //Delete the property from the service
     $serviceService = new org\gocdb\services\ServiceService();
@@ -346,8 +346,10 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $adminUser->setAdmin(TRUE);
     $this->em->persist($adminUser);
 
-    //Delete the property from the service group
+    //flush the user to the DB - so that the RoleAuthorisationService can find it in the DB
+    $this->em->flush();
 
+    //Delete the property from the service group
     $roleActionMappingService = new org\gocdb\services\RoleActionMappingService();
     $roleService = new org\gocdb\services\Role();
     $roleService->setEntityManager($this->em);
@@ -442,6 +444,9 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $adminUser = TestUtil::createSampleUser('my', 'admin', '/my/admin');
     $adminUser->setAdmin(TRUE);
     $this->em->persist($adminUser);
+
+    //flush the user to the DB - so that the RoleAuthorisationService can find it in the DB
+    $this->em->flush();
 
     //Delete the property from the service
     $serviceService = new org\gocdb\services\ServiceService();
