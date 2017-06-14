@@ -97,7 +97,8 @@ class ShibAuthToken implements IAuthentication {
             return;
         }
         else if($idp == 'https://aai.egi.eu/proxy/saml2/idp/metadata.php'){
-            if( empty($_SERVER['epuid'])){// || empty($_SERVER['displayName']) ){
+            // assurance is the old way EGI checkIn used to pass LoA attributes
+            /*if( empty($_SERVER['epuid'])){// || empty($_SERVER['displayName']) ){
                 die('Did not recieve required attributes from the EGI Proxy Identity Provider to complete authentication, please contact gocdb-admins');
             }
             if(empty($_SERVER['assurance'])){
@@ -114,6 +115,34 @@ class ShibAuthToken implements IAuthentication {
             $this->principal = $_SERVER['epuid'];
             $this->userDetails = array('AuthenticationRealm' => array('EGI Proxy IdP'));
             return;
+            */
+
+            if( empty($_SERVER['epuid'])){// || empty($_SERVER['displayName']) ){
+                die('Did not recieve required attributes from the EGI Proxy Identity Provider to complete authentication, please contact gocdb-admins');
+            }
+            if(empty($_SERVER['entitlement'])){
+                //die('Did not recieve the required entitlement attribute from the EGI Dev Proxy IdP, please contact gocdb-admins');
+                $HTML = '<ul><li>Login requires a GOCDB entitlement value <a href="https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb" target="_blank">https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb</a></li><li>Please, logout or restart your browser and attempt to login again using an identity provider that provides a GOCDB entitlement</li></ul>';
+                $HTML .= "<div style='text-align: center;'>";
+                $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
+                $HTML .= "</div>";
+                echo ($HTML);
+                die();
+            }
+
+            $entitlementValuesArray = explode(';', $_SERVER['entitlement']);
+            if( !in_array('urn:mace:egi.eu:aai.egi.eu:gocdb', $entitlementValuesArray) ){
+                 $HTML = '<ul><li>Login requires a GOCDB entitlement <a href="https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb" target="_blank">https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb</a></li><li>Please, logout or restart your browser and attempt to login again using an identity provider that provides a GOCDB entitlement</li></ul>';
+                 $HTML .= "<div style='text-align: center;'>";
+                 $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
+                 $HTML .= "</div>";
+                 echo ($HTML);
+                 die();
+            }
+            $this->principal = $_SERVER['epuid'];
+            $this->userDetails = array('AuthenticationRealm' => array('EGI Proxy IdP'));
+            return;
+
         }
 
 
