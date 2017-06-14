@@ -79,9 +79,11 @@ class ShibAuthToken implements IAuthentication {
     public function getPrinciple() {
        return $this->principal;
     }
-
+    
+    
+    
     private function getAttributesInitToken(){
-        $hostname = gethostname(); // gocdb-test.esc.rl.ac.uk, goc.egi.eu
+        $hostname = $_SERVER['HTTP_HOST']; // don't use $_SERVER['SERVER_NAME'] as this don't support DNS 
         // specify location of the Shib Logout handler
         \Factory::$properties['LOGOUTURL'] = 'https://'.$hostname.'/Shibboleth.sso/Logout';
         $idp = isset($_SERVER['Shib-Identity-Provider']) ? $_SERVER['Shib-Identity-Provider'] : '';
