@@ -65,6 +65,9 @@ class Service implements IScopedEntity {
     /** @Column(type="string", nullable=true) */
     protected $email;
 
+    /** @Column(type="boolean", options={"default": false}) */
+    protected $notify = false;
+
     /** @Column(type="string", nullable=true) */
     protected $url;
 
@@ -238,6 +241,10 @@ class Service implements IScopedEntity {
         return $this->email;
     }
 
+    public function getNotify() {
+        return $this->notify;
+    }
+
     public function getParentSite() {
         return $this->parentSite;
     }
@@ -341,6 +348,10 @@ class Service implements IScopedEntity {
 
     public function setEmail($email) {
         $this->email = $email;
+    }
+
+    public function setNotify($notify) {
+        $this->notify = $notify;
     }
 
     public function setParentSiteDoJoin(Site $parentSite) {
