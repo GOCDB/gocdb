@@ -114,13 +114,22 @@ $siteName = $service->getParentSite()->getName();
             <option value="Y"<?php if ($service->getProduction() == true) echo " selected=\"selected\"" ?>>Y</option>
         </select>
 
-        <!-- Production -->
+        <!-- Monitored -->
         <span class="input_name">
             Is this service monitored?
         </span>
         <select class="add_edit_form" name="IS_MONITORED">
             <option value="N"<?php if ($service->getMonitored() == false) echo " selected=\"selected\"" ?>>N</option>
             <option value="Y"<?php if ($service->getMonitored() == true) echo " selected=\"selected\"" ?>>Y</option>
+        </select>
+
+        <!-- Notify -->
+        <span class="input_name">
+            Do you wish to recieve notifications about this service?
+        </span>
+        <select class="add_edit_form" name="NOTIFY">
+            <option value="N"<?php if ($service->getNotify() == false) echo " selected=\"selected\"" ?>>N</option>
+            <option value="Y"<?php if ($service->getNotify() == true) echo " selected=\"selected\"" ?>>Y</option>
         </select>
 
         <br>
