@@ -119,7 +119,7 @@
         $HTML = "";
         $HTML .= '<div class="Left_Logo_Box left_box_menu">';
         $HTML .= Get_File_Contents(__DIR__."/../../static_html/goc5_logo.html");
-        //Insert a portal is in read only warning message, if it is
+        //Insert a "portal is in read only" warning message, if it is
         if(\Factory::getConfigService()->IsPortalReadOnly()){
             $HTML.= Get_File_Contents(__DIR__."/../../static_html/read_only_warning.html");
         }
