@@ -423,7 +423,7 @@ class NGI extends AbstractEntityService{
 
         //Only admins should be able to add an NGI
         if (!$user->isAdmin()) {
-            throw new \Exception("You must be a global administrator to move a site between NGIs");
+            throw new \Exception("You must be a global administrator to add an NGI");
         }
 
         //seperate values and scope arrays
