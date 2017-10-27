@@ -3,13 +3,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at: 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -30,8 +30,8 @@ require_once __DIR__ . '/IPIQueryRenderable.php';
  * unknown produce and error doc. Parmeter array keys include:
  * <pre>
  * 'sitename', 'roc', 'country', 'certification_status',
- * 'exclude_certification_status', 'production_status', 'scope', 'scope_match', 'extensions', 
- * 'next_cursor', 'prev_cursor' 
+ * 'exclude_certification_status', 'production_status', 'scope', 'scope_match', 'extensions',
+ * 'next_cursor', 'prev_cursor'
  * (where scope refers to Site scope)
  * </pre>
  *
@@ -48,11 +48,11 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     private $sites;
     private $portalContextUrl;
     private $urlAuthority;
-    
+
     private $maxResults = 500; //default page size, set via setPageSize(int);
     private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
     private $isPaging = false;   // is true if default paging is t OR if a cursor URL param has been specified for paging.
-     
+
     // following members are needed for paging
     private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
     private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter
@@ -64,18 +64,18 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     /**
      * Constructor takes entity manager which is then used by the query builder
      * @param EntityManager $em
-     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal') 
+     * @param string $portalContextUrl String for the URL portal context (e.g. 'scheme://host:port/portal')
      *   - used as a prefix to build absolute PORTAL URLs that are rendered in the query output.
-     *   Should not end with '/'. 
-     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
-     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
-     *  (e.g. for HATEOAS links/paging). Should not end with '/'.  
+     *   Should not end with '/'.
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port')
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'.
      */
     public function __construct($em, $portalContextUrl = 'https://goc.egi.eu/portal', $urlAuthority = '') {
         $this->em = $em;
         $this->helpers = new Helpers();
         $this->portalContextUrl = $portalContextUrl;
-        $this->urlAuthority = $urlAuthority; 
+        $this->urlAuthority = $urlAuthority;
     }
 
     /**
@@ -93,8 +93,8 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             'production_status',
             'scope',
             'scope_match',
-            'extensions', 
-            'next_cursor', 
+            'extensions',
+            'next_cursor',
             'prev_cursor'
         );
 
@@ -114,12 +114,12 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $this->prev_cursor = $cursorParams['prev_cursor'];
         $this->next_cursor = $cursorParams['next_cursor'];
         $this->isPaging = $cursorParams['isPaging'];
-        
+
         // if we are enforcing paging, force isPaging to true
         if($this->defaultPaging){
             $this->isPaging = true;
         }
-        
+
         $qb = $this->em->createQueryBuilder();
 
         $qb->select('DISTINCT s', 'sc', 'sp', 'i', 'cs', 'c', 'n', 'sgrid', 'ti') //, 'tz')
@@ -134,12 +134,12 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
                 ->leftJoin('s.tier', 'ti')
                 //->leftJoin('s.timezone', 'tz') // deprecated, dont use the tz entity
                 //->orderBy('s.shortName', 'ASC');
-                //->orderBy('s.id', 'ASC')  // oldest first 
-        ; 
-        
+                //->orderBy('s.id', 'ASC')  // oldest first
+        ;
+
         // Order by ASC (oldest first: 1, 2, 3, 4)
         $this->direction = 'ASC';
-        
+
         // Cursor where clause:
         // Select rows *FROM* the current cursor position
         // by selecting rows either ABOVE or BELOW the current cursor position
@@ -166,7 +166,7 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             // Sets the maximum number of results to retrieve (the "limit")
             $qb->setMaxResults($this->maxResults);
         }
-        
+
         $qb->orderBy('s.id', $this->direction);
 
         /* Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
@@ -244,15 +244,15 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $this->lastCursorId = $cursorPageResults['lastCursorId'];
         return $this->sites;
     }
-    
-    
+
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -264,7 +264,7 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         }
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -272,15 +272,15 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         if($this->selectedRenderingStyle == 'GOCDB_XML'){
             return $this->getXml();
         } else if($this->selectedRenderingStyle == 'GOCDB_XML_LIST'){
-            return $this->getXMLShort(); 
+            return $this->getXMLShort();
         } else if($this->selectedRenderingStyle == 'GLUE2_XML'){
-            return $this->getGlue2XML(); 
+            return $this->getGlue2XML();
         }
         else {
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -302,7 +302,7 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $helpers = $this->helpers;
 
         $xml = new \SimpleXMLElement("<results />");
-        
+
         // Calculate and add paging info
         if ($this->isPaging) {
             $metaXml = $xml->addChild("meta");
@@ -347,6 +347,12 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             $helpers->addIfNotEmpty($xmlSite, 'LATITUDE', $site->getLatitude());
             $helpers->addIfNotEmpty($xmlSite, 'LONGITUDE', $site->getLongitude());
             $helpers->addIfNotEmpty($xmlSite, 'CSIRT_EMAIL', $site->getCsirtEmail());
+            if($site->getNotify()) {
+                $notifyText = "TRUE";
+            } else{
+                $notifyText = "FALSE";
+            }
+            $helpers->addIfNotEmpty($xmlSite, 'NOTIFICATIONS', $notifyText);
             $domain = $xmlSite->addChild('DOMAIN');
             $helpers->addIfNotEmpty($domain, 'DOMAIN_NAME', $site->getDomain());
             $helpers->addIfNotEmpty($xmlSite, 'SITE_IP', $site->getIpRange());
@@ -541,7 +547,7 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         return $xmlString;
     }
 
-    
+
     /**
      * This query does not page by default.
      * If set to true, the query will return the first page of results even if the
@@ -552,7 +558,7 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     public function getDefaultPaging(){
         return $this->defaultPaging;
     }
-    
+
     /**
      * @param boolean $pageTrueOrFalse Set if this query pages by default
      */
@@ -562,7 +568,7 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         }
         $this->defaultPaging = $pageTrueOrFalse;
     }
-    
+
     /**
      * Set the default page size (100 by default if not set)
      * @return int The page size (number of results per page)
@@ -570,7 +576,7 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     public function getPageSize(){
         return $this->maxResults;
     }
-    
+
     /**
      * Set the size of a single page.
      * @param int $pageSize
@@ -581,7 +587,7 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         }
         $this->maxResults = $pageSize;
     }
-    
+
     /**
      * See inteface doc.
      * {@inheritDoc}

@@ -115,6 +115,17 @@ $extensionProperties = $site->getSiteProperties();
             <?php } else echo('PROTECTED - Auth Required'); ?>
             </td>
         </tr>
+        <tr class="site_table_row_2">
+            <td class="site_table">Notifications</td>
+            <td class="site_table">
+                <img src="<?php echo(\GocContextPath::getPath());
+                if($site->getNotify()) {
+                    echo('img/tick.png');
+                } else {
+                    echo('img/cross.png');
+                }?>" height="22px" style="vertical-align: middle;" />
+            </td>
+        </tr>
         </table>
         </div>
 
@@ -231,12 +242,12 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Domain</td>
                     <td class="site_table">
-            <?php
-            if ($params['authenticated']) {
-                xecho($site->getDomain());
-            } else
-                echo('PROTECTED - Auth Required');
-            ?>
+                        <?php
+                            if ($params['authenticated']) {
+                                xecho($site->getDomain());
+                            } else
+                                echo('PROTECTED - Auth Required');
+                        ?>
                     </td>
                 </tr>
             </table>

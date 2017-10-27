@@ -187,6 +187,15 @@ $siteScopes = $site->getScopes();
         </span>
         <input class="input_input_text" type="text" name="HELPDESKEMAIL" value="<?php xecho($site->getHelpdeskEmail()) ?>" />
 
+        <!-- Notify -->
+        <span class="input_name">
+            Do you wish to receive notifications about this site?
+        </span>
+        <select class="add_edit_form" name="NOTIFY">
+            <option value="No"<?php if ($site->getNotify() == false) echo " selected=\"selected\"" ?>>No</option>
+            <option value="Yes"<?php if ($site->getNotify() == true) echo " selected=\"selected\"" ?>>Yes</option>
+        </select>
+
 
         <br>
         <br>

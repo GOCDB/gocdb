@@ -1,4 +1,7 @@
-GOCDB-5.7 Release (07/12/2016). Includes DB schema changes.  
+For a continuing changelog, please see:
+https://github.com/GOCDB/gocdb/releases 
+
+GOCDB-5.7 Release (07/12/2016). Includes DB schema changes.
   - New RESTful write API for managing custom properties defined on Sites, Services and Endpoints.
     Allows Site admins to regsiter a list of cert DNs that defines an ACL of authorised certificates that
     are authorised to invoke the write API.
@@ -9,8 +12,8 @@ GOCDB-5.7 Release (07/12/2016). Includes DB schema changes.
   - All read-API results are now ordered by ascending ID (NB, this changes the 'get_downtime*' methods
     which previously ordered downtimes by descending start date.
   - New attributes added on ServiceEndpoint;
-    Boolean 'monitored' flag which adds the 'ENDPOINT_MONITORED' element to the XML output of each endpoint in the 
-    get_service method, and a new 'email' field for adding contact details for a specific service. 
+    Boolean 'monitored' flag which adds the 'ENDPOINT_MONITORED' element to the XML output of each endpoint in the
+    get_service method, and a new 'email' field for adding contact details for a specific service.
     Note, the email field is NOT currently rendered in the output of the get_service method because this
     method has Level 1 protection level which is considered a pubilc method containing no critical info and no
     personal emails. If emails are needed, can either: a) Elevate the protection level of the get_service method
@@ -18,153 +21,153 @@ GOCDB-5.7 Release (07/12/2016). Includes DB schema changes.
     rules so that Level 1 can include site/service emails but no personal emails, note however there would still be a
     risk that personal emails would still be added.
 
-GOCDB-5.6 Release (07/03/2016). Includes DB schema changes.  
-  - Reserved/Protected scope tags used to control the tagging of resources using 
-    cascading/inheritance rules that limit which tags NGIs->Sites->Services->Downtimes 
-    can declare. Allows certain sites (e.g. sites supporting WLCG-VOs and Elixir sites) 
-    to apply tags only to their resources and prevent other sites from using the same tags. 
-    Allows controlled resource filtering in API and GUI. 
-  - Bulk Add/Upload of multiple custom properties.  Allows the data models of 
-    Sites, ServiceGroups, Services and Endpoints to be easily extended and customised. 
-  - Downtime calendar view with fine-grained downtime filtering. 
-  - Updated/replaced the dateTimePicker JS lib. 
-  - DB Schema change to record user's last login dateTime (User.lastLoginDate field). 
-    Needed to delete inactive accounts that remain idle for >18mths. 
+GOCDB-5.6 Release (07/03/2016). Includes DB schema changes.
+  - Reserved/Protected scope tags used to control the tagging of resources using
+    cascading/inheritance rules that limit which tags NGIs->Sites->Services->Downtimes
+    can declare. Allows certain sites (e.g. sites supporting WLCG-VOs and Elixir sites)
+    to apply tags only to their resources and prevent other sites from using the same tags.
+    Allows controlled resource filtering in API and GUI.
+  - Bulk Add/Upload of multiple custom properties.  Allows the data models of
+    Sites, ServiceGroups, Services and Endpoints to be easily extended and customised.
+  - Downtime calendar view with fine-grained downtime filtering.
+  - Updated/replaced the dateTimePicker JS lib.
+  - DB Schema change to record user's last login dateTime (User.lastLoginDate field).
+    Needed to delete inactive accounts that remain idle for >18mths.
 
 
-GOCDB-5.5 Release (02/12/2015 ). No DB schema changes.  
-  - Added 'Action to take For all child service scopes' field when editing a 
-    site so that the site's scopes can be easily inherited or used to override 
-    all child service scopes. 
+GOCDB-5.5 Release (02/12/2015 ). No DB schema changes.
+  - Added 'Action to take For all child service scopes' field when editing a
+    site so that the site's scopes can be easily inherited or used to override
+    all child service scopes.
   - Adding <RECOGNISED_IN_PROJECTS/>  element to the XML output of the get_user
-    query to show which projects a user's roles apply to. This is needed for 
-    multi-tenant where a single GOC instance can host multiple projects.  
-  - Adding <SCOPES/> element to the XML output of the following PI queries: 
-    get_site, get_service, get_service_endpoint, get_ngi, get_service_group 
-  - Adding 'jquery.multiple.select.js' lib to allow selecting of multiple scopes when 
-    filtering sites/services/ngis/sgs in the GUI. This also required use of PI queries to 
-    create new service methods in order to take advantage of the filtering by 
-    multiple scopes with scope and scope_match params.  
-  - Bug fix to allow comma chars in the values of custom extension properties.  
-    The presence of a comma in the value of an ext prop was previously clashing 
-    with the ScopeQueryBuilder which explodes the scope string on commas. The 
-    fix removes this clash.    
+    query to show which projects a user's roles apply to. This is needed for
+    multi-tenant where a single GOC instance can host multiple projects.
+  - Adding <SCOPES/> element to the XML output of the following PI queries:
+    get_site, get_service, get_service_endpoint, get_ngi, get_service_group
+  - Adding 'jquery.multiple.select.js' lib to allow selecting of multiple scopes when
+    filtering sites/services/ngis/sgs in the GUI. This also required use of PI queries to
+    create new service methods in order to take advantage of the filtering by
+    multiple scopes with scope and scope_match params.
+  - Bug fix to allow comma chars in the values of custom extension properties.
+    The presence of a comma in the value of an ext prop was previously clashing
+    with the ScopeQueryBuilder which explodes the scope string on commas. The
+    fix removes this clash.
   - Adding JQuery Table sorter lib and applied to sorting of many tables including
-    custom properties and downtimes. 
+    custom properties and downtimes.
   - Role mapping and abstractions to define different roles on a per-project
-    basis. Different roles are defined in the RoleActionMappings.xml 
-    file. The mapping file defines which actions are enabled 
-    for each role. The role types have to be pre-inserted into the DB.     
-    This could be extended to define different role types per project 
+    basis. Different roles are defined in the RoleActionMappings.xml
+    file. The mapping file defines which actions are enabled
+    for each role. The role types have to be pre-inserted into the DB.
+    This could be extended to define different role types per project
     (with this release, users can have different role instances per project, but
-    the role types are consistent across projects). 
-  - New improved ExtensionsParser2.php implementation for tokenising  
-    the value of the 'extensions' URL param in PI - the value 
-    part of key=value expressions can now contain any char including escaped 
-    parenthesis and html special chars. Note, this does not affect the input 
-    interface which still restricts which chars are allowed in property values. 
+    the role types are consistent across projects).
+  - New improved ExtensionsParser2.php implementation for tokenising
+    the value of the 'extensions' URL param in PI - the value
+    part of key=value expressions can now contain any char including escaped
+    parenthesis and html special chars. Note, this does not affect the input
+    interface which still restricts which chars are allowed in property values.
     To support input of any char in a property value, the regex rules for validating
-    input need to be updated, and the property values need to be rendered in 
-    CDATA sections in the PI output (i.e. rather than using htmlspecialchars() 
-    on the value, sample logic to do this is provided in getSite()).  
-  - Bug fix, when ending/editing a downtime, the returned downtime->dateTime 
-    properties are in the server's default timezone and not UTC, this caused problems 
+    input need to be updated, and the property values need to be rendered in
+    CDATA sections in the PI output (i.e. rather than using htmlspecialchars()
+    on the value, sample logic to do this is provided in getSite()).
+  - Bug fix, when ending/editing a downtime, the returned downtime->dateTime
+    properties are in the server's default timezone and not UTC, this caused problems
     in time/duration calculations when applied to ending/ending downtimes. The downtime
     editing logic has been updated to convert the downtime dateTimes to UTC before
     performing time calculations. A single global call to date_default_timezone_set("UTC")
-    has also been re-added to the index.php file to treat all times in UTC. 
-  - Bug fix, ShibAuthToken uses $_SERVER['eppn'] to fetch eduPersonPrincipleName 
- 
+    has also been re-added to the index.php file to treat all times in UTC.
+  - Bug fix, ShibAuthToken uses $_SERVER['eppn'] to fetch eduPersonPrincipleName
 
-GOCDB-5.4 Release (06/07/2015). Includes DB schema changes.  
-  - Addition of RoleActionRecord entity for recording all role request actions (deny, approve, revoke). 
+
+GOCDB-5.4 Release (06/07/2015). Includes DB schema changes.
+  - Addition of RoleActionRecord entity for recording all role request actions (deny, approve, revoke).
   - Improved Role approve/deny page rendering and logic.
-  - Improved deployment scripts and install docs. 
-  - Updated OwnedEntity.php to add abstract getName() method for runtime polymorphism. 
+  - Improved deployment scripts and install docs.
+  - Updated OwnedEntity.php to add abstract getName() method for runtime polymorphism.
   - Addition of transient decoratorObject on Role entity for decorating Role instance with
-    extra non-persistent info (for enhanced view rendering).    
-  - Updated SimpleSamlPhpAuthToken.php to show how to support multiple IdPs.  
-  - Updated front controller (index.php) to allow permitAll pages and authentication 
-    on a per-page basis. 
-  - Improved content rendering to hide Edit/Delete links according to permissions. 
-  - Update to php timezonedb rather than by static seed values insert into DB, inc:  
-    Deprecation of the lib/Doctrine/entities/Timezone.php entity. 
-  - Specify downtime dates in site's local timezone with automatic conversion to UTC 
-    Removal of extraneous date_default_timezone_set("UTC") calls (legacy artefact) 
-    Improved add/edit downtime interface 
-  - BugFix - get_service method was ignoring the `monitored` url parameter. 
-  - BugFix - limit to reachable sites when adding downtimes 
-  - Addition of ShibAuthToken.php for easier integration with ShibSP. 
-  - Modified 'lib/Authentication/AuthProviders/GOCDBAuthProvider.php' to support 
-    any non-null IAuthentication token by default, rather than limiting to known 
-    sub-classes. 
-    
-    
+    extra non-persistent info (for enhanced view rendering).
+  - Updated SimpleSamlPhpAuthToken.php to show how to support multiple IdPs.
+  - Updated front controller (index.php) to allow permitAll pages and authentication
+    on a per-page basis.
+  - Improved content rendering to hide Edit/Delete links according to permissions.
+  - Update to php timezonedb rather than by static seed values insert into DB, inc:
+    Deprecation of the lib/Doctrine/entities/Timezone.php entity.
+  - Specify downtime dates in site's local timezone with automatic conversion to UTC
+    Removal of extraneous date_default_timezone_set("UTC") calls (legacy artefact)
+    Improved add/edit downtime interface
+  - BugFix - get_service method was ignoring the `monitored` url parameter.
+  - BugFix - limit to reachable sites when adding downtimes
+  - Addition of ShibAuthToken.php for easier integration with ShibSP.
+  - Modified 'lib/Authentication/AuthProviders/GOCDBAuthProvider.php' to support
+    any non-null IAuthentication token by default, rather than limiting to known
+    sub-classes.
 
-GOCDB-5.3.1 Release (16/02/2015) 
-  - Addition of static GocContextPath.php to allow deployment of GOCDB in other 
-    environments such as a Symfony component (allows web assets to be located 
+
+
+GOCDB-5.3.1 Release (16/02/2015)
+  - Addition of static GocContextPath.php to allow deployment of GOCDB in other
+    environments such as a Symfony component (allows web assets to be located
     in a different directory as required by environment).
-  - Addition of static SecurityContextSource.php as a storage object for external 
-    security context objects that may be set to authenticate users in other 
-    environments such as a a Symfony component. 
-  - Major improvements to Authentication package to enable different auth schemes. 
-  - Support for SAML2.0 SSO logins using SimpleSamlPhp (disabled by default).  
-  - Update DB entity model to add new value (User->$username1) and new script 
-    (QueryPopulateSSO_UsernameRunner.php) to query the EGI Idp to populate this value. 
-  - Update of get_user PI method (GetUser.php): 
+  - Addition of static SecurityContextSource.php as a storage object for external
+    security context objects that may be set to authenticate users in other
+    environments such as a a Symfony component.
+  - Major improvements to Authentication package to enable different auth schemes.
+  - Support for SAML2.0 SSO logins using SimpleSamlPhp (disabled by default).
+  - Update DB entity model to add new value (User->$username1) and new script
+    (QueryPopulateSSO_UsernameRunner.php) to query the EGI Idp to populate this value.
+  - Update of get_user PI method (GetUser.php):
     - ENTITY_TYPE element values updated ( 'group' value is separated into 'ngi' and 'project')
-    - New elements: SSOUSERNAME and PRIMARY_KEY (PK of the target role entity). 
-  - xecho() and xssafe() methods added in view layer to add extra protection against XSS attacks. 
-  - Throw early exceptions if PK/ID values _REQUEST are not numeric. 
-  - Prototyped new regex for extensions expression parsing to allow escaped chars including 
-      escaped parenthesis (not implemented yet).   
-  
+    - New elements: SSOUSERNAME and PRIMARY_KEY (PK of the target role entity).
+  - xecho() and xssafe() methods added in view layer to add extra protection against XSS attacks.
+  - Throw early exceptions if PK/ID values _REQUEST are not numeric.
+  - Prototyped new regex for extensions expression parsing to allow escaped chars including
+      escaped parenthesis (not implemented yet).
 
-GOCDB-5.3 Release (5 Nov 2014) 
-  - Add Multiple Endpoints per Service: https://wiki.egi.eu/wiki/GOCDB/Release4/Development/MultipleEndpointsPerService 
 
-GOCDB-5.2 Release (13 Feb 2014) 
+GOCDB-5.3 Release (5 Nov 2014)
+  - Add Multiple Endpoints per Service: https://wiki.egi.eu/wiki/GOCDB/Release4/Development/MultipleEndpointsPerService
+
+GOCDB-5.2 Release (13 Feb 2014)
  - Extensibility mechanism (allows custom key=value pairs to be defined on sites and services with PI query support using the 'extensions' PI parameter).
  - Notification Service to email relevant users on role requests, approvals and denials. (RT6223)
- - IPv6 addresses added to sites and services.https://wiki.egi.eu/wiki/GOCDB/Release4/Development/ipv6support  
+ - IPv6 addresses added to sites and services.https://wiki.egi.eu/wiki/GOCDB/Release4/Development/ipv6support
  - Extended unit tests for new format PI methods.
  - Multiple updates to user documentation.
  - Continued prototyping of multiple endpoints per service.
- - EUDAT Migrated from GOCDB4 to GOCDB5.2. 
+ - EUDAT Migrated from GOCDB4 to GOCDB5.2.
 
 GOCDB-5.1 Release (26 Nov 2013)
 - New get_downtime_nested_services method. RT1017
 - Get_roc_contacts now includes a link field for GOCDB_PORTAL_URL  RT1423
-- New service endpoint filters in web portal services view. Can now filter by 
+- New service endpoint filters in web portal services view. Can now filter by
   NGI, CertificationStatus and show closed sites. RT4465
 - Security fix applied to get_site_contacts, get_roc_contacts BUGFIX
-- Get_egee_contacts modified to return results as previously did nothing. 
-  Does support the ability for the user to supply a parameter called project. 
-  At the moment this is hardcoded to EGI. But deleting that line will allow this 
+- Get_egee_contacts modified to return results as previously did nothing.
+  Does support the ability for the user to supply a parameter called project.
+  At the moment this is hardcoded to EGI. But deleting that line will allow this
   method to work for Prace,EUDAT etc. BUGFIX
-- New active & imminent downtime view in portal. Users can see currently 
+- New active & imminent downtime view in portal. Users can see currently
   active downtimes and planned downtimes for the next 1,2,3 or 4 weeks. RT1092
 
 GOCDB-5 Release (02-10-2013)
 - Support for multiple RDBMSs using Doctrine ORM
 - Extensive refactoring at all layers to use Doctrine entities.
-- By design: the 'external' interfaces (PI and portal GUI) have few outwardly visible 
-  changes to be backward compatible. 
-- Simpler backend Role model impl (role classifications dropped) so that 
-  a role over an OwnedEntity has a single role type name and a single status (PENDING or GRANTED) 
+- By design: the 'external' interfaces (PI and portal GUI) have few outwardly visible
+  changes to be backward compatible.
+- Simpler backend Role model impl (role classifications dropped) so that
+  a role over an OwnedEntity has a single role type name and a single status (PENDING or GRANTED)
 - New Authentication abstraction layer to abstract x509 details from the underlying
-  code and facilitate new authentication mechanisms such as un/pw via well defined 
-  IAuthProvider and IAuthMananger interfaces. 
-- Support for multiple Projects, e.g. EGI, EUDAT, PRACE in a single GOCDB instance. 
-- Scoping extensions to allow resources to be tagged with multiple scope-tags 
-  with PI support provided using the &scope and &scope_match parameters. 
-- New GOCDB admin interface to simplify daily operational tasks such as deleting 
-  sites and moving sites to different NGIs.  
+  code and facilitate new authentication mechanisms such as un/pw via well defined
+  IAuthProvider and IAuthMananger interfaces.
+- Support for multiple Projects, e.g. EGI, EUDAT, PRACE in a single GOCDB instance.
+- Scoping extensions to allow resources to be tagged with multiple scope-tags
+  with PI support provided using the &scope and &scope_match parameters.
+- New GOCDB admin interface to simplify daily operational tasks such as deleting
+  sites and moving sites to different NGIs.
 
 GOCDB-4.4 Release (10-09-2012)
 This release addresses a number of smaller RT feature requests, UI harmonisation and a great deal of refactoring.
- - UI refresh: UI consistent throughout with modern style 
+ - UI refresh: UI consistent throughout with modern style
  - New view + filter: All Service Endpoints
  - New view: Show all NGIs
  - Updated pages to show single: Users, Roles, NGIs
@@ -182,9 +185,9 @@ This release addresses a number of smaller RT feature requests, UI harmonisation
  	- Siteless endpoints can be put under downtime
  - Majority of code paths consistently use MVC and services layer
  	- Code complexity reduced, easier to understand and modify.
- - Cleaned code: removed many unused files + methods that have been replaced by MVC + Services 
+ - Cleaned code: removed many unused files + methods that have been replaced by MVC + Services
  - Fixed RT tickets: 1099, 1097, 1210, 1016, 1095, 4270, 1096, 3249, 3635, 3521.
- 
+
 GOCDB-4.3 Release (10-04-2012)
 This release includes further refactoring work, support for service groups (previously known as Virtual Sites) and a new authorization model supporting more finely grained roles.
 - New roles and role handling mechanisms as per https://wiki.egi.eu/wiki/GOCDB/Release4/Development/NewRoles
@@ -195,35 +198,35 @@ This release includes further refactoring work, support for service groups (prev
 - New page to view downtimes
 - Added rules to certification status changes (e.g. a site can't go from Closed->Certified)
 
-GOCDB-4.2 Release (25-11-2011) 
-This release includes scoping of sites and service endpoints. 
+GOCDB-4.2 Release (25-11-2011)
+This release includes scoping of sites and service endpoints.
 A GOCDB instance (whether central or regional) needs to differentiate between EGI and non-EGI data. To do this, new tagging logic had been added so that new data sc
 oping rules can be applied to GOCDB entities, allowing Sites, Services and other data to be identified as either ‘EGI,’ ‘Local’ or ‘some other’ scoped data. This is
- a regionalisation prerequisite. By default, sites and services are defined in the 'EGI' scope. 
+ a regionalisation prerequisite. By default, sites and services are defined in the 'EGI' scope.
 - Scoping of sites and service endpoints - Nov 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=2789
 
 GOCDB-4.1 Release (01-11-2011)
-This release sees some changes to the to the PROM database APIs and to the MVC view logic. 
-Importantly, the PLSQL package name has been updated from 'pgridcore' to 'pgridcore2' to reflect these changes. 
-New functionality has also been added. Details below. 
+This release sees some changes to the to the PROM database APIs and to the MVC view logic.
+Importantly, the PLSQL package name has been updated from 'pgridcore' to 'pgridcore2' to reflect these changes.
+New functionality has also been added. Details below.
 
 - Refactored PROM db API. The underlying database code has been refactored for greater flexibility and stability:
-  All changes to the database are now atomic, allowing transactions to be explicitly demarcated within business routines. 
+  All changes to the database are now atomic, allowing transactions to be explicitly demarcated within business routines.
   Database interactions are now performed through a formalised PROM interface API that is agnostic of the database implementation, currently only implemented for Or
 acle.
   (Before v4.1, the GOCDB PROM API did not allow transaction demarcation in high level business operations, such as
-  inserting a site and adding new SE because explicit commits and rollbacks were declared in low-level PLSQL functions 
-  including fnNewLink(), fnUpdateObject(), fnDeleteObject(), fnDeleteLink(). Consequently, any business operation that 
-  invoked these functions multiple times in a single processing unit was not atomic, and gocdb 4.0 could leave the db 
-  in an inconsistent state if an error occurred since full rollback was not possible (e.g. on site creation Savannah 74860). 
-  This almost certainly accounted for a number of previously reported data inconsistencies. Refactoring the database logic 
-  was therefore high priority and is a regionalisation pre-requisite; either all or none of the data should be committed 
-  to the central gocdb when publishing from regional to central). 
-- Refactored much of the code base initially to support scoping but also to provide more flexibility long term, especially the MVC view layer. 
+  inserting a site and adding new SE because explicit commits and rollbacks were declared in low-level PLSQL functions
+  including fnNewLink(), fnUpdateObject(), fnDeleteObject(), fnDeleteLink(). Consequently, any business operation that
+  invoked these functions multiple times in a single processing unit was not atomic, and gocdb 4.0 could leave the db
+  in an inconsistent state if an error occurred since full rollback was not possible (e.g. on site creation Savannah 74860).
+  This almost certainly accounted for a number of previously reported data inconsistencies. Refactoring the database logic
+  was therefore high priority and is a regionalisation pre-requisite; either all or none of the data should be committed
+  to the central gocdb when publishing from regional to central).
+- Refactored much of the code base initially to support scoping but also to provide more flexibility long term, especially the MVC view layer.
   This will make future change requests easier to fulfill and gives us more flexibility to make user interface improvements.
-  (Before v4.1, GOCDB used a generic module for drawing all forms and GUI components such as tables. This module defined a single 
-  code path which was too rigid, making it difficult to deal with form/table requirements on a per-page basis). 
-- New View Site page (to support scoping and to address user issues with the current View Site page) 
+  (Before v4.1, GOCDB used a generic module for drawing all forms and GUI components such as tables. This module defined a single
+  code path which was too rigid, making it difficult to deal with form/table requirements on a per-page basis).
+- New View Site page (to support scoping and to address user issues with the current View Site page)
 - New View Service Endpoint page
 - Added current UTC time to new Downtime page
 - Refactored database code to be atomic (required to implement scoping) - Oct 2011 (release into production end Oct/start-Nov) https://rt.egi.eu/rt/Ticket/Display.h
@@ -241,5 +244,4 @@ gn as summarized below).
 - Record Certification Status History - May 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=939
     Allow authorised operators to suspend sites at central level - March 2011 https://rt.egi.eu/rt/Ticket/Display.html?id=1094
     Show when a site entered the current production status - March 2011 https://wiki.egi.eu/wiki/GOCDB/PI/get_cert_status_date
-    Consolidated Wiki and all documentation. 
-
+    Consolidated Wiki and all documentation.
