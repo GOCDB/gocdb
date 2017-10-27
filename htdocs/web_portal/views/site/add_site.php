@@ -160,7 +160,7 @@
         <input class="input_input_text" type="text" name="HELPDESKEMAIL" />
 
         <span class="input_name">
-            Do you wish to recieve notifications about this site?
+            Do you wish to receive notifications about this site?
         </span>
         <select class="add_edit_form" name="NOTIFY">
             <option value="No">No</option>

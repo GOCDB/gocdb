@@ -96,7 +96,7 @@ $serviceTypes = $params['serviceTypes'];
         </span>
         <input class="input_input_text" type="text" name="EMAIL" />
 
-        <span class="input_name">Do you wish to recieve notifications about this service?</span>
+        <span class="input_name">Do you wish to receive notifications about this service?</span>
         <select class="add_edit_form" name="NOTIFY">
             <option value="N">N</option>
             <option value="Y">Y</option>
