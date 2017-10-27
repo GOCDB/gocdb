@@ -363,20 +363,24 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             $helpers->addIfNotEmpty($xmlSe, 'HOST_IP', $se->getIpAddress());
             $helpers->addIfNotEmpty($xmlSe, 'HOST_IPV6', $se->getIpV6Address());
             $xmlSe->addChild("CORE", "");
-
             if ($se->getProduction()) {
                 $prod = "Y";
             } else {
                 $prod = "N";
             }
             $xmlSe->addChild('IN_PRODUCTION', $prod);
-
             if ($se->getMonitored()) {
                 $mon = "Y";
             } else {
                 $mon = "N";
             }
             $xmlSe->addChild('NODE_MONITORED', $mon);
+            if ($se->getNotify()) {
+                $notifyText = "Y";
+            } else {
+                $notifyText = "N";
+            }
+            $xmlSe->addChild('NOTIFICATIONS', $notifyText);
             $site = $se->getParentSite();
             $helpers->addIfNotEmpty($xmlSe, "SITENAME", $site->getShortName());
             $helpers->addIfNotEmpty($xmlSe, "COUNTRY_NAME", $site->getCountry()->getName());
