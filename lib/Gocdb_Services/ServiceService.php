@@ -484,6 +484,7 @@ class ServiceService extends AbstractEntityService {
      * [BETA] => N
      * [PRODUCTION_LEVEL] => Y
      * [IS_MONITORED] => N
+     * [NOTIFY] => N
      * )
      * )
      * </pre>
@@ -609,6 +610,17 @@ class ServiceService extends AbstractEntityService {
                 $monitored = false;
             }
             $se->setMonitored ( $monitored );
+
+            //Set notify flag for site
+            if (!isset($newValues['NOTIFY'])){
+                $notify = false;
+            }
+            elseif ($newValues['NOTIFY'] == "Y") {
+                $notify = true;
+            } else {
+                $notify = false;
+            }
+            $se->setNotify ($notify);
 
             $se->setDn ( $newValues ['SE'] ['HOST_DN'] );
             $se->setIpAddress ( $newValues ['SE'] ['HOST_IP'] );
@@ -792,6 +804,7 @@ class ServiceService extends AbstractEntityService {
      * [PRODUCTION_LEVEL] => Y
      * [IS_MONITORED] => Y
      * [EMAIL] =>
+     * [NOTIFY] => Y
      * )
      * )
      *
@@ -884,6 +897,17 @@ class ServiceService extends AbstractEntityService {
             } else {
                 $se->setMonitored ( false );
             }
+
+            //Set notify flag for site
+            if (!isset($values['NOTIFY'])){
+                $notify = false;
+            }
+            elseif ($values['NOTIFY'] == "Y") {
+                $notify = true;
+            } else {
+                $notify = false;
+            }
+            $se->setNotify ($notify);
 
             // Set the scopes
             // foreach ($allSelectedScopeIds as $scopeId) {

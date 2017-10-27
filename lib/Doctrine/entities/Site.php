@@ -100,6 +100,9 @@ class Site extends OwnedEntity implements IScopedEntity{
     /** @Column(type="string", nullable=true) */
     protected $helpdeskEmail;
 
+    /** @Column(type="boolean", options={"default": false}) */
+    protected $notify = false;
+
     /** @ManyToOne(targetEntity="NGI", inversedBy="sites") */
     protected $ngi;
 
@@ -317,6 +320,10 @@ class Site extends OwnedEntity implements IScopedEntity{
 
     public function getHelpdeskEmail() {
         return $this->helpdeskEmail;
+    }
+
+    public function getNotify() {
+        return $this->notify;
     }
 
     public function getServices() {
@@ -554,6 +561,10 @@ class Site extends OwnedEntity implements IScopedEntity{
 
     public function setHelpdeskEmail($helpdeskEmail) {
         $this->helpdeskEmail = $helpdeskEmail;
+    }
+
+    public function setNotify($notify) {
+        $this->notify = $notify;
     }
 
     public function addServiceDoJoin(Service $service) {

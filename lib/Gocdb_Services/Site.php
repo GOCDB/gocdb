@@ -116,6 +116,7 @@ class Site extends AbstractEntityService{
      *              [HELPDESKEMAIL] => JCasson@324.com
      *              [DOMAIN] => test.host.com
      *              [TIMEZONE] => Europe/London
+     *              [NOTIFY] => Y
      *      )
      *
      *      [COBJECTID] => 706
@@ -211,6 +212,18 @@ class Site extends AbstractEntityService{
             $site->setAlarmEmail($newValues['Site']['EMERGENCYEMAIL']);
             $site->setHelpdeskEmail($newValues['Site']['HELPDESKEMAIL']);
             $site->setTimezoneId($newValues['Site']['TIMEZONE']);
+
+
+            //Set notify flag for site
+            if (!isset($newValues['NOTIFY'])){
+                $notify = false;
+            }
+            elseif ($newValues['NOTIFY'] == "Yes") {
+                $notify = true;
+            } else {
+                $notify = false;
+            }
+            $site->setNotify ($notify);
 
             // update the target infrastructure
             $dql = "SELECT i FROM Infrastructure i WHERE i.name = :name";
@@ -647,6 +660,7 @@ class Site extends AbstractEntityService{
      *                 [EMERGENCYEMAIL] => jcasson@234.com
      *                 [HELPDESKEMAIL] => gocdb-admins@mailtalk.ac.uk
      *                 [DOMAIN] => Test.com
+     *                 [NOTIFY] => Y
      *     )
      * )
      * @param array $values New Site Values
@@ -750,6 +764,17 @@ class Site extends AbstractEntityService{
             $site->setEmergencyEmail($values['Site']['EMERGENCYEMAIL']);
             $site->setHelpdeskEmail($values['Site']['HELPDESKEMAIL']);
             $site->setTimezoneId($values['Site']['TIMEZONE']);
+
+            //Set notify flag for site
+            if (!isset($values['NOTIFY'])){
+                $notify = false;
+            }
+            elseif ($values['NOTIFY'] == "Yes") {
+                $notify = true;
+            } else {
+                $notify = false;
+            }
+            $site->setNotify ($notify);
 
             // join the site to the parent NGI
             $site->setNgiDoJoin($parentNgi);

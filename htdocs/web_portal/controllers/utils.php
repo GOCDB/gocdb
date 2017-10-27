@@ -316,6 +316,9 @@ function getSiteDataFromWeb() {
         $site_data ['Site'] [$field] = $_REQUEST [$field];
     }
 
+    //Notifcations
+    $site_data ['NOTIFY'] = $_REQUEST ['NOTIFY'];
+
     /*
      * If the user is updating a site the optional cobjectid parameter will be set. If it is set we return it as part of the array
      */
@@ -409,6 +412,8 @@ function getSeDataFromWeb() {
     $se_data ['BETA'] = $_REQUEST ['HOST_BETA'];
     $se_data ['PRODUCTION_LEVEL'] = $_REQUEST ['PRODUCTION_LEVEL'];
     $se_data ['IS_MONITORED'] = $_REQUEST ['IS_MONITORED'];
+    $se_data ['NOTIFY'] = $_REQUEST ['NOTIFY'];
+
 
     /*
     * If the user is updating a service the optional cobjectid parameter will be set. If it is set we return it as part of the array
