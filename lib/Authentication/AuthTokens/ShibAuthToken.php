@@ -98,10 +98,10 @@ class ShibAuthToken implements IAuthentication {
         }
         else if($idp == 'https://aai.egi.eu/proxy/saml2/idp/metadata.php'){
             if( empty($_SERVER['epuid'])){// || empty($_SERVER['displayName']) ){
-                die('Did not recieve required attributes from the EGI Proxy Identity Provider to complete authentication, please contact gocdb-admins');
+                die('Did not receive required attributes from the EGI Proxy Identity Provider to complete authentication, please contact gocdb-admins');
             }
             if(empty($_SERVER['assurance'])){
-                die('Did not recieve the required assurance attribute from the EGI Proxy IdP, please contact gocdb-admins');
+                die('Did not receive the required assurance attribute from the EGI Proxy IdP, please contact gocdb-admins');
             }
             if($_SERVER['assurance'] != 'https://aai.egi.eu/LoA#Substantial'){
                  $HTML = '<ul><li>You authenticated to the EGI Identity Provider using a method that provides an inadequate Level of Assurance for GOCDB (weak user verification).</li><li>Login is required with an assurance level of [Substantial].</li><li>To gain access, you will need to login to the Proxy IdP using a scheme that provides [LoA#Substantial].</li><li>Please logout or restart your browser and attempt to login again.</li></ul>';
