@@ -513,6 +513,7 @@ $extensionProperties = $site->getSiteProperties();
             <th>To</th>
         </tr>
         </thead>
+        <tbody>
         <?php
         //$num = 2;
         foreach ($downtimes as $dt) {
@@ -531,6 +532,7 @@ $extensionProperties = $site->getSiteProperties();
         //if ($num == 1) { $num = 2; } else { $num = 1; }
         }
         ?>
+        </tbody>
         </table>
 
     <!--  only show this link if we're in read / write mode -->
