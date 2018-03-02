@@ -152,14 +152,14 @@ class GetSiteCountPerCountry implements IPIQuery, IPIQueryRenderable{
         $this->countries = $this->query[1]->execute();
         return $this->sites;
     }
-    
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -171,7 +171,7 @@ class GetSiteCountPerCountry implements IPIQuery, IPIQueryRenderable{
         }
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -182,7 +182,7 @@ class GetSiteCountPerCountry implements IPIQuery, IPIQueryRenderable{
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}

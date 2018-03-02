@@ -45,11 +45,11 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     private $roleAuthorisationService;
     private $baseUrl;
     private $urlAuthority;
-    
+
     private $maxResults = 500; //default page size, set via setPageSize(int);
     private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
     private $isPaging = false;   // is true if default paging is t OR if a cursor URL param has been specified for paging.
-     
+
     // following members are needed for paging
     private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
     private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter
@@ -57,17 +57,17 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     private $resultSetSize=0; // used to build the <count> HATEOAS link
     private $lastCursorId=null;  // Used to build the <next> page HATEOAS link
     private $firstCursorId=null; // Used to build the <prev> page HATEOAS link
-    
-    
+
+
     /** Constructor takes entity manager which is then used by the
      *  query builder
      *
      * @param EntityManager $em
      * @param $roleAuthorisationService org\gocdb\services\RoleActionAuthorisationService
      * @param string $baseUrl The base url string to prefix to urls generated in the query output.
-     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
-     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
-     *  (e.g. for HATEOAS links/paging). Should not end with '/'. 
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port')
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'.
      */
     public function __construct($em, $roleAuthorisationService, $baseUrl = 'https://goc.egi.eu/portal', $urlAuthority='') {
         $this->em = $em;
@@ -89,8 +89,8 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             'dnlike',
             'forename',
             'surname',
-            'roletype', 
-            'next_cursor', 
+            'roletype',
+            'next_cursor',
             'prev_cursor'
         );
 
@@ -105,12 +105,12 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $parameters = $this->validParams;
         $binds = array();
         $bc = -1;
-        
+
         $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters);
         $this->prev_cursor = $cursorParams['prev_cursor'];
         $this->next_cursor = $cursorParams['next_cursor'];
         $this->isPaging = $cursorParams['isPaging'];
-        
+
         // if we are enforcing paging, force isPaging to true
         if($this->defaultPaging){
             $this->isPaging = true;
@@ -123,11 +123,11 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
                 ->from('User', 'u')
                 ->leftJoin('u.roles', 'r')
                 //->orderBy('u.id', 'ASC') // oldest first
-        ; 
-        
+        ;
+
         // Order by ASC (oldest first: 1, 2, 3, 4)
         $this->direction = 'ASC';
-        
+
         // Cursor where clause:
         // Select rows *FROM* the current cursor position
         // by selecting rows either ABOVE or BELOW the current cursor position
@@ -154,9 +154,9 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             // Sets the maximum number of results to retrieve (the "limit")
             $qb->setMaxResults($this->maxResults);
         }
-        
+
         $qb->orderBy('u.id', $this->direction);
-                
+
 
         if (isset($parameters ['roletype']) && isset($parameters ['roletypeAND'])) {
             echo '<error>Only use either roletype or roletypeAND not both</error>';
@@ -221,15 +221,15 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         return $this->users;
     }
 
-    
-    
+
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -241,7 +241,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         }
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -252,7 +252,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -263,7 +263,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $array[] = ('GOCDB_XML');
         return $array;
     }
-    
+
     /** Returns proprietary GocDB rendering of the user data
      *  in an XML String
      * @return String
@@ -272,7 +272,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $helpers = $this->helpers;
         $users = $this->users;
         $xml = new \SimpleXMLElement("<results />");
-        
+
         // Calculate and add paging info
         if ($this->isPaging) {
             $metaXml = $xml->addChild("meta");
@@ -280,7 +280,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             $metaXml->addChild("count", $this->resultSetSize);
             $metaXml->addChild("max_page_size", $this->maxResults);
         }
-        
+
         foreach ($users as $user) {
             $xmlUser = $xml->addChild('EGEE_USER');
             $xmlUser->addAttribute("ID", $user->getId() . "G0");
@@ -389,7 +389,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     private function cleanDN($dn) {
         return trim(str_replace(' ', '%20', $dn));
     }
-    
+
     /**
      * This query does not page by default.
      * If set to true, the query will return the first page of results even if the
@@ -400,7 +400,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     public function getDefaultPaging(){
         return $this->defaultPaging;
     }
-    
+
     /**
      * @param boolean $pageTrueOrFalse Set if this query pages by default
      */
@@ -410,7 +410,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         }
         $this->defaultPaging = $pageTrueOrFalse;
     }
-    
+
     /**
      * Set the default page size (100 by default if not set)
      * @return int The page size (number of results per page)
@@ -418,7 +418,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     public function getPageSize(){
         return $this->maxResults;
     }
-    
+
     /**
      * Set the size of a single page.
      * @param int $pageSize
@@ -429,7 +429,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         }
         $this->maxResults = $pageSize;
     }
-    
+
     /**
      * See inteface doc.
      * {@inheritDoc}

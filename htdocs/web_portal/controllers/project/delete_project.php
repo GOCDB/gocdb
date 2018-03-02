@@ -23,7 +23,7 @@ require_once __DIR__ . '/../utils.php';
 
 function delete_project(){
     die("Safguard disabled delete - remove this line to enable in [".__FILE__."]");
-    
+
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
         throw new Exception("An id must be specified");
     }
