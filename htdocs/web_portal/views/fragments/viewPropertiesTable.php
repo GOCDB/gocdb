@@ -9,32 +9,36 @@
     </a>
     <table id="extensionPropsTable" class="table table-striped table-condensed tablesorter">
         <thead>
-        <tr>
-            <th>Name</th>
-            <th>Value</th>
-            <?php if(!$params['portalIsReadOnly']): ?>
-                <th>Edit</th>
-                <th><input type="checkbox" id="selectAllProps"/> Select All</th>
-            <?php endif; ?>
-        </tr>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <?php if(!$params['portalIsReadOnly']) { ?>
+                    <th>Edit</th>
+                    <th><input type="checkbox" id="selectAllProps"/> Select All</th>
+                <?php } ?>
+            </tr>
         </thead>
         <tbody>
-        <?php
-        foreach($extensionProperties as $prop) {
-            ?>
-
-            <tr>
-                <td style="width: 35%;"><?php xecho($prop->getKeyName()); ?></td>
-                <td style="width: 35%;"><?php xecho($prop->getKeyValue()); ?></td>
-                <?php if(!$params['portalIsReadOnly']): ?>
-                    <td style="width: 10%;"><a href="index.php?Page_Type=<?php echo $editPropertyPage;?>&amp;propertyid=<?php echo $prop->getId();?>&amp;id=<?php echo $parent->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-                    <td style="width: 10%;"><input type='checkbox' class="propCheckBox" form="Modify_Properties_Form" name='selectedPropIDs[]' value="<?php echo $prop->getId();?>" autocomplete="off"/></td>
-
-                <?php endif; ?>
-            </tr>
             <?php
-        }
-        ?>
+            foreach($extensionProperties as $prop) {
+            ?>
+                <tr>
+                    <td style="width: 35%;"><?php xecho($prop->getKeyName()); ?></td>
+                    <td style="width: 35%;"><?php xecho($prop->getKeyValue()); ?></td>
+                    <?php if(!$params['portalIsReadOnly']): ?>
+                        <td style="width: 10%;">
+                            <a href="index.php?Page_Type=<?php echo $editPropertyPage;?>&amp;propertyid=<?php echo $prop->getId();?>&amp;id=<?php echo $parent->getId();?>">
+                                <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
+                            </a>
+                        </td>
+                        <td style="width: 10%;">
+                            <input type='checkbox' class="propCheckBox" form="Modify_Properties_Form" name='selectedPropIDs[]' value="<?php echo $prop->getId();?>" autocomplete="off"/>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php
+            }
+            ?>
         </tbody>
     </table>
     <!--  only show this link if we're in read / write mode -->

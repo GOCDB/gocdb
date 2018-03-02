@@ -343,33 +343,30 @@ $configService = \Factory::getConfigService();
         <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
 
         <table id="downtimesTable"  class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-                <th>Description</th>
-                <th>From</th>
-                <th>To</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            //$num = 2;
-            foreach($params['Downtimes'] as $d) {
-            ?>
-
-            <tr>
-                <td>
-                    <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
-                        <?php xecho($d->getDescription()) ?>
-                    </a>
-                </td>
-                <td><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
-                <td><?php echo $d->getEndDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
-            </tr>
-            <?php
-                //if($num == 1) { $num = 2; } else { $num = 1; }
-            }
-            ?>
-        </tbody>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>From</th>
+                    <th>To</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach($params['Downtimes'] as $d) {
+                ?>
+                    <tr>
+                        <td>
+                            <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
+                                <?php xecho($d->getDescription()) ?>
+                            </a>
+                        </td>
+                        <td><?php echo $d->getStartDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
+                        <td><?php echo $d->getEndDate()->format('Y-m-d H:i'/*$d::DATE_FORMAT*/) ?></td>
+                    </tr>
+                <?php
+                }
+                ?>
+            </tbody>
         </table>
 
         <!--  only show this link if we're in read / write mode -->

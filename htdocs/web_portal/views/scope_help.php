@@ -80,23 +80,22 @@
                         <th>Reserved?</th>
                     </tr>
                 </thead>
-
-               <?php foreach($params['optionalScopes'] as $scope){ ?>
-                <tr>
-                    <td><?php xecho($scope->getName());?></td>
-                    <td><?php xecho($scope->getDescription()); ?></td>
-                    <td>&cross;</td>
-                </tr>
-               <?php } ?>
-
-               <?php foreach($params['reservedScopes'] as $scope){ ?>
-                <tr>
-                    <td><?php xecho($scope->getName());?></td>
-                    <td><?php xecho($scope->getDescription()); ?></td>
-                    <td>&check;</td>
-                </tr>
-               <?php } ?>
-
+                <tbody>
+                <?php foreach($params['optionalScopes'] as $scope){ ?>
+                    <tr>
+                        <td><?php xecho($scope->getName());?></td>
+                        <td><?php xecho($scope->getDescription()); ?></td>
+                        <td>&cross;</td>
+                    </tr>
+                <?php } ?>
+                <?php foreach($params['reservedScopes'] as $scope){ ?>
+                    <tr>
+                        <td><?php xecho($scope->getName());?></td>
+                        <td><?php xecho($scope->getDescription()); ?></td>
+                        <td>&check;</td>
+                    </tr>
+                <?php } ?>
+                </tbody>
             </table>
         </div>
     </div>

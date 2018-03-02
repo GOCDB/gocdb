@@ -23,34 +23,31 @@
             <?php echo sizeof($params['Projects']) ?> Project<?php if(sizeof($params['Projects']) != 1) echo "s"?>
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
-
         <table id="selectedProjTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-            </tr>
-        </thead>
-            <?php
-            //$num = 2;
-            foreach($params['Projects'] as $project) {
-            ?>
-            <tr>
-                <td>
-            <a href="index.php?Page_Type=Project&amp;id=<?php echo $project->getId()?>">
-            <?php xecho($project->getName()); ?>
-            </a>
-                </td>
-
-                <td>
-                    <?php xecho($project->getDescription()); ?>
-                </td>
-
-            </tr>
-            <?php
-                //if($num == 1) { $num = 2; } else { $num = 1; }
-                } // End of the foreach loop iterating over Projs
-            ?>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach($params['Projects'] as $project) {
+                ?>
+                    <tr>
+                        <td>
+                            <a href="index.php?Page_Type=Project&amp;id=<?php echo $project->getId()?>">
+                                <?php xecho($project->getName()); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php xecho($project->getDescription()); ?>
+                        </td>
+                    </tr>
+                <?php
+                } // End of the foreach loop iterating over Projects
+                ?>
+            </tbody>
         </table>
     </div>
 </div>

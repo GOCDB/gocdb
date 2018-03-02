@@ -50,34 +50,32 @@
 
         <?php if ($ngiCount != 0): ?>
             <table id="ngisTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Description</th>
-            </tr>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Description</th>
+                    </tr>
                 </thead>
-        <tbody>
-                <?php
-                //$num = 2;
-                foreach($params['NGIs'] as $ngi) {
-                ?>
-                <tr>
-            <td>
-            <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg">
-            </td>
-                    <td>
-            <a href="index.php?Page_Type=NGI&amp;id=<?php echo $ngi->getId() ?>">
-                <?php xecho($ngi->getName()); ?>
-            </a>
-                    </td>
-                    <td><?php xecho($ngi->getDescription()) ?></td>
-                </tr>
-                <?php
-                    //if($num == 1) { $num = 2; } else { $num = 1; }
-                } // End of the foreach loop iterating over SEs
-                ?>
-        </tbody>
+                <tbody>
+                    <?php
+                    foreach($params['NGIs'] as $ngi) {
+                    ?>
+                        <tr>
+                            <td>
+                                <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg">
+                            </td>
+                            <td>
+                                <a href="index.php?Page_Type=NGI&amp;id=<?php echo $ngi->getId() ?>"><?php xecho($ngi->getName()); ?></a>
+                            </td>
+                            <td>
+                                <?php xecho($ngi->getDescription()) ?>
+                            </td>
+                        </tr>
+                    <?php
+                    } // End of the foreach loop iterating over NGIs
+                    ?>
+                </tbody>
             </table>
 
         <?php else: echo "<br><br>&nbsp &nbsp"; endif; ?>
@@ -117,38 +115,41 @@
         <?php if (sizeof($params['Roles'])>0): ?>
 
             <table id="usersTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-            <th></th>
-            <th>Name</th>
-            <th>Role</th>
-            </tr>
-        </thead>
-        <tbody>
-                <?php
-                    $num = 2;
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Role</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
                     foreach($params['Roles'] as $role) {
-                ?>
-                <tr>
-                    <td>
-            <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
-            </td>
-            <td>
-            <?php if($params['authenticated']){ ?>
-            <a  href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
-                <?php echo $role->getUser()->getFullName()?>
-            </a>
-            <?php } else {echo 'PROTECTED'; } ?>
-                    </td>
-                    <td>
-                        <?php if($params['authenticated']) { xecho($role->getRoleType()->getName()); } else {echo('PROTECTED'); } ?>
-                    </td>
-                </tr>
-                <?php
-                    //if($num == 1) { $num = 2; } else { $num = 1; }
-                    } // End of the foreach loop iterating over user roles
-                ?>
-        </tbody>
+                    ?>
+                        <tr>
+                            <td>
+                                <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+                            </td>
+                            <td>
+                                <?php
+                                if($params['authenticated']) {
+                                ?>
+                                    <a href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
+                                        <?php echo $role->getUser()->getFullName()?>
+                                    </a>
+                                <?php
+                                } else {
+                                    echo 'PROTECTED';
+                                } ?>
+                            </td>
+                            <td>
+                                <?php if($params['authenticated']) { xecho($role->getRoleType()->getName()); } else {echo('PROTECTED'); } ?>
+                            </td>
+                        </tr>
+                        <?php
+                            } // End of the foreach loop iterating over user roles
+                        ?>
+                </tbody>
             </table>
         <?php else: echo "<br><br>&nbsp &nbsp There are currently no users with roles over this project<br>"; endif; ?>
         <!-- don't allow role requests in read only mode -->
@@ -169,47 +170,46 @@
             <?php echo sizeof($params['Sites']) ?> Site<?php if(sizeof($params['Sites']) != 1) echo "s"?>
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="decoration" />
-        <?php if(sizeof($params['Sites']) > 0): ?>
-
+        <?php if (sizeof($params['Sites']) > 0) { ?>
             <table id="sitesTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-            <th>Name</th>
-            <th>Certification Status</th>
-            <th>NGI</th>
-            <th>Production Status</th>
-            </tr>
-        </thead>
-                <?php
-                $num = 2;
-                foreach($params['Sites'] as $site) {
-                ?>
-                <tr>
-                    <td>
-            <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId() ?>">
-                <?php xecho($site->getShortName()); ?>
-            </a>
-                    </td>
-
-                    <td>
-                        <?php xecho($site->getCertificationStatus()->getName()) ?>
-                    </td>
-
-                    <td>
-                        <a href="index.php?Page_Type=NGI&amp;id=<?php echo $site->getNGI()->getId() ?>">
-                            <?php xecho($site->getNGI()->getName()) ?>
-                        </a>
-                    </td>
-
-                    <td>
-                        <?php xecho($site->getInfrastructure()->getName()) ?>
-                    </td>
-                </tr>
-                <?php
-        //if($num == 1) { $num = 2; } else { $num = 1; }
-        }?>
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Certification Status</th>
+                        <th>NGI</th>
+                        <th>Production Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach($params['Sites'] as $site) {
+                    ?>
+                        <tr>
+                            <td>
+                                <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId() ?>">
+                                    <?php xecho($site->getShortName()); ?>
+                                </a>
+                            </td>
+                            <td>
+                                <?php xecho($site->getCertificationStatus()->getName()) ?>
+                            </td>
+                            <td>
+                                <a href="index.php?Page_Type=NGI&amp;id=<?php echo $site->getNGI()->getId() ?>">
+                                    <?php xecho($site->getNGI()->getName()) ?>
+                                </a>
+                            </td>
+                            <td>
+                                <?php xecho($site->getInfrastructure()->getName()) ?>
+                            </td>
+                        </tr>
+                    <?php
+                    } // End of the foreach loop iterating over sites
+                    ?>
+                </tbody>
             </table>
-        <?php endif; // End of the foreach loop iterating over sites?>
+        <?php
+        } // End of if checking that there are Sites to iterate over
+        ?>
 
     <!-- Show RoleActionRecords if user has permissions over this object -->
     <?php if ($params['ShowEdit']){

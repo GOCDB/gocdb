@@ -25,34 +25,34 @@
             </thead>
             <tbody>
                 <?php
-                    foreach ($params['RoleActionRecords'] as $ra) {
-                        ?>
-                        <tr>
-                            <td>
-                                <?php xecho($ra->getRoleTypeName()); ?>
-                            </td>
-                            <td>
-                                <a href="index.php?Page_Type=User&amp;id=<?php echo $ra->getRoleUserId(); ?>">
-                                    <?php xecho($ra->getRoleUserPrinciple()); ?>
-                                </a>
-                            </td>
-                            <td>
-                                <?php echo($ra->getActionDate()->format('Y-m-d H:i:s')); ?>
-                            </td>
-                            <td>
-                                <?php xecho($ra->getRolePreStatus()); ?>
-                            </td>
-                            <td>
-                                <?php xecho($ra->getRoleNewStatus()); ?>
-                            </td>
-                            <td>
-                                <a href="index.php?Page_Type=User&amp;id=<?php echo $ra->getUpdatedByUserId(); ?>">
-                                    <?php xecho($ra->getUpdatedByUserPrinciple()); ?>
-                                </a>
-                            </td>
-                        </tr>
-                        <?php
-                    } // End of the foreach loop iterating over RoleActions
+                foreach ($params['RoleActionRecords'] as $ra) {
+                ?>
+                    <tr>
+                        <td>
+                            <?php xecho($ra->getRoleTypeName()); ?>
+                        </td>
+                        <td>
+                            <a href="index.php?Page_Type=User&amp;id=<?php echo $ra->getRoleUserId(); ?>">
+                                <?php xecho($ra->getRoleUserPrinciple()); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php echo($ra->getActionDate()->format('Y-m-d H:i:s')); ?>
+                        </td>
+                        <td>
+                            <?php xecho($ra->getRolePreStatus()); ?>
+                        </td>
+                        <td>
+                            <?php xecho($ra->getRoleNewStatus()); ?>
+                        </td>
+                        <td>
+                            <a href="index.php?Page_Type=User&amp;id=<?php echo $ra->getUpdatedByUserId(); ?>">
+                                <?php xecho($ra->getUpdatedByUserPrinciple()); ?>
+                            </a>
+                        </td>
+                    </tr>
+                <?php
+                } // End of the foreach loop iterating over RoleActionRecords
                 ?>
             </tbody>
         </table>

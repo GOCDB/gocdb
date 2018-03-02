@@ -48,50 +48,44 @@
      */ ?>
 
     <div class="listContainer">
-    <div>
-
-        <?php
-        $roleTypeActionTarget_byObjectType = $params['roleTypeActionTarget_byObjectType'];
-        $inc = 0;
-        foreach ($roleTypeActionTarget_byObjectType as $over => $roleActionTargetArray) {
-        ++$inc;
-        ?>
-        <h3><?php echo $over; ?> Roles</h3>
-            <table id="roleActionMapTable<?php echo($inc)?>" class="table table-striped table-condensed tablesorter">
-            <thead>
-                <tr>
-                <th>RoleType</th>
-                <th>Action</th>
-                <th>On (Target of Action)</th>
-                </tr>
-            </thead>
-            <tbody>
-            <?php foreach ($roleActionTargetArray as $roleActionTarget) { ?>
-                <tr>
-                <td><?php echo $roleActionTarget[0] ?></td>
-                <td><?php echo $roleActionTarget[1] ?></td>
-                <td><?php echo $roleActionTarget[2] ?></td>
-                </tr>
+        <div>
+            <?php
+            $roleTypeActionTarget_byObjectType = $params['roleTypeActionTarget_byObjectType'];
+            $inc = 0;
+            foreach ($roleTypeActionTarget_byObjectType as $over => $roleActionTargetArray) {
+                ++$inc;
+            ?>
+                <h3><?php echo $over; ?> Roles</h3>
+                <table id="roleActionMapTable<?php echo($inc)?>" class="table table-striped table-condensed tablesorter">
+                    <thead>
+                        <tr>
+                            <th>RoleType</th>
+                            <th>Action</th>
+                            <th>On (Target of Action)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($roleActionTargetArray as $roleActionTarget) { ?>
+                            <tr>
+                                <td><?php echo $roleActionTarget[0] ?></td>
+                                <td><?php echo $roleActionTarget[1] ?></td>
+                                <td><?php echo $roleActionTarget[2] ?></td>
+                            </tr>
+                        <?php } ?>
+                    </tbody>
+                </table>
             <?php } ?>
-            </tbody>
-            </table>
-        <?php } ?>
-
+        </div>
     </div>
-
-    </div>
-
 </div>
 
 <script>
    $(document).ready(function()
     {
         $("#roleActionMapTable1").tablesorter();
-     $("#roleActionMapTable2").tablesorter();
-      $("#roleActionMapTable3").tablesorter();
-       $("#roleActionMapTable4").tablesorter();
+        $("#roleActionMapTable2").tablesorter();
+        $("#roleActionMapTable3").tablesorter();
+        $("#roleActionMapTable4").tablesorter();
     }
 );
 </script>
-
-
