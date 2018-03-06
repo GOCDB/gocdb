@@ -178,7 +178,7 @@
             ?>
             <tr>
                 <td>
-                <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
+                <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
                     <?php xecho($se->getHostName()); ?>
                 </a>
                 </td>
@@ -202,7 +202,7 @@
                 </td>
 
                 <td>
-                <a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId(); ?>">
+                <a href="index.php?Page_Type=Site&amp;id=<?php echo $se->getParentSite()->getId(); ?>">
                     <?php xecho($se->getParentSite()->getShortName()); ?>
                 </a>
                 </td>

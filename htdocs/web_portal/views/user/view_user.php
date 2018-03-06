@@ -18,7 +18,7 @@
     <div style="float: right;">
         <?php if($params['ShowEdit']):?>
             <div style="float: right; margin-left: 2em;">
-                <a href="index.php?Page_Type=Edit_User&id=<?php echo $params['user']->getId()?>">
+                <a href="index.php?Page_Type=Edit_User&amp;id=<?php echo $params['user']->getId()?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
@@ -105,7 +105,7 @@
                     <tr class="site_table_row_2">
                         <td class="site_table">Home Site</td>
                         <td class="site_table">
-                            <a href="index.php?Page_Type=Site&id=<?php echo $params['user']->getHomeSite()->getId()?>">
+                            <a href="index.php?Page_Type=Site&amp;id=<?php echo $params['user']->getHomeSite()->getId()?>">
                                 <?php xecho($params['user']->getHomeSite()->getShortName()) ?>
                             </a>
                         </td>
@@ -142,7 +142,7 @@
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 1em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
         Roles in Project
-        <a href="index.php?Page_Type=Project&id=<?php echo $projId ?>">
+        <a href="index.php?Page_Type=Project&amp;id=<?php echo $projId ?>">
         [<?php xecho($projName) ?>]
         </a>
     </span>

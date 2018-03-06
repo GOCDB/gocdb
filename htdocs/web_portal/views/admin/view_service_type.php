@@ -21,7 +21,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
     <?php if(!$portalIsReadOnly):?>
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
-                <a href="index.php?Page_Type=Admin_Edit_Service_Type&id=<?php echo $id ?>">
+                <a href="index.php?Page_Type=Admin_Edit_Service_Type&amp;id=<?php echo $id ?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
@@ -71,7 +71,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                             <div style="background-color: inherit;">
                                 <img src="<?php echo \GocContextPath::getPath()?>img/server.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                                 <span style="vertical-align: middle;">
-                                    <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
+                                    <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
                                         <?php xecho($se->getHostname());?> (<?php xecho($se->getServiceType()->getName());?>)
                                     </a>
                                 </span>

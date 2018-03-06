@@ -4,7 +4,7 @@
     <?php xecho($params['Name'])?> has been successfully added as a new project.
     <br />
     <br />
-    <a href="index.php?Page_Type=Project&id=<?php echo $params['ID'] ?>">
+    <a href="index.php?Page_Type=Project&amp;id=<?php echo $params['ID'] ?>">
      Click here</a> to view the <?php xecho($params['Name'])?> project and add NGIs
      to it.
 

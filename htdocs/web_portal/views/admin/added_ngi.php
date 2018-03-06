@@ -1,7 +1,7 @@
 <div class="rightPageContainer">
     <h1 class="Success">Success</h1><br />
     <br />
-    <a href="index.php?Page_Type=NGI&id=<?php echo $params['ID'] ?>">
+    <a href="index.php?Page_Type=NGI&amp;id=<?php echo $params['ID'] ?>">
     <?php xecho($params['Name'])?>
     </a> has been successfully added as a new NGI.
     <br />

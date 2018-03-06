@@ -30,7 +30,7 @@
             <?php endif; ?>
             <?php if($params['ShowEdit']):?>
                 <div style="float: right; margin-left: 2em;">
-                    <a href="index.php?Page_Type=Edit_NGI&id=<?php echo $params['ngi']->getId() ?>">
+                    <a href="index.php?Page_Type=Edit_NGI&amp;id=<?php echo $params['ngi']->getId() ?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                         <br />
                         <br />
@@ -104,7 +104,7 @@
                         foreach($params['Projects'] as $project) { ?>
                         <tr class="site_table_row_<?php echo $num ?>">
                             <td class="site_table">
-                                <a href="index.php?Page_Type=Project&id=<?php echo $project->getId()?>"><?php xecho($project->getName())?></a>
+                                <a href="index.php?Page_Type=Project&amp;id=<?php echo $project->getId()?>"><?php xecho($project->getName())?></a>
                             </td>
                         </tr>
                         <?php if($num == 1) { $num = 2; } else { $num = 1; } } ?>
@@ -165,7 +165,7 @@
             ?>
                 <tr>
                     <td>
-            <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+            <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId() ?>">
                 <?php xecho($site->getShortName()); ?>
             </a>
                     </td>
@@ -229,7 +229,7 @@
                 <tr>
                     <td>
             <?php if($params['authenticated']) { ?>
-            <a href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId() ?>">
+            <a href="index.php?Page_Type=User&amp;id=<?php echo $role->getUser()->getId() ?>">
               <?php xecho($role->getUser()->getFullName())/*.' ['.$role->getUser()->getId().']' */?>
             </a>
             <?php } else {echo 'PROTECTED'; } ?>
@@ -251,7 +251,7 @@
         <!-- Don't show role request in read only mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['authenticated']):?>
             <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
-                <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['ngi']->getId();?>">
+                <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['ngi']->getId();?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="20px" style="float: left; vertical-align: middle; padding-right: 1em;">
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 0.2em;">
                             Request Role

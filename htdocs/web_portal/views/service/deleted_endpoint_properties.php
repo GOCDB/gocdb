@@ -14,7 +14,7 @@ $endpoint = $params['endpoint'];
         <?php require_once __DIR__ . '/../fragments/propertiesTable.php';?>
 
     <p>
-        <a href="index.php?Page_Type=View_Service_Endpoint&id=<?php echo $endpoint->getId();?>">View endpoint</a>
+        <a href="index.php?Page_Type=View_Service_Endpoint&amp;id=<?php echo $endpoint->getId();?>">View endpoint</a>
     </p>
 
 </div>

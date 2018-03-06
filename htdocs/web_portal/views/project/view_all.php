@@ -37,7 +37,7 @@
             ?>
             <tr>
                 <td>
-            <a href="index.php?Page_Type=Project&id=<?php echo $project->getId()?>">
+            <a href="index.php?Page_Type=Project&amp;id=<?php echo $project->getId()?>">
             <?php xecho($project->getName()); ?>
             </a>
                 </td>

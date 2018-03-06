@@ -33,7 +33,7 @@ $extensionProperties = $site->getSiteProperties();
         <?php endif; ?>
         <?php if ($params['ShowEdit']): ?>
         <div style="float: right; margin-left: 2em;">
-            <a href="index.php?Page_Type=Edit_Site&id=<?php echo($site->getId()) ?>">
+            <a href="index.php?Page_Type=Edit_Site&amp;id=<?php echo($site->getId()) ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/pencil.png" height="25px" style="float: right;" />
             <br />
             <br />
@@ -136,7 +136,7 @@ $extensionProperties = $site->getSiteProperties();
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">NGI/ROC</td><td class="site_table">
-            <a href="index.php?Page_Type=NGI&id=<?php echo($site->getNgi()->getId()) ?>">
+            <a href="index.php?Page_Type=NGI&amp;id=<?php echo($site->getNgi()->getId()) ?>">
                 <?php xecho($site->getNgi()->getName()) ?>
             </a>
             </td>
@@ -152,7 +152,7 @@ $extensionProperties = $site->getSiteProperties();
                 &nbsp;
                 <!--  only show this link if we're in read / write mode -->
                 <?php if (!$portalIsReadOnly): ?>
-                <a href="index.php?Page_Type=Edit_Certification_Status&id=<?php echo($site->getId()) ?>">Change</a>
+                <a href="index.php?Page_Type=Edit_Certification_Status&amp;id=<?php echo($site->getId()) ?>">Change</a>
                 <?php endif; ?>
             <?php } else echo('PROTECTED - Auth Required'); ?>
                     </td>
@@ -357,7 +357,7 @@ $extensionProperties = $site->getSiteProperties();
 
             <tr>
             <td>
-            <a href="index.php?Page_Type=Service&id=<?php echo($se->getId()) ?>">
+            <a href="index.php?Page_Type=Service&amp;id=<?php echo($se->getId()) ?>">
                 <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
             </a>
             </td>
@@ -426,7 +426,7 @@ $extensionProperties = $site->getSiteProperties();
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
         <!-- Add new Service Link -->
-        <a href="index.php?Page_Type=Add_Service&siteId=<?php echo($site->getId()); ?>">
+        <a href="index.php?Page_Type=Add_Service&amp;siteId=<?php echo($site->getId()); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
             Add Service
@@ -489,7 +489,7 @@ $extensionProperties = $site->getSiteProperties();
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['authenticated']): ?>
         <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
-            <a href="index.php?Page_Type=Request_Role&id=<?php echo($site->getId()); ?>">
+            <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo($site->getId()); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                 Request Role
@@ -502,7 +502,7 @@ $extensionProperties = $site->getSiteProperties();
     <!--  Downtimes -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes Affecting <?php xecho($site->getShortName()) ?>'s SEs </span>
-        <a href="index.php?Page_Type=Site_Downtimes&id=<?php echo($site->getId()); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
+        <a href="index.php?Page_Type=Site_Downtimes&amp;id=<?php echo($site->getId()); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
 
         <table id="siteDowntimesTable" class="table table-striped table-condensed tablesorter">
@@ -538,7 +538,7 @@ $extensionProperties = $site->getSiteProperties();
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
         <!-- Add new Downtime Link -->
-        <a href="index.php?Page_Type=Add_Downtime&site=<?php echo($site->getId()); ?>">
+        <a href="index.php?Page_Type=Add_Downtime&amp;site=<?php echo($site->getId()); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
             Add Downtime
@@ -582,14 +582,14 @@ $extensionProperties = $site->getSiteProperties();
                         </td>
                         <td style="width: 10%;"align = "center">
                             <?php if(!$portalIsReadOnly):?>
-                                <a href="index.php?Page_Type=Edit_API_Authentication_Entity&authentityid=<?php echo $authEnt->getId();?>">
+                                <a href="index.php?Page_Type=Edit_API_Authentication_Entity&amp;authentityid=<?php echo $authEnt->getId();?>">
                                     <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
                                 </a>
                             <?php endif;?>
                         </td>
                         <td style="width: 10%;"align = "center">
                             <?php if(!$portalIsReadOnly):?>
-                                <a href="index.php?Page_Type=Delete_API_Authentication_Entity&authentityid=<?php echo $authEnt->getId();?>">
+                                <a href="index.php?Page_Type=Delete_API_Authentication_Entity&amp;authentityid=<?php echo $authEnt->getId();?>">
                                     <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/>
                                 </a>
                             <?php endif;?>
@@ -601,7 +601,7 @@ $extensionProperties = $site->getSiteProperties();
 
             <?php if (!$portalIsReadOnly): ?>
                 <!-- Add new Downtime Link -->
-                <a href="index.php?Page_Type=Add_API_Authentication_Entity&parentid=<?php echo $site->getId()?>">
+                <a href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $site->getId()?>">
                     <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add new API credential

@@ -42,7 +42,7 @@
                     <td class="site_table" style="width: 90%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Admin_Scope&id=<?php echo $scope->getId() ?>">
+                                <a href="index.php?Page_Type=Admin_Scope&amp;id=<?php echo $scope->getId() ?>">
                                     <?php xecho($scope->getName()); ?>
                                 </a>
                             </span>

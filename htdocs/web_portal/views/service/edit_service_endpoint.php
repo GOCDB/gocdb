@@ -11,10 +11,10 @@ $serviceTypes = $params['serviceTypes'];
            id="Edit_Service_Endpoint" name="Edit_Service_Endpoint">
 
         <h1>Edit Endpoint</h1>
-        <a href="index.php?Page_Type=Service&id=<?php echo $service->getId();?>">
+        <a href="index.php?Page_Type=Service&amp;id=<?php echo $service->getId();?>">
             &LeftArrow;View Parent Service</a>
         <br/>
-        <a href="index.php?Page_Type=View_Service_Endpoint&id=<?php echo $endpoint->getId();?>">
+        <a href="index.php?Page_Type=View_Service_Endpoint&amp;id=<?php echo $endpoint->getId();?>">
             &LeftArrow;View Endpoint</a>
         <br />
         <br />

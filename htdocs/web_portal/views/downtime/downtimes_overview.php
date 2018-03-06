@@ -56,7 +56,7 @@ javascript to show and hide these tables.
                     $affectedEPs = count($affectedServices);
                     $parentSite = $affectedServices->first()->getParentSite();
                     $siteTotalEPs = count($parentSite->getServices());
-                    echo $td1 . '<a href="index.php?Page_Type=Downtime&id='.$dt->getId().'"/>'.$dt->getId().'</a>'.$td2;
+                    echo $td1 . '<a href="index.php?Page_Type=Downtime&amp;id='.$dt->getId().'"/>'.$dt->getId().'</a>'.$td2;
 
                     //find affected sites for the site column
                     echo $td1;
@@ -68,7 +68,7 @@ javascript to show and hide these tables.
                     $siteIDArrayUnique = array_unique($siteIDArray, SORT_REGULAR);
                     //print the array
                     foreach($siteIDArrayUnique as $i=>$site){
-                        echo '<a href="index.php?Page_Type=Site&id='.$site[0].'"/>'.$site[1].'</a>';
+                        echo '<a href="index.php?Page_Type=Site&amp;id='.$site[0].'"/>'.$site[1].'</a>';
                         if ($i+1 < count($siteIDArrayUnique))
                             echo ', ';
                     }
@@ -95,8 +95,8 @@ javascript to show and hide these tables.
                     foreach($dt->getServices() as $se){
                         echo '<tr class="site_table_row_2">';
                         $sID = $se->getParentSite()->getId();
-                        echo $td1 . '<a href="index.php?Page_Type=Site&id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
-                        echo $td1 . '<a href="index.php?Page_Type=Service&id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2;
+                        echo $td1 . '<a href="index.php?Page_Type=Site&amp;id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
+                        echo $td1 . '<a href="index.php?Page_Type=Service&amp;id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2;
                         echo $td1 . (($se->getProduction()) ? 'Yes' : 'No') . $td2;
                         echo $td1 . (($se->getMonitored()) ? 'Yes' : 'No') . $td2;
                         echo '</tr>';
@@ -150,7 +150,7 @@ javascript to show and hide these tables.
                     $affectedEPs = count($affectedServices);
                     $parentSite = $affectedServices->first()->getParentSite();
                     $siteTotalEPs = count($parentSite->getServices());
-                    echo $td1 . '<a href="index.php?Page_Type=Downtime&id='.$dt->getId().'"/>'.$dt->getId().'</a>'.$td2;
+                    echo $td1 . '<a href="index.php?Page_Type=Downtime&amp;id='.$dt->getId().'"/>'.$dt->getId().'</a>'.$td2;
 
                     //find affected sites for the site column
                     echo $td1;
@@ -162,7 +162,7 @@ javascript to show and hide these tables.
                     $siteIDArrayUnique = array_unique($siteIDArray, SORT_REGULAR);
                     //print the array
                     foreach($siteIDArrayUnique as $i=>$site){
-                        echo '<a href="index.php?Page_Type=Site&id='.$site[0].'"/>'.$site[1].'</a>';
+                        echo '<a href="index.php?Page_Type=Site&amp;id='.$site[0].'"/>'.$site[1].'</a>';
                         if ($i+1 < count($siteIDArrayUnique))
                             echo ', ';
                     }
@@ -189,8 +189,8 @@ javascript to show and hide these tables.
                     foreach($dt->getServices() as $se){
                         echo '<tr class="site_table_row_2">';
                         $sID = $se->getParentSite()->getId();
-                        echo $td1 . '<a href="index.php?Page_Type=Site&id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
-                        echo $td1 . '<a href="index.php?Page_Type=Service&id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2;
+                        echo $td1 . '<a href="index.php?Page_Type=Site&amp;id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
+                        echo $td1 . '<a href="index.php?Page_Type=Service&amp;id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2;
                         echo $td1 . (($se->getProduction()) ? 'Yes' : 'No') . $td2;
                         echo $td1 . (($se->getMonitored()) ? 'Yes' : 'No') . $td2;
                         echo '</tr>';

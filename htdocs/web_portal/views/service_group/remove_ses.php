@@ -62,7 +62,7 @@ $sg = $params['sg'];
                         <div style="background-color: inherit;">
                             <img src="<?php echo \GocContextPath::getPath()?>img/server.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
+                                <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
                                     <?php
                                         xecho($se->getServiceType()->getName());
                                         echo " - ";
@@ -76,7 +76,7 @@ $sg = $params['sg'];
                         <?php xecho($se->getDescription()); ?>
                     </td>
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId() ?>">
+                        <a href="index.php?Page_Type=Site&amp;id=<?php echo $se->getParentSite()->getId() ?>">
                             <?php xecho($se->getParentSite()->getShortName()) ?>
                         </a>
                     </td>
@@ -89,7 +89,7 @@ $sg = $params['sg'];
         </div>
         <span class="leftFloat topMargin">
             Return to
-            <a href="index.php?Page_Type=Service_Group&id=<?php echo $sg->getId() ?>">
+            <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $sg->getId() ?>">
                  <?php xecho($sg->getName()) ?>
             </a>
         </span>

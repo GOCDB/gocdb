@@ -93,7 +93,7 @@
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
+                                <a href="index.php?Page_Type=User&amp;id=<?php echo $user->getId() ?>">
                                     <?php echo xssafe($user->getSurname()).", ".xssafe($user->getForename()); ?>
                                 </a>
                             </span>
@@ -103,7 +103,7 @@
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Admin_Edit_User_DN&id=<?php echo $user->getId() ?>">
+                                <a href="index.php?Page_Type=Admin_Edit_User_DN&amp;id=<?php echo $user->getId() ?>">
                                     <?php xecho($user->getCertificateDn()); ?>
                                 </a>
                             </span>
@@ -111,7 +111,7 @@
                     </td>
 
                     <td class="site_table">
-                        <!--<a href="index.php?Page_Type=Admin_Change_User_Admin_Status&id=<?php echo $user->getId() ?>">-->
+                        <!--<a href="index.php?Page_Type=Admin_Change_User_Admin_Status&amp;id=<?php echo $user->getId() ?>">-->
                             <?php
                                 switch($user->isAdmin()) {
                                     case true:

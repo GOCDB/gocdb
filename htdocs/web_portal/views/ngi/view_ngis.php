@@ -68,7 +68,7 @@
             <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">
             </td>
             <td>
-            <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
+            <a href="index.php?Page_Type=NGI&amp;id=<?php echo $ngi->getId() ?>">
                 <?php xecho($ngi->getName()); ?>
             </a>
                     </td>

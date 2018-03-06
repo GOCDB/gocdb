@@ -9,7 +9,7 @@ $services = $params['Services']
     <h1 class="Success">Delete <?php xecho($siteName); ?>?</h1><br />
     <p>
         Are you sure you want to delete the site '
-        <a href="index.php?Page_Type=Site&id=<?php echo $siteId;?>">
+        <a href="index.php?Page_Type=Site&amp;id=<?php echo $siteId;?>">
             <?php xecho($siteName);?>
         </a>'? Deleting sites is a functionality reserved for GOCDB administrators.
     </p>
@@ -18,7 +18,7 @@ $services = $params['Services']
         <?php
             foreach($services as $service){
                 echo "<br />"
-                    . "<a href=\"index.php?Page_Type=Service&id=" . $service->getId() ."\">"
+                    . "<a href=\"index.php?Page_Type=Service&amp;id=" . $service->getId() ."\">"
                     .  $service->getHostName() . " (" . $service->getServiceType()->getName() . ")"
                     . "</a> ";
             }
