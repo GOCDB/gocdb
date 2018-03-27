@@ -79,7 +79,7 @@ function submit() {
      $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
      die("Safguard disabled delete - remove this line to enable in [".__FILE__."]");
-     
+
      //remove ngi
      try {
        \Factory::getNgiService()->deleteNgi($ngi, $user);

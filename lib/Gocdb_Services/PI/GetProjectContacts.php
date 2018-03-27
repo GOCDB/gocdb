@@ -2,13 +2,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at: 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -26,7 +26,7 @@ require_once __DIR__ . '/IPIQueryRenderable.php';
 /**
  * Return an XML document that encodes the project contacts selected from the DB with optional cursor paging.
  * Supported params:
- * 'project', 'next_cursor', 'prev_cursor' 
+ * 'project', 'next_cursor', 'prev_cursor'
  *
  * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author James McCarthy
@@ -39,13 +39,13 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
     private $selectedRenderingStyle = 'GOCDB_XML';
     private $helpers;
     private $projects;
-    
+
     private $urlAuthority;
-    
+
     private $maxResults = 500; //default page size, set via setPageSize(int);
     private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
     private $isPaging = false;   // is true if default paging is t OR if a cursor URL param has been specified for paging.
-     
+
     // following members are needed for paging
     private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
     private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter
@@ -54,18 +54,18 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
     private $lastCursorId=null;  // Used to build the <next> page HATEOAS link
     private $firstCursorId=null; // Used to build the <prev> page HATEOAS link
 
-    /** 
+    /**
      * Constructor takes entity manager which is then used by the query builder
      *
      * @param EntityManager $em
-     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
-     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
-     *  (e.g. for HATEOAS links/paging). Should not end with '/'. 
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port')
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'.
      */
     public function __construct($em, $urlAuthority=''){
         $this->em = $em;
         $this->helpers=new Helpers();
-        $this->urlAuthority = $urlAuthority; 
+        $this->urlAuthority = $urlAuthority;
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -76,8 +76,8 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
 
         // Define supported parameters and validate given params (die if an unsupported param is given)
         $supportedQueryParams = array (
-                'project', 
-                'next_cursor', 
+                'project',
+                'next_cursor',
                 'prev_cursor'
         );
 
@@ -92,12 +92,12 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
         $parameters = $this->validParams;
         $binds= array();
         $bc=-1;
-        
+
         $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters);
         $this->prev_cursor = $cursorParams['prev_cursor'];
         $this->next_cursor = $cursorParams['next_cursor'];
         $this->isPaging = $cursorParams['isPaging'];
-        
+
         // if we are enforcing paging, force isPaging to true
         if($this->defaultPaging){
             $this->isPaging = true;
@@ -107,10 +107,10 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
 
         $qb->select('p')
            ->from('project', 'p');
-        
+
        // Order by ASC (oldest first: 1, 2, 3, 4)
        $this->direction = 'ASC';
-       
+
        // Cursor where clause:
        // Select rows *FROM* the current cursor position
        // by selecting rows either ABOVE or BELOW the current cursor position
@@ -137,7 +137,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
            // Sets the maximum number of results to retrieve (the "limit")
            $qb->setMaxResults($this->maxResults);
        }
-       
+
        $qb->orderBy('p.id', $this->direction);
 
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
@@ -174,15 +174,15 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
         $this->lastCursorId = $cursorPageResults['lastCursorId'];
         return $this->projects;
     }
-    
-    
+
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -194,7 +194,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
         }
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -205,7 +205,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -228,7 +228,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
         $projects = $this->projects;
 
         $xml = new \SimpleXMLElement ( "<results />" );
-        
+
         // Calculate and add paging info
         if ($this->isPaging) {
             $metaXml = $xml->addChild("meta");
@@ -239,7 +239,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
 
         foreach($projects as $project){
             $xmlProjUser = $xml->addChild('Project');
-            $xmlProjUser->addAttribute("ID", $project->getId()); 
+            $xmlProjUser->addAttribute("ID", $project->getId());
             $xmlProjUser->addAttribute('NAME', $project->getName());
 
             foreach($project->getRoles() as $role){
@@ -278,7 +278,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
         return $xmlString;
     }
 
-    
+
     /**
      * This query does not page by default.
      * If set to true, the query will return the first page of results even if the
@@ -289,7 +289,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
     public function getDefaultPaging(){
         return $this->defaultPaging;
     }
-    
+
     /**
      * @param boolean $pageTrueOrFalse Set if this query pages by default
      */
@@ -299,7 +299,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
         }
         $this->defaultPaging = $pageTrueOrFalse;
     }
-    
+
     /**
      * Set the default page size (100 by default if not set)
      * @return int The page size (number of results per page)
@@ -307,7 +307,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
     public function getPageSize(){
         return $this->maxResults;
     }
-    
+
     /**
      * Set the size of a single page.
      * @param int $pageSize
@@ -318,7 +318,7 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
         }
         $this->maxResults = $pageSize;
     }
-    
+
     /**
      * See inteface doc.
      * {@inheritDoc}

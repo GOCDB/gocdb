@@ -17,11 +17,11 @@ namespace org\gocdb\services;
 use Doctrine\ORM\Tools\Pagination\Paginator;
 
 /**
- * Contains helper functions for API queries. 
- * Many of these functions simply act to collect common code that is repeated in 
- * different PI queries and so these functions are not intended for use outside 
- * the PI package. 
- * 
+ * Contains helper functions for API queries.
+ * Many of these functions simply act to collect common code that is repeated in
+ * different PI queries and so these functions are not intended for use outside
+ * the PI package.
+ *
  * @author James McCarthy
  * @author David Meredith
  */
@@ -114,19 +114,19 @@ class Helpers {
             }
         }
     }
-    
+
     /**
-     * Validates and searches the given parameter array for valid 'next_cursor' and 'prev_cursor' keys.  
-     * Returns an associative array with the following structure: 
+     * Validates and searches the given parameter array for valid 'next_cursor' and 'prev_cursor' keys.
+     * Returns an associative array with the following structure:
      * <code>
      *  $array = array(
-     *    'isPaging' => boolean true|false, 
-     *    'next_cursor' => null or int, 
+     *    'isPaging' => boolean true|false,
+     *    'next_cursor' => null or int,
      *    'prev_cursor' => null or int
      *  )
      * </code>
-     * 
-     * @param array $parameters Associative array 
+     *
+     * @param array $parameters Associative array
      * @return array Associative array
      */
     public function getValidCursorPagingParamsHelper($parameters){
@@ -134,12 +134,12 @@ class Helpers {
         $pagingDetailsArray['isPaging'] = false;
         $pagingDetailsArray['next_cursor'] = null;
         $pagingDetailsArray['prev_cursor'] = null;
-        
+
         // Cant specify both next_cursor and prev_cursor
         if (isset($parameters['next_cursor']) && isset($parameters['prev_cursor'])) {
             die("<error>It is invalid to specify both 'next_cursor' and 'prev_cursor' parameters in the same query</error>");
         }
-        
+
         // Validate next_cursor parameter
         if (isset($parameters['next_cursor'])) {
             if( ((string)(int)$parameters['next_cursor'] == $parameters['next_cursor']) && (int)$parameters['next_cursor'] >= 0) {
@@ -158,36 +158,36 @@ class Helpers {
                 die("<error>Invalid 'prev_cursor' parameter - must be a whole number greater than or equal to zero</error>");
             }
         }
-       
-        return $pagingDetailsArray; 
+
+        return $pagingDetailsArray;
     }
-    
+
     /**
      * Executes the given query using a Doctrine Paginator or as a straight query
-     * and populates the returned array with expected objects.  
-     * The query applies Doctrine object hydration (HYDRATE_OBJECT).  
-     * Returns an associative array with the following structure: 
-     * 
+     * and populates the returned array with expected objects.
+     * The query applies Doctrine object hydration (HYDRATE_OBJECT).
+     * Returns an associative array with the following structure:
+     *
      * <code>
      * $array = array(
-     *   'resultSet' => array of Doctrine objects/entities 
-     *   'resultSetSize' => int 
-     *   'lastCursorId' => null or int 
+     *   'resultSet' => array of Doctrine objects/entities
+     *   'resultSetSize' => int
+     *   'lastCursorId' => null or int
      *   'firstCursorId'=> null or int
      * )
      * </code>
-     * 
-     * @param bool $isPaging  
+     *
+     * @param bool $isPaging
      * @param \Doctrine\ORM\Query $query
      * @param mixed $next_cursor null or int
      * @param mixed $prev_cursor null or int
-     * @param string $direction 'ASC' or 'DESC' 
+     * @param string $direction 'ASC' or 'DESC'
      */
     public function cursorPagingExecutorHelper($isPaging, $query, $next_cursor, $prev_cursor, $direction){
-        $resultSet = array(); 
-        $lastCursorId = null; 
-        $firstCursorId = null; 
-        
+        $resultSet = array();
+        $lastCursorId = null;
+        $firstCursorId = null;
+
         // if paging, then either the user has specified a 'cursor' url param,
         // or defaultPaging is true and this has been set to 0
         if ($isPaging) {
@@ -195,24 +195,24 @@ class Helpers {
             foreach ($paginator as $obj) {
                 $resultSet[] = $obj;
             }
-    
+
             if($direction == 'DESC'){
                 $resultSet = array_reverse($resultSet);
-            }   
-    
+            }
+
         } else {
             $resultSet = $query->execute();  // object hydration
         }
-         
+
         $resultSetSize = count($resultSet);
-    
+
         // Set the first/last Cursor Ids from the FIRST/TOP and LAST/BOTTOM records listed in the result set
         // (needed for building cursor-pagination links).
         //if($isPaging){
         if($resultSetSize > 0){
             $lastCursorId = $resultSet[$resultSetSize - 1]->getId();
             $firstCursorId = $resultSet[0]->getId();
-    
+
         } else if ($resultSetSize == 0 && $next_cursor !==null && $next_cursor >= 0){
             // The next_cursor has overshot the last available record,
             // so use the current next_cursor in order to build the 'cursor_prev' link.
@@ -231,24 +231,24 @@ class Helpers {
             $firstCursorId = null; // if we have undershot, there is no first/prev cursor Id
 
         }
-        
-        if($lastCursorId !== null && $lastCursorId < 0) $lastCursorId = 0; 
+
+        if($lastCursorId !== null && $lastCursorId < 0) $lastCursorId = 0;
         if($firstCursorId !== null && $firstCursorId < 0) $firstCursorId = 0;
-        
-        
+
+
         //}
-        
-    
+
+
         $returnArray = array();
-        $returnArray['resultSet'] = $resultSet; 
-        $returnArray['resultSetSize'] = $resultSetSize; 
-        $returnArray['lastCursorId'] = $lastCursorId; 
-        $returnArray['firstCursorId'] = $firstCursorId; 
-        return $returnArray;   
-        
+        $returnArray['resultSet'] = $resultSet;
+        $returnArray['resultSetSize'] = $resultSetSize;
+        $returnArray['lastCursorId'] = $lastCursorId;
+        $returnArray['firstCursorId'] = $firstCursorId;
+        return $returnArray;
+
     }
-    
-    
+
+
 
     /**
      * Adds a new tag $tagName to $xml if $value isn't ""
@@ -285,34 +285,34 @@ class Helpers {
     }
 
     /**
-     * Deprecated - do not use. 
-     * Adds 'link' child elements to the given parent xml element to build links for OFFSET paging. 
+     * Deprecated - do not use.
+     * Adds 'link' child elements to the given parent xml element to build links for OFFSET paging.
      * <p>
      * <ul>
-     *   <li>The parent xml element should normally be the 'meta' element following HATEOAS.</li>  
+     *   <li>The parent xml element should normally be the 'meta' element following HATEOAS.</li>
      *   <li>The 'next' link is only added if $next <= $last.</li>
-     *   <li>The 'prev' link is only added if there is a page previous to the current page.</li>  
-     *   <li>The 'href' hyperlink value defines a link which is constructed from the current URI.</li> 
-     *   <li>The 'page' url parameter is added to the value of the href attributes.</li>   
+     *   <li>The 'prev' link is only added if there is a page previous to the current page.</li>
+     *   <li>The 'href' hyperlink value defines a link which is constructed from the current URI.</li>
+     *   <li>The 'page' url parameter is added to the value of the href attributes.</li>
      * </ul>
-     * For example, the following links would be added as child elements to the given metaXml: 
+     * For example, the following links would be added as child elements to the given metaXml:
      * <pre>
-     *    link rel="self" href="/gocdbpi/public/?method=get_service" 
-     *    link rel="next" href="/gocdbpi/public/?method=get_service&amp;page=2" 
-     *    link rel="prev" href="/gocdbpi/public/?method=get_service&amp;page=1" 
+     *    link rel="self" href="/gocdbpi/public/?method=get_service"
+     *    link rel="next" href="/gocdbpi/public/?method=get_service&amp;page=2"
+     *    link rel="prev" href="/gocdbpi/public/?method=get_service&amp;page=1"
      *    link rel="first" href="/gocdbpi/public/?method=get_service&amp;page=1"
      *    link rel="last" href="/gocdbpi/public/?method=get_service&amp;page=42"
      * </pre>
-     * @see http://restcookbook.com/Resources/pagination/ 
+     * @see http://restcookbook.com/Resources/pagination/
      * @deprecated This method assumes offset based paging which should not be used. Use cursor based
      * paging with 'addHateoasCursorPagingLinksToMetaElem()' instead.
-     * 
+     *
      * @param \SimpleXMLElement $metaXml Parent xml tag, normally the 'meta' tag from HATEOAS
-     * @param int $next 
+     * @param int $next
      * @param int $last
-     * @param string $urlAuthority Is prefixed to each 'href' attribute value in order  
-     *   to specify an optional 'scheme://host:port' for absolute URL values (href values are relative 
-     *   URLs by default, i.e. starting with '/'). 
+     * @param string $urlAuthority Is prefixed to each 'href' attribute value in order
+     *   to specify an optional 'scheme://host:port' for absolute URL values (href values are relative
+     *   URLs by default, i.e. starting with '/').
      */
     public function addHateoasPagingLinksToMetaElem($metaXml, $next, $last, $urlAuthority=''){
         // HATEOAS meta element as per: http://restcookbook.com/Resources/pagination/
@@ -361,39 +361,39 @@ class Helpers {
         $lastLink->addAttribute("rel", "last");
         $lastLink->addAttribute("href", $urlBase.$lastQueryUrl);
     }
-    
-    
+
+
     /**
-     * Add 'link'child elements to the given parent xml element for CURSOR based paging. 
-     * 
+     * Add 'link'child elements to the given parent xml element for CURSOR based paging.
+     *
      * <ul>
-     *   <li>The parent xml element should normally be the 'meta' element following HATEOAS.</li>  
+     *   <li>The parent xml element should normally be the 'meta' element following HATEOAS.</li>
      *   <li>The 'next' link is only added if $prev_cursor is not null.</li>
-     *   <li>The 'prev' link is only added if $next_cursor is not null.</li>  
-     *   <li>The 'href' hyperlink value defines a link which is constructed from the current URI.</li>    
+     *   <li>The 'prev' link is only added if $next_cursor is not null.</li>
+     *   <li>The 'href' hyperlink value defines a link which is constructed from the current URI.</li>
      * </ul
-     * 
+     *
      * @param  \SimpleXMLElement $metaXml Parent xml tag, normally the 'meta' tag from HATEOAS
      * @param mixed $prev_cursor null or int
      * @param mixed $next_cursor null or int
-     * @param string $urlAuthority Is prefixed to each 'href' attribute value in order  
-     *   to specify an optional 'scheme://host:port' for absolute URL values (href values are relative 
-     *   URLs by default, i.e. starting with '/'). 
+     * @param string $urlAuthority Is prefixed to each 'href' attribute value in order
+     *   to specify an optional 'scheme://host:port' for absolute URL values (href values are relative
+     *   URLs by default, i.e. starting with '/').
      */
     public function addHateoasCursorPagingLinksToMetaElem($metaXml, $prev_cursor, $next_cursor, $urlAuthority=''){
         // HATEOAS meta element as per: http://restcookbook.com/Resources/pagination/
         $urlParts = parse_url($_SERVER['REQUEST_URI']);
-    
+
         $urlBase = $urlAuthority.$urlParts['path'].'?';
         $urlParamStr = $urlParts['query']; // get only the url query parameter string
         parse_str($urlParamStr, $urlQueryParamsArray); // parse urlParamString into array
-    
+
         // add self link (don't modify the query)
         $selfLink = $metaXml->addChild("link");
         $selfLink->addAttribute("rel", "self");
         $selfLink->addAttribute("href", $urlBase.$urlParts['query']);
-    
-        // add next link 
+
+        // add next link
         if ($next_cursor !== null ){ //&& $next_cursor > 0) {
             unset($urlQueryParamsArray['prev_cursor'] );
             $urlQueryParamsArray['next_cursor'] = $next_cursor; // reset or add the 'next_cursor' parameter
@@ -403,10 +403,10 @@ class Helpers {
             $nextLink->addAttribute("rel", "next");
             $nextLink->addAttribute("href", $urlBase.$nextQueryUrl);
         }
-    
+
         // add prev  link
         if ($prev_cursor !== null ){ //&& $prev_cursor >= 1) {
-            unset($urlQueryParamsArray['next_cursor'] ); 
+            unset($urlQueryParamsArray['next_cursor'] );
             $urlQueryParamsArray['prev_cursor'] = $prev_cursor;
             $prevQueryUrl = http_build_query($urlQueryParamsArray);
             //$escapedNextQueryUrl = htmlspecialchars( $nextQueryUrl, ENT_QUOTES, 'UTF-8' );
@@ -414,7 +414,7 @@ class Helpers {
             $prevLink->addAttribute("rel", "prev");
             $prevLink->addAttribute("href", $urlBase.$prevQueryUrl);
         }
-    
+
         // add start link
         unset($urlQueryParamsArray['prev_cursor'] );
         unset($urlQueryParamsArray['next_cursor'] );
@@ -423,7 +423,7 @@ class Helpers {
         $firstLink = $metaXml->addChild("link");
         $firstLink->addAttribute("rel", "start");
         $firstLink->addAttribute("href", $urlBase.$firstQueryUrl);
-    
+
         // add last link
 //         $urlQueryParamsArray['page'] = $last;
 //         $lastQueryUrl = http_build_query($urlQueryParamsArray);
@@ -431,6 +431,6 @@ class Helpers {
 //         $lastLink->addAttribute("rel", "last");
 //         $lastLink->addAttribute("href", $urlBase.$lastQueryUrl);
     }
-    
+
 
 }
