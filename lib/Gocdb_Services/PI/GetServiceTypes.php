@@ -2,13 +2,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at: 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -73,7 +73,7 @@ class GetServiceTypes implements IPIQuery, IPIQueryRenderable {
         //Initialize base query
         $qb	->select('st')
         ->from('ServiceType', 'st'); // no ordering, should specify by oldest first to be consistent for future
-        //->orderBy('st.id', 'ASC'); // oldest first 
+        //->orderBy('st.id', 'ASC'); // oldest first
 
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.
@@ -106,14 +106,14 @@ class GetServiceTypes implements IPIQuery, IPIQueryRenderable {
         return $this->sts;
     }
 
-    
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -125,7 +125,7 @@ class GetServiceTypes implements IPIQuery, IPIQueryRenderable {
         }
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -136,7 +136,7 @@ class GetServiceTypes implements IPIQuery, IPIQueryRenderable {
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -147,9 +147,9 @@ class GetServiceTypes implements IPIQuery, IPIQueryRenderable {
         $array[] = ('GOCDB_XML');
         return $array;
     }
-    
-    
-    
+
+
+
 
     /** Returns proprietary GocDB rendering of the SerivceType data
      *  in an XML String

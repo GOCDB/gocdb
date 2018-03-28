@@ -1,8 +1,11 @@
+# N.B. Ubuntu Precise available on Travis until March 2018
+dist: precise
+sudo: required
 language: php
 before_install:
     - mysql -e 'CREATE DATABASE doctrine;'
 before_script: .travis/setup
-script: vendor/bin/phpunit tests/DoctrineTestSuite1.php
+script: .travis/run_tests.sh
 services:
     - mysql
 php:
@@ -13,6 +16,15 @@ env:
     - DB=sqlite
     - DB=mysql
 matrix:
+    include:
+    - dist: trusty
+      sudo: false
+      env: DB=mysql
+      php: '5.4'
+    - dist: trusty
+      sudo: false
+      env: DB=mysql
+      php: '5.5'
     allow_failures:
     - env: DB=sqlite
     fast_finish: true

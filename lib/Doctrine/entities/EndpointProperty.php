@@ -21,7 +21,7 @@
  * A unique constraint is defined on the DB preventing duplicate keys for a given endpointLocation.
  * Pairs with duplicate pkeys were intiially permitted, but are no longer.
  * This allows the pairs to be upadated based enitrely on the key name and entity
- * unique identifier, rather than needing the custom property id. 
+ * unique identifier, rather than needing the custom property id.
  * <p>
  * When the owning parent EndpointLocation is deleted, its EndpointProperties
  * are also cascade-deleted.

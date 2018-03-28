@@ -39,14 +39,14 @@ interface IPIQuery {
      * This is not enforced, and implementations may differ (refer
      * to implementation docs).
      * <p>
-     * Unless otherwise specified by the implementation, the returned array 
-     * is normally populated using Doctrine's HYDRATE_OBJECT. It is possible that 
-     * implementations return an array graph using HYDRATE_ARRAY.  
-     * @see http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html#query-result-formats  
+     * Unless otherwise specified by the implementation, the returned array
+     * is normally populated using Doctrine's HYDRATE_OBJECT. It is possible that
+     * implementations return an array graph using HYDRATE_ARRAY.
+     * @see http://docs.doctrine-project.org/projects/doctrine-orm/en/latest/reference/dql-doctrine-query-language.html#query-result-formats
      *
-     * @return array Either an object graph populated using HYDRATE_OBJECT or and array graph populated with HYDRATE_ARRAY 
+     * @return array Either an object graph populated using HYDRATE_OBJECT or and array graph populated with HYDRATE_ARRAY
      */
     public function executeQuery();
-    
+
 
 }

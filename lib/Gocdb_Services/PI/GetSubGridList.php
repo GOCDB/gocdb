@@ -104,14 +104,14 @@ class GetSubGridList implements IPIQuery, IPIQueryRenderable {
         $this->subGrids = $this->query->execute();
         return $this->subGrids;
     }
-    
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -123,7 +123,7 @@ class GetSubGridList implements IPIQuery, IPIQueryRenderable {
         }
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -134,7 +134,7 @@ class GetSubGridList implements IPIQuery, IPIQueryRenderable {
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -145,7 +145,7 @@ class GetSubGridList implements IPIQuery, IPIQueryRenderable {
         $array[] = ('GOCDB_XML');
         return $array;
     }
-    
+
 
 
     /** Returns proprietary GocDB rendering of the Sub Grid data

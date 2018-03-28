@@ -2,13 +2,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at: 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -28,7 +28,7 @@ require_once __DIR__ . '/IPIQueryRenderable.php';
  * Optionally provide an associative array of query parameters with values used to restrict the results.
  * Only known parameters are honoured while unknown params are ignored.
  * 'next_cursor', 'prev_cursor'
- * 
+ *
  *
  * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author James McCarthy
@@ -44,11 +44,11 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
     private $sites;
 
     private $urlAuthority;
-    
+
     private $maxResults = 500; //default page size, set via setPageSize(int);
     private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
     private $isPaging = false;   // is true if default paging is t OR if a cursor URL param has been specified for paging.
-     
+
     // following members are needed for paging
     private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
     private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter
@@ -57,18 +57,18 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
     private $lastCursorId=null;  // Used to build the <next> page HATEOAS link
     private $firstCursorId=null; // Used to build the <prev> page HATEOAS link
 
-    /** 
+    /**
      * Constructor takes entity manager which is then used by the query builder
      *
      * @param EntityManager $em
-     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
-     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
-     *  (e.g. for HATEOAS links/paging). Should not end with '/'. 
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port')
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'.
      */
     public function __construct($em,  $urlAuthority = ''){
         $this->em = $em;
         $this->helpers=new Helpers();
-        $this->urlAuthority = $urlAuthority; 
+        $this->urlAuthority = $urlAuthority;
     }
 
     /** Validates parameters against array of pre-defined valid terms
@@ -86,8 +86,8 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
                 'exclude_certification_status',
                 'production_status',
                 'scope',
-                'scope_match', 
-                'next_cursor', 
+                'scope_match',
+                'next_cursor',
                 'prev_cursor'
         );
 
@@ -102,12 +102,12 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
         $parameters = $this->validParams;
         $binds= array();
         $bc=-1;
-        
+
         $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters);
         $this->prev_cursor = $cursorParams['prev_cursor'];
         $this->next_cursor = $cursorParams['next_cursor'];
         $this->isPaging = $cursorParams['isPaging'];
-        
+
         // if we are enforcing paging, force isPaging to true
         if($this->defaultPaging){
             $this->isPaging = true;
@@ -128,7 +128,7 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
 
         // Order by ASC (oldest first: 1, 2, 3, 4)
         $this->direction = 'ASC';
-        
+
         // Cursor where clause:
         // Select rows *FROM* the current cursor position
         // by selecting rows either ABOVE or BELOW the current cursor position
@@ -155,7 +155,7 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
             // Sets the maximum number of results to retrieve (the "limit")
             $qb->setMaxResults($this->maxResults);
         }
-        
+
         $qb->orderBy('s.id', $this->direction);
 
 
@@ -223,7 +223,7 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
     public function getSelectedRendering(){
         return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -235,7 +235,7 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
         }
         $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
@@ -246,7 +246,7 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
      * Returns array with 'GOCDB_XML' values.
      * {@inheritDoc}
@@ -257,7 +257,7 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
         $array[] = ('GOCDB_XML');
         return $array;
     }
-    
+
     /** Returns proprietary GocDB rendering of the sites data
      *  in an XML String
      * @return String
@@ -342,7 +342,7 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
         }
         $this->maxResults = $pageSize;
     }
-    
+
     /**
      * See inteface doc.
      * {@inheritDoc}
