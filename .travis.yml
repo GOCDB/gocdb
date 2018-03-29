@@ -5,7 +5,7 @@ language: php
 before_install:
     - mysql -e 'CREATE DATABASE doctrine;'
 before_script: .travis/setup
-script: vendor/bin/phpunit tests/DoctrineTestSuite1.php
+script: .travis/run_tests.sh
 services:
     - mysql
 php:

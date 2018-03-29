@@ -74,7 +74,7 @@ class PIRequest {
     private $params = array();
     private $dn = null;
     private $baseUrl;
-    private $baseApiUrl; 
+    private $baseApiUrl;
 
     // params used to set the default behaviour of all paging queries,
     // these vals can be overidden per query if needed.
@@ -87,7 +87,7 @@ class PIRequest {
     public function __construct(){
         // returns the base portal URL as defined in conf file
         $this->baseUrl = \Factory::getConfigService()->GetPortalURL();
-        $this->baseApiUrl = \Factory::getConfigService()->getServerBaseUrl(); 
+        $this->baseApiUrl = \Factory::getConfigService()->getServerBaseUrl();
     }
 
     function process() {
@@ -201,7 +201,7 @@ class PIRequest {
                     $getNGIContacts->validateParameters($this->params);
                     $getNGIContacts->createQuery();
                     $getNGIContacts->executeQuery();
-                    $xml = $getNGIContacts->getRenderingOutput(); 
+                    $xml = $getNGIContacts->getRenderingOutput();
                     break;
                 case "get_service":
                     require_once($directory . 'GetService.php');
@@ -211,7 +211,7 @@ class PIRequest {
                     $getSE->validateParameters($this->params);
                     $getSE->createQuery();
                     $getSE->executeQuery();
-                    $xml = $getSE->getRenderingOutput(); 
+                    $xml = $getSE->getRenderingOutput();
                     break;
                 case "get_service_endpoint":
                     require_once($directory . 'GetService.php');
@@ -234,14 +234,14 @@ class PIRequest {
                 case "get_downtime_to_broadcast":
                     require_once($directory . 'GetDowntimesToBroadcast.php');
                     $getDTTBroadcast = new GetDowntimeToBroadcast($em, $this->baseUrl, $this->baseApiUrl);
-                    $getDTTBroadcast->setDefaultPaging($this->defaultPaging); 
-                    $getDTTBroadcast->setPageSize($this->defaultPageSize); 
+                    $getDTTBroadcast->setDefaultPaging($this->defaultPaging);
+                    $getDTTBroadcast->setPageSize($this->defaultPageSize);
                     $getDTTBroadcast->validateParameters($this->params);
                     $getDTTBroadcast->createQuery();
                     $getDTTBroadcast->executeQuery();
-                    $xml = $getDTTBroadcast->getRenderingOutput(); 
+                    $xml = $getDTTBroadcast->getRenderingOutput();
                     break;
-                case "get_downtime": 
+                case "get_downtime":
                     //require_once($directory . 'GetDowntimeFallback.php');
                     require_once($directory . 'GetDowntime.php');
                     $getDowntime = new GetDowntime($em, false, $this->baseUrl, $this->baseApiUrl);
@@ -250,7 +250,7 @@ class PIRequest {
                     $getDowntime->validateParameters($this->params);
                     $getDowntime->createQuery();
                     $getDowntime->executeQuery();
-                    $xml = $getDowntime->getRenderingOutput();  
+                    $xml = $getDowntime->getRenderingOutput();
                     break;
                 case "get_downtime_nested_services":
                     //require_once($directory . 'GetDowntimeFallback.php');
@@ -261,8 +261,8 @@ class PIRequest {
                     $getDowntime->validateParameters($this->params);
                     $getDowntime->createQuery();
                     $getDowntime->executeQuery();
-                    $xml = $getDowntime->getRenderingOutput(); 
-                    break; 
+                    $xml = $getDowntime->getRenderingOutput();
+                    break;
                 case "get_user":
                     require_once($directory . 'GetUser.php');
                     $this->authAnyCert();
@@ -283,7 +283,7 @@ class PIRequest {
                     $getProjCon->validateParameters($this->params);
                     $getProjCon->createQuery();
                     $getProjCon->executeQuery();
-                    $xml = $getProjCon->getRenderingOutput(); 
+                    $xml = $getProjCon->getRenderingOutput();
                     break;
                 case "get_ngi":
                     require_once($directory . 'GetNGI.php');
@@ -294,7 +294,7 @@ class PIRequest {
                     $getNGI->validateParameters($this->params);
                     $getNGI->createQuery();
                     $getNGI->executeQuery();
-                    $xml = $getNGI->getRenderingOutput(); 
+                    $xml = $getNGI->getRenderingOutput();
                     break;
                 case "get_service_group" :
                     require_once($directory . 'GetServiceGroup.php');
@@ -305,7 +305,7 @@ class PIRequest {
                     $getServiceGroup->validateParameters($this->params);
                     $getServiceGroup->createQuery();
                     $getServiceGroup->executeQuery();
-                    $xml = $getServiceGroup->getRenderingOutput(); 
+                    $xml = $getServiceGroup->getRenderingOutput();
                     break;
                 case "get_service_group_role" :
                     require_once($directory . 'GetServiceGroupRole.php');

@@ -3,13 +3,13 @@
 namespace org\gocdb\services;
 
 /*
- * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License"); 
- * you may not use this file except in compliance with the License. 
- * You may obtain a copy of the License at: 
- * http://www.apache.org/licenses/LICENSE-2.0 
- * Unless required by applicable law or agreed to in writing, 
- * software distributed under the License is distributed on an "AS IS" BASIS, 
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. 
+ * Copyright © 2011 STFC Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at:
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and limitations under the License.
  */
 require_once __DIR__ . '/QueryBuilders/ExtensionsQueryBuilder.php';
@@ -38,15 +38,15 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     protected $query;
     protected $validParams;
     protected $em;
-    private $selectedRenderingStyle = 'GOCDB_XML'; 
+    private $selectedRenderingStyle = 'GOCDB_XML';
     private $helpers;
     private $ngis;
     private $urlAuthority;
-    
+
     private $maxResults = 500; //default page size, set via setPageSize(int);
     private $defaultPaging = false;  // default, set via setDefaultPaging(t/f);
     private $isPaging = false;   // is true if default paging is t OR if a cursor URL param has been specified for paging.
-     
+
     // following members are needed for paging
     private $next_cursor=null;     // Stores the 'next_cursor' URL parameter
     private $prev_cursor=null;     // Stores the 'prev_cursor' URL parameter
@@ -59,9 +59,9 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
      *  query builder
      *
      * @param EntityManager $em
-     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port') 
-     *   - used as a prefix to build absolute API URLs that are rendered in the query output 
-     *  (e.g. for HATEOAS links/paging). Should not end with '/'. 
+     * @param string $urlAuthority String for the URL authority (e.g. 'scheme://host:port')
+     *   - used as a prefix to build absolute API URLs that are rendered in the query output
+     *  (e.g. for HATEOAS links/paging). Should not end with '/'.
      */
     public function __construct($em,  $urlAuthority = '') {
         $this->em = $em;
@@ -79,8 +79,8 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     $supportedQueryParams = array(
         'roc',
         'scope',
-        'scope_match', 
-        'next_cursor', 
+        'scope_match',
+        'next_cursor',
         'prev_cursor'
     );
 
@@ -95,17 +95,17 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $parameters = $this->validParams;
         $binds = array();
         $bc = -1;
-        
+
         $cursorParams = $this->helpers->getValidCursorPagingParamsHelper($parameters);
         $this->prev_cursor = $cursorParams['prev_cursor'];
         $this->next_cursor = $cursorParams['next_cursor'];
         $this->isPaging = $cursorParams['isPaging'];
-        
+
         // if we are enforcing paging, force isPaging to true
         if($this->defaultPaging){
             $this->isPaging = true;
         }
-        
+
 
         $qb = $this->em->createQueryBuilder();
 
@@ -118,7 +118,7 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
         // Order by ASC (oldest first: 1, 2, 3, 4)
         $this->direction = 'ASC';
-        
+
         // Cursor where clause:
         // Select rows *FROM* the current cursor position
         // by selecting rows either ABOVE or BELOW the current cursor position
@@ -145,10 +145,10 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             // Sets the maximum number of results to retrieve (the "limit")
             $qb->setMaxResults($this->maxResults);
         }
-        
+
         $qb->orderBy('n.id', $this->direction);
-            
-        
+
+
         /* Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.
          */
@@ -183,7 +183,7 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
         //Get the dql query from the Query Builder object
         $query = $qb->getQuery();
-        
+
         $this->query = $query;
         return $this->query;
     }
@@ -195,22 +195,22 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     public function executeQuery() {
         $cursorPageResults = $this->helpers->cursorPagingExecutorHelper(
                 $this->isPaging, $this->query, $this->next_cursor, $this->prev_cursor, $this->direction);
-        $this->ngis = $cursorPageResults['resultSet']; 
-        $this->resultSetSize = $cursorPageResults['resultSetSize']; 
-        $this->firstCursorId = $cursorPageResults['firstCursorId']; 
-        $this->lastCursorId = $cursorPageResults['lastCursorId']; 
-        
-        return $this->ngis; 
+        $this->ngis = $cursorPageResults['resultSet'];
+        $this->resultSetSize = $cursorPageResults['resultSetSize'];
+        $this->firstCursorId = $cursorPageResults['firstCursorId'];
+        $this->lastCursorId = $cursorPageResults['lastCursorId'];
+
+        return $this->ngis;
     }
-    
-    
+
+
     /**
      * Gets the current or default rendering output style.
      */
     public function getSelectedRendering(){
-        return $this->$selectedRenderingStyle; 
+        return $this->$selectedRenderingStyle;
     }
-    
+
     /**
      * Set the required rendering output style.
      * @param string $renderingStyle
@@ -220,38 +220,38 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         if($renderingStyle != 'GOCDB_XML' || $renderingStyle != 'GLUE2_XML'){
             throw new \InvalidArgumentException('Requested rendering is not supported');
         }
-        $this->selectedRenderingStyle = $renderingStyle; 
+        $this->selectedRenderingStyle = $renderingStyle;
     }
-    
+
     /**
      * @return string Query output as a string according to the current rendering style.
      */
     public function getRenderingOutput(){
         if($this->selectedRenderingStyle == 'GOCDB_XML'){
-            return $this->getXml(); 
+            return $this->getXml();
         } else if($this->selectedRenderingStyle == 'GLUE2_XML'){
-            return $this->getGlue2XML(); 
+            return $this->getGlue2XML();
         } else {
             throw new \LogicException('Invalid rendering style internal state');
         }
     }
-    
+
     /**
-     * Returns array with 'GOCDB_XML' and 'GLUE2_XML' values. 
+     * Returns array with 'GOCDB_XML' and 'GLUE2_XML' values.
      * {@inheritDoc}
      * @see \org\gocdb\services\IPIQueryRenderable::getSupportedRenderings()
      */
     public function getSupportedRenderings(){
-        $array = array(); 
-        $array[] = ('GOCDB_XML'); 
-        $array[] = ('GLUE2_XML'); 
+        $array = array();
+        $array[] = ('GOCDB_XML');
+        $array[] = ('GLUE2_XML');
         return $array;
     }
-    
-    
-    
 
-    /** 
+
+
+
+    /**
      * Returns proprietary GocDB rendering of the NGI data
      *  in an XML String
      * @return String
@@ -261,7 +261,7 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $ngis = $this->ngis;
 
         $xml = new \SimpleXMLElement("<results />");
-        
+
         // Calculate and add paging info
         if ($this->isPaging) {
             $metaXml = $xml->addChild("meta");
@@ -272,7 +272,7 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
         foreach ($ngis as $ngi) {
             $xmlNgi = $xml->addChild('NGI');
-            $xmlNgi->addAttribute("ID", $ngi->getId()); 
+            $xmlNgi->addAttribute("ID", $ngi->getId());
             $xmlNgi->addAttribute("NAME", $ngi->getName());
             $xmlNgi->addChild("PRIMARY_KEY", $ngi->getId());
             $xmlNgi->addChild("NAME", $ngi->getName());
@@ -312,14 +312,14 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $ngis = $query->getResult();
 
         $xml = new \SimpleXMLElement("<Entities />");
-        
+
         if ($this->isPaging) {
             $metaXml = $xml->addChild("meta");
             $helpers->addHateoasCursorPagingLinksToMetaElem($metaXml, $this->firstCursorId, $this->lastCursorId, $this->urlAuthority);
             $metaXml->addChild("count", $this->resultSetSize);
             $metaXml->addChild("max_page_size", $this->maxResults);
         }
-        
+
 
         foreach ($ngis as $ngi) {
             $xmlNgi = $xml->addChild("AdminDomain");
@@ -360,8 +360,8 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         return $xmlString;
     }
 
-    
-    
+
+
     /**
      * This query does not page by default.
      * If set to true, the query will return the first page of results even if the
@@ -372,7 +372,7 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     public function getDefaultPaging(){
         return $this->defaultPaging;
     }
-    
+
     /**
      * @param boolean $pageTrueOrFalse Set if this query pages by default
      */
@@ -382,7 +382,7 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         }
         $this->defaultPaging = $pageTrueOrFalse;
     }
-    
+
     /**
      * Set the default page size (100 by default if not set)
      * @return int The page size (number of results per page)
@@ -390,7 +390,7 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     public function getPageSize(){
         return $this->maxResults;
     }
-    
+
     /**
      * Set the size of a single page.
      * @param int $pageSize

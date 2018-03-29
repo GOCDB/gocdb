@@ -36,23 +36,23 @@ interface IPIQueryPageable {
      * @param int $pageSize
      */
     public function setPageSize($pageSize);
-    
+
     /**
-     * Returns an associative array of paging related parameters that 
-     * are available AFTER executing the query. 
+     * Returns an associative array of paging related parameters that
+     * are available AFTER executing the query.
      * <p>
-     * This includes the number of results returned in the current page of results ('count') 
+     * This includes the number of results returned in the current page of results ('count')
      * and for cursor based paging, this includes the current values for the 'next_cursor'
-     * and 'prev_cursor' values. Unless otherwise specified by the implementations, 
-     * the format of the returned array is: 
-     *  
+     * and 'prev_cursor' values. Unless otherwise specified by the implementations,
+     * the format of the returned array is:
+     *
      * <code>
      * $array = (
-     *   'count' => int or null, 
-     *   'next_cursor' => int or null (null if no next results), 
-     *   'prev_cursor' => int or null (null if no prev results) 
+     *   'count' => int or null,
+     *   'next_cursor' => int or null (null if no next results),
+     *   'prev_cursor' => int or null (null if no prev results)
      * </code>
-     * @return array Associative array. 
+     * @return array Associative array.
      */
     public function getPostExecutionPageInfo();
 
