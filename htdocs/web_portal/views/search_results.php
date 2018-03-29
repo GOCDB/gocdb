@@ -8,7 +8,7 @@
         </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
             <ul>
-                <li>Searching sites, services and users</li>
+                <li>Searching sites, hostnames, descriptions and users</li>
                 <li>Please note, these search results are case-insensitive unlike the API parameters which must be case-sensitive</li>
             </ul>
         </span>
