@@ -140,7 +140,7 @@
 	<field>
 	    <fname>HOST_DN</fname>
 	    <length>255</length>
-	    <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/\)\(]+)+$/</regex>
+	    <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/\)\(]+)*$/</regex>
 	</field>
 	<field>
 	    <fname>HOST_OS</fname>
