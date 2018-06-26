@@ -18,7 +18,7 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
   * OpenSSL Extension for PHP
 
 * [Apache Http](#apache-and-x509-host-cert)
-  * Version 2.2 or higher
+  * Version 2.2 or higher with `mod_ssl` module
   * X509 host certificate.
 
 * [Database server](#rdbms) 
@@ -117,18 +117,26 @@ rpm -i oracle-instanclient*
 yum install gcc php-pear php-devel
 ```
 
-Set the pear http proxy if necessary, and the install the oci8 module using pecl:
+Optionally, set the pear http proxy if necessary:
 
 ```bash
 pear config-set http_proxy http://pro.xy:port
-pecl install oci8-2.0.10
 ```
 
+Install the oci8 module using pecl:
+
+```bash
+pecl install oci8-2.0.10
+```
 This will download and compile the module, and place it in your php extension dir.
 
-Add the ```extension=oci8.so``` line to your php.ini. Confirm it is working with ```php -i | grep -i oci8```
+Add the ```extension=oci8.so``` line to your php.ini or create a configuration file: 
 
+```bash 
+echo 'extension=oci8.so' > /etc/php.d/oci8.ini
+```
 
+Confirm it is working with ```php -i | grep -i oci8```
 
 ### Doctrine <a id="doctrine"></a>   
 
@@ -250,14 +258,13 @@ a sensible password). Run this script as the Oracle admin/system user:
 ```
 -- Manage GOCDB5 user if already exists (optional) --
 drop user gocdb5 cascade;
-ALTER USER gocdb5 IDENTIFIED BY new_password;
 
 -- CREATE USER SQL
-CREATE USER GOCDB5 IDENTIFIED BY <PASSWORD>;
-DEFAULT TABLESPACE "USERS";
+CREATE USER GOCDB5 IDENTIFIED BY <PASSWORD> 
+DEFAULT TABLESPACE "USERS" 
+QUOTA UNLIMITED ON "USERS" 
 TEMPORARY TABLESPACE "TEMP";
--- ROLES
-GRANT "RESOURCE" TO GOCDB5 ;
+-- ROLES - GRANT "RESOURCE" TO GOCDB5
 -- SYSTEM PRIVILEGES
 GRANT CREATE TRIGGER TO GOCDB5 ;
 GRANT CREATE SEQUENCE TO GOCDB5 ;
@@ -307,7 +314,7 @@ The database schema is deployed to your database using Doctrine.
 * Locate the provided template file: `bootstrap_doctrine_TEMPLATE.php`. In this
 file you will find three blocks of code commented out, once for each of the
 supported database, SQLite, Oracle and MySQL.
-* Copy this file to `bootstrap_doctrine.php` in the same dir and modify to
+* Copy this file to `bootstrap_doctrine.php` in the same dir and modify (including commenting out the "die" statement at the top of the file) to
 specify your chosen DB connection details (see file for more details, including
 how to compile Doctrine proxy objects for better performance for production usage).
 * Check that doctrine can connect to the DB running the following (still in the <gocDBSrcHome>/lib/Doctrine directory):
