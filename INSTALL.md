@@ -10,6 +10,9 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 ## Prerequisites <a id="prerequisites"></a>
 
+* [GOCDB website content](#gocdb])
+  * 'Git-cloned' or by archive from https://github.com/GOCDB/gocdb
+  
 * [PHP](#php)
   * v5.3.3 (newer versions should be fine, but are untested)
   * If using Oracle: PHP oci8 extension (needs to be compiled using the Oracle Instant client v10 or higher
@@ -32,7 +35,14 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 * PhpUnit and PDO driver for selected DB (optional, required for running DBUnit tests only, see `tests/README.md` for more info)
 
+### GOCDB website content <a id="gocdb"></a>
 
+GOCDB web content and configuration - html,css,php etc. and configuration samples should be downloaded from [Github](https://github.com/GOCDB/gocdb) either by 'git-cloning' or from a downloaded archive. The standard location is under /usr/share/gocdb e.g.-
+
+```bash
+cd /usr/share
+git-clone https://github.com/GOCDB/gocdb.git
+```
 
 ### PHP
 
@@ -92,7 +102,7 @@ update your php.ini by adding `extension=[php_]timezonedb.so|dll` (note, Win pre
 * If you are planning to use Oracle, you need the php oci8 extension, which must be compiled. ([php oci8](http://php.net/manual/en/book.oci8.php))  
 * Do not forget to configure your timezone settings correctly.
 
-### Apache and x509 Host cert
+### Apache and x509 Host cert <a id="apache"></a>
 
 A sample Apache config file is provided `config/gocdbssl.conf`. This file
 defines a sample apache virtual host for serving your GocDB portal, including URL mappings/aliases and SSL settings.
@@ -249,7 +259,7 @@ deployment of your GOCDB instance:
 ### Create DB User/Account <a id="create-db"></a>
 #### Oracle
 
-<todo> - description of sqlplus install
+If you intend to populate the database from a dump of an existing GOCDB5 instance you do NOT need to create the GOCDB5 user. Simply deploy the data as described at ["Deploy and existing DB"](#deploy-existing-dump) below remembering that you might want to ALTER the password for the GOCDB5 user after the import.
 
 We advise that you create a dedicated GOCDB5 user. For Oracle, you can create
 the user with the following script (substitute GOCDB5 for your username and
@@ -379,7 +389,7 @@ $ cd lib/Doctrine
 $ php deploy/DeploySampleDataRunner.php sampleData
 ```
 
-### Deploy an existing DB .dmp file to populate your DB
+### Deploy an existing DB .dmp file to populate your DB<a id="deploy-existing-dump"></a>
 
 You may want to deploy an existing dump/backup of the DB rather than deploying the
 DDL and seeding the empty DB with required data and sample data. Oracle provides the
@@ -392,9 +402,6 @@ This directory object defines the directory where the .dmp file is loaded from.
   ```
   sqlplus system
   SQL> create or replace DIRECTORY dmpdir AS '<Directroy path>';
-  SQL> grant read,write on directory dmpdir to <user>;
-  SQL> SELECT owner, directory_name, directory_path FROM all_directories;
-  SQL> select directory_path from dba_directories where upper(directory_name) =  'DMPDIR';
   SQL> exit
   ```
 
