@@ -136,7 +136,6 @@ h1 {
 	padding: 0.5em 0.5em 0.5em 0.5em;
 	border: 1px solid #b4b4b4;
 	width: 13em;
-	box-shadow: 2px 2px 1px 0px #c5d0e3;
 	
 	background-color: #fcfcfc;
 	border-radius: 0.4em;
@@ -650,7 +649,6 @@ div.rightPageContainer {
 	margin-bottom: 3em;
     border: 1px solid #b4b4b4;
     padding: 1em;
-    box-shadow: 2px 2px 1px 0px #c5d0e3;
     border-radius: 0.4em;
     
 }
