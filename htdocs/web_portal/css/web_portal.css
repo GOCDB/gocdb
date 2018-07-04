@@ -3,14 +3,12 @@ table.tablesorter {
 	font-family:arial;
 	background-color: #CDCDCD;
 	margin:10px 0pt 15px;
-	/*font-size: 8pt;*/
 	width: 100%;
 	text-align: left;
 }
 table.tablesorter thead tr th, table.tablesorter tfoot tr th {
 	background-color: #e6EEEE;
 	border: 1px solid #FFF;
-	/*font-size: 8pt;*/
 	padding: 4px;
 }
 table.tablesorter thead tr .header {
@@ -81,12 +79,8 @@ h4 {
 }
 
 h3 {
-	/*border-top:          	1px solid #505050;*/
-	/*border-bottom:       	1px solid #505050;*/
-	/*margin-bottom:       	0.25em;*/
 	padding-bottom: 1em;
 	font-size: 1.5em;
-	/*font-weight:			normal;*/
 	margin-top: 0em;
 	border-top: 0em;
 	padding-top: 0em;
@@ -95,7 +89,6 @@ h3 {
 h4 {
 	padding-bottom: 1em;
 	font-size: 1em;
-	/*font-weight:			normal;*/
 	margin-top: 0em;
 	border-top: 0em;
 	padding-top: 0em;
@@ -125,7 +118,6 @@ h1 {
 	width: 83em;
 	min-width: 45em;
 	overflow: hidden;
-	/* border: 1px solid black; */
 	z-index: 1;
 	background-color: transparent;
 }
@@ -177,7 +169,6 @@ div.Indented {
 	position: relative;
 	margin: 0.0em 0.0em 0.0em 13em;
 	padding: 0.5em 1em 0.0em 1em;
-	/* border: 1px solid #505050; */
 }
 
 .empty {
@@ -217,13 +208,11 @@ h4.menu_title {
 
 .input_name {
 	display: block;
-	/*width:               	20em;*/
 	font-size: 0.9em;
 }
 
 .input_syntax {
 	display: inline;
-	/*width:               	20em;*/
 	color: #909090;
 	font-style: italic;
 	font-size: 0.9em;
@@ -259,7 +248,6 @@ ul.Smaller_Left_Padding {
 li {
 	color: #3E6397;
 	list-style-type: circle;
-	/* border: 0.1em solid; */
     margin-left: -0.4em;
     margin-bottom: 0.3em;
 }
@@ -352,7 +340,6 @@ span.New_Service_Endpoint {
 	display: block;
 }
 
-/*   border: medium double rgb(250,0,255);*/
 option.sectionTitle {
 	background-color: #000000;
 	font-weight: bold;
