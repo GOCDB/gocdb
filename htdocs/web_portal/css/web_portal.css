@@ -59,7 +59,7 @@ a img {
 }
 
 h1,th,h2,h3,h4 {
-	color: #00AC00;
+	color: #2E2426;
 	text-decoration: none;
 	font-weight:normal;
 	margin-top: 0em;
@@ -68,7 +68,7 @@ h1,th,h2,h3,h4 {
 }
 
 a {
-	color: #103C7A;
+	color: #4575B4;
 	text-decoration: none;
     margin-top: 0em;
     margin-bottom: 0em;
@@ -262,15 +262,15 @@ li {
 }
 
 .table_row_1,.table_header {
-	background-color: #D3D3D3;
+	background-color: #D3D7DF;
 }
 
 .site_table_row_1 {
-	background-color: #D0E1F7;
+	background-color: #D3D7DF;
 }
 
 .site_table_row_2 {
-	background-color: #F5F5F5;
+	background-color: #EEEEEC;
 }
 
 td.site_table {
@@ -453,7 +453,7 @@ select.Downtime_Select {
 }
 
 .header {
-	color: #009000;
+	color: #2E3436;
 	padding:0.9em;
 }
 
