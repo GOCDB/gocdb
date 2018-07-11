@@ -1,12 +1,18 @@
 body {
-	background-image: url('background2.jpg');
+	background: linear-gradient(to bottom left,#F7F9FE, #DEE9FB, #D0DFF9);
 	background-repeat: no-repeat;
-	background-color: #b3cfff;
 	color: #272A4B;
 	font-family: "VAGRoundedLtRegular",Tahoma, "museo-sans-1", "museo-sans-2", "Helvetica Neue", Geneva,sans-serif;
 	font-size: 0.8em;
 	text-align: center;
 	text-align: left;
+	background-attachment: fixed;
+	margin: 0;
+	height: 100%;
+}
+
+html {
+	height: 100%;
 }
 
 a img {
