@@ -41,8 +41,7 @@
         </script>-->
         <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/googleSiteMap.js">
         </script>
-        <div style="display:inline-block;  ">
-            <div id="GoogleMap" style="width:840px;height:400px;"></div>
-        </div>
+        <div id="GoogleMap" style="width:100%;height:400px;"></div>
+        
     <?php endif; ?>
 </div>
