@@ -10,15 +10,18 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 ## Prerequisites <a id="prerequisites"></a>
 
+* [GOCDB website content](#gocdb])
+  * 'Git-cloned' or by archive from https://github.com/GOCDB/gocdb
+  
 * [PHP](#php)
   * v5.3.3 (newer versions should be fine, but are untested)
   * If using Oracle: PHP oci8 extension (needs to be compiled using the Oracle Instant client v10 or higher
     downloadable from Oracle website, see "Compiling OCI8" section below).
-  * libxml2 and DOM support for PHP (Note: On RHEL, PHP requires the PHP XML RPM to be installed for this component to function).
+  * libxml2 and DOM support for PHP (Note: On RHEL, PHP requires the php-xml RPM to be installed for this component to function).
   * OpenSSL Extension for PHP
 
-* [Apache Http](#apache)
-  * Version 2.2 or higher
+* [Apache Http](#apache-and-x509-host-cert)
+  * Version 2.2 or higher with `mod_ssl` module
   * X509 host certificate.
 
 * [Database server](#rdbms) 
@@ -30,11 +33,18 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
   * Note, for doctine 2.3.3 and older there is a bug in the paging code, which affects the GetDowntime API result. The fix is detailed [below](#doctrineFix)
   * dbal 2.5.4 - a DB abstraction layer that doctine depends on (newer versions should be fine but are untested)
 
-* PhpUnit and PDO driver for selected DB (optional, required for running DBUnit tests only, see `tests/INSTALL.md` for more info)
+* PhpUnit and PDO driver for selected DB (optional, required for running DBUnit tests only, see `tests/README.md` for more info)
 
+### GOCDB website content <a id="gocdb"></a>
 
+GOCDB web content and configuration - html,css,php etc. and configuration samples should be downloaded from [Github](https://github.com/GOCDB/gocdb) either by 'git-cloning' or from a downloaded archive. The standard location is under /usr/share/gocdb e.g.-
 
-### PHP <a id="php"></a>  
+```bash
+cd /usr/share
+git-clone https://github.com/GOCDB/gocdb.git
+```
+
+### PHP
 
 Php needs to be installed and configured to run under apache and on the command
 line. A sample configuration is copied below:
@@ -92,16 +102,15 @@ update your php.ini by adding `extension=[php_]timezonedb.so|dll` (note, Win pre
 * If you are planning to use Oracle, you need the php oci8 extension, which must be compiled. ([php oci8](http://php.net/manual/en/book.oci8.php))  
 * Do not forget to configure your timezone settings correctly.
 
-### Apache and x509 Host cert
+### Apache and x509 Host cert <a id="apache"></a>
 
-* A sample Apache config file is provided `config/gocdbssl.conf`. This file
-defines a sample apache virtual host for serving your GocDB portal, including
-URL mappings/aliases and SSL settings.
-For GocDB, three URL alias/directory-mappings are needed, one for the portal GUI
-page-controller, one for the public REST endpoints and one for the private REST
-endpoints. See the sample config file for details.
+A sample Apache config file is provided `config/gocdbssl.conf`. This file
+defines a sample apache virtual host for serving your GocDB portal, including URL mappings/aliases and SSL settings.
+For GocDB, three URL alias/directory-mappings are needed, one for the portal GUI page-controller, one for the public REST endpoints and one for the private REST endpoints. See the sample config file for details.
 
-### Database Server <a id="rdbms"></a>
+Note that, depending on Apache/httpd version, the "Require all granted" statements in gocdbssl.conf may cause an HTTP Error "500 - Invalid configuration..." and can be commented out.
+
+### Database Server
 GOCDB uses a DB abstraction layer (Doctrine) and with some configuration should be deployable on different RDBMS platforms that are supported for Doctrine. Instructions are provided here for Oracle (the free Oracle 11g is perfectly suitable) and MySQL/MariaDB comming soon. 
 
 #### Oracle 11g
@@ -111,42 +120,39 @@ The free to use XE/11g Oracle DB can be used to host run GOCDB on Win/nix. To us
 The OCI8 extension/driver for php needs to be installed, see: http://php.net/oci8
 This can be most easily installed with the free Oracle Instant Client libs which can be installed in a number of ways (http://php.net/manual/en/oci8.installation.php), but the most easy is via PECL as descibed below: 
 
-Install the basic and devel instantclient rpms from Oracle (http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html) and install GCC, PHP dev and pear packages:
+Install the basic, devel and sqlplus instantclient rpms from Oracle (http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html) and install GCC, PHP dev and pear packages:
 
 ```bash
 rpm -i oracle-instanclient*
 yum install gcc php-pear php-devel
 ```
 
-Set the pear http proxy if necessary, and the install the oci8 module using pecl:
+Optionally, set the pear http proxy if necessary:
 
 ```bash
 pear config-set http_proxy http://pro.xy:port
-pecl install oci8-2.0.10
 ```
 
+Install the oci8 module using pecl:
+
+```bash
+pecl install oci8-2.0.10
+```
 This will download and compile the module, and place it in your php extension dir.
 
-Add the ```extension=oci8.so``` line to your php.ini. Confirm it is working with ```php -i | grep -i oci8```
+Add the ```extension=oci8.so``` line to your php.ini or create a configuration file: 
 
+```bash 
+echo 'extension=oci8.so' > /etc/php.d/oci8.ini
+```
 
+Confirm it is working with ```php -i | grep -i oci8```
 
 ### Doctrine <a id="doctrine"></a>   
 
 Install Doctrine ORM and DBAL using one of the methods below and make sure doctrine is available on the command
 line. Note, Doctrine can be installed either globally using PEAR or as a project
-specific dependency using composer. Either way, ensure your `$PATH` environment
-variable is updated to run the doctrine command line client:
-
-```bash
-$ export PATH=$PATH:/home/djm76/programming/php/gocdb5_mep/gocdb/vendor/bin
-$ cd lib/Doctrine
-$ doctrine --version
-Doctrine Command Line Interface version 2.4.8
-$ doctrine-dbal --version
-Doctrine Command Line Interface version 2.5.4
-```
-Note: you will need to run `$doctrine --version` from within the `gocDBSrcHome/lib/Doctrine` directory.
+specific dependency using composer. 
 
 #### Install Doctrine Via Composer (Recommended)
 
@@ -213,7 +219,22 @@ see: [pear installation](http://pear.php.net/manual/en/installation.getting.php)
   $ echo 'to uninstall a package'
   $ pear uninstall pear.doctrine-project.org/DoctrineORM
   ```
+  
+#### Check Doctrine installation
 
+  Whichever way you installed Doctrine, ensure that your `$PATH` environment variable is updated to run the doctrine command line client.
+  
+  Note: you need to run `$doctrine --version` from within the `gocDBSrcHome/lib/Doctrine` directory.
+  
+  ```bash
+  $ export PATH=$PATH:/home/djm76/programming/php/gocdb5_mep/gocdb/vendor/bin
+  $ cd lib/Doctrine
+  $ doctrine --version
+  Doctrine Command Line Interface version 2.4.8
+  $ doctrine-dbal --version
+  Doctrine Command Line Interface version 2.5.4
+  ```  
+  
 #### Paginator fix <a id="doctrineFix"></a>
 
 When using doctrine 2.3.3 on an oracle database, returning an ordered list of results using the Paginator will not honour the specified ordering. e.g. instead of returning the 100 most recent downtimes when using `orderby START_TIME descending`, it will return the first hundred downtimes in the table, which have then been ordered by start_time descending. See https://github.com/doctrine/doctrine2/issues/2456 for more details.
@@ -238,6 +259,8 @@ deployment of your GOCDB instance:
 ### Create DB User/Account <a id="create-db"></a>
 #### Oracle
 
+If you intend to populate the database from a dump of an existing GOCDB5 instance you do NOT need to create the GOCDB5 user. Simply deploy the data as described at ["Deploy and existing DB"](#deploy-existing-dump) below remembering that you might want to ALTER the password for the GOCDB5 user after the import.
+
 We advise that you create a dedicated GOCDB5 user. For Oracle, you can create
 the user with the following script (substitute GOCDB5 for your username and
 a sensible password). Run this script as the Oracle admin/system user:
@@ -245,14 +268,13 @@ a sensible password). Run this script as the Oracle admin/system user:
 ```
 -- Manage GOCDB5 user if already exists (optional) --
 drop user gocdb5 cascade;
-ALTER USER gocdb5 IDENTIFIED BY new_password;
 
 -- CREATE USER SQL
-CREATE USER GOCDB5 IDENTIFIED BY <PASSWORD>
-DEFAULT TABLESPACE "USERS"
+CREATE USER GOCDB5 IDENTIFIED BY <PASSWORD> 
+DEFAULT TABLESPACE "USERS" 
+QUOTA UNLIMITED ON "USERS" 
 TEMPORARY TABLESPACE "TEMP";
--- ROLES
-GRANT "RESOURCE" TO GOCDB5 ;
+-- ROLES - GRANT "RESOURCE" TO GOCDB5
 -- SYSTEM PRIVILEGES
 GRANT CREATE TRIGGER TO GOCDB5 ;
 GRANT CREATE SEQUENCE TO GOCDB5 ;
@@ -261,6 +283,12 @@ GRANT CREATE JOB TO GOCDB5 ;
 GRANT CREATE PROCEDURE TO GOCDB5 ;
 GRANT CREATE TYPE TO GOCDB5 ;
 GRANT CREATE SESSION TO GOCDB5 ;
+```
+
+If you are using sqlplus to connect to the database remotely you will need also -
+
+```
+GRANT CONNECT TO GOCDB5;
 ```
 
 By default, Oracle 11g will expire a password in 180 days. In previous versions
@@ -296,7 +324,7 @@ The database schema is deployed to your database using Doctrine.
 * Locate the provided template file: `bootstrap_doctrine_TEMPLATE.php`. In this
 file you will find three blocks of code commented out, once for each of the
 supported database, SQLite, Oracle and MySQL.
-* Copy this file to `bootstrap_doctrine.php` in the same dir and modify to
+* Copy this file to `bootstrap_doctrine.php` in the same dir and modify (including commenting out the "die" statement at the top of the file) to
 specify your chosen DB connection details (see file for more details, including
 how to compile Doctrine proxy objects for better performance for production usage).
 * Check that doctrine can connect to the DB running the following (still in the <gocDBSrcHome>/lib/Doctrine directory):
@@ -361,7 +389,7 @@ $ cd lib/Doctrine
 $ php deploy/DeploySampleDataRunner.php sampleData
 ```
 
-### Deploy an existing DB .dmp file to populate your DB
+### Deploy an existing DB .dmp file to populate your DB<a id="deploy-existing-dump"></a>
 
 You may want to deploy an existing dump/backup of the DB rather than deploying the
 DDL and seeding the empty DB with required data and sample data. Oracle provides the
@@ -373,10 +401,7 @@ This directory object defines the directory where the .dmp file is loaded from.
 
   ```
   sqlplus system
-  SQL> create or replace DIRECTORY 'dmpdir' AS '<Directroy path>';
-  SQL> grant read,write on directory dmpdir to <user>;
-  SQL> SELECT owner, directory_name, directory_path FROM all_directories;
-  SQL> select directory_path from dba_directories where upper(directory_name) =  'DMPDIR';
+  SQL> create or replace DIRECTORY dmpdir AS '<Directroy path>';
   SQL> exit
   ```
 
