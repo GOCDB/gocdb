@@ -32,7 +32,7 @@
                                 <?php xecho($ra->getRoleTypeName()); ?>
                             </td>
                             <td>
-                                <a href="index.php?Page_Type=User&id=<?php echo $ra->getRoleUserId(); ?>">
+                                <a href="index.php?Page_Type=User&amp;id=<?php echo $ra->getRoleUserId(); ?>">
                                     <?php xecho($ra->getRoleUserPrinciple()); ?>
                                 </a>
                             </td>
@@ -46,7 +46,7 @@
                                 <?php xecho($ra->getRoleNewStatus()); ?>
                             </td>
                             <td>
-                                <a href="index.php?Page_Type=User&id=<?php echo $ra->getUpdatedByUserId(); ?>">
+                                <a href="index.php?Page_Type=User&amp;id=<?php echo $ra->getUpdatedByUserId(); ?>">
                                     <?php xecho($ra->getUpdatedByUserPrinciple()); ?>
                                 </a>
                             </td>

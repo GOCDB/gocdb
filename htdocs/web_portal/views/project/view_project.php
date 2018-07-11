@@ -18,7 +18,7 @@
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <?php if($params['ShowEdit']){?>
-                    <a href="index.php?Page_Type=Edit_Project&id=<?php echo $params['ID']?>">
+                    <a href="index.php?Page_Type=Edit_Project&amp;id=<?php echo $params['ID']?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                         <br />
                         <br />
@@ -67,7 +67,7 @@
             <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg">
             </td>
                     <td>
-            <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
+            <a href="index.php?Page_Type=NGI&amp;id=<?php echo $ngi->getId() ?>">
                 <?php xecho($ngi->getName()); ?>
             </a>
                     </td>
@@ -85,7 +85,7 @@
         <?php if(!$params['portalIsReadOnly']):?>
             <!-- Add NGI link -->
             <?php if($params['ShowEdit']){?>
-                <a href="index.php?Page_Type=Add_Project_NGIs&id=<?php echo $params['ID'];?>">
+                <a href="index.php?Page_Type=Add_Project_NGIs&amp;id=<?php echo $params['ID'];?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                             Add NGIs
@@ -96,7 +96,7 @@
             <?php if ($ngiCount > 0): ?>
                 <!-- Remove NGI Link -->
                 <?php if($params['ShowEdit']){?>
-                    <a href="index.php?Page_Type=Remove_Project_NGIs&id=<?php echo $params['ID'];?>">
+                    <a href="index.php?Page_Type=Remove_Project_NGIs&amp;id=<?php echo $params['ID'];?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                         <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                                 Remove NGIs
@@ -153,7 +153,7 @@
         <?php else: echo "<br><br>&nbsp &nbsp There are currently no users with roles over this project<br>"; endif; ?>
         <!-- don't allow role requests in read only mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['authenticated']):?>
-            <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['ID'];?>">
+            <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['ID'];?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Request Role
@@ -186,7 +186,7 @@
                 ?>
                 <tr>
                     <td>
-            <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+            <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId() ?>">
                 <?php xecho($site->getShortName()); ?>
             </a>
                     </td>
@@ -196,7 +196,7 @@
                     </td>
 
                     <td>
-                        <a href="index.php?Page_Type=NGI&id=<?php echo $site->getNGI()->getId() ?>">
+                        <a href="index.php?Page_Type=NGI&amp;id=<?php echo $site->getNGI()->getId() ?>">
                             <?php xecho($site->getNGI()->getName()) ?>
                         </a>
                     </td>

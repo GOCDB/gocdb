@@ -8,7 +8,7 @@ $serviceType = $params['serviceType'];
           id="Add_Service_Endpoint" name="Add_Service_Endpoint"> <!-- class="inputForm"-->
 
         <h1>Add Endpoint</h1>
-         <a href="index.php?Page_Type=Service&id=<?php echo $service->getId();?>">
+         <a href="index.php?Page_Type=Service&amp;id=<?php echo $service->getId();?>">
             &LeftArrow;View Parent Service</a>
         <br />
         <br />

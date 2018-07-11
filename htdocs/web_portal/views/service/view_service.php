@@ -22,7 +22,7 @@ $configService = \Factory::getConfigService();
     <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
-                <a href="index.php?Page_Type=Edit_Service&id=<?php echo $se->getId() ?>">
+                <a href="index.php?Page_Type=Edit_Service&amp;id=<?php echo $se->getId() ?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
@@ -129,7 +129,7 @@ $configService = \Factory::getConfigService();
                 <tr class="site_table_row_1">
                     <td class="site_table">Parent Site</td>
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Site&id=<?php echo $se->getParentSite()->getId() ?>">
+                        <a href="index.php?Page_Type=Site&amp;id=<?php echo $se->getParentSite()->getId() ?>">
                             <?php xecho($se->getParentSite()->getShortName()); ?>
                         </a>
                     </td>
@@ -247,7 +247,7 @@ $configService = \Factory::getConfigService();
                 ?>
                 <tr class="site_table_row_<?php echo $num; ?>">
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Service_Group&id=<?php echo $sg->getId()?>">
+                        <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $sg->getId()?>">
                             <?php xecho($sg->getName()) ?>
                         </a>
                     </td>
@@ -287,7 +287,7 @@ $configService = \Factory::getConfigService();
 
                 <tr class="site_table_row_<?php echo $num ?>">
                     <td style="width: 30%;"class="site_table">
-                        <a href="index.php?Page_Type=View_Service_Endpoint&id=<?php echo $endpoint->getId() ?>">
+                        <a href="index.php?Page_Type=View_Service_Endpoint&amp;id=<?php echo $endpoint->getId() ?>">
                             <?php xecho($endpoint->getName()) ?>
                         </a>
                     </td>
@@ -295,12 +295,12 @@ $configService = \Factory::getConfigService();
                     <td style="width: 30%;"class="site_table"><?php xecho($endpoint->getInterfaceName()); ?></td>
                     <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
                         <td style="width: 10%;"align = "center"class="site_table">
-                                <a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>">
+                                <a href="index.php?Page_Type=Edit_Service_Endpoint&amp;endpointid=<?php echo $endpoint->getId();?>&amp;serviceid=<?php echo $seId;?>">
                                     <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
                                 </a>
                         </td>
                         <td style="width: 10%;"align = "center"class="site_table">
-                            <a href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $seId;?>">
+                            <a href="index.php?Page_Type=Delete_Service_Endpoint&amp;endpointid=<?php echo $endpoint->getId();?>&amp;serviceid=<?php echo $seId;?>">
                                 <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/>
                             </a>
                         </td>
@@ -315,7 +315,7 @@ $configService = \Factory::getConfigService();
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Endpoint -->
-            <a href="index.php?Page_Type=Add_Service_Endpoint&se=<?php echo $se->getId();?>">
+            <a href="index.php?Page_Type=Add_Service_Endpoint&amp;se=<?php echo $se->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Endpoint
@@ -339,7 +339,7 @@ $configService = \Factory::getConfigService();
     <!--  Downtimes -->
     <div class="listContainer rounded" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
-        <a href="index.php?Page_Type=SE_Downtimes&id=<?php echo $se->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
+        <a href="index.php?Page_Type=SE_Downtimes&amp;id=<?php echo $se->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
 
         <table id="downtimesTable"  class="table table-striped table-condensed tablesorter">
@@ -375,7 +375,7 @@ $configService = \Factory::getConfigService();
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Downtime Link -->
-            <a href="index.php?Page_Type=Add_Downtime&se=<?php echo $se->getId();?>&site=<?php echo $se->getParentSite()->getId(); ?>">
+            <a href="index.php?Page_Type=Add_Downtime&amp;se=<?php echo $se->getId();?>&amp;site=<?php echo $se->getParentSite()->getId(); ?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Downtime

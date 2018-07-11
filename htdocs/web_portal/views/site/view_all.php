@@ -144,7 +144,7 @@
             ?>
             <tr>
             <td>
-                <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+                <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId() ?>">
                 <?php echo $site->getShortName(); ?>
                 </a>
             </td>

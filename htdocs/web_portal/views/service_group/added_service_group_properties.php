@@ -8,6 +8,6 @@ $propertyArray=$params['propArr']
 
     <?php echo count($propertyArray) ?> new service group property(s) added to <?php echo $parent->getName(); ?>. <br/>
 
-    <a href="index.php?Page_Type=Service_Group&id=<?php echo $parent->getID(); ?>">
+    <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $parent->getID(); ?>">
         View service group</a>
 </div>

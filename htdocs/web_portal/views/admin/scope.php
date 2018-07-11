@@ -40,7 +40,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
     <?php if(!$params['portalIsReadOnly']):?>
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
-                <a href="index.php?Page_Type=Admin_Edit_Scope&id=<?php echo $id ?>">
+                <a href="index.php?Page_Type=Admin_Edit_Scope&amp;id=<?php echo $id ?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
@@ -87,7 +87,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId() ?>">
+                                <a href="index.php?Page_Type=NGI&amp;id=<?php echo $ngi->getId() ?>">
                                     <img class="flag" style="vertical-align: middle" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php echo $ngi->getName() ?>.jpg">
                                     <span>&nbsp;&nbsp;</span><?php xecho($ngi->getName()); ?>
                                 </a>
@@ -127,7 +127,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+                                <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId() ?>">
                                     <span>&nbsp;&nbsp;</span><?php xecho($site->getShortName()); ?>
                                 </a>
                             </span>
@@ -168,7 +168,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
+                                <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $sGroup->getId()?>">
                                    <?php xecho($sGroup->getName()); ?>
                                 </a>
                             </span>
@@ -198,7 +198,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Services&scope=<?php xecho($name)?>">
+                        <a href="index.php?Page_Type=Services&amp;scope=<?php xecho($name)?>">
                             View Services
                         </a>
                     </td>

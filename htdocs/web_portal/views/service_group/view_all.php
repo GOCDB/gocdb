@@ -84,7 +84,7 @@
             ?>
             <tr>
                 <td>
-            <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
+            <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $sGroup->getId()?>">
             <?php xecho($sGroup->getName()); ?>
             </a>
                 </td>

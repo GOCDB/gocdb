@@ -20,7 +20,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
         <?php if($params['ShowEdit']):?>
             <div style="float: right;">
                 <div style="float: right; margin-left: 2em;">
-                    <a href="index.php?Page_Type=Edit_Service_Group&id=<?php echo $params['sGroup']->getId()?>">
+                    <a href="index.php?Page_Type=Edit_Service_Group&amp;id=<?php echo $params['sGroup']->getId()?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                         <br />
                         <br />
@@ -119,7 +119,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                     <div style="background-color: inherit;">
                        <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
+                                <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
                                     <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")");?>
                                 </a>
                             </span>
@@ -156,14 +156,14 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Link -->
-            <a href="index.php?Page_Type=Add_Service_Group_SEs&id=<?php echo $params['sGroup']->getId();?>">
+            <a href="index.php?Page_Type=Add_Service_Group_SEs&amp;id=<?php echo $params['sGroup']->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Services
                 </span>
             </a>
             <!-- Remove Service Link -->
-            <a href="index.php?Page_Type=Remove_Service_Group_SEs&id=<?php echo $params['sGroup']->getId();?>">
+            <a href="index.php?Page_Type=Remove_Service_Group_SEs&amp;id=<?php echo $params['sGroup']->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Remove Services
@@ -212,7 +212,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['authenticated']): ?>
             <!-- Request role Link -->
-            <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['sGroup']->getId();?>">
+            <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['sGroup']->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Request Role
@@ -234,7 +234,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
     <!--  Downtimes -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
-        <a href="index.php?Page_Type=SGroup_Downtimes&id=<?php echo $params['sGroup']->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
+        <a href="index.php?Page_Type=SGroup_Downtimes&amp;id=<?php echo $params['sGroup']->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">

@@ -22,7 +22,7 @@ $dt = $params['downtime'];
             <div style="float: right;">
 
                 <div style="float: right; margin-left: 2em;">
-                    <a href="index.php?Page_Type=Edit_Downtime&id=<?php echo $dt->getId()?>">
+                    <a href="index.php?Page_Type=Edit_Downtime&amp;id=<?php echo $dt->getId()?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                         <br />
                         <br />
@@ -156,7 +156,7 @@ $dt = $params['downtime'];
                     <td class="site_table" style="width: 35%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                            <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
+                            <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
                                 <?php echo xssafe($se->getHostname()) . " (" . xssafe($se->getServiceType()->getName()) . ")";?>
                             </a>
                             </span>
@@ -196,11 +196,11 @@ $dt = $params['downtime'];
                             foreach($se->getEndpointLocations() as $el){
                                 echo '<tr>';
                                 if(in_array($el, $dt->getEndpointLocations()->toArray())){
-                                    echo '<td>&check; <a href="index.php?Page_Type=View_Service_Endpoint&id=' . $el->getId() . '">'.xssafe($el->getName()).'</a></td>';
+                                    echo '<td>&check; <a href="index.php?Page_Type=View_Service_Endpoint&amp;id=' . $el->getId() . '">'.xssafe($el->getName()).'</a></td>';
                                     echo '<td>'.xssafe($el->getUrl()).'</td>';
                                     echo '<td>'.xssafe($el->getInterfaceName()).'</td>';
                                 } else {
-                                    echo '<td><span style=\'color: grey\'>&cross; <a href="index.php?Page_Type=View_Service_Endpoint&id='.$el->getId().'">'.xssafe($el->getName()).'</span></td>';
+                                    echo '<td><span style=\'color: grey\'>&cross; <a href="index.php?Page_Type=View_Service_Endpoint&amp;id='.$el->getId().'">'.xssafe($el->getName()).'</span></td>';
                                     echo "<td><span style='color: grey'>".xssafe($el->getUrl()).'</span></td>';
                                     echo "<td><span style='color: grey'>".xssafe($el->getInterfaceName()).'</span></td>';
                                 }

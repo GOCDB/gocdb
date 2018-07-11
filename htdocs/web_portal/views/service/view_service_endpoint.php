@@ -24,7 +24,7 @@ $seId = $se->getId();
     <?php if (!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
         <div style="float: right;">
         <div style="float: right; margin-left: 2em;">
-            <a href="index.php?Page_Type=Edit_Service_Endpoint&endpointid=<?php echo $endpoint->getId(); ?>&serviceid=<?php echo $seId; ?>">
+            <a href="index.php?Page_Type=Edit_Service_Endpoint&amp;endpointid=<?php echo $endpoint->getId(); ?>&amp;serviceid=<?php echo $seId; ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/pencil.png" height="25px" style="float: right;" />
             <br />
             <br />
@@ -34,7 +34,7 @@ $seId = $se->getId();
         <div style="float: right;">
             <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
             <a onclick="return confirmSubmit()"
-               href="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId(); ?>&serviceid=<?php echo $seId; ?>">
+               href="index.php?Page_Type=Delete_Service_Endpoint&amp;endpointid=<?php echo $endpoint->getId(); ?>&serviceid=<?php echo $seId; ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
             <br />
             <br />
@@ -53,7 +53,7 @@ $seId = $se->getId();
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Name</td><td class="site_table">
-            <a href="index.php?Page_Type=Service&id=<?php echo $se->getId() ?>">
+            <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
                 <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
             </a>
                     </td>

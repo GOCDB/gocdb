@@ -38,7 +38,7 @@
                 ?>
                 <tr>
                     <td style="width: 25%">
-            <a href="index.php?Page_Type=NGI&id=<?php echo $ngi->getId()?>">
+            <a href="index.php?Page_Type=NGI&amp;id=<?php echo $ngi->getId()?>">
                 <img class="flag" src="<?php echo \GocContextPath::getPath()?>img/ngi/<?php xecho($ngi->getName()) ?>.jpg" style="vertical-align: middle">
                 &nbsp;&nbsp;&nbsp;<?php xecho($ngi->getName()); ?>
             </a>
@@ -82,7 +82,7 @@
                 ?>
                 <tr>
                     <td style="width: 30%">
-            <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
+            <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId() ?>">
                 <?php xecho($site->getShortName()); ?>
             </a>
                     </td>
@@ -125,7 +125,7 @@
                 ?>
                 <tr>
                     <td style="width: 30%">
-            <a href="index.php?Page_Type=Service&id=<?php echo $ser->getId() ?>">
+            <a href="index.php?Page_Type=Service&amp;id=<?php echo $ser->getId() ?>">
                 <?php xecho($ser->getHostName()); ?>
             </a>
                     </td>
@@ -171,7 +171,7 @@
                     ?>
                     <tr >
                         <td style="width: 25%">
-                <a href="index.php?Page_Type=User&id=<?php echo $user->getId() ?>">
+                <a href="index.php?Page_Type=User&amp;id=<?php echo $user->getId() ?>">
                 <?php xecho($user->getFullName()); ?>
                 </a>
                         </td>
