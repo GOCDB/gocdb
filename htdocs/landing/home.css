@@ -2,7 +2,7 @@ body {
 	background: linear-gradient(to bottom left,#F7F9FE, #DEE9FB, #D0DFF9);
 	background-repeat: no-repeat;
 	color: #272A4B;
-	font-family: "VAGRoundedLtRegular",Tahoma, "museo-sans-1", "museo-sans-2", "Helvetica Neue", Geneva,sans-serif;
+	font-family: 'PT Sans', sans-serif;
 	font-size: 0.8em;
 	text-align: center;
 	text-align: left;
@@ -608,7 +608,6 @@ div.rightPageContainer {
 	margin-bottom: 3em;
     border: 1px solid grey;
     padding: 1em;
-    box-shadow: 2px 2px 1px 0px #8da4c9;
     border-radius: 0.4em;
     
 }
