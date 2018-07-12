@@ -11,6 +11,17 @@ body {
 	height: 100%;
 }
 
+.button {
+	background: linear-gradient(#48d249, #b0ebb1);
+	color: white;
+	text-align: center;
+	display: block;
+	font-size: 2.3em;
+	border-radius: 0.4em;
+	padding: 0.4em 1em;
+	width: 50%
+}
+
 html {
 	height: 100%;
 }
@@ -29,7 +40,7 @@ h1 {
 a {
 	color: #103C7A;
 	text-decoration: none;
-    margin-top: 0em;
+    margin-top: 1.5em;
     margin-bottom: 0em;
 }
 
