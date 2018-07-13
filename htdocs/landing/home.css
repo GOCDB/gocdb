@@ -12,7 +12,7 @@ body {
 }
 
 .button {
-	background: linear-gradient(#48d249, #b0ebb1);
+	background: linear-gradient(#48D49, #B0EBB1);
 	color: white;
 	text-align: center;
 	display: block;
@@ -28,12 +28,12 @@ html {
 
 
 h1 {
-	color: #00ac00;
+	color: #00AC00;
 	text-decoration: none;
 	font-weight:normal;
 	margin-top: 0em;
 	margin-bottom: 0.2em;
-	text-shadow: 1px 1px 1px #d5ddd5;
+	text-shadow: 1px 1px 1px #D5DDD5;
 	font-size: 2.5em;
 }
 
