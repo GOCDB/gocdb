@@ -63,6 +63,9 @@ a {
 
 div.Copyright_Text {
 	font-size: 0.8em;
+	width: 45em;
+	height: 50px;
+	margin-left: 12em;
 }
 
 a.Licence_Link {
@@ -72,6 +75,7 @@ a.Licence_Link {
 
 .leftFloat {
 	float: left;
+	margin-right:auto;
 }
 
 
