@@ -1,79 +1,49 @@
 body {
-	background-image: url('background2.jpg');
+	background: linear-gradient(to bottom left,#F7F9FE, #DEE9FB, #D0DFF9);
 	background-repeat: no-repeat;
-	background-color: #b3cfff;
 	color: #272A4B;
-	font-family: "VAGRoundedLtRegular",Tahoma, "museo-sans-1", "museo-sans-2", "Helvetica Neue", Geneva,sans-serif;
+	font-family: 'PT Sans', sans-serif;
 	font-size: 0.8em;
 	text-align: center;
 	text-align: left;
+	background-attachment: fixed;
+	margin: 0;
+	height: 100%;
 }
 
-a img {
-	border: none;
+.button {
+	background: linear-gradient(#48D49, #B0EBB1);
+	color: white;
+	text-align: center;
+	display: block;
+	font-size: 2.3em;
+	border-radius: 0.4em;
+	padding: 0.4em 1em;
+	width: 50%
 }
 
-h1,th,h2,h3,h4 {
-	color: #00ac00;
+html {
+	height: 100%;
+}
+
+
+h1 {
+	color: #00AC00;
 	text-decoration: none;
 	font-weight:normal;
 	margin-top: 0em;
 	margin-bottom: 0.2em;
-}
-
-h1, h2, h3 {
-	color: #00c100;
-	text-shadow: 1px 1px 1px #d5ddd5;
+	text-shadow: 1px 1px 1px #D5DDD5;
+	font-size: 2.5em;
 }
 
 a {
 	color: #103C7A;
 	text-decoration: none;
-    margin-top: 0em;
+    margin-top: 1.5em;
     margin-bottom: 0em;
 }
 
-h4 {
-	margin-top: 0.5em;
-	margin-bottom: 0.5em;
-}
-
-h3 {
-	/*border-top:          	1px solid #505050;*/
-	/*border-bottom:       	1px solid #505050;*/
-	/*margin-bottom:       	0.25em;*/
-	padding-bottom: 1em;
-	font-size: 1.5em;
-	/*font-weight:			normal;*/
-	margin-top: 0em;
-	border-top: 0em;
-	padding-top: 0em;
-}
-
-h4 {
-	padding-bottom: 1em;
-	font-size: 1em;
-	/*font-weight:			normal;*/
-	margin-top: 0em;
-	border-top: 0em;
-	padding-top: 0em;
-	font-weight: normal;
-}
-
-h3.Standard_Padding {
-	margin: 0em;
-}
-
-h1 {
-    font-size: 2.5em;
-}
- 
-/*
-    *	Containing DIV's
-	*	Page Container is the whole page
-	*	Left Box is the menu
-	*	Right Box is the smaller page contents
-	*/
 .page_container { 
 	position: relative;
 	margin-left: auto;
@@ -81,519 +51,36 @@ h1 {
 	width: 50em;
 	min-width: 45em;
 	overflow: hidden;
-	/* border: 1px solid black; */
 	z-index: 1;
 	background-color: transparent;
 }
 
-/* Credit for this section of CSS goes to Matt Lira of STFC, 2009 */
-.left_box_menu {
-	float: left;
-	margin: 0.5em 0.5em 0.5em 0.5em;
-	padding: 0.5em 0.5em 0.5em 0.5em;
-	border: 1px solid grey;
-	width: 11.5em;
-	box-shadow: 2px 2px 1px 0px #8da4c9;
-	background-color: white;
-	border-radius: 0.4em;
-}
 
-div.Left_Search_Box {
-	clear: left;
-	margin-top: 0em;
-}
-
-input.Search {
-	width: 85%;
-	margin-left: 1em;
-	margin-bottom: 0.5em;
-}
-
-input.Search_Button {
-	margin-left: 1em;
-	margin-bottom: 0.5em;
-}
-
-div.Left_User_Status_Box {
-	clear: left;
-	margin-top: 0em;
-}
-
-div.Left_Logo_Box {
-	float: left;
-	clear: left;
-}
-
-div.Indented {
-	margin-left: 1em;
-}
-
-.right_box {
+.centre_box {
 	position: relative;
 	padding: 0.5em 1em 0.0em 1em;
-	/* border: 1px solid #505050; */
-}
-
-.empty {
-	clear: both;
-}
-
-.Logo_Text {
-	display: inline;
-}
-
-.logo_image {
-	display: inline;
-	height: 3em;
-	text-align: center;
-}
-
-h3.Small_Bottom_Margin {
-	margin-bottom: 0.25em;
-	padding-bottom: 0.25em;
-}
-
-h4.menu_title {
-	margin-bottom: 0.25em;
-	padding-bottom: 0.25em;
-	padding-left: 0.5em;
-}
-
-/* Input Form Configuration */
-.inputForm {
-	display: inline;
-}
-
-.input_button {
-	margin-top: 0.5em;
-	font-size: 0.7em;
-}
-
-.input_name {
-	display: block;
-	/*width:               	20em;*/
-	font-size: 0.9em;
-}
-
-.input_syntax {
-	display: inline;
-	/*width:               	20em;*/
-	color: #909090;
-	font-style: italic;
-	font-size: 0.9em;
-}
-
-span.menu_link {
-	display: inline;
-	font-size: 1em;
-	margin-bottom: 0.5em;
-	color: #103C7A;
-	border: 0.1em solid #FFFFFF;
-}
-
-span.menu_link:hover {
-	border: 0.1em solid #00C100;
-}
-
-hr.Menu_Spacer {
-	position: relative;
-	width: 11em;
-	left: -1.5em;
-}
-
-ul.Smaller_Top_Margin {
-	margin-top: 0em;
-}
-
-ul.Smaller_Left_Padding {
-	padding-left: 2em;
-	margin-bottom: 0.5em;
-}
-
-li {
-	color: #3E6397;
-	list-style-type: circle;
-	/* border: 0.1em solid; */
-    margin-left: -0.4em;
-    margin-bottom: 0.3em;
-}
-
-.input_input_text {
-	width: 90%;
-	margin-bottom: 1em;
-	margin-left: 2em;
-}
-
-.input_input_date {
-	width: 30%;
-	margin-bottom: 1em;
-	margin-left: 2em;
-}
-
-.table_row_1,.table_header {
-	background-color: #d3d3d3;
-}
-
-.site_table_row_1 {
-	background-color: #d0e1f7;
-}
-
-.site_table_row_2 {
-	background-color: #f5f5f5;
-}
-
-td.site_table {
-	padding-left: 1em;
-	padding-top: 0.5em;
-	padding-bottom: 0.5em;
-}
-
-th.site_table {
-	padding-left: 1em;
-	padding-top: 0.5em;
-	padding-bottom: 0.5em;
-	color: black;
-	font-weight: bold;
-}
-
-.start_page_body {
-	line-height: 1.5em;
-}
-
-td {
-	padding: 0.2em;
-}
-
-span.action {
-	margin-left: auto;
-	margin-right: auto;
-	padding: 0em 0.25em 0em 0.25em;
-	text-align: center;
-}
-
-h3.spacer {
-	display: inline;
-	width: 4em;
 }
 
 div.Copyright_Text {
 	font-size: 0.8em;
+	width: 45em;
+	height: 50px;
+	margin-left: 12em;
 }
 
 a.Licence_Link {
 	font-family: serif;
 }
 
-span.Developed_By_Text {
-	font-family: serif;
-}
-
-.add_edit_form {
-	margin-left: 2em;
-	margin-bottom: 1em;
-	width: 90%;
-}
-
-span.Error {
-	position: relative;
-	left: -1.5em;
-}
-
-span.New_Service_Endpoint {
-	padding-bottom: 1em;
-	display: block;
-}
-
-/*   border: medium double rgb(250,0,255);*/
-option.sectionTitle {
-	background-color: #000000;
-	font-weight: bold;
-	font-size: 12px;
-	color: white;
-	text-align: center;
-}
-
-/* ################## CALENDAR CSS DIVS  ###################### */
-	/* calendar icon */
-img.tcalIcon {
-	cursor: pointer;
-	margin-left: 1px;
-	vertical-align: middle;
-}
-
-/* calendar container element */
-div#tcal {
-	position: absolute;
-	visibility: hidden;
-	z-index: 100;
-	width: 158px;
-	padding: 2px 0 0 0;
-}
-
-/* all tables in calendar */
-div#tcal table {
-	width: 100%;
-	border: 1px solid silver;
-	border-collapse: collapse;
-	background-color: white;
-}
-
-/* navigation table */
-div#tcal table.ctrl {
-	border-bottom: 0;
-}
-
-/* navigation buttons */
-div#tcal table.ctrl td {
-	width: 15px;
-	height: 20px;
-}
-
-/* month year header */
-div#tcal table.ctrl th {
-	background-color: white;
-	color: black;
-	border: 0;
-}
-
-/* week days header */
-div#tcal th {
-	border: 1px solid silver;
-	border-collapse: collapse;
-	text-align: center;
-	padding: 3px 0;
-	font-family: tahoma, verdana, arial;
-	font-size: 10px;
-	background-color: gray;
-	color: white;
-}
-
-/* date cells */
-div#tcal td {
-	border: 0;
-	border-collapse: collapse;
-	text-align: center;
-	padding: 2px 0;
-	font-family: tahoma, verdana, arial;
-	font-size: 11px;
-	width: 22px;
-	cursor: pointer;
-}
-
-/* date highlight
-   in case of conflicting settings order here determines the priority from least to most important */
-div#tcal td.othermonth {
-	color: silver;
-}
-
-div#tcal td.weekend {
-	background-color: #ACD6F5;
-}
-
-div#tcal td.today {
-	border: 1px solid red;
-}
-
-div#tcal td.selected {
-	background-color: #FFB3BE;
-}
-
-/* iframe element used to suppress windowed controls in IE5/6 */
-iframe#tcalIF {
-	position: absolute;
-	visibility: hidden;
-	z-index: 98;
-	border: 0;
-}
-
-/* transparent shadow */
-div#tcalShade {
-	position: absolute;
-	visibility: hidden;
-	z-index: 99;
-}
-
-div#tcalShade table {
-	border: 0;
-	border-collapse: collapse;
-	width: 100%;
-}
-
-div#tcalShade table td {
-	border: 0;
-	border-collapse: collapse;
-	padding: 0;
-}
-
-select.Downtime_Select {
-	margin-left: 2em;
-}
-
-.header {
-	color: #009000;
-}
-
-div.listContainer {
-	width: 99.5%;
-	float: left;
-	border: 1px solid grey;
-	margin-right: 10px;
-	margin-top: 1.6em;
-	box-shadow: 2px 2px 1px 0px #8da4c9;
-	border-radius: 0.4em;
-}
-
-span.listHeader {
-	vertical-align: middle;
-	float: left;
-	padding-top: 0.9em;
-	padding-left: 1em;
-}
 
 .leftFloat {
 	float: left;
+	margin-right:auto;
 }
 
-span.vSiteDescription {
-	clear: both;
-	float: left;
-	padding-bottom: 0.4em;
-}
 
-span.vSitesMoreInfo {
-	clear: both;
-	float: left;
-}
 
-img.decoration {
-	float: right;
-	padding-right: 1em;
-	padding-top: 0.5em;
-	padding-bottom: 0.5em;
-	height: 25px;
-}
-
-input.vSiteSearch {
-	color: grey;
-	float: left;
-	margin-left: 1em;
-	margin-top: 0.5em;
-	margin-bottom: 0.5em;
-	width: 95%;
-	clear: left;
-}
-
-input.vSiteSearchButton {
-	float: left;
-	margin-left: 1em;
-	margin-bottom: 1em;
-}
-
-div.vSiteSearchResultContainer {
-	overflow: auto;
-	max-height: 20em;
-	float: left;
-	width: 100%;
-	display: none;
-	border-top: 1px grey solid
-}
-
-span.vSite1emBottomMargin {
-	padding-bottom: 1em;
-}
-
-table.vSiteResults {
-	clear: both;
-	width: 100%;
-}
-
-/* Top page logo */
-img.pageLogo {
-    height: 60px;
-    margin-right: 1.5em;
-}
-
-div.rightPageHolder {
-    overflow: hidden;
-    margin-top: 1em;
-}
-
-span.vSiteNotice {
-    clear: both;
-    display: block;
-    margin-top: 2em;
-    float: left;
-}
-
-img.centered {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
-span.topMargin {
-    margin-top: 1em;
-}	
-
-span.block {
-    display: block;
-}
-
-form.inline {
-    display: inline;
-}
-
-div.topMargin {
-	padding-top: 1em;
-}
-
-div.topMargin2 {
-    margin-top: 2em;
-}
-
-div.siteContainer {
-    float: left;
-    clear: both;
-    border: 1px solid grey;
-    margin-right: 0px;
-    margin-top: 1.3em;
-    padding: 1em;
-    box-shadow: 1px 1px 1px 0px #8da4c9;
-    border-radius: 0.4em;
-}
-
-div.clearLeft {
-    clear: left;
-}
-
-div.siteFilter {
-	margin-left: 1em;
-}
-
-.leftMargin {
-	margin-left: 1em;
-}
-
-.middleAlign {
-    vertical-align: middle;
-}
-
-/* NGI logo (usually a flag) */
-img.flag {
-    height: 25px;
-    width: 38px;
-}
-
-.middle {
-    vertical-align: middle;
-}
-
-img.nav {
-    height: 30px;
-    width: 30px;
-}
-
-div.rightPageContainer {
+div.centrePageContainer {
 	background: white;
 	background-image: url('contentBackground.jpg');
 	background-position: top right;
@@ -602,21 +89,6 @@ div.rightPageContainer {
 	margin-bottom: 3em;
     border: 1px solid grey;
     padding: 1em;
-    box-shadow: 2px 2px 1px 0px #8da4c9;
     border-radius: 0.4em;
     
-}
-
-div.tableContainer {
-    box-shadow: 2px 2px 1px 0px #8da4c9;
-    border-radius: 0.4em;
-}
-
-.rounded {
-    border-radius: 0.5em;
-}
-
-.copyright {
-	float: left;
-	margin-left: 0.5em;
 }
