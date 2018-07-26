@@ -160,6 +160,16 @@ div.Left_Logo_Box {
     clear: left;
 }
 
+div.Left_Logo_Row {
+    height: 25px;
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+img.Left_Logo_Image {
+    max-height: 100%;
+}
+
 div.Indented {
     margin-left: 1em;
 }

@@ -122,13 +122,17 @@
     {
         $HTML = "";
         $HTML .= '<div class="Left_Logo_Box left_box_menu">';
-        $HTML .= '<div align="center"><a href="http://www.stfc.ac.uk" target="_blank"><img src="'.\GocContextPath::getPath().'img/STFC.jpg" height="25"/></a>&nbsp;&nbsp;';
-        $HTML .= '<a href="http://europa.eu" target="_blank"><img src="'.\GocContextPath::getPath().'img/eu.jpg" height="25"/></a>&nbsp;&nbsp;';
-        //$HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="img/egi.gif" height="25"/></a></div>';
-        $HTML .= '<a href="http://www.egi.eu" target="_blank"><img src="'.\GocContextPath::getPath().'img/egi_logo.jpg" height="25"/></a>';
+        $HTML .= '<div class="Left_Logo_Row">';
+        $HTML .= '<a href="https://stfc.ukri.org/" target="_blank"><img class="Left_Logo_Image" style="margin: 0px 5px 0px 0px;" src="'.\GocContextPath::getPath().'img/STFCMediumColourTrans_crop.png" alt="The logo of the Science and Technology Facilities Council" /></a>';
+        $HTML .= '<a href="https://europa.eu/european-union/index_en" target="_blank"><img class="Left_Logo_Image" src="'.\GocContextPath::getPath().'img/eu_flag_yellow_low_150.png" alt="The logo of the European Union" /></a>&nbsp;&nbsp;';
+        $HTML .= '<a href="https://www.egi.eu" target="_blank"><img class="Left_Logo_Image" src="'.\GocContextPath::getPath().'img/egi_logo_no_background_150.png" alt="The logo of the E G I Foundation" /></a>';
+        $HTML .= '<a href="https://www.eosc-hub.eu/" target="_blank"><img class="Left_Logo_Image" style="margin: 0px 0px 0px 5px" src="'.\GocContextPath::getPath().'img/eosc-hub-v-web_150.png" alt="The logo of the EOSC-hub Horizon 20 20 project" /></a>';
         $HTML .= '</div>';
-        $HTML .= '<br>';
-        $HTML .= 'GOCDB is an EGI service provided by <a href="http://stfc.ac.uk">STFC</a> co-funded by <a href="http://egi.eu">EGI.eu</a> and <a href="http://go.egi.eu/eng">EGI-Engage</a>';
+        $HTML .= 'GOCDB is provided by <a href="https://stfc.ukri.org/">STFC</a> for <a href="https://egi.eu">EGI</a>, co-funded by <a href="https://egi.eu">EGI.eu</a> and <a href="https://www.eosc-hub.eu/">EOSC-hub.</a>';
+	      $HTML .= '<br>- ';
+        $HTML .= '<a href="/privacy.html">Privacy Notice</a>.';
+	      $HTML .= '<br>- ';
+        $HTML .= '<a href="/aup.html">Acceptable Use Policy</a>.';
         $HTML .= '</div>';
 
         return $HTML;
