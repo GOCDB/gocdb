@@ -1,94 +1,93 @@
 body {
-	background: linear-gradient(to bottom left,#F7F9FE, #DEE9FB, #D0DFF9);
-	background-repeat: no-repeat;
-	color: #272A4B;
-	font-family: 'PT Sans', sans-serif;
-	font-size: 0.8em;
-	text-align: center;
-	text-align: left;
-	background-attachment: fixed;
-	margin: 0;
-	height: 100%;
+    background: linear-gradient(to bottom left,#F7F9FE, #DEE9FB, #D0DFF9);
+    background-repeat: no-repeat;
+    color: #272A4B;
+    font-family: 'PT Sans', sans-serif;
+    font-size: 0.8em;
+    text-align: center;
+    text-align: left;
+    background-attachment: fixed;
+    margin: 0;
+    height: 100%;
 }
 
 .button {
-	background: linear-gradient(#48D49, #B0EBB1);
-	color: white;
-	text-align: center;
-	display: block;
-	font-size: 2.3em;
-	border-radius: 0.4em;
-	padding: 0.4em 1em;
-	width: 50%
+    background: linear-gradient(#48D249, #B0EBB1);
+    color: white;
+    text-align: center;
+    display: block;
+    font-size: 2.3em;
+    border-radius: 0.4em;
+    padding: 0.4em 1em;
+    width: 50%
 }
 
 html {
-	height: 100%;
+    height: 100%;
 }
 
 
 h1 {
-	color: #00AC00;
-	text-decoration: none;
-	font-weight:normal;
-	margin-top: 0em;
-	margin-bottom: 0.2em;
-	text-shadow: 1px 1px 1px #D5DDD5;
-	font-size: 2.5em;
+    color: #00AC00;
+    text-decoration: none;
+    font-weight:normal;
+    margin-top: 0em;
+    margin-bottom: 0.2em;
+    text-shadow: 1px 1px 1px #D5DDD5;
+    font-size: 2.5em;
 }
 
 a {
-	color: #103C7A;
-	text-decoration: none;
+    color: #103C7A;
+    text-decoration: none;
     margin-top: 1.5em;
     margin-bottom: 0em;
 }
 
 .page_container { 
-	position: relative;
-	margin-left: auto;
-	margin-right: auto;
-	width: 50em;
-	min-width: 45em;
-	overflow: hidden;
-	z-index: 1;
-	background-color: transparent;
+    position: relative;
+    margin-left: auto;
+    margin-right: auto;
+    width: 50em;
+    min-width: 45em;
+    overflow: hidden;
+    z-index: 1;
+    background-color: transparent;
 }
 
 
 .centre_box {
-	position: relative;
-	padding: 0.5em 1em 0.0em 1em;
+    position: relative;
+    padding: 0.5em 1em 0.0em 1em;
 }
 
 div.Copyright_Text {
-	font-size: 0.8em;
-	width: 45em;
-	height: 50px;
-	margin-left: 12em;
+    font-size: 0.8em;
+    width: 45em;
+    height: 50px;
+    margin-left: 12em;
 }
 
 a.Licence_Link {
-	font-family: serif;
+    font-family: serif;
 }
 
 
 .leftFloat {
-	float: left;
-	margin-right:auto;
+    float: left;
+    margin-right:auto;
 }
 
 
 
 div.centrePageContainer {
-	background: white;
-	background-image: url('contentBackground.jpg');
-	background-position: top right;
-	background-repeat: no-repeat;
-	overflow: hidden;
-	margin-bottom: 3em;
+    background: white;
+    background-image: url('contentBackground.jpg');
+    background-position: top right;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    margin-bottom: 3em;
     border: 1px solid grey;
     padding: 1em;
     border-radius: 0.4em;
-    
 }
