@@ -162,61 +162,59 @@
 
     <table id="selectedSETable" class="table table-striped table-condensed tablesorter">
         <thead>
-        <tr>
-            <th>Hostname</th>
-            <th>Service Type</th>
-            <th>Production</th>
-            <th>Monitored</th>
-            <th>Host Site</th>
-            <th>Scope(s)</th>
-        </tr>
+            <tr>
+                <th>Hostname</th>
+                <th>Service Type</th>
+                <th>Production</th>
+                <th>Monitored</th>
+                <th>Host Site</th>
+                <th>Scope(s)</th>
+            </tr>
         </thead>
         <tbody>
-        <?php
-        if (count($params['services']) > 0) {
-            foreach ($params['services'] as $se) {
-            ?>
-            <tr>
-                <td>
-                <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
-                    <?php xecho($se->getHostName()); ?>
-                </a>
-                </td>
-                <td>
-                <?php xecho($se->getServiceType()->getName()); ?>
-                </td>
-                <td>
-                <?php if ($se->getProduction() == true) { ?>
-                    <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height=22px />
-                <?php } else { ?>
-                    <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height=22px />
-                <?php } ?>
-                </td>
-
-                <td>
-                <?php if ($se->getMonitored() == true) { ?>
-                    <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height=22px />
-                <?php } else { ?>
-                    <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height=22px />
-                <?php } ?>
-                </td>
-
-                <td>
-                <a href="index.php?Page_Type=Site&amp;id=<?php echo $se->getParentSite()->getId(); ?>">
-                    <?php xecho($se->getParentSite()->getShortName()); ?>
-                </a>
-                </td>
-
-                <td>
-                <textarea readonly="true" style="height: 25px;"><?php xecho($se->getScopeNamesAsString()); ?></textarea>
-                </td>
-
-            </tr>
             <?php
-            }
-        }
-        ?>
+            if (count($params['services']) > 0) {
+                foreach ($params['services'] as $se) {
+            ?>
+                    <tr>
+                        <td>
+                            <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
+                                <?php xecho($se->getHostName()); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php xecho($se->getServiceType()->getName()); ?>
+                        </td>
+                        <td>
+                            <?php if ($se->getProduction() == true) { ?>
+                                <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height=22px />
+                            <?php } else { ?>
+                                <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height=22px />
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <?php if ($se->getMonitored() == true) { ?>
+                                <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height=22px />
+                            <?php } else { ?>
+                                <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height=22px />
+                            <?php } ?>
+                        </td>
+                        <td>
+                            <a href="index.php?Page_Type=Site&amp;id=<?php echo $se->getParentSite()->getId(); ?>">
+                                <?php xecho($se->getParentSite()->getShortName()); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <textarea readonly="true" style="height: 25px;"><?php
+                                xecho($se->getScopeNamesAsString());
+                            ?></textarea>
+                        </td>
 
+                    </tr>
+            <?php
+                } // end of foreach iterating over services
+            } // end of if
+            ?>
         </tbody>
     </table>
 
@@ -285,4 +283,3 @@
 //        });
     });
 </script>
-

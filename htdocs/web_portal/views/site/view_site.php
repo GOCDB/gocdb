@@ -342,84 +342,80 @@ $extensionProperties = $site->getSiteProperties();
                 <th>URL</th>
                 <th>Production</th>
                 <th>Monitored</th>
-                <th>
-                    Scope Tags
-                </th>
+                <th>Scope Tags</th>
             </tr>
         </thead>
-            <tbody>
-        <?php
-        $num = 2;
-        foreach ($params['ServicesAndScopes'] as $serviceAndScopes) {
-        $se = $serviceAndScopes['Service'];
-        $scopes = $serviceAndScopes['Scopes'];
-        ?>
-
-            <tr>
-            <td>
-            <a href="index.php?Page_Type=Service&amp;id=<?php echo($se->getId()) ?>">
-                <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
-            </a>
-            </td>
-            <td><textarea readonly="true" style="height: 25px;"><?php xecho((string) $se->getUrl()) ?></textarea></td>
-
-            <td>
+        <tbody>
             <?php
-            switch ($se->getProduction()) {
-            case true:
-                ?>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
-                <?php
-                break;
-            case false:
-                ?>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
-                <?php
-                break;
-            }
+            $num = 2;
+            foreach ($params['ServicesAndScopes'] as $serviceAndScopes) {
+            $se = $serviceAndScopes['Service'];
+            $scopes = $serviceAndScopes['Scopes'];
             ?>
-            </td>
-
-            <td>
-            <?php
-            switch ($se->getMonitored()) {
-            case true:
-                ?>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                <tr>
+                    <td>
+                        <a href="index.php?Page_Type=Service&amp;id=<?php echo($se->getId()) ?>">
+                            <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
+                        </a>
+                    </td>
+                    <td>
+                        <textarea readonly="true" style="height: 25px;"><?php xecho((string) $se->getUrl()) ?></textarea>
+                    </td>
+                    <td>
+                        <?php
+                        switch ($se->getProduction()) {
+                        case true:
+                            ?>
+                        <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        case false:
+                            ?>
+                        <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        }
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        switch ($se->getMonitored()) {
+                        case true:
+                            ?>
+                        <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        case false:
+                            ?>
+                        <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        }
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        $count = 0;
+                        $numScopes = sizeof($scopes);
+                        $scopeString = '';
+                        foreach ($scopes as $scopeName => $sharedWithParent) {
+                        if ($sharedWithParent) {
+                            $scopeString .= $scopeName;
+                        } else {
+                            $scopeString .= $scopeName . '(x)';
+                        }
+                        if (++$count != $numScopes) {
+                            $scopeString .= ", ";
+                        }
+                        }
+                        ?>
+                        <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
+                        </td>
+                    </tr>
                 <?php
-                break;
-            case false:
+                } // End of the foreach loop iterating over ServicesAndScopes
                 ?>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
-                <?php
-                break;
-            }
-            ?>
-            </td>
-            <td>
-            <?php
-            $count = 0;
-            $numScopes = sizeof($scopes);
-            $scopeString = '';
-            foreach ($scopes as $scopeName => $sharedWithParent) {
-            if ($sharedWithParent) {
-                $scopeString .= $scopeName;
-            } else {
-                $scopeString .= $scopeName . '(x)';
-            }
-            if (++$count != $numScopes) {
-                $scopeString .= ", ";
-            }
-            }
-            ?>
-            <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
-            </td>
-            </tr>
-        <?php
-        //if ($num == 1) { $num = 2; } else { $num = 1; }
-        } // End of the foreach loop iterating over SEs
-        ?>
-        </tbody>
+            </tbody>
         </table>
 
 
@@ -442,47 +438,44 @@ $extensionProperties = $site->getSiteProperties();
         <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
 
         <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Role</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php
-        //$num = 2;
-        foreach ($params['roles'] as $role) {
-        ?>
-
-            <tr>
-            <td>
-                <div style="background-color: inherit;">
-                <?php if ($params['authenticated']) { ?>
-                <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
-                    <?php xecho($role->getUser()->getFullName()) ?>
-                </a>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
                 <?php
-                } else {
-                echo 'PROTECTED';
+                foreach ($params['roles'] as $role) {
+                ?>
+                    <tr>
+                        <td>
+                            <div style="background-color: inherit;">
+                                <?php if ($params['authenticated']) { ?>
+                                <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
+                                    <?php xecho($role->getUser()->getFullName()) ?>
+                                </a>
+                                <?php
+                                } else {
+                                echo 'PROTECTED';
+                                }
+                                ?>
+                            </div>
+                        </td>
+                        <td>
+                            <?php
+                            if ($params['authenticated']) {
+                                xecho($role->getRoleType()->getName());
+                            } else {
+                                echo 'PROTECTED';
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                <?php
                 }
                 ?>
-                </div>
-            </td>
-            <td>
-            <?php
-            if ($params['authenticated']) {
-                xecho($role->getRoleType()->getName());
-            } else {
-                echo 'PROTECTED';
-            }
-            ?>
-            </td>
-            </tr>
-        <?php
-        //if ($num == 1) { $num = 2; } else { $num = 1; }
-        }
-        ?>
-        </tbody>
+            </tbody>
         </table>
 
     <!-- Request Role Link -->
@@ -506,33 +499,30 @@ $extensionProperties = $site->getSiteProperties();
         <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
 
         <table id="siteDowntimesTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-        <tr>
-            <th>Description</th>
-            <th>From</th>
-            <th>To</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        //$num = 2;
-        foreach ($downtimes as $dt) {
-        ?>
-
-            <tr>
-            <td>
-                <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo($dt->getId()) ?>">
-                <?php xecho($dt->getDescription()) ?>
-                </a>
-            </td>
-            <td><?php echo($dt->getStartDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
-            <td><?php echo($dt->getEndDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
-            </tr>
-        <?php
-        //if ($num == 1) { $num = 2; } else { $num = 1; }
-        }
-        ?>
-        </tbody>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>From</th>
+                    <th>To</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($downtimes as $dt) {
+                ?>
+                    <tr>
+                        <td>
+                            <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo($dt->getId()) ?>">
+                            <?php xecho($dt->getDescription()) ?>
+                            </a>
+                        </td>
+                        <td><?php echo($dt->getStartDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
+                        <td><?php echo($dt->getEndDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
+                    </tr>
+                <?php
+                }
+                ?>
+            </tbody>
         </table>
 
     <!--  only show this link if we're in read / write mode -->
@@ -595,7 +585,7 @@ $extensionProperties = $site->getSiteProperties();
                             <?php endif;?>
                         </td>
                     </tr>
-                    <?php }?>
+                    <?php } ?>
                 </tbody>
             </table>
 
