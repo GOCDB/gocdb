@@ -215,6 +215,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
 
        // Add the jQuery form change event handlers
        $("#addDTForm").find(":input").change(function(){
+           updateStartEndTimesInUtc();
            validate();
        });
 
