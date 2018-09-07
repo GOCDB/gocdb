@@ -66,7 +66,7 @@ class NGI extends OwnedEntity implements IScopedEntity {
      * Unidirectional - Scope tags associated with the NGI
      *
      * @ManyToMany(targetEntity="Scope")
-     * @JoinTable(name="NGIs_Scopes",
+     * @JoinTable(name="Ngis_Scopes",
      *      joinColumns={@JoinColumn(name="ngi_Id", referencedColumnName="id")},
      *      inverseJoinColumns={@JoinColumn(name="scope_Id", referencedColumnName="id")}
      *      )
