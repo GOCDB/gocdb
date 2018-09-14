@@ -24,6 +24,7 @@ die('Ok, next step is to configure this file for your installation: '.__FILE__);
 
 
 
+$evm = new EventManager();
 // Create a simple "default" Doctrine ORM configuration for XML Mapping
 $isDevMode = true;
 //$config = Setup::createXMLMetadataConfiguration(array(__DIR__."/config/xml"), $isDevMode);
@@ -65,9 +66,9 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/entities"
     //		'dbname' => 'XE',
     //		'charset' => 'AL32UTF8'
     //	);
-    //  // Need to explicitly set the Oracle session date format [1]
-    //  $evm = new EventManager();
-    //  $evm->addEventSubscriber(new OracleSessionInit(array('NLS_TIME_FORMAT' => 'HH24:MI:SS')));
+    //
+    // ** For Oracle installations uncomment the following line:
+    // $evm->addEventSubscriber(new OracleSessionInit(array('NLS_TIME_FORMAT' => 'HH24:MI:SS')));
     /////////////////////////////////////////////////////////////////////////////////////////////
 
 
@@ -80,8 +81,6 @@ $config = Setup::createAnnotationMetadataConfiguration(array(__DIR__."/entities"
     //	'dbname' => 'doctrine'
     //);
     /////////////////////////////////////////////////////////////////////////////////////////////
-
-
 
 
 // obtaining the entity manager
