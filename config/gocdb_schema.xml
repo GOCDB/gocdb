@@ -442,6 +442,11 @@
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
 	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
+  <field>
+    <fname>RESERVED</fname>
+    <length>1</length>
+    <regex>/^[01]$/</regex>
+  </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>

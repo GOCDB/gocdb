@@ -71,14 +71,13 @@ class Scope extends AbstractEntityService{
             $dql = "SELECT s from Scope s ORDER BY s.name";
             $query = $this->em->createQuery($dql);
             return $query->getResult();
-
-        } else if(count($scopeIdArray) > 0){
+        }
+        if(count($scopeIdArray) > 0){
             $dql = "SELECT s from Scope s WHERE s.id IN(:scopeIdArray) ORDER BY s.name";
             $query = $this->em->createQuery($dql)->setParameter('scopeIdArray', $scopeIdArray);
             return $query->getResult();
-        } else {
-            return array();
         }
+        return array();
     }
 
 
@@ -120,12 +119,12 @@ class Scope extends AbstractEntityService{
 
         // Check the parameter keys are supoported
         $supportedParams = array('excludeNonDefault', 'excludeDefault', 'excludeReserved', 'excludeNonReserved');
-    $testParamKeys = array_keys($filterParams);
-    foreach ($testParamKeys as $key) {
+        $testParamKeys = array_keys($filterParams);
+        foreach ($testParamKeys as $key) {
         // if givenkey is not defined in supportedkeys it is unsupported
-        if (!in_array($key, $supportedParams)) {
-        throw new \InvalidArgumentException('Unsupported parameter key');
-        }
+          if (!in_array($key, $supportedParams)) {
+              throw new \InvalidArgumentException('Unsupported parameter key');
+          }
     }
 
         $defaultScopeName = $this->configService->getDefaultScopeName();
@@ -145,29 +144,18 @@ class Scope extends AbstractEntityService{
             }
         }
         if(isset($filterParams['excludeReserved']) && $filterParams['excludeReserved'] == TRUE){
-            $reservedScopes = $this->configService->getReservedScopeList();
-            foreach ($allScopes as $scope) {
-                foreach($reservedScopes as $rs){
-                   if($scope->getName() == $rs){
-                       unset($allScopes[array_search($scope, $allScopes)]);
-                   }
-                }
+          foreach ($allScopes as $scope) {
+            if($scope->getReserved()){
+              unset($allScopes[array_search($scope, $allScopes)]);
             }
+          }
         }
         if(isset($filterParams['excludeNonReserved']) && $filterParams['excludeNonReserved'] == TRUE){
-            $reservedScopes = $this->configService->getReservedScopeList();
-            foreach ($allScopes as $scope) {
-                $isReserved = false;
-                foreach($reservedScopes as $rs){
-                   if($scope->getName() == $rs){
-                       $isReserved = true;
-                       break;
-                   }
-                }
-                if(!$isReserved){
-                   unset($allScopes[array_search($scope, $allScopes)]);
-                }
+          foreach ($allScopes as $scope) {
+            if(!$scope->getReserved()){
+              unset($allScopes[array_search($scope, $allScopes)]);
             }
+          }
         }
         return $allScopes;
     }
@@ -277,13 +265,13 @@ class Scope extends AbstractEntityService{
               throw new Exception("This scope tag is still applied to one or more NGIs. ". $scope->getName() ."can not be deleted until these links are removed");
             }
             if(sizeof($sites)>0){
-              throw new Exception("This scope tag is still applied to one or more NGIs. ". $scope->getName() ."can not be deleted until these links are removed");
+              throw new Exception("This scope tag is still applied to one or more Sites. ". $scope->getName() ."can not be deleted until these links are removed");
             }
             if(sizeof($serviceGroups)>0){
-              throw new Exception("This scope tag is still applied to one or more NGIs. ". $scope->getName() ."can not be deleted until these links are removed");
+              throw new Exception("This scope tag is still applied to one or more Service Groups. ". $scope->getName() ."can not be deleted until these links are removed");
             }
             if(sizeof($services)>0){
-              throw new Exception("This scope tag is still applied to one or more NGIs. ". $scope->getName() ."can not be deleted until these links are removed");
+              throw new Exception("This scope tag is still applied to one or more Services. ". $scope->getName() ."can not be deleted until these links are removed");
             }
         }
 
@@ -343,9 +331,8 @@ class Scope extends AbstractEntityService{
         try {
             //new scope object
             $scope = new \Scope();
-            //set name
-            $scope->setName($values['Name']);
-            $scope->setDescription($values['Description']);
+            
+            $this->populateScope($scope, $values);
 
             $this->em->persist($scope);
             $this->em->flush();
@@ -383,6 +370,8 @@ class Scope extends AbstractEntityService{
             //set name
             $scope->setName($newValues['Name']);
             $scope->setDescription($newValues['Description']);
+            
+            $this->populateScope($scope, $newValues);
 
             $this->em->merge($scope);
             $this->em->flush();
@@ -479,13 +468,23 @@ class Scope extends AbstractEntityService{
         $query = $this->em->createQuery($dql);
         $result = $query->setParameter('name', $name)->getResult();
 
-        if(count($result)==0){
-            return true;
-        }
-        else {
-            return false;
-        }
+        return count($result)==0;
+    }
 
+    /** 
+     * Populate the scope instance
+     * Note that to reserve a scope the Reserved key MUST be set in the input array
+     * This is to be consistent with html checkbox behaviour
+    */
+    private function populateScope(\Scope $scope, $values) {
+        
+        $scope->setName($values['Name']);
+        $scope->setDescription($values['Description']);
+        $scope->setReserved(false);
+
+        if (array_key_exists('Reserved', $values)) {
+            $scope->setReserved($values['Reserved'] == true);
+        } 
     }
 
     /**
@@ -522,6 +521,13 @@ class Scope extends AbstractEntityService{
             if (!$this->scopeNameIsUnique($scopeData['Name'])) {
                 throw new \Exception("Scope names must be unique, '" . $scopeData['Name'] . "' is already in use");
             }
+        }
+        
+        // if reserved status specified it must be TRUE or false
+        if (array_key_exists('Reserved', $scopeData)) {
+          if ($scopeData['Reserved'] != 0 and $scopeData['Reserved'] != 1){
+            throw new \Exception("Scope reserved status must be true(1) or false(0), '" . $scopeData['Reserved'] . "' is invalid.");
+          }
         }
 
         //remove the ID fromt the values file if present (which it may be for an edit)
