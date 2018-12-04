@@ -26,8 +26,7 @@ html {
     height: 100%;
 }
 
-
-h1 {
+h1,h2,h3 {
     color: #00AC00;
     text-decoration: none;
     font-weight:normal;
@@ -37,6 +36,21 @@ h1 {
     font-size: 2.5em;
 }
 
+/* h2-4 are only used in the Privacy and AUP policy notices */
+
+h2 {
+    font-size: 2.0em;	
+}
+
+h3 {
+    font-size: 1.5em;	
+    line-height: 1;
+}
+
+h4 {
+    line-height: 1;
+}
+
 a {
     color: #103C7A;
     text-decoration: none;
@@ -44,7 +58,7 @@ a {
     margin-bottom: 0em;
 }
 
-.page_container { 
+.page_container,.wide_page_container { 
     position: relative;
     margin-left: auto;
     margin-right: auto;
@@ -55,6 +69,11 @@ a {
     background-color: transparent;
 }
 
+/* wide_page_container is only used in Privacy and AUP policy */
+
+.wide_page_container {
+    width: 70em;
+}
 
 .centre_box {
     position: relative;
@@ -72,13 +91,18 @@ a.Licence_Link {
     font-family: serif;
 }
 
+a.docLink {
+    color: #00AC00;
+}
+
+a:hover {
+    text-decoration: underline;
+}
 
 .leftFloat {
     float: left;
     margin-right:auto;
 }
-
-
 
 div.centrePageContainer {
     background: white;
@@ -90,4 +114,12 @@ div.centrePageContainer {
     border: 1px solid grey;
     padding: 1em;
     border-radius: 0.4em;
+}
+
+div.policyText {
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-top: 3em;
+    margin-bottom: auto;
+    text-align: justify;
 }
