@@ -12,6 +12,7 @@ body {
 }
 
 .button {
+    background: #48D249; /* backstop for (IE) compatibility mode view setting */
     background: linear-gradient(#48D249, #B0EBB1);
     color: white;
     text-align: center;
@@ -19,7 +20,11 @@ body {
     font-size: 2.3em;
     border-radius: 0.4em;
     padding: 0.4em 1em;
-    width: 50%
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4%;
+    margin-bottom: 4%;
 }
 
 html {
@@ -82,13 +87,9 @@ a {
 
 div.Copyright_Text {
     font-size: 0.8em;
-    width: 45em;
-    height: 50px;
-    margin-left: 12em;
-}
-
-a.Licence_Link {
-    font-family: serif;
+    text-align: center;
+    margin-top: 1em;
+    margin-bottom: 1em;
 }
 
 a.docLink {
@@ -97,6 +98,23 @@ a.docLink {
 
 a:hover {
     text-decoration: underline;
+}
+
+img.Sponsor_Logo {
+  max-height: 100%;
+  border: none; /* for IE(11) */
+}
+
+h1.Landing_Welcome {
+  display: inline-block;
+}
+
+/* The GOCDB cloverleaf */
+
+img.Landing_Logo {
+  display: inline-block; 
+  vertical-align:top; 
+  margin-right: 1em;
 }
 
 .leftFloat {
