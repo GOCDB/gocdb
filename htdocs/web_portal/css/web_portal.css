@@ -687,4 +687,8 @@ label.error {
 
 .selectEndpoint{
 }
+/* Registration page */
+img.new_window{
+  height: 0.75em;
+}
 
