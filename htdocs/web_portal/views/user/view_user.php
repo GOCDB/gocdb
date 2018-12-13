@@ -44,18 +44,8 @@
     <div style="float: left; width: 100%; margin-top: 2em;">
          <div class="alert alert-warning" role="alert">
             <ul>
-               <li>A GOCDB account means <b>you accept that your ID string, your basic user details and roles will be visible to other authenticated users and client-services of GOCDB</b>, including those authenticated by: </br></br>
-                  <ol>
-                    <li>a certificate issed from a Certification Authority (CA) that is registered with the <a href="https://www.igtf.net">Interoperable Global Trust Federation (IGTF).</a></li>
-                    <li>new authentication/security realms will be added here and you will be notified by email and in the portal.</li>
-                  </ol>
-               </li>
-            </ul>
-            <br>
-            <ul>
-               <li>Your details are re-published by GOCDB and used by EGI for Monitoring, Accounting and for use in its data processing systems.</li>
-               <li><a href="https://wiki.egi.eu/wiki/GOCDB/data_privacy">Further details and terms/conditions of use here</a></li>
-               <li>If you do not provide this consent, please <b>DELETE</b> your account.</li>
+              <li>By registering a GOCDB account you have agreed to abide by the <a href="/aup.html" target="_blank" title="opens in new window">GOCDB Acceptable Use Policy and Conditions of Use <img src="/portal/img/new_window.png" alt="new window logo" class="new_window"></a>.</li>
+              <li>Personal data, which you provide and is collected when you use GOCDB, is processed in accordance with the <a href="/privacy.html" target="_blank" title="opens in new window">GOCDB Privacy Notice <img src="/portal/img/new_window.png" alt="new window logo"  class="new_window"></a>.</li>
             </ul>
         </div>
 
