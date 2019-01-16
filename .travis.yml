@@ -1,6 +1,5 @@
 # N.B. Ubuntu Precise available on Travis until March 2018
 dist: precise
-sudo: required
 language: php
 before_install:
     - mysql -e 'CREATE DATABASE doctrine;'
@@ -18,11 +17,9 @@ env:
 matrix:
     include:
     - dist: trusty
-      sudo: false
       env: DB=mysql
       php: '5.4'
     - dist: trusty
-      sudo: false
       env: DB=mysql
       php: '5.5'
     allow_failures:
