@@ -10,9 +10,9 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 ## Prerequisites <a id="prerequisites"></a>
 
-* [GOCDB website content](#gocdb])
+* [GOCDB website content](#gocdb-website-content-)
   * 'Git-cloned' or by archive from https://github.com/GOCDB/gocdb
-  
+
 * [PHP](#php)
   * v5.3.3 (newer versions should be fine, but are untested)
   * If using Oracle: PHP oci8 extension (needs to be compiled using the Oracle Instant client v10 or higher
@@ -24,8 +24,8 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
   * Version 2.2 or higher with `mod_ssl` module
   * X509 host certificate.
 
-* [Database server](#rdbms) 
-  * Oracle 11g+ or MySQL
+* [Database server](#database-server)
+  * Oracle 11g+ or MariaDB/MySQL
   * (note: the free Oracle 11g XE Express Editions which comes with a free license is perfectly suitable)
 
 * [Doctrine and DBAL](#doctrine)
@@ -111,14 +111,14 @@ For GocDB, three URL alias/directory-mappings are needed, one for the portal GUI
 Note that, depending on Apache/httpd version, the "Require all granted" statements in gocdbssl.conf may cause an HTTP Error "500 - Invalid configuration..." and can be commented out.
 
 ### Database Server
-GOCDB uses a DB abstraction layer (Doctrine) and with some configuration should be deployable on different RDBMS platforms that are supported for Doctrine. Instructions are provided here for Oracle (the free Oracle 11g is perfectly suitable) and MySQL/MariaDB comming soon. 
+GOCDB uses a DB abstraction layer (Doctrine) and with some configuration should be deployable on different RDBMS platforms that are supported for Doctrine. Instructions are provided here for Oracle (the free Oracle 11g is perfectly suitable) and MySQL/MariaDB.
 
 #### Oracle 11g
 The free to use XE/11g Oracle DB can be used to host run GOCDB on Win/nix. To use Oracle on nix systems, the OCI8 extension/driver needs to be compiled and installed.  
 
 ##### Compiling/Installing OCI8
 The OCI8 extension/driver for php needs to be installed, see: http://php.net/oci8
-This can be most easily installed with the free Oracle Instant Client libs which can be installed in a number of ways (http://php.net/manual/en/oci8.installation.php), but the most easy is via PECL as descibed below: 
+This can be most easily installed with the free Oracle Instant Client libs which can be installed in a number of ways (http://php.net/manual/en/oci8.installation.php), but the most easy is via PECL as descibed below:
 
 Install the basic, devel and sqlplus instantclient rpms from Oracle (http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html) and install GCC, PHP dev and pear packages:
 
@@ -140,19 +140,51 @@ pecl install oci8-2.0.10
 ```
 This will download and compile the module, and place it in your php extension dir.
 
-Add the ```extension=oci8.so``` line to your php.ini or create a configuration file: 
+Add the ```extension=oci8.so``` line to your php.ini or create a configuration file:
 
-```bash 
+```bash
 echo 'extension=oci8.so' > /etc/php.d/oci8.ini
 ```
 
 Confirm it is working with ```php -i | grep -i oci8```
 
+#### MariaDB/MySQL
+The following instructions are to set up a local MariaDB/MySQL database for GOCDB. They have not been tested in a production enviroment and are currently intended for test instances.
+
+First you will need to install the MariaDB/MySQL server and client. Then start the 'mariadb'/'mysqld' service.
+
+1. Access the CLI for MariaDB/MySQL
+
+    ```
+    $ mysql
+    ```
+
+1. Create a database to use
+
+    ````
+    CREATE DATABASE gocdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;
+    ````
+
+1. Create a user to access it and give that user a password
+
+    ````
+    CREATE USER 'gocdbuser'@'localhost' IDENTIFIED BY 'PASSWORD_GOES_HERE';
+    ````
+
+1. Grant the user permissions over the database. Note: these permissions are wider than is strictly required and deployment into a production environment would first require revising these permissions more in line with those given for Oracle in the set up instructions.
+
+    ````
+    GRANT ALL PRIVILEGES ON gocdb.* TO 'gocdbuser'@'localhost';
+    FLUSH PRIVILEGES;
+    ````
+
+You are now good to continue the installation.
+
 ### Doctrine <a id="doctrine"></a>   
 
 Install Doctrine ORM and DBAL using one of the methods below and make sure doctrine is available on the command
 line. Note, Doctrine can be installed either globally using PEAR or as a project
-specific dependency using composer. 
+specific dependency using composer.
 
 #### Install Doctrine Via Composer (Recommended)
 
@@ -215,17 +247,17 @@ see: [pear installation](http://pear.php.net/manual/en/installation.getting.php)
   $
   $ echo 'to list packages installed in a particular channel:'
   $ pear list -c pear.doctrine-project.org
-  $ 
+  $
   $ echo 'to uninstall a package'
   $ pear uninstall pear.doctrine-project.org/DoctrineORM
   ```
-  
+
 #### Check Doctrine installation
 
   Whichever way you installed Doctrine, ensure that your `$PATH` environment variable is updated to run the doctrine command line client.
-  
+
   Note: you need to run `$doctrine --version` from within the `gocDBSrcHome/lib/Doctrine` directory.
-  
+
   ```bash
   $ export PATH=$PATH:/home/djm76/programming/php/gocdb5_mep/gocdb/vendor/bin
   $ cd lib/Doctrine
@@ -234,7 +266,7 @@ see: [pear installation](http://pear.php.net/manual/en/installation.getting.php)
   $ doctrine-dbal --version
   Doctrine Command Line Interface version 2.5.4
   ```  
-  
+
 #### Paginator fix <a id="doctrineFix"></a>
 
 When using doctrine 2.3.3 on an oracle database, returning an ordered list of results using the Paginator will not honour the specified ordering. e.g. instead of returning the 100 most recent downtimes when using `orderby START_TIME descending`, it will return the first hundred downtimes in the table, which have then been ordered by start_time descending. See https://github.com/doctrine/doctrine2/issues/2456 for more details.
@@ -270,9 +302,9 @@ a sensible password). Run this script as the Oracle admin/system user:
 drop user gocdb5 cascade;
 
 -- CREATE USER SQL
-CREATE USER GOCDB5 IDENTIFIED BY <PASSWORD> 
-DEFAULT TABLESPACE "USERS" 
-QUOTA UNLIMITED ON "USERS" 
+CREATE USER GOCDB5 IDENTIFIED BY <PASSWORD>
+DEFAULT TABLESPACE "USERS"
+QUOTA UNLIMITED ON "USERS"
 TEMPORARY TABLESPACE "TEMP";
 -- ROLES - GRANT "RESOURCE" TO GOCDB5
 -- SYSTEM PRIVILEGES
