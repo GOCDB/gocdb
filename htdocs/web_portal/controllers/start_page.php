@@ -30,10 +30,8 @@ function startPage() {
 
     $configServ = \Factory::getConfigService();
     $showMap = $configServ->getShowMapOnStartPage();
-    $apiKey = $configServ->getGoogleAPIKey();
 
     $params = array('roles' => $roles,
-                    'googleAPIKey'=>$apiKey,
                     'showMap'=>$showMap);
     $title = "GOCDB";
     show_view('start_page.php', $params, $title, null);

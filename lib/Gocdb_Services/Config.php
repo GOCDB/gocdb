@@ -229,16 +229,6 @@ class Config {
         return $showMap;
     }
 
-    public function getGoogleAPIKey(){
-        $apiKey = $this->GetLocalInfoXML()->local_info->google->google_API_key;
-
-        if(empty($apiKey)){
-            $apiKey = '';
-        }
-
-        return $apiKey;
-    }
-
     public function getExtensionsLimit(){
         return $this->GetLocalInfoXML()->local_info->extensions->max;
     }

@@ -1,9 +1,9 @@
 <?php
 /*======================================================
- * File: sitesForGoogleMapXML.php
+ * File: sitesForMapXML.php
  * Author: George Ryall
  * Description: Returns xml containing all sites that are not closed and have
- * lcation information. Used by google map on start page.
+ * location information. Used by the map on start page.
  *
  *
  * License information
@@ -25,7 +25,7 @@ require_once __DIR__.'/../../../lib/Gocdb_Services/Factory.php';
 
 function show_xml(){
     try{
-        $xml = Factory::getSiteService()->getGoogleMapXMLString();
+        $xml = Factory::getSiteService()->getMapXMLString();
     }
     catch(Exception $e){
         show_view('error.php', $e->getMessage(), "Error");
@@ -33,5 +33,5 @@ function show_xml(){
 
     $params['XML']=$xml;
 
-    show_view('sitesForGoogleMapXML.php', $params, null, true);
+    show_view('sitesForMapXML.php', $params, null, true);
 }
