@@ -25,7 +25,8 @@
           <li>If an organisation deploys and uses their own system or a local GOCDB installation, their data won't appear here.</li>
         </ul>
 
-    </div>
+</div>
+
     <?php if(sizeof($params['roles']) > 0) { ?>
         <div class="alert alert-warning" style="width: 98%; margin-bottom:1%; float: left;">
                 <span class="glyphicon glyphicon-asterisk"></span>   <b>Notification:</b> You have pending role requests - <a href="index.php?Page_Type=Role_Requests">Manage Roles</a>
