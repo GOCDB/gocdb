@@ -4,7 +4,7 @@ $sg = $params['sg'];
 <div class="rightPageContainer">
     <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/service_group/remove_se_from_vsite.js"></script>
     <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/ajax.js"></script>
-    <script language="JavaScript" src="<?php echo \GocContextPath::getPath()?>javascript/jquery-1.7.1.min.js"></script>
+    <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
     <div class="rightPageHolder">
         <div class="leftFloat">
             <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" class="pageLogo" />
