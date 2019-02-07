@@ -183,7 +183,7 @@ function Draw_Page($Page_Type) {
         break;
     case "Site_Geo_xml" :
             //rejectIfNotAuthenticated();
-            require_once __DIR__ . '/controllers/sitesForGoogleMapXML.php';
+            require_once __DIR__ . '/controllers/sitesForMapXML.php';
             show_xml ();
             break;
         case "Error_Redirect":

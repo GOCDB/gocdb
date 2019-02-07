@@ -1,46 +1,37 @@
-//function to display google map. Adapted by George Ryall from the following tutorials:
-// * https://developers.google.com/maps/articles/phpsqlajax_v3
-// * https://developers.google.com/maps/documentation/javascript/tutorial
-// * http://www.w3schools.com/googleAPI/
-// * The example code here : http://gmaps-samples-v3.googlecode.com/svn/trunk/xmlparsing/ 
+// javascript file to display a leaflet map.
+// Based on https://leafletjs.com/examples/quick-start/ and
+// https://switch2osm.org/using-tiles/getting-started-with-leaflet/
 
-google.maps.event.addDomListener(window, 'load', initialize);
-
-var infowindow;
 var map;
 
-function initialize() {
-    var mapProp = {
-        //Starting position of map
-        center:new google.maps.LatLng(30,0),
-        zoom:2,
-        //Enable zoom control, but move it to the left and make it small
-        zoomControl:true,
-        zoomControlOptions: {
-            style:google.maps.ZoomControlStyle.SMALL,
-            position:google.maps.ControlPosition.RIGHT_TOP
-        },
-        //Allow map type choiuce, but move to bottom left
-        mapTypeControl:true,
-        mapTypeControlOptions: {
-            position:google.maps.ControlPosition.TOP_RIGHT   
-        },
-        //Turn off pan control - it clutters map and users can drag if needed
-        panControl:false,
-        //turn of street view controller
-        streetViewControl:false,
-        //Options:ROADMAP/SATELLITE/HYBRID/TERRAIN   
-        mapTypeId:google.maps.MapTypeId.ROADMAP
-    };
+// Function to display a leaflet map with markers from GOCDB Site data.
+function initmap() {
+	// set up the map
+	map = new L.Map('map');
 
-    map = new google.maps.Map(document.getElementById("GoogleMap"), mapProp);
+	// create the tile layer with correct attribution.
+	var osmUrl='https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png';
+	var osmAttrib='Map data © <a href="https://openstreetmap.org">OpenStreetMap</a> contributors';
+	var osm = new L.TileLayer(osmUrl, {
+        attribution: osmAttrib,
+        // A min zoom of 2 gives you a view of most of the world. Any further out starts to look "bad".
+        minZoom: 2,
+        // A max zoom of 20 or more doesn't have any map tiles.
+        maxZoom: 19,
+    });		
+
+	// Centre the view so that most sites can be viewed at level 2.
+	map.setView(new L.LatLng(30, 10), 2);
+	map.addLayer(osm);
     
     downloadUrl("index.php?Page_Type=Site_Geo_xml", function(data) {
         var markers = [];
         var xmlMarkers = data.documentElement.getElementsByTagName("Site");
         for (var i = 0; i < xmlMarkers.length; i++) {
-            var latlng = new google.maps.LatLng(parseFloat(xmlMarkers[i].getAttribute("Latitude")),
-                                  parseFloat(xmlMarkers[i].getAttribute("Longitude")));
+            var latlng = [
+                parseFloat(xmlMarkers[i].getAttribute("Latitude")),
+                parseFloat(xmlMarkers[i].getAttribute("Longitude"))
+            ];
             var shortName = xmlMarkers[i].getAttribute("ShortName");
             var officialName = xmlMarkers[i].getAttribute("OfficialName");
             var url = xmlMarkers[i].getAttribute("PortalURL");
@@ -50,24 +41,13 @@ function initialize() {
                 description += "<br />";
             }
             var info = "<b>" + shortName + "</b> ("+ officialName + ")<br />" + description + "<a href=\"" + url + "\">View site</a>";
-            var marker = createMarker(info, latlng);
-            markers.push(marker);
+
+            var marker = L.marker(latlng).addTo(map);
+            marker.bindPopup(info)
         }
-        var markerCluster = new MarkerClusterer(map, markers);
    });
 }
 
-function createMarker(description, latlng) {
-    var marker = new google.maps.Marker({position: latlng, map: map});
-    google.maps.event.addListener(marker, "click", function() {
-        if (infowindow) infowindow.close();
-        infowindow = new google.maps.InfoWindow({content: description});
-        infowindow.open(map, marker);
-    });
-
-    return marker;
-}
-  
 /**
 * Returns an XMLHttp instance to use for asynchronous
 * downloading. This method will never throw an exception, but will

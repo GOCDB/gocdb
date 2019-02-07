@@ -40,11 +40,8 @@
             <name>Scope0</name>
         </default_scope>
         
-        <!-- Behaviour related to google API tools -->
-        <google>
-            <!-- Show google map on start page -->
-            <show_map_on_start_page>true</show_map_on_start_page>
-        </google>
+        <!-- Show map on the start page -->
+        <show_map_on_start_page>true</show_map_on_start_page>
         
         <!-- default_scope_match
         Define the default value for the 'scope_match' PI parameter. 
@@ -92,4 +89,3 @@
 		
 	</local_info>
 </schema>
-

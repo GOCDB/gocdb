@@ -1380,9 +1380,9 @@ class Site extends AbstractEntityService{
     }
 
     /*
-     * @return string xml string containing information required by google maps js
+     * @return string xml string containing information required by the front map
      */
-    public function getGoogleMapXMLString(){
+    public function getMapXMLString(){
         $sites = $this->getSitesWithGeoInfo();
         $portalUrl = $this->configService->GetPortalURL();
 
