@@ -100,8 +100,8 @@ function add_menu_item($menu_item)
     }
     if ($show == "all" or ($show=="write_enabled" and (!$portalIsReadOnly or $userisadmin)) or (($show == "admin") and ($userisadmin))){
         $html .=    	"<li class=\"Menu_Item\">".
-                        "<a href=\"".$link."\"><span class=\"menu_link\">".
-        $name."</span></a></li>";
+                        "<a href=\"".htmlspecialchars($link)."\"><span class=\"menu_link\">".
+        htmlspecialchars($name)."</span></a></li>";
     }
     return $html;
 }

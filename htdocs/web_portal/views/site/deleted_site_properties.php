@@ -14,7 +14,7 @@ $site = $params['site'];
     <?php require_once __DIR__ . '/../fragments/propertiesTable.php';?>
 
     <p>
-        <a href="index.php?Page_Type=Site&id=<?php echo $site->getId();?>">View Site</a>
+        <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId();?>">View Site</a>
     </p>
 
 </div>

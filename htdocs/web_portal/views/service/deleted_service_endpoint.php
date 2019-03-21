@@ -11,7 +11,7 @@ $service = $params['service'];
     </p>
     <p>
     Has been successfully removed from service <?php xecho($service->getHostName());?><br/>
-    <a href="index.php?Page_Type=Service&id=<?php echo $service->getId();?>">
+    <a href="index.php?Page_Type=Service&amp;id=<?php echo $service->getId();?>">
     View service</a>
     </p>
 

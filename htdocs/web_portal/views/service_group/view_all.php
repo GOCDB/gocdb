@@ -70,38 +70,36 @@
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <table id="selectedSgTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Scope(s)</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            //$num = 2;
-            foreach($params['sGroups'] as $sGroup) {
-            ?>
-            <tr>
-                <td>
-            <a href="index.php?Page_Type=Service_Group&id=<?php echo $sGroup->getId()?>">
-            <?php xecho($sGroup->getName()); ?>
-            </a>
-                </td>
-
-                <td>
-                    <?php xecho($sGroup->getDescription()); ?>
-                </td>
-
-                <td>
-           <textarea readonly="true" style="height: 25px;"><?php xecho($sGroup->getScopeNamesAsString()); ?></textarea>
-                </td>
-            </tr>
-            <?php
-                //if($num == 1) { $num = 2; } else { $num = 1; }
-                } // End of the foreach loop iterating over SEs
-            ?>
-        </tbody>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Scope(s)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach($params['sGroups'] as $sGroup) {
+                ?>
+                    <tr>
+                        <td>
+                            <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $sGroup->getId()?>">
+                            <?php xecho($sGroup->getName()); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php xecho($sGroup->getDescription()); ?>
+                        </td>
+                        <td>
+                            <textarea readonly="true" style="height: 25px;"><?php
+                                xecho($sGroup->getScopeNamesAsString());
+                            ?></textarea>
+                        </td>
+                    </tr>
+                <?php
+                } // End of the foreach loop iterating over sGroups
+                ?>
+            </tbody>
         </table>
     </div>
     <br>&nbsp;

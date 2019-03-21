@@ -119,63 +119,43 @@
         <img src="<?php echo \GocContextPath::getPath() ?>img/grid.png" class="decoration" />
 
         <table id="selectedSiteTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>NGI</th>
-                <th>Infrastructure</th>
-                <th>Certification Status</th>
-                <th>Scope(s)</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php
-        //$num = 2;
-        if (sizeof($params['sites'] > 0)) {
-        foreach ($params['sites'] as $site) {
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>NGI</th>
+                    <th>Infrastructure</th>
+                    <th>Certification Status</th>
+                    <th>Scope(s)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($params['sites'] as $site) {
+                ?>
+                    <tr>
+                        <td>
+                            <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId() ?>">
+                            <?php echo $site->getShortName(); ?>
+                            </a>
+                        </td>
 
-//		    $scopeC = count($site->getScopes());
-//		    $style = ""; //Set no style as the default
-//		    if ($scopeC != 0) {
-//			if ($site->getScopes()->first()->getName() == "Local") {
-//			    $style = " style=\"background-color: #A3D7A3;\"";
-//			}
-//		    }
-            ?>
-            <tr>
-            <td>
-                <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-                <?php echo $site->getShortName(); ?>
-                </a>
-            </td>
-
-            <td>
-                <?php xecho($site->getNGI()->getName()); ?>
-            </td>
-
-            <td>
-                <?php xecho($site->getInfrastructure()->getName()); ?>
-            </td>
-
-            <td>
-                <?php xecho($site->getCertificationStatus()->getName()); ?>
-            </td>
-
-            <td>
-                <textarea readonly="true" style="height: 25px;"><?php xecho($site->getScopeNamesAsString()); ?></textarea>
-            </td>
-
-            </tr>
-            <?php
-//		    if ($num == 1) {
-//			$num = 2;
-//		    } else {
-//			$num = 1;
-//		    }
-        } // End of the foreach loop iterating over sites
-        }
-        ?>
-        </tbody>
+                        <td>
+                            <?php xecho($site->getNGI()->getName()); ?>
+                        </td>
+                        <td>
+                            <?php xecho($site->getInfrastructure()->getName()); ?>
+                        </td>
+                        <td>
+                            <?php xecho($site->getCertificationStatus()->getName()); ?>
+                        </td>
+                        <td>
+                            <textarea readonly="true" style="height: 25px;"><?php xecho($site->getScopeNamesAsString()); ?></textarea>
+                        </td>
+                    </tr>
+                <?php
+                } // End of the foreach loop iterating over sites
+                ?>
+            </tbody>
         </table>
     </div>
     <br>&nbsp;

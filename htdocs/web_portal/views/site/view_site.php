@@ -33,7 +33,7 @@ $extensionProperties = $site->getSiteProperties();
         <?php endif; ?>
         <?php if ($params['ShowEdit']): ?>
         <div style="float: right; margin-left: 2em;">
-            <a href="index.php?Page_Type=Edit_Site&id=<?php echo($site->getId()) ?>">
+            <a href="index.php?Page_Type=Edit_Site&amp;id=<?php echo($site->getId()) ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/pencil.png" height="25px" style="float: right;" />
             <br />
             <br />
@@ -136,7 +136,7 @@ $extensionProperties = $site->getSiteProperties();
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">NGI/ROC</td><td class="site_table">
-            <a href="index.php?Page_Type=NGI&id=<?php echo($site->getNgi()->getId()) ?>">
+            <a href="index.php?Page_Type=NGI&amp;id=<?php echo($site->getNgi()->getId()) ?>">
                 <?php xecho($site->getNgi()->getName()) ?>
             </a>
             </td>
@@ -152,7 +152,7 @@ $extensionProperties = $site->getSiteProperties();
                 &nbsp;
                 <!--  only show this link if we're in read / write mode -->
                 <?php if (!$portalIsReadOnly): ?>
-                <a href="index.php?Page_Type=Edit_Certification_Status&id=<?php echo($site->getId()) ?>">Change</a>
+                <a href="index.php?Page_Type=Edit_Certification_Status&amp;id=<?php echo($site->getId()) ?>">Change</a>
                 <?php endif; ?>
             <?php } else echo('PROTECTED - Auth Required'); ?>
                     </td>
@@ -342,91 +342,87 @@ $extensionProperties = $site->getSiteProperties();
                 <th>URL</th>
                 <th>Production</th>
                 <th>Monitored</th>
-                <th>
-                    Scope Tags
-                </th>
+                <th>Scope Tags</th>
             </tr>
         </thead>
-            <tbody>
-        <?php
-        $num = 2;
-        foreach ($params['ServicesAndScopes'] as $serviceAndScopes) {
-        $se = $serviceAndScopes['Service'];
-        $scopes = $serviceAndScopes['Scopes'];
-        ?>
-
-            <tr>
-            <td>
-            <a href="index.php?Page_Type=Service&id=<?php echo($se->getId()) ?>">
-                <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
-            </a>
-            </td>
-            <td><textarea readonly="true" style="height: 25px;"><?php xecho((string) $se->getUrl()) ?></textarea></td>
-
-            <td>
+        <tbody>
             <?php
-            switch ($se->getProduction()) {
-            case true:
-                ?>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
-                <?php
-                break;
-            case false:
-                ?>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
-                <?php
-                break;
-            }
+            $num = 2;
+            foreach ($params['ServicesAndScopes'] as $serviceAndScopes) {
+            $se = $serviceAndScopes['Service'];
+            $scopes = $serviceAndScopes['Scopes'];
             ?>
-            </td>
-
-            <td>
-            <?php
-            switch ($se->getMonitored()) {
-            case true:
-                ?>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                <tr>
+                    <td>
+                        <a href="index.php?Page_Type=Service&amp;id=<?php echo($se->getId()) ?>">
+                            <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
+                        </a>
+                    </td>
+                    <td>
+                        <textarea readonly="true" style="height: 25px;"><?php xecho((string) $se->getUrl()) ?></textarea>
+                    </td>
+                    <td>
+                        <?php
+                        switch ($se->getProduction()) {
+                        case true:
+                            ?>
+                        <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        case false:
+                            ?>
+                        <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        }
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        switch ($se->getMonitored()) {
+                        case true:
+                            ?>
+                        <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        case false:
+                            ?>
+                        <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                            <?php
+                            break;
+                        }
+                        ?>
+                    </td>
+                    <td>
+                        <?php
+                        $count = 0;
+                        $numScopes = sizeof($scopes);
+                        $scopeString = '';
+                        foreach ($scopes as $scopeName => $sharedWithParent) {
+                        if ($sharedWithParent) {
+                            $scopeString .= $scopeName;
+                        } else {
+                            $scopeString .= $scopeName . '(x)';
+                        }
+                        if (++$count != $numScopes) {
+                            $scopeString .= ", ";
+                        }
+                        }
+                        ?>
+                        <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
+                        </td>
+                    </tr>
                 <?php
-                break;
-            case false:
+                } // End of the foreach loop iterating over ServicesAndScopes
                 ?>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
-                <?php
-                break;
-            }
-            ?>
-            </td>
-            <td>
-            <?php
-            $count = 0;
-            $numScopes = sizeof($scopes);
-            $scopeString = '';
-            foreach ($scopes as $scopeName => $sharedWithParent) {
-            if ($sharedWithParent) {
-                $scopeString .= $scopeName;
-            } else {
-                $scopeString .= $scopeName . '(x)';
-            }
-            if (++$count != $numScopes) {
-                $scopeString .= ", ";
-            }
-            }
-            ?>
-            <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
-            </td>
-            </tr>
-        <?php
-        //if ($num == 1) { $num = 2; } else { $num = 1; }
-        } // End of the foreach loop iterating over SEs
-        ?>
-        </tbody>
+            </tbody>
         </table>
 
 
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
         <!-- Add new Service Link -->
-        <a href="index.php?Page_Type=Add_Service&siteId=<?php echo($site->getId()); ?>">
+        <a href="index.php?Page_Type=Add_Service&amp;siteId=<?php echo($site->getId()); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
             Add Service
@@ -442,54 +438,51 @@ $extensionProperties = $site->getSiteProperties();
         <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
 
         <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-                <th>Name</th>
-                <th>Role</th>
-            </tr>
-        </thead>
-        <tbody>
-        <?php
-        //$num = 2;
-        foreach ($params['roles'] as $role) {
-        ?>
-
-            <tr>
-            <td>
-                <div style="background-color: inherit;">
-                <?php if ($params['authenticated']) { ?>
-                <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
-                    <?php xecho($role->getUser()->getFullName()) ?>
-                </a>
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
                 <?php
-                } else {
-                echo 'PROTECTED';
+                foreach ($params['roles'] as $role) {
+                ?>
+                    <tr>
+                        <td>
+                            <div style="background-color: inherit;">
+                                <?php if ($params['authenticated']) { ?>
+                                <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
+                                    <?php xecho($role->getUser()->getFullName()) ?>
+                                </a>
+                                <?php
+                                } else {
+                                echo 'PROTECTED';
+                                }
+                                ?>
+                            </div>
+                        </td>
+                        <td>
+                            <?php
+                            if ($params['authenticated']) {
+                                xecho($role->getRoleType()->getName());
+                            } else {
+                                echo 'PROTECTED';
+                            }
+                            ?>
+                        </td>
+                    </tr>
+                <?php
                 }
                 ?>
-                </div>
-            </td>
-            <td>
-            <?php
-            if ($params['authenticated']) {
-                xecho($role->getRoleType()->getName());
-            } else {
-                echo 'PROTECTED';
-            }
-            ?>
-            </td>
-            </tr>
-        <?php
-        //if ($num == 1) { $num = 2; } else { $num = 1; }
-        }
-        ?>
-        </tbody>
+            </tbody>
         </table>
 
     <!-- Request Role Link -->
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['authenticated']): ?>
         <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
-            <a href="index.php?Page_Type=Request_Role&id=<?php echo($site->getId()); ?>">
+            <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo($site->getId()); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                 Request Role
@@ -502,43 +495,40 @@ $extensionProperties = $site->getSiteProperties();
     <!--  Downtimes -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes Affecting <?php xecho($site->getShortName()) ?>'s SEs </span>
-        <a href="index.php?Page_Type=Site_Downtimes&id=<?php echo($site->getId()); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
+        <a href="index.php?Page_Type=Site_Downtimes&amp;id=<?php echo($site->getId()); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
 
         <table id="siteDowntimesTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-        <tr>
-            <th>Description</th>
-            <th>From</th>
-            <th>To</th>
-        </tr>
-        </thead>
-        <tbody>
-        <?php
-        //$num = 2;
-        foreach ($downtimes as $dt) {
-        ?>
-
-            <tr>
-            <td>
-                <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo($dt->getId()) ?>">
-                <?php xecho($dt->getDescription()) ?>
-                </a>
-            </td>
-            <td><?php echo($dt->getStartDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
-            <td><?php echo($dt->getEndDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
-            </tr>
-        <?php
-        //if ($num == 1) { $num = 2; } else { $num = 1; }
-        }
-        ?>
-        </tbody>
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>From</th>
+                    <th>To</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                foreach ($downtimes as $dt) {
+                ?>
+                    <tr>
+                        <td>
+                            <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo($dt->getId()) ?>">
+                            <?php xecho($dt->getDescription()) ?>
+                            </a>
+                        </td>
+                        <td><?php echo($dt->getStartDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
+                        <td><?php echo($dt->getEndDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
+                    </tr>
+                <?php
+                }
+                ?>
+            </tbody>
         </table>
 
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
         <!-- Add new Downtime Link -->
-        <a href="index.php?Page_Type=Add_Downtime&site=<?php echo($site->getId()); ?>">
+        <a href="index.php?Page_Type=Add_Downtime&amp;site=<?php echo($site->getId()); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
             Add Downtime
@@ -582,26 +572,26 @@ $extensionProperties = $site->getSiteProperties();
                         </td>
                         <td style="width: 10%;"align = "center">
                             <?php if(!$portalIsReadOnly):?>
-                                <a href="index.php?Page_Type=Edit_API_Authentication_Entity&authentityid=<?php echo $authEnt->getId();?>">
+                                <a href="index.php?Page_Type=Edit_API_Authentication_Entity&amp;authentityid=<?php echo $authEnt->getId();?>">
                                     <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
                                 </a>
                             <?php endif;?>
                         </td>
                         <td style="width: 10%;"align = "center">
                             <?php if(!$portalIsReadOnly):?>
-                                <a href="index.php?Page_Type=Delete_API_Authentication_Entity&authentityid=<?php echo $authEnt->getId();?>">
+                                <a href="index.php?Page_Type=Delete_API_Authentication_Entity&amp;authentityid=<?php echo $authEnt->getId();?>">
                                     <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/>
                                 </a>
                             <?php endif;?>
                         </td>
                     </tr>
-                    <?php }?>
+                    <?php } ?>
                 </tbody>
             </table>
 
             <?php if (!$portalIsReadOnly): ?>
                 <!-- Add new Downtime Link -->
-                <a href="index.php?Page_Type=Add_API_Authentication_Entity&parentid=<?php echo $site->getId()?>">
+                <a href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $site->getId()?>">
                     <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add new API credential

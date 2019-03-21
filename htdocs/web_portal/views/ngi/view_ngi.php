@@ -21,7 +21,7 @@
                 <div style="float: right; margin-left: 2em; text-align:center;">
                     <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                     <a onclick="return confirmSubmit()"
-                       href="index.php?Page_Type=Admin_Delete_NGI&id=<?php echo $params['ngi']->getId() ?>">
+                       href="index.php?Page_Type=Admin_Delete_NGI&amp;id=<?php echo $params['ngi']->getId() ?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" />
                         <br />
                         <span>Admin<br>Delete</span>
@@ -30,7 +30,7 @@
             <?php endif; ?>
             <?php if($params['ShowEdit']):?>
                 <div style="float: right; margin-left: 2em;">
-                    <a href="index.php?Page_Type=Edit_NGI&id=<?php echo $params['ngi']->getId() ?>">
+                    <a href="index.php?Page_Type=Edit_NGI&amp;id=<?php echo $params['ngi']->getId() ?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                         <br />
                         <br />
@@ -104,7 +104,7 @@
                         foreach($params['Projects'] as $project) { ?>
                         <tr class="site_table_row_<?php echo $num ?>">
                             <td class="site_table">
-                                <a href="index.php?Page_Type=Project&id=<?php echo $project->getId()?>"><?php xecho($project->getName())?></a>
+                                <a href="index.php?Page_Type=Project&amp;id=<?php echo $project->getId()?>"><?php xecho($project->getName())?></a>
                             </td>
                         </tr>
                         <?php if($num == 1) { $num = 2; } else { $num = 1; } } ?>
@@ -141,68 +141,55 @@
         <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="decoration" />
 
         <table id="sitesTable" class="table table-striped table-condensed tablesorter" >
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Certification Status</th>
-            <th>Production Status</th>
-            <th>Scope(s)</th>
-        </tr>
-        </thead>
-        <tbody>
-<!--            <tr class="site_table">
-              <td colspan="4">
-                  Note, Scope values marked with (x) indicate the parent NGI does not share that scope
-              </td>
-            </tr>-->
-
-            <?php
-            //$num = 2;
-            if(sizeof($params['ngi']->getSites()) > 0) {
+            <thead>
+            <tr>
+                <th>Name</th>
+                <th>Certification Status</th>
+                <th>Production Status</th>
+                <th>Scope(s)</th>
+            </tr>
+            </thead>
+            <tbody>
+                <?php
                 foreach($params['SitesAndScopes'] as $siteAndScopes) {
                     $site = $siteAndScopes['Site'];
-                    $scopes=$siteAndScopes['Scopes'];
-            ?>
-                <tr>
-                    <td>
-            <a href="index.php?Page_Type=Site&id=<?php echo $site->getId() ?>">
-                <?php xecho($site->getShortName()); ?>
-            </a>
-                    </td>
-
-                    <td>
-                        <?php xecho($site->getCertificationStatus()->getName()) ?>
-                    </td>
-
-                    <td>
-                        <?php xecho($site->getInfrastructure()->getName()) ?>
-                    </td>
-                     <td>
-                                 <?php
-                                 $count = 0;
-                                 $numScopes = sizeof($scopes);
-                                 $scopeString = '';
-                                 foreach ($scopes as $scopeName => $sharedWithParent) {
-                                     if ($sharedWithParent) {
-                                         $scopeString .= $scopeName;
-                                     } else {
-                                         $scopeString .= $scopeName . '(x)';
-                                     }
-                                     if (++$count != $numScopes) {
-                                         $scopeString .= ", ";
-                                     }
-                                 } ?>
-                          <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
-                    </td>
-
-
-                </tr>
+                    $scopes = $siteAndScopes['Scopes'];
+                ?>
+                    <tr>
+                        <td>
+                            <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId() ?>">
+                                <?php xecho($site->getShortName()); ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?php xecho($site->getCertificationStatus()->getName()) ?>
+                        </td>
+                        <td>
+                            <?php xecho($site->getInfrastructure()->getName()) ?>
+                        </td>
+                        <td>
+                            <?php
+                            $count = 0;
+                            $numScopes = sizeof($scopes);
+                            $scopeString = '';
+                            foreach ($scopes as $scopeName => $sharedWithParent) {
+                                if ($sharedWithParent) {
+                                    $scopeString .= $scopeName;
+                                } else {
+                                    $scopeString .= $scopeName . '(x)';
+                                }
+                                if (++$count != $numScopes) {
+                                    $scopeString .= ", ";
+                                }
+                            }
+                            ?>
+                            <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
+                        </td>
+                    </tr>
                 <?php
-                    //if($num == 1) { $num = 2; } else { $num = 1; }
-                    } // End of the foreach loop iterating over sites
-            }
-            ?>
-        </tbody>
+                } // End of the foreach loop iterating over SitesAndScopes
+                ?>
+            </tbody>
         </table>
     </div>
 
@@ -212,46 +199,51 @@
            Users (Click on name to manage roles)
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
-
         <table id="usersTable" class="table table-striped table-condensed tablesorter" >
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>Role</th>
-        </tr>
-        </thead>
-        <tbody>
-            <?php
-            $num = 2;
-            if(sizeof($params['roles']) > 0) {
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Role</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
                 foreach($params['roles'] as $role) {
                 ?>
-                <tr>
-                    <td>
-            <?php if($params['authenticated']) { ?>
-            <a href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId() ?>">
-              <?php xecho($role->getUser()->getFullName())/*.' ['.$role->getUser()->getId().']' */?>
-            </a>
-            <?php } else {echo 'PROTECTED'; } ?>
-                    </td>
+                    <tr>
+                        <td>
+                            <?php
+                            if ($params['authenticated']) {
+                            ?>
+                                <a href="index.php?Page_Type=User&amp;id=<?php echo $role->getUser()->getId() ?>">
+                                    <?php xecho($role->getUser()->getFullName()) ?>
+                                </a>
+                            <?php
+                            } else {
+                                echo 'PROTECTED';
+                            }
+                            ?>
+                        </td>
 
-                    <td>
-            <?php if($params['authenticated']) { ?>
-            <?php xecho($role->getRoleType()->getName())?>
-            <?php } else {echo 'PROTECTED'; } ?>
-                    </td>
-                </tr>
+                        <td>
+                            <?php
+                            if ($params['authenticated']) {
+                                xecho($role->getRoleType()->getName());
+                            } else {
+                                echo 'PROTECTED';
+                            }
+                            ?>
+                        </td>
+                    </tr>
                 <?php
-                    //if($num == 1) { $num = 2; } else { $num = 1; }
-                    } // End of the foreach loop iterating over sites
-            }
-            ?>
-    </tbody>
+                } // End of the foreach loop iterating over sites
+                ?>
+            </tbody>
         </table>
         <!-- Don't show role request in read only mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['authenticated']):?>
             <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
-                <a href="index.php?Page_Type=Request_Role&id=<?php echo $params['ngi']->getId();?>">
+                <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['ngi']->getId();?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="20px" style="float: left; vertical-align: middle; padding-right: 1em;">
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 0.2em;">
                             Request Role

@@ -96,7 +96,7 @@
                          } elseif($request->getOwnedEntity() instanceof \Project){
                              $entityViewLinkName = 'Project';
                          }
-                         echo  " <a href='index.php?Page_Type=$entityViewLinkName&id=$entityId'>$entityName [$entityViewLinkName]</a>";
+                         echo  " <a href='index.php?Page_Type=$entityViewLinkName&amp;id=$entityId'>$entityName [$entityViewLinkName]</a>";
 
                        ?>
                     </td>
@@ -104,7 +104,7 @@
                     <?php if(!$params['portalIsReadOnly']):?>
                         <td class="site_table">
                             <form action="index.php?Page_Type=Revoke_Role" method="post">
-                                <!--<a href="index.php?Page_Type=Revoke_Role&id=<?php echo $request->getId()?>" onclick="return confirmSubmit()"> Delete </a>-->
+                                <!--<a href="index.php?Page_Type=Revoke_Role&amp;id=<?php echo $request->getId()?>" onclick="return confirmSubmit()"> Delete </a>-->
                                 <input type="hidden" name="id" value="<?php echo $request->getId()?>" />
                                 <input type="submit" value="Delete" class="btn btn-sm btn-danger" onclick="return confirmSubmit()">
                             </form>
@@ -154,7 +154,7 @@
                          $requestingUserId = $requestingUser->getId();
                          $surname = xssafe($requestingUser->getSurname());
                          $forename = xssafe($requestingUser->getForename());
-                         echo "<a href='index.php?Page_Type=User&id=$requestingUserId'>$forename $surname</a>";
+                         echo "<a href='index.php?Page_Type=User&amp;id=$requestingUserId'>$forename $surname</a>";
                         ?>
 
                     </td>
@@ -176,7 +176,7 @@
                          } elseif($request->getOwnedEntity() instanceof \Project){
                              $entityClassName = 'Project';
                          }
-                         echo  " <a href='index.php?Page_Type=$entityClassName&id=$entityId'>$entityName [$entityClassName]</a>";
+                         echo  " <a href='index.php?Page_Type=$entityClassName&amp;id=$entityId'>$entityName [$entityClassName]</a>";
                         ?>
                     </td>
                     <td class="site_table">

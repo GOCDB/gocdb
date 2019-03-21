@@ -5,7 +5,7 @@
     type with the following description: "<?php xecho($params['Description'])?>".
     <br />
     <br />
-    <a href="index.php?Page_Type=Admin_Service_Type&id=<?php echo $params['ID'] ?>">
+    <a href="index.php?Page_Type=Admin_Service_Type&amp;id=<?php echo $params['ID'] ?>">
      Click here</a> to view the <?php xecho($params['Name'])?> service type.
 
 

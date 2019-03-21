@@ -64,7 +64,7 @@ function rejectIfNotAuthenticated($message = null){
     if(empty($authPrincipleStr)){
         // prob better to do a re-direct here to error page.
         if($message == null){
-            die('Access Denined, authentication failed - A valid user certificate was not found');
+            die('Access Denied, authentication failed - A valid user certificate was not found');
             //or your EGI SSO user account is not associated with a valid certificate.');
         } else {
             die($message);
@@ -183,7 +183,7 @@ function Draw_Page($Page_Type) {
         break;
     case "Site_Geo_xml" :
             //rejectIfNotAuthenticated();
-            require_once __DIR__ . '/controllers/sitesForGoogleMapXML.php';
+            require_once __DIR__ . '/controllers/sitesForMapXML.php';
             show_xml ();
             break;
         case "Error_Redirect":

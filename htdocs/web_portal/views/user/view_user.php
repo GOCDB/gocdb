@@ -18,7 +18,7 @@
     <div style="float: right;">
         <?php if($params['ShowEdit']):?>
             <div style="float: right; margin-left: 2em;">
-                <a href="index.php?Page_Type=Edit_User&id=<?php echo $params['user']->getId()?>">
+                <a href="index.php?Page_Type=Edit_User&amp;id=<?php echo $params['user']->getId()?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                     <br />
                     <br />
@@ -44,18 +44,8 @@
     <div style="float: left; width: 100%; margin-top: 2em;">
          <div class="alert alert-warning" role="alert">
             <ul>
-               <li>A GOCDB account means <b>you accept that your ID string, your basic user details and roles will be visible to other authenticated users and client-services of GOCDB</b>, including those authenticated by: </br></br>
-                  <ol>
-                    <li>a certificate issed from a Certification Authority (CA) that is registered with the <a href="https://www.igtf.net">Interoperable Global Trust Federation (IGTF).</a></li>
-                    <li>new authentication/security realms will be added here and you will be notified by email and in the portal.</li>
-                  </ol>
-               </li>
-            </ul>
-            <br>
-            <ul>
-               <li>Your details are re-published by GOCDB and used by EGI for Monitoring, Accounting and for use in its data processing systems.</li>
-               <li><a href="https://wiki.egi.eu/wiki/GOCDB/data_privacy">Further details and terms/conditions of use here</a></li>
-               <li>If you do not provide this consent, please <b>DELETE</b> your account.</li>
+              <li>By registering a GOCDB account you have agreed to abide by the <a href="/aup.html" target="_blank" title="opens in new window">GOCDB Acceptable Use Policy and Conditions of Use <img src="/portal/img/new_window.png" alt="new window logo" class="new_window"></a>.</li>
+              <li>Personal data, which you provide and is collected when you use GOCDB, is processed in accordance with the <a href="/privacy.html" target="_blank" title="opens in new window">GOCDB Privacy Notice <img src="/portal/img/new_window.png" alt="new window logo"  class="new_window"></a>.</li>
             </ul>
         </div>
 
@@ -105,7 +95,7 @@
                     <tr class="site_table_row_2">
                         <td class="site_table">Home Site</td>
                         <td class="site_table">
-                            <a href="index.php?Page_Type=Site&id=<?php echo $params['user']->getHomeSite()->getId()?>">
+                            <a href="index.php?Page_Type=Site&amp;id=<?php echo $params['user']->getHomeSite()->getId()?>">
                                 <?php xecho($params['user']->getHomeSite()->getShortName()) ?>
                             </a>
                         </td>
@@ -142,7 +132,7 @@
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 1em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
         Roles in Project
-        <a href="index.php?Page_Type=Project&id=<?php echo $projId ?>">
+        <a href="index.php?Page_Type=Project&amp;id=<?php echo $projId ?>">
         [<?php xecho($projName) ?>]
         </a>
     </span>

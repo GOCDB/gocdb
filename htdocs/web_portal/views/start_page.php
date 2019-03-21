@@ -25,7 +25,8 @@
           <li>If an organisation deploys and uses their own system or a local GOCDB installation, their data won't appear here.</li>
         </ul>
 
-    </div>
+</div>
+
     <?php if(sizeof($params['roles']) > 0) { ?>
         <div class="alert alert-warning" style="width: 98%; margin-bottom:1%; float: left;">
                 <span class="glyphicon glyphicon-asterisk"></span>   <b>Notification:</b> You have pending role requests - <a href="index.php?Page_Type=Role_Requests">Manage Roles</a>
@@ -34,15 +35,10 @@
 
     <!-- map Block -->
     <?php if($params['showMap']): ?>
-        <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false&key=<?php echo $params['googleAPIKey'];?>">
-        </script>
-        <!--This script provides the marker clustering functionality comment out the cluster line in googleSiteMap.js and this script to disable it-->
-        <!--<script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/googleMapClusterer.js">
-        </script>-->
-        <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/googleSiteMap.js">
-        </script>
-        <div style="display:inline-block;  ">
-            <div id="GoogleMap" style="width:840px;height:400px;"></div>
-        </div>
+      <!-- Use a web based leaflet.js to avoid distributing leaflet.js. -->
+      <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.css" integrity="sha256-YR4HrDE479EpYZgeTkQfgVJq08+277UXxMLbi/YP69o=" crossorigin="anonymous" />
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.4.0/leaflet.js" integrity="sha256-6BZRSENq3kxI4YYBDqJ23xg0r1GwTHEpvp3okdaIqBw=" crossorigin="anonymous"></script>
+      <script type="text/javascript" src="javascript/leafletembed.js"></script>
+      <div id="map" style="width:100%;height:400px;"><body onload="initmap()"></div>
     <?php endif; ?>
 </div>

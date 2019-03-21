@@ -4,7 +4,7 @@
     <?php xecho($params['Name'])?> has been successfully added as a new scope.
     <br />
     <br />
-    <a href="index.php?Page_Type=Admin_Scope&id=<?php echo $params['ID'] ?>">
+    <a href="index.php?Page_Type=Admin_Scope&amp;id=<?php echo $params['ID'] ?>">
      Click here</a> to view the <?php xecho($params['Name'])?> scope.
 
 

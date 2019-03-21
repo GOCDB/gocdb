@@ -44,26 +44,26 @@
               from all the child Services - a Service can't have a reserved tag that
               is not supported by its parent Site.</li>
             <li>For NGIs: If a Reserved tag is removed from an NGI, then the same tag is NOT
-              removed from all the child Sites - this is intentionally different from the Site->Service relationship.</li>
+              removed from all the child Sites - this is intentionally different from the Site&rarr;Service relationship.</li>
         </ul>
         <h2>How are scope tags used in the API?</h2>
         The following are some examples of scope tags in use in PI
         queries:
         <ul>
             <li>
-                <pre>?method=get_site&scope=EGI</pre>
+                <pre>?method=get_site&amp;scope=EGI</pre>
                 (Fetch all sites tagged as 'EGI')
             </li>
             <li>
-                <pre>?method=get_site&scope=EGI,ProjX&scope_match=all</pre>
+                <pre>?method=get_site&amp;scope=EGI,ProjX&amp;scope_match=all</pre>
                 (Fetch all sites tagged with <b>both</b> 'EGI' and ProjX)
             </li>
             <li>
-                <pre>?method=get_site&scope=EGI,ProjX&scope_match=any</pre>
+                <pre>?method=get_site&amp;scope=EGI,ProjX&amp;scope_match=any</pre>
                 (Fetch all sites tagged with <b>either</b> 'EGI' or ProjX)
             </li>
              <li>
-                <pre>?method=get_site&scope=</pre>
+                <pre>?method=get_site&amp;scope=</pre>
                 (Fetch <b>all sites</b> regardless of scope tags)
             </li>
         </ul>
@@ -80,23 +80,22 @@
                         <th>Reserved?</th>
                     </tr>
                 </thead>
-
-               <?php foreach($params['optionalScopes'] as $scope){ ?>
-                <tr>
-                    <td><?php xecho($scope->getName());?></td>
-                    <td><?php xecho($scope->getDescription()); ?></td>
-                    <td>&cross;</td>
-                </tr>
-               <?php } ?>
-
-               <?php foreach($params['reservedScopes'] as $scope){ ?>
-                <tr>
-                    <td><?php xecho($scope->getName());?></td>
-                    <td><?php xecho($scope->getDescription()); ?></td>
-                    <td>&check;</td>
-                </tr>
-               <?php } ?>
-
+                <tbody>
+                <?php foreach($params['optionalScopes'] as $scope){ ?>
+                    <tr>
+                        <td><?php xecho($scope->getName());?></td>
+                        <td><?php xecho($scope->getDescription()); ?></td>
+                        <td>&cross;</td>
+                    </tr>
+                <?php } ?>
+                <?php foreach($params['reservedScopes'] as $scope){ ?>
+                    <tr>
+                        <td><?php xecho($scope->getName());?></td>
+                        <td><?php xecho($scope->getDescription()); ?></td>
+                        <td>&check;</td>
+                    </tr>
+                <?php } ?>
+                </tbody>
             </table>
         </div>
     </div>

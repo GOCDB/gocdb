@@ -2,45 +2,49 @@
 <!--  Custom Properties -->
 <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
     <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Extension Properties</span>
-    <a href="index.php?Page_Type=Export_Properties&parent_type=<?php echo get_class($parent)?>&id=<?php echo $parent->getId();?>">
+    <a href="index.php?Page_Type=Export_Properties&amp;parent_type=<?php echo get_class($parent)?>&amp;id=<?php echo $parent->getId();?>">
         <span class="header" style="vertical-align:middle; float: right; padding-top: 0.9em; padding-left: 1em;">
             Export all properties
         </span>
     </a>
     <table id="extensionPropsTable" class="table table-striped table-condensed tablesorter">
         <thead>
-        <tr>
-            <th>Name</th>
-            <th>Value</th>
-            <?php if(!$params['portalIsReadOnly']): ?>
-                <th>Edit</th>
-                <th><input type="checkbox" id="selectAllProps"/> Select All</th>
-            <?php endif; ?>
-        </tr>
+            <tr>
+                <th>Name</th>
+                <th>Value</th>
+                <?php if(!$params['portalIsReadOnly']) { ?>
+                    <th>Edit</th>
+                    <th><input type="checkbox" id="selectAllProps"/> Select All</th>
+                <?php } ?>
+            </tr>
         </thead>
         <tbody>
-        <?php
-        foreach($extensionProperties as $prop) {
-            ?>
-
-            <tr>
-                <td style="width: 35%;"><?php xecho($prop->getKeyName()); ?></td>
-                <td style="width: 35%;"><?php xecho($prop->getKeyValue()); ?></td>
-                <?php if(!$params['portalIsReadOnly']): ?>
-                    <td style="width: 10%;"><a href="index.php?Page_Type=<?php echo $editPropertyPage;?>&propertyid=<?php echo $prop->getId();?>&id=<?php echo $parent->getId();?>"><img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/></a></td>
-                    <td style="width: 10%;"><input type='checkbox' class="propCheckBox" form="Modify_Properties_Form" name='selectedPropIDs[]' value="<?php echo $prop->getId();?>" autocomplete="off"/></td>
-
-                <?php endif; ?>
-            </tr>
             <?php
-        }
-        ?>
+            foreach($extensionProperties as $prop) {
+            ?>
+                <tr>
+                    <td style="width: 35%;"><?php xecho($prop->getKeyName()); ?></td>
+                    <td style="width: 35%;"><?php xecho($prop->getKeyValue()); ?></td>
+                    <?php if(!$params['portalIsReadOnly']): ?>
+                        <td style="width: 10%;">
+                            <a href="index.php?Page_Type=<?php echo $editPropertyPage;?>&amp;propertyid=<?php echo $prop->getId();?>&amp;id=<?php echo $parent->getId();?>">
+                                <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
+                            </a>
+                        </td>
+                        <td style="width: 10%;">
+                            <input type='checkbox' class="propCheckBox" form="Modify_Properties_Form" name='selectedPropIDs[]' value="<?php echo $prop->getId();?>" autocomplete="off"/>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+            <?php
+            }
+            ?>
         </tbody>
     </table>
     <!--  only show this link if we're in read / write mode -->
     <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
         <!-- Add new data Link -->
-        <a href="index.php?Page_Type=<?php echo $addPropertiesPage?>&parentid=<?php echo $parent->getId()?>">
+        <a href="index.php?Page_Type=<?php echo $addPropertiesPage?>&amp;parentid=<?php echo $parent->getId()?>">
             <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Properties

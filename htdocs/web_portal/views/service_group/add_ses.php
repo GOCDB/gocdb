@@ -25,7 +25,7 @@
 
         <?php if($params['siteLessServices']) { ?>
         <div class="leftFloat topMargin2 leftMargin">
-            <a href="index.php?Page_Type=Add_New_SE_To_Service_Group&id=<?php echo $params['sg']->getId() ?>">
+            <a href="index.php?Page_Type=Add_New_SE_To_Service_Group&amp;id=<?php echo $params['sg']->getId() ?>">
                 <img class="middleAlign" src="<?php echo \GocContextPath::getPath()?>img/add.png" height="25px" width="25px" style="padding-right: 0.5em;" />
                 <span class="middleAlign">
                     Add a new service to this service group

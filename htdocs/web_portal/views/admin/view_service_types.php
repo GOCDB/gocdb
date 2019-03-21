@@ -41,7 +41,7 @@
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Admin_Service_Type&id=<?php echo $serviceType->getId() ?>">
+                                <a href="index.php?Page_Type=Admin_Service_Type&amp;id=<?php echo $serviceType->getId() ?>">
                                     <?php xecho($serviceType->getName()); ?>
                                 </a>
                             </span>

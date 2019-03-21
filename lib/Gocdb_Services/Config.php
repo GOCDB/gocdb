@@ -214,7 +214,7 @@ class Config {
     }
 
     public function getShowMapOnStartPage(){
-        $showMapString = $this->GetLocalInfoXML()->local_info->google->show_map_on_start_page;
+        $showMapString = $this->GetLocalInfoXML()->local_info->show_map_on_start_page;
 
         if(empty($showMapString)){
             $showMap = false;
@@ -227,16 +227,6 @@ class Config {
         }
 
         return $showMap;
-    }
-
-    public function getGoogleAPIKey(){
-        $apiKey = $this->GetLocalInfoXML()->local_info->google->google_API_key;
-
-        if(empty($apiKey)){
-            $apiKey = '';
-        }
-
-        return $apiKey;
     }
 
     public function getExtensionsLimit(){

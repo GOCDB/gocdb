@@ -29,7 +29,7 @@
             <br/>
             <br/>
             Return to
-            <a href="index.php?Page_Type=Project&id=<?php echo $params['ID'] ?>">
+            <a href="index.php?Page_Type=Project&amp;id=<?php echo $params['ID'] ?>">
                  <?php xecho($params['Name']) ?>
             </a>
         </div>

@@ -8,6 +8,6 @@ $propertyArray=$params['propArr']
 
     <?php echo count($propertyArray) ?> new endpoint property(s) added to <?php echo $parent->getName() ?>. <br/>
 
-    <a href="index.php?Page_Type=View_Service_Endpoint&id=<?php echo $parent->getID(); ?>">
+    <a href="index.php?Page_Type=View_Service_Endpoint&amp;id=<?php echo $parent->getID(); ?>">
         View endpoint</a>
 </div>

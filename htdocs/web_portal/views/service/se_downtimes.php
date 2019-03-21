@@ -17,30 +17,34 @@
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">All Downtimes (Year-Month-Day Time in UTC)</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
             <table id="allServiceDowntimesTable" class="table table-striped table-condensed tablesorter">
-        <thead>
-            <tr>
-            <th>Description</th>
-            <th>From</th>
-            <th>To</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php
-            foreach($params['downtimes'] as $downtime) {
-            ?>
-
-            <tr>
-            <td>
-                <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $downtime->getId() ?>">
-                    <?php echo $downtime->getDescription() ?>
-                </a>
-            </td>
-
-            <td style="width: 20%"><?php echo $downtime->getStartDate()->format('Y-m-d H:i'/*$downtime::DATE_FORMAT*/); ?></td>
-            <td style="width: 20%"><?php echo $downtime->getEndDate()->format('Y-m-d H:i'/*$downtime::DATE_FORMAT*/); ?></td>
-            </tr>
-            <?php } ?>
-        </tbody>
+                <thead>
+                    <tr>
+                        <th>Description</th>
+                        <th>From</th>
+                        <th>To</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    foreach($params['downtimes'] as $downtime) {
+                    ?>
+                        <tr>
+                            <td>
+                                <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $downtime->getId() ?>">
+                                    <?php echo $downtime->getDescription() ?>
+                                </a>
+                            </td>
+                            <td style="width: 20%">
+                                <?php echo $downtime->getStartDate()->format('Y-m-d H:i'/*$downtime::DATE_FORMAT*/); ?>
+                            </td>
+                            <td style="width: 20%">
+                                <?php echo $downtime->getEndDate()->format('Y-m-d H:i'/*$downtime::DATE_FORMAT*/); ?>
+                            </td>
+                        </tr>
+                    <?php
+                    } // end of foreach iterating over downtimes
+                    ?>
+                </tbody>
             </table>
         </div>
     </div>

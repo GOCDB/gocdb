@@ -14,7 +14,7 @@ $serviceGroup = $params['serviceGroup'];
     <?php require_once __DIR__ . '/../fragments/propertiesTable.php';?>
 
     <p>
-    <a href="index.php?Page_Type=Service_Group&id=<?php echo $serviceGroup->getId();?>">View service group</a>
+    <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $serviceGroup->getId();?>">View service group</a>
     </p>
 
 </div>
