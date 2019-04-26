@@ -509,9 +509,9 @@ class ServiceService extends AbstractEntityService {
         $this->validateEndpointUrl ( $newValues ['endpointUrl'] );
         $this->uniqueCheck ( $newValues ['SE'] ['HOSTNAME'], $st, $se->getParentSite () );
         // validate production/monitored combination
-        if ($st != 'VOMS' && $st != 'emi.ARGUS') {
+        if ($st != 'VOMS' && $st != 'emi.ARGUS' && $st != 'org.squid-cache.Squid') {
             if ($newValues ['PRODUCTION_LEVEL'] == "Y" && $newValues ['IS_MONITORED'] != "Y") {
-                throw new \Exception ( "If Production flat is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)" );
+                throw new \Exception ( "If Production flat is set to True, Monitored flag must also be True (except for VOMS, emi.ARGUS and org.squid-cache.Squid)" );
             }
         }
 
@@ -829,9 +829,9 @@ class ServiceService extends AbstractEntityService {
         $this->uniqueCheck ( $values ['SE'] ['HOSTNAME'], $st, $site );
 
         // validate production/monitored combination
-        if ($st != 'VOMS' && $st != 'emi.ARGUS') {
+        if ($st != 'VOMS' && $st != 'emi.ARGUS' && $st != 'org.squid-cache.Squid') {
             if ($values ['PRODUCTION_LEVEL'] == "Y" && $values ['IS_MONITORED'] != "Y") {
-                throw new \Exception ( "If Production flag is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)" );
+                throw new \Exception ( "If Production flag is set to True, Monitored flag must also be True (except for VOMS, emi.ARGUS and org.squid-cache.Squid)" );
             }
         }
 
