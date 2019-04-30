@@ -511,7 +511,7 @@ class ServiceService extends AbstractEntityService {
         // validate production/monitored combination
         if ($st != 'VOMS' && $st != 'emi.ARGUS' && $st != 'org.squid-cache.Squid') {
             if ($newValues ['PRODUCTION_LEVEL'] == "Y" && $newValues ['IS_MONITORED'] != "Y") {
-                throw new \Exception ( "If Production flat is set to True, Monitored flag must also be True (except for VOMS, emi.ARGUS and org.squid-cache.Squid)" );
+                throw new \Exception ( "For the '".$st."' service type, if the Production flag is set to True, the Monitored flag must also be True." );
             }
         }
 
@@ -831,7 +831,7 @@ class ServiceService extends AbstractEntityService {
         // validate production/monitored combination
         if ($st != 'VOMS' && $st != 'emi.ARGUS' && $st != 'org.squid-cache.Squid') {
             if ($values ['PRODUCTION_LEVEL'] == "Y" && $values ['IS_MONITORED'] != "Y") {
-                throw new \Exception ( "If Production flag is set to True, Monitored flag must also be True (except for VOMS, emi.ARGUS and org.squid-cache.Squid)" );
+                throw new \Exception ( "For the '".$st."' service type, if the Production flag is set to True, the Monitored flag must also be True." );
             }
         }
 
