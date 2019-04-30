@@ -509,7 +509,11 @@ class ServiceService extends AbstractEntityService {
         $this->validateEndpointUrl ( $newValues ['endpointUrl'] );
         $this->uniqueCheck ( $newValues ['SE'] ['HOSTNAME'], $st, $se->getParentSite () );
         // validate production/monitored combination
-        if ($st != 'VOMS' && $st != 'emi.ARGUS' && $st != 'org.squid-cache.Squid') {
+        // Service types that are exceptions to the
+        // 'production => monitored' rule.
+        $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
+        // Check that the service type is not an exception to the 'production => monitored' rule.
+        if (!in_array($st, $ruleExceptions)) {
             if ($newValues ['PRODUCTION_LEVEL'] == "Y" && $newValues ['IS_MONITORED'] != "Y") {
                 throw new \Exception ( "For the '".$st."' service type, if the Production flag is set to True, the Monitored flag must also be True." );
             }
@@ -829,7 +833,11 @@ class ServiceService extends AbstractEntityService {
         $this->uniqueCheck ( $values ['SE'] ['HOSTNAME'], $st, $site );
 
         // validate production/monitored combination
-        if ($st != 'VOMS' && $st != 'emi.ARGUS' && $st != 'org.squid-cache.Squid') {
+        // Service types that are exceptions to the
+        // 'production => monitored' rule.
+        $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
+        // Check that the service type is not an exception to the 'production => monitored' rule.
+        if (!in_array($st, $ruleExceptions)) {
             if ($values ['PRODUCTION_LEVEL'] == "Y" && $values ['IS_MONITORED'] != "Y") {
                 throw new \Exception ( "For the '".$st."' service type, if the Production flag is set to True, the Monitored flag must also be True." );
             }
