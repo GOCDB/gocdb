@@ -4,10 +4,7 @@
 
 Grid Operations Configuration Management Database. A Repository, Portal and REST style API for managing Grid and Cloud topology objects including; projects, administrative domains, sites, services, service-endpoints, service-groups, downtimes, users, roles and business rules.
 
-<img alt="STFC logo" src="htdocs/web_portal/img/STFCMediumColourTrans_crop.png" height=57/>
-<img alt="EU flag" src="htdocs/web_portal/img/eu_flag_yellow_low_150.png" height=57 />
-<img alt="EGI logo" src="htdocs/web_portal/img/egi_logo.jpg" height=57 />
-<img alt="EOSC-hub logo" src="htdocs/web_portal/img/eosc-hub-v-web_150.png" height=57 />
+<img alt="STFC logo" src="htdocs/web_portal/img/STFCMediumColourTrans_crop.png" height=57/> <img alt="EU flag" src="htdocs/web_portal/img/eu_flag_yellow_low_150.png" height=57 /> <img alt="EGI logo" src="htdocs/web_portal/img/egi_logo.jpg" height=57 /> <img alt="EOSC-hub logo" src="htdocs/web_portal/img/eosc-hub-v-web_150.png" height=57 />
 
 GOCDB is provided by <a class="Licence_Link" href="https://stfc.ukri.org/">
 STFC</a> for <a class="Licence_Link" href="http://www.egi.eu">EGI</a>, co-funded by <a class="Licence_Link" href="http://www.egi.eu">EGI.eu</a> and 
