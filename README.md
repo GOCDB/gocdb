@@ -11,7 +11,7 @@ Grid Operations Configuration Management Database. A Repository, Portal and REST
   <img alt="EOSC-hub logo" src="htdocs/web_portal/img/eosc-hub-v-web_150.png" height=57 />
 </span>
 
-GOCDB is provided by [STFC](https://stfc.ukri.org/) for [EGI](http://www.egi.eu), co-funded by [EGI.eu](http://www.egi.eu) and [EOSC-hub](http://go.egi.eu/eng). Licensed under the [Apache 2 License](ttp://www.apache.org/licenses/LICENSE-2.0).
+GOCDB is provided by [STFC](https://stfc.ukri.org/) for [EGI](https://www.egi.eu/federation/), co-funded by [EGI.eu](https://www.egi.eu/) and [EOSC-hub](https://www.eosc-hub.eu/). Licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0).
 
 ## Documentation
 
