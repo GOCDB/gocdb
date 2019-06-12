@@ -474,13 +474,16 @@ class ServiceService extends AbstractEntityService {
         // 'production => monitored' rule.
         $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
 
-        $st = $this->getServiceType($serviceValues['serviceType']);
+        $serviceType = $this->getServiceType($serviceValues['serviceType']);
 
         // Check that the service type is not an exception to the
         // 'production => monitored'.
-        if (!in_array ($st, $ruleExceptions)) {
+        if (!in_array ($serviceType, $ruleExceptions)) {
             if ($serviceValues['PRODUCTION_LEVEL'] == "Y" && $serviceValues['IS_MONITORED'] != "Y") {
-                throw new \Exception("For the '".$st."' service type, if the Production flag is set to True, the Monitored flag must also be True.");
+                throw new \Exception(
+                    "For the '".$serviceType."' service type, if the ".
+                    "Production flag is set to True, the Monitored flag must ".
+                    "also be True.");
             }
         }
     }
