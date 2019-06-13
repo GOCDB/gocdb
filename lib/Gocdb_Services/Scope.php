@@ -91,9 +91,9 @@ class Scope extends AbstractEntityService{
      *       default value listed in the 'local_info.xml' config file</li>
      *   <li>'excludeNonDefault' => boolean (if true exclude scopes that are not default)</li>
      *   <li>'excludeReserved' => boolean (if true, exclude 'reserved' scopes,
-     *      i.e. those that are listed as reserved in the the 'local_info.xml' config file</li>
+     *      i.e. those that are flagged as reserved in the database scopes table</li>
      *   <li>'excludeNonReserved' => boolean (if true, exclude 'normal' scopes,
-     *     i.e. those that are not listed as reserved in the the 'local_info.xml' config file</li>
+     *     i.e. those that are not flagged as reserved in the database scopes table</li>
      * </ul>
      *
      * @param array $filterParams Associative array
