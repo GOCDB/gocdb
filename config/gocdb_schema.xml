@@ -168,15 +168,19 @@
       <length>255</length>
       <!-- Support for all URI chars (unreserved, gen-delims, sub-delims and percent) RFC 3986 -->
 	    <regex>/^[0-9a-zA-Z:\/\.\&amp;\?\_\$\+\!\*\'\(\)\,\-#\[\]@;=~%]*$/</regex>
+      <ftype>string</ftype>
   </field>
   <field>
       <fname>PRODUCTION</fname>
+      <ftype>boolean</ftype>
   </field>
   <field>
       <fname>BETA</fname>
+      <ftype>boolean</ftype>
   </field>
   <field>
       <fname>MONITORED</fname>
+      <ftype>boolean</ftype>
   </field>
     </entity>
     <!-- ==========================================================  -->
@@ -366,6 +370,7 @@
     </field>
     <field>
         <fname>MONITORED</fname>
+        <ftype>boolean</ftype>
     </field>
     </entity>
 
