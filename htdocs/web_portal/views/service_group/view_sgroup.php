@@ -31,7 +31,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                     <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                     <a onclick="return confirmSubmit()"
                         href="index.php?Page_Type=Delete_Service_Group&id=<?php echo $params['sGroup']->getId()?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
                         <br />
                         <br />
                         <span>Delete</span>
@@ -164,7 +164,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
             </a>
             <!-- Remove Service Link -->
             <a href="index.php?Page_Type=Remove_Service_Group_SEs&amp;id=<?php echo $params['sGroup']->getId();?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Remove Services
                 </span>

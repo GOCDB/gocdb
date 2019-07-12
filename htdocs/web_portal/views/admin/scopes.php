@@ -52,7 +52,7 @@
                         <td class="site_table">
                              <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                              <a onclick="return confirmSubmit()" href="index.php?Page_Type=Admin_Remove_Scope&id=<?php echo $scope->getId() ?>">
-                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="22px" style="vertical-align: middle;" />
                             </a>
                         </td>
                     <?php endif ?>

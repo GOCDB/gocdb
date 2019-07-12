@@ -33,7 +33,7 @@ $configService = \Factory::getConfigService();
                 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                     href="index.php?Page_Type=Delete_Service&id=<?php echo $se->getId() ?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -301,7 +301,7 @@ $configService = \Factory::getConfigService();
                         </td>
                         <td style="width: 10%;"align = "center"class="site_table">
                             <a href="index.php?Page_Type=Delete_Service_Endpoint&amp;endpointid=<?php echo $endpoint->getId();?>&amp;serviceid=<?php echo $seId;?>">
-                                <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/>
+                                <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/trash.png"/>
                             </a>
                         </td>
                     <?php endif; ?>

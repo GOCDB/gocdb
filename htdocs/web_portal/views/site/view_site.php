@@ -25,7 +25,7 @@ $extensionProperties = $site->getSiteProperties();
             <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
             <a onclick="return confirmSubmit()"
                href="index.php?Page_Type=Delete_Site&id=<?php echo($site->getId()); ?>">
-            <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="25px"/>
+            <img src="<?php echo \GocContextPath::getPath() ?>img/trash.png" height="25px"/>
             <br/>
             <span>Admin<br>Delete</span>
             </a>

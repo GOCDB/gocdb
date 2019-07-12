@@ -31,7 +31,7 @@
                 <?php if($params['ShowEdit']){?>
                     <a onclick="return confirmSubmit()"
                         href="index.php?Page_Type=Delete_Project&id=<?php echo $params['ID']?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
                         <br />
                         <br />
                         <span>Delete</span>
@@ -95,7 +95,7 @@
                 <!-- Remove NGI Link -->
                 <?php if($params['ShowEdit']){?>
                     <a href="index.php?Page_Type=Remove_Project_NGIs&amp;id=<?php echo $params['ID'];?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                         <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                                 Remove NGIs
                         </span>
