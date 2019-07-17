@@ -53,7 +53,7 @@
         <!--  User -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">User Details</span>
-            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="decoration" />
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
@@ -136,7 +136,7 @@
         [<?php xecho($projName) ?>]
         </a>
     </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
 
 
         <table style="clear: both; width: 100%;">
@@ -219,7 +219,7 @@
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
         Project Agnostic Roles (Selected roles may be over objects with no ancestor Project, e.g. ServiceGroups)
     </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
 
 
         <table style="clear: both; width: 100%;">

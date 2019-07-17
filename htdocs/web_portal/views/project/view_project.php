@@ -46,7 +46,7 @@
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
             This project <?php if ($ngiCount == 0){echo "has no";} else{echo "consists of " . $ngiCount;} ?> NGI<?php if($ngiCount != 1) echo "s"?>
         </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" class="decoration" />
 
         <?php if ($ngiCount != 0): ?>
             <table id="ngisTable" class="table table-striped table-condensed tablesorter">
@@ -111,7 +111,7 @@
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
             Users (Click on name to manage roles)
         </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
         <?php if (sizeof($params['Roles'])>0): ?>
 
             <table id="usersTable" class="table table-striped table-condensed tablesorter">

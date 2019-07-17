@@ -46,7 +46,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
         <!--  Data -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Properties</span>
-            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="decoration" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Monitored</td><td class="site_table">
@@ -95,7 +95,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
     <!--  Services -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Services</span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Hostname (service type)</th>
@@ -175,7 +175,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
     <!-- Roles -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
@@ -235,7 +235,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
         <a href="index.php?Page_Type=SGroup_Downtimes&amp;id=<?php echo $params['sGroup']->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
-        <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" class="decoration" />
         <table style="clear: both; width: 100%;">
             <tr class="site_table_row_1">
                 <th class="site_table">Description</th>

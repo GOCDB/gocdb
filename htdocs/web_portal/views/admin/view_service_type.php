@@ -50,7 +50,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                         else {echo 'are ' . $SEsCount . ' services';}?>
             with <?php echo $name ?> service type<?php if ($SEsCount == 0) {echo '.';} else {echo ':';}?>
         </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration" />
         <?php if ($SEsCount != 0): ?>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
@@ -69,7 +69,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                     <tr class="site_table_row_<?php echo $num ?>">
                         <td class="site_table">
                             <div style="background-color: inherit;">
-                                <img src="<?php echo \GocContextPath::getPath()?>img/server.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/server.png" class="decoration" />
                                 <span style="vertical-align: middle;">
                                     <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
                                         <?php xecho($se->getHostname());?> (<?php xecho($se->getServiceType()->getName());?>)
