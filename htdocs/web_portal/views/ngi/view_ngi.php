@@ -216,6 +216,7 @@
                             if ($params['authenticated']) {
                             ?>
                                 <a href="index.php?Page_Type=User&amp;id=<?php echo $role->getUser()->getId() ?>">
+                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                                     <?php xecho($role->getUser()->getFullName()) ?>
                                 </a>
                             <?php

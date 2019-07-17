@@ -158,7 +158,7 @@
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table" style="width: 40%">
                     <div style="background-color: inherit;">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                             <?php xecho($role->getRoleType()->getName())/*.' ['.$role->getId().']'*/ ?>
                     </div>
                 </td>
@@ -241,7 +241,7 @@
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table" style="width: 40%">
                     <div style="background-color: inherit;">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                             <?php xecho($role->getRoleType()->getName())/*.' ['.$role->getId().']'*/ ?>
                     </div>
                 </td>
