@@ -459,6 +459,35 @@ class ServiceService extends AbstractEntityService {
         return $types;
     }
 
+    /*
+     * Validates the the 'production => monitored' rule for the user inputted 
+     * service data.
+
+     * @param array $serviceValues
+     * @throws \Exception If the serviceValues production/monitored combination
+     * is invalid. The \Exception's message will contain a human readable error
+     * message.
+     * @return null
+     */
+    private function validateProductionMonitoredCombination($serviceValues) {
+        // Service types that are exceptions to the
+        // 'production => monitored' rule.
+        $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
+
+        $serviceType = $this->getServiceType($serviceValues['serviceType']);
+
+        // Check that the service type is not an exception to the
+        // 'production => monitored'.
+        if (!in_array ($serviceType, $ruleExceptions)) {
+            if ($serviceValues['PRODUCTION_LEVEL'] == "Y" && $serviceValues['IS_MONITORED'] != "Y") {
+                throw new \Exception(
+                    "For the '".$serviceType."' service type, if the ".
+                    "Production flag is set to True, the Monitored flag must ".
+                    "also be True.");
+            }
+        }
+    }
+
     /**
      * Updates a Service.
      * Returns the updated SE
@@ -509,11 +538,7 @@ class ServiceService extends AbstractEntityService {
         $this->validateEndpointUrl ( $newValues ['endpointUrl'] );
         $this->uniqueCheck ( $newValues ['SE'] ['HOSTNAME'], $st, $se->getParentSite () );
         // validate production/monitored combination
-        if ($st != 'VOMS' && $st != 'emi.ARGUS') {
-            if ($newValues ['PRODUCTION_LEVEL'] == "Y" && $newValues ['IS_MONITORED'] != "Y") {
-                throw new \Exception ( "If Production flat is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)" );
-            }
-        }
+        $this->validateProductionMonitoredCombination($newValues);
 
         // EDIT SCOPE TAGS:
         // collate selected scopeIds (reserved and non-reserved)
@@ -829,11 +854,7 @@ class ServiceService extends AbstractEntityService {
         $this->uniqueCheck ( $values ['SE'] ['HOSTNAME'], $st, $site );
 
         // validate production/monitored combination
-        if ($st != 'VOMS' && $st != 'emi.ARGUS') {
-            if ($values ['PRODUCTION_LEVEL'] == "Y" && $values ['IS_MONITORED'] != "Y") {
-                throw new \Exception ( "If Production flag is set to True, Monitored flag must also be True (except for VOMS and emi.ARGUS)" );
-            }
-        }
+        $this->validateProductionMonitoredCombination($values);
 
         // ADD SCOPE TAGS:
         // collate selected reserved and non-reserved scopeIds.
