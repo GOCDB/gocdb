@@ -1,7 +1,7 @@
 <div class="rightPageContainer">
     <div class="rightPageHolder">
         <div class="leftFloat">
-            <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" class="pageLogo" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" class="pageLogo" />
         </div>
         <div class="leftFloat" style="width: 50em;">
             <h1 class="vSite">

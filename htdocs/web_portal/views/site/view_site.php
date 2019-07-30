@@ -25,7 +25,7 @@ $extensionProperties = $site->getSiteProperties();
             <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
             <a onclick="return confirmSubmit()"
                href="index.php?Page_Type=Delete_Site&id=<?php echo($site->getId()); ?>">
-            <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="25px"/>
+            <img src="<?php echo \GocContextPath::getPath() ?>img/trash.png" height="25px"/>
             <br/>
             <span>Admin<br>Delete</span>
             </a>
@@ -50,7 +50,7 @@ $extensionProperties = $site->getSiteProperties();
         <!--  Contacts -->
         <div class="tableContainer" style="width: 55%; float: left;" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Contact Info</span>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath() ?>img/contact_card.png" class="decoration" />
         <table style="clear: both; width: 100%; table-layout: fixed;">
         <tr class="site_table_row_1">
             <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
@@ -132,7 +132,7 @@ $extensionProperties = $site->getSiteProperties();
         <!--  Project Data -->
         <div class="tableContainer" style="width: 42%; float: right;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Project Data</span>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/project.png" height="25px" style="float: right; padding-right: 0.5em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath() ?>img/project.png" class="decoration" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">NGI/ROC</td><td class="site_table">
@@ -194,7 +194,7 @@ $extensionProperties = $site->getSiteProperties();
         <!--  Networking -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Networking</span>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/network.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath() ?>img/network.png" class="decoration" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Home URL</td>
@@ -256,7 +256,7 @@ $extensionProperties = $site->getSiteProperties();
         <!-- Location Data -->
         <div class="tableContainer" style="width: 42%; float: right;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Location</span>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/pin.png" height="25px" style="float: right; padding-right: 0.5em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath() ?>img/pin.png" class="decoration" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Country</td><td class="site_table">
@@ -333,7 +333,7 @@ $extensionProperties = $site->getSiteProperties();
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
         Services (Note, Service scope values marked with (x) indicate the Site does not share that scope)
     </span>
-        <img src="<?php echo \GocContextPath::getPath() ?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath() ?>img/service.png" class="decoration" />
 
         <table id="servicesTable" class="table table-striped table-condensed tablesorter">
         <thead>
@@ -435,7 +435,7 @@ $extensionProperties = $site->getSiteProperties();
     <!--  Users -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
-        <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" class="decoration" />
 
         <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
             <thead>
@@ -453,6 +453,7 @@ $extensionProperties = $site->getSiteProperties();
                             <div style="background-color: inherit;">
                                 <?php if ($params['authenticated']) { ?>
                                 <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
+                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px"  style="vertical-align: middle; padding-right: 1em;" />
                                     <?php xecho($role->getUser()->getFullName()) ?>
                                 </a>
                                 <?php
@@ -496,7 +497,7 @@ $extensionProperties = $site->getSiteProperties();
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes Affecting <?php xecho($site->getShortName()) ?>'s SEs </span>
         <a href="index.php?Page_Type=Site_Downtimes&amp;id=<?php echo($site->getId()); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
-        <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" class="decoration" />
 
         <table id="siteDowntimesTable" class="table table-striped table-condensed tablesorter">
             <thead>

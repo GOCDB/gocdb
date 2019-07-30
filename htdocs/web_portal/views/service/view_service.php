@@ -33,7 +33,7 @@ $configService = \Factory::getConfigService();
                 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                     href="index.php?Page_Type=Delete_Service&id=<?php echo $se->getId() ?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -301,7 +301,7 @@ $configService = \Factory::getConfigService();
                         </td>
                         <td style="width: 10%;"align = "center"class="site_table">
                             <a href="index.php?Page_Type=Delete_Service_Endpoint&amp;endpointid=<?php echo $endpoint->getId();?>&amp;serviceid=<?php echo $seId;?>">
-                                <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/>
+                                <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/trash.png"/>
                             </a>
                         </td>
                     <?php endif; ?>
@@ -340,7 +340,7 @@ $configService = \Factory::getConfigService();
     <div class="listContainer rounded" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes</span>
         <a href="index.php?Page_Type=SE_Downtimes&amp;id=<?php echo $se->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
-        <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" class="decoration" />
 
         <table id="downtimesTable"  class="table table-striped table-condensed tablesorter">
             <thead>

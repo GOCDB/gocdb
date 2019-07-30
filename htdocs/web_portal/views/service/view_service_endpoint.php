@@ -35,7 +35,7 @@ $seId = $se->getId();
             <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
             <a onclick="return confirmSubmit()"
                href="index.php?Page_Type=Delete_Service_Endpoint&amp;endpointid=<?php echo $endpoint->getId(); ?>&serviceid=<?php echo $seId; ?>">
-            <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+            <img src="<?php echo \GocContextPath::getPath() ?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
             <br />
             <br />
             <span>Delete</span>

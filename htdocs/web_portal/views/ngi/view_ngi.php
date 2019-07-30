@@ -22,7 +22,7 @@
                     <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                     <a onclick="return confirmSubmit()"
                        href="index.php?Page_Type=Admin_Delete_NGI&amp;id=<?php echo $params['ngi']->getId() ?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" />
                         <br />
                         <span>Admin<br>Delete</span>
                     </a>
@@ -216,6 +216,7 @@
                             if ($params['authenticated']) {
                             ?>
                                 <a href="index.php?Page_Type=User&amp;id=<?php echo $role->getUser()->getId() ?>">
+                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                                     <?php xecho($role->getUser()->getFullName()) ?>
                                 </a>
                             <?php

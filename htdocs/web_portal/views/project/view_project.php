@@ -31,7 +31,7 @@
                 <?php if($params['ShowEdit']){?>
                     <a onclick="return confirmSubmit()"
                         href="index.php?Page_Type=Delete_Project&id=<?php echo $params['ID']?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
                         <br />
                         <br />
                         <span>Delete</span>
@@ -46,7 +46,7 @@
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
             This project <?php if ($ngiCount == 0){echo "has no";} else{echo "consists of " . $ngiCount;} ?> NGI<?php if($ngiCount != 1) echo "s"?>
         </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" class="decoration" />
 
         <?php if ($ngiCount != 0): ?>
             <table id="ngisTable" class="table table-striped table-condensed tablesorter">
@@ -95,7 +95,7 @@
                 <!-- Remove NGI Link -->
                 <?php if($params['ShowEdit']){?>
                     <a href="index.php?Page_Type=Remove_Project_NGIs&amp;id=<?php echo $params['ID'];?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                         <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                                 Remove NGIs
                         </span>
@@ -111,7 +111,7 @@
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
             Users (Click on name to manage roles)
         </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
         <?php if (sizeof($params['Roles'])>0): ?>
 
             <table id="usersTable" class="table table-striped table-condensed tablesorter">
@@ -128,7 +128,7 @@
                     ?>
                         <tr>
                             <td>
-                                <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px"  style="vertical-align: middle; padding-right: 1em;" />
                             </td>
                             <td>
                                 <?php

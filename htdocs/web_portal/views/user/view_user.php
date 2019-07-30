@@ -29,7 +29,7 @@
                 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                     href="index.php?Page_Type=Delete_User&id=<?php echo $params['user']->getId() ?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -53,7 +53,7 @@
         <!--  User -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">User Details</span>
-            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="decoration" />
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
@@ -136,7 +136,7 @@
         [<?php xecho($projName) ?>]
         </a>
     </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
 
 
         <table style="clear: both; width: 100%;">
@@ -158,7 +158,7 @@
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table" style="width: 40%">
                     <div style="background-color: inherit;">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                             <?php xecho($role->getRoleType()->getName())/*.' ['.$role->getId().']'*/ ?>
                     </div>
                 </td>
@@ -219,7 +219,7 @@
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
         Project Agnostic Roles (Selected roles may be over objects with no ancestor Project, e.g. ServiceGroups)
     </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
 
 
         <table style="clear: both; width: 100%;">
@@ -241,7 +241,7 @@
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table" style="width: 40%">
                     <div style="background-color: inherit;">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" style="vertical-align: middle; padding-right: 1em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px" style="vertical-align: middle; padding-right: 1em;" />
                             <?php xecho($role->getRoleType()->getName())/*.' ['.$role->getId().']'*/ ?>
                     </div>
                 </td>
