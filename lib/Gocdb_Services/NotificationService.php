@@ -133,6 +133,19 @@ class NotificationService extends AbstractEntityService {
     }
 
 
+    private function mock_mail($to, $subject, $message, $additional_headers = "", $additional_parameters = "") {
+        echo "<!--\n";
+        echo "Sending mail disabled, but would have sent:\n";
+        echo "$additional_headers\n";
+        echo "To: $to\n";
+        echo "Subject: $subject\n";
+        echo "\n$message\n";
+        echo "\nAdditional Parameters: $additional_parameters\n";
+        echo "-->\n";
+        return True;
+    }
+
+
     private function send_email($role_requested, $requesting_user, $entity_name, $approving_user) {
         $sendMail = TRUE;
         $headers = "From: no-reply@goc.egi.eu";
@@ -152,22 +165,20 @@ class NotificationService extends AbstractEntityService {
                 '    %5$s/index.php?Page_Type=Role_Requests',
                 '',
                 'Note: This role could already have been approved or denied by another GocDB User',
-            ),
+            )),
             $approving_user->getForename(),
             $requesting_user->getForename(),
             $role_requested->getRoleType()->getName(),
             $role_requested->getOwnedEntity()->getName(),
             $this->get_webPortalURL()
-        ));
+        );
 
         $email = $approving_user->getEmail();
 
         if ($sendMail) {
             mail($email, $subject, $body, $headers);
         } else {
-            echo "Email: $email<br>";
-            echo "Subject: $subject<br>";
-            echo "Body: $body<br>";
+            $this->mock_mail($email, $subject, $body, $headers);
         }
     }
 }
