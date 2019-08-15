@@ -102,48 +102,11 @@ class NotificationService extends AbstractEntityService {
             // Remove duplicate user ids from array
             $authorising_user_ids = array_unique ( $authorising_user_ids );
 
-            // Get the PortalURL to create an accurate link to the role approval view
-            $localInfoLocation = __DIR__ . "/../../config/local_info.xml";
-            $localInfoXML = simplexml_load_file ( $localInfoLocation );
-            $webPortalURL = $localInfoXML->local_info->web_portal_url;
-
-            // Email content
-            $headers = "From: no-reply@goc.egi.eu";
-            $sendMail = TRUE;
             // Send email to all users who can approve this role request
             if ($authorising_user_ids != null) {
                 foreach ( $authorising_user_ids as $user_id ) {
                     $approving_user = \Factory::getUserService()->getUser($user_id);
-                    $email = $approving_user->getEmail();
-                    $subject = sprintf(
-                        'GocDB: A Role request from %1$s over %2$s requires your attention',
-                        $requesting_user->getForename(),
-                        $entity_name
-                    );
-                    $body = sprintf(
-                        implode("\n", array(
-                            'Dear %1$s,',
-                            '%2$s requested %3$s on %4$s which requires your attention.',
-                            '',
-                            'You can approve or deny the request here:',
-                            '    %3$s/index.php?Page_Type=Role_Requests',
-                            '',
-                            'Note: This role could already have been approved or denied by another GocDB User',
-                        ),
-                        $approving_user->getForename(),
-                        $requesting_user->getForename(),
-                        $role_requested->getRoleType()->getName(),
-                        $role_requested->getOwnedEntity()->getName(),
-                        $webPortalURL
-                    ));
-
-                    if($sendMail){
-                       mail($email, $subject, $body, $headers);
-                    } else {
-                       echo "Email: " . $email . "<br>";
-                       echo "Subject: " . $subject . "<br>";
-                       echo "Body: " . $body . "<br>";
-                    }
+                    $this->send_email($role_requested, $requesting_user, $entity_name, $requesting_user);
                 }
             }
         }
@@ -162,6 +125,49 @@ class NotificationService extends AbstractEntityService {
                     echo $project->getName () . "<br>";
                 }
             }
+        }
+    }
+
+    private function send_email($role_requested, $requesting_user, $entity_name, $approving_user) {
+        $sendMail = TRUE;
+        $headers = "From: no-reply@goc.egi.eu";
+
+        // Get the PortalURL to create an accurate link to the role approval view
+        $localInfoLocation = __DIR__ . "/../../config/local_info.xml";
+        $localInfoXML = simplexml_load_file ( $localInfoLocation );
+        $webPortalURL = $localInfoXML->local_info->web_portal_url;
+
+        $subject = sprintf(
+            'GocDB: A Role request from %1$s over %2$s requires your attention',
+            $requesting_user->getForename(),
+            $entity_name
+        );
+
+        $body = sprintf(
+            implode("\n", array(
+                'Dear %1$s,',
+                '%2$s requested %3$s on %4$s which requires your attention.',
+                '',
+                'You can approve or deny the request here:',
+                '    %5$s/index.php?Page_Type=Role_Requests',
+                '',
+                'Note: This role could already have been approved or denied by another GocDB User',
+            ),
+            $approving_user->getForename(),
+            $requesting_user->getForename(),
+            $role_requested->getRoleType()->getName(),
+            $role_requested->getOwnedEntity()->getName(),
+            $webPortalURL
+        ));
+
+        $email = $approving_user->getEmail();
+
+        if ($sendMail) {
+            mail($email, $subject, $body, $headers);
+        } else {
+            echo "Email: $email<br>";
+            echo "Subject: $subject<br>";
+            echo "Body: $body<br>";
         }
     }
 }
