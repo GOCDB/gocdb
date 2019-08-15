@@ -67,11 +67,6 @@ class NotificationService extends AbstractEntityService {
                 }
             }
 
-            // remove admin from enabling roles
-            /*$position = array_search ( 'GOCDB_ADMIN', $enablingRoles );
-            if ($position != null) {
-                unset ( $enablingRoles [$position] );
-            }*/
             // Get the user id and add it to the array if they have an enabling role
             if (count ( $enablingRoles ) > 0) {
                 $authorising_user_ids [] = $role->getUser ()->getId ();
