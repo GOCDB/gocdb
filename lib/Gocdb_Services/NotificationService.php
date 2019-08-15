@@ -123,14 +123,19 @@ class NotificationService extends AbstractEntityService {
         }
     }
 
+
+    /**
+    * Return the PortalURL to enable an accurate link to the role approval view to be created
+    */
+    private function get_webPortalURL() {
+        $localInfoXML = simplexml_load_file(__DIR__ . "/../../config/local_info.xml");
+        return $localInfoXML->local_info->web_portal_url;
+    }
+
+
     private function send_email($role_requested, $requesting_user, $entity_name, $approving_user) {
         $sendMail = TRUE;
         $headers = "From: no-reply@goc.egi.eu";
-
-        // Get the PortalURL to create an accurate link to the role approval view
-        $localInfoLocation = __DIR__ . "/../../config/local_info.xml";
-        $localInfoXML = simplexml_load_file ( $localInfoLocation );
-        $webPortalURL = $localInfoXML->local_info->web_portal_url;
 
         $subject = sprintf(
             'GocDB: A Role request from %1$s over %2$s requires your attention',
@@ -152,7 +157,7 @@ class NotificationService extends AbstractEntityService {
             $requesting_user->getForename(),
             $role_requested->getRoleType()->getName(),
             $role_requested->getOwnedEntity()->getName(),
-            $webPortalURL
+            $this->get_webPortalURL()
         ));
 
         $email = $approving_user->getEmail();
