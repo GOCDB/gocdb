@@ -101,7 +101,7 @@ class NotificationService extends AbstractEntityService {
             if ($authorising_user_ids != null) {
                 foreach ( $authorising_user_ids as $user_id ) {
                     $approving_user = \Factory::getUserService()->getUser($user_id);
-                    $this->send_email($role_requested, $requesting_user, $entity_name, $requesting_user);
+                    $this->send_email($role_requested, $requesting_user, $entity_name, $approving_user);
                 }
             }
         }
