@@ -33,7 +33,7 @@ $dt = $params['downtime'];
                     <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                     <a onclick="return confirmSubmit()"
                         href="index.php?Page_Type=Delete_Downtime&id=<?php echo $dt->getId()?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
                         <br />
                         <br />
                         <span>Delete</span>
@@ -49,7 +49,7 @@ $dt = $params['downtime'];
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
                         Downtime is ongoing
                     </span>
-                    <img src="<?php echo \GocContextPath::getPath()?>img/star.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;">
+                    <img src="<?php echo \GocContextPath::getPath()?>img/star.png" class="decoration">
                     <table style="clear: both; width: 100%; table-layout: fixed;">
                         <tr class="site_table_row_1">
                             <td class="site_table" style="width: 30%">
@@ -76,7 +76,7 @@ $dt = $params['downtime'];
             <!--  Information -->
             <div class="tableContainer" style="width: 55%; float: left;">
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Information</span>
-                <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+                <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="decoration" />
                 <table style="clear: both; width: 100%;">
                     <tr class="site_table_row_2">
                         <td class="site_table">Severity</td><td class="site_table">
@@ -94,7 +94,7 @@ $dt = $params['downtime'];
             <!--  Timing -->
             <div class="tableContainer" style="width: 42%; float: right;">
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Timing (UTC)</span>
-                <img src="<?php echo \GocContextPath::getPath()?>img/clock.png" height="25px" style="float: right; padding-right: 0.5em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+                <img src="<?php echo \GocContextPath::getPath()?>img/clock.png" class="decoration" />
                 <table style="clear: both; width: 100%;">
                     <tr class="site_table_row_1">
                         <td class="site_table">Start Date</td><td class="site_table">
@@ -131,7 +131,7 @@ $dt = $params['downtime'];
                 Affected Services&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <input type="checkbox" id="affectedEndpointsCheckBox" /> &nbsp;Show Affected Child Endpoints
             </span>
-            <img src="<?php echo \GocContextPath::getPath()?>img/service.png" height="25px" style="float: right; padding-right: 1em; padding-top: 0.5em; padding-bottom: 0.5em;" />
+            <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <th class="site_table">Service Hostname (service type)</th>

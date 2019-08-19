@@ -83,12 +83,12 @@ function get_https2($url){
             CURLOPT_HEADER         => false,
             CURLOPT_FOLLOWLOCATION => false,
             CURLOPT_MAXREDIRS      => 1,
-            CURLOPT_SSL_VERIFYHOST => '1',
-            CURLOPT_SSL_VERIFYPEER => '0',
+            CURLOPT_SSL_VERIFYHOST => 2,
+            CURLOPT_SSL_VERIFYPEER => 0,
             CURLOPT_USERAGENT      => 'GOCDB monitor',
             CURLOPT_VERBOSE        => false,
             CURLOPT_URL            => $url,
-            CURLOPT_RETURNTRANSFER => '1',
+            CURLOPT_RETURNTRANSFER => true,
             CURLOPT_CAPATH => '/etc/grid-security/certificates/'
     );
     if( defined('SERVER_SSLCERT') && defined('SERVER_SSLKEY') ){
