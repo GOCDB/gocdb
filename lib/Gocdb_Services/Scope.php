@@ -28,7 +28,7 @@ class Scope extends AbstractEntityService{
 
     function __construct() {
         parent::__construct();
-        $this->configService = new Config();
+        $this->configService = \Factory::getConfigService();
     }
 
 

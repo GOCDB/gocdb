@@ -84,10 +84,15 @@ class PIWriteRequest {
    * $this->docsURL)
    */
   public function __construct() {
+    # Use the factory config service. Will return a new instance if one
+    # has not yet been created, otherwise the previously created instance
+    # will be returned.
+    ## TODO check url override initialisation
+    $configServ = \Factory::getConfigService();
+
     # returns the base portal URL as defined in conf file
-    $configServ = new config();
     $this->baseUrl = $configServ->getServerBaseUrl() . "/gocdbpi";
-    $this->docsURL = $configServ->getWriteApiDocsUrl();
+    $this->docsURL = $configServ->getWriteApiDocsUrl();    # returns the base portal URL as defined in conf file
 
     #Define some generic exception messages (remaining ones will be generated once entity type and value are known)
     $this->genericExceptionMessages["URLFormat"] =
@@ -568,7 +573,7 @@ class PIWriteRequest {
   * @return boolean
   */
   private function portalIsReadOnly() {
-    $configServ = new \org\gocdb\services\Config();
+    $configServ = \Factory::getConfigService();
     return $configServ->IsPortalReadOnly();
   }
 

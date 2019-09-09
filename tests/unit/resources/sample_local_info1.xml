@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema>
+<config>
+
 	<local_info>
         <!-- If read-only is set as true, the portal will prevent changes to the
              data by all users. This can be used for a read-only failover instance. -->
@@ -88,4 +89,4 @@
 
 		
 	</local_info>
-</schema>
+</config>

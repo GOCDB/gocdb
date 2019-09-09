@@ -50,7 +50,8 @@ class ServiceGroup extends AbstractEntityService{
     function __construct(/*$roleActionAuthorisationService*/) {
         parent::__construct();
         //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
-         $this->configService = new Config();
+        //$this->configService = new Config();
+        $this->configService = \Factory::getConfigService();
     }
 
     /**

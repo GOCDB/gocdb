@@ -39,7 +39,7 @@ class Site extends AbstractEntityService{
         parent::__construct();
         //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
         //$this->scopeService = $scopeService;
-        $this->configService = new Config();
+        $this->configService = \Factory::getConfigService();
     }
 
     /**
