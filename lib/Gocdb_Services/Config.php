@@ -228,6 +228,25 @@ class Config {
     }
 
     /**
+     * returns true if the given menu is to be shown according to local_info.xml
+     * @return boolean
+     */
+    public function showMenu($menuName) {
+
+        if (empty($this->GetLocalInfoXML()->menus->$menuName)) { 
+            return true;
+        }
+
+        switch (strtolower((string) $this->GetLocalInfoXML()->menus->$menuName)) {
+            case 'false';
+            case 'hide';
+            case 'no';
+                return false;
+        }
+        return true;
+    }
+    
+    /**
      * Determine if the requested feature is set in the local_info.xml file.
      * @param type $featureName The feature name which should correspond to an
      *  XML child element under <local_info><optional_features>
