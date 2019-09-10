@@ -644,7 +644,7 @@ class PIWriteRequest {
                     throw $e;
                 }
 
-                switch($this->entityProperty == 'extensionproperties') {
+                switch($this->entityProperty) {
                     case 'extensionproperties':{
                         #TWO CASES: one there is a single value, the other mutliple - create an array for the single, use array for multiple.
                         if (is_null($this->entityPropertyKey)) {
