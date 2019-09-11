@@ -154,8 +154,17 @@ function getEntityScopesAsJSON2($targetScopedEntity = null, $parentScopedEntity 
                 $reservedScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);
             }
         } else {
-            // An optional scope tag:
-            $optionalScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);
+            $s = $scope->getName();
+            if (\Factory::getConfigService()->getDefaultFilterByScope()) {
+                $defaultScope = \Factory::getConfigService()->getDefaultScopeName();
+                $s = $scope->getName();
+                if ( $s == $defaultScope or $s == "Local" ) {
+                    $optionalScopeIds[] = array($scope->getId(), $s, $isChecked);
+                }
+            } else {
+                // An optional scope tag:
+                $optionalScopeIds[] = array($scope->getId(), $s, $isChecked);
+            }
         }
     }
     // build the response

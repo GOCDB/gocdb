@@ -83,18 +83,24 @@ function showAllSites(){
     $filterParams['scope_match'] = '';
     $selectedScopes = array();
     if(!empty($_GET['mscope'])) {
-    $scopeStringParam = '';
-    foreach($_GET['mscope'] as $key => $scopeVal){
-        $scopeStringParam .= $scopeVal.',';
+        $scopeStringParam = '';
+        foreach($_GET['mscope'] as $key => $scopeVal){
+            $scopeStringParam .= $scopeVal.',';
+            $selectedScopes[] = $scopeVal;
+        }
+        $filterParams['scope'] = $scopeStringParam;
+            $scopeMatch = 'all';
+        if(isset($_GET['scopeMatch'])) {
+            $scopeMatch = $_GET['scopeMatch'];
+        }
+        $filterParams['scope_match'] = $scopeMatch;
+
+    } elseif (\Factory::getConfigService()->getDefaultFilterByScope()) {
+        $scopeVal = \Factory::getConfigService()->getDefaultScopeName();
         $selectedScopes[] = $scopeVal;
-    }
-    $filterParams['scope'] = $scopeStringParam;
-        $scopeMatch = 'all';
-    if(isset($_GET['scopeMatch'])) {
-        $scopeMatch = $_GET['scopeMatch'];
-    }
-    $filterParams['scope_match'] = $scopeMatch;
-    }
+        $filterParams['scope'] = $scopeVal;
+        $filterParams['scope_match'] = 'all';
+}
 
     $serv = \Factory::getSiteService();
 

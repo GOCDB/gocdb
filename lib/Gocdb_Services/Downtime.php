@@ -738,44 +738,6 @@ class Downtime extends AbstractEntityService{
         $downtimes = $getDowntime->executeQuery();
         return $downtimes;
     }
-
-    /**
-     *
-     * @param \Date $windowStart
-     * @param \Date $windowEnd
-     */
-    public function getActiveAndImminentDowntimes($windowStart, $windowEnd) {
-    $dql = "SELECT DISTINCT d, se, s, st
-                FROM Downtime d
-                JOIN d.services se
-                JOIN se.parentSite s
-                JOIN se.serviceType st
-                WHERE (
-                    :windowStart IS null
-                    OR d.endDate > :windowStart
-                )
-                AND (
-                    :windowEnd IS null
-                    OR d.startDate < :windowEnd
-                )
-                OR (
-                        :onGoingOnly = 'no'
-                        OR
-                        (:onGoingOnly = 'yes'
-                        AND d.startDate < :now
-                        AND d.endDate > :now)
-                )
-                ORDER BY d.startDate DESC";
-
-    $q = $this->em->createQuery($dql)
-        ->setParameter('onGoingOnly', 'yes')
-        ->setParameter('now', new \DateTime())
-        ->setParameter('windowStart', $windowStart)
-        ->setParameter('windowEnd', $windowEnd);
-
-    return $downtimes = $q->getResult();
-    }
-
     /**
      */
     public function getActiveDowntimes() {
@@ -784,16 +746,31 @@ class Downtime extends AbstractEntityService{
                 JOIN d.services se
                 JOIN se.parentSite s
                 JOIN se.serviceType st
+                JOIN se.scopes sc
                 WHERE (
                         :onGoingOnly = 'no'
                         OR
                         (:onGoingOnly = 'yes'
                         AND d.startDate < :now
                         AND d.endDate > :now)
-                )
-                ORDER BY d.startDate DESC";
+                    )";
 
-        $q = $this->em->createQuery( $dql )->setParameter( 'onGoingOnly', 'yes' )->setParameter( 'now', new \DateTime () );
+        $filterByScope = \Factory::getConfigService()->getFilterDowntimesByScope();
+
+        if ($filterByScope) {
+            $defaultScope = \Factory::getConfigService()->getDefaultScopeName();
+            $dql .= " AND (sc.name = :defaultScope)";
+        }
+        
+        $dql .= " ORDER BY d.startDate DESC";
+
+        $q = $this->em->createQuery( $dql )
+                ->setParameter( 'onGoingOnly', 'yes' )
+                ->setParameter( 'now', new \DateTime () );
+
+        if ($filterByScope) {
+            $q->setParameter('defaultScope', $defaultScope);
+        }
 
         return $downtimes = $q->getResult ();
     }
@@ -811,6 +788,7 @@ class Downtime extends AbstractEntityService{
                 JOIN d.services se
                 JOIN se.parentSite s
                 JOIN se.serviceType st
+                JOIN se.scopes sc
                 WHERE (
                     :windowStart IS null
                     OR d.endDate > :windowStart
@@ -818,10 +796,24 @@ class Downtime extends AbstractEntityService{
                 AND (
                     :windowEnd IS null
                     OR d.startDate < :windowEnd
-                )
-                ORDER BY d.startDate DESC";
+                )";
 
-        $q = $this->em->createQuery( $dql )->setParameter( 'windowStart', $windowStart )->setParameter( 'windowEnd', $windowEnd );
+        $filterByScope = \Factory::getConfigService()->getFilterDowntimesByScope();
+
+        if ($filterByScope) {
+            $defaultScope = \Factory::getConfigService()->getDefaultScopeName();
+            $dql .= " AND (sc.name = :defaultScope)";
+        }
+        
+        $dql .= " ORDER BY d.startDate DESC";
+
+        $q = $this->em->createQuery( $dql )
+                ->setParameter( 'windowStart', $windowStart )
+                ->setParameter( 'windowEnd', $windowEnd );
+
+        if ($filterByScope) {
+            $q->setParameter('defaultScope', $defaultScope);
+        }
 
         return $downtimes = $q->getResult ();
     }

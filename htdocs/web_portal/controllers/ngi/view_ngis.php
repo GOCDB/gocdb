@@ -37,13 +37,19 @@ function view_ngis() {
     $filterParams['scope'] = '';
     $selectedScopes = array();
     if(!empty($_GET['mscope'])) {
-    $scopeStringParam = '';
-    foreach($_GET['mscope'] as $key => $scopeVal){
-        $scopeStringParam .= $scopeVal.',';
+        $scopeStringParam = '';
+        foreach($_GET['mscope'] as $key => $scopeVal){
+            $scopeStringParam .= $scopeVal.',';
+            $selectedScopes[] = $scopeVal;
+        }
+        $filterParams['scope'] = $scopeStringParam;
+        $filterParams['scope_match'] = 'all';
+
+    } elseif (\Factory::getConfigService()->getDefaultFilterByScope()) {
+        $scopeVal = \Factory::getConfigService()->getDefaultScopeName();
         $selectedScopes[] = $scopeVal;
-    }
-    $filterParams['scope'] = $scopeStringParam;
-    $filterParams['scope_match'] = 'all';
+        $filterParams['scope'] = $scopeVal;
+        $filterParams['scope_match'] = 'all';
     }
 
     $scopes = \Factory::getScopeService()->getScopes();

@@ -13,34 +13,7 @@
         -->
         <local_info url="host-172-16-113-107.nubes.stfc.ac.uk">
 
-          <read_only>true</read_only>
-          <show_map_on_start_page>false</show_map_on_start_page>
-
-                  <!-- <filter_downtimes_by_default_scope>true</filter_downtimes_by_default_scope> -->
-
-          <menus>
-            <Projects>hide</Projects>
-            <ServiceGroups>hide</ServiceGroups>
-            <NGI>hide</NGI>
-            <AddNGI>false</AddNGI>
-            <AddProject>false</AddProject>
-            <AddSite>false</AddSite>
-            <Scopes>false</Scopes>
-            <AdminScopes>hide</AdminScopes>
-          </menus>
-
-          <css>
-            <backgroundTop>B5892D</backgroundTop> <!-- // eosc-hub logo brown -->
-            <backgroundBottom>FCF2DD</backgroundBottom>
-            <headingTextColour>#1D3046</headingTextColour> <!-- // eosc-hub logo dark blue -->
-          </css>
-
-          <name_mapping>
-            <Service>
-              <!-- <ServiceEndpoint>Service Component</ServiceEndpoint> -->
-              <endpoint>component</endpoint>
-            </Service>
-          </name_mapping>
+          <default_filter_by_scope>true</default_filter_by_scope>
 
         </local_info>
         <!--
@@ -139,6 +112,11 @@
         <default_scope>
             <name>EGI</name>
         </default_scope>
+
+        <!-- If set to true the initial state of the scope filter drop-downs on the
+             ngi,site,service, downtimes pages is selected for the default_scope
+        -->
+        <default_filter_by_scope>true</default_filter_by_scope>
 
         <!-- Show map on the start page -->
         <show_map_on_start_page>true</show_map_on_start_page>
