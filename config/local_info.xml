@@ -8,6 +8,8 @@
           ## the default values given in the default (no url) section below.
           ## Any valid xml element tree can be specified here but it MUST
           ## exist in the default section that follows.
+          ## Use of elements 'menus','css' and 'name_mappings' are described
+          ## in the defaults section.
         -->
         <local_info url="host-172-16-113-107.nubes.stfc.ac.uk">
 
@@ -26,6 +28,19 @@
             <Scopes>false</Scopes>
             <AdminScopes>hide</AdminScopes>
           </menus>
+
+          <css>
+            <backgroundTop>B5892D</backgroundTop> <!-- // eosc-hub logo brown -->
+            <backgroundBottom>FCF2DD</backgroundBottom>
+            <headingTextColour>#1D3046</headingTextColour> <!-- // eosc-hub logo dark blue -->
+          </css>
+
+          <name_mapping>
+            <Service>
+              <!-- <ServiceEndpoint>Service Component</ServiceEndpoint> -->
+              <endpoint>component</endpoint>
+            </Service>
+          </name_mapping>
 
         </local_info>
         <!--
@@ -60,6 +75,33 @@
             <Scopes>true</Scopes>
             <AdminScopes>true</AdminScopes>
           </menus>
+          <!-- css
+            ## Provide hex colour values for the background as implemented in
+            ## lib\Gocdb_Services\Config.php (called by
+            ## docs\web_portal\css\web_portal.php).
+            ## [Note that these values are used as part of the dynamic css
+            ## style sheet fetched by the browser after the base html is
+            ## returned.]
+          -->
+          <css>
+            <backgroundTop>F7F9FE</backgroundTop>
+            <backgroundBottom>D0DFF9</backgroundBottom>
+            <headingTextColour>00AC00</headingTextColour>
+          </css>
+          <!-- name_mapping
+            ## Basic rather primitive gocdb entity name mapping.
+            ## Provide word mappings to be used to 'rename' gocdb entities for use in
+            ## menus and general page display.
+            ## Implemented as look-ups function getNameMapping in
+            ## lib\Gocdb_Services\Config.php
+            ## Provided to rename gocdb 'enpoints' to FitSM 'components
+          -->
+          <name_mapping>
+            <Service>
+              <ServiceEndpoint>Service Endpoint</ServiceEndpoint>
+              <endpoint>endpoint</endpoint>
+            </Service>
+          </name_mapping>
 
         <!-- Specify the URLs used to access your GOCDB web portal and PI.
         - It is important to update these values to match your deployment.

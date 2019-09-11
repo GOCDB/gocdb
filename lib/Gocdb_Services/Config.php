@@ -245,6 +245,32 @@ class Config {
         }
         return true;
     }
+    /**
+     * returns the relevant name mapping according to local_info.xml
+     * @return string
+     */
+    public function getNameMapping($entityType, $key) {
+        if (empty($this->GetLocalInfoXML()->name_mapping->$entityType)) {
+            return $key;
+        }
+        switch ($entityType) {
+            case 'Service':
+                return $this->GetLocalInfoXML()->name_mapping->$entityType->{str_replace(' ','',$key)};
+        }
+    }
+    /**
+     * accessor function for css colour values from local_info.xml
+     * @return string
+     */
+    public function getBackgroundTop() {
+        return '#'.$this->GetLocalInfoXML()->css->backgroundTop;
+    }
+    public function getBackgroundBottom() {
+        return '#'.$this->GetLocalInfoXML()->css->backgroundBottom;
+    }
+    public function getHeadingTextColour() {
+        return '#'.$this->GetLocalInfoXML()->css->headingTextColour;
+    }
     
     /**
      * Determine if the requested feature is set in the local_info.xml file.
