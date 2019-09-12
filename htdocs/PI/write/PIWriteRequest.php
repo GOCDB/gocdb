@@ -108,6 +108,7 @@ class PIWriteRequest {
             $this->getAndProcessURL($method, $requestUrl);
             $this->getRequestContent($requestContents);
             $this->validateEntityTypePropertyAndPropValue();
+            $this->checkIfGOCDBIsReadOnlyAndRequestisNotGET();
             $this->updateEntity($siteService);
 
         } catch (\Exception $e) {
@@ -765,5 +766,27 @@ class PIWriteRequest {
             $this->httpResponseCode=500;
             throw new \Exception("Internal error: The service service has not been set. Please contact a GOCDB administrator and report this error.");
         }
+    }
+
+    /**
+    *Returns true if portal is read only portal is read only
+    *
+    * @return boolean
+    */
+    private function portalIsReadOnly() {
+        $configServ = new \org\gocdb\services\Config();
+        return $configServ->IsPortalReadOnly();
+    }
+
+    /**
+    *Throws error if portal/GOCDB is in read only mode
+    *
+    *@throws \Exception
+    */
+    private function checkIfGOCDBIsReadOnlyAndRequestisNotGET(){
+      if ($this->requestMethod != 'GET' && $this->portalIsReadOnly()){
+        $this->httpResponseCode=503;
+        throw new \Exception("GOCDB is currently in read only mode");
+      }
     }
 }
