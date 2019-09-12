@@ -535,7 +535,6 @@ class ServiceService extends AbstractEntityService {
         $st = $this->getServiceType ( $newValues ['serviceType'] );
 
         $this->validate ( $newValues ['SE'], 'service' );
-        $this->validateEndpointUrl ( $newValues ['endpointUrl'] );
         $this->uniqueCheck ( $newValues ['SE'] ['HOSTNAME'], $st, $se->getParentSite () );
         // validate production/monitored combination
         $this->validateProductionMonitoredCombination($newValues);
@@ -653,12 +652,9 @@ class ServiceService extends AbstractEntityService {
             $se->setOperatingSystem ( $newValues ['SE'] ['HOST_OS'] );
             $se->setArchitecture ( $newValues ['SE'] ['HOST_ARCH'] );
             $se->setEmail ( $newValues ['SE'] ['EMAIL'] );
+            $se->setUrl ( $newValues ['SE'] ['URL'] );
 
             $se->setServiceType ( $st );
-
-            // $el = $se->getEndpointLocations()->first();
-            // $el->setUrl($newValues['endpointUrl']);
-            $se->setUrl ( $newValues ['endpointUrl'] );
 
             // Update the service's scope
             // firstly remove all existing scope links
@@ -789,24 +785,6 @@ class ServiceService extends AbstractEntityService {
         }
     }
 
-    /**
-     * Validates the user inputted service data against the
-     * checks in the gocdb_schema.xml.
-     *
-     * @param string $endpoint_url the new URL
-     * @throws \Exception If the new URL isn't
-     *         valid. The \Exception's message will contain a human
-     *         readable error message.
-     * @return null
-     */
-    private function validateEndpointUrl($endpoint_url) {
-        require_once __DIR__ . '/Validate.php';
-        $serv = new \org\gocdb\services\Validate ();
-        $valid = $serv->validate ( 'endpoint_location', "URL", $endpoint_url );
-        if (! $valid) {
-            throw new \Exception ( "Invalid URL: $endpoint_url" );
-        }
-    }
 
     /**
      * Array
@@ -850,7 +828,6 @@ class ServiceService extends AbstractEntityService {
         }
 
         $this->validate ( $values ['SE'], 'service' );
-        $this->validateEndpointUrl ( $values ['endpointUrl'] );
         $this->uniqueCheck ( $values ['SE'] ['HOSTNAME'], $st, $site );
 
         // validate production/monitored combination
@@ -949,7 +926,7 @@ class ServiceService extends AbstractEntityService {
             $se->setHostName ( $values ['SE'] ['HOSTNAME'] );
             $se->setDescription ( $values ['SE'] ['DESCRIPTION'] );
             $se->setEmail ( $values ['SE'] ['EMAIL'] );
-            $se->setUrl ( $values ['endpointUrl'] );
+            $se->setUrl ( $values ['SE'] ['URL'] );
 
             $this->em->persist ( $se );
             $this->em->flush ();
