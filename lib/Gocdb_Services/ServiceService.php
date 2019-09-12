@@ -1863,12 +1863,7 @@ class ServiceService extends AbstractEntityService {
         $url = $newValues ['SERVICEENDPOINT'] ['URL'];
         $description = $newValues ['SERVICEENDPOINT'] ['DESCRIPTION'];
         $email = $newValues['SERVICEENDPOINT']['EMAIL'];
-
-        if ($newValues ['SERVICEENDPOINT'] ['INTERFACENAME'] != '') {
-            $interfaceName = $newValues ['SERVICEENDPOINT'] ['INTERFACENAME'];
-        } else {
-            $interfaceName = ( string ) $service->getServiceType ();
-        }
+        $interfaceName = $newValues ['SERVICEENDPOINT'] ['INTERFACENAME'];
 
         if($newValues['IS_MONITORED']) {
             $monitored = true;
@@ -1876,38 +1871,61 @@ class ServiceService extends AbstractEntityService {
             $monitored = false;
         }
 
-        if (empty ( $name )) {
-            throw new \Exception ( "An endpoint must have a name." );
-        }
-
-        // check endpoint's name is unique under the service
-        foreach ( $service->getEndpointLocations () as $endpointL ) {
-            // exclude itself
-            if ($endpoint != $endpointL && $endpointL->getName () == $name) {
-                throw new \Exception ( "Please provide a unique name for this endpoint." );
-            }
-        }
-
-        $this->em->getConnection ()->beginTransaction ();
-
-        try {
-            // Set the endpoints new member variables
-            $endpoint->setName ( $name );
-            $endpoint->setUrl ( $url );
-            $endpoint->setInterfaceName ( $interfaceName );
-            $endpoint->setDescription ( $description );
-            $endpoint->setEmail($email);
-            $endpoint->setMonitored($monitored);
-            $this->em->merge ( $endpoint );
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $ex ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $ex;
-        }
+        $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
     }
 
+    public function editEndpointApi (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored, $authIdentifierType, $authIdentifier) {
+      //Check the portal is not in read only mode, throws exception if it is
+      $this->checkGOCDBIsNotReadOnly();
+
+      \Factory::getSiteService()->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
+
+      $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
+
+    }
+
+    /**
+     *Function containing the logic to edit an endpoint with none of the authorisation or validation
+    */
+    private function editEndpointLogic (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored){
+      $service = $endpoint->getService ();
+
+      if (empty ( $name )) {
+          throw new \Exception ( "An endpoint must have a name." );
+      }
+
+      //if no interface name is provided, default to service type
+      if ($interfaceName == '') {
+          $interfaceName = ( string ) $service->getServiceType ();
+      }
+
+      // check endpoint's name is unique under the service
+      foreach ( $service->getEndpointLocations () as $endpointL ) {
+          // exclude itself
+          if ($endpoint != $endpointL && $endpointL->getName () == $name) {
+              throw new \Exception ( "Please provide a unique name for this endpoint." );
+          }
+      }
+
+      $this->em->getConnection ()->beginTransaction ();
+
+      try {
+          // Set the endpoints new member variables
+          $endpoint->setName ( $name );
+          $endpoint->setUrl ( $url );
+          $endpoint->setInterfaceName ( $interfaceName );
+          $endpoint->setDescription ( $description );
+          $endpoint->setEmail($email);
+          $endpoint->setMonitored($monitored);
+          $this->em->merge ( $endpoint );
+          $this->em->flush ();
+          $this->em->getConnection ()->commit ();
+      } catch ( \Exception $ex ) {
+          $this->em->getConnection ()->rollback ();
+          $this->em->close ();
+          throw $ex;
+      }
+    }
 
     /**
      * User deletes the given endpoint.
@@ -1941,6 +1959,50 @@ class ServiceService extends AbstractEntityService {
         }
     }
 
+    /**
+     * Function to establish if an endpoint already has a value sets
+     *
+     * @returns boolean
+    */
+    public function EndpointPropSet (\EndpointLocation $endpoint, $endpointPropName) {
+      switch (strtolower($endpointPropName)) {
+        case 'name':{
+          $propValue = $endpoint->getName();
+          break;
+        }
+        case 'url':{
+          $propValue = $endpoint->getUrl();
+          break;
+        }
+        case 'interfacename':{
+          $propValue = $endpoint->getInterfaceName();
+          break;
+        }
+        case 'description':{
+          $propValue = $endpoint->getDescription();
+          break;
+        }
+        case 'email':{
+          $propValue = $endpoint->getEmail();
+          break;
+        }
+        case 'monitored': {
+          #booleans are always set
+          return true;
+        }
+        default:{
+          throw new \Exception("Internal error: endpoint property name ($endpointPropName) not ".
+          "recognised. Please contact a GOCDB administrator and report this error.");
+        }
+      }
+
+      if (empty($propValue)) {
+        return false;
+      } else {
+        return true;
+      }
+
+    }
 
     private function checkNumberOfScopes($scopeIds) {
         require_once __DIR__ . '/Config.php';

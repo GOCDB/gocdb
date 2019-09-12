@@ -95,6 +95,9 @@ class PIWriteRequest {
           "API requests should take the form $this->baseUrl" .
           "/APIVERSION/ENTITYTYPE/ENTITYID/ENTITYPROPERTY/[ENTITYPROPERTYKEY]. " .
           "For more details see: $this->docsURL";
+        $this->genericExceptionMessages["cantPostABool"] =
+          "The post method is not supported for boolean values. For more details".
+          " see: $this->docsURL";
     }
 
     /**
@@ -356,7 +359,6 @@ class PIWriteRequest {
       //to authenticate everything except 'GET' requests and then process 'GETs'
       //on a case by case basis.
       $this->checkUserAuthenticated();
-
 
         switch($this->entityType) {
           case 'site': {
@@ -878,14 +880,132 @@ class PIWriteRequest {
 
     #Make the requested change
     switch($this->entityProperty) {
+        case 'name':
+        case 'url':
+        case 'interfacename':
+        case 'description':
+        case 'email':
+        case 'monitored': {
+          switch ($this->requestMethod) {
+            case 'POST': {
+              $this->updateEndpointPropPost($endpoint, $this->entityProperty, $this->entityPropertyValue);
+              break;
+            }
+            case 'PUT': {
+              $this->updateEndpointPropPut($endpoint, $this->entityProperty, $this->entityPropertyValue);
+              break;
+            }
+            default: {
+              $this->exceptionWithResponseCode(405,$this->genericExceptionMessages["entityTypePropertyMethod"]);
+              break;
+            }
+          }
+          break;
+        }
         case 'extensionproperties':{
           $this->updateEndpointExtensionProperties($endpoint);
           break;
         }
         default: {
           $this->exceptionWithResponseCode(501,$this->genericExceptionMessages["entityTypePropertyCombo"]);
-        }
+      }
     }
+  }
+
+  /**
+   * Update a property of an endpoint folloeing a POST requests
+   *
+   * @param  EndpointLocation $endpoint
+   * @param    $endpointPropName Name of property being updated
+   * @param    $endpointPropValue Value of property being updated
+   * @throws \Exception
+   */
+  private function updateEndpointPropPost (\EndpointLocation $endpoint, $endpointPropName, $endpointPropName) {
+    if($endpointPropName == 'monitored') {
+      #Not valid for boolians
+      $this->exceptionWithResponseCode(405,$this->genericExceptionMessages["cantPostABool"]);
+
+    } elseif ($this->serviceService->EndpointPropSet($endpoint, $endpointPropName)) {
+      #POST method must fail if the value is already set
+      $this->exceptionWithResponseCode(409,$this->genericExceptionMessages["propAlreadySet"]);
+
+    } else {
+      $this->updateEndpointProp($endpoint, $endpointPropName, $endpointPropName);
+    }
+  }
+
+  /**
+   * Update a property of an endpoint folloeing a PUT requests
+   *
+   * @param  EndpointLocation $endpoint
+   * @param    $endpointPropName Name of property being updated
+   * @param    $endpointPropValue Value of property being updated
+   * @throws \Exception
+   */
+  private function updateEndpointPropPut (\EndpointLocation $endpoint, $endpointPropName, $endpointPropValue) {
+    #update the values
+    $this->updateEndpointProp($endpoint, $endpointPropName, $endpointPropValue);
+
+  }
+
+  /**
+   * Function to update individual properties of endpoints
+   *
+   * @throws \Exception
+   */
+  Private function updateEndpointProp (\EndpointLocation $endpoint, $endpointPropName, $endpointPropValue) {
+    $this->checkServiceServiceSet();
+
+    $name = $endpoint->getName();
+    $url = $endpoint->getUrl();
+    $interfaceName = $endpoint -> getInterfaceName();
+    $description = $endpoint-> getDescription();
+    $email = $endpoint -> getEMail();
+    $monitored = $endpoint->getMonitored();
+
+    switch($endpointPropName) {
+      case 'name':{
+        $name = $endpointPropValue;
+        break;
+      }
+      case 'url':{
+        $url = $endpointPropValue;
+        break;
+      }
+      case 'interfacename':{
+        $interfaceName = $endpointPropValue;
+        break;
+      }
+      case 'description':{
+        $description = $endpointPropValue;
+        break;
+      }
+      case 'email':{
+        $email = $endpointPropValue;
+        break;
+      }
+      case 'monitored':{
+        $monitored = $endpointPropValue;
+        break;
+      }
+      default:{
+        $this->exceptionWithResponseCode(500,
+          "Internal error: endpoint property name ($endpointPropName) not ".
+          "recognised despite being validated. Please contact a GOCDB administrator and report this error."
+        );
+      }
+    }
+
+    // check endpoint's name is unique under the service
+    foreach ( $endpoint->getService()->getEndpointLocations () as $endpointL ) {
+      // exclude itself
+      if ($endpoint != $endpointL && $endpointL->getName () == $name) {
+        $this->exceptionWithResponseCode(409,"Please provide a unique name for this endpoint.");
+      }
+    }
+
+    $this->serviceService->editEndpointApi($endpoint, $name, $url, $interfaceName, $description, $email, $monitored, $this->userIdentifierType, $this->userIdentifier);
+
   }
 
   /**
@@ -1006,6 +1126,10 @@ class PIWriteRequest {
       "\"" . $this->requestMethod . "\" is not currently a supported " .
       "request method for altering" . $this->entityType. "'s " .
       $this->entityProperty . " . For more details see: $this->docsURL";
+    $this->genericExceptionMessages["propAlreadySet"] =
+      "$this->entityProperty has already been set for this " .
+      "$this->entityType. Consider using a PUT request. For more details " .
+      "see: $this->docsURL";
   }
 
 }
