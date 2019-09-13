@@ -209,30 +209,32 @@ class PIWriteRequest {
                 if (isset($requestArray['value']) && count($requestArray)==1) {
                     $this->entityPropertyValue=$requestArray['value'];
                 } elseif(!isset($requestArray['value'])) {
-                    $this->httpResponseCode=400;
-                    throw new \Exception(
-                        "A value for \"$this->entityProperty\" should be provided. " .
-                        "This should be provided in a JSON string {\"value\":\"<value for " .
-                        "\"$this->entityProperty\">\"}, with no other pairs present." .
-                        " If you believe \"$this->entityProperty\" should take multiple key/value ".
-                        "pairs, check your spelling of \"$this->entityProperty\"" . $genericError
+                  $this->exceptionWithResponseCode(400,
+                    "A value for \"$this->entityProperty\" should be provided. " .
+                    "This should be provided in a JSON string {\"value\":\"<value for " .
+                    "\"$this->entityProperty\">\"}, with no other pairs present." .
+                    " If you believe \"$this->entityProperty\" should take multiple key/value ".
+                    "pairs, check your spelling of \"$this->entityProperty\"" . $genericError
                     );
                 } else {
-                    $this->httpResponseCode=400;
-                    throw new \Exception("Request message cotnained more than one object. " . $genericError );
+                  $this->exceptionWithResponseCode(400,
+                    "Request message cotnained more than one object. " . $genericError
+                  );
                 }
             } else {
                 if(!empty($requestArray)) {
                     $this->entityPropertyKVArray=$requestArray;
                 } else {
-                    $this->httpResponseCode=400;
-                    throw new \Exception("Please specify the properties you wish to change. " . $genericError );
+                  $this->exceptionWithResponseCode(400,
+                    "Please specify the properties you wish to change. " . $genericError
+                  );
                 }
 
             }
         } elseif (!empty($requestContents)) {
-            $this->httpResponseCode=400;
-            throw new \Exception( "The JSON message is not correctly formatted. " . $genericError );
+          $this->exceptionWithResponseCode(400,
+            "The JSON message is not correctly formatted. " . $genericError
+          );
         }
     }
 
@@ -270,8 +272,9 @@ class PIWriteRequest {
                 $this->validateWithService($objectType,'name',$this->entityPropertyKey,$validateServ);
                 $this->validateWithService($objectType,'value',$this->entityPropertyValue,$validateServ);
             } else {
-                $this->httpResponseCode=400;
-                throw new \Exception("The API currently only supports specifying a key in the url for extension properties. For help see: $this->docsURL");
+                $this->exceptionWithResponseCode(400,
+                  "The API currently only supports specifying a key in the url for extension properties. For help see: $this->docsURL"
+                );
             }
         } elseif (is_null($this->entityPropertyKey) && !is_null($this->entityPropertyValue) && is_null($this->entityPropertyKVArray)) {
             $this->validateWithService($objectType,$this->entityProperty,$this->entityPropertyValue,$validateServ);
@@ -287,25 +290,29 @@ class PIWriteRequest {
                 }
                 unset($value);
             } else {
-                $this->httpResponseCode=400;
-                throw new \Exception("The API currently only supports specifying an array of values for extension properties. For help see: $this->docsURL");
+                $this->exceptionWithResponseCode(400,
+                  "The API currently only supports specifying an array of values for extension properties. For help see: $this->docsURL"
+                );
             }
         } elseif (is_null($this->entityPropertyValue) && is_null($this->entityPropertyKVArray)) {
             #Only delete methods support not providing values of any kind
             if ($this->requestMethod == 'DELETE') {
                 #only currently supported for extension properties
                 if ($this->entityProperty != 'extensionproperties') {
-                    $this->httpResponseCode=400;
-                    throw new \Exception("The API currently only supports deleting without specifying values for extension properties. For help see: $this->docsURL");
+                    $this->exceptionWithResponseCode(400,
+                      "The API currently only supports deleting without specifying values for extension properties. For help see: $this->docsURL"
+                    );
                 }
             } else {
-                $this->httpResponseCode=400;
-                throw new \Exception("For methods other than 'DELETE' a value or set of values must be provided. For help see: $this->docsURL");
+                $this->exceptionWithResponseCode(400,
+                  "For methods other than 'DELETE' a value or set of values must be provided. For help see: $this->docsURL"
+                );
             }
 
         } else {
-            $this->httpResponseCode=500;
-            throw new \Exception("The validation process has failed due to an error in the internal logic. Please contact the administrator.");
+            $this->exceptionWithResponseCode(500,
+              "The validation process has failed due to an error in the internal logic. Please contact the administrator."
+            );
         }
     }
 
@@ -326,13 +333,11 @@ class PIWriteRequest {
             #returns either true or false depending on if the value is valid.
             $valid = $validateService->validate(strtolower($objectType),strtoupper($objectProperty),$propertyValue);
         } catch (\Exception $e) {
-            $this->httpResponseCode=400;
-            throw new \Exception("Validation Error. " . $e->getMessage() . $genericError);
+            $this->exceptionWithResponseCode(400,"Validation Error. " . $e->getMessage() . $genericError);
         }
 
         if(!$valid) {
-            $this->httpResponseCode=400;
-            throw new \exception("The value ($propertyValue) you have specified is not valid$genericError");
+          $this->exceptionWithResponseCode(400,"The value ($propertyValue) you have specified is not valid$genericError");
         }
     }
 
@@ -367,11 +372,10 @@ class PIWriteRequest {
             break;
           }
           default: {
-            $this->httpResponseCode=501;
-            throw new \exception(
-                "Updating " . $this->entityType. "s is not currently supported " .
-                "through the API, for details of the currently supported methods " .
-                "see: $this->docsURL"
+            $this->exceptionWithResponseCode(501,
+              "Updating " . $this->entityType. "s is not currently supported " .
+              "through the API, for details of the currently supported methods " .
+              "see: $this->docsURL"
             );
           }
         }
@@ -393,8 +397,7 @@ class PIWriteRequest {
     private function processURLtoArray($url) {
       #If the request isn't set then no url parameters have been used
       if (is_null($url)) {
-          $this->httpResponseCode=400;
-          throw new \Exception($this->genericExceptionMessages["URLFormat"]);
+        $this->exceptionWithResponseCode(400,$this->genericExceptionMessages["URLFormat"]);
       }
 
       #Split the request into seperate parts, with the slash as a seperator
@@ -407,10 +410,9 @@ class PIWriteRequest {
 
       #The request url should have either 4 or 5 elements
       if(!in_array(count($requestArray),array(4,5))){
-          $this->httpResponseCode=400;
-          throw new \Exception(
-              "Request url has the wrong number of elements. " . $this->genericExceptionMessages["URLFormat"]
-          );
+        $this->exceptionWithResponseCode(400,
+          "Request url has the wrong number of elements. " . $this->genericExceptionMessages["URLFormat"]
+        );
       }
 
       return $requestArray;
@@ -427,12 +429,10 @@ class PIWriteRequest {
     private function processAPIVersion($versionText) {
       $this->apiVersion = strtolower($versionText);
 
-     #check api version is supported
+     #Check the API version requested is supported by this version of GOCDB
      if(!in_array($this->apiVersion,$this->supportedAPIVersions)) {
-         $this->httpResponseCode=400;
-         throw new \Exception(
-             "Unsupported API version: \"$this->apiVersion\". "
-             . $this->genericExceptionMessages["URLFormat"]
+      $this->exceptionWithResponseCode(400,
+        "Unsupported API version: \"$this->apiVersion\". " . $this->genericExceptionMessages["URLFormat"]
          );
      }
     }
@@ -450,12 +450,24 @@ class PIWriteRequest {
       if(is_numeric($entityIDText)&&(intval($entityIDText)==floatval($entityIDText))) {
           $this->entityID = intval($entityIDText);
       } else {
-          $this->httpResponseCode=400;
-          throw new \Exception(
-              "Entity ID's should be integers. \"$entityIDText\" is not an integer. "
-              . $this->genericExceptionMessages["URLFormat"]
-          );
+        $this->exceptionWithResponseCode(400,
+          "Entity ID's should be integers. \"$entityIDText\" is not an integer. "
+          . $this->genericExceptionMessages["URLFormat"]
+        );
       }
+    }
+
+    /**
+     * Throws an exception with the given essage after setting the repsponse code
+     * It will be caguht later and given tot he user in areadable format
+     * TODO:There are better ways of doing this, involving extnding the exception class
+     * @param  int    $code    HTTP Response code
+     * @param  string $message exception message
+     * @throws \Exception
+     */
+    private function exceptionWithResponseCode($code, $message) {
+      $this->httpResponseCode = $code;
+      throw new \Exception($message);
     }
 
     /**
@@ -469,17 +481,14 @@ class PIWriteRequest {
       if(in_array(strtoupper($method),$this->supportedRequestMethods)) {
           $this->requestMethod=strtoupper($method);
       } elseif (strtoupper($method)=="GET") {
-          $this->httpResponseCode=405;
-          throw new \Exception(
-              "\"GET\" is not currently a supported request method. " .
-              "Try the other API: https://wiki.egi.eu/wiki/GOCDB/PI/Technical_Documentation"
+          $this->exceptionWithResponseCode(405,
+            "\"GET\" is not currently a supported request method. " .
+            "Try the other API: https://wiki.egi.eu/wiki/GOCDB/PI/Technical_Documentation"
           );
       }else {
-          $this->httpResponseCode=405;
-          throw new \Exception(
-              "\"" . $method .
-              "\" is not currently a supported request method. For more details see: $this->docsURL"
-          );
+        $this->exceptionWithResponseCode(405,
+          "\"" . $method . "\" is not currently a supported request method. For more details see: $this->docsURL"
+        );
       }
     }
 
@@ -504,8 +513,9 @@ class PIWriteRequest {
      */
     private function checkServiceServiceSet () {
         if(is_null($this->serviceService)) {
-            $this->httpResponseCode=500;
-            throw new \Exception("Internal error: The service service has not been set. Please contact a GOCDB administrator and report this error.");
+          $this->exceptionWithResponseCode(500,
+            "Internal error: The service service has not been set. Please contact a GOCDB administrator and report this error."
+          );
         }
     }
 
@@ -526,8 +536,7 @@ class PIWriteRequest {
     */
     private function checkIfGOCDBIsReadOnlyAndRequestisNotGET(){
       if ($this->requestMethod != 'GET' && $this->portalIsReadOnly()){
-        $this->httpResponseCode=503;
-        throw new \Exception("GOCDB is currently in read only mode");
+        $this->exceptionWithResponseCode(503,"GOCDB is currently in read only mode");
       }
     }
 
@@ -552,10 +561,11 @@ class PIWriteRequest {
      */
     private function checkUserAuthenticated () {
       if (empty($this->userIdentifier)) {
-          $this->httpResponseCode = 403; #yes 403 - 401 is not appropriate for X509 authentication
-          throw new \Exception(
-              "You need to be authenticated to access this resource. " .
-              "Please provide a valid IGTF X509 Certificate");
+        #yes 403 - 401 is not appropriate for X509 authentication
+        $this->exceptionWithResponseCode(403,
+          "You need to be authenticated to access this resource. " .
+          "Please provide a valid IGTF X509 Certificate"
+        );
       }
     }
 
@@ -570,16 +580,14 @@ class PIWriteRequest {
       try {
           $site = $siteService->getSite($this->entityID);
       } catch(\Exception $e){
-          $this->httpResponseCode=404;
-          throw new \Exception("A site with the specified id could not be found");
+        $this->exceptionWithResponseCode(404,"A site with the specified id could not be found");
       }
 
       #Authorisation
       try {
           $siteService->checkAuthroisedAPIIDentifier($site, $this->userIdentifier, $this->userIdentifierType);
       } catch(\Exception $e){
-          $this->httpResponseCode=403;
-          throw $e;
+          $this->exceptionWithResponseCode(403,$e->getMessage());
       }
 
       switch($this->entityProperty) {
@@ -588,8 +596,7 @@ class PIWriteRequest {
             break;
           }
           default: {
-              $this->httpResponseCode=501;
-              throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
+            $this->exceptionWithResponseCode(501,$this->genericExceptionMessages["entityTypePropertyCombo"]);
           }
       }
     }
@@ -623,8 +630,7 @@ class PIWriteRequest {
           break;
         }
         default: {
-          $this->httpResponseCode=405;
-          throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
+          $this->exceptionWithResponseCode(405,$this->genericExceptionMessages["entityTypePropertyMethod"]);
           break;
         }
       }
@@ -663,8 +669,7 @@ class PIWriteRequest {
       try {
           $siteService->addPropertiesAPI($site, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
       } catch(\Exception $e) {
-          $this->httpResponseCode=409;
-          throw $e;
+          $this->exceptionWithResponseCode(409, $e->getMessage());
       }
     }
 
@@ -686,20 +691,18 @@ class PIWriteRequest {
 
               $extensionProp = $siteService->getPropertyByKeyAndParent($key, $site);
               if (is_null($extensionProp)) {
-                  $this->httpResponseCode=404;
-                  throw new \Exception(
-                      "A property with key \"$key\" could not be found for "
-                      . $site->getName() . ". No properties have been deleted. "
-                  );
+                $this->exceptionWithResponseCode(404,
+                  "A property with key \"$key\" could not be found for "
+                  . $site->getName() . ". No properties have been deleted. "
+                );
               }
 
               #If a value has been provided for the property, it needs to matched
               if (!empty($value) && ($extensionProp->getKeyValue() != $value)) {
-                  $this->httpResponseCode=409;
-                  throw new \Exception(
-                      "The value provided for the property with key \"$key\" does " .
-                      "not match the existing one. No Properties have been deleted."
-                  );
+                $this->exceptionWithResponseCode(409,
+                "The value provided for the property with key \"$key\" does " .
+                "not match the existing one. No Properties have been deleted."
+                );
               }
 
               $extensionPropArray[] = $extensionProp;
@@ -722,16 +725,14 @@ class PIWriteRequest {
     try {
       $service = $this->serviceService->getService($this->entityID);
     } catch (\Exception $e) {
-      $this->httpResponseCode=404;
-      throw new \Exception("A service with the specified id could not be found");
+      $this->exceptionWithResponseCode(404,"A service with the specified id could not be found");
     }
 
     #Authorisation
     try {
       $siteService->checkAuthroisedAPIIDentifier($service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
     } catch(\Exception $e){
-      $this->httpResponseCode=403;
-      throw $e;
+      $this->exceptionWithResponseCode(403, $e->getMessage());
     }
 
     switch($this->entityProperty) {
@@ -740,8 +741,7 @@ class PIWriteRequest {
         break;
       }
       default: {
-        $this->httpResponseCode=501;
-        throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
+        $this->exceptionWithResponseCode(501,$this->genericExceptionMessages["entityTypePropertyCombo"]);
       }
     }
   }
@@ -775,8 +775,7 @@ class PIWriteRequest {
           break;
       }
       default: {
-        $this->httpResponseCode=405;
-        throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
+        $this->exceptionWithResponseCode(405, $this->genericExceptionMessages["entityTypePropertyMethod"]);
         break;
       }
     }
@@ -795,8 +794,7 @@ class PIWriteRequest {
     try {
       $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
     } catch(\Exception $e) {
-      $this->httpResponseCode=409;
-      throw $e;
+      $this->exceptionWithResponseCode(409, $e->getMessage());
     }
   }
 
@@ -813,8 +811,7 @@ class PIWriteRequest {
     try {
       $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
     } catch(\Exception $e) {
-      $this->httpResponseCode=409;
-      throw $e;
+      $this->exceptionWithResponseCode(409, $e->getMessage());
     }
   }
 
@@ -834,8 +831,7 @@ class PIWriteRequest {
       foreach ($extensionPropKVArray as $key => $value) {
         $extensionProp = $this->serviceService->getServicePropertyByKeyAndParent($key, $service);
         if (is_null($extensionProp)) {
-          $this->httpResponseCode=404;
-          throw new \Exception(
+          $this->exceptionWithResponseCode(404,
             "A property with key \"$key\" could not be found for "
             . $service->getHostName() . ". No properties have been deleted. "
           );
@@ -843,8 +839,7 @@ class PIWriteRequest {
 
         #If a value has been provided for the property, it needs to matched
         if (!empty($value) && ($extensionProp->getKeyValue() != $value)) {
-          $this->httpResponseCode=409;
-          throw new \Exception(
+          $this->exceptionWithResponseCode(409,
             "The value provided for the property with key \"$key\" does " .
             "not match the existing one. No Properties have been deleted."
           );
@@ -871,16 +866,14 @@ class PIWriteRequest {
     try {
         $endpoint = $this->serviceService->getEndpoint($this->entityID);
     } catch (\Exception $e) {
-        $this->httpResponseCode=404;
-        throw new \Exception("A endpoint with the specified id could not be found");
+      $this->exceptionWithResponseCode(404, "An endpoint with the specified id could not be found");
     }
 
     #Authorisation
     try {
         $siteService->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
     } catch(\Exception $e){
-        $this->httpResponseCode=403;
-        throw $e;
+        $this->exceptionWithResponseCode(403, $e->getMessage());
     }
 
     #Make the requested change
@@ -890,8 +883,7 @@ class PIWriteRequest {
           break;
         }
         default: {
-          $this->httpResponseCode=501;
-          throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
+          $this->exceptionWithResponseCode(501,$this->genericExceptionMessages["entityTypePropertyCombo"]);
         }
     }
   }
@@ -924,8 +916,7 @@ class PIWriteRequest {
         break;
       }
       default: {
-        $this->httpResponseCode=405;
-        throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
+        $this->exceptionWithResponseCode(405,$this->genericExceptionMessages["entityTypePropertyMethod"]);
         break;
       }
     }
@@ -944,8 +935,7 @@ class PIWriteRequest {
     try {
       $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
     } catch(\Exception $e) {
-      $this->httpResponseCode=409;
-      throw $e;
+      $this->exceptionWithResponseCode(409, $e->getMessage());
     }
   }
 
@@ -962,8 +952,7 @@ class PIWriteRequest {
     try {
       $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
     } catch(\Exception $e) {
-      $this->httpResponseCode=409;
-      throw $e;
+      $this->exceptionWithResponseCode(409, $e->getMessage());
     }
   }
 
@@ -983,8 +972,7 @@ class PIWriteRequest {
       foreach ($extensionPropKVArray as $key => $value) {
         $extensionProp = $this->serviceService->getEndpointPropertyByKeyAndParent($key, $endpoint);
         if (is_null($extensionProp)) {
-          $this->httpResponseCode=404;
-          throw new \Exception(
+          $this->exceptionWithResponseCode(404,
             "A property with key \"$key\" could not be found for "
             . $endpoint->getName() . ". No properties have been deleted. "
           );
@@ -992,8 +980,7 @@ class PIWriteRequest {
 
         #If a value has been provided for the property, it needs to matched
         if (!empty($value) && ($extensionProp->getKeyValue() != $value)) {
-          $this->httpResponseCode=409;
-          throw new \Exception(
+          $this->exceptionWithResponseCode(409,
             "The value provided for the property with key \"$key\" does " .
             "not match the existing one. No Properties have been deleted."
           );
