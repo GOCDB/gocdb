@@ -359,106 +359,8 @@ class PIWriteRequest {
               break;
             }
             case 'service': {
-                #This case requires the serviceService
-                $this->checkServiceServiceSet();
-
-                #Identify the service
-                try {
-                    $service = $this->serviceService->getService($this->entityID);
-                } catch (\Exception $e) {
-                    $this->httpResponseCode=404;
-                    throw new \Exception("A service with the specified id could not be found");
-                }
-
-                #Authorisation
-                try {
-                    $siteService->checkAuthroisedAPIIDentifier($service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
-                } catch(\Exception $e){
-                    $this->httpResponseCode=403;
-                    throw $e;
-                }
-
-                switch($this->entityProperty) {
-                    case 'extensionproperties':{
-                        #TWO CASES: one there is a single value, the other mutliple - create an array for the single, use array for multiple.
-                        if (is_null($this->entityPropertyKey)) {
-                            $extensionPropKVArray = $this->entityPropertyKVArray;
-                        } else {
-                            $extensionPropKVArray = array($this->entityPropertyKey => $this->entityPropertyValue);
-                        }
-
-                        #Based on Request types run either an add with or without overwritebv or a remove.
-                        switch ($this->requestMethod) {
-                            case 'POST':{
-                                #Post requests will fail if the property with that value already exists or the property limit has been reached
-                                #TODO:This will return the wrong error code if something else goes wrong
-                                try {
-                                    $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
-                                } catch(\Exception $e) {
-                                    $this->httpResponseCode=409;
-                                    throw $e;
-                                }
-                                break;
-                            }
-                            case 'PUT':{
-                                #Put requests will fail if the property limit has been reached
-                                #TODO:This will return the wrong error code if something else goes wrong
-                                try {
-                                    $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
-                                } catch(\Exception $e) {
-                                    $this->httpResponseCode=409;
-                                    throw $e;
-                                }
-                                break;
-                            }
-                            case 'DELETE':{
-                                #Convert the array of K/V pairs into an array of properties. If the array is empty, then we want to delte all the properties
-                                if (empty($extensionPropKVArray)) {
-                                    $extensionPropArray = $service->getServiceProperties()->toArray();
-                                } else {
-                                    $extensionPropArray = array();
-                                    foreach ($extensionPropKVArray as $key => $value) {
-
-                                        $extensionProp = $this->serviceService->getServicePropertyByKeyAndParent($key, $service);
-                                        if (is_null($extensionProp)) {
-                                            $this->httpResponseCode=404;
-                                            throw new \Exception(
-                                                "A property with key \"$key\" could not be found for "
-                                                . $service->getHostName() . ". No properties have been deleted. "
-                                            );
-                                        }
-
-                                        #If a value has been provided for the property, it needs to matched
-                                        if (!empty($value) && ($extensionProp->getKeyValue() != $value)) {
-                                            $this->httpResponseCode=409;
-                                            throw new \Exception(
-                                                "The value provided for the property with key \"$key\" does " .
-                                                "not match the existing one. No Properties have been deleted."
-                                            );
-                                        }
-
-                                        $extensionPropArray[] = $extensionProp;
-                                    }
-                                }
-
-                                $this->serviceService->deleteServicePropertiesAPI($service, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
-
-                                break;
-                            }
-                            default: {
-                                $this->httpResponseCode=405;
-                                throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                    default: {
-                        $this->httpResponseCode=501;
-                        throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
-                    }
-                }
-                break;
+              $this->updateService($siteService);
+              break;
             }
             case 'endpoint': {
                 #This case requires the serviceService
@@ -904,6 +806,155 @@ class PIWriteRequest {
 
       $siteService->deleteSitePropertiesAPI($site, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
     }
+
+  /**
+   * Updates the specified service
+   * @param  Site   $siteService [description]
+   * @throws \Exception
+   */
+  private function updateService(Site $siteService){
+    #This case requires the serviceService
+    $this->checkServiceServiceSet();
+
+    #Identify the service
+    try {
+      $service = $this->serviceService->getService($this->entityID);
+    } catch (\Exception $e) {
+      $this->httpResponseCode=404;
+      throw new \Exception("A service with the specified id could not be found");
+    }
+
+    #Authorisation
+    try {
+      $siteService->checkAuthroisedAPIIDentifier($service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
+    } catch(\Exception $e){
+      $this->httpResponseCode=403;
+      throw $e;
+    }
+
+    switch($this->entityProperty) {
+      case 'extensionproperties':{
+        $this->updateServiceExtensionProperties($service);
+        break;
+      }
+      default: {
+        $this->httpResponseCode=501;
+        throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
+      }
+    }
+  }
+
+  /**
+   * Updates the extension properties of the service specified
+   *
+   * @param  $service serivce being updated
+   * @throws \Exception
+   */
+  private function updateServiceExtensionProperties($service) {
+    #TWO CASES: one there is a single value, the other mutliple - create an array for the single, use array for multiple.
+    if (is_null($this->entityPropertyKey)) {
+        $extensionPropKVArray = $this->entityPropertyKVArray;
+    } else {
+        $extensionPropKVArray = array($this->entityPropertyKey => $this->entityPropertyValue);
+    }
+
+    #Based on Request types run either an add with or without overwritebv or a remove.
+    switch ($this->requestMethod) {
+      case 'POST':{
+        $this->updateServiceExtensionPropertiesPost($service, $extensionPropKVArray);
+        break;
+      }
+      case 'PUT':{
+        $this->updateServiceExtensionPropertiesPut($service, $extensionPropKVArray);
+        break;
+      }
+      case 'DELETE':{
+          $this->updateServiceExtensionPropertiesDelete($service, $extensionPropKVArray);
+          break;
+      }
+      default: {
+        $this->httpResponseCode=405;
+        throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
+        break;
+      }
+    }
+  }
+
+  /**
+   * Update extension properties for the service requested following a POST
+   * request
+   * @param  $service service being updated
+   * @param  array $extensionPropKVArray
+   * @throws \Exception
+   */
+  private function updateServiceExtensionPropertiesPost ($service, $extensionPropKVArray) {
+    #Post requests will fail if the property with that value already exists or the property limit has been reached
+    #TODO:This will return the wrong error code if something else goes wrong
+    try {
+      $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
+    } catch(\Exception $e) {
+      $this->httpResponseCode=409;
+      throw $e;
+    }
+  }
+
+  /**
+   * Update extension properties for the service requested following a PUT
+   * request
+   * @param  $service service being updated
+   * @param  array $extensionPropKVArray
+   * @throws \Exception
+   */
+  private function updateServiceExtensionPropertiesPut ($service, $extensionPropKVArray) {
+    #Put requests will fail if the property limit has been reached
+    #TODO:This will return the wrong error code if something else goes wrong
+    try {
+      $this->serviceService->addServicePropertiesAPI($service, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+    } catch(\Exception $e) {
+      $this->httpResponseCode=409;
+      throw $e;
+    }
+  }
+
+  /**
+   * Update extension properties for the service requested following a DELETE
+   * request
+   * @param  $service service being updated
+   * @param  array $extensionPropKVArray
+   * @throws \Exception
+   */
+  private function updateServiceExtensionPropertiesDelete ($service, $extensionPropKVArray) {
+    #Convert the array of K/V pairs into an array of properties. If the array is empty, then we want to delte all the properties
+    if (empty($extensionPropKVArray)) {
+      $extensionPropArray = $service->getServiceProperties()->toArray();
+    } else {
+      $extensionPropArray = array();
+      foreach ($extensionPropKVArray as $key => $value) {
+        $extensionProp = $this->serviceService->getServicePropertyByKeyAndParent($key, $service);
+        if (is_null($extensionProp)) {
+          $this->httpResponseCode=404;
+          throw new \Exception(
+            "A property with key \"$key\" could not be found for "
+            . $service->getHostName() . ". No properties have been deleted. "
+          );
+        }
+
+        #If a value has been provided for the property, it needs to matched
+        if (!empty($value) && ($extensionProp->getKeyValue() != $value)) {
+          $this->httpResponseCode=409;
+          throw new \Exception(
+            "The value provided for the property with key \"$key\" does " .
+            "not match the existing one. No Properties have been deleted."
+          );
+        }
+
+        $extensionPropArray[] = $extensionProp;
+      }
+    }
+
+    $this->serviceService->deleteServicePropertiesAPI($service, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
+  }
+
   /**
    * Generates exception messages which depend on the entutity type and entity
    * value being known (and so which can't be created in _Construct)
