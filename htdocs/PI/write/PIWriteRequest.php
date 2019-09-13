@@ -355,104 +355,8 @@ class PIWriteRequest {
 
         switch($this->entityType) {
             case 'site': {
-
-                #Identify the site
-                try {
-                    $site = $siteService->getSite($this->entityID);
-                } catch(\Exception $e){
-                    $this->httpResponseCode=404;
-                    throw new \Exception("A site with the specified id could not be found");
-                }
-
-                #Authorisation
-                try {
-                    $siteService->checkAuthroisedAPIIDentifier($site, $this->userIdentifier, $this->userIdentifierType);
-                } catch(\Exception $e){
-                    $this->httpResponseCode=403;
-                    throw $e;
-                }
-
-                switch($this->entityProperty) {
-                    case 'extensionproperties':{
-                        #TWO CASES: one there is a single value, the other mutliple - create an array for the single, use array for multiple.
-                        if (is_null($this->entityPropertyKey)) {
-                            $extensionPropKVArray = $this->entityPropertyKVArray;
-                        } else {
-                            $extensionPropKVArray = array($this->entityPropertyKey => $this->entityPropertyValue);
-                        }
-
-                        #Based on Request types run either an add with or without overwritebv or a remove.
-                        switch ($this->requestMethod) {
-                            case 'POST':{
-                                #Post requests will fail if the property with that value already exists or the property limit has been reached
-                                #TODO:This will return the wrong error code if something else goes wrong
-                                try {
-                                    $siteService->addPropertiesAPI($site, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
-                                } catch(\Exception $e) {
-                                    $this->httpResponseCode=409;
-                                    throw $e;
-                                }
-                                break;
-                            }
-                            case 'PUT':{
-                                #Put requests will fail if the property limit has been reached
-                                #TODO:This will return the wrong error code if something else goes wrong
-                                try {
-                                    $siteService->addPropertiesAPI($site, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
-                                } catch(\Exception $e) {
-                                    $this->httpResponseCode=409;
-                                    throw $e;
-                                }
-                                break;
-                            }
-                            case 'DELETE':{
-                                #Convert the array of K/V pairs into an array of properties. If the array is empty, then we want to delte all the properties
-                                if (empty($extensionPropKVArray)) {
-                                    $extensionPropArray = $site->getSiteProperties()->toArray();
-                                } else {
-                                    $extensionPropArray = array();
-                                    foreach ($extensionPropKVArray as $key => $value) {
-
-                                        $extensionProp = $siteService->getPropertyByKeyAndParent($key, $site);
-                                        if (is_null($extensionProp)) {
-                                            $this->httpResponseCode=404;
-                                            throw new \Exception(
-                                                "A property with key \"$key\" could not be found for "
-                                                . $site->getName() . ". No properties have been deleted. "
-                                            );
-                                        }
-
-                                        #If a value has been provided for the property, it needs to matched
-                                        if (!empty($value) && ($extensionProp->getKeyValue() != $value)) {
-                                            $this->httpResponseCode=409;
-                                            throw new \Exception(
-                                                "The value provided for the property with key \"$key\" does " .
-                                                "not match the existing one. No Properties have been deleted."
-                                            );
-                                        }
-
-                                        $extensionPropArray[] = $extensionProp;
-                                    }
-                                }
-
-                                $siteService->deleteSitePropertiesAPI($site, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
-
-                                break;
-                            }
-                            default: {
-                                $this->httpResponseCode=405;
-                                throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                    default: {
-                        $this->httpResponseCode=501;
-                        throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
-                    }
-                }
-                break;
+              $this->updateSite($siteService);
+              break;
             }
             case 'service': {
                 #This case requires the serviceService
@@ -851,6 +755,155 @@ class PIWriteRequest {
       }
     }
 
+    /**
+     * Updates the properties of the site specified in the request
+     *
+     * @param  Site   $siteService
+     * @throws \Exception
+     */
+    private function updateSite (Site $siteService) {
+      #Identify the site
+      try {
+          $site = $siteService->getSite($this->entityID);
+      } catch(\Exception $e){
+          $this->httpResponseCode=404;
+          throw new \Exception("A site with the specified id could not be found");
+      }
+
+      #Authorisation
+      try {
+          $siteService->checkAuthroisedAPIIDentifier($site, $this->userIdentifier, $this->userIdentifierType);
+      } catch(\Exception $e){
+          $this->httpResponseCode=403;
+          throw $e;
+      }
+
+      switch($this->entityProperty) {
+          case 'extensionproperties':{
+            $this->updateSiteExtensionProperties ($siteService, $site);
+            break;
+          }
+          default: {
+              $this->httpResponseCode=501;
+              throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
+          }
+      }
+    }
+
+    /**
+     * Update the extension properties of a site
+     * @param  Site   $siteService
+     * @param   $site        The site being updated
+     * @throws \Exception
+     */
+    private function updateSiteExtensionProperties (Site $siteService, $site) {
+      #TWO CASES: one there is a single value, the other mutliple - create an array for the single, use array for multiple.
+      if (is_null($this->entityPropertyKey)) {
+          $extensionPropKVArray = $this->entityPropertyKVArray;
+      } else {
+          $extensionPropKVArray = array($this->entityPropertyKey => $this->entityPropertyValue);
+      }
+
+      #Based on Request types run either an add with or without overwritebv or a remove.
+      switch ($this->requestMethod) {
+        case 'POST':{
+          $this->updateSiteExtensionPropertiesPost($siteService, $site, $extensionPropKVArray);
+          break;
+        }
+        case 'PUT':{
+          $this->updateSiteExtensionPropertiesPut($siteService, $site, $extensionPropKVArray);
+          break;
+        }
+        case 'DELETE':{
+          $this->updateSiteExtensionPropertiesDELETE($siteService, $site, $extensionPropKVArray);
+          break;
+        }
+        default: {
+          $this->httpResponseCode=405;
+          throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
+          break;
+        }
+      }
+    }
+
+    /**
+     * Updates extension properties for site, following POST request
+     *
+     * @param  Site   $siteService [description]
+     * @param array   $extensionPropKVArray
+     * @param  $site site being updated
+     * @throws \Exception
+     */
+    private function updateSiteExtensionPropertiesPost (Site $siteService, $site, $extensionPropKVArray) {
+      #Post requests will fail if the property with that value already exists or the property limit has been reached
+      #TODO:This will return the wrong error code if something else goes wrong
+      try {
+          $siteService->addPropertiesAPI($site, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
+      } catch(\Exception $e) {
+          $this->httpResponseCode=409;
+          throw $e;
+      }
+    }
+
+    /**
+     * Updates extension properties for site, following PUT request
+     *
+     * @param  Site   $siteService [description]
+     * @param array   $extensionPropKVArray
+     * @param  $site site being updated
+     * @throws \Exception
+     */
+    private function updateSiteExtensionPropertiesPut (Site $siteService, $site, $extensionPropKVArray) {
+      #Put requests will fail if the property limit has been reached
+      #TODO:This will return the wrong error code if something else goes wrong
+      try {
+          $siteService->addPropertiesAPI($site, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
+      } catch(\Exception $e) {
+          $this->httpResponseCode=409;
+          throw $e;
+      }
+    }
+
+    /**
+     * Updates extension properties for site, following DELETE request
+     *
+     * @param  Site   $siteService [description]
+     * @param array   $extensionPropKVArray
+     * @param  $site site being updated
+     * @throws \Exception
+     */
+    private function updateSiteExtensionPropertiesDelete (Site $siteService, $site, $extensionPropKVArray) {
+      #Convert the array of K/V pairs into an array of properties. If the array is empty, then we want to delte all the properties
+      if (empty($extensionPropKVArray)) {
+          $extensionPropArray = $site->getSiteProperties()->toArray();
+      } else {
+          $extensionPropArray = array();
+          foreach ($extensionPropKVArray as $key => $value) {
+
+              $extensionProp = $siteService->getPropertyByKeyAndParent($key, $site);
+              if (is_null($extensionProp)) {
+                  $this->httpResponseCode=404;
+                  throw new \Exception(
+                      "A property with key \"$key\" could not be found for "
+                      . $site->getName() . ". No properties have been deleted. "
+                  );
+              }
+
+              #If a value has been provided for the property, it needs to matched
+              if (!empty($value) && ($extensionProp->getKeyValue() != $value)) {
+                  $this->httpResponseCode=409;
+                  throw new \Exception(
+                      "The value provided for the property with key \"$key\" does " .
+                      "not match the existing one. No Properties have been deleted."
+                  );
+              }
+
+              $extensionPropArray[] = $extensionProp;
+          }
+      }
+
+      $siteService->deleteSitePropertiesAPI($site, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
+    }
   /**
    * Generates exception messages which depend on the entutity type and entity
    * value being known (and so which can't be created in _Construct)
