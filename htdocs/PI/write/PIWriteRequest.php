@@ -74,6 +74,10 @@ class PIWriteRequest {
     #An array that will ultimately be returned to the user
     private $returnObject=null;
 
+    #An array of generic exception messages used by multiple functions
+    private $genericExceptionMessages = array();
+
+
     /**
      * construct function for PIWriteREquest class.
      *
@@ -85,6 +89,12 @@ class PIWriteRequest {
         $configServ = new config();
         $this->baseUrl = $configServ->getServerBaseUrl() . "/gocdbpi";
         $this->docsURL = $configServ->getWriteApiDocsUrl();
+
+        #Define some generic exception messages
+        $this->genericExceptionMessages["URLFormat"] =
+          "API requests should take the form $this->baseUrl" .
+          "/APIVERSION/ENTITYTYPE/ENTITYID/ENTITYPROPERTY/[ENTITYPROPERTYKEY]. " .
+          "For more details see: $this->docsURL";
     }
 
     /**
@@ -142,58 +152,18 @@ class PIWriteRequest {
      * @throws \Exception
      */
     private function getAndProcessURL($method, $requestUrl) {
-        $genericURLFormatErrorMessage = "API requests should take the form $this->baseUrl" .
-            "/APIVERSION/ENTITYTYPE/ENTITYID/ENTITYPROPERTY/[ENTITYPROPERTYKEY]. " .
-            "For more details see: $this->docsURL";
-
-        #If the request isn't set then no url parameters have been used
-        if (is_null($requestUrl)) {
-            $this->httpResponseCode=400;
-            throw new \Exception($genericURLFormatErrorMessage);
-        }
-
-        #Split the request into seperate parts, with the slash as a seperator
-        #Note that apache will collapse multiple /'s into a single /)
-        $requestArray = explode("/",$requestUrl);
-
-        #We should probably ignore trailing slashes, which will generate an empty array element
-        #Using strlen so that '0' is not removed
-        $requestArray = array_filter($requestArray, 'strlen');
-
-        #The request url should have either 4 or 5 elements
-        if(!in_array(count($requestArray),array(4,5))){
-            $this->httpResponseCode=400;
-            throw new \Exception(
-                "Request url has the wrong number of elements. " . $genericURLFormatErrorMessage
-            );
-        }
+        #Process URL into array of useful values
+        $requestArray = $this->processURLtoArray($requestUrl);
 
         #Process request contents
         #API Version
-         $this->apiVersion = strtolower($requestArray[0]);
-
-        #check api version is supported
-        if(!in_array($this->apiVersion,$this->supportedAPIVersions)) {
-            $this->httpResponseCode=400;
-            throw new \Exception(
-                "Unsupported API version: \"$requestArray[0]\". "
-                . $genericURLFormatErrorMessage
-            );
-        }
+        $this->processAPIVersion($requestArray[0]);
 
         #entityType
         $this->entityType = strtolower($requestArray[1]);
 
-        #entityID - Also check that an integer has been specified
-        if(is_numeric($requestArray[2])&&(intval($requestArray[2])==floatval($requestArray[2]))) {
-            $this->entityID = intval($requestArray[2]);
-        } else {
-            $this->httpResponseCode=400;
-            throw new \Exception(
-                "Entity ID's should be integers. \"$requestArray[2]\" is not an integer. "
-                . $genericURLFormatErrorMessage
-            );
-        }
+        #entityID
+        $this->processEntityID ($requestArray[2]);
 
         #entityProperty
         $this->entityProperty = strtolower($requestArray[3]);
@@ -204,21 +174,7 @@ class PIWriteRequest {
         }
 
         #RequestMethod
-        if(in_array(strtoupper($method),$this->supportedRequestMethods)) {
-            $this->requestMethod=strtoupper($method);
-        } elseif (strtoupper($method)=="GET") {
-            $this->httpResponseCode=405;
-            throw new \Exception(
-                "\"GET\" is not currently a supported request method. " .
-                "Try the other API: https://wiki.egi.eu/wiki/GOCDB/PI/Technical_Documentation"
-            );
-        }else {
-            $this->httpResponseCode=405;
-            throw new \Exception(
-                "\"" . $method .
-                "\" is not currently a supported request method. For more details see: $this->docsURL"
-            );
-        }
+        $this->processRequestMethod($method);
     }
 
     /**
@@ -744,6 +700,108 @@ class PIWriteRequest {
     }
 
     /**
+    * Takes the URL and turns it into a useful array
+    *
+    * Also checks some things and tidy's it up
+    * @param string $url A section of the url the user accessed the wirte API
+    * @throws \exception
+    * @return array $requestArray an array of useful things extracted from the url
+    */
+    private function processURLtoArray($url) {
+      #If the request isn't set then no url parameters have been used
+      if (is_null($url)) {
+          $this->httpResponseCode=400;
+          throw new \Exception($this->genericExceptionMessages["URLFormat"]);
+      }
+
+      #Split the request into seperate parts, with the slash as a seperator
+      #Note that apache will collapse multiple /'s into a single /)
+      $requestArray = explode("/",$url);
+
+      #We should probably ignore trailing slashes, which will generate an empty array element
+      #Using strlen so that '0' is not removed
+      $requestArray = array_filter($requestArray, 'strlen');
+
+      #The request url should have either 4 or 5 elements
+      if(!in_array(count($requestArray),array(4,5))){
+          $this->httpResponseCode=400;
+          throw new \Exception(
+              "Request url has the wrong number of elements. " . $this->genericExceptionMessages["URLFormat"]
+          );
+      }
+
+      return $requestArray;
+    }
+
+    /**
+    * Processes the API Version
+    *
+    * Takes the API version provided by the user, updates the relevant  class
+    * property and checks it against supported values
+    * @param $versionText the API version from the url the user used to access the API
+    * @throws \Exception
+    */
+    private function processAPIVersion($versionText) {
+      $this->apiVersion = strtolower($versionText);
+
+     #check api version is supported
+     if(!in_array($this->apiVersion,$this->supportedAPIVersions)) {
+         $this->httpResponseCode=400;
+         throw new \Exception(
+             "Unsupported API version: \"$this->apiVersion\". "
+             . $this->genericExceptionMessages["URLFormat"]
+         );
+     }
+    }
+
+    /**
+     * Processes the entity id
+     *
+     * Takes the entity id, checks it is an integer and sets the relevant class
+     * property.
+     * @param  $entityIDText ID of entity from the url used to access the api
+     * @throws \Exception
+     */
+    private function processEntityID($entityIDText) {
+      #also check that an integer has been specified
+      if(is_numeric($entityIDText)&&(intval($entityIDText)==floatval($entityIDText))) {
+          $this->entityID = intval($entityIDText);
+      } else {
+          $this->httpResponseCode=400;
+          throw new \Exception(
+              "Entity ID's should be integers. \"$entityIDText\" is not an integer. "
+              . $this->genericExceptionMessages["URLFormat"]
+          );
+      }
+    }
+
+    /**
+     * Processes the method specified when accessing the APIVERSION
+     *
+     * Checks method against supported list (giving a specific error for GET) and
+     * sets the appropriate class property
+     * @param  string $method method specified by user when accessing the api
+     */
+    private function processRequestMethod($method) {
+      if(in_array(strtoupper($method),$this->supportedRequestMethods)) {
+          $this->requestMethod=strtoupper($method);
+      } elseif (strtoupper($method)=="GET") {
+          $this->httpResponseCode=405;
+          throw new \Exception(
+              "\"GET\" is not currently a supported request method. " .
+              "Try the other API: https://wiki.egi.eu/wiki/GOCDB/PI/Technical_Documentation"
+          );
+      }else {
+          $this->httpResponseCode=405;
+          throw new \Exception(
+              "\"" . $method .
+              "\" is not currently a supported request method. For more details see: $this->docsURL"
+          );
+      }
+    }
+
+
+    /**
      * Function to allow a serviceService to be set.
      *
      * The service service is only required for calls that change services or
@@ -769,7 +827,7 @@ class PIWriteRequest {
     }
 
     /**
-    *Returns true if portal is read only portal is read only
+    * Returns true if portal is read only portal is read only
     *
     * @return boolean
     */
@@ -779,9 +837,9 @@ class PIWriteRequest {
     }
 
     /**
-    *Throws error if portal/GOCDB is in read only mode
+    * Throws error if portal/GOCDB is in read only mode
     *
-    *@throws \Exception
+    * @throws \Exception
     */
     private function checkIfGOCDBIsReadOnlyAndRequestisNotGET(){
       if ($this->requestMethod != 'GET' && $this->portalIsReadOnly()){
