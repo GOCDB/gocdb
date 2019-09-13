@@ -354,124 +354,26 @@ class PIWriteRequest {
 
 
         switch($this->entityType) {
-            case 'site': {
-              $this->updateSite($siteService);
-              break;
-            }
-            case 'service': {
-              $this->updateService($siteService);
-              break;
-            }
-            case 'endpoint': {
-                #This case requires the serviceService
-                $this->checkServiceServiceSet();
-
-                #Identify the SE
-                try {
-                    $endpoint = $this->serviceService->getEndpoint($this->entityID);
-                } catch (\Exception $e) {
-                    $this->httpResponseCode=404;
-                    throw new \Exception("A endpoint with the specified id could not be found");
-                }
-
-                #Authorisation
-                try {
-                    $siteService->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
-                } catch(\Exception $e){
-                    $this->httpResponseCode=403;
-                    throw $e;
-                }
-
-                switch($this->entityProperty) {
-                    case 'extensionproperties':{
-                        #TWO CASES: one there is a single value, the other mutliple - create an array for the single, use array for multiple.
-                        if (is_null($this->entityPropertyKey)) {
-                            $extensionPropKVArray = $this->entityPropertyKVArray;
-                        } else {
-                            $extensionPropKVArray = array($this->entityPropertyKey => $this->entityPropertyValue);
-                        }
-
-                        #Based on Request types run either an add with or without overwritebv or a remove.
-                        switch ($this->requestMethod) {
-                            case 'POST':{
-                                #Post requests will fail if the property with that value already exists or the property limit has been reached
-                                #TODO:This will return the wrong error code if something else goes wrong
-                                try {
-                                    $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
-                                } catch(\Exception $e) {
-                                    $this->httpResponseCode=409;
-                                    throw $e;
-                                }
-                                break;
-                            }
-                            case 'PUT':{
-                                #Put requests will fail if the property limit has been reached
-                                #TODO:This will return the wrong error code if something else goes wrong
-                                try {
-                                    $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
-                                } catch(\Exception $e) {
-                                    $this->httpResponseCode=409;
-                                    throw $e;
-                                }
-                                break;
-                            }
-                            case 'DELETE':{
-                                #Convert the array of K/V pairs into an array of properties. If the array is empty, then we want to delte all the properties
-                                if (empty($extensionPropKVArray)) {
-                                    $extensionPropArray = $endpoint->getEndpointProperties()->toArray();
-                                } else {
-                                    $extensionPropArray = array();
-                                    foreach ($extensionPropKVArray as $key => $value) {
-
-                                        $extensionProp = $this->serviceService->getEndpointPropertyByKeyAndParent($key, $endpoint);
-                                        if (is_null($extensionProp)) {
-                                            $this->httpResponseCode=404;
-                                            throw new \Exception(
-                                                "A property with key \"$key\" could not be found for "
-                                                . $endpoint->getName() . ". No properties have been deleted. "
-                                            );
-                                        }
-
-                                        #If a value has been provided for the property, it needs to matched
-                                        if (!empty($value) && ($extensionProp->getKeyValue() != $value)) {
-                                            $this->httpResponseCode=409;
-                                            throw new \Exception(
-                                                "The value provided for the property with key \"$key\" does " .
-                                                "not match the existing one. No Properties have been deleted."
-                                            );
-                                        }
-
-                                        $extensionPropArray[] = $extensionProp;
-                                    }
-                                }
-
-                                $this->serviceService->deleteendpointPropertiesAPI($endpoint, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
-
-                                break;
-                            }
-                            default: {
-                                $this->httpResponseCode=405;
-                                throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
-                                break;
-                            }
-                        }
-                        break;
-                    }
-                    default: {
-                        $this->httpResponseCode=501;
-                        throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
-                    }
-                }
-                break;
-            }
-            default: {
-                $this->httpResponseCode=501;
-                throw new \exception(
-                    "Updating " . $this->entityType. "s is not currently supported " .
-                    "through the API, for details of the currently supported methods " .
-                    "see: $this->docsURL"
-                );
-            }
+          case 'site': {
+            $this->updateSite($siteService);
+            break;
+          }
+          case 'service': {
+            $this->updateService($siteService);
+            break;
+          }
+          case 'endpoint': {
+            $this->updateEndpoint($siteService);
+            break;
+          }
+          default: {
+            $this->httpResponseCode=501;
+            throw new \exception(
+                "Updating " . $this->entityType. "s is not currently supported " .
+                "through the API, for details of the currently supported methods " .
+                "see: $this->docsURL"
+            );
+          }
         }
 
         #TODO: return the entity that's been changed or created as $this->returnObject,
@@ -953,6 +855,155 @@ class PIWriteRequest {
     }
 
     $this->serviceService->deleteServicePropertiesAPI($service, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
+  }
+
+  /**
+   * Update an Endpoint
+   *
+   * @param  Site   $siteService
+   * @throws \Exception
+   */
+  private function updateEndpoint (Site $siteService) {
+    #This case requires the serviceService
+    $this->checkServiceServiceSet();
+
+    #Identify the SE
+    try {
+        $endpoint = $this->serviceService->getEndpoint($this->entityID);
+    } catch (\Exception $e) {
+        $this->httpResponseCode=404;
+        throw new \Exception("A endpoint with the specified id could not be found");
+    }
+
+    #Authorisation
+    try {
+        $siteService->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
+    } catch(\Exception $e){
+        $this->httpResponseCode=403;
+        throw $e;
+    }
+
+    #Make the requested change
+    switch($this->entityProperty) {
+        case 'extensionproperties':{
+          $this->updateEndpointExtensionProperties($endpoint);
+          break;
+        }
+        default: {
+          $this->httpResponseCode=501;
+          throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
+        }
+    }
+  }
+
+  /**
+   * Update the Extension properties of an endpoint
+   * @param   $endpoint The endpoint to be updated
+   * @throws \Exception
+   */
+  private function updateEndpointExtensionProperties ($endpoint) {
+    #TWO CASES: one there is a single value, the other mutliple - create an array for the single, use array for multiple.
+    if (is_null($this->entityPropertyKey)) {
+        $extensionPropKVArray = $this->entityPropertyKVArray;
+    } else {
+        $extensionPropKVArray = array($this->entityPropertyKey => $this->entityPropertyValue);
+    }
+
+    #Based on Request types run either an add with or without overwritebv or a remove.
+    switch ($this->requestMethod) {
+      case 'POST':{
+        $this->updateEndpointExtensionPropertiesPost($endpoint, $extensionPropKVArray);
+        break;
+      }
+      case 'PUT':{
+        $this->updateEndpointExtensionPropertiesPut($endpoint, $extensionPropKVArray);
+        break;
+      }
+      case 'DELETE':{
+        $this->updateEndpointExtensionPropertiesDelete($endpoint, $extensionPropKVArray);
+        break;
+      }
+      default: {
+        $this->httpResponseCode=405;
+        throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
+        break;
+      }
+    }
+  }
+
+  /**
+   * Update the Extension properties of an endpoint requested using Post
+   *
+   * @param   $endpoint The endpoint to be updated
+   * @param  array  $extensionPropKVArray
+   * @throws \Exception
+   */
+  private function updateEndpointExtensionPropertiesPost ($endpoint, $extensionPropKVArray) {
+    #Post requests will fail if the property with that value already exists or the property limit has been reached
+    #TODO:This will return the wrong error code if something else goes wrong
+    try {
+      $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
+    } catch(\Exception $e) {
+      $this->httpResponseCode=409;
+      throw $e;
+    }
+  }
+
+  /**
+   * Update the Extension properties of an endpoint requested using Put
+   *
+   * @param   $endpoint The endpoint to be updated
+   * @param  array  $extensionPropKVArray
+   * @throws \Exception
+   */
+  private function updateEndpointExtensionPropertiesPut ($endpoint, $extensionPropKVArray) {
+    #Post requests will fail if the property with that value already exists or the property limit has been reached
+    #TODO:This will return the wrong error code if something else goes wrong
+    try {
+      $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
+    } catch(\Exception $e) {
+      $this->httpResponseCode=409;
+      throw $e;
+    }
+  }
+
+  /**
+   * Update the Extension properties of an endpoint requested using Delete
+   *
+   * @param   $endpoint The endpoint to be updated
+   * @param  array  $extensionPropKVArray
+   * @throws \Exception
+   */
+  private function updateEndpointExtensionPropertiesDelete ($endpoint, $extensionPropKVArray) {
+    #Convert the array of K/V pairs into an array of properties. If the array is empty, then we want to delte all the properties
+    if (empty($extensionPropKVArray)) {
+      $extensionPropArray = $endpoint->getEndpointProperties()->toArray();
+    } else {
+      $extensionPropArray = array();
+      foreach ($extensionPropKVArray as $key => $value) {
+        $extensionProp = $this->serviceService->getEndpointPropertyByKeyAndParent($key, $endpoint);
+        if (is_null($extensionProp)) {
+          $this->httpResponseCode=404;
+          throw new \Exception(
+            "A property with key \"$key\" could not be found for "
+            . $endpoint->getName() . ". No properties have been deleted. "
+          );
+        }
+
+        #If a value has been provided for the property, it needs to matched
+        if (!empty($value) && ($extensionProp->getKeyValue() != $value)) {
+          $this->httpResponseCode=409;
+          throw new \Exception(
+            "The value provided for the property with key \"$key\" does " .
+            "not match the existing one. No Properties have been deleted."
+          );
+        }
+
+        $extensionPropArray[] = $extensionProp;
+      }
+    }
+
+    $this->serviceService->deleteendpointPropertiesAPI($endpoint, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
   }
 
   /**
