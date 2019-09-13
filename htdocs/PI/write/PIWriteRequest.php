@@ -90,7 +90,7 @@ class PIWriteRequest {
         $this->baseUrl = $configServ->getServerBaseUrl() . "/gocdbpi";
         $this->docsURL = $configServ->getWriteApiDocsUrl();
 
-        #Define some generic exception messages
+        #Define some generic exception messages (remaining ones will be generated once entity type and value are known)
         $this->genericExceptionMessages["URLFormat"] =
           "API requests should take the form $this->baseUrl" .
           "/APIVERSION/ENTITYTYPE/ENTITYID/ENTITYPROPERTY/[ENTITYPROPERTYKEY]. " .
@@ -116,9 +116,11 @@ class PIWriteRequest {
     public function processRequest($method, $requestUrl, $requestContents, Site $siteService) {
         try {
             $this->getAndProcessURL($method, $requestUrl);
+            $this->generateExceptionMessages();
             $this->getRequestContent($requestContents);
             $this->validateEntityTypePropertyAndPropValue();
             $this->checkIfGOCDBIsReadOnlyAndRequestisNotGET();
+            $this->getAndSetAuthInfo();
             $this->updateEntity($siteService);
 
         } catch (\Exception $e) {
@@ -344,39 +346,12 @@ class PIWriteRequest {
      * @throws \Exception
      */
     private function updateEntity(Site $siteService) {
+      //We don't currently allow any access to unauthenticated users, so for now
+      //we can simply refuse unauthenticated users. In the future we could look
+      //to authenticate everything except 'GET' requests and then process 'GETs'
+      //on a case by case basis.
+      $this->checkUserAuthenticated();
 
-        #Authentication
-        #$this->userIdentifier will be empty if the unser doesn't provide a credential
-        #If in the future we implement API keys, then I suggest we only look for
-        #the DN if the API key isn't presented.
-        if(is_null($this->userIdentifier)){
-            $this->userIdentifier = Get_User_Principle_PI();
-            $this->userIdentifierType = 'X509';
-        }
-
-        /*
-        * We don't currently allow any access to unauthenticated users, so for now
-        * we can simply refuse unauthenticated users. In the future we could look
-        * to authenticate everything except 'GET' requests and then process 'GETs'
-        * on a case by case basis.
-        */
-        if (empty($this->userIdentifier)) {
-            $this->httpResponseCode = 403; #yes 403 - 401 is not appropriate for X509 authentication
-            throw new \Exception(
-                "You need to be authenticated to access this resource. " .
-                "Please provide a valid IGTF X509 Certificate");
-        }
-
-        #TODO: put these error message texts into a seperate function
-        $entityTypePropertyComboNotSupportedText =
-            "Updating a " . $this->entityType. "'s $this->entityProperty is " .
-            "not currently supported through the API, for details of " .
-            "the currently supported methods see: $this->docsURL";
-
-        $entityTypePropertyMethodNotSupportedText =
-            "\"" . $this->requestMethod . "\" is not currently a supported " .
-            "request method for altering" . $this->entityType. "'s " .
-            $this->entityProperty . " . For more details see: $this->docsURL";
 
         switch($this->entityType) {
             case 'site': {
@@ -466,7 +441,7 @@ class PIWriteRequest {
                             }
                             default: {
                                 $this->httpResponseCode=405;
-                                throw new \Exception($entityTypePropertyMethodNotSupportedText);
+                                throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
                                 break;
                             }
                         }
@@ -474,7 +449,7 @@ class PIWriteRequest {
                     }
                     default: {
                         $this->httpResponseCode=501;
-                        throw new \exception($entityTypePropertyComboNotSupportedText);
+                        throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
                     }
                 }
                 break;
@@ -568,7 +543,7 @@ class PIWriteRequest {
                             }
                             default: {
                                 $this->httpResponseCode=405;
-                                throw new \Exception($entityTypePropertyMethodNotSupportedText);
+                                throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
                                 break;
                             }
                         }
@@ -576,7 +551,7 @@ class PIWriteRequest {
                     }
                     default: {
                         $this->httpResponseCode=501;
-                        throw new \exception($entityTypePropertyComboNotSupportedText);
+                        throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
                     }
                 }
                 break;
@@ -670,7 +645,7 @@ class PIWriteRequest {
                             }
                             default: {
                                 $this->httpResponseCode=405;
-                                throw new \Exception($entityTypePropertyMethodNotSupportedText);
+                                throw new \Exception($this->genericExceptionMessages["entityTypePropertyMethod"]);
                                 break;
                             }
                         }
@@ -678,7 +653,7 @@ class PIWriteRequest {
                     }
                     default: {
                         $this->httpResponseCode=501;
-                        throw new \exception($entityTypePropertyComboNotSupportedText);
+                        throw new \exception($this->genericExceptionMessages["entityTypePropertyCombo"]);
                     }
                 }
                 break;
@@ -847,4 +822,48 @@ class PIWriteRequest {
         throw new \Exception("GOCDB is currently in read only mode");
       }
     }
+
+
+    /**
+     * Gets authentication information and sets the relevant class property
+     */
+    private function getAndSetAuthInfo() {
+      #Authentication
+      #$this->userIdentifier will be empty if the unser doesn't provide a credential
+      #If in the future we implement API keys, then I suggest we only look for
+      #the DN if the API key isn't presented.
+      #Failure to authenticate is handled elsewhere
+      if(is_null($this->userIdentifier)){
+          $this->userIdentifier = Get_User_Principle_PI();
+          $this->userIdentifierType = 'X509';
+      }
+    }
+
+    /**
+     * Checks the user is authenticated and throws exception if not
+     */
+    private function checkUserAuthenticated () {
+      if (empty($this->userIdentifier)) {
+          $this->httpResponseCode = 403; #yes 403 - 401 is not appropriate for X509 authentication
+          throw new \Exception(
+              "You need to be authenticated to access this resource. " .
+              "Please provide a valid IGTF X509 Certificate");
+      }
+    }
+
+  /**
+   * Generates exception messages which depend on the entutity type and entity
+   * value being known (and so which can't be created in _Construct)
+   */
+  private function generateExceptionMessages () {
+    $this->genericExceptionMessages["entityTypePropertyCombo"] =
+      "Updating a " . $this->entityType. "'s $this->entityProperty is " .
+      "not currently supported through the API, for details of " .
+      "the currently supported methods see: $this->docsURL";
+    $this->genericExceptionMessages["entityTypePropertyMethod"] =
+      "\"" . $this->requestMethod . "\" is not currently a supported " .
+      "request method for altering" . $this->entityType. "'s " .
+      $this->entityProperty . " . For more details see: $this->docsURL";
+  }
+
 }
