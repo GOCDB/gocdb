@@ -111,7 +111,7 @@ class PIWriteRequest {
             $this->updateEntity($siteService);
 
         } catch (\Exception $e) {
-            #For 500 errors, make it explicit it's an internal errors
+            #For 500 errors, make it explicit it's an internal error
             if ($this->httpResponseCode==500) {
                 $message = "Internal error. Please contact the GOCDB asministrators. Message: " . $e->getMessage();
             } else {
@@ -644,7 +644,7 @@ class PIWriteRequest {
                     throw $e;
                 }
 
-                switch($this->entityProperty == 'extensionproperties') {
+                switch($this->entityProperty) {
                     case 'extensionproperties':{
                         #TWO CASES: one there is a single value, the other mutliple - create an array for the single, use array for multiple.
                         if (is_null($this->entityPropertyKey)) {
@@ -754,7 +754,7 @@ class PIWriteRequest {
     }
 
     /**
-     * Function to check the service servicex is set and throw error if not.
+     * Function to check the service service is set and throw error if not.
      *
      * The service service is only required for calls that change services or
      * endpoints, so we allow it to not be set and provide a setter.
