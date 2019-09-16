@@ -22,7 +22,7 @@ javascript to show and hide these tables.
         <div style="float: left;">
             <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" class="pageLogo" />
         </div>
-        <div style="float: left; width: 45em;">
+        <div style="float: left;">
             <h1 style="float: left; margin-left: 0em; padding-bottom: 0.0em;">
                    Overview of Current and Planned Downtimes
             </h1>

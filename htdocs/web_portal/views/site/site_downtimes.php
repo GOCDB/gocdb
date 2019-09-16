@@ -5,19 +5,27 @@ $downtimes = $params['downtimes'];
 <div class="rightPageContainer">
     <div style="overflow: hidden">
         <div style="float: left;">
+            <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" class="pageLogo" />
+        </div>
+        <div style="float: left;">
             <h1 style="float: left; margin-left: 0em; padding-bottom: 0.3em;">
-                Downtimes Affecting
                 <a  style="font-family: inherit; font-size: inherit; font-weight: inherit; padding-bottom: inherit; "
                     href="index.php?Page_Type=Site&id=<?php echo $site->getId(); ?>">
-            <?php xecho($site) ?></a>'s
-                Services
+                <?php xecho($site) ?></a> Downtimes
             </h1>
+        </div>
+        <div style="float: left;">
+            <span style="clear: both; float: left; padding-bottom: 0.4em;">
+                All downtimes affecting <?php xecho($site) ?> services and endpoints (Year-Month-Day Time in UTC)
+            </span>
         </div>
 
         <!--  Downtimes -->
          <div class="listContainer">
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">All Downtimes (Year-Month-Day Time in UTC)</span>
-            <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" class="decoration" />
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                <?php echo sizeof($downtimes) ?> Downtime<?php if(sizeof($downtimes) != 1) echo "s"?>
+            </span>
+            <img src="<?php echo \GocContextPath::getPath() ?>img/grid.png" class="decoration" />
             <table id="allSiteDowntimesTable" class="table table-striped table-condensed tablesorter">
                 <thead>
                     <tr>
