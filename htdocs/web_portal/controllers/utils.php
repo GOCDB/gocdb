@@ -385,6 +385,9 @@ function getSeDataFromWeb() {
 
     $fields = array (
             'serviceType',
+            'IS_MONITORED',
+            'NOTIFY',
+            'PRODUCTION_LEVEL'
     );
 
     foreach($fields as $field){
@@ -410,10 +413,6 @@ function getSeDataFromWeb() {
     $se_data ['SE'] ['EMAIL'] = $_REQUEST ['EMAIL'];
     $se_data ['SE'] ['URL'] = $_REQUEST ['endpointUrl'];
     $se_data ['BETA'] = $_REQUEST ['HOST_BETA'];
-    $se_data ['PRODUCTION_LEVEL'] = $_REQUEST ['PRODUCTION_LEVEL'];
-    $se_data ['IS_MONITORED'] = $_REQUEST ['IS_MONITORED'];
-    $se_data ['NOTIFY'] = $_REQUEST ['NOTIFY'];
-
 
     /*
     * If the user is updating a service the optional cobjectid parameter will be set. If it is set we return it as part of the array
