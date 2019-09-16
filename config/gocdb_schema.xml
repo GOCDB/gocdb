@@ -163,6 +163,12 @@
 	    <length>255</length>
 	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)+$/</regex>
 	</field>
+  <field>
+      <fname>URL</fname>
+      <length>255</length>
+      <!-- Support for all URI chars (unreserved, gen-delims, sub-delims and percent) RFC 3986 -->
+	    <regex>/^[0-9a-zA-Z:\/\.\&amp;\?\_\$\+\!\*\'\(\)\,\-#\[\]@;=~%]*$/</regex>
+  </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
@@ -306,19 +312,6 @@
 	</field>
 	<field>
 	    <fname>CONFIRMATION_CODE</fname>
-	</field>
-    </entity>
-
-    <!-- ====================================================
-    This can be deleted once add service form is redone.
-    -->
-    <entity>
-	<name>endpoint_location</name>
-	<field>
-	    <fname>URL</fname>
-	    <length>255</length>
-	    <!-- Support for all URI chars (unreserved, gen-delims, sub-delims and percent) RFC 3986 -->
-	    <regex>/^[0-9a-zA-Z:\/\.\&amp;\?\_\$\+\!\*\'\(\)\,\-#\[\]@;=~%]*$/</regex>
 	</field>
     </entity>
 

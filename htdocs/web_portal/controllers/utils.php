@@ -382,10 +382,9 @@ function getSGroupDataFromWeb() {
  * @return array an array representation of a service
  */
 function getSeDataFromWeb() {
-    // Fields that are used to link other objects to the site
+
     $fields = array (
             'serviceType',
-            'endpointUrl'
     );
 
     foreach($fields as $field){
@@ -409,6 +408,7 @@ function getSeDataFromWeb() {
     $se_data ['SE'] ['HOST_OS'] = $_REQUEST ['HOST_OS'];
     $se_data ['SE'] ['HOST_ARCH'] = $_REQUEST ['HOST_ARCH'];
     $se_data ['SE'] ['EMAIL'] = $_REQUEST ['EMAIL'];
+    $se_data ['SE'] ['URL'] = $_REQUEST ['endpointUrl'];
     $se_data ['BETA'] = $_REQUEST ['HOST_BETA'];
     $se_data ['PRODUCTION_LEVEL'] = $_REQUEST ['PRODUCTION_LEVEL'];
     $se_data ['IS_MONITORED'] = $_REQUEST ['IS_MONITORED'];
