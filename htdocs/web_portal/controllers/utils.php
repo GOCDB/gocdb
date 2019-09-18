@@ -544,27 +544,6 @@ function getDtDataFromWeb() {
 }
 
 /**
- *  Gets the relevant fields from a user's web request
- *  ($_REQUEST) and returns an associative array.
- *  @global array $_REQUEST Downtime data submitted by the end user
- *  @return array an array representation of a downtime
- */
-function getDtDataFromWebOld() {
-    $dt['DOWNTIME']['SEVERITY'] = $_REQUEST['SEVERITY'];
-    $dt['DOWNTIME']['DESCRIPTION'] = $_REQUEST['DESCRIPTION'];
-    $dt['DOWNTIME']['START_TIMESTAMP'] = $_REQUEST['START_TIMESTAMP'];
-    $dt['DOWNTIME']['END_TIMESTAMP'] = $_REQUEST['END_TIMESTAMP'];
-    if(!isset($_REQUEST['Impacted_SEs'])){
-        throw new Exception('Error - No service selected, downtime must affect at least one service');
-    }
-    $dt['Impacted_SEs'] = $_REQUEST['Impacted_SEs'];
-    if(isset($_REQUEST['ID'])) {
-        $dt['ID'] = $_REQUEST['ID'];
-    }
-    return $dt;
-}
-
-/**
  * Gets the site properties data passed by user *
  */
 function getSpDataFromWeb() {
