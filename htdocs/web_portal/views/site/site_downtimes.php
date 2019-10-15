@@ -4,20 +4,20 @@ $downtimes = $params['downtimes'];
 ?>
 <div class="rightPageContainer">
     <div style="overflow: hidden">
-        <div style="float: left;">
-            <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" class="pageLogo" />
-        </div>
-        <div style="float: left;">
-            <h1 style="float: left; margin-left: 0em; padding-bottom: 0.3em;">
-                <a  style="font-family: inherit; font-size: inherit; font-weight: inherit; padding-bottom: inherit; "
-                    href="index.php?Page_Type=Site&id=<?php echo $site->getId(); ?>">
-                <?php xecho($site) ?></a> Downtimes
-            </h1>
-        </div>
-        <div style="float: left;">
-            <span style="clear: both; float: left; padding-bottom: 0.4em;">
-                All downtimes affecting <?php xecho($site) ?> services and endpoints (Year-Month-Day Time in UTC)
-            </span>
+        <div>
+            <div style="float: left;">
+                <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" class="pageLogo" />
+            </div>
+            <div>
+                <h1 style="float: none;">
+                    <a  style="font-family: inherit; font-size: inherit; font-weight: inherit; padding-bottom: inherit; "
+                        href="index.php?Page_Type=Site&id=<?php echo $site->getId(); ?>">
+                    <?php xecho($site) ?></a> Downtimes
+                </h1>
+            </div>
+            <div style="float: none;">
+                All downtimes affecting <?php xecho($site) ?> services and endpoints.
+            </div>
         </div>
 
         <!--  Downtimes -->
@@ -26,6 +26,9 @@ $downtimes = $params['downtimes'];
                 <?php echo sizeof($downtimes) ?> Downtime<?php if(sizeof($downtimes) != 1) echo "s"?>
             </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/grid.png" class="decoration" />
+            <span style="vertical-align:middle; float: right; padding-top: 0.9em; padding-right: 8%;">
+                Year-Month-Day Time in UTC
+            </span>
             <table id="allSiteDowntimesTable" class="table table-striped table-condensed tablesorter">
                 <thead>
                     <tr>

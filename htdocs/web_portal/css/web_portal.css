@@ -288,6 +288,12 @@ td.site_table {
     padding-bottom: 0.5em;
 }
 
+td.site_table_nopad {
+    padding-left: 1em;
+    padding-top: 0em;
+    padding-bottom: 0em;
+}
+
 th.site_table {
     padding-left: 1em;
     padding-top: 0.5em;

@@ -4,8 +4,9 @@ $dtActive = $params['downtimesActive'];
 $dtImmenent = $params['downtimesImmenent'];
 $timePeriod = $params['timePeriod'];
 
-$td1 = '<td>';
+$td1 = '<td class="site_table">';
 $td2 = '</td>';
+$td1np = '<td class="site_table_nopad">';
 ?>
 
 <!---
@@ -95,10 +96,10 @@ javascript to show and hide these tables.
                     foreach($dt->getServices() as $se){
                         echo '<tr class="site_table_row_2">';
                         $sID = $se->getParentSite()->getId();
-                        echo $td1 . '<a href="index.php?Page_Type=Site&amp;id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
-                        echo $td1 . '<a href="index.php?Page_Type=Service&amp;id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2;
-                        echo $td1 . (($se->getProduction()) ? 'Yes' : 'No') . $td2;
-                        echo $td1 . (($se->getMonitored()) ? 'Yes' : 'No') . $td2;
+                        echo $td1np . '<a href="index.php?Page_Type=Site&amp;id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
+                        echo $td1np . '<a href="index.php?Page_Type=Service&amp;id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2;
+                        echo $td1np . (($se->getProduction()) ? 'Yes' : 'No') . $td2;
+                        echo $td1np . (($se->getMonitored()) ? 'Yes' : 'No') . $td2;
                         echo '</tr>';
                     }
 
@@ -133,6 +134,7 @@ javascript to show and hide these tables.
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <th class="site_table">Downtime Id</th>
+                    <th class="site_table">Site</th>
                     <th class="site_table">Description</th>
                     <th class="site_table">Severity</th>
                     <th class="site_table">Classification</th>
@@ -189,10 +191,10 @@ javascript to show and hide these tables.
                     foreach($dt->getServices() as $se){
                         echo '<tr class="site_table_row_2">';
                         $sID = $se->getParentSite()->getId();
-                        echo $td1 . '<a href="index.php?Page_Type=Site&amp;id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
-                        echo $td1 . '<a href="index.php?Page_Type=Service&amp;id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2;
-                        echo $td1 . (($se->getProduction()) ? 'Yes' : 'No') . $td2;
-                        echo $td1 . (($se->getMonitored()) ? 'Yes' : 'No') . $td2;
+                        echo $td1np . '<a href="index.php?Page_Type=Site&amp;id='.$sID.'"/>'.xssafe($se->getParentSite()->getName()).'</a>'.$td2;
+                        echo $td1np . '<a href="index.php?Page_Type=Service&amp;id='.$se->getId().'"/>'.xssafe($se->getHostName()).'</a>'.$td2;
+                        echo $td1np . (($se->getProduction()) ? 'Yes' : 'No') . $td2;
+                        echo $td1np . (($se->getMonitored()) ? 'Yes' : 'No') . $td2;
                         echo '</tr>';
                     }
 
