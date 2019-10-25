@@ -148,10 +148,10 @@ class ShibAuthToken implements IAuthentication {
         }
         else if($idp == 'https://aai-dev.egi.eu/proxy/saml2/idp/metadata.php'){
             if( empty($_SERVER['epuid'])){
-                die('Did not recieve required epuid attributes from the EGI Dev Proxy Identity Provider to complete authentication, please contact gocdb-admins');
+                die('Did not receive required ePUID attributes from the EGI Dev Proxy Identity Provider to complete authentication, please contact gocdb-admins');
             }
             if(empty($_SERVER['entitlement'])){
-                die('Did not recieve the required entitlement attribute from the EGI Dev Proxy IdP, please contact gocdb-admins');
+                die('Did not receive the required entitlement attribute from the EGI Dev Proxy IdP, please contact gocdb-admins');
             } 
             $entitlementValuesArray = explode(';', $_SERVER['entitlement']); 
             if( !in_array('urn:mace:egi.eu:aai.egi.eu:gocdb', $entitlementValuesArray) ){
