@@ -411,7 +411,7 @@ function getSeDataFromWeb() {
     $se_data ['SE'] ['HOST_OS'] = trim($_REQUEST ['HOST_OS']);
     $se_data ['SE'] ['HOST_ARCH'] = trim($_REQUEST ['HOST_ARCH']);
     $se_data ['SE'] ['EMAIL'] = trim($_REQUEST ['EMAIL']);
-    $se_data ['SE'] ['URL'] = $_REQUEST ['endpointUrl'];
+    $se_data ['SE'] ['URL'] = trim($_REQUEST ['endpointUrl']);
     $se_data ['BETA'] = $_REQUEST ['HOST_BETA'];
 
     /*
