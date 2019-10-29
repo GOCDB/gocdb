@@ -218,7 +218,7 @@ class PIWriteRequest {
                     );
                 } else {
                   $this->exceptionWithResponseCode(400,
-                    "Request message cotnained more than one object. " . $genericError
+                    "Request message contained more than one object. " . $genericError
                   );
                 }
             } else {
@@ -411,7 +411,7 @@ class PIWriteRequest {
       #The request url should have either 4 or 5 elements
       if(!in_array(count($requestArray),array(4,5))){
         $this->exceptionWithResponseCode(400,
-          "Request url has the wrong number of elements. " . $this->genericExceptionMessages["URLFormat"]
+          "Request URL has the wrong number of elements. " . $this->genericExceptionMessages["URLFormat"]
         );
       }
 
@@ -421,7 +421,7 @@ class PIWriteRequest {
     /**
     * Processes the API Version
     *
-    * Takes the API version provided by the user, updates the relevant  class
+    * Takes the API version provided by the user, updates the relevant class
     * property and checks it against supported values
     * @param $versionText the API version from the url the user used to access the API
     * @throws \Exception
@@ -438,7 +438,7 @@ class PIWriteRequest {
     }
 
     /**
-     * Processes the entity id
+     * Processes the entity ID
      *
      * Takes the entity id, checks it is an integer and sets the relevant class
      * property.
@@ -458,8 +458,8 @@ class PIWriteRequest {
     }
 
     /**
-     * Throws an exception with the given essage after setting the repsponse code
-     * It will be caguht later and given tot he user in areadable format
+     * Throws an exception with the given message after setting the response code
+     * It will be caught later and given to the user in a readable format
      * TODO:There are better ways of doing this, involving extnding the exception class
      * @param  int    $code    HTTP Response code
      * @param  string $message exception message
@@ -615,7 +615,7 @@ class PIWriteRequest {
           $extensionPropKVArray = array($this->entityPropertyKey => $this->entityPropertyValue);
       }
 
-      #Based on Request types run either an add with or without overwritebv or a remove.
+      #Based on Request types run either an add with or without overwrite or a remove.
       switch ($this->requestMethod) {
         case 'POST':{
           $this->updateSiteExtensionPropertiesPost($siteService, $site, $extensionPropKVArray);
@@ -866,7 +866,7 @@ class PIWriteRequest {
     try {
         $endpoint = $this->serviceService->getEndpoint($this->entityID);
     } catch (\Exception $e) {
-      $this->exceptionWithResponseCode(404, "An endpoint with the specified id could not be found");
+      $this->exceptionWithResponseCode(404, "An endpoint with the specified ID could not be found");
     }
 
     #Authorisation
@@ -901,7 +901,7 @@ class PIWriteRequest {
         $extensionPropKVArray = array($this->entityPropertyKey => $this->entityPropertyValue);
     }
 
-    #Based on Request types run either an add with or without overwritebv or a remove.
+    #Based on Request types run either an add with or without overwrite or a remove.
     switch ($this->requestMethod) {
       case 'POST':{
         $this->updateEndpointExtensionPropertiesPost($endpoint, $extensionPropKVArray);
