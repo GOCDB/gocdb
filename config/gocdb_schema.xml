@@ -182,6 +182,10 @@
       <fname>MONITORED</fname>
       <ftype>boolean</ftype>
   </field>
+  <field>
+      <fname>NOTIFY</fname>
+      <ftype>boolean</ftype>
+  </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
