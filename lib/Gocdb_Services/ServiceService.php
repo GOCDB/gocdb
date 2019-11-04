@@ -470,7 +470,7 @@ class ServiceService extends AbstractEntityService {
      * is invalid. The \Exception's message will contain a human readable error
      * message.
      */
-    private function validateProductionMonitoredCombination($serviceTypeName, $production, $monitored) {
+    public function validateProductionMonitoredCombination($serviceTypeName, $production, $monitored) {
         // Service types that are exceptions to the
         // 'production => monitored' rule.
         $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
@@ -577,103 +577,153 @@ class ServiceService extends AbstractEntityService {
             }
         }
 
-        // Check no changes to Reserved scopes (if not admin):
-        // When normal users EDIT the service, the selected scopeIds should
-        // be checked to prevent users manually crafting a POST request in an attempt
-        // to select reserved scopes, this is unlikely but it is a possible hack.
-        //
-        // Note, on edit we also don't want to enforce cascading of parent Site scopes to the service,
-        // as we need to allow an admin to de-select a service's reserved scopes
-        // (which is a perfectly valid requirement) and prevent re-cascading
-        // when the user next edits the service!
-        /*
-         * if (!$user->isAdmin()) {
-         * $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
-         * array('excludeNonReserved' => true), $selectedScopesToApply);
-         *
-         * $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
-         * array('excludeNonReserved' => true), $se->getScopes()->toArray());
-         *
-         * if(count($selectedReservedScopes) != count($existingReservedScopes)) {
-         * throw new \Exception("The reserved Scope count does not match the Services's existing scope count ");
-         * }
-         * foreach($selectedReservedScopes as $sc){
-         * if(!in_array($sc, $existingReservedScopes)){
-         * throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the Service");
-         * }
-         * }
-         * }
-         */
-
         // check there are the required number of optional scopes specified
         $this->checkNumberOfScopes ( $this->scopeService->getScopesFilterByParams ( array (
                 'excludeReserved' => true
         ), $selectedScopesToApply ) );
 
-        // Explicity demarcate our tx boundary
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            // Set the service's member variables
-            $se->setHostName ( $newValues ['SE'] ['HOSTNAME'] );
-            $se->setDescription ( $newValues ['SE'] ['DESCRIPTION'] );
+        $updatedServiceValues =array();
+        $updatedServiceValues['hostname'] = $newValues ['SE'] ['HOSTNAME'];
+        $updatedServiceValues['description'] = $newValues ['SE'] ['DESCRIPTION'];
+        $updatedServiceValues['url'] = $newValues['SE']['URL'];
+        $updatedServiceValues['dn'] = $newValues ['SE']['HOST_DN'];
+        $updatedServiceValues['ip'] = $newValues['SE']['HOST_IP'];
+        $updatedServiceValues['ip6'] = $newValues['SE']['HOST_IP_V6'];
+        $updatedServiceValues['os'] = $newValues['SE']['HOST_OS'];
+        $updatedServiceValues['email'] = $newValues['SE']['EMAIL'];
+        $updatedServiceValues['arch'] = $newValues['SE']['HOST_ARCH'];
+        $updatedServiceValues['monitored'] = $this->ptlTexToBool($newValues['IS_MONITORED']);
+        $updatedServiceValues['beta'] = $this->ptlTexToBool($newValues['BETA']);
+        $updatedServiceValues['production'] = $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']);
+        $updatedServiceValues['notify'];
 
-            $prod = $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']);
-            $se->setProduction ( $prod );
-
-            $beta = $this->ptlTexToBool($newValues['BETA']);
-            $se->setBeta ( $beta );
-
-            $monitored = $this->ptlTexToBool($newValues['IS_MONITORED']);
-            $se->setMonitored ( $monitored );
-
-            //Set notify flag for site
-            if (!isset($newValues['NOTIFY'])){
-                $notify = false;
-            }
-            else {
-                $notify = $this->ptlTexToBool($newValues['NOTIFY']);
-            }
-            $se->setNotify ($notify);
-
-            $se->setDn ( $newValues ['SE'] ['HOST_DN'] );
-            $se->setIpAddress ( $newValues ['SE'] ['HOST_IP'] );
-            $se->setIpV6Address ( $newValues ['SE'] ['HOST_IP_V6'] );
-            $se->setOperatingSystem ( $newValues ['SE'] ['HOST_OS'] );
-            $se->setArchitecture ( $newValues ['SE'] ['HOST_ARCH'] );
-            $se->setEmail ( $newValues ['SE'] ['EMAIL'] );
-            $se->setUrl ( $newValues ['SE'] ['URL'] );
-
-            $se->setServiceType ( $st );
-
-            // Update the service's scope
-            // firstly remove all existing scope links
-            $scopes = $se->getScopes ();
-            foreach ( $scopes as $s ) {
-                $se->removeScope ( $s );
-            }
-
-            // find then link each scope specified to the site
-            // foreach ($scopeIdsToApply as $scopeId) {
-            // $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-            // $scope = $this->em->createQuery($dql)
-            // ->setParameter(1, $scopeId)
-            // ->getSingleResult();
-            // $se->addScope($scope);
-            // }
-            foreach ( $selectedScopesToApply as $scope ) {
-                $se->addScope ( $scope );
-            }
-
-            $this->em->merge ( $se );
-            // $this->em->merge($el);
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $ex ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $ex;
+        if (!isset($newValues['NOTIFY'])){
+            $updatedServiceValues['notify'] = false;
         }
+        else {
+            $updatedServiceValues['notify'] = $this->ptlTexToBool($newValues['NOTIFY']);
+        }
+
+        $this->editServiceLogic($se, $selectedScopesToApply, $st, $updatedServiceValues);
+
         return $se;
+    }
+
+    /**
+     * Function called by write API to edit a service. Provides API specific
+     * authorisation on top of shared logic with web portal
+     * @param Service $service            service being updated
+     * @param  string $hostname           service hostname
+     * @param  string $description        service description
+     * @param  string $url                service url
+     * @param  string $dn                 service dn
+     * @param  string $ip                 service IP
+     * @param  string $ip6                serviec IP (ipV6)
+     * @param  string $os                 service OS
+     * @param  string $email              service email
+     * @param  string $arch               service archetecture
+     * @param  string $monitored
+     * @param  boolean $beta
+     * @param  boolean $production
+     * @param  boolean $notify
+     * @param  string $authIdentifierType
+     * @param  string $authIdentifier
+     */
+    public function editServiceApi(\Service $service, $hostname, $description, $url, $dn, $ip, $ip6, $os, $email, $arch, $monitored, $beta, $production, $notify, $authIdentifierType, $authIdentifier) {
+      //Check the portal is not in read only mode, throws exception if it is
+      $this->checkGOCDBIsNotReadOnly();
+
+      \Factory::getSiteService()->checkAuthroisedAPIIDentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+
+      $scopes = clone $service->getScopes();
+      $sType = $service->getServiceType();
+      $updatedServiceValues = array (
+        'hostname'=>$hostname,
+        'description'=>$description,
+        'url'=>$url,
+        'dn'=>$dn,
+        'ip'=>$ip,
+        'ip6'=>$ip6,
+        'os'=>$os,
+        'email'=>$email,
+        'arch'=>$arch,
+        'monitored'=>$monitored,
+        'beta'=>$beta,
+        'production'=>$production,
+        'notify'=>$notify,
+      );
+
+      $this->validateProductionMonitoredCombination($service->getServiceType()->getName(), $production, $monitored);
+
+      $this->editServiceLogic($service, $scopes, $sType, $updatedServiceValues);
+    }
+
+
+    /**
+     * The logic of editing a service, without the authorisation or validation.
+     * Private function as there should always be authorisation anad validation
+     * steps within the service before calling this function.
+     *
+     * @param  Service $service       service to be updated
+     * @param  array  $scopes         scopes of service being updated
+     * @param         $sType          service type of service
+     * @param array $updatedServiceValues values being updated for $service. Should contain:
+     *                ['hostname']    hostname of service being updated
+     *                ['description'] description of service being updated
+     *                ['url']         url of service being updated
+     *                ['dn']          dn of service being updated
+     *                ['$ip6']        ip V6 of service being updated
+     *                ['ip']          ip of service being updated
+     *                ['$os']         os of service being updated
+     *                ['email']       email of service being updated
+     *                ['$arch']       architecture  of service being updated
+     *                ['$monitored']  boolean monitored of service being updated
+     *                ['$beta']       boolean beta of service being updated
+     *                ['$production'] boolean production of service being updated
+     *                ['$notify']     boolean notify value of service being updated
+     * @throws Exception
+     */
+    private function editServiceLogic(\Service $service, $scopes, $sType, $updatedServiceValues){
+      // Explicity demarcate our tx boundary
+      $this->em->getConnection ()->beginTransaction ();
+      try {
+          // Set the service's member variables
+          $service->setHostName($updatedServiceValues['hostname']);
+          $service->setDescription($updatedServiceValues['description']);
+          $service->setUrl($updatedServiceValues['url']);
+          $service->setDn($updatedServiceValues['dn']);
+          $service->setIpAddress($updatedServiceValues['ip']);
+          $service->setIpV6Address($updatedServiceValues['ip6']);
+          $service->setOperatingSystem($updatedServiceValues['os']);
+          $service->setEmail($updatedServiceValues['email']);
+          $service->setArchitecture($updatedServiceValues['arch']);
+          $service->setMonitored($updatedServiceValues['monitored']);
+          $service->setBeta($updatedServiceValues['beta']);
+          $service->setProduction($updatedServiceValues['production']);
+          $service->setNotify($updatedServiceValues['notify']);
+
+          $service->setServiceType($sType);
+
+          // Update the service's scope
+          // firstly remove all existing scope links
+          $oldScopes = $service->getScopes ();
+          foreach($oldScopes as $s ) {
+              $service->removeScope($s);
+          }
+
+          // find then link each scope specified to the site
+          foreach($scopes as $scope) {
+              $service->addScope($scope);
+          }
+
+          $this->em->merge($service);
+          $this->em->flush ();
+          $this->em->getConnection ()->commit ();
+      } catch ( \Exception $e ) {
+          $this->em->getConnection ()->rollback ();
+          $this->em->close ();
+          throw $e;
+      }
     }
 
     /*
@@ -1766,6 +1816,70 @@ class ServiceService extends AbstractEntityService {
             $this->em->close ();
             throw $e;
         }
+    }
+
+    /**
+     * Function to establish if a service already has a value sets
+     *
+     * @returns boolean
+    */
+    public function servicePropSet (\Service $service, $servicePropName) {
+      switch (strtolower($servicePropName)) {
+        case 'hostname':{
+          $propValue = $service->getHostName();
+          break;
+        }
+        case 'description':{
+          $propValue = $service->getDescription();
+          break;
+        }
+        case 'url':{
+          $propValue = $service->getUrl();
+          break;
+        }
+        case 'host_dn':{
+          $propValue = $service->getDn();
+          break;
+        }
+        case 'host_ip':{
+          $propValue = $service->getIpAddress();
+          break;
+        }
+        case 'host_ip_v6':{
+          $propValue = $service->getIpV6Address();
+          break;
+        }
+        case 'host_os':{
+          $propValue = $service->getOperatingSystem();
+          break;
+        }
+        case 'email':{
+          $propValue = $service->getEmail();
+          break;
+        }
+        case 'host_arch':{
+          $propValue = $service->getArchitecture();
+          break;
+        }
+        case 'monitored':
+        case 'beta':
+        case 'production':
+        case 'notify':
+        {
+          #booleans are always set
+          return true;
+        }
+        default:{
+          throw new \Exception("Internal error: service property name ($servicePropName) not ".
+          "recognised. Please contact a GOCDB administrator and report this error.");
+        }
+      }
+
+      if (empty($propValue)) {
+        return false;
+      } else {
+        return true;
+      }
     }
 
     /**
