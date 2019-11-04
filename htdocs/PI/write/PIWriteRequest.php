@@ -766,6 +766,35 @@ class PIWriteRequest {
     $this->checkAuthorisation ($siteService, $service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
 
     switch($this->entityProperty) {
+      case 'hostname':
+      case 'description':
+      case 'production':
+      case 'beta':
+      case 'monitored':
+      case 'notify':
+      case 'host_dn':
+      case 'host_ip':
+      case 'host_ip_v6':
+      case 'host_os':
+      case 'host_arch':
+      case 'url':
+      case 'email':{
+        switch ($this->requestMethod) {
+          case 'POST': {
+            $this->updateServicePropPost($service, $this->entityProperty, $this->entityPropertyValue);
+            break;
+          }
+          case 'PUT': {
+            $this->updateServicePropPut($service, $this->entityProperty, $this->entityPropertyValue);
+            break;
+          }
+          default: {
+            $this->exceptionWithResponseCode(405,$this->genericExceptionMessages["entityTypePropertyMethod"]);
+            break;
+          }
+        }
+        break;
+      }
       case 'extensionproperties':{
         $this->updateServiceExtensionProperties($service);
         break;
@@ -774,6 +803,136 @@ class PIWriteRequest {
         $this->exceptionWithResponseCode(501,$this->genericExceptionMessages["entityTypePropertyCombo"]);
       }
     }
+  }
+
+  /**
+   * Update a property of a service following a POST request
+   *
+   * @param  Service $service
+   * @param    $servicePropName Name of property being updated
+   * @param    $servicePropValue Value of property being updated
+   * @throws \Exception
+   */
+  private function updateServicePropPost (\Service $service, $servicePropName, $servicePropValue) {
+    //Construct an array of all the names of boolean properties of services
+    $serviceBoolPropNames = array('production', 'beta', 'monitored', 'notify');
+
+    if(in_array($servicePropName, $serviceBoolPropNames)) {
+      #POST not valid for Endpoint booleans as they are set when the entity created and so are already defined
+      $this->exceptionWithResponseCode(405,$this->genericExceptionMessages["cantPostABool"]);
+
+    } elseif ($this->serviceService->ServicePropSet($service, $servicePropName)) {
+      #POST method must fail if the value is already set
+      $this->exceptionWithResponseCode(409,$this->genericExceptionMessages["propAlreadySet"]);
+
+    } else {
+      $this->updateServiceProp($service,$servicePropName, $servicePropValue);
+    }
+  }
+
+  /**
+   * Update a property of a service following a PUT request
+   *
+   * @param  Service $service
+   * @param    $servicePropName Name of property being updated
+   * @param    $servicePropValue Value of property being updated
+   * @throws \Exception
+   */
+  private function updateServicePropPut (\Service $service, $servicePropName, $servicePropValue) {
+    $this->updateServiceProp($service, $servicePropName, $servicePropValue);
+  }
+
+  /**
+   * Function to update individual properties of services
+   *
+   * @throws \Exception
+   */
+  Private function updateServiceProp (\Service $service, $servicePropName, $servicePropValue) {
+    $this->checkServiceServiceSet();
+
+    $hostname = $service->getHostName();
+    $description = $service->getDescription();
+    $url = $service->getUrl();
+    $dn = $service->getDn();
+    $ip = $service->getIpAddress();
+    $ip6 = $service->getIpV6Address();
+    $os = $service->getOperatingSystem();
+    $email = $service->getEmail();
+    $arch = $service->getArchitecture();
+    $monitored = $service->getMonitored();
+    $beta = $service->getBeta();
+    $production = $service->getProduction();
+    $notify = $service->getNotify();
+
+    switch ($servicePropName) {
+      case 'hostname':{
+        $hostname = $servicePropValue;
+        break;
+      }
+      case 'description':{
+        $description = $servicePropValue;
+        break;
+      }
+      case 'url':{
+        $url = $servicePropValue;
+        break;
+      }
+      case 'host_dn':{
+        $dn = $servicePropValue;
+        break;
+      }
+      case 'host_ip':{
+        $ip = $servicePropValue;
+        break;
+      }
+      case 'host_ip_v6':{
+        $ip6 = $servicePropValue;
+        break;
+      }
+      case 'host_os':{
+        $os = $servicePropValue;
+        break;
+      }
+      case 'email':{
+        $email = $servicePropValue;
+        break;
+      }
+      case 'host_arch':{
+        $arch = $servicePropValue;
+        break;
+      }
+      case 'monitored':{
+        $monitored = $servicePropValue;
+        break;
+      }
+      case 'beta':{
+        $beta = $servicePropValue;
+        break;
+      }
+      case 'production':{
+        $production = $servicePropValue;
+        break;
+      }
+      case 'notify':{
+        $notify = $servicePropValue;
+        break;
+      }
+      default:{
+        $this->exceptionWithResponseCode(500,
+          "Internal error: service property name ($servicePropName) not ".
+          "recognised despite being validated. Please contact a GOCDB administrator and report this error."
+        );
+      }
+    }
+
+    //Validate production/monitored flag combination
+    try {
+      $this->serviceService->validateProductionMonitoredCombination($service->getServiceType()->getName(), $production, $monitored);
+    } catch(\Exception $e){
+      $this->exceptionWithResponseCode(403, $e->getMessage());
+    }
+
+    $this->serviceService->editServiceApi($service, $hostname, $description, $url, $dn, $ip, $ip6, $os, $email, $arch, $monitored, $beta, $production, $notify, $this->userIdentifierType, $this->userIdentifier);
   }
 
   /**
