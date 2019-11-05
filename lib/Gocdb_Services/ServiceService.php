@@ -459,29 +459,28 @@ class ServiceService extends AbstractEntityService {
         return $types;
     }
 
-    /*
-     * Validates the the 'production => monitored' rule for the user inputted 
+    /**
+     * Validates the the 'production => monitored' rule for the user inputted
      * service data.
-
-     * @param array $serviceValues
+     *
+     * @param  string $serviceTypeName name of type of service being checked
+     * @param  string     $production  proposed production value
+     * @param  string     $monitored   proposed monitored value
      * @throws \Exception If the serviceValues production/monitored combination
      * is invalid. The \Exception's message will contain a human readable error
      * message.
-     * @return null
      */
-    private function validateProductionMonitoredCombination($serviceValues) {
+    private function validateProductionMonitoredCombination($serviceTypeName, $production, $monitored) {
         // Service types that are exceptions to the
         // 'production => monitored' rule.
         $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
 
-        $serviceType = $this->getServiceType($serviceValues['serviceType']);
-
         // Check that the service type is not an exception to the
         // 'production => monitored'.
-        if (!in_array ($serviceType, $ruleExceptions)) {
-            if ($serviceValues['PRODUCTION_LEVEL'] == "Y" && $serviceValues['IS_MONITORED'] != "Y") {
+        if (!in_array ($serviceTypeName, $ruleExceptions)) {
+            if ($production && !$monitored) {
                 throw new \Exception(
-                    "For the '".$serviceType."' service type, if the ".
+                    "For the '".$serviceTypeName."' service type, if the ".
                     "Production flag is set to True, the Monitored flag must ".
                     "also be True.");
             }
@@ -537,7 +536,11 @@ class ServiceService extends AbstractEntityService {
         $this->validate ( $newValues ['SE'], 'service' );
         $this->uniqueCheck ( $newValues ['SE'] ['HOSTNAME'], $st, $se->getParentSite () );
         // validate production/monitored combination
-        $this->validateProductionMonitoredCombination($newValues);
+        $this->validateProductionMonitoredCombination(
+          $this->getServiceType($newValues['serviceType']),
+          $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']),
+          $this->ptlTexToBool($newValues['IS_MONITORED'])
+        );
 
         // EDIT SCOPE TAGS:
         // collate selected scopeIds (reserved and non-reserved)
@@ -817,7 +820,11 @@ class ServiceService extends AbstractEntityService {
         $this->uniqueCheck ( $values ['SE'] ['HOSTNAME'], $st, $site );
 
         // validate production/monitored combination
-        $this->validateProductionMonitoredCombination($values);
+        $this->validateProductionMonitoredCombination(
+          $this->getServiceType($values['serviceType']),
+          $this->ptlTexToBool($values['PRODUCTION_LEVEL']),
+          $this->ptlTexToBool($values['IS_MONITORED'])
+        );
 
         // ADD SCOPE TAGS:
         // collate selected reserved and non-reserved scopeIds.
