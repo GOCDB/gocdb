@@ -614,35 +614,21 @@ class ServiceService extends AbstractEntityService {
             $se->setHostName ( $newValues ['SE'] ['HOSTNAME'] );
             $se->setDescription ( $newValues ['SE'] ['DESCRIPTION'] );
 
-            if ($newValues ['PRODUCTION_LEVEL'] == "Y") {
-                $prod = true;
-            } else {
-                $prod = false;
-            }
+            $prod = $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']);
             $se->setProduction ( $prod );
 
-            if ($newValues ['BETA'] == "Y") {
-                $beta = true;
-            } else {
-                $beta = false;
-            }
+            $beta = $this->ptlTexToBool($newValues['BETA']);
             $se->setBeta ( $beta );
 
-            if ($newValues ['IS_MONITORED'] == "Y") {
-                $monitored = true;
-            } else {
-                $monitored = false;
-            }
+            $monitored = $this->ptlTexToBool($newValues['IS_MONITORED']);
             $se->setMonitored ( $monitored );
 
             //Set notify flag for site
             if (!isset($newValues['NOTIFY'])){
                 $notify = false;
             }
-            elseif ($newValues['NOTIFY'] == "Y") {
-                $notify = true;
-            } else {
-                $notify = false;
+            else {
+                $notify = $this->ptlTexToBool($newValues['NOTIFY']);
             }
             $se->setNotify ($notify);
 
@@ -876,36 +862,21 @@ class ServiceService extends AbstractEntityService {
             $se->setServiceType ( $st );
 
             // Set production
-            if ($values ['PRODUCTION_LEVEL'] == "Y") {
-                $se->setProduction ( true );
-            } else {
-                $se->setProduction ( false );
-            }
+            $se->setProduction($this->ptlTexToBool($values['PRODUCTION_LEVEL']));
 
             // Set Beta
-            if ($values ['BETA'] == "Y") {
-                $se->setBeta ( true );
-            } else {
-                $se->setBeta ( false );
-            }
+            $se->setBeta($this->ptlTexToBool($values['BETA']));
 
             // Set monitored
-            if ($values ['IS_MONITORED'] == "Y") {
-                $se->setMonitored ( true );
-            } else {
-                $se->setMonitored ( false );
-            }
+            $se->setMonitored($this->ptlTexToBool($values['IS_MONITORED']));
 
             //Set notify flag for site
             if (!isset($values['NOTIFY'])){
-                $notify = false;
+                $se->setNotify(false);
             }
-            elseif ($values['NOTIFY'] == "Y") {
-                $notify = true;
-            } else {
-                $notify = false;
+            else{
+                $se->setNotify($this->ptlTexToBool($values['NOTIFY']));
             }
-            $se->setNotify ($notify);
 
             // Set the scopes
             // foreach ($allSelectedScopeIds as $scopeId) {
@@ -2013,5 +1984,19 @@ class ServiceService extends AbstractEntityService {
         uksort ( $ScopeNamesAndParentShareInfo, 'strcasecmp' );
 
         return $ScopeNamesAndParentShareInfo;
+    }
+
+    /**
+     * Returns true for "Y" and false for everything else.
+     *
+     * @param  string $text string, usually "Y" or "N"
+     * @return boolean
+     */
+    private function ptlTexToBool($text) {
+      if ($text == "Y") {
+          return true;
+      } else {
+          return false;
+      }
     }
 }
