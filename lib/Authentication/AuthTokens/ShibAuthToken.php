@@ -133,7 +133,7 @@ class ShibAuthToken implements IAuthentication {
             }
 
             $entitlementValuesArray = explode(';', $_SERVER['entitlement']);
-            if( !in_array('urn:mace:egi.eu:aai.egi.eu:gocdb', $entitlementValuesArray) ){
+            if( !in_array('urn:mace:egi.eu:res:gocdb#aai.egi.eu', $entitlementValuesArray) ){
                  $HTML = '<ul><li>Login requires a GOCDB entitlement <a href="https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb" target="_blank">https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb</a></li><li>Please, logout or restart your browser and attempt to login again using an identity provider that provides a GOCDB entitlement</li></ul>';
                  $HTML .= "<div style='text-align: center;'>";
                  $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
