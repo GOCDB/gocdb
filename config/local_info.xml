@@ -1,9 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <config>
   <!--
     Provide default values for all configuration elements.
     See also local override information provided below this local_info element.
   -->
+
   <local_info>
 
     <!-- If read-only is set as true, the portal will prevent changes to the
