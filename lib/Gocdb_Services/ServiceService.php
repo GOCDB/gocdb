@@ -459,29 +459,28 @@ class ServiceService extends AbstractEntityService {
         return $types;
     }
 
-    /*
-     * Validates the the 'production => monitored' rule for the user inputted 
+    /**
+     * Validates the the 'production => monitored' rule for the user inputted
      * service data.
-
-     * @param array $serviceValues
+     *
+     * @param  string $serviceTypeName name of type of service being checked
+     * @param  string     $production  proposed production value
+     * @param  string     $monitored   proposed monitored value
      * @throws \Exception If the serviceValues production/monitored combination
      * is invalid. The \Exception's message will contain a human readable error
      * message.
-     * @return null
      */
-    private function validateProductionMonitoredCombination($serviceValues) {
+    private function validateProductionMonitoredCombination($serviceTypeName, $production, $monitored) {
         // Service types that are exceptions to the
         // 'production => monitored' rule.
         $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
 
-        $serviceType = $this->getServiceType($serviceValues['serviceType']);
-
         // Check that the service type is not an exception to the
         // 'production => monitored'.
-        if (!in_array ($serviceType, $ruleExceptions)) {
-            if ($serviceValues['PRODUCTION_LEVEL'] == "Y" && $serviceValues['IS_MONITORED'] != "Y") {
+        if (!in_array ($serviceTypeName, $ruleExceptions)) {
+            if ($production && !$monitored) {
                 throw new \Exception(
-                    "For the '".$serviceType."' service type, if the ".
+                    "For the '".$serviceTypeName."' service type, if the ".
                     "Production flag is set to True, the Monitored flag must ".
                     "also be True.");
             }
@@ -537,7 +536,11 @@ class ServiceService extends AbstractEntityService {
         $this->validate ( $newValues ['SE'], 'service' );
         $this->uniqueCheck ( $newValues ['SE'] ['HOSTNAME'], $st, $se->getParentSite () );
         // validate production/monitored combination
-        $this->validateProductionMonitoredCombination($newValues);
+        $this->validateProductionMonitoredCombination(
+          $this->getServiceType($newValues['serviceType']),
+          $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']),
+          $this->ptlTexToBool($newValues['IS_MONITORED'])
+        );
 
         // EDIT SCOPE TAGS:
         // collate selected scopeIds (reserved and non-reserved)
@@ -614,35 +617,21 @@ class ServiceService extends AbstractEntityService {
             $se->setHostName ( $newValues ['SE'] ['HOSTNAME'] );
             $se->setDescription ( $newValues ['SE'] ['DESCRIPTION'] );
 
-            if ($newValues ['PRODUCTION_LEVEL'] == "Y") {
-                $prod = true;
-            } else {
-                $prod = false;
-            }
+            $prod = $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']);
             $se->setProduction ( $prod );
 
-            if ($newValues ['BETA'] == "Y") {
-                $beta = true;
-            } else {
-                $beta = false;
-            }
+            $beta = $this->ptlTexToBool($newValues['BETA']);
             $se->setBeta ( $beta );
 
-            if ($newValues ['IS_MONITORED'] == "Y") {
-                $monitored = true;
-            } else {
-                $monitored = false;
-            }
+            $monitored = $this->ptlTexToBool($newValues['IS_MONITORED']);
             $se->setMonitored ( $monitored );
 
             //Set notify flag for site
             if (!isset($newValues['NOTIFY'])){
                 $notify = false;
             }
-            elseif ($newValues['NOTIFY'] == "Y") {
-                $notify = true;
-            } else {
-                $notify = false;
+            else {
+                $notify = $this->ptlTexToBool($newValues['NOTIFY']);
             }
             $se->setNotify ($notify);
 
@@ -831,7 +820,11 @@ class ServiceService extends AbstractEntityService {
         $this->uniqueCheck ( $values ['SE'] ['HOSTNAME'], $st, $site );
 
         // validate production/monitored combination
-        $this->validateProductionMonitoredCombination($values);
+        $this->validateProductionMonitoredCombination(
+          $this->getServiceType($values['serviceType']),
+          $this->ptlTexToBool($values['PRODUCTION_LEVEL']),
+          $this->ptlTexToBool($values['IS_MONITORED'])
+        );
 
         // ADD SCOPE TAGS:
         // collate selected reserved and non-reserved scopeIds.
@@ -876,36 +869,21 @@ class ServiceService extends AbstractEntityService {
             $se->setServiceType ( $st );
 
             // Set production
-            if ($values ['PRODUCTION_LEVEL'] == "Y") {
-                $se->setProduction ( true );
-            } else {
-                $se->setProduction ( false );
-            }
+            $se->setProduction($this->ptlTexToBool($values['PRODUCTION_LEVEL']));
 
             // Set Beta
-            if ($values ['BETA'] == "Y") {
-                $se->setBeta ( true );
-            } else {
-                $se->setBeta ( false );
-            }
+            $se->setBeta($this->ptlTexToBool($values['BETA']));
 
             // Set monitored
-            if ($values ['IS_MONITORED'] == "Y") {
-                $se->setMonitored ( true );
-            } else {
-                $se->setMonitored ( false );
-            }
+            $se->setMonitored($this->ptlTexToBool($values['IS_MONITORED']));
 
             //Set notify flag for site
             if (!isset($values['NOTIFY'])){
-                $notify = false;
+                $se->setNotify(false);
             }
-            elseif ($values['NOTIFY'] == "Y") {
-                $notify = true;
-            } else {
-                $notify = false;
+            else{
+                $se->setNotify($this->ptlTexToBool($values['NOTIFY']));
             }
-            $se->setNotify ($notify);
 
             // Set the scopes
             // foreach ($allSelectedScopeIds as $scopeId) {
@@ -2013,5 +1991,19 @@ class ServiceService extends AbstractEntityService {
         uksort ( $ScopeNamesAndParentShareInfo, 'strcasecmp' );
 
         return $ScopeNamesAndParentShareInfo;
+    }
+
+    /**
+     * Returns true for "Y" and false for everything else.
+     *
+     * @param  string $text string, usually "Y" or "N"
+     * @return boolean
+     */
+    private function ptlTexToBool($text) {
+      if ($text == "Y") {
+          return true;
+      } else {
+          return false;
+      }
     }
 }
