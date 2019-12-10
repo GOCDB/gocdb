@@ -1429,7 +1429,7 @@ class Site extends AbstractEntityService{
     }
 
     /**
-    * Returns true if the identifier/type combination is a valid API
+    * Throws exception if the identifier/type combination is not a valid API
     * authentication entity for the provided site.
     * @param Site site
     * @param string $identifier
