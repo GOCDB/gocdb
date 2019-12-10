@@ -126,7 +126,7 @@ class PIWriteRequest {
         } catch (\Exception $e) {
             #For 500 errors, make it explicit it's an internal error
             if ($this->httpResponseCode==500) {
-                $message = "Internal error. Please contact the GOCDB asministrators. Message: " . $e->getMessage();
+                $message = "Internal error. Please contact the GOCDB administrators. Message: " . $e->getMessage();
             } else {
                 $message = $e->getMessage();
             }
