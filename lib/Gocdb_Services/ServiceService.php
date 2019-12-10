@@ -1919,7 +1919,7 @@ class ServiceService extends AbstractEntityService {
         $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
     }
 
-    public function editEndpointApi (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored, $authIdentifierType, $authIdentifier) {
+    public function editEndpointApi (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored, $authIdentifier, $authIdentifierType) {
       //Check the portal is not in read only mode, throws exception if it is
       $this->checkGOCDBIsNotReadOnly();
 
@@ -1973,13 +1973,13 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
-     * User deletes the given endpoint.
+     * Function to delete endpoint using web portal
+     *
      * @param \EndpointLocation $endpoint
      * @param \User $user
      * @throws Exception
      */
     public function deleteEndpoint(\EndpointLocation $endpoint, \User $user) {
-        require_once __DIR__ . '/../DAOs/ServiceDAO.php';
 
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
@@ -1989,19 +1989,49 @@ class ServiceService extends AbstractEntityService {
         // check user has permission to edit endpoint's service
         $this->validateAddEditDeleteActions ( $user, $service );
 
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            $serviceDAO = new \ServiceDAO ();
-            $serviceDAO->setEntityManager ( $this->em );
-            $serviceDAO->removeEndpoint ( $endpoint );
+        $this->deleteEndpointLogic($endpoint);
+    }
 
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
-        }
+    /**
+     * Function called from API to delete an endpoint
+     *
+     * @param  EndpointLocation $endpoint endpoint to be deleted
+     * @param  Service          $service  service of endpoint being deleted
+     * @thows  Exception
+     */
+    public function deleteEndpointAPI (\EndpointLocation $endpoint, $authIdentifier, $authIdentifierType) {
+      //Check the portal is not in read only mode, throws exception if it is
+      $this->checkGOCDBIsNotReadOnly();
+
+      //Check authorisation
+      \Factory::getSiteService()->checkAuthorisedAPIIDentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
+
+      //Make the change
+      $this->deleteEndpointLogic($endpoint);
+    }
+
+    /**
+     * Logic to delete an endpoint, abstracted array from authorisation and validation
+     *
+     * @param  EndpointLocation $endpoint endpoint to delete
+     * @throws Exception
+     */
+    private function deleteEndpointLogic (\EndpointLocation $endpoint) {
+      require_once __DIR__ . '/../DAOs/ServiceDAO.php';
+
+      $this->em->getConnection ()->beginTransaction ();
+      try {
+          $serviceDAO = new \ServiceDAO ();
+          $serviceDAO->setEntityManager ( $this->em );
+          $serviceDAO->removeEndpoint ( $endpoint );
+
+          $this->em->flush ();
+          $this->em->getConnection ()->commit ();
+      } catch ( \Exception $e ) {
+          $this->em->getConnection ()->rollback ();
+          $this->em->close ();
+          throw $e;
+      }
     }
 
     /**

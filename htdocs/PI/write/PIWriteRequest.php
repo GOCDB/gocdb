@@ -278,19 +278,20 @@ class PIWriteRequest {
         }
 
         #Now we itterate through all the possible cases.
-        #The first is that a entity key has been provided, currently only extension properties support this
+        #The first is that a entity key has been provided as well as a value, currently only extension properties support this
         #The second is that there is no key, and a single value has been provided
         #The third is that a series of key/value pairs have been provided
-        #The fourth is a delete where no array or value has been specified, this is only currently supported for extension properties
+        #The fourth is a delete where no array or value has been specified, but a key has. This is only currently supported for deletion of extension properties and endpoints
         #The final statement deals with the case where a key has been specified as well as multiple values or where both a single value and an array are set. Neither should happen.
         if (!is_null($this->entityPropertyKey) && !is_null($this->entityPropertyValue) && is_null($this->entityPropertyKVArray)) {
-            #only currently supported for extension properties
+            #only currently supported for extension properties and deletion of endpoints
             if ($this->entityProperty == 'extensionproperties') {
                 $this->validateWithService($objectType,'name',$this->entityPropertyKey,$validateServ);
                 $this->validateWithService($objectType,'value',$this->entityPropertyValue,$validateServ);
             } else {
                 $this->exceptionWithResponseCode(400,
-                  "The API currently only supports specifying a key in the url for extension properties. For help see: $this->docsURL"
+                  "The API currently only supports specifying a key (5th URL element) in the url for".
+                  "extension properties or deletion of endpoints. For help see: $this->docsURL"
                 );
             }
         } elseif (is_null($this->entityPropertyKey) && !is_null($this->entityPropertyValue) && is_null($this->entityPropertyKVArray)) {
@@ -314,18 +315,34 @@ class PIWriteRequest {
         } elseif (is_null($this->entityPropertyValue) && is_null($this->entityPropertyKVArray)) {
             #Only delete methods support not providing values of any kind
             if ($this->requestMethod == 'DELETE') {
-                #only currently supported for extension properties
-                if ($this->entityProperty != 'extensionproperties') {
-                    $this->exceptionWithResponseCode(400,
-                      "The API currently only supports deleting without specifying values for extension properties. For help see: $this->docsURL"
-                    );
+              if ($this->entityType == 'service' && $this->entityProperty == 'endpoint') {
+                #For deletion of endpoints a key must be specified
+                if (is_null($this->entityPropertyKey)) {
+                  $this->exceptionWithResponseCode(400,"The ID of the endpoint must be specified. See: $this->docsURL");
                 }
+
+                # In this case the key should be the ID of the endpoint being deleted (so should be an integer)
+                if (!is_int($this->entityPropertyKey) && !ctype_digit($this->entityPropertyKey)) { //this checks strings which contain all digits and integers
+                  $this->exceptionWithResponseCode(400,"The ID of the endpoint must be an integer. See: $this->docsURL");
+                }
+              } elseif ($this->entityProperty == 'extensionproperties') {
+                  //nothing to validate
+              } else {
+                $this->exceptionWithResponseCode(400,
+                  "The API currently only supports deleting without specifying values for extension properties. For help see: $this->docsURL"
+                );
+              }
             } else {
                 $this->exceptionWithResponseCode(400,
                   "For methods other than 'DELETE' a value or set of values must be provided. For help see: $this->docsURL"
                 );
             }
-
+        } elseif (!is_null($this->entityPropertyKey) && is_null($this->entityPropertyValue) && !is_null($this->entityPropertyKVArray) && $this->requestMethod == 'DELETE') {
+          if ($this->requestMethod == 'DELETE'){
+            $this->exceptionWithResponseCode(400,
+              "When using the DELETE method, and specifying both the ID of the object being deleted and the ID of the parent, no request body should be provided. For help see: $this->docsURL"
+            );
+          }
         } else {
             $this->exceptionWithResponseCode(500,
               "The validation process has failed due to an error in the internal logic. Please contact the administrator."
@@ -799,6 +816,17 @@ class PIWriteRequest {
         $this->updateServiceExtensionProperties($service);
         break;
       }
+      case 'endpoint':{
+        if ($this->requestMethod != 'DELETE') {
+          $this->exceptionWithResponseCode(400,
+            "Only deletion of endpoints is supported when a service is specified. ".
+            "For PUT or POST use endpoint methods. See: $this->docsURL"
+          );
+        } else {
+          $this->deleteServiceEndPoint($service, $this->entityPropertyKey, $siteService);
+        }
+        break;
+      }
       default: {
         $this->exceptionWithResponseCode(501,$this->genericExceptionMessages["entityTypePropertyCombo"]);
       }
@@ -1039,6 +1067,39 @@ class PIWriteRequest {
     }
 
     $this->serviceService->deleteServicePropertiesAPI($service, $extensionPropArray, $this->userIdentifierType, $this->userIdentifier);
+  }
+
+  /**
+   * Deletes the endpoint with the specified ID, as long as it belongs to the
+   * specified service and the user is authorised to do so
+   *
+   * @param  Service $service    Service to which the endpoint should belong
+   * @param  integer $endpointID ID of endpoint to be deleted
+   *
+   * @throws \Exception
+   */
+  private function deleteServiceEndPoint(\Service $service, $endpointID, Site $siteService) {
+    #This case requires the serviceService
+    $this->checkServiceServiceSet();
+
+    #Identify the ServiceEndPoint
+    try {
+        $endpoint = $this->serviceService->getEndpoint($endpointID);
+    } catch (\Exception $e) {
+      $this->exceptionWithResponseCode(404, "An endpoint with the specified ID could not be found");
+    }
+
+    #Check endpoint belongs to service specified
+    if ($endpoint->getService()->getId() != $service->getId()) {
+      $this->exceptionWithResponseCode(400, "The endpoint specified does not belong to the service specified");
+    }
+
+    #Authorisation
+    $this->checkAuthorisation ($siteService, $service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
+
+    #Delete endpoint
+    $this->serviceService->deleteEndpointApi($endpoint, $this->userIdentifier, $this->userIdentifierType);
+
   }
 
   /**
