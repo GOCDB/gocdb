@@ -571,7 +571,7 @@ class PIWriteRequest {
 
     private function checkAuthorisation (Site $siteService, \Site $site, $identifier, $indentifierType) {
       try {
-        $siteService->checkAuthroisedAPIIDentifier($site, $identifier, $indentifierType);
+        $siteService->checkAuthorisedAPIIdentifier($site, $identifier, $indentifierType);
       } catch (\Exception $e) {
         #yes 403 - 401 is not appropriate for X509 authentication
         $this->httpResponseCode = 403;

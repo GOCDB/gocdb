@@ -1034,7 +1034,7 @@ class ServiceService extends AbstractEntityService {
         $this->checkGOCDBIsNotReadOnly();
 
         // Validate the user has permission to add properties
-        \Factory::getSiteService()->checkAuthroisedAPIIDentifier($service->getParentSite(), $authenticationIdentifier, $authenticationType);
+        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($service->getParentSite(), $authenticationIdentifier, $authenticationType);
 
         //Convert the property array into the format used by the webportal logic
         #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
@@ -1178,7 +1178,7 @@ class ServiceService extends AbstractEntityService {
         $this->checkGOCDBIsNotReadOnly();
 
         // Validate the user has permission to add properties
-        \Factory::getSiteService()->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $authenticationIdentifier, $authenticationType);
+        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authenticationIdentifier, $authenticationType);
 
         //Convert the property array into the format used by the webportal logic
         #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
@@ -1326,7 +1326,7 @@ class ServiceService extends AbstractEntityService {
                 throw new \Exception("Internal error: property parent service and service do not match.");
             }
         }
-        \Factory::getSiteService()->checkAuthroisedAPIIDentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
 
         //Make the change
         $this->em->getConnection()->beginTransaction();
@@ -1410,7 +1410,7 @@ class ServiceService extends AbstractEntityService {
                 throw new \Exception("Internal error: property endpoint and endpoint do not match");
             }
         }
-        \Factory::getSiteService()->checkAuthroisedAPIIDentifier($parentService->getParentSite(), $authIdentifier, $authIdentifierType);
+        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($parentService->getParentSite(), $authIdentifier, $authIdentifierType);
 
         //Make the change
         $this->em->getConnection()->beginTransaction();
