@@ -198,43 +198,58 @@ class PIWriteRequest {
     $requestArray = json_decode($requestContents,true,2);
 
     #json_decode returns null for invalid JSON and $requestContents will be empty if there was no request body
-    if(!is_null($requestArray)) {
-      /*The general case expects a single value to be given. In the specific case
-       * of updating extension properties where no specific property is specified
-       * in the url (and so now in $this->entityPropertyKey) we expect multiple
-       * key/value pairs. We use $this->entityPropertyValue and $this->entityPropertyKVArray
-       * frespectivly for these cases.
-       */
-      if($this->entityProperty!='extensionproperties'||!is_null($this->entityPropertyKey)) {
-        if (isset($requestArray['value']) && count($requestArray)==1) {
-          $this->entityPropertyValue=$requestArray['value'];
-        } elseif(!isset($requestArray['value'])) {
+    if(is_null($requestArray) && !empty($requestContents)) {
+      $this->exceptionWithResponseCode(400,
+        "The JSON message is not correctly formatted. " . $genericError
+      );
+    }
+
+    #If the request contents is empty then there is nothing for us to get
+    if(empty($requestContents)) {
+      return;
+    }
+
+    /* The default case is that a single value (or nothing at all) is specified.
+     * But, we first deal with cases where we expect multiple key/value pairs.
+     * Single values are stored in $this->entityPropertyValue whilst miultiple
+     * values are stored in $this->entityPropertyKVArray.
+     */
+    switch ($this->entityProperty) {
+      case 'extensionproperties':
+
+        //If a property key has been specified, then we don't expect a K/V list
+        //and want to make use of the default case
+        if(is_null($this->entityPropertyKey)) {
+          $this->entityPropertyKVArray=$requestArray;
+          break;
+        }
+        
+      default:
+
+        //If there is not a value in the array at this point throw an exception
+        if (!isset($requestArray['value'])) {
           $this->exceptionWithResponseCode(400,
             "A value for \"$this->entityProperty\" should be provided. " .
+            "This should be provided in a JSON string {\"value\":\"<value for " .
+            "\"$this->entityProperty\">\"}, with no other pairs present." . $genericError
+          );
+        }
+
+        //If there are additional entiries in our array to the value, throw exception
+        if(count($requestArray)==1) {
+          $this->exceptionWithResponseCode(400,
+            "Only one value for \"$this->entityProperty\" should be provided. " .
             "This should be provided in a JSON string {\"value\":\"<value for " .
             "\"$this->entityProperty\">\"}, with no other pairs present." .
             " If you believe \"$this->entityProperty\" should take multiple key/value ".
             "pairs, check your spelling of \"$this->entityProperty\"" . $genericError
           );
-        } else {
-          $this->exceptionWithResponseCode(400,
-            "Request message contained more than one object. " . $genericError
-          );
         }
-      } else {
-        if(!empty($requestArray)) {
-          $this->entityPropertyKVArray=$requestArray;
-        } else {
-          $this->exceptionWithResponseCode(400,
-            "Please specify the properties you wish to change. " . $genericError
-          );
-        }
-      }
-    } elseif (!empty($requestContents)) {
-      $this->exceptionWithResponseCode(400,
-        "The JSON message is not correctly formatted. " . $genericError
-      );
-    }
+
+        $this->entityPropertyValue=$requestArray['value'];
+
+        break;
+     }
   }
 
     /**
