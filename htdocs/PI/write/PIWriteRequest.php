@@ -218,6 +218,10 @@ class PIWriteRequest {
      * values are stored in $this->entityPropertyKVArray.
      */
     switch ($this->entityProperty) {
+      case 'endpoint':
+        $this->entityPropertyKVArray=$requestArray;
+        break;
+
       case 'extensionproperties':
 
         //If a property key has been specified, then we don't expect a K/V list
@@ -297,8 +301,9 @@ class PIWriteRequest {
         } elseif (is_null($this->entityPropertyKey) && !is_null($this->entityPropertyValue) && is_null($this->entityPropertyKVArray)) {
             $this->validateWithService($objectType,$this->entityProperty,$this->entityPropertyValue,$validateServ);
         } elseif (is_null($this->entityPropertyKey) && is_null($this->entityPropertyValue) && !is_null($this->entityPropertyKVArray)) {
-            #only currently supported for extension properties
-            if ($this->entityProperty == 'extensionproperties') {
+            #only currently supported for extension properties and whole endpoints
+            switch ($this->entityProperty) {
+              case 'extensionproperties':
                 foreach ($this->entityPropertyKVArray as $key => $value) {
                     $this->validateWithService($objectType,'name',$key,$validateServ);
                     #Values can be null in the case of DELETEs
@@ -307,10 +312,25 @@ class PIWriteRequest {
                     }
                 }
                 unset($value);
-            } else {
+                break;
+
+              case 'endpoint':
+                #This is only valid where the object type is service
+                  if($objectType!='service'){
+                    $this->exceptionWithResponseCode(400,
+                      "Endpoints should only be specified for Services, not $objectType. For help see: $this->docsURL"
+                    );
+                  }
+                foreach ($this->entityPropertyKVArray as $endpointProp => $endpointPropValue) {
+                  $this->validateWithService('endpoint',$endpointProp,$endpointPropValue,$validateServ);
+                }
+
+                break;
+              default:
                 $this->exceptionWithResponseCode(400,
                   "The API currently only supports specifying an array of values for extension properties. For help see: $this->docsURL"
                 );
+                break;
             }
         } elseif (is_null($this->entityPropertyValue) && is_null($this->entityPropertyKVArray)) {
             #Only delete methods support not providing values of any kind
@@ -817,13 +837,19 @@ class PIWriteRequest {
         break;
       }
       case 'endpoint':{
-        if ($this->requestMethod != 'DELETE') {
-          $this->exceptionWithResponseCode(400,
-            "Only deletion of endpoints is supported when a service is specified. ".
-            "For PUT or POST use endpoint methods. See: $this->docsURL"
-          );
-        } else {
-          $this->deleteServiceEndPoint($service, $this->entityPropertyKey, $siteService);
+        switch ($this->requestMethod) {
+          case 'POST':
+            $this->postWholeEndpoint($service,array_change_key_case($this->entityPropertyKVArray),$siteService);
+            break;
+          case 'PUT':
+            $this->putWholeEndpoint($service,array_change_key_case($this->entityPropertyKVArray),$siteService);
+            break;
+          case 'DELETE':
+            $this->deleteServiceEndPoint($service, $this->entityPropertyKey, $siteService);
+            break;
+          default:
+            $this->exceptionWithResponseCode(405,$this->genericExceptionMessages["entityTypePropertyMethod"]);
+            break;
         }
         break;
       }
@@ -1070,6 +1096,168 @@ class PIWriteRequest {
   }
 
   /**
+   * Function to process a POST request for a whole endpoint
+   *
+   * @param  Service $service        the service to which the new endpoint is to belong
+   * @param  array   $endpointArray  array containing the details of the endpoint
+   * @param  Site    $siteService    an instance of the site service
+   * @throws \Exception
+   */
+  private function postWholeEndpoint(\Service $service, $endpointArray, Site $siteService) {
+    #This case requires the serviceService
+    $this->checkServiceServiceSet();
+
+    #Authorisation
+    $this->checkAuthorisation ($siteService, $service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
+
+    #check a name has been provided
+    if(!isset($endpointArray['name'])) {
+      $this->exceptionWithResponseCode(400,
+        "A name must be specified when adding new endpoints."
+      );
+    }
+
+    #Check if endpoint already exists (exception if it does)
+    if($this->serviceService->endpointWithNameExists($service, $endpointArray['name'])) {
+      $this->exceptionWithResponseCode(409,
+        "A service with the name " . $endpointArray['name'] . " already exists for the " . $service->getHostName() ." service."
+      );
+    }
+
+    #Add new endpoint
+    $this->addWholeEndpoint($service, $endpointArray);
+  }
+
+  /**
+   * Function to process a PUT request for a whole endpoint
+   *
+   * @param  Service $service        the service to which the new endpoint is to belong,
+   *                                 or the service to be updated already belongs
+   * @param  array   $endpointArray  array containing the details of the endpont
+   * @param  Site    $siteService    an instance of the site service
+   * @throws \Exception
+   */
+  private function putWholeEndpoint(\Service $service, $endpointArray, Site $siteService) {
+    #This case requires the serviceService
+    $this->checkServiceServiceSet();
+
+    #Authorisation
+    $this->checkAuthorisation ($siteService, $service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
+
+    #Check a name has been provided
+    if(!isset($endpointArray['name'])) {
+      $this->exceptionWithResponseCode(400,
+        "A name must be specified when adding new endpoints."
+      );
+    }
+
+    #If an endpoint with that name exists, we will edit it. If it doesn't, we add it
+    if ($this->serviceService->endpointWithNameExists($service, $endpointArray['name'])) {
+      $endpoint = $this->serviceService->getEndpointByName($service, $endpointArray['name']);
+      $this->updateWholeEndpoint($endpoint, $endpointArray);
+    } else {
+      $this->addWholeEndpoint($service, $endpointArray);
+    }
+  }
+
+  /**
+   * Function to add a new endpoint, calls function in service service
+   *
+   * A check that a name is in the array of values is carried out before the
+   * function is called and the function is only called if the name is unique for the service
+   *
+   * @param \Service $service       The service to which the endpoint is to belong
+   * @param array    $endpointArray Array containing values for the new endpoint
+   */
+  private function addWholeEndpoint(\Service $service, $endpointArray) {
+    $this->checkServiceServiceSet();
+
+    $name = $endpointArray['name'];
+
+    if (isset($endpointArray['url'])) {
+      $url = $endpointArray['url'];
+    } else {
+      #When adding a new endpoint a URL must be specified
+      $this->exceptionWithResponseCode(400,
+        "A URL must be specified when adding new endpoints."
+      );
+    }
+
+    $interfaceName= $service->getServiceType()->getName();
+    if (isset($endpointArray['interfacename'])) {
+      $interfaceName = $endpointArray['interfacename'];
+    }
+
+    $description=null;
+    if (isset($endpointArray['description'])) {
+      $description = $endpointArray['description'];
+    }
+
+    $email = null;
+    if (isset($endpointArray['email'])) {
+      $email = $endpointArray['email'];
+    }
+
+    $monitored = $service->getMonitored();
+    if (isset($endpointArray['monitored'])) {
+      $monitored = $endpointArray['monitored'];
+    }
+
+    $this->serviceService->addEndpointApi($service, $name, $url, $interfaceName, $description, $email, $monitored, $this->userIdentifier, $this->userIdentifierType);
+  }
+
+  /**
+   * Updates an endpoint, calls to the service service.
+   *
+   * @param  \EndpointLocation $endpoint       The endpoint to be updated
+   * @param  array             $endpointArray  Array containing details to be updated
+   * @throws \Exception
+   */
+  private function updateWholeEndpoint(\EndpointLocation $endpoint, $endpointArray) {
+    $this->checkServiceServiceSet();
+
+    $name = $endpoint->getName();
+    $url = $endpoint->getUrl();
+    $interfaceName = $endpoint -> getInterfaceName();
+    $description = $endpoint-> getDescription();
+    $email = $endpoint -> getEMail();
+    $monitored = $endpoint->getMonitored();
+
+    if (isset($endpointArray['name'])) {
+      // check endpoint name is unique under the service
+      foreach ( $endpoint->getService()->getEndpointLocations () as $endpointL ) {
+        // exclude itself
+        if ($endpoint != $endpointL && $endpointL->getName () == $name) {
+          $this->exceptionWithResponseCode(409,"Please provide a unique name for this endpoint.");
+        }
+      }
+      $name = $endpointArray['name'];
+    }
+
+    if (isset($endpointArray['url'])) {
+      $url = $endpointArray['url'];
+    }
+
+    if (isset($endpointArray['interfacename'])) {
+      $interfaceName = $endpointArray['interfacename'];
+    }
+
+    if (isset($endpointArray['description'])) {
+      $description = $endpointArray['description'];
+    }
+
+    if (isset($endpointArray['email'])) {
+      $email = $endpointArray['email'];
+    }
+
+    if (isset($endpointArray['monitored'])) {
+      $monitored = $endpointArray['monitored'];
+    }
+
+    $this->serviceService->editEndpointApi($endpoint, $name, $url, $interfaceName, $description, $email, $monitored, $this->userIdentifier, $this->userIdentifierType);
+  }
+
+  /**
    * Deletes the endpoint with the specified ID, as long as it belongs to the
    * specified service and the user is authorised to do so
    *
@@ -1164,7 +1352,7 @@ class PIWriteRequest {
    * @param    $endpointPropValue Value of property being updated
    * @throws \Exception
    */
-  private function updateEndpointPropPost (\EndpointLocation $endpoint, $endpointPropName, $endpointPropName) {
+  private function updateEndpointPropPost (\EndpointLocation $endpoint, $endpointPropName, $endpointPropValue) {
     if($endpointPropName == 'monitored') {
       #POST not valid for Endpoint booleans as they are set when the entity created and so are already defined
       $this->exceptionWithResponseCode(405,$this->genericExceptionMessages["cantPostABool"]);
@@ -1174,7 +1362,7 @@ class PIWriteRequest {
       $this->exceptionWithResponseCode(409,$this->genericExceptionMessages["propAlreadySet"]);
 
     } else {
-      $this->updateEndpointProp($endpoint, $endpointPropName, $endpointPropName);
+      $this->updateEndpointProp($endpoint, $endpointPropName, $endpointPropValue);
     }
   }
 
@@ -1198,58 +1386,15 @@ class PIWriteRequest {
    * @throws \Exception
    */
   Private function updateEndpointProp (\EndpointLocation $endpoint, $endpointPropName, $endpointPropValue) {
-    $this->checkServiceServiceSet();
 
-    $name = $endpoint->getName();
-    $url = $endpoint->getUrl();
-    $interfaceName = $endpoint -> getInterfaceName();
-    $description = $endpoint-> getDescription();
-    $email = $endpoint -> getEMail();
-    $monitored = $endpoint->getMonitored();
-
-    switch($endpointPropName) {
-      case 'name':{
-        $name = $endpointPropValue;
-        break;
-      }
-      case 'url':{
-        $url = $endpointPropValue;
-        break;
-      }
-      case 'interfacename':{
-        $interfaceName = $endpointPropValue;
-        break;
-      }
-      case 'description':{
-        $description = $endpointPropValue;
-        break;
-      }
-      case 'email':{
-        $email = $endpointPropValue;
-        break;
-      }
-      case 'monitored':{
-        $monitored = $endpointPropValue;
-        break;
-      }
-      default:{
-        $this->exceptionWithResponseCode(500,
-          "Internal error: endpoint property name ($endpointPropName) not ".
-          "recognised despite being validated. Please contact a GOCDB administrator and report this error."
-        );
-      }
+    if (!in_array($endpointPropName,array('name','url','interfacename','description','email','monitored'))){
+      $this->exceptionWithResponseCode(500,
+        "Internal error: endpoint property name ($endpointPropName) not ".
+        "recognised despite being validated. Please contact a GOCDB administrator and report this error."
+      );
     }
 
-    // check endpoint's name is unique under the service
-    foreach ( $endpoint->getService()->getEndpointLocations () as $endpointL ) {
-      // exclude itself
-      if ($endpoint != $endpointL && $endpointL->getName () == $name) {
-        $this->exceptionWithResponseCode(409,"Please provide a unique name for this endpoint.");
-      }
-    }
-
-    $this->serviceService->editEndpointApi($endpoint, $name, $url, $interfaceName, $description, $email, $monitored, $this->userIdentifierType, $this->userIdentifier);
-
+    $this->updateWholeEndpoint($endpoint, array($endpointPropName=>$endpointPropValue));
   }
 
   /**

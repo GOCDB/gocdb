@@ -1850,34 +1850,75 @@ class ServiceService extends AbstractEntityService {
             $monitored = false;
         }
 
-        if (empty ( $name )) {
-            throw new \Exception ( "An endpoint must have a name." );
-        }
-        // check endpoint's name is unique under the service
-        if($this->endpointWithNameExists($service, $name)){
-          throw new \Exception ( "Please provide a unique name for this endpoint." );
-        }
-
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            $endpoint = new \EndpointLocation ();
-            $endpoint->setName ( $name );
-            $endpoint->setUrl ( $url );
-            $endpoint->setInterfaceName ( $interfaceName );
-            $endpoint->setDescription ( $description );
-            $endpoint->setEmail($email);
-            $endpoint->setMonitored($monitored);
-            $service->addEndpointLocationDoJoin ( $endpoint );
-            $this->em->persist ( $endpoint );
-
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
-        }
+        $endpoint = $this->addEndpointLogic($service, $name, $url, $interfaceName, $description, $email, $monitored);
         return $endpoint;
+    }
+
+    /**
+     * Add an endpoint with the values from the API to the given service
+     *
+     * @param \Service $service           service to which the new endpoint will be added
+     * @param  string            $name               name of endpoint
+     * @param  string            $url                url of endpoint
+     * @param  string            $interfaceName      interface name of endpoint
+     * @param  string            $description        description of endpoint
+     * @param  string            $email              email of endpoint
+     * @param  boolean           $monitored          whether endpoint is monitored
+     * @param  string            $authIdentifier     Authentication string from API
+     * @param  string            $authIdentifierType Type of Authentication string
+     */
+    public function addEndpointApi(\Service $service, $name, $url, $interfaceName, $description, $email, $monitored, $authIdentifier, $authIdentifierType) {
+      //Check the portal is not in read only mode, throws exception if it is
+      $this->checkGOCDBIsNotReadOnly();
+
+      \Factory::getSiteService()->checkAuthorisedAPIIDentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+
+      $this->addEndpointLogic($service, $name, $url, $interfaceName, $description, $email, $monitored);
+    }
+
+    /**
+     * Function containing the logic to add an endpoint to a sevice, but with
+     * none of the authorisation or validation
+     *
+     * @param \Service $service           service to which the new endpoint will be added
+     * @param  string            $name               name of endpoint
+     * @param  string            $url                url of endpoint
+     * @param  string            $interfaceName      interface name of endpoint
+     * @param  string            $description        description of endpoint
+     * @param  string            $email              email of endpoint
+     * @param  boolean           $monitored          whether endpoint is monitored
+     * @throws \Exception
+     */
+    private function addEndpointLogic (\Service $service, $name, $url, $interfaceName, $description, $email, $monitored){
+
+      if (empty ( $name )) {
+          throw new \Exception ( "An endpoint must have a name." );
+      }
+      // check endpoint's name is unique under the service
+      if($this->endpointWithNameExists($service, $name)){
+        throw new \Exception ( "Please provide a unique name for this Service Endpoint." );
+      }
+
+      $this->em->getConnection ()->beginTransaction ();
+      try {
+          $endpoint = new \EndpointLocation ();
+          $endpoint->setName($name);
+          $endpoint->setUrl($url);
+          $endpoint->setInterfaceName($interfaceName);
+          $endpoint->setDescription($description);
+          $endpoint->setEmail($email);
+          $endpoint->setMonitored($monitored);
+          $service->addEndpointLocationDoJoin($endpoint);
+          $this->em->persist($endpoint);
+
+          $this->em->flush();
+          $this->em->getConnection()->commit();
+      } catch(\Exception $e) {
+          $this->em->getConnection()->rollback();
+          $this->em->close();
+          throw $e;
+      }
+      return $endpoint;
     }
 
     /**
@@ -1917,19 +1958,41 @@ class ServiceService extends AbstractEntityService {
         $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
     }
 
+    /**
+     * Edit the given endpoint using the given values provided from the API
+     *
+     * @param  \EndpointLocation $endpoint           endpoint to be updated
+     * @param  string            $name               name of endpoint
+     * @param  string            $url                url of endpoint
+     * @param  string            $interfaceName      interface name of endpoint
+     * @param  string            $description        description of endpoint
+     * @param  string            $email              email of endpoint
+     * @param  boolean           $monitored          whether endpoint is monitored
+     * @param  string            $authIdentifier     Authentication string from API
+     * @param  string            $authIdentifierType Type of Authentication string
+     */
     public function editEndpointApi (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored, $authIdentifier, $authIdentifierType) {
       //Check the portal is not in read only mode, throws exception if it is
       $this->checkGOCDBIsNotReadOnly();
 
-      \Factory::getSiteService()->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
+      \Factory::getSiteService()->checkAuthorisedAPIIDentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
 
       $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
 
     }
 
     /**
-     *Function containing the logic to edit an endpoint with none of the authorisation or validation
-    */
+     * Function containing the logic to edit an endpoint with none of the authorisation or validation
+     *
+     * @param  EndpointLocation $endpoint      [description]
+     * @param  string            $name               name of endpoint
+     * @param  string            $url                url of endpoint
+     * @param  string            $interfaceName      interface name of endpoint
+     * @param  string            $description        description of endpoint
+     * @param  string            $email              email of endpoint
+     * @param  boolean           $monitored          whether endpoint is monitored
+     * @throws \Exception
+     */
     private function editEndpointLogic (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored){
       $service = $endpoint->getService ();
 
@@ -2075,7 +2138,7 @@ class ServiceService extends AbstractEntityService {
     /**
      * Returns true if an endpoint with a given name exists for a given service
      *
-     * TODO: This could be made more effecient using a DQL select statement
+     * TODO: This could be made more efficient using a DQL select statement
      * @param  Service $service service being checked
      * @param  string  $name    endpoint name being checked
      * @return boolean
@@ -2087,6 +2150,27 @@ class ServiceService extends AbstractEntityService {
         }
       }
       return false;
+    }
+
+    /**
+     * Function to return an endpoint for a given service with a given name
+     *
+     * TODO: This could be made more efficient using a DQL select statement
+     * @param  Service $service service endpoint being sought belongs to
+     * @param  string  $name    name of endpoint sought
+     * @return \Endpoint           endpoint
+     * @throws \Exception
+     */
+    public function getEndpointByName (\Service $service, $name) {
+      foreach ($service->getEndpointLocations() as $endpoint) {
+        if ($name == $endpoint->getName()){
+          return $endpoint;
+        }
+      }
+
+      //If the endpoint wasn't found, throw exceptions
+      throw new \Exception("Endpoint not found");
+
     }
 
     private function checkNumberOfScopes($scopeIds) {
