@@ -179,64 +179,63 @@ class PIWriteRequest {
         $this->processRequestMethod($method);
     }
 
-    /**
-     * Process the contents of the request provided by the client.
-     *
-     * Process the contents of the JSON provided by the client (and checks that
-     * the client has provided some if it should have). Sets the member vaariables
-     * $this->entityPropertyValue or $this->entityPropertyKVArray. Relies on the
-     * member variables $this->entityProperty, $this->entityPropertyKey.
-     *
-     * @param  string $requestContents json string provided by client
-     * @throws \Exception
-     */
-    private function getRequestContent($requestContents) {
-        $genericError = "For more information on correctly formatting your request, see $this->docsURL";
+  /**
+   * Process the contents of the request provided by the client.
+   *
+   * Process the contents of the JSON provided by the client (and checks that
+   * the client has provided some if it should have). Sets the member vaariables
+   * $this->entityPropertyValue or $this->entityPropertyKVArray. Relies on the
+   * member variables $this->entityProperty, $this->entityPropertyKey.
+   *
+   * @param  string $requestContents json string provided by client
+   * @throws \Exception
+   */
+  private function getRequestContent($requestContents) {
+    $genericError = "For more information on correctly formatting your request, see $this->docsURL";
 
-        #Convert the request to JSON - note depth of 2, as current, and expected,
-        #use cases don't contain any nested properties
-        $requestArray = json_decode($requestContents,true,2);
+    #Convert the request to JSON - note depth of 2, as current, and expected,
+    #use cases don't contain any nested properties
+    $requestArray = json_decode($requestContents,true,2);
 
-        #json_decode returns null for invalid JSON and $requestContents will be empty if there was no request body
-        if(!is_null($requestArray)) {
-            /*The general case expects a single value to be given. In the specific case
-            * of updating extension properties where no specific property is specified
-            * in the url (and so now in $this->entityPropertyKey) we expect multiple
-            * key/value pairs. We use $this->entityPropertyValue and $this->entityPropertyKVArray
-            * frespectivly for these cases.
-            */
-            if($this->entityProperty!='extensionproperties'||!is_null($this->entityPropertyKey)) {
-                if (isset($requestArray['value']) && count($requestArray)==1) {
-                    $this->entityPropertyValue=$requestArray['value'];
-                } elseif(!isset($requestArray['value'])) {
-                  $this->exceptionWithResponseCode(400,
-                    "A value for \"$this->entityProperty\" should be provided. " .
-                    "This should be provided in a JSON string {\"value\":\"<value for " .
-                    "\"$this->entityProperty\">\"}, with no other pairs present." .
-                    " If you believe \"$this->entityProperty\" should take multiple key/value ".
-                    "pairs, check your spelling of \"$this->entityProperty\"" . $genericError
-                    );
-                } else {
-                  $this->exceptionWithResponseCode(400,
-                    "Request message contained more than one object. " . $genericError
-                  );
-                }
-            } else {
-                if(!empty($requestArray)) {
-                    $this->entityPropertyKVArray=$requestArray;
-                } else {
-                  $this->exceptionWithResponseCode(400,
-                    "Please specify the properties you wish to change. " . $genericError
-                  );
-                }
-
-            }
-        } elseif (!empty($requestContents)) {
+    #json_decode returns null for invalid JSON and $requestContents will be empty if there was no request body
+    if(!is_null($requestArray)) {
+      /*The general case expects a single value to be given. In the specific case
+       * of updating extension properties where no specific property is specified
+       * in the url (and so now in $this->entityPropertyKey) we expect multiple
+       * key/value pairs. We use $this->entityPropertyValue and $this->entityPropertyKVArray
+       * frespectivly for these cases.
+       */
+      if($this->entityProperty!='extensionproperties'||!is_null($this->entityPropertyKey)) {
+        if (isset($requestArray['value']) && count($requestArray)==1) {
+          $this->entityPropertyValue=$requestArray['value'];
+        } elseif(!isset($requestArray['value'])) {
           $this->exceptionWithResponseCode(400,
-            "The JSON message is not correctly formatted. " . $genericError
+            "A value for \"$this->entityProperty\" should be provided. " .
+            "This should be provided in a JSON string {\"value\":\"<value for " .
+            "\"$this->entityProperty\">\"}, with no other pairs present." .
+            " If you believe \"$this->entityProperty\" should take multiple key/value ".
+            "pairs, check your spelling of \"$this->entityProperty\"" . $genericError
+          );
+        } else {
+          $this->exceptionWithResponseCode(400,
+            "Request message contained more than one object. " . $genericError
           );
         }
+      } else {
+        if(!empty($requestArray)) {
+          $this->entityPropertyKVArray=$requestArray;
+        } else {
+          $this->exceptionWithResponseCode(400,
+            "Please specify the properties you wish to change. " . $genericError
+          );
+        }
+      }
+    } elseif (!empty($requestContents)) {
+      $this->exceptionWithResponseCode(400,
+        "The JSON message is not correctly formatted. " . $genericError
+      );
     }
+  }
 
     /**
     * Carries out the business logic around using the validate service to check the
