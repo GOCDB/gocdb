@@ -1854,10 +1854,8 @@ class ServiceService extends AbstractEntityService {
             throw new \Exception ( "An endpoint must have a name." );
         }
         // check endpoint's name is unique under the service
-        foreach ( $service->getEndpointLocations () as $endpointL ) {
-            if ($endpointL->getName () == $name) {
-                throw new \Exception ( "Please provide a unique name for this endpoint." );
-            }
+        if($this->endpointWithNameExists($service, $name)){
+          throw new \Exception ( "Please provide a unique name for this endpoint." );
         }
 
         $this->em->getConnection ()->beginTransaction ();
@@ -2072,6 +2070,23 @@ class ServiceService extends AbstractEntityService {
       }
 
       return !empty($propValue);
+    }
+
+    /**
+     * Returns true if an endpoint with a given name exists for a given service
+     *
+     * TODO: This could be made more effecient using a DQL select statement
+     * @param  Service $service service being checked
+     * @param  string  $name    endpoint name being checked
+     * @return boolean
+     */
+    public function endpointWithNameExists (\Service $service, $name) {
+      foreach ($service->getEndpointLocations() as $endpoint) {
+        if ($name == $endpoint->getName()){
+          return true;
+        }
+      }
+      return false;
     }
 
     private function checkNumberOfScopes($scopeIds) {
