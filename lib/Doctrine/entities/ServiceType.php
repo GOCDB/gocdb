@@ -38,8 +38,16 @@ class ServiceType {
     /** @OneToMany(targetEntity="Service", mappedBy="serviceType") */
     protected $services = null;
 
+    /**
+     * An instance of a Service of this ServiceType may
+     * unmonitored while in production.
+     * @Column(type="boolean", options={"default":FALSE})
+     */
+    protected $allowMonitoringException;
+
     public function __construct() {
         $this->services = new ArrayCollection();
+        $this->allowMonitoringException = FALSE;
     }
 
     /**
@@ -98,6 +106,23 @@ class ServiceType {
     public function addService($service) {
         $this->services[] = $service;
         $service->setServiceType($this);
+    }
+
+    /**
+     * Add an exception where an instance of this ServiceType is allowed
+     * to be unmonitored when in production with a specific Scope.
+     * Return value is the existing boolean state
+     */
+    public function setAllowMonitoringException($state) {
+        $oldState = $this->getAllowMonitoringException();
+        $this->allowMonitoringException = $state;
+        return $oldState;
+    }
+    /**
+     * Check if a monitoring exception is allowed within the given scope.
+     */
+    public function getAllowMonitoringException() {
+        return $this->allowMonitoringException;
     }
 
     /**

@@ -1,6 +1,7 @@
 <?php
 $name = xssafe($params['Name']);
 $description = xssafe($params['Description']);
+$allowMonitoringException = xssafe($params['AllowMonitoringExtension']);
 $id = $params['ID'];
 $services = $params['Services'];
 $SEsCount= sizeof($services);
@@ -13,7 +14,9 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
     <!--Headings-->
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;">Service Type: <?php echo $name?></h1>
-        <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php echo $description ?></span>
+        <span style="clear: both; float: left; padding-bottom: 0.4em;">
+            <br /><?php require_once __DIR__.'/../fragments/serviceTypeInfo.php'; ?>
+        </span>
     </div>
 
     <!--Edit/Delete buttons-->

@@ -37,6 +37,7 @@ function view_service_type(){
     $params['Name'] = $serviceType -> getName();
     $params['Description'] = $serviceType -> getDescription();
     $params['ID']= $serviceType ->getId();
+    $params['AllowMonitoringException'] = $serviceType->getAllowMonitoringException();
     $params['Services'] = $serv ->getServices($params['ID']);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
 

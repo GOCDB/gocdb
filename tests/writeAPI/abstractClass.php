@@ -266,7 +266,7 @@ abstract class AbstractWriteAPITestClass extends PHPUnit_Extensions_Database_Tes
     {
       #create a sample site and create a new sample service and join it to that site
         $sampleService = TestUtil::createSampleService("Sample service" . $append);
-        $sampleST = TestUtil::createSampleServiceType("sample.service.type" . $append);
+        $sampleST = TestUtil::createSampleServiceType("Service type Description", "sample.service.type" . $append);
         $sampleService->setServiceType($sampleST);
         $sampleSite = $this->createSampleSite($append);
         $sampleSite->addServiceDoJoin($sampleService);

@@ -73,6 +73,7 @@ function submit() {
         $serviceType = \Factory::getServiceTypeService()->addServiceType($newValues, $user);
         $params = array('Name' => $serviceType->getName(),
                         'Description'=> $serviceType->getDescription(),
+                        'AllowMonitoringException' => $serviceType->getAllowMonitoringException(),
                         'ID'=> $serviceType->getId());
         show_view("admin/added_service_type.php", $params, "Successfuly added new service type");
     } catch (Exception $e) {

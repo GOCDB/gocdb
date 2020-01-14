@@ -676,6 +676,11 @@ function getScopeDataFromWeb() {
 function getSTDataFromWeb() {
     $serviceTypeData ['Name'] = trim($_REQUEST ['Name']);
     $serviceTypeData ['Description'] = trim($_REQUEST ['Description']);
+    if(isset($_REQUEST['AllowMonitoringException'])) {
+        $serviceTypeData ['AllowMonitoringException'] = ($_REQUEST ['AllowMonitoringException'] == "checked");
+    } else {
+        $serviceTypeData ['AllowMonitoringException'] = FALSE;
+    }
     if (array_key_exists('ID', $_REQUEST)){
         $serviceTypeData ['ID'] = $_REQUEST ['ID'];
     }

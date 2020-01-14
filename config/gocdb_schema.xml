@@ -415,18 +415,22 @@
     </entity>
     <!-- ==========================================================  -->
     <entity>
-        <name>service_type</name>
-        <field>
-            <fname>NAME</fname>
-            <length>255</length>
-            <regex>/^([[:alpha:]]|[[:digit:]]|[\._-])*$/</regex>
-        </field>
-        <field>
-            <fname>DESCRIPTION</fname>
-            <length>255</length>
-            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-            <regex>/^[^`'\";&lt;&gt;]+$/</regex>
-        </field>
+	<name>service_type</name>
+	<field>
+	    <fname>NAME</fname>
+	    <length>255</length>
+	    <regex>/^([[:alpha:]]|[[:digit:]]|[\._-])*$/</regex>
+	</field>
+	<field>
+	    <fname>DESCRIPTION</fname>
+	    <length>255</length>
+	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+	</field>
+    <field>
+        <fname>ALLOWMONITORINGEXCEPTION</fname>
+        <ftype>boolean</ftype>
+    </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>

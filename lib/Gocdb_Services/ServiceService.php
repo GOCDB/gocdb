@@ -470,19 +470,23 @@ class ServiceService extends AbstractEntityService {
      * is invalid. The \Exception's message will contain a human readable error
      * message.
      */
-    public function validateProductionMonitoredCombination($serviceTypeName, $production, $monitored) {
+    public function validateProductionMonitoredCombination($serviceType, $production, $monitored) {
         // Service types that are exceptions to the
         // 'production => monitored' rule.
         $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
 
+        $serviceTypeName = $serviceType->getName();
         // Check that the service type is not an exception to the
         // 'production => monitored'.
-        if (!in_array ($serviceTypeName, $ruleExceptions)) {
-            if ($production && !$monitored) {
+        if ($production && !$monitored) {
+            // Legacy hard-coded rules (as of Jan-20) should be removed
+            if (!in_array ($serviceTypeName, $ruleExceptions) and
+                !$serviceType->getAllowMonitoringException()) {
                 throw new \Exception(
-                    "For the '".$serviceTypeName."' service type, if the ".
-                    "Production flag is set to True, the Monitored flag must ".
-                    "also be True.");
+                    "For the '".$serviceTypeName."' service type, if a ".
+                    "service is in Production it must be Monitored. ".
+                    "Contact GOCDB administrators if required to discuss ".
+                    "changing this requirement.");
             }
         }
     }
@@ -535,12 +539,6 @@ class ServiceService extends AbstractEntityService {
 
         $this->validate ( $newValues ['SE'], 'service' );
         $this->uniqueCheck ( $newValues ['SE'] ['HOSTNAME'], $st, $se->getParentSite () );
-        // validate production/monitored combination
-        $this->validateProductionMonitoredCombination(
-          $this->getServiceType($newValues['serviceType']),
-          $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']),
-          $this->ptlTexToBool($newValues['IS_MONITORED'])
-        );
 
         // EDIT SCOPE TAGS:
         // collate selected scopeIds (reserved and non-reserved)
@@ -578,9 +576,20 @@ class ServiceService extends AbstractEntityService {
         }
 
         // check there are the required number of optional scopes specified
-        $this->checkNumberOfScopes ( $this->scopeService->getScopesFilterByParams ( array (
-                'excludeReserved' => true
-        ), $selectedScopesToApply ) );
+
+        $this->checkNumberOfScopes(
+            $this->scopeService->getScopesFilterByParams(
+                array('excludeReserved' => true),
+                $selectedScopesToApply
+            )
+        );
+
+        // validate production/monitored combination
+        $this->validateProductionMonitoredCombination(
+            $st,
+            $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']),
+            $this->ptlTexToBool($newValues['IS_MONITORED'])
+        );
 
         $updatedServiceValues =array();
         $updatedServiceValues['hostname'] = $newValues ['SE'] ['HOSTNAME'];
@@ -595,7 +604,6 @@ class ServiceService extends AbstractEntityService {
         $updatedServiceValues['monitored'] = $this->ptlTexToBool($newValues['IS_MONITORED']);
         $updatedServiceValues['beta'] = $this->ptlTexToBool($newValues['BETA']);
         $updatedServiceValues['production'] = $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']);
-        $updatedServiceValues['notify'];
 
         if (!isset($newValues['NOTIFY'])){
             $updatedServiceValues['notify'] = false;
@@ -653,18 +661,17 @@ class ServiceService extends AbstractEntityService {
         'notify'=>$notify,
       );
 
-      $this->validateProductionMonitoredCombination($service->getServiceType()->getName(), $production, $monitored);
+      $this->validateProductionMonitoredCombination($service->getServiceType(), $production, $monitored);
 
       $this->editServiceLogic($service, $scopes, $sType, $updatedServiceValues);
     }
-
 
     /**
      * The logic of editing a service, without the authorisation or validation.
      * Private function as there should always be authorisation anad validation
      * steps within the service before calling this function.
      *
-     * @param  Service $service       service to be updated
+     * @param  \Service $service       service to be updated
      * @param  array  $scopes         scopes of service being updated
      * @param         $sType          service type of service
      * @param array $updatedServiceValues values being updated for $service. Should contain:
@@ -804,13 +811,6 @@ class ServiceService extends AbstractEntityService {
         $this->validate ( $values ['SE'], 'service' );
         $this->uniqueCheck ( $values ['SE'] ['HOSTNAME'], $st, $site );
 
-        // validate production/monitored combination
-        $this->validateProductionMonitoredCombination(
-          $this->getServiceType($values['serviceType']),
-          $this->ptlTexToBool($values['PRODUCTION_LEVEL']),
-          $this->ptlTexToBool($values['IS_MONITORED'])
-        );
-
         // ADD SCOPE TAGS:
         // collate selected reserved and non-reserved scopeIds.
         // Note, Reserved scopes can be inherited from the parent Site.
@@ -846,6 +846,13 @@ class ServiceService extends AbstractEntityService {
 
         // check there are the required number of OPTIONAL scopes specified
         $this->checkNumberOfScopes ( $values ['Scope_ids'] );
+
+        // validate production/monitored combination
+        $this->validateProductionMonitoredCombination(
+            $st,
+            $this->ptlTexToBool($values['PRODUCTION_LEVEL']),
+            $this->ptlTexToBool($values['IS_MONITORED'])
+          );
 
         $this->em->getConnection ()->beginTransaction ();
         try {

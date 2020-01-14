@@ -975,7 +975,7 @@ class PIWriteRequest {
 
     //Validate production/monitored flag combination
     try {
-      $this->serviceService->validateProductionMonitoredCombination($service->getServiceType()->getName(), $production, $monitored);
+      $this->serviceService->validateProductionMonitoredCombination($service->getServiceType(), $production, $monitored);
     } catch(\Exception $e){
       $this->exceptionWithResponseCode(403, $e->getMessage());
     }

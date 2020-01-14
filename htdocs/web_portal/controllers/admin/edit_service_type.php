@@ -56,7 +56,8 @@ function draw() {
     $serviceType = \Factory::getServiceTypeService()->getServiceType($_REQUEST['id']);
 
     $params = array('Name' => $serviceType->getName(),'ID' => $serviceType->getId(),
-                    'Description' => $serviceType->getDescription());
+                    'Description' => $serviceType->getDescription(),
+                    'AllowMonitoringException' => $serviceType->getAllowMonitoringException());
 
     show_view("admin/edit_service_type.php", $params, "Edit " . $serviceType->getName());
 }
@@ -85,6 +86,7 @@ function submit() {
         $alteredServiceType =$serv->editServiceType($unalteredServiceType, $newValues, $user);
         $params = array('Name' => $alteredServiceType->getName(),
                         'Description'=> $alteredServiceType->getDescription(),
+                        'AllowMonitoringException' => $alteredServiceType->getAllowMonitoringException(),
                         'ID'=> $alteredServiceType->getId());
         show_view("admin/edited_service_type.php", $params);
     } catch (Exception $e) {

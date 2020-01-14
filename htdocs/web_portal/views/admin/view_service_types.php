@@ -30,6 +30,7 @@
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
+                <th class="site_table">Services</th>
                 <th class="site_table">Description</th>
             </tr>
             <?php
@@ -46,6 +47,10 @@
                                 </a>
                             </span>
                         </div>
+                    </td>
+
+                    <td class="site_table">
+                        <?php xecho(sizeof($serviceType->getServices())); ?>
                     </td>
 
                     <td class="site_table">

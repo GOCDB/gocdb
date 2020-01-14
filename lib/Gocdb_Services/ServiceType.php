@@ -143,6 +143,8 @@ class ServiceType extends AbstractEntityService{
             $serviceType->setName($values['Name']);
             //set description
             $serviceType->setDescription($values['Description']);
+            //set flag for monitoring exception allowed
+            $serviceType->setAllowMonitoringException($values['AllowMonitoringException']);
 
             $this->em->persist($serviceType);
             $this->em->flush();
@@ -186,6 +188,8 @@ class ServiceType extends AbstractEntityService{
             $serviceType->setName($newValues['Name']);
             //set description
             $serviceType->setDescription($newValues['Description']);
+            //flag for monitoring exception allowed
+            $serviceType->setAllowMonitoringException($newValues['AllowMonitoringException']);
 
             $this->em->merge($serviceType);
             $this->em->flush();
