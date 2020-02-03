@@ -223,7 +223,7 @@ class PIWriteRequest {
           $this->entityPropertyKVArray=$requestArray;
           break;
         }
-        
+
       default:
 
         //If there is not a value in the array at this point throw an exception
@@ -236,7 +236,7 @@ class PIWriteRequest {
         }
 
         //If there are additional entiries in our array to the value, throw exception
-        if(count($requestArray)==1) {
+        if(count($requestArray)>1) {
           $this->exceptionWithResponseCode(400,
             "Only one value for \"$this->entityProperty\" should be provided. " .
             "This should be provided in a JSON string {\"value\":\"<value for " .
