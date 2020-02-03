@@ -188,7 +188,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
             <tr class="site_table_row_<?php echo $num ?>">
                 <td class="site_table">
                     <div style="background-color: inherit;">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px"  style="vertical-align: middle; padding-right: 1em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
                         <?php if($params['authenticated']) { ?>
                             <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
                                 <?php xecho($role->getUser()->getFullName())?>
