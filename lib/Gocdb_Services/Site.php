@@ -1056,7 +1056,7 @@ class Site extends AbstractEntityService{
         $this->checkGOCDBIsNotReadOnly();
 
         // Validate the user has permission to add properties
-        $this->checkAuthroisedAPIIDentifier($site, $authenticationIdentifier, $authenticationType);
+        $this->checkAuthorisedAPIIdentifier($site, $authenticationIdentifier, $authenticationType);
 
         //Convert the property array into the format used by the webportal logic
         #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
@@ -1202,7 +1202,7 @@ class Site extends AbstractEntityService{
                 throw new \Exception("Internal error: property parent site and site do not match.");
             }
         }
-        $this->checkAuthroisedAPIIDentifier($site, $authIdentifier, $authIdentifierType);
+        $this->checkAuthorisedAPIIdentifier($site, $authIdentifier, $authIdentifierType);
 
         //Make the change
         $this->em->getConnection()->beginTransaction();
@@ -1436,7 +1436,7 @@ class Site extends AbstractEntityService{
     * @param string $type
     * @throws \Exception
     */
-    public function checkAuthroisedAPIIDentifier (\Site $site, $identifier, $type) {
+    public function checkAuthorisedAPIIdentifier (\Site $site, $identifier, $type) {
         if (!$this->authorisedAPIIdentifier($site, $identifier, $type)) {
             throw new \Exception("The $type identifier \"$identifier\" is not authorised to alter the " . $site->getName() . " site");
         }
