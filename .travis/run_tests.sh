@@ -7,7 +7,7 @@ if [[ $TRAVIS ]]; then
     git diff --name-only --diff-filter=ACMRTUXB HEAD^ | grep '\.php$' | xargs -r -n 1 php -l || exit 1
 
     # Run test suite
-    vendor/bin/phpunit tests/DoctrineTestSuite1.php
+    vendor/bin/phpunit --coverage-clover=coverage.xml tests/DoctrineTestSuite1.php
 else
     echo 'ABORTED: NOT RUNNING ON TRAVIS'
     exit 2
