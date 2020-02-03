@@ -79,7 +79,7 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)+$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)+$/</regex>
 	</field>
 	<field>
 	    <fname>CONTACTTEL</fname>
@@ -94,7 +94,7 @@
 	<field>
 	    <fname>CSIRTEMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>CSIRTTEL</fname>
@@ -104,12 +104,12 @@
 	<field>
 	    <fname>EMERGENCYEMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>HELPDESKEMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)*$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)*$/</regex>
 	</field>
 	<field>
 	    <fname>TIMEZONE</fname>
@@ -161,7 +161,7 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)+$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)+$/</regex>
 	</field>
   <field>
       <fname>URL</fname>
@@ -259,7 +259,7 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}){1}$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*){1}$/</regex>
 	</field>
 	<field>
 	    <fname>TELEPHONE</fname>
@@ -285,22 +285,22 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>ROD_EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>HELPDESK_EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>SECURITY_EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>GGUS_SU</fname>
@@ -324,7 +324,7 @@
 	</field>
 	<field>
 	    <fname>EMAIL</fname>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	    <length>255</length>
 	</field>
 	<field>
@@ -370,7 +370,7 @@
     <field>
         <fname>EMAIL</fname>
         <length>255</length>
-        <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)*$/</regex>
+        <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)*$/</regex>
     </field>
     <field>
         <fname>MONITORED</fname>
@@ -394,7 +394,7 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^((([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6});)*(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6});?$/</regex>
+	    <regex>/^(([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*);)*([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*);?$/</regex>
 	</field>
     </entity>
     <!-- ==========================================================  -->
