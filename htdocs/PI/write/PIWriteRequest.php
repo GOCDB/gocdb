@@ -126,7 +126,7 @@ class PIWriteRequest {
         } catch (\Exception $e) {
             #For 500 errors, make it explicit it's an internal error
             if ($this->httpResponseCode==500) {
-                $message = "Internal error. Please contact the GOCDB asministrators. Message: " . $e->getMessage();
+                $message = "Internal error. Please contact the GOCDB administrators. Message: " . $e->getMessage();
             } else {
                 $message = $e->getMessage();
             }
@@ -569,6 +569,17 @@ class PIWriteRequest {
       }
     }
 
+    private function checkAuthorisation (Site $siteService, \Site $site, $identifier, $indentifierType) {
+      try {
+        $siteService->checkAuthroisedAPIIDentifier($site, $identifier, $indentifierType);
+      } catch (\Exception $e) {
+        #yes 403 - 401 is not appropriate for X509 authentication
+        $this->httpResponseCode = 403;
+        throw $e;
+      }
+
+    }
+
     /**
      * Updates the properties of the site specified in the request
      *
@@ -584,11 +595,7 @@ class PIWriteRequest {
       }
 
       #Authorisation
-      try {
-          $siteService->checkAuthroisedAPIIDentifier($site, $this->userIdentifier, $this->userIdentifierType);
-      } catch(\Exception $e){
-          $this->exceptionWithResponseCode(403,$e->getMessage());
-      }
+      $this->checkAuthorisation ($siteService, $site, $this->userIdentifier, $this->userIdentifierType);
 
       switch($this->entityProperty) {
           case 'extensionproperties':{
@@ -729,11 +736,7 @@ class PIWriteRequest {
     }
 
     #Authorisation
-    try {
-      $siteService->checkAuthroisedAPIIDentifier($service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
-    } catch(\Exception $e){
-      $this->exceptionWithResponseCode(403, $e->getMessage());
-    }
+    $this->checkAuthorisation ($siteService, $service->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
 
     switch($this->entityProperty) {
       case 'extensionproperties':{
@@ -870,11 +873,7 @@ class PIWriteRequest {
     }
 
     #Authorisation
-    try {
-        $siteService->checkAuthroisedAPIIDentifier($endpoint->getService()->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
-    } catch(\Exception $e){
-        $this->exceptionWithResponseCode(403, $e->getMessage());
-    }
+    $this->checkAuthorisation ($siteService, $endpoint->getService()->getParentSite(), $this->userIdentifier, $this->userIdentifierType);
 
     #Make the requested change
     switch($this->entityProperty) {
