@@ -698,3 +698,8 @@ img.new_window{
   height: 0.75em;
 }
 
+img.person{
+  height: 25px;
+  vertical-align: middle;
+  padding-right: 1em;
+}

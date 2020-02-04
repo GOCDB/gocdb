@@ -453,7 +453,7 @@ $extensionProperties = $site->getSiteProperties();
                             <div style="background-color: inherit;">
                                 <?php if ($params['authenticated']) { ?>
                                 <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
-                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px"  style="vertical-align: middle; padding-right: 1em;" />
+                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
                                     <?php xecho($role->getUser()->getFullName()) ?>
                                 </a>
                                 <?php
