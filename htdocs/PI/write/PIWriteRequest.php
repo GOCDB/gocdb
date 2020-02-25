@@ -960,10 +960,9 @@ class PIWriteRequest {
    * @throws \Exception
    */
   private function updateEndpointExtensionPropertiesPut ($endpoint, $extensionPropKVArray) {
-    #Post requests will fail if the property with that value already exists or the property limit has been reached
     #TODO:This will return the wrong error code if something else goes wrong
     try {
-      $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, true, $this->userIdentifierType, $this->userIdentifier);
+      $this->serviceService->addEndpointPropertiesAPI($endpoint, $extensionPropKVArray, false, $this->userIdentifierType, $this->userIdentifier);
     } catch(\Exception $e) {
       $this->exceptionWithResponseCode(409, $e->getMessage());
     }
