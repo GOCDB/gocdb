@@ -647,7 +647,7 @@ class PIWriteRequest {
           break;
         }
         case 'DELETE':{
-          $this->updateSiteExtensionPropertiesDELETE($siteService, $site, $extensionPropKVArray);
+          $this->updateSiteExtensionPropertiesDelete($siteService, $site, $extensionPropKVArray);
           break;
         }
         default: {
