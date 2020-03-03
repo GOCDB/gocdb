@@ -27,7 +27,6 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
      * Called once, before any of the tests are executed.
      */
     public static function setUpBeforeClass() {
-        //print __METHOD__ . "\n";
     }
 
     /**
@@ -42,11 +41,9 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
      * assert any pre-conditions required by tests.
      */
     protected function assertPreConditions() {
-        //print __METHOD__ . "\n";
     }
 
     protected function assertPostConditions() {
-        //print __METHOD__ . "\n";
     }
 
     /**
@@ -54,14 +51,12 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
      * This method is called after a test is executed.
      */
     protected function tearDown() {
-        //print __METHOD__ . "\n";
     }
 
     /**
      * executed only once, after all the testing methods
      */
     public static function tearDownAfterClass() {
-        //print __METHOD__ . "\n";
     }
 
     protected function onNotSuccessfulTest(Exception $e) {
@@ -75,15 +70,6 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
         $roleActionService = new org\gocdb\services\RoleActionMappingService();
         $errors = $roleActionService->validateRoleActionMappingFileAgainstXsd();
         $this->assertEmpty($errors);
-        /*$xml = new \DOMDocument();
-        $xml->load(__DIR__."/../../../../config/RoleActionMappings.xml");
-        if (!$xml->schemaValidate(__DIR__."/../../../../config/RoleActionMappingsSchema.xsd")) {
-            $this->fail('could not validate instance doc');
-            $errors = libxml_get_errors();
-            foreach ($errors as $error) {
-                print libxml_display_error($error);
-            }
-        }*/
     }
 
     public function testGetRoleNamesForProject(){
@@ -93,21 +79,8 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
 
         $rolenamesOver = $roleActionService->getRoleTypeNamesForProject('EGI');
         $this->assertEquals(14, count($rolenamesOver));
-        //print_r($rolenamesOver);
     $rolenamesOver = $roleActionService->getRoleTypeNamesForProject(null);
         $this->assertEquals(14, count($rolenamesOver));
-
-//        $rolenamesOver = $roleActionService->getRoleTypeNamesForProject('WLCG');
-//        $this->assertEquals(4, count($rolenamesOver));
-//        //print_r($rolenamesOver);
-//
-//        $rolenamesOver = $roleActionService->getRoleTypeNamesForProject('EUDAT');
-//        $this->assertEquals(5, count($rolenamesOver));
-//        //print_r($rolenamesOver);
-//
-//        $rolenamesOver = $roleActionService->getRoleTypeNamesForProject(NULL);
-//        $this->assertEquals(1, count($rolenamesOver));
-        //print_r($rolenamesOver);
     }
 
 
@@ -199,17 +172,6 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
         $roleActionService = new org\gocdb\services\RoleActionMappingService();
         $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings4.xml");
 
-//        // EGI project
-//        $expected = array('RoleH' => 'Project');
-//        $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("AZ", 'project', 'egi');
-//        $this->assertArraySubset($expected, $enablingRoleTypeNames);
-//        //print_r($enablingRoleNames);
-//
-//        $expected = array();
-//        $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("AZ", 'site', 'egi');
-//        $this->assertArraySubset($expected, $enablingRoleTypeNames);
-
-        // EGI2 project
         // to do action 'AX' on a 'site' requires roles:
         $expected = array('RoleA','RoleB','RoleC','RoleD','RoleE');
         $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("AX", 'site', 'egi2');
@@ -248,30 +210,6 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
 
     }
 
-    /*
-     * @expectedException \LogicException
-     * @expectedExceptionCode 22
-     */
-//    public function testInvalidDocMultipleDefaultElements(){
-//        print __METHOD__ . "\n";
-//        $roleActionService = new org\gocdb\services\RoleActionMappingService();
-//        $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings1.xml");
-//        $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("action", "hello", "world");
-//    }
-
-//    public function testInvalidDocMultipleRoleActionMappingsForProject(){
-//        print __METHOD__ . "\n";
-//        $roleActionService = new org\gocdb\services\RoleActionMappingService();
-//        $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestInvalidRoleActionMappings2.xml");
-//        try {
-//            $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("action", "hello", "EGI");
-//            $this->fail("shouldn't have got here");
-//        } catch (\Exception $ex){
-//            //print_r($ex->getMessage()) ;
-//            //$errors = libxml_get_errors();
-//            //var_dump($errors);
-//        }
-//    }
 
     public function testGetEnabledActionsForRoleType1() {
     print __METHOD__ . "\n";
@@ -280,9 +218,7 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
 
     $enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('RoleA');
 
-//	foreach($enabledActionsOnTargets as $enabledActionOnTarget){
-//	    print_r($enabledActionOnTarget[0].' '.$enabledActionOnTarget[1]."\n");
-//	}
+
     $expectedActionsOnTargets = array();
         $expectedActionsOnTargets[] = array('A1', 'site');
         $expectedActionsOnTargets[] = array('A1', 'service');
@@ -317,9 +253,7 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
     $roleActionService->setRoleActionMappingsXmlPath(__DIR__ . "/../../resources/roleActionMappingSamples/TestRoleActionMappings5.xml");
 
     $enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('NGI Operations Manager');
-//	foreach($enabledActionsOnTargets as $enabledActionOnTarget){
-//	    print_r($enabledActionOnTarget[0].' '.$enabledActionOnTarget[1]."\n");
-//	}
+
 
     $expectedActionsOnTargets = array();
         $expectedActionsOnTargets[] = array('ACTION_EDIT_OBJECT', 'Ngi');

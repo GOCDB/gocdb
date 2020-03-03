@@ -1,12 +1,7 @@
 <?php
-
-//require_once 'PHPUnit/Extensions/Database/TestCase.php';
-//require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
 require_once dirname(__FILE__) . '/TestUtil.php';
-
-use Doctrine\ORM\EntityManager;
 require_once dirname(__FILE__) . "/bootstrap.php";
-
+use Doctrine\ORM\EntityManager;
 
 /**
  * This test case truncates the test database (a clean insert with no seed data)
@@ -119,11 +114,6 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
         }
     }
 
-//    public function testSimpleAssert(){
-//        print __METHOD__ . "\n";
-//        $this->assertTrue(2 == 2);
-//    }
-
     public function testAssertTestEntityMangersAreDifferent(){
         print __METHOD__ . "\n";
         $em1 = $this->createEntityManager();
@@ -174,9 +164,7 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
 
 
         $seList = $refetchedSite->getServices();
-        /*foreach($seList as $se){
-            print $se->getId().' '.$se->getHostName()."\n";
-        }*/
+
         $this->assertCount(3, $seList);
     }
 
@@ -230,7 +218,7 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
 
         $this->em->persist($site); // is now managed
         $this->em->persist($ngi);  // is now managed
-        $siteCount = count($ngi->getSites()); //echo('siteCount: '.$siteCount);
+        $siteCount = count($ngi->getSites());
         $this->assertTrue($siteCount == 1);
         $this->em->flush();
 
@@ -452,7 +440,6 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
             $this->em->persist($se);  // is now managed
         }
         $seCount = count($site->getServices());
-        //print 'debug '.$seCount."\n";
         $this->assertTrue($seCount == $n);
         $this->em->rollback();
 
@@ -497,15 +484,12 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
         // If the fail statement is called below, then it could be an issue with
         // with the DB. For example, Sqlite with Doctrine does not enforce FK constraints !
         // see: http://stackoverflow.com/a/4599894
-        //try {
-            // We shouldn't be able to remove the site as we need to remove the
-            // services first as we have no cascade-delete option set.
-            $this->em->remove($refetchedSite);
-            $this->em->flush();
-            $this->fail('Should not get to this point - DBALException expected');
-        //} catch (Exception $ex){
-        //    print_r('yup, and exception was thrown dave'.$ex);
-        //}
+
+        // We shouldn't be able to remove the site as we need to remove the
+        // services first as we have no cascade-delete option set.
+        $this->em->remove($refetchedSite);
+        $this->em->flush();
+        $this->fail('Should not get to this point - DBALException expected');
 
     }
 
@@ -601,7 +585,6 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
         $this->em->flush();
 
         // Rollback so that we don't commit the new pks and site to the DB
-        //$this->em->getConnection()->commit();
         $this->em->getConnection()->rollback();
 
         $testConn = $this->getConnection();
@@ -710,15 +693,12 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
         // If the fail statement is called below, then it could be an issue with
         // with the DB. For example, Sqlite with Doctrine does not enforce FK constraints !
         // see: http://stackoverflow.com/a/4599894
-        //try {
-            // We shouldn't be able to remove the site as we need to remove the
-            // services first as we have no cascade-delete option set.
-            $this->em->remove($se);
-            $this->em->flush();
-            $this->fail('Should not get to this point - DBALException expected');
-        //} catch (Exception $ex){
-        //    print_r('yup, and exception was thrown dave'.$ex);
-        //}
+
+        // We shouldn't be able to remove the site as we need to remove the
+        // services first as we have no cascade-delete option set.
+        $this->em->remove($se);
+        $this->em->flush();
+        $this->fail('Should not get to this point - DBALException expected');
     }
 
     /**

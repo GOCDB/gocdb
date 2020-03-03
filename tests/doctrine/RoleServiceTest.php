@@ -1,8 +1,5 @@
 <?php
-//require_once 'PHPUnit/Extensions/Database/TestCase.php';
-//require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
 require_once dirname(__FILE__) . '/TestUtil.php';
-
 use Doctrine\ORM\EntityManager;
 require_once dirname(__FILE__) . '/bootstrap.php';
 require_once dirname(__FILE__). '/../../lib/Gocdb_Services/Role.php';
@@ -94,7 +91,6 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
      * @return EntityManager
      */
     private function createEntityManager(){
-        //require dirname(__FILE__).'/../lib/Doctrine/bootstrap.php';
         require dirname(__FILE__).'/bootstrap_doctrine.php';
         return $entityManager;
     }
@@ -109,32 +105,12 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $tables = simplexml_load_file($fixture);
 
         foreach($tables as $tableName) {
-            //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM ".$tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
-            //echo 'row count: '.$result->getRowCount() ;
             if($result->getRowCount() != 0)
                 throw new RuntimeException("Invalid fixture. Table has rows: ".$tableName->getName());
         }
     }
-
-
-    /*public function testPersistGetSupportedRoleTypeNameClassPairs(){
-       print __METHOD__ . "\n";
-       $roleTypes = TestUtil::getSupportedRoleTypes();
-       if(count($roleTypes) == 0){
-           throw new LogicException('No roleTypes configured');
-       }
-       // Assert that we can persist all the configured role types.
-       // This is to test the unique constraint on the RoleType.name value
-       // and any other DB col constraints.
-       foreach($roleTypes as $rt){
-          $this->em->persist($rt);
-       }
-       $this->em->flush();
-    }*/
-
-
 
     public function test_getPendingRolesUserCanApprove(){
         print __METHOD__ . "\n";
@@ -630,62 +606,4 @@ class RoleServiceTest extends PHPUnit_Extensions_Database_TestCase {
 
     }
 
-
-
-
-
-
-    /*public function testRoleTypeValues(){
-        print __METHOD__ . "\n";
-        $roleService = new org\gocdb\services\Role();
-
-        $roleType = new RoleType(RoleTypeName::SITE_ADMIN, RoleTypeClass::SITE_USER);
-        $this->assertTrue($roleService->isValidRoleType($roleType));
-        $roleType = new RoleType(RoleTypeName::SITE_SECOFFICER, RoleTypeClass::SITE_MANAGER);
-        $this->assertTrue($roleService->isValidRoleType($roleType));
-        $roleType = new RoleType(RoleTypeName::SITE_SECOFFICER, \RoleTypeClass::SITE_USER);
-        $this->assertFalse($roleService->isValidRoleType($roleType));
-    }*/
-
-    /*public function testGetRoleTypeClassificationsByRoleTypeName(){
-        print __METHOD__ . "\n";
-        $roleService = new org\gocdb\services\Role();
-
-        $roleNames = $roleService->getRoleTypeNamesByClassification(RoleTypeClass::PROJECT);
-        $this->assertTrue(count($roleNames) == 4);
-        $this->assertTrue(in_array(RoleTypeName::COO, $roleNames));
-        $this->assertTrue(in_array(RoleTypeName::COD_ADMIN, $roleNames));
-        $this->assertTrue(in_array(RoleTypeName::COD_STAFF, $roleNames));
-        $this->assertTrue(in_array(RoleTypeName::EGI_CSIRT_OFFICER, $roleNames));
-
-        $roleNames = $roleService->getRoleTypeNamesByClassification(RoleTypeClass::REGIONAL_MANAGER);
-        $this->assertTrue(count($roleNames) == 3);
-        $this->assertTrue(in_array(RoleTypeName::NGI_SEC_OFFICER, $roleNames));
-        $this->assertTrue(in_array(RoleTypeName::NGI_OPS_DEP_MAN, $roleNames));
-        $this->assertTrue(in_array(RoleTypeName::NGI_OPS_MAN, $roleNames));
-
-        $roleNames = $roleService->getRoleTypeNamesByClassification(RoleTypeClass::REGIONAL_USER);
-        $this->assertTrue(count($roleNames) == 2);
-        $this->assertTrue(in_array(RoleTypeName::REG_STAFF_ROD, $roleNames));
-        $this->assertTrue(in_array(RoleTypeName::REG_FIRST_LINE_SUPPORT, $roleNames));
-
-        $roleNames = $roleService->getRoleTypeNamesByClassification(RoleTypeClass::SITE_MANAGER);
-        $this->assertTrue(count($roleNames) == 3);
-        $this->assertTrue(in_array(RoleTypeName::SITE_OPS_MAN, $roleNames));
-        $this->assertTrue(in_array(RoleTypeName::SITE_OPS_DEP_MAN, $roleNames));
-        $this->assertTrue(in_array(RoleTypeName::SITE_SECOFFICER, $roleNames));
-
-        $roleNames = $roleService->getRoleTypeNamesByClassification(RoleTypeClass::SITE_USER);
-        $this->assertTrue(count($roleNames) == 1);
-        $this->assertTrue(in_array(RoleTypeName::SITE_ADMIN, $roleNames));
-
-        $roleNames = $roleService->getRoleTypeNamesByClassification(RoleTypeClass::SERVICEGROUP_ADMIN);
-        $this->assertTrue(count($roleNames) == 1);
-        $this->assertTrue(in_array(RoleTypeName::SERVICEGROUP_ADMIN, $roleNames));
-    }*/
-
-
-
 }
-
-?>

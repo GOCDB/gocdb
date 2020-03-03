@@ -1,7 +1,4 @@
 <?php
-
-//require_once 'PHPUnit/Extensions/Database/TestCase.php';
-//require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
 require_once dirname(__FILE__) . '/TestUtil.php';
 
 use Doctrine\ORM\EntityManager;
@@ -18,10 +15,6 @@ require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/NGI.php';
 class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
 
     private $em;
-
-    //private $egiScope;
-    //private $localScope;
-    //private $eudatScope;
 
     /**
      * Overridden.
@@ -89,7 +82,6 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
      * @return EntityManager
      */
     private function createEntityManager() {
-        //require dirname(__FILE__).'/../lib/Doctrine/bootstrap.php';
         require dirname(__FILE__) . '/bootstrap_doctrine.php';
         return $entityManager;
     }
@@ -104,10 +96,8 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
         $tables = simplexml_load_file($fixture);
 
         foreach ($tables as $tableName) {
-            //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM " . $tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
-            //echo 'row count: '.$result->getRowCount() ;
             if ($result->getRowCount() != 0)
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
         }
@@ -156,6 +146,4 @@ class NGIServiceTest extends PHPUnit_Extensions_Database_TestCase {
     }
 
 }
-
-
 ?>

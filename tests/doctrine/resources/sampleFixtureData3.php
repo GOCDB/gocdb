@@ -6,10 +6,6 @@
  * @author David Meredith
  */
 
-/*
-
- */
-
 
         // Sites ****************************
         $site0 = TestUtil::createSampleSite("Site0");
@@ -23,8 +19,6 @@
         $this->em->persist($site3);
         $this->em->persist($site4);
         // Sites ****************************
-
-
 
 
         // site1 has 1 prop

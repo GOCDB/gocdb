@@ -29,10 +29,6 @@ class RoleCascadeDeletionsTest extends PHPUnit_Extensions_Database_TestCase {
 
     private $em;
 
-    //private $egiScope;
-    //private $localScope;
-    //private $eudatScope;
-
     /**
      * Overridden.
      */
@@ -99,7 +95,6 @@ class RoleCascadeDeletionsTest extends PHPUnit_Extensions_Database_TestCase {
      * @return EntityManager
      */
     private function createEntityManager() {
-        //require dirname(__FILE__).'/../lib/Doctrine/bootstrap.php';
         require dirname(__FILE__) . '/bootstrap_doctrine.php';
         return $entityManager;
     }

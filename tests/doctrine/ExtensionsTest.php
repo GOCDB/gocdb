@@ -1,14 +1,9 @@
 <?php
-
-//require_once 'PHPUnit/Extensions/Database/TestCase.php';
-//require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
 require_once dirname(__FILE__) . '/TestUtil.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/ServiceService.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/RoleActionMappingService.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/RoleActionAuthorisationService.php';
-
 use Doctrine\ORM\EntityManager;
-
 require_once dirname(__FILE__) . '/bootstrap.php';
 
 /**
@@ -99,10 +94,8 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $tables = simplexml_load_file($fixture);
 
     foreach ($tables as $tableName) {
-        //print $tableName->getName() . "\n";
         $sql = "SELECT * FROM " . $tableName->getName();
         $result = $con->createQueryTable('results_table', $sql);
-        //echo 'row count: '.$result->getRowCount() ;
         if ($result->getRowCount() != 0)
         throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
     }
@@ -260,11 +253,6 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $this->assertTrue(count($properties) == 2);
     $this->em->flush();
 
-    //Print names of properties
-    //foreach($properties as $prop){
-    //	print($prop->getKeyName()."-");
-    //	print($prop->getKeyValue()."\n");
-    //}
     //Check this via the database
     $con = $this->getConnection();
 
@@ -367,11 +355,6 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $this->assertTrue(count($properties) == 2);
     $this->em->flush();
 
-    //Print names of properties
-    //foreach($properties as $prop){
-    //	print($prop->getKeyName()."-");
-    //	print($prop->getKeyValue()."\n");
-    //}
     //Check this via the database
     $con = $this->getConnection();
 
@@ -462,12 +445,6 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase {
     $properties = $endpoint->getEndpointProperties();
     $this->assertTrue(count($properties) == 2);
     $this->em->flush();
-
-    //Print names of properties
-    //foreach ($properties as $prop) {
-    //    print($prop->getKeyName() . "-");
-    //    print($prop->getKeyValue() . "\n");
-    //}
 
     //Check this via the database
     $con = $this->getConnection();

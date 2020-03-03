@@ -1,11 +1,6 @@
 <?php
-
-//require_once 'PHPUnit/Extensions/Database/TestCase.php';
-//require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
 require_once dirname(__FILE__) . '/TestUtil.php';
-
 use Doctrine\ORM\EntityManager;
-
 require_once dirname(__FILE__) . '/bootstrap.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/Site.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/NGI.php';
@@ -19,11 +14,7 @@ require_once dirname(__FILE__) . '/../../lib/DAOs/ServiceDAO.php';
  * @author David Meredith
  */
 class ServiceDAOTest extends PHPUnit_Extensions_Database_TestCase {
-
     private $em;
-    //private $egiScope;
-    //private $localScope;
-    //private $eudatScope;
 
     /**
      * Overridden.
@@ -153,7 +144,6 @@ class ServiceDAOTest extends PHPUnit_Extensions_Database_TestCase {
         $this->assertTrue($result->getRowCount() == 0);
     }
 
-
      public function testNgiService_removeNgi() {
         print __METHOD__ . "\n";
         include __DIR__ . '/resources/sampleFixtureData1.php';
@@ -165,10 +155,7 @@ class ServiceDAOTest extends PHPUnit_Extensions_Database_TestCase {
         $ngiService = new org\gocdb\services\NGI();
         $ngiService->setEntityManager($this->em);
         $ngiService->deleteNgi($ngi, $adminUser, FALSE);
-
      }
-
 }
 
-//close class
 ?>

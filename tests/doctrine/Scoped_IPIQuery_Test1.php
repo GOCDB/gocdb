@@ -1,22 +1,13 @@
 <?php
-
-//require_once 'PHPUnit/Extensions/Database/TestCase.php';
-//require_once 'PHPUnit/Extensions/Database/DataSet/DefaultDataSet.php';
 require_once dirname(__FILE__) . '/TestUtil.php';
-
 use Doctrine\ORM\EntityManager;
-
 require_once dirname(__FILE__) . '/bootstrap.php';
-//require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/PI/QueryBuilders/ScopeQueryBuilder.php';
-//require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/PI/QueryBuilders/Helpers.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/PI/GetNGI.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/PI/GetSite.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/PI/GetService.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/PI/GetServiceGroup.php';
-//
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/Factory.php';
 require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/PI/QueryBuilders/ExtensionsParser.php';
-
 
 /**
  * Creates selected <code>IPIQuery</code> objects that perform scoped queries on
@@ -181,11 +172,6 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
         $this->queryForIScopedEntity($query, array('scope' => 'Scope1', 'scope_match' => 'any'), 3);
         $this->queryForIScopedEntity($query, array('scope' => 'ScopeX0,ScopeX1,ScopeX1', 'scope_match' => 'any'), 0);
 
-//	$query->validateParameters(array('scope' => 'Scope0,Scope1,ScopeX', 'scope_match' => 'any'));
-//	$query->createQuery();
-//      $results = $query->executeQuery();
-//	print_r(count($results));
-//      $this->assertTrue(4 == count($results));
 
     $this->queryForIScopedEntity($query, array('scope' => 'Scope0,Scope1,ScopeX', 'scope_match' => 'any'), 4);
     $this->queryForIScopedEntity($query, array('scope' => 'Scope1,ScopeX,ScopeXX', 'scope_match' => 'any'), 3);
@@ -204,5 +190,4 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
 
 }
 
-//close class
 ?>

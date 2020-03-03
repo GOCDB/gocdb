@@ -108,10 +108,8 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
         $tables = simplexml_load_file($fixture);
 
         foreach($tables as $tableName) {
-            //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM ".$tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
-            //echo 'row count: '.$result->getRowCount() ;
             if($result->getRowCount() != 0){
                 throw new RuntimeException("Invalid fixture. Table has rows: ".$tableName->getName());
             }
@@ -145,10 +143,6 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
         }
         $scopes = $scopeService->getScopes($scopeIds);
         $this->assertEquals(10, count($scopes));
-//        foreach($scopes as $scope){
-//            echo $scope->getId().' '.$scope->getName()."\n";
-//        }
-
     }
 
     public function testGetScopesFilterByParams1() {
@@ -167,7 +161,6 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
         $excludedScopeNames = $configService->getReservedScopeList();//'Scope0', 'Scope1', 'Scope2', 'Scope3'
         $filteredScopes = $scopeService->getScopesFilterByParams($filterParams, null);
         foreach($filteredScopes as $scope){
-            //echo $scope->getName()."\n";
             if(in_array($scope->getName(), $excludedScopeNames)){
                $this->fail("Reserved scope returned");
             }
@@ -198,7 +191,6 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
         $excludedScopeNames = array('Scope4', 'Scope5', 'Scope6', 'Scope7', 'Scope8', 'Scope9');
         $filteredScopes = $scopeService->getScopesFilterByParams($filterParams, null);
         foreach($filteredScopes as $scope){
-            //echo $scope->getName()."\n";
             if(in_array($scope->getName(), $excludedScopeNames)){
                $this->fail("Normal/Non-Reserved scope returned");
             }
@@ -257,7 +249,6 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
         $excludedScopeNames = array('Scope1','Scope2','Scope3','Scope4','Scope5','Scope6','Scope7','Scope8','Scope9');
         $filteredScopes = $scopeService->getScopesFilterByParams($filterParams, null);
         foreach($filteredScopes as $scope){
-            //echo $scope->getName()."\n";
             if(in_array($scope->getName(), $excludedScopeNames)){
                $this->fail("Default scope returned");
             }

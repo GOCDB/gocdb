@@ -16,10 +16,8 @@ require_once __DIR__ . '/../../../doctrine/TestUtil.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Role.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/RoleActionMappingService.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/RoleActionAuthorisationService.php';
-
 use Doctrine\ORM\EntityManager;
 require_once __DIR__ . '/../../../doctrine/bootstrap.php';
-
 
 /**
  * Description of RoleActionAuthorisationServiceTest
@@ -159,7 +157,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
 
     // Create RoleActionAuthorisationService with dependencies
         $roleAuthServ = new org\gocdb\services\RoleActionAuthorisationService
-                ($roleActionMappingService/*, $roleService*/);
+                ($roleActionMappingService);
         $roleAuthServ->setEntityManager($em2);
 
         // Create role and link user and owned entities (user link not shown)
@@ -175,7 +173,6 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
     // Assert user has no authorising roles over n1 BECAUSE p1 is not
     // mapped in XML file and there is no default mapping!
         $enablingRoles = $roleAuthServ->authoriseAction(\Action::REVOKE_ROLE, $n1, $u)->getGrantingRoles();
-    //print_r("dave: ".$enablingRoles[0]->getRoleType()->getName());
         $this->assertEquals(0, count($enablingRoles));
     }
 
@@ -220,10 +217,6 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $roleActionMappingService = new org\gocdb\services\RoleActionMappingService();
         $roleActionMappingService->setRoleActionMappingsXmlPath(
                 __DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings6.xml");
-
-        //Create Role Service
-        //$roleService = new org\gocdb\services\Role();
-        //$roleService->setEntityManager($em2);
 
         // Create RoleActionAuthorisationService with dependencies
         $roleAuthServ = new org\gocdb\services\RoleActionAuthorisationService
@@ -499,11 +492,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $this->assertEquals(1, count($enablingRoles));
         $this->assertTrue(in_array($r6, $enablingRoles));
 
-
-
-
     }
-
 
 
     public function test_getUserRolesOnAndAboveEntity(){
@@ -904,19 +893,6 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
         $this->assertEquals(0, count($enablingRoles));
     }
 
-
-
-
-
-
-
-    /*private function getRoleTypeNames($enablingRoles) {
-        $enablingRoleNames = array();
-        foreach ($enablingRoles as $role) {
-            $enablingRoleNames[] = $role->getRoleType()->getName();
-        }
-        return $enablingRoleNames;
-    }*/
 
 }
 
