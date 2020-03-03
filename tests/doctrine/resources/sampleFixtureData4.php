@@ -68,7 +68,7 @@ $downtime5->addService($service1);
 $downtime6->addService($service1);
 
 
-//$downtime4->addEndpointLocation($endpoint2_1); // downtiem4 is not linked to endpoint !
+//$downtime4->addEndpointLocation($endpoint2_1); // downtime4 is not linked to endpoint !
 $downtime4->addService($service2);// downtime4 is directly linked to service2
 $downtime6->addEndpointLocation($endpoint2_1); //downtime6 is linked to service2 via its endpoint
 //$downtime6->addService($service2);  // downtime6 is not linked to endpoint !
