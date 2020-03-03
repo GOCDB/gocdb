@@ -106,8 +106,9 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase {
     foreach($tables as $tableName) {
       $sql = "SELECT * FROM ".$tableName->getName();
       $result = $con->createQueryTable('results_table', $sql);
-      if($result->getRowCount() != 0)
+      if($result->getRowCount() != 0) {
         throw new RuntimeException("Invalid fixture. Table has rows: ".$tableName->getName());
+      }
     }
   }
 

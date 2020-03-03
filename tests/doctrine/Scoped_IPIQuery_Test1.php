@@ -105,8 +105,9 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
       $sql = "SELECT * FROM " . $tableName->getName();
       $result = $con->createQueryTable('results_table', $sql);
       //echo 'row count: '.$result->getRowCount() ;
-      if ($result->getRowCount() != 0)
+      if ($result->getRowCount() != 0) {
         throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
+      }
     }
   }
 
