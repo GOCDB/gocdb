@@ -154,7 +154,7 @@ class ShibAuthToken implements IAuthentication {
                 die('Did not receive the required entitlement attribute from the EGI Dev Proxy IdP, please contact gocdb-admins');
             } 
             $entitlementValuesArray = explode(';', $_SERVER['entitlement']); 
-            if( !in_array('urn:mace:egi.eu:aai.egi.eu:gocdb', $entitlementValuesArray) ){
+            if( !in_array('urn:mace:egi.eu:res:gocdb#aai.egi.eu', $entitlementValuesArray) ){
                  $HTML = '<ul><li>You authenticated to the EGI Dev Identity Provider using a method that does not provide a GOCDB entitlement.</li><li>Login is required with a gocdb entitlement.</li><li>To gain access, you will need to login to the Proxy IdP using a scheme that provides a gocdb entitlement.</li><li>Please logout or restart your browser and attempt to login again.</li></ul>';
                  $HTML .= "<div style='text-align: center;'>";
                  $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
