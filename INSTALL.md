@@ -554,13 +554,17 @@ before running a production GocDB instance. See `tests/README.md` for details.
 
 If you modify the `lib/Doctrine/entities` objects, to add new values for example,
 you will need to update your DB schema. This can be done using the doctrine
-command line tool. For example:
+command line tool (first stop GOCDB running so there are no active DB connections). For example:
 
 ```
 $ cd lib/Doctrine
 $ vim entities/Site.php     # modify the Site entity object, e.g. add a new 'timezoneId' value
 $ doctrine orm:schema-tool:update --dump-sql
 ALTER TABLE SITES ADD (timezoneId VARCHAR2(255) DEFAULT NULL)
+```
+For production enviroments you should now sanity check the outputed SQL before running it against your database using the relevant CLI tool. Alternatively, in testing enviroments, you can simply run the following to execute the code:
+
+```
 $ doctrine orm:schema-tool:update --force
 Updating database schema...
 Database schema updated successfully! "1" queries were executed
