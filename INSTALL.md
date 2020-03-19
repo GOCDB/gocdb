@@ -562,7 +562,7 @@ $ vim entities/Site.php     # modify the Site entity object, e.g. add a new 'tim
 $ doctrine orm:schema-tool:update --dump-sql
 ALTER TABLE SITES ADD (timezoneId VARCHAR2(255) DEFAULT NULL)
 ```
-For production enviroments you should now sanity check the outputed SQL before running it against your database using the relevant CLI tool. Alternatively, in testing enviroments, you can simply run the following to execute the code:
+For production environments you should now sanity check the outputted SQL before running it against your database using the relevant CLI tool. Alternatively, in testing environments, you can simply run the following to execute the code:
 
 ```
 $ doctrine orm:schema-tool:update --force
