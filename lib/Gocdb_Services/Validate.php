@@ -36,6 +36,22 @@ class Validate {
         //Check the length of the field value, if too long, throws exception
         $this->checkFieldLength($Object_Name, $Field_Name, $Field_Value);
 
+        //Check the Type of the field value, where this is defined
+        $type = $this->Get_Field_value($Object_Name, $Field_Name, 'ftype');
+        if (count($type) != 0) {
+          if (strtolower($type) == "string") {
+            if (!is_string($Field_Value)) {
+                throw new \Exception($Field_Name . " must be a string.");
+            }
+          } elseif (strtolower($type) == "boolean") {
+            if (!is_bool($Field_Value)) {
+                throw new \Exception($Field_Name . " must be a boolean.");
+            }
+          } else {
+            throw new \Exception("Internal error: validation of data of type $type is not supported by the validation service");
+          }
+        }
+        
         $RegEx = $this->Get_Field_value($Object_Name, $Field_Name, 'regex');
         // If there are no checks to perform then $Field_Value must be valid
         if(count($RegEx) == 0)

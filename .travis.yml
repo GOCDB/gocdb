@@ -1,5 +1,5 @@
-# N.B. Ubuntu Precise available on Travis until March 2018
-dist: precise
+os: linux
+dist: trusty
 language: php
 before_install:
     - mysql -e 'CREATE DATABASE doctrine;'
@@ -8,20 +8,33 @@ script: .travis/run_tests.sh
 services:
     - mysql
 php:
-    - '5.3'
     - '5.4'
     - '5.5'
-env:
-    - DB=sqlite
-    - DB=mysql
-matrix:
+    - '5.6'
+    - '7.0'
+    - '7.1'
+    - '7.2'
+    - '7.3'
+    - '7.4'
+env: DB=mysql
+
+jobs:
     include:
-    - dist: trusty
+      # N.B. Ubuntu Precise required to use PHP 5.3
+    - dist: precise
       env: DB=mysql
-      php: '5.4'
-    - dist: trusty
-      env: DB=mysql
-      php: '5.5'
+      php: '5.3'
+    - env: DB=sqlite
+      php: '5.6'
     allow_failures:
     - env: DB=sqlite
+    - env: DB=mysql
+      php: '7.2'
+    - env: DB=mysql
+      php: '7.3'
+    - env: DB=mysql
+      php: '7.4'
     fast_finish: true
+
+after_success:
+    - bash <(curl -s https://codecov.io/bash)

@@ -453,7 +453,7 @@ $extensionProperties = $site->getSiteProperties();
                             <div style="background-color: inherit;">
                                 <?php if ($params['authenticated']) { ?>
                                 <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
-                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px"  style="vertical-align: middle; padding-right: 1em;" />
+                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
                                     <?php xecho($role->getUser()->getFullName()) ?>
                                 </a>
                                 <?php
@@ -495,8 +495,12 @@ $extensionProperties = $site->getSiteProperties();
 
     <!--  Downtimes -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Recent Downtimes Affecting <?php xecho($site->getShortName()) ?>'s SEs </span>
-        <a href="index.php?Page_Type=Site_Downtimes&amp;id=<?php echo($site->getId()); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
+        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+            Recent Downtimes Affecting <?php xecho($site->getShortName()) ?> Sevices and Endpoints
+            <a href="index.php?Page_Type=Site_Downtimes&amp;id=<?php echo($site->getId()); ?>">
+                (View all Downtimes)
+            </a>
+        </span>
         <img src="<?php echo \GocContextPath::getPath() ?>img/down_arrow.png" class="decoration" />
 
         <table id="siteDowntimesTable" class="table table-striped table-condensed tablesorter">

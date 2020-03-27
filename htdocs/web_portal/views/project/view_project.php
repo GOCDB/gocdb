@@ -128,7 +128,7 @@
                     ?>
                         <tr>
                             <td>
-                                <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px"  style="vertical-align: middle; padding-right: 1em;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
                             </td>
                             <td>
                                 <?php
