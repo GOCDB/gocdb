@@ -792,7 +792,7 @@ class RoleActionAuthorisationServiceTest  extends PHPUnit_Extensions_Database_Te
     /*
     *                               p1
     *                                |
-      *                             ngi      <- ngiManRT, rodRT,
+    *                             ngi      <- ngiManRT, rodRT,
     *                             |    \
     *         siteAdminRT  ->   site1   site2
     *                             |
