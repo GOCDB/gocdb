@@ -115,7 +115,7 @@ class PIWriteRequest {
      */
     public function processRequest($method, $requestUrl, $requestContents, Site $siteService) {
         try {
-            $this->getAndProcessURL($method, $requestUrl);
+            $this->processURL($method, $requestUrl);
             $this->generateExceptionMessages();
             $this->getRequestContent($requestContents);
             $this->validateEntityTypePropertyAndPropValue();
@@ -153,11 +153,11 @@ class PIWriteRequest {
      * @param  string $requestUrl url used to access API, only the last section
      * @throws \Exception
      */
-    private function getAndProcessURL($method, $requestUrl) {
+    private function processURL($method, $requestUrl) {
         #Process URL into array of useful values
         $requestArray = $this->processURLtoArray($requestUrl);
 
-        #Process request contents
+        #Process url contents
         #API Version
         $this->processAPIVersion($requestArray[0]);
 
