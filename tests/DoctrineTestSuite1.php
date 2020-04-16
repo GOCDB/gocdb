@@ -14,6 +14,10 @@ require_once __DIR__ . '/doctrine/DowntimeServiceEndpointTest1.php';
 require_once __DIR__ . '/unit/lib/Gocdb_Services/RoleActionAuthorisationServiceTest.php';
 require_once __DIR__ . '/unit/lib/Gocdb_Services/RoleActionMappingServiceTest.php';
 require_once __DIR__ . '/unit/lib/Gocdb_Services/ScopeServiceTest.php';
+require_once __DIR__ . '/writeAPI/siteMethods.php';
+require_once __DIR__ . '/writeAPI/serviceMethods.php';
+require_once __DIR__ . '/writeAPI/endpointMethods.php';
+
 
 /**
  * TestSuite designed to run the main doctrine tests
@@ -38,10 +42,13 @@ class DoctrineTestSuite1 {
     $suite->addTestSuite('ExtensionsTest');
     $suite->addTestSuite('Scoped_IPIQuery_Test1');
     $suite->addTestSuite('DowntimeServiceEndpointTest1');
-
     $suite->addTestSuite('RoleActionAuthorisationServiceTest');
     $suite->addTestSuite('RoleActionMappingServiceTest');
     $suite->addTestSuite('ScopeServiceTest');
+    $suite->addTestSuite('WriteAPIsiteMethodsTests');
+    $suite->addTestSuite('WriteAPIserviceMethodsTests');
+    $suite->addTestSuite('WriteAPIendpointMethodsTests');
+
 
     return $suite;
   }
