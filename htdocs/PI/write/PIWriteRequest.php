@@ -110,6 +110,7 @@ class PIWriteRequest {
      * @param  string $requestUrl url used to access API, only the last section
      * @param  string|null $requestContents contents of the request (JSON String or null)
      * @param  Site $siteService Site Service
+     * @param array ('userIdentifier'=><Identifier of user>,'userIdentifierType'=><Type of identifier e.g. X509>)
      * @return array ('httpResponseCode'=><code>,'returnObject'=><object to return to user>)
      */
     public function processRequest($method, $requestUrl, $requestContents, Site $siteService, $authArray) {
