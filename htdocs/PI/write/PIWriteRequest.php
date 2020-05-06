@@ -120,7 +120,7 @@ class PIWriteRequest {
             $this->getRequestContent($requestContents);
             $this->validateEntityTypePropertyAndPropValue();
             $this->checkIfGOCDBIsReadOnlyAndRequestisNotGET();
-            $this->getAndSetAuthInfo($authArray);
+            $this->setAuthInfo($authArray);
             $this->updateEntity($siteService);
 
         } catch (\Exception $e) {
@@ -554,13 +554,14 @@ class PIWriteRequest {
       }
     }
 
-
     /**
-     * Sets the relevant class property
+     * Sets the class properties relating to authentication
+     * @param array $authArray 'userIdentifier'=>[The identifier of the user accessing the API],
+     *                         'userIdentifierType'=>[The type of identifier being used to access the API]
      */
-    private function getAndSetAuthInfo($authArray) {
+    private function setAuthInfo($authArray) {
       #Authentication
-      #$this->userIdentifier will be empty if the unser doesn't provide a credential
+      #$this->userIdentifier will be empty if the user doesn't provide a credential
       #If in the future we implement API keys, then I suggest we only look for
       #the DN if the API key isn't presented.
       #Failure to authenticate is handled elsewhere
