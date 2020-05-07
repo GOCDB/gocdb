@@ -18,11 +18,11 @@ use Doctrine\ORM\EntityManager;
 require_once __DIR__ . '/../../../doctrine/bootstrap.php';
 
 /**
- * DBUnit test class 
+ * DBUnit test class
  *
  */
 class ServiceServiceTest extends PHPUnit_Extensions_Database_TestCase{
-  private $em;
+  private $eMan;
 
   /**
   * Overridden.
@@ -82,7 +82,7 @@ class ServiceServiceTest extends PHPUnit_Extensions_Database_TestCase{
   */
   protected function setUp() {
     parent::setUp();
-    $this->em = $this->createEntityManager();
+    $this->eMan = $this->createEntityManager();
   }
 
   /**
@@ -90,6 +90,8 @@ class ServiceServiceTest extends PHPUnit_Extensions_Database_TestCase{
   * @return EntityManager
   */
   private function createEntityManager(){
+    // Initialise to avoid unused variable warnings
+    $entityManager = NULL;
     require __DIR__ . '/../../../doctrine/bootstrap_doctrine.php';
     return $entityManager;
   }
@@ -113,27 +115,29 @@ class ServiceServiceTest extends PHPUnit_Extensions_Database_TestCase{
   }
 
   public function createValidationEntities(){
-    
-    $site = TestUtil::createSampleSite("TestSite");
-    $this->em->persist($site);
 
-    $service = TestUtil::createSampleService("TestService1");
-    $this->em->persist($service);
+    $util = new TestUtil();
+
+    $site = $util->createSampleSite("TestSite");
+    $this->eMan->persist($site);
+
+    $service = $util->createSampleService("TestService1");
+    $this->eMan->persist($service);
     $service->setParentSiteDoJoin($site);
 
-    $user = TestUtil::createSampleUser("Test", "Testing", "/c=test");
-    $this->em->persist($user);
+    $user = $util->createSampleUser("Test", "Testing", "/c=test");
+    $this->eMan->persist($user);
     $user->setAdmin(TRUE);
 
-    $roleActionMappingService = new org\gocdb\services\RoleActionMappingService();
-    $roleActionAuthService = new org\gocdb\services\RoleActionAuthorisationService($roleActionMappingService);
-    $roleActionAuthService->setEntityManager($this->em);
+    $roleAMS = new org\gocdb\services\RoleActionMappingService();
+    $roleAAS = new org\gocdb\services\RoleActionAuthorisationService($roleAMS);
+    $roleAAS->setEntityManager($this->eMan);
 
-    $this->em->flush();
+    $this->eMan->flush();
 
     $serviceService = new org\gocdb\services\ServiceService();
-    $serviceService->setEntityManager($this->em);
-    $serviceService->setRoleActionAuthorisationService($roleActionAuthService);
+    $serviceService->setEntityManager($this->eMan);
+    $serviceService->setRoleActionAuthorisationService($roleAAS);
 
     return array($service, $user, $serviceService);
   }
@@ -145,7 +149,8 @@ class ServiceServiceTest extends PHPUnit_Extensions_Database_TestCase{
     print __METHOD__ . "\n";
 
     list ($service, $user, $serviceService) = $this->createValidationEntities();
-   
+    // Properties are specified as array of arrays of form
+    // [[Name,Value],[Name,Value], ... ]
     $values[0] = array("ValidName1","ValidValue");
     $values[1] = array("ValidName2","<ValidValue><ValidValue>");
 
@@ -168,13 +173,16 @@ class ServiceServiceTest extends PHPUnit_Extensions_Database_TestCase{
     print __METHOD__ . "\n";
 
     list ($service, $user, $serviceService) = $this->createValidationEntities();
-   
+    // Properties are specified as array of arrays of form
+    // [[Name,Value],[Name,Value], ... ]
+    // < & > are invalid characters in the property name but are valid
+    // for the property value.
     $values[0] = array("<Invalid>","<valid>");
 
     $this->setExpectedException('Exception');
 
     $serviceService->addProperties($service, $user, $values);
-    
+
   }
   /**
    * Check that validation of property value is operating as expected
@@ -184,12 +192,14 @@ class ServiceServiceTest extends PHPUnit_Extensions_Database_TestCase{
     print __METHOD__ . "\n";
 
     list ($service, $user, $serviceService) = $this->createValidationEntities();
-   
+    // Properties are specified as array of arrays of form
+    // [[Name,Value],[Name,Value], ... ]
+    // Quote characters are invalid in property value
     $values[0] = array("Valid","'Not Valid'");
 
     $this->setExpectedException('Exception');
 
     $serviceService->addProperties($service, $user, $values);
-    
+
   }
 }
