@@ -23,7 +23,6 @@ namespace org\gocdb\services;
 
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Config.php';
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Validate.php';
-require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
 
 // Set the timezone to UTC for rendering all times/dates in PI.
 // The date-times stored in the DB are in UTC, however, we still need to
@@ -111,16 +110,17 @@ class PIWriteRequest {
      * @param  string $requestUrl url used to access API, only the last section
      * @param  string|null $requestContents contents of the request (JSON String or null)
      * @param  Site $siteService Site Service
+     * @param array ('userIdentifier'=><Identifier of user>,'userIdentifierType'=><Type of identifier e.g. X509>)
      * @return array ('httpResponseCode'=><code>,'returnObject'=><object to return to user>)
      */
-    public function processRequest($method, $requestUrl, $requestContents, Site $siteService) {
+    public function processRequest($method, $requestUrl, $requestContents, Site $siteService, $authArray) {
         try {
             $this->processURL($method, $requestUrl);
             $this->generateExceptionMessages();
             $this->getRequestContent($requestContents);
             $this->validateEntityTypePropertyAndPropValue();
             $this->checkIfGOCDBIsReadOnlyAndRequestisNotGET();
-            $this->getAndSetAuthInfo();
+            $this->setAuthInfo($authArray);
             $this->updateEntity($siteService);
 
         } catch (\Exception $e) {
@@ -554,19 +554,30 @@ class PIWriteRequest {
       }
     }
 
-
     /**
-     * Gets authentication information and sets the relevant class property
+     * Sets the class properties relating to authentication
+     * @param array $authArray 'userIdentifier'=>[The identifier of the user accessing the API],
+     *                         'userIdentifierType'=>[The type of identifier being used to access the API]
      */
-    private function getAndSetAuthInfo() {
+    private function setAuthInfo($authArray) {
       #Authentication
-      #$this->userIdentifier will be empty if the unser doesn't provide a credential
+      #$this->userIdentifier will be empty if the user doesn't provide a credential
       #If in the future we implement API keys, then I suggest we only look for
       #the DN if the API key isn't presented.
       #Failure to authenticate is handled elsewhere
-      if(is_null($this->userIdentifier)){
-          $this->userIdentifier = Get_User_Principle_PI();
-          $this->userIdentifierType = 'X509';
+      if (array_key_exists('userIdentifier', $authArray)) {
+        $this->userIdentifier = $authArray['userIdentifier'];
+      } else {
+        $this->exceptionWithResponseCode(500,
+          "Internal error: no identifier found. Please contact the GOCDB administrators"
+        );
+      }
+      if (array_key_exists('userIdentifierType', $authArray)) {
+        $this->userIdentifierType = $authArray['userIdentifierType'];
+      } else {
+        $this->exceptionWithResponseCode(500,
+          "Internal error: no identifier type found. Please contact the GOCDB administrators"
+        );
       }
     }
 
