@@ -8,14 +8,6 @@ $background_top = \Factory::getConfigService()->getBackgroundTop();
 $background_bottom = \Factory::getConfigService()->getBackgroundBottom();
 $header_text_colour = \Factory::getConfigService()->getHeadingTextColour();
 
-/* if (\Factory::getConfigService()->getDefaultScopeName() == 'EOSC-hub') {
-    $background_top = '#B5892D';        // eosc brown
-    $background_bottom = '#FCF2DD';     // eosc pale brown
-} else {
-    $background_top = '#F7F9FE';        // godcb default
-    $background_bottom = '#D0DFF9';
-}
-*/
 ?>
 /* table.sorter plugin, http://tablesorter.com/docs/ */
 table.tablesorter {
