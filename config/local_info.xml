@@ -39,14 +39,14 @@
             ## enable the menu display.
           -->
           <menus>
-            <Projects>true</Projects>
-            <NGI>true</NGI>
+            <Projects>show</Projects>
+            <NGI>show</NGI>
             <AddNGI>show</AddNGI>
             <AddProject>show</AddProject>
-            <ServiceGroups>true</ServiceGroups>
-            <AddSite>true</AddSite>
-            <Scopes>true</Scopes>
-            <AdminScopes>true</AdminScopes>
+            <ServiceGroups>show</ServiceGroups>
+            <AddSite>show</AddSite>
+            <Scopes>show</Scopes>
+            <AdminScopes>show</AdminScopes>
           </menus>
           <!-- css
             ## Provide hex colour values for the background as implemented in
