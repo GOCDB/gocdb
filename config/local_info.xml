@@ -85,7 +85,7 @@
             <backgroundDirection>to bottom left</backgroundDirection>
             <backgroundColour1>#F7F9FE</backgroundColour1>
             <backgroundColour2>#DEE9FB</backgroundColour2>
-            <backgroundColour3></backgroundColour3>
+            <backgroundColour3>#D0DFF9</backgroundColour3>
             <headingTextColour>#00AC00</headingTextColour>
           </css>
           <!-- name_mapping
