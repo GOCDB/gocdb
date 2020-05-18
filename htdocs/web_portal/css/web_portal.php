@@ -4,8 +4,10 @@ header("Content-type: text/css");
 // Load variable values from local configuration //
 \Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
 
-$background_top = \Factory::getConfigService()->getBackgroundTop();
-$background_bottom = \Factory::getConfigService()->getBackgroundBottom();
+$background_direction = \Factory::getConfigService()->getBackgroundDirection();
+$background_colour1 = \Factory::getConfigService()->getBackgroundColour1();
+$background_colour2 = \Factory::getConfigService()->getBackgroundColour2();
+$background_colour3 = \Factory::getConfigService()->getBackgroundColour3();
 $header_text_colour = \Factory::getConfigService()->getHeadingTextColour();
 
 ?>
@@ -49,7 +51,24 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 
 
 body {
-    background: linear-gradient(to bottom left, <?=$background_top?>, <?=$background_top?>, <?=$background_bottom?>); */
+    background: linear-gradient(
+    <?php
+        // Build the linear gradient input
+        $out = '';
+        if ($background_colour3 != '') {
+            $out = ','.$background_colour3;
+        }
+        if ($background_colour2 != '') {
+            $out = ','.$background_colour2 . $out;
+        }
+        if ($background_colour1 != '') {
+            $out = ','.$background_colour1 . $out;
+        }
+        $out = $background_direction . $out;
+
+        echo $out;
+    ?>
+    );
     color: #272A4B;
     font-family: 'PT Sans', sans-serif;
     font-size: 10pt;

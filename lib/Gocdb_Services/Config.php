@@ -29,7 +29,7 @@ class Config {
 
     public function __construct() {
         $this->gocdb_schemaFile = __DIR__."/../../config/gocdb_schema.xml";
-        
+
         $this->setLocalInfoFileLocation(__DIR__."/../../config/local_info.xml");
     }
 
@@ -86,18 +86,18 @@ class Config {
         }
 
     }
-    
+
     /**
      * Set the url parameter overrides. THe url is used to match the xml section
      * containing override values for the default local_info.
-     * 
+     *
      * @param string $filePath
-     * @throws \LogicException If not a string     
+     * @throws \LogicException If not a string
      */
     public function setLocalInfoOverride ($url){
         if(!is_string($url)){
             throw new \LogicException("Invalid url given for local_info override.");
-        }      
+        }
         $this->local_info_override = $url;
         /**
          *  Force the cached object to be discarded as the file has changed
@@ -121,14 +121,14 @@ class Config {
         if ($this->local_info_xml == NULL) {
             if (!($this->local_info_xml = $this->readLocalInfoXML($this->getLocalInfoFileLocation(), $this->local_info_override))) {
                 throw new \ErrorException("Failed to load xml configuration file: ".$this->getLocalInfoFileLocation());
-            } 
-        } 
+            }
+        }
         return $this->local_info_xml;
     }
 
     /**
      * Reads the local_info.xml, returning a simplexml object. The contents of the file are
-     * adjusted based on the url attribute provided. 
+     * adjusted based on the url attribute provided.
      * @return simple xml object
      */
     private function readLocalInfoXML ($path, $url = NULL) {
@@ -150,13 +150,13 @@ class Config {
         }
 
         $default_info = $unqualified[0];
-        
+
         if (!is_null($url)) {
             // Find any elements matching the given url
             $qualified = $base->xpath("//local_info[@url=\"$url\"]");
 
             if (count($qualified) != 0) {
-                if (count($qualified) != 1) { 
+                if (count($qualified) != 1) {
                     throw new \ErrorException('Duplicate local_info elements with same url attribute found in configuration file '.$path);
                 }
 
@@ -182,15 +182,15 @@ class Config {
     }
     /**
      * Iteratively passes through a given SimpleXmlIterator object overwriting the values in an input
-     * SimpleXmlElement with the values found in the iterator. 
+     * SimpleXmlElement with the values found in the iterator.
      * Note: The elements in the iterator MUST exist in the input element.
      */
-    private function descendXml (\SimpleXmlIterator $iterator, $keys, \SimpleXmlElement $default_info) {      
-        
+    private function descendXml (\SimpleXmlIterator $iterator, $keys, \SimpleXmlElement $default_info) {
+
         for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
 
             $keys[] = $iterator->key();
- 
+
             if ($iterator->hasChildren()) {
                 $this->descendXml($iterator->getChildren(), $keys, $default_info);
             } else {
@@ -233,7 +233,7 @@ class Config {
      */
     public function showMenu($menuName) {
 
-        if (empty($this->GetLocalInfoXML()->menus->$menuName)) { 
+        if (empty($this->GetLocalInfoXML()->menus->$menuName)) {
             return true;
         }
 
@@ -262,16 +262,22 @@ class Config {
      * accessor function for css colour values from local_info.xml
      * @return string
      */
-    public function getBackgroundTop() {
-        return '#'.$this->GetLocalInfoXML()->css->backgroundTop;
+    public function getBackgroundDirection() {
+        return $this->GetLocalInfoXML()->css->backgroundDirection;
     }
-    public function getBackgroundBottom() {
-        return '#'.$this->GetLocalInfoXML()->css->backgroundBottom;
+    public function getBackgroundColour1() {
+        return $this->GetLocalInfoXML()->css->backgroundColour1;
+    }
+    public function getBackgroundColour2() {
+        return $this->GetLocalInfoXML()->css->backgroundColour2;
+    }
+    public function getBackgroundColour3() {
+        return $this->GetLocalInfoXML()->css->backgroundColour3;
     }
     public function getHeadingTextColour() {
-        return '#'.$this->GetLocalInfoXML()->css->headingTextColour;
+        return $this->GetLocalInfoXML()->css->headingTextColour;
     }
-    
+
     /**
      * Determine if the requested feature is set in the local_info.xml file.
      * @param type $featureName The feature name which should correspond to an
