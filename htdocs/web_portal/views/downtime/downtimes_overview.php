@@ -3,6 +3,7 @@ define('DATE_FORMAT', 'd-m-Y H:i');
 $dtActive = $params['downtimesActive'];
 $dtImmenent = $params['downtimesImmenent'];
 $timePeriod = $params['timePeriod'];
+$filterScope = $params['filterScope'];
 
 $td1 = '<td class="site_table">';
 $td2 = '</td>';
@@ -25,11 +26,17 @@ javascript to show and hide these tables.
         </div>
         <div style="float: left;">
             <h1 style="float: left; margin-left: 0em; padding-bottom: 0.0em;">
-                   Overview of Current and Planned Downtimes
+                   Downtimes
             </h1>
             <span style="float: left; clear: both;">
-                All currently active and planned downtimes over the coming weeks<br />
-             </span>
+                Currently active and scheduled downtimes<!-- This comment removes the pad space
+                --><?php
+                    if ($filterScope != NULL) {
+                        echo ', filtered by scope "' . $filterScope . '"';
+                    }
+                ?><!-- This comment removes the pad space
+                -->.<br />
+            </span>
         </div>
 
         <!--  Active Downtimes -->
@@ -116,7 +123,7 @@ javascript to show and hide these tables.
 
         <!--  Imminent Downtimes -->
         <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Downtimes Schedules for the next week(s)</span>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Downtimes Scheduled for the next week(s)</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration"/>
 
            <div class="topMargin rightFloat clearRight">

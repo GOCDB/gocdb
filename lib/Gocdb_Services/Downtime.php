@@ -740,7 +740,7 @@ class Downtime extends AbstractEntityService{
     }
     /**
      */
-    public function getActiveDowntimes() {
+    public function getActiveDowntimes($scopeFilter = NULL) {
         $dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d
                 JOIN d.services se
@@ -755,21 +755,18 @@ class Downtime extends AbstractEntityService{
                         AND d.endDate > :now)
                     )";
 
-        $filterByScope = \Factory::getConfigService()->getFilterDowntimesByScope();
-
-        if ($filterByScope) {
-            $defaultScope = \Factory::getConfigService()->getDefaultScopeName();
-            $dql .= " AND (sc.name = :defaultScope)";
+        if ($scopeFilter != NULL) {
+            $dql .= " AND (sc.name = :scopeFilter)";
         }
-        
+
         $dql .= " ORDER BY d.startDate DESC";
 
         $q = $this->em->createQuery( $dql )
                 ->setParameter( 'onGoingOnly', 'yes' )
                 ->setParameter( 'now', new \DateTime () );
 
-        if ($filterByScope) {
-            $q->setParameter('defaultScope', $defaultScope);
+        if ($scopeFilter != NULL) {
+            $q->setParameter('scopeFilter', $scopeFilter);
         }
 
         return $downtimes = $q->getResult ();
@@ -782,7 +779,7 @@ class Downtime extends AbstractEntityService{
      * @param \Date $windowStart
      * @param \Date $windowEnd
      */
-    public function getImminentDowntimes($windowStart, $windowEnd) {
+    public function getImminentDowntimes($windowStart, $windowEnd, $scopeFilter = NULL) {
         $dql = "SELECT DISTINCT d, se, s, st
                 FROM Downtime d
                 JOIN d.services se
@@ -798,21 +795,18 @@ class Downtime extends AbstractEntityService{
                     OR d.startDate < :windowEnd
                 )";
 
-        $filterByScope = \Factory::getConfigService()->getFilterDowntimesByScope();
-
-        if ($filterByScope) {
-            $defaultScope = \Factory::getConfigService()->getDefaultScopeName();
-            $dql .= " AND (sc.name = :defaultScope)";
+        if ($scopeFilter != NULL) {
+            $dql .= " AND (sc.name = :scopeFilter)";
         }
-        
+
         $dql .= " ORDER BY d.startDate DESC";
 
         $q = $this->em->createQuery( $dql )
                 ->setParameter( 'windowStart', $windowStart )
                 ->setParameter( 'windowEnd', $windowEnd );
 
-        if ($filterByScope) {
-            $q->setParameter('defaultScope', $defaultScope);
+        if ($scopeFilter != NULL) {
+            $q->setParameter('scopeFilter', $scopeFilter);
         }
 
         return $downtimes = $q->getResult ();

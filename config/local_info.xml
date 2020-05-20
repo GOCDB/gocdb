@@ -11,7 +11,11 @@
           ## Use of elements 'menus','css' and 'name_mappings' are described
           ## in the defaults section.
         -->
-        <local_info url="host-172-16-113-107.nubes.stfc.ac.uk">
+        <local_info url="host-172-16-113-108.nubes.stfc.ac.uk">
+
+          <default_scope>
+              <name>EOSChub</name>
+          </default_scope>
 
           <default_filter_by_scope>true</default_filter_by_scope>
 
@@ -143,7 +147,7 @@
         <!-- If set to true the initial state of the scope filter drop-downs on the
              ngi,site,service, downtimes pages is selected for the default_scope
         -->
-        <default_filter_by_scope>true</default_filter_by_scope>
+        <default_filter_by_scope>false</default_filter_by_scope>
 
         <!-- Show map on the start page -->
         <show_map_on_start_page>true</show_map_on_start_page>

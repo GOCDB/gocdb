@@ -383,14 +383,7 @@ class Config {
         }
         return $reservedScopes;
     }
-    public function getFilterDowntimesByScope () {
 
-        if (strtolower($this->GetLocalInfoXML()->filter_downtimes_by_default_scope) == 'true'){
-            return true;
-        }
-
-        return false;
-    }
     public function getDefaultFilterByScope () {
 
         if (strtolower($this->GetLocalInfoXML()->default_filter_by_scope) == 'true'){
