@@ -26,16 +26,10 @@ javascript to show and hide these tables.
         </div>
         <div style="float: left;">
             <h1 style="float: left; margin-left: 0em; padding-bottom: 0.0em;">
-                   Downtimes
+                   Overview of Current and Planned Downtimes
             </h1>
             <span style="float: left; clear: both;">
-                Currently active and scheduled downtimes<!-- This comment removes the pad space
-                --><?php
-                    if ($filterScope != NULL) {
-                        echo ', filtered by scope "' . $filterScope . '"';
-                    }
-                ?><!-- This comment removes the pad space
-                -->.<br />
+                All currently active and planned downtimes over the coming weeks<br />
             </span>
         </div>
 
