@@ -1355,39 +1355,6 @@ class Site extends AbstractEntityService{
         return $xmlString;
     }
 
-    /**
-    * Returns true if the identifier/type combination is a valid API
-    * authentication entity for the provided site.
-    * @param Site site
-    * @param string $identifier
-    * @param string $type
-    * @return boolean
-    */
-    public function authorisedAPIIdentifier (\Site $site, $identifier, $type) {
-        #TODO: this may be more effecient as a DQL query
-        foreach($site->getAPIAuthenticationEntities() as $authEnt) {
-            if ($authEnt->getType() == $type && $authEnt->getIdentifier() == $identifier) {
-                return true;
-            }
-        }
-
-        return false;
-    }
-
-    /**
-    * Throws exception if the identifier/type combination is not a valid API
-    * authentication entity for the provided site.
-    * @param Site site
-    * @param string $identifier
-    * @param string $type
-    * @throws \Exception
-    */
-    public function checkAuthorisedAPIIdentifier (\Site $site, $identifier, $type) {
-        if (!$this->authorisedAPIIdentifier($site, $identifier, $type)) {
-            throw new \Exception("The $type identifier \"$identifier\" is not authorised to alter the " . $site->getName() . " site");
-        }
-    }
-
     private function uniqueAPIAuthEnt(\Site $site, $identifier, $type) {
         //TODO: This would probably be more effecient as a DQL query
         $existingAuthEnts = $site->getAPIAuthenticationEntities();

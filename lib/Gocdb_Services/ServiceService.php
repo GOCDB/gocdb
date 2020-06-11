@@ -633,7 +633,7 @@ class ServiceService extends AbstractEntityService {
       //Check the portal is not in read only mode, throws exception if it is
       $this->checkGOCDBIsNotReadOnly();
 
-      \Factory::getSiteService()->checkAuthorisedAPIIDentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+      $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
 
       $scopes = clone $service->getScopes();
       $sType = $service->getServiceType();
@@ -1084,7 +1084,7 @@ class ServiceService extends AbstractEntityService {
         $this->checkGOCDBIsNotReadOnly();
 
         // Validate the user has permission to add properties
-        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($service->getParentSite(), $authenticationIdentifier, $authenticationType);
+        $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authenticationIdentifier, $authenticationType);
 
         //Convert the property array into the format used by the webportal logic
         #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
@@ -1228,7 +1228,7 @@ class ServiceService extends AbstractEntityService {
         $this->checkGOCDBIsNotReadOnly();
 
         // Validate the user has permission to add properties
-        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authenticationIdentifier, $authenticationType);
+        $this->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authenticationIdentifier, $authenticationType);
 
         //Convert the property array into the format used by the webportal logic
         #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
@@ -1376,7 +1376,7 @@ class ServiceService extends AbstractEntityService {
                 throw new \Exception("Internal error: property parent service and service do not match.");
             }
         }
-        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+        $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
 
         //Make the change
         $this->em->getConnection()->beginTransaction();
@@ -1460,7 +1460,7 @@ class ServiceService extends AbstractEntityService {
                 throw new \Exception("Internal error: property endpoint and endpoint do not match");
             }
         }
-        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($parentService->getParentSite(), $authIdentifier, $authIdentifierType);
+        $this->checkAuthorisedAPIIdentifier($parentService->getParentSite(), $authIdentifier, $authIdentifierType);
 
         //Make the change
         $this->em->getConnection()->beginTransaction();
@@ -1871,7 +1871,7 @@ class ServiceService extends AbstractEntityService {
       //Check the portal is not in read only mode, throws exception if it is
       $this->checkGOCDBIsNotReadOnly();
 
-      \Factory::getSiteService()->checkAuthorisedAPIIDentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+      $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
 
       $this->addEndpointLogic($service, $name, $url, $interfaceName, $description, $email, $monitored);
     }
@@ -1975,7 +1975,7 @@ class ServiceService extends AbstractEntityService {
       //Check the portal is not in read only mode, throws exception if it is
       $this->checkGOCDBIsNotReadOnly();
 
-      \Factory::getSiteService()->checkAuthorisedAPIIDentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
+      $this->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
 
       $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
 
@@ -2065,7 +2065,7 @@ class ServiceService extends AbstractEntityService {
       $this->checkGOCDBIsNotReadOnly();
 
       //Check authorisation
-      \Factory::getSiteService()->checkAuthorisedAPIIDentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
+      $this->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
 
       //Make the change
       $this->deleteEndpointLogic($endpoint);
