@@ -1,18 +1,10 @@
 <?php
+require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
-$localInfoLocation = __DIR__."/../../../config/local_info.xml";
-$localInfoXML = simplexml_load_file($localInfoLocation);
-$webPortalURL = $localInfoXML->local_info->web_portal_url;
-$piURL = $localInfoXML->local_info->pi_url; // e.g. https://localhost/gocdbpi
-$baseURL = $localInfoXML->local_info->server_base_url;
-
-
-define("PI_URL", $piURL."/public/?method=get_site_list"); //https://localhost/gocdbpi/public/?method=get_site_list
-define("PORTAL_URL", $webPortalURL);
-define("SERVER_BASE_URL", $baseURL);
-//define("SERVER_SSLCERT", "/etc/grid-security/hostcert.pem");
-//define("SERVER_SSLKEY", "/etc/pki/tls/private/hostkey.pem");
-
+// Initialise the configuration service.
+// If non-default location for xml configuration file is needed
+// use Factory::ConfigService->setLocalInfoFileLocation(...)
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
 
 $test_statuses =  array(
         "GOCDB5 DB connection" 						=> "unknown",
@@ -40,16 +32,14 @@ $test_messages =  array(
 );
 
 $disp = array(
-        "unknown" => "<td align='center' bgcolor='#A0A0A0'><font size='1'><i>unknown</i></font></td>",
-        "warn" => "<td align='center' bgcolor='#FFAA00'><font size='1'>WARNING</font></td>",
-        "error" => "<td align='center' bgcolor='#F00000'><font size='1'>ERROR</font></td>",
-        "ok" => "<td align='center' bgcolor='#00D000'><font size='1'>OK</font></td>",
+        "unknown"   => "<td align='center' bgcolor='#A0A0A0'><font size='1'><i>unknown</i></font></td>",
+        "warn"      => "<td align='center' bgcolor='#FFAA00'><font size='1'>WARNING</font></td>",
+        "error"     => "<td align='center' bgcolor='#F00000'><font size='1'>ERROR</font></td>",
+        "ok"        => "<td align='center' bgcolor='#00D000'><font size='1'>OK</font></td>",
 );
 
 // Test the connection to the database using Doctrine
 function test_db_connection(){
-    require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
-
     try {
         $entityManager = Factory::getNewEntityManager();
         $entityManager->getConnection()->connect();
@@ -110,6 +100,10 @@ function get_https2($url){
     }
 
     return $return;
+}
+
+function get_testPiMethod () {
+    return  "/public/?method=get_site_list";
 }
 
 ?>

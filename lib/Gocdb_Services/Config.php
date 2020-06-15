@@ -306,6 +306,15 @@ class Config {
     }
 
     /**
+     * The PI URL as recorded in local_info.xml.
+     */
+    public function getPiUrl(){
+        $localInfo = $this->GetLocalInfoXML();
+        $url = $localInfo->pi_url;
+        return strval($url);
+    }
+
+    /**
      * The base server URL as recorded in local_info.xml. This URL is used with the
      * PI query output, e.g. for building paging/HATEOAS links.
      */
