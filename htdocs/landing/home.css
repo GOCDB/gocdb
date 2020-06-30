@@ -44,11 +44,11 @@ h1,h2,h3 {
 /* h2-4 are only used in the Privacy and AUP policy notices */
 
 h2 {
-    font-size: 2.0em;	
+    font-size: 2.0em;
 }
 
 h3 {
-    font-size: 1.5em;	
+    font-size: 1.5em;
     line-height: 1;
 }
 
@@ -63,7 +63,7 @@ a {
     margin-bottom: 0em;
 }
 
-.page_container,.wide_page_container { 
+.page_container,.wide_page_container {
     position: relative;
     margin-left: auto;
     margin-right: auto;
@@ -100,9 +100,20 @@ a:hover {
     text-decoration: underline;
 }
 
-img.Sponsor_Logo {
-  max-height: 100%;
-  border: none; /* for IE(11) */
+a.Sponsor_Link img.Sponsor_Logo {
+    display:inline-block;
+    vertical-align: bottom;
+    height: 100%;
+}
+
+a.Sponsor_Link:hover {
+    text-decoration: none;
+}
+
+/* Put a small gap between the clickable area of the sponsor logos */
+a.Sponsor_Link {
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
 h1.Landing_Welcome {
@@ -112,8 +123,8 @@ h1.Landing_Welcome {
 /* The GOCDB cloverleaf */
 
 img.Landing_Logo {
-  display: inline-block; 
-  vertical-align:top; 
+  display: inline-block;
+  vertical-align:top;
   margin-right: 1em;
 }
 
