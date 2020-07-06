@@ -37,7 +37,7 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 
 
 
-body {  
+body {
     background: linear-gradient(to bottom left,#F7F9FE, #DEE9FB, #D0DFF9);
     color: #272A4B;
     font-family: 'PT Sans', sans-serif;
@@ -105,14 +105,14 @@ h1 {
 }
 
 
- 
+
 /*
     *	Containing DIV's
 	*	Page Container is the whole page
 	*	Left Box is the menu
 	*	Right Box is the smaller page contents
 	*/
-.page_container { 
+.page_container {
     position: relative;
     margin-left: auto;
     margin-right: auto;
@@ -166,8 +166,14 @@ div.Left_Logo_Row {
     margin-bottom: 5px;
 }
 
-img.Left_Logo_Image {
-    max-height: 100%;
+a.Sponsor_Link img.Sponsor_Logo {
+    display:inline-block;
+    vertical-align: bottom;
+    height: 100%;
+}
+
+a.Sponsor_Link:hover {
+    text-decoration: none;
 }
 
 div.Indented {
@@ -186,7 +192,7 @@ div.Indented {
 
 .Logo_Text {
     display: inline;
-} 
+}
 
 .logo_image {
     display: inline;
@@ -512,8 +518,8 @@ img.decoration {
 
 img.titleIcon{
     height:25px;
-    float: right; 
-    margin:2% 1% 1% 0%; 
+    float: right;
+    margin:2% 1% 1% 0%;
 }
 
 input.vSiteSearch {
@@ -576,7 +582,7 @@ img.centered {
 
 span.topMargin {
     margin-top: 1em;
-}	
+}
 
 span.block {
     display: block;
@@ -647,7 +653,7 @@ div.rightPageContainer {
     border: 1px solid #B4B4B4;
     padding: 1em;
     border-radius: 0.4em;
-    
+
 }
 
 div.tableContainer {
@@ -673,8 +679,8 @@ div.tableContainer {
 
 .smallLabelText{
     margin-left:8px;
-    font-size:11px; 
-    font-weight: normal; 
+    font-size:11px;
+    font-weight: normal;
     font-style:italic;
     display:inline-block;
 }
@@ -688,7 +694,7 @@ label.error {
 }
 
 .selectService{
-    background-color: #D5D5D5;	
+    background-color: #D5D5D5;
 }
 
 .selectEndpoint{

@@ -123,10 +123,32 @@
         $HTML = "";
         $HTML .= '<div class="Left_Logo_Box left_box_menu">';
         $HTML .= '<div class="Left_Logo_Row">';
-        $HTML .= '<a href="https://stfc.ukri.org/" target="_blank"><img class="Left_Logo_Image" style="margin: 0px 5px 0px 0px;" src="'.\GocContextPath::getPath().'img/UKRI_STF_Council-Logo_Horiz-RGB_crop.png" alt="The logo of the Science and Technology Facilities Council" /></a>';
-        $HTML .= '<a href="https://europa.eu/european-union/index_en" target="_blank"><img class="Left_Logo_Image" src="'.\GocContextPath::getPath().'img/eu_flag_yellow_low_150.png" alt="The logo of the European Union" /></a>&nbsp;&nbsp;';
-        $HTML .= '<a href="https://www.egi.eu" target="_blank"><img class="Left_Logo_Image" src="'.\GocContextPath::getPath().'img/egi_logo_no_background_150.png" alt="The logo of the E G I Foundation" /></a>';
-        $HTML .= '<a href="https://www.eosc-hub.eu/" target="_blank"><img class="Left_Logo_Image" style="margin: 0px 0px 0px 5px" src="'.\GocContextPath::getPath().'img/eosc-hub-v-web_150.png" alt="The logo of the EOSC-hub Horizon 20 20 project" /></a>';
+
+        $HTML .= '<a href="https://stfc.ukri.org/" class="Sponsor_Link" target="_blank">'.
+                    /* Allow for STFC council symbol extending above the upper bound of the UKRI symbol */
+                    '<img style="height: 112%; margin-top: -12%" class="Sponsor_Logo" '.
+                    'src="'.\GocContextPath::getPath().'img/UKRI_STF_Council-Logo_Horiz-RGB_crop.png" '.
+                    'alt="The logo of the Science and Technology Facilities Council" />'.
+                    '</a>';
+
+        $HTML .= '<a href="https://europa.eu/european-union/index_en" class="Sponsor_Link" target="_blank">'.
+                    '<img class="Sponsor_Logo" '.
+                    'src="'.\GocContextPath::getPath().'img/eu_flag_yellow_low_150.png" '.
+                    'alt="The logo of the European Union" />'.
+                    '.</a>';
+
+        $HTML .= '<a href="https://www.egi.eu" class="Sponsor_Link" target="_blank">'.
+                    '<img class="Sponsor_Logo" '.
+                    'src="'.\GocContextPath::getPath().'img/egi_logo_no_background_150.png" '.
+                    'alt="The logo of the E G I Foundation" />
+                    </a>';
+
+        $HTML .= '<a href="https://www.eosc-hub.eu/" class="Sponsor_Link" target="_blank">'.
+                    '<img class="Sponsor_Logo" '.
+                    'src="'.\GocContextPath::getPath().'img/eosc-hub-v-web_150.png" '.
+                    'alt="The logo of the EOSC-hub Horizon 20 20 project" />'.
+                    '</a>';
+
         $HTML .= '</div>';
         $HTML .= 'GOCDB is provided by <a href="https://stfc.ukri.org/">STFC</a> for <a href="https://egi.eu">EGI</a>, co-funded by <a href="https://egi.eu">EGI.eu</a> and <a href="https://www.eosc-hub.eu/">EOSC-hub.</a>';
 	      $HTML .= '<br>- ';
