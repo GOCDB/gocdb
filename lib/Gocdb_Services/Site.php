@@ -236,13 +236,6 @@ class Site extends AbstractEntityService{
             foreach($scopes as $s) {
                 $site->removeScope($s);
             }
-//            foreach($scopeIdsToApply as $scopeId){
-//                $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-//                $scope = $this->em->createQuery($dql)
-//                             ->setParameter(1, $scopeId)
-//                             ->getSingleResult();
-//                $site->addScope($scope);
-//            }
 
             // Link the requested scopes to the site
             foreach($selectedScopesToApply as $scope){
@@ -312,13 +305,6 @@ class Site extends AbstractEntityService{
                              ->getSingleResult();
             $site->setCountry($country);
 
-            // deprecated
-//            $dql = "SELECT t FROM Timezone t WHERE t.name = ?1";
-//            $timezone = $this->em->createQuery($dql)
-//                            ->setParameter(1, $newValues['Timezone'])
-//                            ->getSingleResult();
-//            $site->setTimezone($timezone);
-
             $this->em->merge($site);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -368,20 +354,18 @@ class Site extends AbstractEntityService{
 
     /**
      * Return all {@see \Site}s that satisfy the specfied filter parameters.
-     * <p>
+     *
      * $filterParams defines an associative array of optional parameters for
      * filtering the sites. The supported Key => Value pairs include:
-     * <ul>
-     *   <li>'sitename' => String site name</li>
-     *   <li>'roc' => String name of parent NGI/ROC</li>
-     *   <li>'country' => String country name</li>
-     *   <li>'certification_status' => String certification status value e.g. 'Certified'</li>
-     *   <li>'exclude_certification_status' => String exclude sites with this certification status</li>
-     *   <li>'production_status' => String site production status value</li>
-     *   <li>'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'</li>
-     *   <li>'scope_match' => String 'any' or 'all' </li>
-     *   <li>'extensions' => String extensions expression to filter custom key=value pairs</li>
-     * <ul>
+     *   'sitename' => String site name
+     *   'roc' => String name of parent NGI/ROC
+     *   'country' => String country name
+     *   'certification_status' => String certification status value e.g. 'Certified'
+     *   'exclude_certification_status' => String exclude sites with this certification status
+     *   'production_status' => String site production status value
+     *   'scope' => 'String,comma,sep,list,of,scopes,e.g.,egi,wlcg'
+     *   'scope_match' => String 'any' or 'all'
+     *   'extensions' => String extensions expression to filter custom key=value pairs
      *
      * @param array $filterParams
      * @return array Site array
@@ -389,12 +373,6 @@ class Site extends AbstractEntityService{
     public function getSitesFilterByParams($filterParams){
         require_once __DIR__.'/PI/GetSite.php';
         $getSite = new GetSite($this->em);
-        //$params = array('sitename' => 'GRIDOPS-GOCDB');
-        //$params = array('scope' => 'EGI,DAVE', 'sitename' => 'GRIDOPS-GOCDB');
-        //$params = array('scope' => 'EGI,Local', 'scope_match' => 'any', 'exclude_certification_status' => 'Closed');
-        //$params = array('scope' => 'EGI,Local', 'scope_match' => 'all');
-        //$params = array('scope' => 'EGI,DAVE', 'scope_match' => 'all');
-        //$params = array('extensions' => '(aaa=123)(dave=\(someVal with parethesis\))(test=test)');
         $getSite->validateParameters($filterParams);
         $getSite->createQuery();
         $sites = $getSite->executeQuery();
@@ -584,20 +562,6 @@ class Site extends AbstractEntityService{
     }
 
     /**
-     *  Return all timezones in the DB
-     *  @return Array an array of Timezone objects
-     */
-//    public function getTimezones() {
-//            $dql = "SELECT t from Timezone t
-//                            ORDER BY t.name";
-//            $timezones = $this->em
-//                    ->createQuery($dql)
-//                    ->getResult();
-//            return $timezones;
-//    }
-
-
-    /**
      * Returns the downtimes linked to a site.
      * @param integer $id Site ID
      * @param integer $dayLimit Limit to downtimes that are only $dayLimit old (can be null) */
@@ -741,8 +705,6 @@ class Site extends AbstractEntityService{
             // flush synchronizes the in-memory state of managed objects with the database
             // but we can still rollback
             $this->em->flush();
-            //$this->em->getConnection()->commit();
-            //$this->em->getConnection()->beginTransaction();
             $site = new \Site();
             $site->setPrimaryKey($pk->getId() . "G0");
             $site->setOfficialName($values['Site']['OFFICIAL_NAME']);
@@ -812,13 +774,6 @@ class Site extends AbstractEntityService{
 
 
             // Set the scopes
-//            foreach($allSelectedScopeIds as $scopeId){
-//                $dql = "SELECT s FROM Scope s WHERE s.id = :id";
-//                $scope = $this->em->createQuery($dql)
-//                    ->setParameter('id', $scopeId)
-//                    ->getSingleResult();
-//                $site->addScope($scope);
-//            }
             foreach($selectedScopesToApply as $scope){
                 $site->addScope($scope);
             }
@@ -830,13 +785,6 @@ class Site extends AbstractEntityService{
                     ->getSingleResult();
             $site->setCountry($country);
 
-                    // deprecated - don't use the lookup DB entity
-//                    $dql = "SELECT t FROM Timezone t WHERE t.id = :id";
-//                    $timezone = $this->em->createQuery($dql)
-//                            ->setParameter('id', $values['Timezone'])
-//                            ->getSingleResult();
-//                    $site->setTimezone($timezone);
-
             $this->em->persist($site);
             // flush synchronizes the in-memory state of managed objects with the database
             // but we can still rollback
@@ -844,8 +792,6 @@ class Site extends AbstractEntityService{
             $this->em->getConnection()->commit();
         } catch(\Exception $ex){
             $this->em->getConnection()->rollback();
-            //$this->em->remove($pk);
-            //$this->em->flush();
             $this->em->close();
             throw $ex;
         }
