@@ -357,7 +357,9 @@ abstract class extensionPropertyAbstract extends AbstractWriteAPITestClass{
 
     #Construct a set of extension properties to delete where one has a different key to the ones we added
     $propsToDelete = array_slice($this->sampleExtensionProps, 1);
-    $propsToDelete[array_keys(array_slice($this->sampleExtensionProps, 0, 1))[0] . 'Not the same now'] = array_values(array_slice($this->sampleExtensionProps, 0, 1))[0];
+    $newKeyArray = array_keys(array_slice($this->sampleExtensionProps, 0, 1));
+    $newValueArray = array_values(array_slice($this->sampleExtensionProps, 0, 1));
+    $propsToDelete[$newKeyArray[0].'Not the same now'] = $newValueArray[0];
 
     #Use the API. (case variation in method and key is deliberate as API should be insensitive)
     $APIOutput = $this->wellFormattedWriteAPICall ('DEleTE', json_encode($propsToDelete), $this->validAuthIdent, $entType, $ent->getId(), 'EXTENSIONproperties');
@@ -382,9 +384,11 @@ abstract class extensionPropertyAbstract extends AbstractWriteAPITestClass{
     #Add the props to the entity
     $this->createExtensionProperties($ent, $entType, $this->sampleExtensionProps);
 
+    $newPropKeyArray = array_keys(array_slice($this->sampleExtensionProps, 0, 1));
+    $newPropValArray = array_values(array_slice($this->sampleExtensionProps, 0, 1));
     #Construct a set of extension properties to delete where one has a different value to the ones we added
     $propsToDelete = array_slice($this->sampleExtensionProps, 1);
-    $propsToDelete[array_keys(array_slice($this->sampleExtensionProps, 0, 1))[0]] = array_values(array_slice($this->sampleExtensionProps, 0, 1))[0].'Not the Same';
+    $propsToDelete[$newPropKeyArray[0]] = $newPropValArray[0].'Not the Same';
 
     #Use the API. (case variation in method and key is deliberate as API should be insensitive)
     $APIOutput = $this->wellFormattedWriteAPICall ('DEleTE', json_encode($propsToDelete), $this->validAuthIdent, $entType, $ent->getId(), 'EXTENSIONproperties');
@@ -442,7 +446,8 @@ abstract class extensionPropertyAbstract extends AbstractWriteAPITestClass{
 
     #Construct the desired request body
     if ($withVal) {
-      $reqBody = $this->singleValToJsonRequest(array_values(array_slice($this->sampleExtensionProps, 0, 1))[0]);
+      $propForReq = array_values(array_slice($this->sampleExtensionProps, 0, 1));
+      $reqBody = $this->singleValToJsonRequest($propForReq[0]);
     } elseif ($emptyReq) {
       $reqBody = '';
     } else {
@@ -451,7 +456,8 @@ abstract class extensionPropertyAbstract extends AbstractWriteAPITestClass{
       $reqBody = null;
     }
 
-    $propKey = array_keys(array_slice($this->sampleExtensionProps, 0, 1))[0];
+    $propKeyArray = array_keys(array_slice($this->sampleExtensionProps, 0, 1));
+    $propKey = $propKeyArray [0];
 
     #Use the API. (case variation in method and key is deliberate as API should be insensitive)
     $APIOutput = $this->wellFormattedWriteAPICall ('DEleTE', $reqBody, $this->validAuthIdent, $entType, $ent->getId(), 'EXTENSIONproperties',$propKey);
@@ -516,7 +522,8 @@ abstract class extensionPropertyAbstract extends AbstractWriteAPITestClass{
 
     #Construct the desired request body
     if ($withVal) {
-      $reqBody = $this->singleValToJsonRequest(array_values(array_slice($this->sampleExtensionProps, 0, 1))[0]);
+      $propValArray = array_values(array_slice($this->sampleExtensionProps, 0, 1));
+      $reqBody = $this->singleValToJsonRequest($propValArray[0]);
     } elseif ($emptyReq) {
       $reqBody = '';
     } else {
@@ -525,7 +532,8 @@ abstract class extensionPropertyAbstract extends AbstractWriteAPITestClass{
       $reqBody = null;
     }
 
-    $propKey = array_keys(array_slice($this->sampleExtensionProps, 0, 1))[0] . 'this doesnt exist';
+    $propKeyArray = array_keys(array_slice($this->sampleExtensionProps, 0, 1));
+    $propKey = $propKeyArray [0] . 'this doesnt exist';
 
     #Use the API. (case variation in method and key is deliberate as API should be insensitive)
     $APIOutput = $this->wellFormattedWriteAPICall ('DEleTE', $reqBody, $this->validAuthIdent, $entType, $ent->getId(), 'EXTENSIONproperties',$propKey);
@@ -551,10 +559,12 @@ abstract class extensionPropertyAbstract extends AbstractWriteAPITestClass{
     $this->createExtensionProperties($ent, $entType, $this->sampleExtensionProps);
 
     #Construct the request body with the wrong value
-    $reqBody = $this->singleValToJsonRequest(array_values(array_slice($this->sampleExtensionProps, 0, 1))[0].'not correct now');
+    $propValArray = array_values(array_slice($this->sampleExtensionProps, 0, 1));
+    $reqBody = $this->singleValToJsonRequest($propValArray[0].'not correct now');
 
     #define the correct key
-    $propKey = array_keys(array_slice($this->sampleExtensionProps, 0, 1))[0];
+    $propKeyArray = array_keys(array_slice($this->sampleExtensionProps, 0, 1));
+    $propKey = $propKeyArray [0];
 
     #Use the API. (case variation in method and key is deliberate as API should be insensitive)
     $APIOutput = $this->wellFormattedWriteAPICall ('DEleTE', $reqBody, $this->validAuthIdent, $entType, $ent->getId(), 'EXTENSIONproperties', $propKey);
