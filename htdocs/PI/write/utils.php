@@ -20,17 +20,6 @@
  *
 /*====================================================== */
 
-/*
-* http_response_code() is implemented in php from php 5.4.0 onwards, when we
-* upgrade, this block (and the associated file) can be deleted (having checked that  http_response_code
-* implments all the status codes that we may wish to use).
-* See http://stackoverflow.com/questions/3258634/php-how-to-send-http-response-code
-* and http://php.net/http_response_code#107261
-*/
-if (!function_exists('http_response_code')) {
-    require_once __DIR__ . '/responseCode.php';
-}
-
 /**
  * following the processign of a write-api request, this function returns any
  * object provided in a JSON format. It also sets the http resposne code given
