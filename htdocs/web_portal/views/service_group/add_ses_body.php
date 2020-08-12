@@ -1,4 +1,4 @@
-<span class="vSiteNotice">Please ensure the SE administrators are aware you are adding their SEs to this service group.</span>
+<span class="vSiteNotice">Please ensure the service administrators are aware you are adding their services to this service group.</span>
 
     <!--  Services -->
     <div class="listContainer">
