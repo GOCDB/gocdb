@@ -34,17 +34,26 @@ class TestUtil {
     public static function createSampleEndpointLocation(){
         $el = new EndpointLocation();
         $el->setUrl("https://google.co.uk");
+        $el->setName("JustSomeEndpoint");
         return $el;
     }
 
    public static function createSampleService($label){
         $se = new Service();
         $se->setHostName(''.$label);
+        $se->setEmail('sample@em.ail');
         $se->setBeta(false);
         $se->setProduction(true);
         $se->setMonitored(true);
         return $se;
     }
+
+    public static function createSampleServiceType($name){
+         $st = new ServiceType();
+         $st->setName($name);
+         $st->setDescription('sample service type');
+         return $st;
+     }
 
     public static function createSampleRoleType($name) {
         $rt = new RoleType($name);
@@ -136,4 +145,3 @@ class TestUtil {
 }
 
 ?>
-

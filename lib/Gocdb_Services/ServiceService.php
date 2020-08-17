@@ -470,7 +470,7 @@ class ServiceService extends AbstractEntityService {
      * is invalid. The \Exception's message will contain a human readable error
      * message.
      */
-    private function validateProductionMonitoredCombination($serviceTypeName, $production, $monitored) {
+    public function validateProductionMonitoredCombination($serviceTypeName, $production, $monitored) {
         // Service types that are exceptions to the
         // 'production => monitored' rule.
         $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
@@ -577,103 +577,153 @@ class ServiceService extends AbstractEntityService {
             }
         }
 
-        // Check no changes to Reserved scopes (if not admin):
-        // When normal users EDIT the service, the selected scopeIds should
-        // be checked to prevent users manually crafting a POST request in an attempt
-        // to select reserved scopes, this is unlikely but it is a possible hack.
-        //
-        // Note, on edit we also don't want to enforce cascading of parent Site scopes to the service,
-        // as we need to allow an admin to de-select a service's reserved scopes
-        // (which is a perfectly valid requirement) and prevent re-cascading
-        // when the user next edits the service!
-        /*
-         * if (!$user->isAdmin()) {
-         * $selectedReservedScopes = $this->scopeService->getScopesFilterByParams(
-         * array('excludeNonReserved' => true), $selectedScopesToApply);
-         *
-         * $existingReservedScopes = $this->scopeService->getScopesFilterByParams(
-         * array('excludeNonReserved' => true), $se->getScopes()->toArray());
-         *
-         * if(count($selectedReservedScopes) != count($existingReservedScopes)) {
-         * throw new \Exception("The reserved Scope count does not match the Services's existing scope count ");
-         * }
-         * foreach($selectedReservedScopes as $sc){
-         * if(!in_array($sc, $existingReservedScopes)){
-         * throw new \Exception("A reserved Scope Tag was selected that is not already assigned to the Service");
-         * }
-         * }
-         * }
-         */
-
         // check there are the required number of optional scopes specified
         $this->checkNumberOfScopes ( $this->scopeService->getScopesFilterByParams ( array (
                 'excludeReserved' => true
         ), $selectedScopesToApply ) );
 
-        // Explicity demarcate our tx boundary
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            // Set the service's member variables
-            $se->setHostName ( $newValues ['SE'] ['HOSTNAME'] );
-            $se->setDescription ( $newValues ['SE'] ['DESCRIPTION'] );
+        $updatedServiceValues =array();
+        $updatedServiceValues['hostname'] = $newValues ['SE'] ['HOSTNAME'];
+        $updatedServiceValues['description'] = $newValues ['SE'] ['DESCRIPTION'];
+        $updatedServiceValues['url'] = $newValues['SE']['URL'];
+        $updatedServiceValues['dn'] = $newValues ['SE']['HOST_DN'];
+        $updatedServiceValues['ip'] = $newValues['SE']['HOST_IP'];
+        $updatedServiceValues['ip6'] = $newValues['SE']['HOST_IP_V6'];
+        $updatedServiceValues['os'] = $newValues['SE']['HOST_OS'];
+        $updatedServiceValues['email'] = $newValues['SE']['EMAIL'];
+        $updatedServiceValues['arch'] = $newValues['SE']['HOST_ARCH'];
+        $updatedServiceValues['monitored'] = $this->ptlTexToBool($newValues['IS_MONITORED']);
+        $updatedServiceValues['beta'] = $this->ptlTexToBool($newValues['BETA']);
+        $updatedServiceValues['production'] = $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']);
+        $updatedServiceValues['notify'];
 
-            $prod = $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']);
-            $se->setProduction ( $prod );
-
-            $beta = $this->ptlTexToBool($newValues['BETA']);
-            $se->setBeta ( $beta );
-
-            $monitored = $this->ptlTexToBool($newValues['IS_MONITORED']);
-            $se->setMonitored ( $monitored );
-
-            //Set notify flag for site
-            if (!isset($newValues['NOTIFY'])){
-                $notify = false;
-            }
-            else {
-                $notify = $this->ptlTexToBool($newValues['NOTIFY']);
-            }
-            $se->setNotify ($notify);
-
-            $se->setDn ( $newValues ['SE'] ['HOST_DN'] );
-            $se->setIpAddress ( $newValues ['SE'] ['HOST_IP'] );
-            $se->setIpV6Address ( $newValues ['SE'] ['HOST_IP_V6'] );
-            $se->setOperatingSystem ( $newValues ['SE'] ['HOST_OS'] );
-            $se->setArchitecture ( $newValues ['SE'] ['HOST_ARCH'] );
-            $se->setEmail ( $newValues ['SE'] ['EMAIL'] );
-            $se->setUrl ( $newValues ['SE'] ['URL'] );
-
-            $se->setServiceType ( $st );
-
-            // Update the service's scope
-            // firstly remove all existing scope links
-            $scopes = $se->getScopes ();
-            foreach ( $scopes as $s ) {
-                $se->removeScope ( $s );
-            }
-
-            // find then link each scope specified to the site
-            // foreach ($scopeIdsToApply as $scopeId) {
-            // $dql = "SELECT s FROM Scope s WHERE s.id = ?1";
-            // $scope = $this->em->createQuery($dql)
-            // ->setParameter(1, $scopeId)
-            // ->getSingleResult();
-            // $se->addScope($scope);
-            // }
-            foreach ( $selectedScopesToApply as $scope ) {
-                $se->addScope ( $scope );
-            }
-
-            $this->em->merge ( $se );
-            // $this->em->merge($el);
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $ex ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $ex;
+        if (!isset($newValues['NOTIFY'])){
+            $updatedServiceValues['notify'] = false;
         }
+        else {
+            $updatedServiceValues['notify'] = $this->ptlTexToBool($newValues['NOTIFY']);
+        }
+
+        $this->editServiceLogic($se, $selectedScopesToApply, $st, $updatedServiceValues);
+
         return $se;
+    }
+
+    /**
+     * Function called by write API to edit a service. Provides API specific
+     * authorisation on top of shared logic with web portal
+     * @param Service $service            service being updated
+     * @param  string $hostname           service hostname
+     * @param  string $description        service description
+     * @param  string $url                service url
+     * @param  string $dn                 service dn
+     * @param  string $ip                 service IP
+     * @param  string $ip6                serviec IP (ipV6)
+     * @param  string $os                 service OS
+     * @param  string $email              service email
+     * @param  string $arch               service archetecture
+     * @param  string $monitored
+     * @param  boolean $beta
+     * @param  boolean $production
+     * @param  boolean $notify
+     * @param  string $authIdentifierType
+     * @param  string $authIdentifier
+     */
+    public function editServiceApi(\Service $service, $hostname, $description, $url, $dn, $ip, $ip6, $os, $email, $arch, $monitored, $beta, $production, $notify, $authIdentifierType, $authIdentifier) {
+      //Check the portal is not in read only mode, throws exception if it is
+      $this->checkGOCDBIsNotReadOnly();
+
+      $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+
+      $scopes = clone $service->getScopes();
+      $sType = $service->getServiceType();
+      $updatedServiceValues = array (
+        'hostname'=>$hostname,
+        'description'=>$description,
+        'url'=>$url,
+        'dn'=>$dn,
+        'ip'=>$ip,
+        'ip6'=>$ip6,
+        'os'=>$os,
+        'email'=>$email,
+        'arch'=>$arch,
+        'monitored'=>$monitored,
+        'beta'=>$beta,
+        'production'=>$production,
+        'notify'=>$notify,
+      );
+
+      $this->validateProductionMonitoredCombination($service->getServiceType()->getName(), $production, $monitored);
+
+      $this->editServiceLogic($service, $scopes, $sType, $updatedServiceValues);
+    }
+
+
+    /**
+     * The logic of editing a service, without the authorisation or validation.
+     * Private function as there should always be authorisation anad validation
+     * steps within the service before calling this function.
+     *
+     * @param  Service $service       service to be updated
+     * @param  array  $scopes         scopes of service being updated
+     * @param         $sType          service type of service
+     * @param array $updatedServiceValues values being updated for $service. Should contain:
+     *                ['hostname']    hostname of service being updated
+     *                ['description'] description of service being updated
+     *                ['url']         url of service being updated
+     *                ['dn']          dn of service being updated
+     *                ['$ip6']        ip V6 of service being updated
+     *                ['ip']          ip of service being updated
+     *                ['$os']         os of service being updated
+     *                ['email']       email of service being updated
+     *                ['$arch']       architecture  of service being updated
+     *                ['$monitored']  boolean monitored of service being updated
+     *                ['$beta']       boolean beta of service being updated
+     *                ['$production'] boolean production of service being updated
+     *                ['$notify']     boolean notify value of service being updated
+     * @throws Exception
+     */
+    private function editServiceLogic(\Service $service, $scopes, $sType, $updatedServiceValues){
+      // Explicitly demarcate our tx boundary
+      $this->em->getConnection ()->beginTransaction ();
+      try {
+          // Set the service's member variables
+          $service->setHostName($updatedServiceValues['hostname']);
+          $service->setDescription($updatedServiceValues['description']);
+          $service->setUrl($updatedServiceValues['url']);
+          $service->setDn($updatedServiceValues['dn']);
+          $service->setIpAddress($updatedServiceValues['ip']);
+          $service->setIpV6Address($updatedServiceValues['ip6']);
+          $service->setOperatingSystem($updatedServiceValues['os']);
+          $service->setEmail($updatedServiceValues['email']);
+          $service->setArchitecture($updatedServiceValues['arch']);
+          $service->setMonitored($updatedServiceValues['monitored']);
+          $service->setBeta($updatedServiceValues['beta']);
+          $service->setProduction($updatedServiceValues['production']);
+          $service->setNotify($updatedServiceValues['notify']);
+
+          $service->setServiceType($sType);
+
+          // Update the scope of the service
+          // firstly remove all existing scope links
+          $oldScopes = $service->getScopes ();
+          foreach($oldScopes as $s ) {
+              $service->removeScope($s);
+          }
+
+          // find each specified scope and then link it to the specified site
+          foreach($scopes as $scope) {
+              $service->addScope($scope);
+          }
+
+          $this->em->merge($service);
+          $this->em->flush ();
+          $this->em->getConnection ()->commit ();
+      } catch ( \Exception $e ) {
+          $this->em->getConnection ()->rollback ();
+          $this->em->close ();
+          throw $e;
+      }
     }
 
     /**
@@ -1034,7 +1084,7 @@ class ServiceService extends AbstractEntityService {
         $this->checkGOCDBIsNotReadOnly();
 
         // Validate the user has permission to add properties
-        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($service->getParentSite(), $authenticationIdentifier, $authenticationType);
+        $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authenticationIdentifier, $authenticationType);
 
         //Convert the property array into the format used by the webportal logic
         #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
@@ -1178,7 +1228,7 @@ class ServiceService extends AbstractEntityService {
         $this->checkGOCDBIsNotReadOnly();
 
         // Validate the user has permission to add properties
-        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authenticationIdentifier, $authenticationType);
+        $this->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authenticationIdentifier, $authenticationType);
 
         //Convert the property array into the format used by the webportal logic
         #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
@@ -1326,7 +1376,7 @@ class ServiceService extends AbstractEntityService {
                 throw new \Exception("Internal error: property parent service and service do not match.");
             }
         }
-        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+        $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
 
         //Make the change
         $this->em->getConnection()->beginTransaction();
@@ -1410,7 +1460,7 @@ class ServiceService extends AbstractEntityService {
                 throw new \Exception("Internal error: property endpoint and endpoint do not match");
             }
         }
-        \Factory::getSiteService()->checkAuthorisedAPIIdentifier($parentService->getParentSite(), $authIdentifier, $authIdentifierType);
+        $this->checkAuthorisedAPIIdentifier($parentService->getParentSite(), $authIdentifier, $authIdentifierType);
 
         //Make the change
         $this->em->getConnection()->beginTransaction();
@@ -1704,6 +1754,66 @@ class ServiceService extends AbstractEntityService {
     }
 
     /**
+     * Function to establish if a service already has a value set
+     *
+     * @returns boolean
+    */
+    public function servicePropSet (\Service $service, $servicePropName) {
+      switch (strtolower($servicePropName)) {
+        case 'hostname':{
+          $propValue = $service->getHostName();
+          break;
+        }
+        case 'description':{
+          $propValue = $service->getDescription();
+          break;
+        }
+        case 'url':{
+          $propValue = $service->getUrl();
+          break;
+        }
+        case 'host_dn':{
+          $propValue = $service->getDn();
+          break;
+        }
+        case 'host_ip':{
+          $propValue = $service->getIpAddress();
+          break;
+        }
+        case 'host_ip_v6':{
+          $propValue = $service->getIpV6Address();
+          break;
+        }
+        case 'host_os':{
+          $propValue = $service->getOperatingSystem();
+          break;
+        }
+        case 'email':{
+          $propValue = $service->getEmail();
+          break;
+        }
+        case 'host_arch':{
+          $propValue = $service->getArchitecture();
+          break;
+        }
+        case 'monitored':
+        case 'beta':
+        case 'production':
+        case 'notify':
+        {
+          #booleans are always set
+          return true;
+        }
+        default:{
+          throw new \Exception("Internal error: service property name ($servicePropName) not ".
+          "recognised. Please contact a GOCDB administrator and report this error.");
+        }
+      }
+
+      return !empty($propValue);
+    }
+
+    /**
      * Adds an endpoint to a service
      *
      * @param $values
@@ -1740,36 +1850,75 @@ class ServiceService extends AbstractEntityService {
             $monitored = false;
         }
 
-        if (empty ( $name )) {
-            throw new \Exception ( "An endpoint must have a name." );
-        }
-        // check endpoint's name is unique under the service
-        foreach ( $service->getEndpointLocations () as $endpointL ) {
-            if ($endpointL->getName () == $name) {
-                throw new \Exception ( "Please provide a unique name for this endpoint." );
-            }
-        }
-
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            $endpoint = new \EndpointLocation ();
-            $endpoint->setName ( $name );
-            $endpoint->setUrl ( $url );
-            $endpoint->setInterfaceName ( $interfaceName );
-            $endpoint->setDescription ( $description );
-            $endpoint->setEmail($email);
-            $endpoint->setMonitored($monitored);
-            $service->addEndpointLocationDoJoin ( $endpoint );
-            $this->em->persist ( $endpoint );
-
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
-        }
+        $endpoint = $this->addEndpointLogic($service, $name, $url, $interfaceName, $description, $email, $monitored);
         return $endpoint;
+    }
+
+    /**
+     * Add an endpoint with the values from the API to the given service
+     *
+     * @param \Service $service           service to which the new endpoint will be added
+     * @param  string            $name               name of endpoint
+     * @param  string            $url                url of endpoint
+     * @param  string            $interfaceName      interface name of endpoint
+     * @param  string            $description        description of endpoint
+     * @param  string            $email              email of endpoint
+     * @param  boolean           $monitored          whether endpoint is monitored
+     * @param  string            $authIdentifier     Authentication string from API
+     * @param  string            $authIdentifierType Type of Authentication string
+     */
+    public function addEndpointApi(\Service $service, $name, $url, $interfaceName, $description, $email, $monitored, $authIdentifier, $authIdentifierType) {
+      //Check the portal is not in read only mode, throws exception if it is
+      $this->checkGOCDBIsNotReadOnly();
+
+      $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+
+      $this->addEndpointLogic($service, $name, $url, $interfaceName, $description, $email, $monitored);
+    }
+
+    /**
+     * Function containing the logic to add an endpoint to a sevice, but with
+     * none of the authorisation or validation
+     *
+     * @param \Service $service           service to which the new endpoint will be added
+     * @param  string            $name               name of endpoint
+     * @param  string            $url                url of endpoint
+     * @param  string            $interfaceName      interface name of endpoint
+     * @param  string            $description        description of endpoint
+     * @param  string            $email              email of endpoint
+     * @param  boolean           $monitored          whether endpoint is monitored
+     * @throws \Exception
+     */
+    private function addEndpointLogic (\Service $service, $name, $url, $interfaceName, $description, $email, $monitored){
+
+      if (empty ( $name )) {
+          throw new \Exception ( "An endpoint must have a name." );
+      }
+      // check endpoint's name is unique under the service
+      if($this->endpointWithNameExists($service, $name)){
+        throw new \Exception ( "Please provide a unique name for this Service Endpoint." );
+      }
+
+      $this->em->getConnection ()->beginTransaction ();
+      try {
+          $endpoint = new \EndpointLocation ();
+          $endpoint->setName($name);
+          $endpoint->setUrl($url);
+          $endpoint->setInterfaceName($interfaceName);
+          $endpoint->setDescription($description);
+          $endpoint->setEmail($email);
+          $endpoint->setMonitored($monitored);
+          $service->addEndpointLocationDoJoin($endpoint);
+          $this->em->persist($endpoint);
+
+          $this->em->flush();
+          $this->em->getConnection()->commit();
+      } catch(\Exception $e) {
+          $this->em->getConnection()->rollback();
+          $this->em->close();
+          throw $e;
+      }
+      return $endpoint;
     }
 
     /**
@@ -1798,12 +1947,7 @@ class ServiceService extends AbstractEntityService {
         $url = $newValues ['SERVICEENDPOINT'] ['URL'];
         $description = $newValues ['SERVICEENDPOINT'] ['DESCRIPTION'];
         $email = $newValues['SERVICEENDPOINT']['EMAIL'];
-
-        if ($newValues ['SERVICEENDPOINT'] ['INTERFACENAME'] != '') {
-            $interfaceName = $newValues ['SERVICEENDPOINT'] ['INTERFACENAME'];
-        } else {
-            $interfaceName = ( string ) $service->getServiceType ();
-        }
+        $interfaceName = $newValues ['SERVICEENDPOINT'] ['INTERFACENAME'];
 
         if($newValues['IS_MONITORED']) {
             $monitored = true;
@@ -1811,47 +1955,92 @@ class ServiceService extends AbstractEntityService {
             $monitored = false;
         }
 
-        if (empty ( $name )) {
-            throw new \Exception ( "An endpoint must have a name." );
-        }
-
-        // check endpoint's name is unique under the service
-        foreach ( $service->getEndpointLocations () as $endpointL ) {
-            // exclude itself
-            if ($endpoint != $endpointL && $endpointL->getName () == $name) {
-                throw new \Exception ( "Please provide a unique name for this endpoint." );
-            }
-        }
-
-        $this->em->getConnection ()->beginTransaction ();
-
-        try {
-            // Set the endpoints new member variables
-            $endpoint->setName ( $name );
-            $endpoint->setUrl ( $url );
-            $endpoint->setInterfaceName ( $interfaceName );
-            $endpoint->setDescription ( $description );
-            $endpoint->setEmail($email);
-            $endpoint->setMonitored($monitored);
-            $this->em->merge ( $endpoint );
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $ex ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $ex;
-        }
+        $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
     }
 
+    /**
+     * Edit the given endpoint using the given values provided from the API
+     *
+     * @param  \EndpointLocation $endpoint           endpoint to be updated
+     * @param  string            $name               name of endpoint
+     * @param  string            $url                url of endpoint
+     * @param  string            $interfaceName      interface name of endpoint
+     * @param  string            $description        description of endpoint
+     * @param  string            $email              email of endpoint
+     * @param  boolean           $monitored          whether endpoint is monitored
+     * @param  string            $authIdentifier     Authentication string from API
+     * @param  string            $authIdentifierType Type of Authentication string
+     */
+    public function editEndpointApi (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored, $authIdentifier, $authIdentifierType) {
+      //Check the portal is not in read only mode, throws exception if it is
+      $this->checkGOCDBIsNotReadOnly();
+
+      $this->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
+
+      $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
+
+    }
 
     /**
-     * User deletes the given endpoint.
+     * Function containing the logic to edit an endpoint with none of the authorisation or validation
+     *
+     * @param  EndpointLocation $endpoint      [description]
+     * @param  string            $name               name of endpoint
+     * @param  string            $url                url of endpoint
+     * @param  string            $interfaceName      interface name of endpoint
+     * @param  string            $description        description of endpoint
+     * @param  string            $email              email of endpoint
+     * @param  boolean           $monitored          whether endpoint is monitored
+     * @throws \Exception
+     */
+    private function editEndpointLogic (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored){
+      $service = $endpoint->getService ();
+
+      if (empty ( $name )) {
+          throw new \Exception ( "An endpoint must have a name." );
+      }
+
+      //if no interface name is provided, default to service type
+      if ($interfaceName == '') {
+          $interfaceName = ( string ) $service->getServiceType ();
+      }
+
+      // check endpoint's name is unique under the service
+      foreach ( $service->getEndpointLocations () as $endpointL ) {
+          // exclude itself
+          if ($endpoint != $endpointL && $endpointL->getName () == $name) {
+              throw new \Exception ( "Please provide a unique name for this endpoint." );
+          }
+      }
+
+      $this->em->getConnection ()->beginTransaction ();
+
+      try {
+          // Set the endpoints new member variables
+          $endpoint->setName ( $name );
+          $endpoint->setUrl ( $url );
+          $endpoint->setInterfaceName ( $interfaceName );
+          $endpoint->setDescription ( $description );
+          $endpoint->setEmail($email);
+          $endpoint->setMonitored($monitored);
+          $this->em->merge ( $endpoint );
+          $this->em->flush ();
+          $this->em->getConnection ()->commit ();
+      } catch ( \Exception $ex ) {
+          $this->em->getConnection ()->rollback ();
+          $this->em->close ();
+          throw $ex;
+      }
+    }
+
+    /**
+     * Function to delete endpoint using web portal
+     *
      * @param \EndpointLocation $endpoint
      * @param \User $user
      * @throws Exception
      */
     public function deleteEndpoint(\EndpointLocation $endpoint, \User $user) {
-        require_once __DIR__ . '/../DAOs/ServiceDAO.php';
 
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
@@ -1861,21 +2050,128 @@ class ServiceService extends AbstractEntityService {
         // check user has permission to edit endpoint's service
         $this->validateAddEditDeleteActions ( $user, $service );
 
-        $this->em->getConnection ()->beginTransaction ();
-        try {
-            $serviceDAO = new \ServiceDAO ();
-            $serviceDAO->setEntityManager ( $this->em );
-            $serviceDAO->removeEndpoint ( $endpoint );
-
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
-            throw $e;
-        }
+        $this->deleteEndpointLogic($endpoint);
     }
 
+    /**
+     * Function called from API to delete an endpoint
+     *
+     * @param  EndpointLocation $endpoint endpoint to be deleted
+     * @param  Service          $service  service of endpoint being deleted
+     * @thows  Exception
+     */
+    public function deleteEndpointAPI (\EndpointLocation $endpoint, $authIdentifier, $authIdentifierType) {
+      //Check the portal is not in read only mode, throws exception if it is
+      $this->checkGOCDBIsNotReadOnly();
+
+      //Check authorisation
+      $this->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
+
+      //Make the change
+      $this->deleteEndpointLogic($endpoint);
+    }
+
+    /**
+     * Logic to delete an endpoint, abstracted array from authorisation and validation
+     *
+     * @param  EndpointLocation $endpoint endpoint to delete
+     * @throws Exception
+     */
+    private function deleteEndpointLogic (\EndpointLocation $endpoint) {
+      require_once __DIR__ . '/../DAOs/ServiceDAO.php';
+
+      $this->em->getConnection ()->beginTransaction ();
+      try {
+          $serviceDAO = new \ServiceDAO ();
+          $serviceDAO->setEntityManager ( $this->em );
+          $serviceDAO->removeEndpoint ( $endpoint );
+
+          $this->em->flush ();
+          $this->em->getConnection ()->commit ();
+      } catch ( \Exception $e ) {
+          $this->em->getConnection ()->rollback ();
+          $this->em->close ();
+          throw $e;
+      }
+    }
+
+    /**
+     * Function to establish if an endpoint already has a value set
+     *
+     * @returns boolean
+    */
+    public function EndpointPropSet (\EndpointLocation $endpoint, $endpointPropName) {
+      switch (strtolower($endpointPropName)) {
+        case 'name':{
+          $propValue = $endpoint->getName();
+          break;
+        }
+        case 'url':{
+          $propValue = $endpoint->getUrl();
+          break;
+        }
+        case 'interfacename':{
+          $propValue = $endpoint->getInterfaceName();
+          break;
+        }
+        case 'description':{
+          $propValue = $endpoint->getDescription();
+          break;
+        }
+        case 'email':{
+          $propValue = $endpoint->getEmail();
+          break;
+        }
+        case 'monitored': {
+          #booleans are always set
+          return true;
+        }
+        default:{
+          throw new \Exception("Internal error: endpoint property name ($endpointPropName) not ".
+          "recognised. Please contact a GOCDB administrator and report this error.");
+        }
+      }
+
+      return !empty($propValue);
+    }
+
+    /**
+     * Returns true if an endpoint with a given name exists for a given service
+     *
+     * TODO: This could be made more efficient using a DQL select statement
+     * @param  Service $service service being checked
+     * @param  string  $name    endpoint name being checked
+     * @return boolean
+     */
+    public function endpointWithNameExists (\Service $service, $name) {
+      foreach ($service->getEndpointLocations() as $endpoint) {
+        if ($name == $endpoint->getName()){
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /**
+     * Function to return an endpoint for a given service with a given name
+     *
+     * TODO: This could be made more efficient using a DQL select statement
+     * @param  Service $service service endpoint being sought belongs to
+     * @param  string  $name    name of endpoint sought
+     * @return \Endpoint           endpoint
+     * @throws \Exception
+     */
+    public function getEndpointByName (\Service $service, $name) {
+      foreach ($service->getEndpointLocations() as $endpoint) {
+        if ($name == $endpoint->getName()){
+          return $endpoint;
+        }
+      }
+
+      //If the endpoint wasn't found, throw exceptions
+      throw new \Exception("Endpoint not found");
+
+    }
 
     private function checkNumberOfScopes($scopeIds) {
         require_once __DIR__ . '/Config.php';
