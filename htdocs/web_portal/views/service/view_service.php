@@ -86,12 +86,9 @@ $configService = \Factory::getConfigService();
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Contact E-Mail</td><td class="site_table">
-                    <?php if (!$params['authenticated']) : ?>
-                            PROTECTED - Registration required
-                    <?php endif; ?>
-                    <?php if ($params['authenticated']) : ?>
-                            <?php xecho($se->getEmail()) ?>
-                    <?php endif; ?>
+                        <?php if ($params['authenticated']) {
+                            xecho($se->getEmail());
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
