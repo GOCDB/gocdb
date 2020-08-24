@@ -243,7 +243,7 @@
 	<field>
 	    <fname>TITLE</fname>
 	    <length>255</length>
-	    <regex>/^[a-zA-Z\s\-']+$/</regex>
+	    <regex>/^[a-zA-Z\s\-']*$/</regex>
 	</field>
 	<field>
 	    <fname>CERTIFICATE_DN</fname>
