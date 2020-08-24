@@ -85,7 +85,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                         <a href="mailto:<?php xecho($params['sGroup']->getEmail()); ?>">
                             <?php xecho($params['sGroup']->getEmail()); ?>
                         </a>
-                        <?php } else {echo('PROTECTED - Auth Required');} ?>
+                        <?php } else {echo('PROTECTED - Registration required');} ?>
                     </td>
                 </tr>
             </table>

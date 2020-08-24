@@ -53,41 +53,41 @@ $configService = \Factory::getConfigService();
                     <td class="site_table">Host name</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                             xecho($se->getHostName());
-                        } else echo('PROTECTED - Auth required'); ?>
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">IP Address</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                           xecho($se->getIpAddress());
-                        }else echo('PROTECTED - Auth required');  ?>
+                        }else echo('PROTECTED - Registration required');  ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">IP v6 Address</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                             xecho($se->getIpV6Address());
-                        } else echo('PROTECTED - Auth required'); ?>
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Operating System</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                             xecho($se->getOperatingSystem());
-                        } else echo('PROTECTED - Auth required'); ?>
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Architecture</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                             xecho($se->getArchitecture());
-                        } else echo('PROTECTED - Auth required'); ?>
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Contact E-Mail</td><td class="site_table">
                     <?php if (!$params['authenticated']) : ?>
-                            PROTECTED - Auth required
+                            PROTECTED - Registration required
                     <?php endif; ?>
                     <?php if ($params['authenticated']) : ?>
                             <?php xecho($se->getEmail()) ?>
@@ -119,7 +119,7 @@ $configService = \Factory::getConfigService();
                         <div style="word-wrap: break-word;">
                                 <?php if ($params['authenticated']) {
                                     xecho($se->getDn()) ;
-                                } else echo('PROTECTED - Auth required'); ?>
+                                } else echo('PROTECTED - Registration required'); ?>
                         </div>
                     </td>
                 </tr>
