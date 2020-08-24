@@ -60,14 +60,14 @@ $configService = \Factory::getConfigService();
                     <td class="site_table">IP Address</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                           xecho($se->getIpAddress());
-                        }else echo('PROTECED - Auth required');  ?>
+                        }else echo('PROTECTED - Auth required');  ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">IP v6 Address</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                             xecho($se->getIpV6Address());
-                        } else echo('PROTECED - Auth required'); ?>
+                        } else echo('PROTECTED - Auth required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
