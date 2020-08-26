@@ -172,7 +172,7 @@ class NotificationService extends AbstractEntityService {
         );
 
         $email = $approving_user->getEmail();
-        $headers = "From: no-reply@goc.egi.eu";
+        $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
 
         if ($this->get_config_send_email()) {
             mail($email, $subject, $body, $headers);
