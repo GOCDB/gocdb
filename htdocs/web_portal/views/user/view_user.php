@@ -108,19 +108,26 @@
 
 
     <div class="listContainer">
-        <b>Authentication Attributes:</b>
-        <br>
-        <?php
-        foreach ($params['authAttributes'] as $key => $val) {
-            $attributeValStr = '';
-            foreach ($val as $v) {
-                $attributeValStr .= ', '.$v;
-            }
-            if(strlen($attributeValStr) > 2){$attributeValStr = substr($attributeValStr, 2);}
-            xecho('[' . $key . ']  [' . $attributeValStr . ']');
-            echo '<br>';
-        }
-        ?>
+      <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+        Authentication Attributes
+      </span>
+      <table style="clear: both; width: 100%;">
+        <tr class="site_table_row_1">
+          <td class="site_table">
+            <?php
+              foreach ($params['authAttributes'] as $key => $val) {
+                $attributeValStr = '';
+                foreach ($val as $v) {
+                  $attributeValStr .= ', '.$v;
+                }
+                if(strlen($attributeValStr) > 2){$attributeValStr = substr($attributeValStr, 2);}
+                xecho('[' . $key . '] [' . $attributeValStr . ']');
+                echo '<br>';
+              }
+            ?>
+          </td>
+        </tr>
+      </table>
     </div>
 
     <div style="float: left; width: 100%; margin-top: 2em;" class="alert alert-info" role="alert">
