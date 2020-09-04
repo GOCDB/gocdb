@@ -16,14 +16,11 @@ require_once __DIR__.'/../IAuthentication.php';
  */
 
 /**
- * AuthToken for use with ShibSP.
+ * AuthToken for use with IRIS IAM.
  * <p>
- * Requires installation/config of ShibSP before use.
  * You will almost certainly need to modify this class to request the necessary
  * SAML attribute from the IdP that is used as the principle string.
  * <p>
- * The token is stateless because it relies on the ShibSP session and simply
- * reads the attributes stored in the ShibSP session.
  *
  * @see IAuthentication
  * @author David Meredith

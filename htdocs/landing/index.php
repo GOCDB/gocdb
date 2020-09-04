@@ -29,9 +29,15 @@
             <div>
                 <?php
                 $hostname = $_SERVER['HTTP_HOST'];
-                $target = urlencode("https://" . $hostname . "/portal/");
-                $egi_redirect = "https://" . $hostname . "/Shibboleth.sso/Login?target=" . $target;
-                $iam_redirect = "https://" . $hostname . "/portal/redirect_uri?iss=https%3A%2F%2Firis-iam.stfc.ac.uk%2F&target_link_uri=https%3A%2F%2F" . $hostname . "%2Fportal%2F&x_csrf=JYYNOFT4bdU"
+                $egi_target = urlencode("https://" . $hostname . "/portal/");
+                $egi_redirect = "https://" . $hostname . "/Shibboleth.sso/Login?target=" . $egi_target;
+                if($_SERVER['REQUEST_URI'] === "/"){
+                    $iam_target = "target_link_uri=" . urlencode("https://" . $hostname . "/portal/");
+                }
+                else{
+                    $iam_target=ltrim($_SERVER['REQUEST_URI'], '/?');
+                }
+                $iam_redirect = "https://" . $hostname . "/portal/redirect_uri?iss=https%3A%2F%2Firis-iam.stfc.ac.uk%2F&" . $iam_target;
                 ?>
                 <a style="width:30%; display:inline-block; font-size:1.5em" href="<?php echo $egi_redirect; ?>" class="button">EGI Check-In</a>
                 <a style="width:30%; display:inline-block; font-size:1.5em"  href="<?php echo $iam_redirect ?>" class="button">IRIS IAM</a>
