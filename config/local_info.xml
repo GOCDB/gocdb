@@ -1,136 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <config>
-        <!--
-          ## Begin local override.
-          ## Specify a url attribute to be matched  against the incoming requestor
-          ## url. Only a single url is supported.
-          ## If the urls match, the values specified in this section will override
-          ## the default values given in the default (no url) section below.
-          ## Any valid xml element tree can be specified here but it MUST
-          ## exist in the default section that follows.
-          ## Use of elements 'menus','css' and 'name_mappings' are described
-          ## in the defaults section.
-        -->
-        <local_info url="host-172-16-113-108.nubes.stfc.ac.uk">
+  <!--
+    Provide default values for all configuration elements.
+    See also local override information provided below this local_info element.
+  -->
+  <local_info>
 
-          <default_scope>
-              <name>EOSChub</name>
-          </default_scope>
-
-          <default_filter_by_scope>true</default_filter_by_scope>
-
-          <css>
-          <backgroundDirection>to bottom</backgroundDirection>
-            <!-- Approx EOSC-hub colours -->
-            <backgroundColour1>MidnightBlue</backgroundColour1>
-            <backgroundColour2>DodgerBlue</backgroundColour2>
-            <backgroundColour3></backgroundColour3>
-            <headingTextColour>Sienna</headingTextColour>
-
-            <!-- Picked from EOSC-hub logo
-            <backgroundColour1>#1d2f45</backgroundColour1>
-            <backgroundColour2>#76a3d6</backgroundColour2>
-            <backgroundColour3></backgroundColour3>
-            <headingTextColour>#b4862d</headingTextColour>
-            -->
-          </css>
-
-        </local_info>
-        <!--
-          ## End local override
-        -->
-
-        <!--
-          ## Begin defaults
-        -->
-        <local_info>
-
-          <!-- If read-only is set as true, the portal will prevent changes to the
+    <!-- If read-only is set as true, the portal will prevent changes to the
              data by all users. This can be used for a read-only failover instance. -->
-          <read_only>false</read_only>
+    <read_only>false</read_only>
 
-          <!-- menus
-            ## Give the xml element names from config/web_portal/menu.xml
-            ## to select menu link(s) given in the left-hand menu box.
-            ## Selected menus can be hidden by providing an element value
-            ## of any of hide,false,0 or no. The default behaviour is to
-            ## show the menu subject to the restrictions encoded in menu.xml
-            ## but any other value but those given above will also work to
-            ## enable the menu display.
-          -->
-          <menus>
-            <Projects>show</Projects>
-            <NGI>show</NGI>
-            <AddNGI>show</AddNGI>
-            <AddProject>show</AddProject>
-            <ServiceGroups>show</ServiceGroups>
-            <AddSite>show</AddSite>
-            <Scopes>show</Scopes>
-            <AdminScopes>show</AdminScopes>
-          </menus>
-          <!-- css
-            ## Provide names or hex colour values for the background as
-            ## implemented in lib\Gocdb_Services\Config.php (called by
-            ## docs\web_portal\css\web_portal.php).
-            ## [Note that these values are used as part of the dynamic css
-            ## style sheet fetched by the browser after the base html is
-            ## returned.]
-            ## Colours can be specified as CSS colour names -
-            https://www.w3schools.com/colors/colors_names.asp
-            ## or hex values.
-            ## Gradient direction supplied as
-            ## https://www.w3schools.com/csSref/func_linear-gradient.asp
-            ## supporting 2-way and diagonal gradients e.g. "to bottom"
-            ## and "to bottom left" are supported with up to 3 colours.
-            ## If a 3 colour specification is not required, specify
-            ## an empty 3rd element.
-          -->
-          <css>
-            <backgroundDirection>to bottom left</backgroundDirection>
-            <backgroundColour1>#F7F9FE</backgroundColour1>
-            <backgroundColour2>#DEE9FB</backgroundColour2>
-            <backgroundColour3>#D0DFF9</backgroundColour3>
-            <headingTextColour>#00AC00</headingTextColour>
-          </css>
-          <!-- name_mapping
-            ## Basic rather primitive gocdb entity name mapping.
-            ## Provide word mappings to be used to 'rename' gocdb entities for use in
-            ## menus and general page display.
-            ## Implemented as look-ups function getNameMapping in
-            ## lib\Gocdb_Services\Config.php
-            ## Provided to rename gocdb 'enpoints' to FitSM 'components
-          -->
-          <name_mapping>
-            <Service>
-              <ServiceEndpoint>Service Endpoint</ServiceEndpoint>
-              <endpoint>endpoint</endpoint>
-            </Service>
-          </name_mapping>
+    <!-- Specify the URLs used to access your GOCDB web portal and PI.
+      - It is important to update these values to match your deployment.
+      - These values substitute placeholder variables and is used in both the
+        PI XML output and in constructing web portal links.
+      - The '/portal' path fragment must match your WEB PORTAL ALIAS mapping
+        in your apache httpd config (see sample 'gocdbssl.conf' file).
+      - The '/gocdbi' path fragment must match your PUBLIC and PRIVATE PI mappings
+        in your apache httpd config (see sample 'gocdbssl.conf' file).
+      - Do not terminate these values with a '/' char.
+    -->
+    <web_portal_url>https://localhost/portal</web_portal_url>
+    <pi_url>https://localhost/gocdbpi</pi_url>
+    <server_base_url>https://localhost</server_base_url>
+    <write_api_user_docs_url>https://wiki.egi.eu/wiki/GOCDB/Write_API/Technical_Documentation</write_api_user_docs_url>
 
-        <!-- Specify the URLs used to access your GOCDB web portal and PI.
-        - It is important to update these values to match your deployment.
-        - These values substitute placeholder variables and is used in both the
-          PI XML output and in constructing web portal links.
-        - The '/portal' path fragment must match your WEB PORTAL ALIAS mapping
-          in your apache httpd config (see sample 'gocdbssl.conf' file).
-        - The '/gocdbi' path fragment must match your PUBLIC and PRIVATE PI mappings
-          in your apache httpd config (see sample 'gocdbssl.conf' file).
-        - Do not terminate these values with a '/' char.
-        -->
-        <web_portal_url>https://localhost/portal</web_portal_url>
-        <pi_url>https://localhost/gocdbpi</pi_url>
-        <server_base_url>https://localhost</server_base_url>
-        <write_api_user_docs_url>https://wiki.egi.eu/wiki/GOCDB/Write_API/Technical_Documentation</write_api_user_docs_url>
-
-        <optional_features>
-            <!-- If false then a service must belong to a physical
+    <optional_features>
+      <!-- If false then a service must belong to a physical
                  site. If true an option will be available to add a brand new
                  SE to a service group and the new SE won't belong to a
                  physical site (****MUST be false, true IS NOT SUPPORTED YET****). -->
-            <siteless_services>false</siteless_services>
-        </optional_features>
+      <siteless_services>false</siteless_services>
+    </optional_features>
 
-        <!-- default_scope
+    <!-- default_scope
         Optional - defines the default scope of the instance.
         If a default scope IS provided, it is applied when PI queries
         do not explicitly specify the 'scope' parameter e.g. 'get_site' would return
@@ -140,19 +43,19 @@
         'get_site' would return all sites in all scopes.
         -->
 
-        <default_scope>
-            <name>EGI</name>
-        </default_scope>
+    <default_scope>
+      <name>EGI</name>
+    </default_scope>
 
-        <!-- If set to true the initial state of the scope filter drop-downs on the
+    <!-- If set to true the initial state of the scope filter drop-downs on the
              ngi,site,service, downtimes pages is selected for the default_scope
         -->
-        <default_filter_by_scope>false</default_filter_by_scope>
+    <default_filter_by_scope>false</default_filter_by_scope>
 
-        <!-- Show map on the start page -->
-        <show_map_on_start_page>true</show_map_on_start_page>
+    <!-- Show map on the start page -->
+    <show_map_on_start_page>true</show_map_on_start_page>
 
-        <!-- default_scope_match
+    <!-- default_scope_match
         Define the default value for the 'scope_match' PI parameter.
         Values can be 'any' or 'all'. The default value is applied when multiple
         scopes are specified in a PI query using the 'scope' parameter and when the
@@ -160,19 +63,19 @@
         in this query: 'getSite&scope=EGI,EUDAT,SCOPEX' should sites be returned
         that define all or any of the specified scopes?
         -->
-        <default_scope_match>all</default_scope_match>
+    <default_scope_match>all</default_scope_match>
 
-        <!-- Define the minimum number of OPTIONAL scopes required for each IScopedEntity,
+    <!-- Define the minimum number of OPTIONAL scopes required for each IScopedEntity,
         Optional scopes are NOT in the reserved_scopes list.
         (Should be positive integer or zero). -->
-        <minimum_scopes>
-            <ngi>1</ngi>
-            <site>1</site>
-            <service>1</service>
-            <service_group>1</service_group>
-        </minimum_scopes>
+    <minimum_scopes>
+      <ngi>1</ngi>
+      <site>1</site>
+      <service>1</service>
+      <service_group>1</service_group>
+    </minimum_scopes>
 
-        <!--
+    <!--
         Specify a list of RESERVED scope tag names:
         - New Reserved tags can only be directly assigned to resources by the gocdb-admins
          (resources include NGIs, Sites, Services, SGs but not Projects - don't currently need to tag projects)
@@ -187,31 +90,130 @@
         - For NGIs: If a Reserved tag is removed from an NGI, then the same tag is NOT
           removed from all the child Sites - this is intentionally different from the Site->Service relationship.
         -->
-        <reserved_scopes>
-            <scope>wlcg</scope>
-            <scope>tier1</scope>
-            <scope>tier2</scope>
-            <scope>alice</scope>
-            <scope>atlas</scope>
-            <scope>cms</scope>
-            <scope>lhcb</scope>
-            <scope>elixir</scope>
-            <scope>FedCloud</scope>
-        </reserved_scopes>
+    <reserved_scopes>
+      <scope>wlcg</scope>
+      <scope>tier1</scope>
+      <scope>tier2</scope>
+      <scope>alice</scope>
+      <scope>atlas</scope>
+      <scope>cms</scope>
+      <scope>lhcb</scope>
+      <scope>elixir</scope>
+      <scope>FedCloud</scope>
+    </reserved_scopes>
 
-        <!-- Define the max amount of extensions a user can define when using the extensions feature -->
-        <extensions>
-            <max>20</max>
-        </extensions>
+    <!-- Define the max amount of extensions a user can define when using the extensions feature -->
+    <extensions>
+      <max>20</max>
+    </extensions>
 
-
-        <!--
+    <!--
         Server send email true or false (set to false on a test server to avoid spamming users).
         Emails are sent by the server when managing/requesting roles, retrieving user
         accounts (e.g. associating a user account with a new cert DN).
         -->
-        <send_email>false</send_email>
+    <send_email>false</send_email>
 
+    <!-- menus
+      Give the xml element names from config/web_portal/menu.xml
+      to select menu link(s) given in the left-hand menu box.
+      Selected menus can be hidden by providing an element value
+      of any of hide,false,0 or no. The default behaviour is to
+      show the menu subject to the restrictions encoded in menu.xml
+      but any other value but those given above will also work to
+      enable the menu display.
+    -->
+    <menus>
+      <Projects>show</Projects>
+      <NGI>show</NGI>
+      <AddNGI>show</AddNGI>
+      <AddProject>show</AddProject>
+      <ServiceGroups>show</ServiceGroups>
+      <AddSite>show</AddSite>
+      <Scopes>show</Scopes>
+      <AdminScopes>show</AdminScopes>
+    </menus>
 
-        </local_info>
+    <!-- css
+      Provide names or hex colour values for the background as
+      implemented in lib\Gocdb_Services\Config.php (called by
+      docs\web_portal\css\web_portal.php).
+      [Note that these values are used as part of the dynamic css
+      style sheet fetched by the browser after the base html is
+      returned.]
+      Colours can be specified as CSS colour names -
+      https://www.w3schools.com/colors/colors_names.asp
+      or hex values.
+      Gradient direction supplied as
+      https://www.w3schools.com/csSref/func_linear-gradient.asp
+      supporting 2-way and diagonal gradients e.g. "to bottom"
+      and "to bottom left" are supported with up to 3 colours.
+      If a 3 colour specification is not required, specify
+      an empty 3rd element.
+    -->
+    <css>
+      <backgroundDirection>to bottom left</backgroundDirection>
+      <backgroundColour1>#F7F9FE</backgroundColour1>
+      <backgroundColour2>#DEE9FB</backgroundColour2>
+      <backgroundColour3>#D0DFF9</backgroundColour3>
+      <headingTextColour>#00AC00</headingTextColour>
+    </css>
+
+    <!-- name_mapping
+      Basic rather primitive gocdb entity name mapping.
+      Provide word mappings to be used to 'rename' gocdb entities for use in
+      menus and general page display.
+      Implemented as look-ups function getNameMapping in
+      lib\Gocdb_Services\Config.php
+      Provided to rename gocdb 'endpoints' to FitSM 'components
+    -->
+    <name_mapping>
+      <Service>
+        <ServiceEndpoint>Service Endpoint</ServiceEndpoint>
+        <endpoint>endpoint</endpoint>
+      </Service>
+    </name_mapping>
+  </local_info>
+
+  <!--
+    Optional: Begin local override.
+
+    One or more additional local_info elements, with a single url attribute each, can
+    optionally be provided to override default configuration values for requests
+    arriving from the specified url.
+    Specify the url without the protocol prefix (no https://).
+    Multiple local_info elements with at most one url attribute each are supported.
+    A single local_info element without url attribute must be specified (as above)
+    to provide default values for all available configuration elements
+    (i.e. for requests where no matching url is found or none are provided).
+    Any valid configuration element can be specified here but it MUST exist in
+    the default section that follows.
+    EXAMPLE:
+
+  <local_info url="REPLACE WITH URL TO MATCH">
+
+    <read_only>true</read_only>
+
+    <default_scope>
+      <name>BIG_PROJECT</name>
+    </default_scope>
+
+    <css>
+      <backgroundDirection>to bottom</backgroundDirection>
+      <backgroundColour1>MidnightBlue</backgroundColour1>
+      <backgroundColour2>#76a3d6</backgroundColour2>
+      <backgroundColour3></backgroundColour3>
+      <headingTextColour>Sienna</headingTextColour>
+    </css>
+
+    <menus>
+      <Projects>hide</Projects>
+      <NGI>show</NGI>
+    </menus>
+
+  </local_info>
+
+  End local override
+  -->
+
 </config>
