@@ -218,6 +218,10 @@ function view()
     $selectedScopes = array();
     if (!empty($_GET['scope'])) {
         $selectedScopes = explode(',', $_GET['scope']);
+    } else {
+        if (\Factory::getConfigService()->getDefaultFilterByScope()) {
+            $selectedScopes[] = \Factory::getConfigService()->getDefaultScopeName();
+        }
     }
 
     $scopeMatch = "any";

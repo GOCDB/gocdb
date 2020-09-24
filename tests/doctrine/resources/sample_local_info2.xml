@@ -38,7 +38,7 @@
         'get_site' would return all sites in all scopes. 
         -->
         <default_scope>
-            <name>Scope0</name>
+            <name>unknown</name>
         </default_scope>
 
         <default_filter_by_scope>true</default_filter_by_scope> 

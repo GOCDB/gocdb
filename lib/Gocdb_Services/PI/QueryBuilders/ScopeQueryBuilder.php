@@ -352,8 +352,8 @@ class ScopeQueryBuilder{
         $configService = \Factory::getConfigService();
         $scopes = $configService->getDefaultScopeName();
 
-        if ($scopes == null || trim($scopes) == "") {
-            return null;
+        if (!$configService->getDefaultFilterByScope() || $scopes == null || trim($scopes) == "") {
+                return null;
         } else {
             return $scopes;
         }

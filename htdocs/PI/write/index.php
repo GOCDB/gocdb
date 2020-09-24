@@ -29,6 +29,12 @@ require_once __DIR__ . '/utils.php';
 $siteServ = \Factory::getSiteService();
 $serviceServ = \Factory::getServiceService();
 
+// Initialise the configuration service with the host url of the incoming request.
+// Allows the overriding of configuration values. Do not use 'new' to create a new 
+// instance after this.
+
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+
 #Request method
 $requestMethod = $_SERVER['REQUEST_METHOD'];
 

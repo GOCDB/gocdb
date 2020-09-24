@@ -64,6 +64,12 @@ function xecho($data) {
     echo xssafe($data);
 }
 
+// Initialise the configuration service with the host url of the incoming request.
+// Allows the overriding of configuration values. Do not use 'new' to create a new 
+// instance after this.
+
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+
 $piReq = new PIRequest();
 $piReq->process();
 

@@ -53,10 +53,14 @@ function drawSEs(){
     $selectedScopes = array();
     $scope = '';
     if(!empty($_GET['mscope'])) {
-    foreach($_GET['mscope'] as $key => $scopeVal){
-        $scope .= $scopeVal.',';
+        foreach($_GET['mscope'] as $key => $scopeVal){
+            $scope .= $scopeVal.',';
+            $selectedScopes[] = $scopeVal;
+        }
+    } elseif (\Factory::getConfigService()->getDefaultFilterByScope()) {
+        $scopeVal = \Factory::getConfigService()->getDefaultScopeName();
+        $scope = $scopeVal;
         $selectedScopes[] = $scopeVal;
-    }
     }
     $ngi = "";
     if(isset($_GET['ngi'])) {

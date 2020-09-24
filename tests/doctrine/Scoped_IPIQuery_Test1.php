@@ -118,6 +118,10 @@ class Scoped_IPIQuery_Test1 extends PHPUnit_Extensions_Database_TestCase {
     print __METHOD__ . "\n";
     include __DIR__ . '/resources/sampleFixtureData2.php';
 
+    // Initialise the factory config service.
+    \Factory::getConfigService()->setLocalInfoFileLocation(__DIR__ . '/resources/sample_local_info2.xml');
+
+
     $query = new \org\gocdb\services\GetNGI($this->em);
     $this->doScopedQueryCalls($query);
 

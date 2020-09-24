@@ -1,3 +1,16 @@
+<?php
+require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
+header("Content-type: text/css");
+// Load variable values from local configuration //
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+
+$background_direction = \Factory::getConfigService()->getBackgroundDirection();
+$background_colour1 = \Factory::getConfigService()->getBackgroundColour1();
+$background_colour2 = \Factory::getConfigService()->getBackgroundColour2();
+$background_colour3 = \Factory::getConfigService()->getBackgroundColour3();
+$header_text_colour = \Factory::getConfigService()->getHeadingTextColour();
+
+?>
 /* table.sorter plugin, http://tablesorter.com/docs/ */
 table.tablesorter {
     background-color: #CDCDCD;
@@ -38,7 +51,24 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 
 
 body {
-    background: linear-gradient(to bottom left,#F7F9FE, #DEE9FB, #D0DFF9);
+    background: linear-gradient(
+    <?php
+        // Build the linear gradient input
+        $out = '';
+        if ($background_colour3 != '') {
+            $out = ','.$background_colour3;
+        }
+        if ($background_colour2 != '') {
+            $out = ','.$background_colour2 . $out;
+        }
+        if ($background_colour1 != '') {
+            $out = ','.$background_colour1 . $out;
+        }
+        $out = $background_direction . $out;
+
+        echo $out;
+    ?>
+    );
     color: #272A4B;
     font-family: 'PT Sans', sans-serif;
     font-size: 10pt;
@@ -59,7 +89,7 @@ a img {
 }
 
 h1,th,h2,h3,h4 {
-    color: #00AC00;
+    color: <?=$header_text_colour?>;
     text-decoration: none;
     font-weight:normal;
     margin-top: 0em;
@@ -474,7 +504,7 @@ select.Downtime_Select {
 }
 
 .header {
-    color: #009000;
+    color: <?=$header_text_colour?>;
     padding:0.9em;
 }
 

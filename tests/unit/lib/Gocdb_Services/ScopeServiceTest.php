@@ -14,6 +14,8 @@
 require_once __DIR__ . '/../../../doctrine/TestUtil.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Scope.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Config.php';
+require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
+
 use Doctrine\ORM\EntityManager;
 require_once __DIR__ . '/../../../doctrine/bootstrap.php';
 
@@ -148,7 +150,7 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
 
     $scopeService = new \org\gocdb\services\Scope();
     $scopeService->setEntityManager($this->em);
-    $configService = new \org\gocdb\services\Config();
+    $configService = \Factory::getConfigService();
     $configService->setLocalInfoFileLocation(__DIR__ . '/../../resources/sample_local_info1.xml');
     $scopeService->setConfigService($configService);
 
@@ -178,7 +180,7 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
 
     $scopeService = new \org\gocdb\services\Scope();
     $scopeService->setEntityManager($this->em);
-    $configService = new \org\gocdb\services\Config();
+    $configService = \Factory::getConfigService();
     $configService->setLocalInfoFileLocation(__DIR__ . '/../../resources/sample_local_info1.xml');
     $scopeService->setConfigService($configService);
 
@@ -207,7 +209,7 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
 
     $scopeService = new \org\gocdb\services\Scope();
     $scopeService->setEntityManager($this->em);
-    $configService = new \org\gocdb\services\Config();
+    $configService = \Factory::getConfigService();
     $configService->setLocalInfoFileLocation(__DIR__ . '/../../resources/sample_local_info1.xml');
     $scopeService->setConfigService($configService);
 
@@ -236,7 +238,7 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
 
     $scopeService = new \org\gocdb\services\Scope();
     $scopeService->setEntityManager($this->em);
-    $configService = new \org\gocdb\services\Config();
+    $configService = \Factory::getConfigService();
     $configService->setLocalInfoFileLocation(__DIR__ . '/../../resources/sample_local_info1.xml');
     $scopeService->setConfigService($configService);
 
@@ -264,7 +266,7 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
 
     $scopeService = new \org\gocdb\services\Scope();
     $scopeService->setEntityManager($this->em);
-    $configService = new \org\gocdb\services\Config();
+    $configService = \Factory::getConfigService();
     $configService->setLocalInfoFileLocation(__DIR__ . '/../../resources/sample_local_info1.xml');
     $scopeService->setConfigService($configService);
 
@@ -289,7 +291,7 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase{
     print __METHOD__ . "\n";
     $scopeService = new \org\gocdb\services\Scope();
     $scopeService->setEntityManager($this->em);
-    $configService = new \org\gocdb\services\Config();
+    $configService = \Factory::getConfigService();
     $configService->setLocalInfoFileLocation(__DIR__ . '/../../resources/sample_local_info1.xml');
     $scopeService->setConfigService($configService);
 
