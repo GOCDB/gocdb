@@ -56,10 +56,19 @@ function draw() {
     die();
     }
 
+    $authDetails = $_SERVER['OIDC_CLAIM_external_authn'];
+    $startPos = 3+strpos($authDetails, ":", (strpos($authDetails, "MAIL")));
+    $endPos = strpos($authDetails, "\"", 3+$startPos);
+    $length = $endPos-$startPos;
+    $userEmail = substr($authDetails, $startPos, $length);
+
     /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
     $authToken = Get_User_AuthToken();
     $params['authAttributes'] = $authToken->getDetails();
 
+    $params['given_name'] = $_SERVER['OIDC_CLAIM_given_name'];
+    $params['family_name'] = $_SERVER['OIDC_CLAIM_family_name'];
+    $params['email'] = $userEmail;
     $params['dn'] = $dn;
     show_view('user/register.php', $params);
 }
