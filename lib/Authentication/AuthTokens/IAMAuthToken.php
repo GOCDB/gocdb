@@ -85,6 +85,10 @@ class IAMAuthToken implements IAuthentication {
         $this->userDetails = array('AuthenticationRealm' => array('IRIS IAM - OIDC'));
         //print_r($_SERVER);
         //echo(gettype($_SERVER['OIDC_CLAIM_groups']));
+        if(strpos($_SERVER['OIDC_CLAIM_groups'], "localAccounts")===false){
+        }else{
+            die('You must login via your organisation on IAM to gain access to this site.');
+        }
         if(strpos($_SERVER['OIDC_CLAIM_groups'], "gocdb")===false){
             die('You do not belog to the correct group(s) to gain access to this site.');
         }
