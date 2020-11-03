@@ -43,6 +43,9 @@ class GOCDBAuthProvider implements IAuthenticationProvider {
         else if($auth instanceof SimpleSamlPhpAuthToken){
             $roles[] = 'ROLE_SAMLUSER';
         }
+        else if($auth instanceof IAMAuthToken){
+            $roles[] = 'ROLE_IRISUSER';
+        }
         $auth->setAuthorities($roles);
         return $auth;
     }
