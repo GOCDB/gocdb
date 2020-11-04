@@ -172,7 +172,7 @@ class ShibAuthToken implements IAuthentication {
 //            die('Now go configure this AuthToken file ['.__FILE__.']');
 //        }
         // if we have not set the principle/userDetails, re-direct to landing page
-        //header("Location: https://www.google.com");
+        header("Location: https://" . $hostname);
     }
 
     /**
