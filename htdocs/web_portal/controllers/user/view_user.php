@@ -34,7 +34,6 @@ function view_user() {
     }
     $params['user'] = $user;
 
-
     // 2D array, each element stores role and a child array holding project Ids
     $role_ProjIds = array();
 
@@ -42,6 +41,13 @@ function view_user() {
     $roles = \Factory::getRoleService()->getUserRoles($user, \RoleStatus::GRANTED); //$user->getRoles();
 
     $callingUser = \Factory::getUserService()->getUserByPrinciple(Get_User_Principle());
+
+    // Set flag for if the user is looking at their own record or not.
+    if ($user == $callingUser) {
+      $params['viewingSelf'] = true;
+    } else {
+      $params['viewingSelf'] = false;
+    }
 
     // can the calling user revoke the targetUser's roles?
     /* @var $r \Role */

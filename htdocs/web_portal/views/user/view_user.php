@@ -105,8 +105,8 @@
         </div>
     </div>
 
-
-
+<!-- Only show this box if the logged in user is looking at their own page -->
+<?php if ($params['viewingSelf']) { ?>
     <div class="listContainer">
       <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
         User Authentication Details
@@ -129,6 +129,7 @@
         </tr>
       </table>
     </div>
+<?php } ?>
 
     <div style="float: left; width: 100%; margin-top: 2em;" class="alert alert-info" role="alert">
     See the <a href="index.php?Page_Type=View_Role_Action_Mappings">role action mappings</a> page to see which permissions are granted by which roles.
