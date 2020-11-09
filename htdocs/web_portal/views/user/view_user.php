@@ -121,7 +121,7 @@
                   $attributeValStr .= ', '.$v;
                 }
                 if(strlen($attributeValStr) > 2){$attributeValStr = substr($attributeValStr, 2);}
-                xecho('[' . $key . '] [' . $attributeValStr . ']');
+                xecho($key . ': ' . $attributeValStr);
                 echo '<br>';
               }
             ?>
