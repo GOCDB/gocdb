@@ -109,7 +109,7 @@
 
     <div class="listContainer">
       <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-        Authentication Attributes
+        User Authentication Details
       </span>
       <table style="clear: both; width: 100%;">
         <tr class="site_table_row_1">
