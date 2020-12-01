@@ -80,17 +80,16 @@ class IAMAuthToken implements IAuthentication {
     
     
     private function getAttributesInitToken(){
-        $hostname = $_SERVER['HTTP_HOST']; // don't use $_SERVER['SERVER_NAME'] as this don't support DNS 
-        $this->principal = $_SERVER["REMOTE_USER"];
-        $this->userDetails = array('AuthenticationRealm' => array('IRIS IAM - OIDC'));
-        //print_r($_SERVER);
-        //echo(gettype($_SERVER['OIDC_CLAIM_groups']));
-        if(strpos($_SERVER['OIDC_CLAIM_groups'], "localAccounts")===false){
-        }else{
-            die('You must login via your organisation on IAM to gain access to this site.');
-        }
-        if(strpos($_SERVER['OIDC_CLAIM_groups'], "gocdb")===false){
-            die('You do not belog to the correct group(s) to gain access to this site.');
+        if(isset($_SERVER['OIDC_access_token'])){
+            $this->principal = $_SERVER["REMOTE_USER"];
+            $this->userDetails = array('AuthenticationRealm' => array('IRIS IAM - OIDC'));
+            if(strpos($_SERVER['OIDC_CLAIM_groups'], "localAccounts")===false){
+            }else{
+                die('You must login via your organisation on IAM to gain access to this site.');
+            }
+            if(strpos($_SERVER['OIDC_CLAIM_groups'], "gocdb")===false){
+                die('You do not belog to the correct group(s) to gain access to this site.');
+            }
         }
     }
 

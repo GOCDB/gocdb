@@ -369,8 +369,8 @@ class PIRequest {
 
     function authAnyCert() {
         if (empty($this->dn))
-            die("<No valid certificate found. A trusted certificate is " .
-                    "required to access this resource. Try accessing the " .
+            die("<No valid credentials provided. A suitable credential is " .
+                    "required to access this resource. Try accessing this " .
                     "resource through the private interface.");
     }
 
