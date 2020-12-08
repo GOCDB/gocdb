@@ -61,6 +61,7 @@ function draw(\User $user = null, \APIAuthentication $authEnt = null, \Site $sit
     $params['authEnt'] = $authEnt;
     $params['authTypes'] = array();
     $params['authTypes'][]='X509';
+    $params['authTypes'][]='OIDC Subject';
 
     show_view("site/edit_api_auth.php", $params);
     die();

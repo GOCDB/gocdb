@@ -62,9 +62,10 @@ function returnJsonWriteAPIResult ($httpResponseCode, $object) {
  */
 function getAuthenticationInfo () {
   require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
-  #Only x509 authentication is currently supported. If in the future we support
-  #API keys then I suggest we only look for a x509 DN if an API key isn't presented
-  $identifierType = 'X509';
+  #Check if associated cert/token is set to define identifier type
+  if(isset($_SERVER['SSL_CLIENT_CERT'])){$identifierType = 'X509';}
+  if(isset($_SERVER['OIDC_access_token'])){$identifierType = 'OIDC Subject';}
+
   #This will return null if no cert is presented
   $identifier = Get_User_Principle_PI();
 

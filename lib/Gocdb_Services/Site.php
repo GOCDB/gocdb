@@ -1408,6 +1408,11 @@ class Site extends AbstractEntityService{
         if ($type == 'X509' && !preg_match("/^(\/[A-Za-z]+=[a-zA-Z0-9\/\-\_\s\.,'@:\/]+)*$/", $identifier)) {
             throw new \Exception("Invalid x509 DN");
         }
+        
+        //If the entity is of type OIDC subject, do a more thorough check again
+        if ($type == 'OIDC Subject' && !preg_match("/^([a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12})$/", $identifier)) {
+            throw new \Exception("Invalid OIDC Subject");
+        }
 
         //Check there isn't already a identifier of that type with that identifier for that Site
         $this->uniqueAPIAuthEnt($site, $identifier, $type);
@@ -1486,6 +1491,11 @@ class Site extends AbstractEntityService{
         //Note that we are allowing ':' as they can appear in robot DN's
         if ($type == 'X509' && !preg_match("/^(\/[A-Za-z]+=[a-zA-Z0-9\/\-\_\s\.,'@:\/]+)*$/", $identifier)) {
             throw new \Exception("Invalid x509 DN");
+        }
+
+        //If the entity is of type OIDC subject, do a more thorough check again
+        if ($type == 'OIDC Subject' && !preg_match("/^([a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12})$/", $identifier)) {
+            throw new \Exception("Invalid OIDC Subject");
         }
 
         /**
