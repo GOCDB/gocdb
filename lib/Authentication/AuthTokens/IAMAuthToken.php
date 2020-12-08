@@ -17,13 +17,9 @@ require_once __DIR__.'/../IAuthentication.php';
 
 /**
  * AuthToken for use with IRIS IAM.
- * <p>
- * You will almost certainly need to modify this class to request the necessary
- * SAML attribute from the IdP that is used as the principle string.
- * <p>
  *
  * @see IAuthentication
- * @author David Meredith
+ * @author Sarah Byrne
  */
 class IAMAuthToken implements IAuthentication {
 
@@ -83,10 +79,12 @@ class IAMAuthToken implements IAuthentication {
         if(isset($_SERVER['OIDC_access_token'])){
             $this->principal = $_SERVER["REMOTE_USER"];
             $this->userDetails = array('AuthenticationRealm' => array('IRIS IAM - OIDC'));
+            //Don't allow access if user only has a local account on IRIS
             if(strpos($_SERVER['OIDC_CLAIM_groups'], "localAccounts")===false){
             }else{
                 die('You must login via your organisation on IAM to gain access to this site.');
             }
+            //Don't allow access unless user is a member of the IRIS gocdb group
             if(strpos($_SERVER['OIDC_CLAIM_groups'], "gocdb")===false){
                 die('You do not belog to the correct group(s) to gain access to this site.');
             }

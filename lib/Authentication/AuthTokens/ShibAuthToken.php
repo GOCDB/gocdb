@@ -166,13 +166,6 @@ class ShibAuthToken implements IAuthentication {
             $this->userDetails = array('AuthenticationRealm' => array('EGI Proxy IdP'));
             return;
         }
-
-
-//        else {
-//            die('Now go configure this AuthToken file ['.__FILE__.']');
-//        }
-        // if we have not set the principle/userDetails, re-direct to landing page
-        header("Location: https://" . $hostname);
     }
 
     /**

@@ -56,6 +56,7 @@ function draw() {
     die();
     }
 
+    //Extract users email from oidc claims
     $authDetails = $_SERVER['OIDC_CLAIM_external_authn'];
     $startPos = 3+strpos($authDetails, ":", (strpos($authDetails, "MAIL")));
     $endPos = strpos($authDetails, "\"", 3+$startPos);
