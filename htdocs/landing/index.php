@@ -23,7 +23,7 @@
             <p> Please read these documents before accessing GOCDB.</p>
           </div>
           <div style="width: 80%; margin-left: auto; margin-right: auto;">
-            <a href="/portal/" style="width:73%; font-size:1.7em" class="button">Access GOCDB via X.509 Certificate</a>
+            <a href="/portal/" style="width:68%; font-size:1.7em" class="button">Access GOCDB using your IGTF X.509 Certificate</a>
             <p>or</p>
             <p>Access GOCDB using one of the following:</p>
             <div>
