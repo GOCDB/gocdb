@@ -4,6 +4,7 @@ $downtimes = $params['Downtimes'];
 $parentNgiName = $site->getNgi()->getName();
 $portalIsReadOnly = $params['portalIsReadOnly'];
 $extensionProperties = $site->getSiteProperties();
+$showPD = $params['authenticated']; // display Personal Data
 ?>
 <div class="rightPageContainer">
     <div style="float: left; text-align: center;">
@@ -54,7 +55,7 @@ $extensionProperties = $site->getSiteProperties();
         <table style="clear: both; width: 100%; table-layout: fixed;">
         <tr class="site_table_row_1">
             <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="mailto:<?php xecho($site->getEmail()) ?>">
                 <?php xecho($site->getEmail()) ?>
                 </a>
@@ -63,7 +64,7 @@ $extensionProperties = $site->getSiteProperties();
         </tr>
         <tr class="site_table_row_2">
             <td class="site_table">Telephone</td><td class="site_table"><?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getTelephone());
             } else
                 echo('PROTECTED - Registration required');
@@ -71,7 +72,7 @@ $extensionProperties = $site->getSiteProperties();
         </tr>
         <tr class="site_table_row_1">
             <td class="site_table">Emergency Tel</td><td class="site_table"><?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getEmergencyTel());
             } else
                 echo('PROTECTED - Registration required');
@@ -79,7 +80,7 @@ $extensionProperties = $site->getSiteProperties();
         </tr>
         <tr class="site_table_row_2">
             <td class="site_table">CSIRT Tel</td><td class="site_table"><?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getCsirtTel());
             } else
                 echo('PROTECTED - Registration required')
@@ -88,7 +89,7 @@ $extensionProperties = $site->getSiteProperties();
         <tr class="site_table_row_1">
             <td class="site_table">CSIRT E-Mail</td>
             <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="mailto:<?php xecho($site->getCsirtEmail()) ?>">
                 <?php xecho($site->getCsirtEmail()) ?>
                 </a>
@@ -98,7 +99,7 @@ $extensionProperties = $site->getSiteProperties();
         <tr class="site_table_row_2">
             <td class="site_table">Emergency E-Mail</td>
             <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="mailto:<?php xecho($site->getEmergencyEmail()) ?>">
                 <?php xecho($site->getEmergencyEmail()) ?>
                 </a>
@@ -108,7 +109,7 @@ $extensionProperties = $site->getSiteProperties();
         <tr class="site_table_row_1">
             <td class="site_table">Helpdesk E-Mail</td>
             <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="mailto:<?php xecho($site->getHelpdeskEmail()); ?>">
                 <?php xecho($site->getHelpdeskEmail()) ?>
                 </a>
@@ -147,7 +148,7 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Certification Status</td>
                     <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <?php xecho($site->getCertificationStatus()->getName()) ?>
                 &nbsp;
                 <!--  only show this link if we're in read / write mode -->
@@ -199,7 +200,7 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Home URL</td>
             <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="<?php xecho($site->getHomeUrl()) ?>">
                 <?php xecho($site->getHomeUrl()) ?>
                 </a>
@@ -210,7 +211,7 @@ $extensionProperties = $site->getSiteProperties();
                     <td class="site_table">GIIS URL</td>
                     <td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getGiisUrl());
             } else
                 echo('PROTECTED - Registration required');
@@ -221,7 +222,7 @@ $extensionProperties = $site->getSiteProperties();
                     <td class="site_table">IP Range</td>
                     <td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getIpRange());
             } else
                 echo('PROTECTED - Registration required');
@@ -232,7 +233,7 @@ $extensionProperties = $site->getSiteProperties();
                     <td class="site_table" style="width:20%">IP v6 Range</td>
                     <td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getIpV6Range());
             } else
                 echo('PROTECTED - Registration required');
@@ -243,7 +244,7 @@ $extensionProperties = $site->getSiteProperties();
                     <td class="site_table">Domain</td>
                     <td class="site_table">
                         <?php
-                            if ($params['authenticated']) {
+                            if ($showPD) {
                                 xecho($site->getDomain());
                             } else
                                 echo('PROTECTED - Registration required');
@@ -261,7 +262,7 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Country</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getCountry()->getName());
             } else {
                 echo 'PROTECTED';
@@ -272,7 +273,7 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_2">
                     <td class="site_table">Latitude</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getLatitude());
             } else {
                 echo 'PROTECTED';
@@ -283,7 +284,7 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Longitude</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getLongitude());
             } else {
                 echo 'PROTECTED';
@@ -294,7 +295,7 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_2">
                     <td class="site_table">Time Zone</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getTimezoneId());
             } else {
                 echo 'PROTECTED';
@@ -305,7 +306,7 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Location</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getLocation());
             } else {
                 echo 'PROTECTED';
@@ -451,7 +452,7 @@ $extensionProperties = $site->getSiteProperties();
                     <tr>
                         <td>
                             <div style="background-color: inherit;">
-                                <?php if ($params['authenticated']) { ?>
+                                <?php if ($showPD) { ?>
                                 <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
                                     <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
                                     <?php xecho($role->getUser()->getFullName()) ?>
@@ -465,7 +466,7 @@ $extensionProperties = $site->getSiteProperties();
                         </td>
                         <td>
                             <?php
-                            if ($params['authenticated']) {
+                            if ($showPD) {
                                 xecho($role->getRoleType()->getName());
                             } else {
                                 echo 'PROTECTED';
@@ -481,7 +482,7 @@ $extensionProperties = $site->getSiteProperties();
 
     <!-- Request Role Link -->
     <!--  only show this link if we're in read / write mode -->
-    <?php if (!$portalIsReadOnly && $params['authenticated']): ?>
+    <?php if (!$portalIsReadOnly && $showPD): ?>
         <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
             <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo($site->getId()); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>

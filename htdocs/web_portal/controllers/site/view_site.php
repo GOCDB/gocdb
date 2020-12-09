@@ -6,6 +6,9 @@ function view_site() {
 
     $serv = \Factory::getSiteService();
     $servServ  = \Factory::getServiceService();
+    $userServ = \Factory::getUserService();
+    $configServ = \Factory::getConfigService();
+    $authServ = \Factory::getRoleActionAuthorisationService();
 
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
@@ -23,21 +26,30 @@ function view_site() {
 
     //get user for case that portal is read only and user is admin, so they can still see edit links
     $dn = Get_User_Principle();
-    $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    $params['UserIsAdmin']=false;
-    if(!is_null($user)) {
-        $params['UserIsAdmin']=$user->isAdmin();
-    }
+    $user = $userServ->getUserByPrinciple($dn);
 
+    $params['UserIsAdmin'] = false;
     $params['authenticated'] = false;
-    if($user != null){
-        $params['authenticated'] = true;
+
+    if(!is_null($user)) {
+        // Overload the 'authenticated' key for use to disable display of personal data
+        // User will only see personal data if they have a role somewhere
+        // ToDo: should this be restricted to role at a site?
+
+        if($user->isAdmin()) {
+            $params['UserIsAdmin'] = true;
+            $params['authenticated'] = true;
+        }
+        elseif ($userServ->isAllowReadPD($user)) {
+            $params['authenticated'] = true;
+        }
     }
 
     // Does current viewer have edit permissions over Site ?
     $params['ShowEdit'] = false;
     //if(count($serv->authorize Action(\Action::EDIT_OBJECT, $site, $user))>=1){
-    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction()){
+    if ($authServ->authoriseAction(\Action::EDIT_OBJECT, $site, $user)
+                    ->getGrantAction()) {
        $params['ShowEdit'] = true;
     }
 

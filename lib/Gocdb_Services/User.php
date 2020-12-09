@@ -102,7 +102,36 @@ class User extends AbstractEntityService{
 
         return $user;
     }
+    /**
+     * Check if a user is allowed to read personal data at sites.
+     * @param \User The user to check for
+     * @return Boolean true if allowed, else false;
+     */
+    public function isAllowReadPD(\User $user) {
 
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        if (!\Factory::getConfigService()->isRestrictPDByRole()) {
+            return true;
+        }
+
+        $sites = $this->getSitesFromRoles($user, \RoleStatus::GRANTED);
+        $authServ = \Factory::getRoleActionAuthorisationService();
+
+        foreach ($sites as $site) {
+            if ($authServ->authoriseAction(\Action::READ_PERSONAL_DATA, $site, $user)
+                ->getGrantAction()
+            ) {
+                // exit the first time we find a grant as we don't support
+                // site-level viewing granularity.
+                return true;
+            }
+        }
+        // No site was found with an authorisation.
+        return false;
+    }
     /**
      * Updates the users last login time to the current time in UTC.
      * @param \User $user

@@ -28,16 +28,15 @@ function view_user() {
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     }
-    $userId =  $_GET['id'];
 
-    $serv = \Factory::getUserService();
-    $user = $serv->getUser($userId);
-    if ($user === null) {
+    $userService = \Factory::getUserService();
+    $user = $userService->getUser($_GET['id']);
+
+    if($user === null){
        throw new Exception("No user with that ID");
     }
 
-    $params = [];
-    $params['user'] = $user;
+    $params = array();
 
     // Check if user only has one identifier to disable unlinking
     $params['lastIdentifier'] = (count($user->getUserIdentifiers()) === 1);
@@ -51,6 +50,21 @@ function view_user() {
         $authEntSites[$apiAuth->getParentSite()->getId()]++;
     }
 
+    /** @var \User $callingUser */
+    $callingUser = $userService->getUserByPrinciple(Get_User_Principle());
+
+    // Restrict users to see only their own data unless authorised.
+    // User objects are not 'owned' so we check their authz at connected sites.
+    if (is_null($callingUser) ||
+        (!$callingUser->isAdmin() &&
+         $user !== $callingUser &&
+        !$userService->isAllowReadPD($callingUser)))
+        {
+            throw new Exception('You are not authorised to read other users\' personal data.');
+        }
+
+    $params['user'] = $user;
+
     // 2D array, each element stores role and a child array holding project Ids
     $role_ProjIds = array();
 
@@ -60,8 +74,6 @@ function view_user() {
 
     $currentIdString = Get_User_Principle();
     $params['currentIdString'] = $currentIdString;
-    $callingUser = $serv->getUserByPrinciple($currentIdString);
-    $roleSiteCounts = array(); // Holds the number of roles held per site authentication entity
 
     // can the calling user revoke the targetUser's roles?
     /** @var \Role $r */
@@ -85,8 +97,6 @@ function view_user() {
         $authorisingRoles = \Factory::getRoleActionAuthorisationService()
             ->authoriseAction(\Action::REVOKE_ROLE, $roleOwnedEntity, $callingUser)
             ->getGrantingRoles();
-
-        $callingUser = \Factory::getUserService()->getUserByPrinciple(Get_User_Principle());
 
         if ($user != $callingUser) {
             // determine if callingUser can REVOKE this role instance
@@ -126,18 +136,6 @@ function view_user() {
         $role_ProjIds[] = array($r, $projIds);
     }// end iterating roles
 
-    // Pass over the role list disabling revoke button where the user owns
-    // a API credential(s) and only a single site role
-
-    foreach ($role_ProjIds as &$pid) {
-        $site = $pid[0]->getOwnedEntity()->getId();
-        if ($roleSiteCounts[$site] == 1) {
-            $decorator = $pid[0]->getDecoratorObject();
-            $decorator["revokeButton"] = "disabled";
-            $pid[0]->setDecoratorObject($decorator);
-        }
-    }
-
     // Get a list of the projects and their Ids for grouping roles by proj in view
     $projectNamesIds = array();
     $projects = \Factory::getProjectService()->getProjects();
@@ -147,14 +145,13 @@ function view_user() {
 
     // Check to see if the current calling user has permission to edit the target user
     try {
-        $serv->editUserAuthorization($user, $callingUser);
+        $userService->editUserAuthorization($user, $callingUser);
         $params['ShowEdit'] = true;
     } catch (Exception $e) {
         $params['ShowEdit'] = false;
     }
 
-    $params['idString'] = $serv->getDefaultIdString($user);
-
+    $params['idString'] = $userService->getDefaultIdString($user);
     $params['projectNamesIds'] = $projectNamesIds;
     $params['role_ProjIds'] = $role_ProjIds;
     $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();

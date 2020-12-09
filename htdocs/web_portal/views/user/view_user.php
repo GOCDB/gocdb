@@ -195,8 +195,8 @@
                 <th class="site_table">Role Type <!--[roleId] --></th>
                 <th class="site_table">Held Over</th>
                 <?php if(!$params['portalIsReadOnly']):?>
-                    <th class="site_table" style="width: 10%; text-align:center">Revoke Role</th>
-                    <th class="site_table"/>
+                    <th class="site_table" style="width: 8em; text-align:center">Revoke Role</th>
+                    <th><!--Disabled revoke button message--></th>
                 <?php endif; ?>
             </tr>
             <?php
@@ -243,33 +243,27 @@
                        </a>
                     <?php } ?>
                 </td>
-                <td class="site_table" style="width: 10%; text-align:center"
+                <td class="site_table" style="text-align:center">
                     <?php
-                        if(!$params['portalIsReadOnly'] && $role->getDecoratorObject() != null) {
+                        $decorator = $role->getDecoratorObject();
+                        if(!$params['portalIsReadOnly'] && $decorator != null) {
                             echo '<form action="index.php?Page_Type=Revoke_Role" method="post">';
-                                echo '<input type="hidden" name="id" value="';
-                                        xecho($role->getId());
-                                        echo '"/>';
-                                echo '<input id="revokeButton" type="submit" ';
-                                        xecho($role->getDecoratorObject()["revokeButton"]);
-                                        echo ' value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()" ';
-                                        echo ' title="Your roles allowing revoke: ';
-                                        xecho($role->getDecoratorObject()["revokeMessage"]);
-                                        echo '"/>';
+                                echo "<input type='hidden' name='id' value='{$role->getId()}'/>";
+                                echo "<input id='revokeButton' type='submit' {$decorator["revokeButton"]} " .
+                                        "value='Revoke' class='btn btn-sm btn-danger' onclick='return confirmSubmit()' " .
+                                        "title='Your roles allowing revoke: {$decorator['revokeMessage']}'/>";
                             echo '</form>';
                         };
                     ?>
                 </td>
-                <td class="site_table" style="width: 30%">
+                <td class="site_table" style="width: 26%; padding-left:0em">
                     <?php
-                        $decorator = $role->getDecoratorObject();
                         if(!$params['portalIsReadOnly'] &&
                             is_array($decorator) && $decorator["revokeButton"] == 'disabled') {
                                 echo 'Remove or reassign API credentials from site before revoking this role.';
                         }
                     ?>
                 </td>
-
             </tr>
             <?php
               if($num == 1) { $num = 2; } else { $num = 1; }
@@ -348,7 +342,7 @@
                         <form action="index.php?Page_Type=Revoke_Role" method="post">
                             <input type="hidden" name="id" value="<?php echo $role->getId()?>" />
                             <input id="revokeButton" type="submit" value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()"
-                                   title="Your roles allowing revoke: <?php xecho($role->getDecoratorObject()); ?>" >
+                                   title="Your roles allowing revoke: <?php xecho($decorator); ?>" >
                         </form>
                     <?php endif;?>
                 </td>

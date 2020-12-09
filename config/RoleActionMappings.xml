@@ -12,33 +12,33 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-@author David Meredith 
+@author David Meredith
 -->
 
 
-<RoleActionMappingRules     
+<RoleActionMappingRules
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns='http://goc.egi.eu/2015/03/spec1.0_r1'
-    xsi:schemaLocation='http://goc.egi.eu/2015/03/spec1.0_r1 ./RoleActionMappingsSchema.xsd'> 
+    xsi:schemaLocation='http://goc.egi.eu/2015/03/spec1.0_r1 ./RoleActionMappingsSchema.xsd'>
 
-   
-    <RoleActionMapping> 
 
-        <!-- 
-        Define the Role names and which of the owned entity types they apply to. 
-        Note, role name and alias values must be unique (names have a DB unique constraint).  
-        Aliases are used as a convenient shorthand to define the XML rules. 
-        --> 
+    <RoleActionMapping>
+
+        <!--
+        Define the Role names and which of the owned entity types they apply to.
+        Note, role name and alias values must be unique (names have a DB unique constraint).
+        Aliases are used as a convenient shorthand to define the XML rules.
+        -->
 	<RoleNames over="ServiceGroup">
             <Role id="SERVICE_GROUP_ADMIN">Service Group Administrator</Role>
         </RoleNames>
-	
+
         <RoleNames over="Project">
             <Role id="COD_STAFF">COD Staff</Role>
             <Role id="COD_ADMIN">COD Administrator</Role>
             <Role id="EGI_CSIRT_OFFICER">EGI CSIRT Officer</Role>
             <Role id="COO">Chief Operations Officer</Role>
-        </RoleNames>  
+        </RoleNames>
 
 
         <RoleNames over="Ngi">
@@ -49,17 +49,17 @@
             <Role id="REG_FIRST_LINE_SUPPORT">Regional First Line Support</Role>
         </RoleNames>
 
-        <RoleNames over="Site"> 
+        <RoleNames over="Site">
             <Role id="SITE_ADMIN">Site Administrator</Role>
             <Role id="SITE_SECOFFICER">Site Security Officer</Role>
             <Role id="SITE_OPS_DEP_MAN">Site Operations Deputy Manager</Role>
             <Role id="SITE_OPS_MAN">Site Operations Manager</Role>
-        </RoleNames> 
+        </RoleNames>
 
 
         <!--
-        The listed Roles enable the Actions over the target object(s). 
-        --> 
+        The listed Roles enable the Actions over the target object(s).
+        -->
 
 	<RoleMapping>
             <Roles>
@@ -72,25 +72,25 @@
                     <Action>ACTION_REJECT_ROLE</Action>
                     <Action>ACTION_REVOKE_ROLE</Action>
                 </Actions>
-                <Target>ServiceGroup</Target> 
+                <Target>ServiceGroup</Target>
             </EnabledActions>
         </RoleMapping>
 
         <RoleMapping>
             <Roles>
                 <RoleRef idRef="COD_STAFF"/>
-                <RoleRef idRef="COD_ADMIN"/> 
+                <RoleRef idRef="COD_ADMIN"/>
                 <RoleRef idRef="EGI_CSIRT_OFFICER"/>
                 <RoleRef idRef="COO"/>
-            </Roles>  
+            </Roles>
             <EnabledActions>
                 <Actions>
                     <Action>ACTION_EDIT_OBJECT</Action>
                     <Action>ACTION_GRANT_ROLE</Action>
                     <Action>ACTION_REJECT_ROLE</Action>
                     <Action>ACTION_REVOKE_ROLE</Action>
-                </Actions> 
-                <Target>Project</Target> 
+                </Actions>
+                <Target>Project</Target>
             </EnabledActions>
             <EnabledActions>
                 <Actions>
@@ -135,112 +135,113 @@
             </EnabledActions>
         </RoleMapping>
 
-        <RoleMapping> 
+        <RoleMapping>
             <Roles>
                 <RoleRef idRef="SITE_ADMIN"/>
-                <RoleRef idRef="SITE_SECOFFICER"/> 
-                <RoleRef idRef="SITE_OPS_DEP_MAN"/> 
+                <RoleRef idRef="SITE_SECOFFICER"/>
+                <RoleRef idRef="SITE_OPS_DEP_MAN"/>
                 <RoleRef idRef="SITE_OPS_MAN"/>
-                <RoleRef idRef="REG_FIRST_LINE_SUPPORT"/> 
-                <RoleRef idRef="REG_STAFF_ROD"/> 
-                <RoleRef idRef="NGI_SEC_OFFICER"/> 
-                <RoleRef idRef="NGI_OPS_DEP_MAN"/> 
-                <RoleRef idRef="NGI_OPS_MAN"/> 
-            </Roles>  
-            <EnabledActions> 
+                <RoleRef idRef="REG_FIRST_LINE_SUPPORT"/>
+                <RoleRef idRef="REG_STAFF_ROD"/>
+                <RoleRef idRef="NGI_SEC_OFFICER"/>
+                <RoleRef idRef="NGI_OPS_DEP_MAN"/>
+                <RoleRef idRef="NGI_OPS_MAN"/>
+            </Roles>
+            <EnabledActions>
                 <Actions>
                     <Action>ACTION_EDIT_OBJECT</Action>
-                    <Action>ACTION_SITE_ADD_SERVICE</Action> 
+                    <Action>ACTION_SITE_ADD_SERVICE</Action>
                     <Action>ACTION_SITE_DELETE_SERVICE</Action>
-                </Actions> 
-                <Target>Site</Target>   
-            </EnabledActions> 
-        </RoleMapping> 
+                    <Action>ACTION_READ_PERSONAL_DATA</Action>
+                </Actions>
+                <Target>Site</Target>
+            </EnabledActions>
+        </RoleMapping>
 
 
-        <RoleMapping> 
+        <RoleMapping>
             <Roles>
-                <RoleRef idRef="SITE_SECOFFICER"/> 
-                <RoleRef idRef="SITE_OPS_DEP_MAN"/> 
+                <RoleRef idRef="SITE_SECOFFICER"/>
+                <RoleRef idRef="SITE_OPS_DEP_MAN"/>
                 <RoleRef idRef="SITE_OPS_MAN"/>
-                <RoleRef idRef="NGI_SEC_OFFICER"/> 
-                <RoleRef idRef="NGI_OPS_DEP_MAN"/> 
-                <RoleRef idRef="NGI_OPS_MAN"/> 
-            </Roles> 
-            <EnabledActions> 
+                <RoleRef idRef="NGI_SEC_OFFICER"/>
+                <RoleRef idRef="NGI_OPS_DEP_MAN"/>
+                <RoleRef idRef="NGI_OPS_MAN"/>
+            </Roles>
+            <EnabledActions>
                 <Actions>
                     <Action>ACTION_GRANT_ROLE</Action>
-                    <Action>ACTION_REJECT_ROLE</Action> 
+                    <Action>ACTION_REJECT_ROLE</Action>
                     <Action>ACTION_REVOKE_ROLE</Action>
-                </Actions> 
-                <Target>Site</Target>   
-            </EnabledActions> 
-        </RoleMapping> 
+                </Actions>
+                <Target>Site</Target>
+            </EnabledActions>
+        </RoleMapping>
 
- 
-        <RoleMapping> 
+
+        <RoleMapping>
             <Roles>
-                <RoleRef idRef="NGI_SEC_OFFICER"/> 
-                <RoleRef idRef="NGI_OPS_DEP_MAN"/> 
-                <RoleRef idRef="NGI_OPS_MAN"/>  
+                <RoleRef idRef="NGI_SEC_OFFICER"/>
+                <RoleRef idRef="NGI_OPS_DEP_MAN"/>
+                <RoleRef idRef="NGI_OPS_MAN"/>
                 <RoleRef idRef="COD_STAFF"/>
                 <RoleRef idRef="COD_ADMIN"/>
                 <RoleRef idRef="EGI_CSIRT_OFFICER"/>
                 <RoleRef idRef="COO"/>
-            </Roles>  
-            <EnabledActions> 
+            </Roles>
+            <EnabledActions>
                 <Actions>
                     <Action>ACTION_SITE_EDIT_CERT_STATUS</Action>
-                </Actions> 
-                <Target>Site</Target>   
-            </EnabledActions> 
-        </RoleMapping> 
+                </Actions>
+                <Target>Site</Target>
+            </EnabledActions>
+        </RoleMapping>
 
 
 
 
-        <!-- 
-        For the newly proposed edit NGI cert status: 
-        <RoleMapping> 
+        <!--
+        For the newly proposed edit NGI cert status:
+        <RoleMapping>
            <Roles>
                <RoleRef idRef="COD_STAFF"/>
                <RoleRef idRef="COD_ADMIN"/>
                <RoleRef idRef="EGI_CSIRT_OFFICER"/>
                <RoleRef idRef="COO"/>
-           </Roles>  
-           <EnabledActions> 
-             <Actions><Action>ACTION_NGI_EDIT_CERT_STATUS</Action></Actions> 
-             <Target>Ngi</Target>   
-           </EnabledActions> 
-        </RoleMapping> 
+           </Roles>
+           <EnabledActions>
+             <Actions><Action>ACTION_NGI_EDIT_CERT_STATUS</Action></Actions>
+             <Target>Ngi</Target>
+           </EnabledActions>
+        </RoleMapping>
         -->
 
 
-         
+
 	<!--
-        TODO - Only Project level users can assign reserved scope tags to resources in their project.  
-        Useless until a dedicated interface is added which allows project-level users 
-        to edit reserved scopes on resources (Edit Site/Service/NGI Reserved Scopes), especially 
-        since rule-mappings may prevent proj-level users from adding/editing sites/services.  
+        TODO - Only Project level users can assign reserved scope tags to resources in their project.
+        Useless until a dedicated interface is added which allows project-level users
+        to edit reserved scopes on resources (Edit Site/Service/NGI Reserved Scopes), especially
+        since rule-mappings may prevent proj-level users from adding/editing sites/services.
         -->
-<!--        <RoleMapping> 
+<!--        <RoleMapping>
            <Roles>
                <RoleRef idRef="COD_STAFF"/>
                <RoleRef idRef="COD_ADMIN"/>
                <RoleRef idRef="EGI_CSIRT_OFFICER"/>
                <RoleRef idRef="COO"/>
-           </Roles>  
-           <EnabledActions> 
+           </Roles>
+           <EnabledActions>
                 <Actions>
                     <Action>ACTION_APPLY_RESERVED_SCOPE_TAG</Action>
-                </Actions> 
-             <Target>Ngi</Target>   
-             <Target>Site</Target>   
-             <Target>Project</Target>   
-           </EnabledActions> 
+                </Actions>
+             <Target>Ngi</Target>
+             <Target>Site</Target>
+             <Target>Project</Target>
+           </EnabledActions>
         </RoleMapping> -->
-       
 
-    </RoleActionMapping> 
+
+    </RoleActionMapping>
 
 </RoleActionMappingRules>

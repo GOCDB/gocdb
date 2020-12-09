@@ -149,6 +149,9 @@ class Action {
     // Actions that apply to Service
     //const SE_ADD_DOWNTIME = 'ACTION_SE_ADD_DOWNTIME';
 
+    //
+    const READ_PERSONAL_DATA = 'ACTION_READ_PERSONAL_DATA';
+
     /**
      * private constructor to limit instantiation
      */

@@ -186,6 +186,17 @@
     order of tokens in MyConfig1 if user has multiple identifiers -->
     <API_all_auth_realms>false</API_all_auth_realms>
 
+    <!-- restrict_personal_data
+      Whether or not to honour legacy behaviour for showing personal data
+      If false, a user need only be self-registered with an acceptable certificate
+              i.e. authenticated and registered
+      If true, display of personal data depends on the role assignment xml schema
+              i.e. authenticated, registered AND have ACTION_READ_PERSONAL_DATA enabled
+              in config/RoleActionMappings.xml
+
+    -->
+    <restrict_personal_data>false</restrict_personal_data>
+
   </local_info>
 
   <!--
