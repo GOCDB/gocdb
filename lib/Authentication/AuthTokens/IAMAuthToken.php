@@ -86,7 +86,7 @@ class IAMAuthToken implements IAuthentication {
             }
             //Don't allow access unless user is a member of the IRIS gocdb group
             if(strpos($_SERVER['OIDC_CLAIM_groups'], "gocdb")===false){
-                die('You do not belog to the correct group(s) to gain access to this site.');
+                die('You do not belong to the correct group to gain access to this site. Please visit iris-iam.stfc.ac.uk and submit a request to join the GOCDB group. This shall be reviewed by a GOCDB admin.');
             }
         }
     }
