@@ -162,7 +162,7 @@ function Get_User_Principle(){
 }
 
 /**
- * Get the DN from an x509 cert, principle from oidc auth, or null if a user certificate can't be loaded.
+ * Get the DN from an x509 cert, Principle from oidc token, or null if neither can be loaded.
  * Called from the PI to authenticate requests using certificates or oidc.
  * @return string or null if can't authenticate request
  */
