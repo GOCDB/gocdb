@@ -38,7 +38,7 @@
     <rule ref="rulesets/naming.xml/ShortVariable">
         <!-- Allow common GOCDB exceptions for Entity Manager, cert DN etc. -->
         <properties>
-            <property name="exceptions" value="em,dn" />
+            <property name="exceptions" value="em,dn,id" />
             <!-- Alternative syntax is
             <property name="exceptions">
                 <value>em,dn</value>
