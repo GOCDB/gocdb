@@ -68,18 +68,32 @@ function test_url($url) {
 }
 
 function get_https2($url){
+
     $curloptions = array (
-            CURLOPT_RETURNTRANSFER => false,
-            CURLOPT_HEADER         => false,
-            CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_MAXREDIRS      => 1,
-            CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_USERAGENT      => 'GOCDB monitor',
-            CURLOPT_VERBOSE        => false,
-            CURLOPT_URL            => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CAPATH => '/etc/grid-security/certificates/'
+        // In addition to transfer failures, check inside the HTTP response for an error
+        // response code (HTTP > 400)
+        CURLOPT_FAILONERROR    => true,
+        CURLOPT_HEADER         => false,
+        // No client authentication is being attempted. Any request to access a 'protected'
+        // resource is currently redirected (HTTP 301/2) to the Shibboleth authentication
+        // service which, if followed, results in a 'server error' (HTTP 500) response .
+        // With this option set to false, a 'successful' request is actually just the
+        // receipt of the 'redirect' HTTP 301/2.
+        CURLOPT_FOLLOWLOCATION => false,
+        CURLOPT_MAXREDIRS      => 0,
+        // VERIFYHOST checks that the CN in the certificate matches what we asked for
+        CURLOPT_SSL_VERIFYHOST => true,
+        // VERIFYPEER checks that we trust the certificate's issuer (CA)
+        // If you are testing with a self-signed host certificate, you will have to
+        // copy the host's .pem certificate into CURLOPT_CAPATH or
+        // set SSL_VERIFYPEER to false
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_USERAGENT      => 'GOCDB monitor',
+        CURLOPT_VERBOSE        => false,
+        CURLOPT_URL            => $url,
+        // Return either the string response or a bool false for failure.
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CAPATH => '/etc/grid-security/certificates/'
     );
     if( defined('SERVER_SSLCERT') && defined('SERVER_SSLKEY') ){
       $curloptions[CURLOPT_SSLCERT] = SERVER_SSLCERT;
@@ -90,7 +104,14 @@ function get_https2($url){
     curl_setopt_array($handle, $curloptions);
 
     $return = curl_exec($handle);
-    if (curl_errno($handle)) {
+    $httpResponse = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
+    if (!is_string($return)) {
+        if (curl_errno($handle) == 22) {
+            // CURLOPT_FAILONERROR detected HTTP response error
+            // See man page for curl --fail option
+            throw new Exception("http response code: $httpResponse");
+        }
         throw new Exception("curl error:".curl_error($handle));
     }
     curl_close($handle);
