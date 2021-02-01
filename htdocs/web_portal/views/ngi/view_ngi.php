@@ -54,7 +54,7 @@
                             <a href="mailto:<?php xecho($params['ngi']->getEmail()) ?>">
                                 <?php xecho($params['ngi']->getEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                            <?php } else {echo('PROTECTED - Registration required');} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_2">
@@ -63,7 +63,7 @@
                             <a href="mailto:<?php xecho($params['ngi']->getRodEmail()) ?>">
                             <?php xecho($params['ngi']->getRodEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                            <?php } else {echo('PROTECTED - Registration required');} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_1">
@@ -72,7 +72,7 @@
                             <a href="mailto:<?php xecho($params['ngi']->getHelpdeskEmail()) ;?>">
                             <?php xecho($params['ngi']->getHelpdeskEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                            <?php } else {echo('PROTECTED - Registration required');} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_2">
@@ -81,14 +81,14 @@
                             <a href="mailto:<?php echo $params['ngi']->getSecurityEmail() ?>">
                             <?php xecho($params['ngi']->getSecurityEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                            <?php } else {echo('PROTECTED - Registration required');} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_1">
                         <td class="site_table" style="width: 30%">GGUS Support Unit</td><td class="site_table">
                             <?php if($params['authenticated']) { ?>
                             <?php xecho($params['ngi']->getGgus_Su()) ?>
-                            <?php } else {echo('PROTECTED - Auth Required');} ?>
+                            <?php } else {echo('PROTECTED - Registration required');} ?>
                         </td>
                     </tr>
                 </table>

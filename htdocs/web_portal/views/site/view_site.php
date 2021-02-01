@@ -58,7 +58,7 @@ $extensionProperties = $site->getSiteProperties();
                 <a href="mailto:<?php xecho($site->getEmail()) ?>">
                 <?php xecho($site->getEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Auth Required'); ?>
+            <?php } else echo('PROTECTED - Registration required'); ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
@@ -66,7 +66,7 @@ $extensionProperties = $site->getSiteProperties();
             if ($params['authenticated']) {
                 xecho($site->getTelephone());
             } else
-                echo('PROTECTED - Auth Required');
+                echo('PROTECTED - Registration required');
             ?></td>
         </tr>
         <tr class="site_table_row_1">
@@ -74,7 +74,7 @@ $extensionProperties = $site->getSiteProperties();
             if ($params['authenticated']) {
                 xecho($site->getEmergencyTel());
             } else
-                echo('PROTECTED - Auth Required');
+                echo('PROTECTED - Registration required');
             ?></td>
         </tr>
         <tr class="site_table_row_2">
@@ -82,7 +82,7 @@ $extensionProperties = $site->getSiteProperties();
             if ($params['authenticated']) {
                 xecho($site->getCsirtTel());
             } else
-                echo('PROTECTED - Auth Required')
+                echo('PROTECTED - Registration required')
                 ?></td>
         </tr>
         <tr class="site_table_row_1">
@@ -92,7 +92,7 @@ $extensionProperties = $site->getSiteProperties();
                 <a href="mailto:<?php xecho($site->getCsirtEmail()) ?>">
                 <?php xecho($site->getCsirtEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Auth Required'); ?>
+            <?php } else echo('PROTECTED - Registration required'); ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
@@ -102,7 +102,7 @@ $extensionProperties = $site->getSiteProperties();
                 <a href="mailto:<?php xecho($site->getEmergencyEmail()) ?>">
                 <?php xecho($site->getEmergencyEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Auth Required'); ?>
+            <?php } else echo('PROTECTED - Registration required'); ?>
             </td>
         </tr>
         <tr class="site_table_row_1">
@@ -112,7 +112,7 @@ $extensionProperties = $site->getSiteProperties();
                 <a href="mailto:<?php xecho($site->getHelpdeskEmail()); ?>">
                 <?php xecho($site->getHelpdeskEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Auth Required'); ?>
+            <?php } else echo('PROTECTED - Registration required'); ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
@@ -154,7 +154,7 @@ $extensionProperties = $site->getSiteProperties();
                 <?php if (!$portalIsReadOnly): ?>
                 <a href="index.php?Page_Type=Edit_Certification_Status&amp;id=<?php echo($site->getId()) ?>">Change</a>
                 <?php endif; ?>
-            <?php } else echo('PROTECTED - Auth Required'); ?>
+            <?php } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
 
@@ -203,7 +203,7 @@ $extensionProperties = $site->getSiteProperties();
                 <a href="<?php xecho($site->getHomeUrl()) ?>">
                 <?php xecho($site->getHomeUrl()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Auth Required'); ?>
+            <?php } else echo('PROTECTED - Registration required'); ?>
             </td>
                 </tr>
                 <tr class="site_table_row_2">
@@ -213,7 +213,7 @@ $extensionProperties = $site->getSiteProperties();
             if ($params['authenticated']) {
                 xecho($site->getGiisUrl());
             } else
-                echo('PROTECTED - Auth Required');
+                echo('PROTECTED - Registration required');
             ?>
                     </td>
                 </tr>
@@ -224,7 +224,7 @@ $extensionProperties = $site->getSiteProperties();
             if ($params['authenticated']) {
                 xecho($site->getIpRange());
             } else
-                echo('PROTECTED - Auth Required');
+                echo('PROTECTED - Registration required');
             ?>
                     </td>
                 </tr>
@@ -235,7 +235,7 @@ $extensionProperties = $site->getSiteProperties();
             if ($params['authenticated']) {
                 xecho($site->getIpV6Range());
             } else
-                echo('PROTECTED - Auth Required');
+                echo('PROTECTED - Registration required');
             ?>
                     </td>
                 </tr>
@@ -246,7 +246,7 @@ $extensionProperties = $site->getSiteProperties();
                             if ($params['authenticated']) {
                                 xecho($site->getDomain());
                             } else
-                                echo('PROTECTED - Auth Required');
+                                echo('PROTECTED - Registration required');
                         ?>
                     </td>
                 </tr>
