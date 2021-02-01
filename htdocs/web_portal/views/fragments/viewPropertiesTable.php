@@ -26,14 +26,16 @@
                     <td style="width: 35%;"><?php xecho($prop->getKeyName()); ?></td>
                     <td style="width: 35%;">
                     <?php
-                    //Adding in a hyperlink when Value is a url
-                    $value = $prop->getKeyValue();
-                    if(filter_var($value, FILTER_VALIDATE_URL)){?>
-                        <a href = <?php xecho($value); ?> ><?php xecho($value) ?></a>
-                    <?php }
-                    else{
-                        xecho($value);
-                    }?>
+                        // Wrap value in a hyperlink when it looks like a URL
+                        $value = $prop->getKeyValue();
+                        if(filter_var($value, FILTER_VALIDATE_URL)) {
+                            echo "<a href = ".xssafe($value).">";
+                            xecho($value);
+                            echo "</a>";
+                        } else {
+                            xecho($value);
+                        }
+                    ?>
                     </td>
                     <?php if(!$params['portalIsReadOnly']): ?>
                         <td style="width: 10%;">
