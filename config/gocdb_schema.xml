@@ -266,6 +266,9 @@
 	    <length>255</length>
 	    <regex>/^(\+?[0-9\-\.\s\)\(]+)?$/</regex>
 	</field>
+	<field>
+		<fname>UNLINK_HOMESITE</fname>
+	</field>
     </entity>
 
     <!-- ==========================================================  -->

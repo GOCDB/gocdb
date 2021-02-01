@@ -32,6 +32,11 @@ function getUserDataFromWeb() {
         $user_data[$field] = $_REQUEST[$field];
     }
 
+    if (array_key_exists("UNLINK_HOMESITE", $_REQUEST)) {
+        // Mimic checkbox behaviour: will only be returned if the box is checked.
+        $user_data["UNLINK_HOMESITE"] = null;
+    }
+
     if(!empty($_REQUEST['OBJECTID'])) {
         $user_data['ID'] = $_REQUEST['OBJECTID'];
     }

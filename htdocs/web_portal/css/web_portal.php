@@ -294,16 +294,20 @@ li {
     margin-bottom: 0.3em;
 }
 
-.input_input_text {
+.input_input_text,
+.input_input_date,
+.input_input_check {
+    margin-left: 2em;
+}
+
+.input_input_text,
+.input_input_date {
     width: 90%;
     margin-bottom: 1em;
-    margin-left: 2em;
 }
 
 .input_input_date {
     width: 30%;
-    margin-bottom: 1em;
-    margin-left: 2em;
 }
 
 .table_row_1,.table_header {
