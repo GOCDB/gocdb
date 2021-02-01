@@ -6,7 +6,7 @@
             Title
         </span>
         <?php
-            $titles = array('Mr', 'Mrs', 'Miss', 'Ms', 'Prof', 'Dr');
+          $titles = array('', 'Dr', 'Miss', 'Mr', 'Mrs',  'Ms', 'Mx', 'Prof');
         ?>
         <select name="TITLE" class="add_edit_form">
         <?php
