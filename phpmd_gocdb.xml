@@ -30,7 +30,22 @@
 
     <rule ref="rulesets/cleancode.xml">
         <exclude name="ElseExpression" />
+        <exclude name="StaticAccess" />
+        <exclude name="MissingImport" />
     </rule>
+    <rule ref="rulesets/cleancode.xml/StaticAccess">
+        <!-- Allow Services Factory and some test helpers -->
+        <properties>
+            <property name="exceptions" value="Factory,TestUtil,ServiceTestUtil" />
+        </properties>
+    </rule>
+    <!--
+    <rule ref="rulesets/cleancode.xml/MissingImport">
+        <properties>
+            <property name="ignore-global" value="true" />
+        </properties>
+    </rule>
+    -->
 
     <rule ref="rulesets/naming.xml">
         <exclude name="ShortVariable" />
