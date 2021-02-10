@@ -23,7 +23,7 @@ foreach ($res as $r){
 
 if ($counts["error"] != 0) {
     echo("An error has been detected while checking GOCDB services. ".
-            "Please check https://goc.egi.eu/portal/GOCDB_monitor/ to find out more\n");
+        "Please check https://goc.egi.eu/portal/GOCDB_monitor/ to find out more\n");
     exit(2); // return Nagios error code for CRITICAL
 }
 else if ($counts["warn"] != 0) {
