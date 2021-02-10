@@ -22,6 +22,7 @@ require_once __DIR__ . '/writeAPI/siteMethods.php';
 require_once __DIR__ . '/writeAPI/serviceMethods.php';
 require_once __DIR__ . '/writeAPI/endpointMethods.php';
 
+require_once __DIR__ . '/unit/lib/Gocdb_Services/ServiceServiceTest.php';
 
 /**
  * TestSuite designed to run the main doctrine tests
@@ -53,6 +54,7 @@ class DoctrineTestSuite1 {
     $suite->addTestSuite('WriteAPIserviceMethodsTests');
     $suite->addTestSuite('WriteAPIendpointMethodsTests');
 
+    $suite->addTestSuite('ServiceServiceTest');
 
     return $suite;
   }

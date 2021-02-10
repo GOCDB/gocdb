@@ -32,41 +32,41 @@ class TestUtil {
     }
 
     public static function createSampleEndpointLocation(){
-        $el = new EndpointLocation();
-        $el->setUrl("https://google.co.uk");
-        $el->setName("JustSomeEndpoint");
-        return $el;
+        $epl = new EndpointLocation();
+        $epl->setUrl("https://google.co.uk");
+        $epl->setName("JustSomeEndpoint");
+        return $epl;
     }
 
    public static function createSampleService($label){
-        $se = new Service();
-        $se->setHostName(''.$label);
-        $se->setEmail('sample@em.ail');
-        $se->setBeta(false);
-        $se->setProduction(true);
-        $se->setMonitored(true);
-        return $se;
+        $serv = new Service();
+        $serv->setHostName(''.$label);
+        $serv->setEmail('sample@em.ail');
+        $serv->setBeta(false);
+        $serv->setProduction(true);
+        $serv->setMonitored(true);
+        return $serv;
     }
 
     public static function createSampleServiceType($name){
-         $st = new ServiceType();
-         $st->setName($name);
-         $st->setDescription('sample service type');
-         return $st;
+         $stype = new ServiceType();
+         $stype->setName($name);
+         $stype->setDescription('sample service type');
+         return $stype;
      }
 
     public static function createSampleRoleType($name) {
-        $rt = new RoleType($name);
-        return $rt;
+        $rtype = new RoleType($name);
+        return $rtype;
     }
 
     public static function createSampleUser($forename, $surname, $dn) {
-        $u = new User();
-        $u->setForename($forename);
-        $u->setSurname($surname);
-        $u->setCertificateDn($dn);
-        $u->setAdmin(FALSE);
-        return $u;
+        $user = new User();
+        $user->setForename($forename);
+        $user->setSurname($surname);
+        $user->setCertificateDn($dn);
+        $user->setAdmin(FALSE);
+        return $user;
     }
 
     public static function createSampleNGI($label) {
@@ -81,8 +81,7 @@ class TestUtil {
     }
 
     public static function createSampleRole(\User $user, \RoleType $roleType, \OwnedEntity $ownedEntity, $roleStatus) {
-        $r = new Role($roleType, $user, $ownedEntity, $roleStatus);
-        return $r;
+        return new Role($roleType, $user, $ownedEntity, $roleStatus);
     }
 
     public static function createSampleSite($label) {
@@ -94,11 +93,11 @@ class TestUtil {
     }
 
     public static function createSampleServiceGroup($label){
-        $sg = new ServiceGroup();
-        $sg->setName($label);
-        $sg->setMonitored(1);
-        $sg->setEmail($label."@email.com");
-        return $sg;
+        $sgrp = new ServiceGroup();
+        $sgrp->setName($label);
+        $sgrp->setMonitored(1);
+        $sgrp->setEmail($label."@email.com");
+        return $sgrp;
     }
 
     public static function createSampleSiteProperty($key, $val){

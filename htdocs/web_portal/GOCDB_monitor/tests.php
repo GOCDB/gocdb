@@ -66,11 +66,11 @@ function test_db_connection(){
 
 function test_url($url) {
     try{
-        $res = get_https2($url);
+        get_https2($url);
         $retval["status"] = "ok";
         $retval["message"] = "everything is well";
-    } catch (Exception $Exception){
-        $message = $Exception->getMessage();
+    } catch (Exception $exception){
+        $message = $exception->getMessage();
         $retval["status"] = "error";
         $retval["message"] = "$message";
     }
