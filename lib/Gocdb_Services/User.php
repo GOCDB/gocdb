@@ -408,6 +408,15 @@ class User extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
 
         $this->editUserAuthorization($user, $currentUser);
+
+        if (!$user->getAPIAuthenticationEntities()->isEmpty()) {
+            // Must remove attached API credentials before removal
+            $userName = $user->getFullName();
+            throw new \Exception("Request to delete user $userName rejected:" .
+                " Delete or reassign API credentials owned by user" .
+                " from sites before deletion.");
+        }
+
         $this->em->getConnection()->beginTransaction();
         try {
             $this->em->remove($user);
