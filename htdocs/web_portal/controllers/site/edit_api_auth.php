@@ -62,6 +62,12 @@ function draw(\User $user = null, \APIAuthentication $authEnt = null, \Site $sit
     $params['authTypes'] = array();
     $params['authTypes'][]='X509';
     $params['authTypes'][]='OIDC Subject';
+    $params['user'] = $user;
+    $params['allowWrite'] = $authEnt->getAllowAPIWrite();
+    // If the user is changing, send in the new user DN
+    if ($user->getId() != $authEnt->getUser()->getId()) {
+        $params['currentUserIdent'] = $authEnt->getUser()->getCertificateDn();
+    }
 
     show_view("site/edit_api_auth.php", $params);
     die();

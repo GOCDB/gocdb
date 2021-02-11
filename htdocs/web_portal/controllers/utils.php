@@ -688,6 +688,9 @@ function getSTDataFromWeb() {
 function getAPIAuthenticationFromWeb() {
     $authEntityData['TYPE'] = $_REQUEST['TYPE'];
     $authEntityData['IDENTIFIER'] = trim($_REQUEST['IDENTIFIER']);
+    $authEntityData['ALLOW_WRITE'] = key_exists('ALLOW_WRITE', $_REQUEST)?
+                                        trim($_REQUEST['ALLOW_WRITE']) == 'checked':
+                                        false;
 
     return $authEntityData;
 

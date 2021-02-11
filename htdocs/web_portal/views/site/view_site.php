@@ -553,40 +553,73 @@ $extensionProperties = $site->getSiteProperties();
     <?php if($params['ShowEdit']):?>
         <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-                Credentials authorised to use the GOCDB write API (Only shown if you have the relevant permissions)
+                Credentials authorised to use the GOCDB read and write APIs (Only shown if you have the relevant permissions)
             </span>
+            <img src="<?php echo \GocContextPath::getPath() ?>img/key.png" class="decoration" />
             <table id="AuthenticatedEntities" class="table table-striped table-condensed tablesorter">
                 <thead>
                     <tr>
                         <th>Type</th>
                         <th>Identifier</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th>User</th>
+                        <th style="text-align:center">API Write</th>
+                        <th style="text-align:center">Edit</th>
+                        <th style="text-align:center">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    foreach ($params['APIAuthenticationEntities'] as $authEnt) {
+                    foreach ($params['APIAuthEnts'] as $APIAuthEnt) {
+                        $disableButtons = false;
+                        /* TODO-irn Add configuration switch for disabling buttons - default for now
+                         * to enabled.
+                        if (($APIAuthEnt->getIdentifier() == $APIAuthEnt->getUser()->getCertificateDn())) {
+                            // This credential is the owning user's own.
+                            // isable edit and delete
+                            // for other users.
+                            // TODO-irn: decide if this is sensible??
+                            if ($params['userId'] == $APIAuthEnt->getUser()->getId()) {
+                                $disableButtons = true;
+                            }
+                        }
+                        */
                     ?>
                     <tr>
                         <td>
-                            <?php xecho($authEnt->getType())?>
+                            <?php xecho($APIAuthEnt->getType())?>
                         </td>
                         <td>
-                            <?php xecho($authEnt->getIdentifier())?>
+                            <?php xecho($APIAuthEnt->getIdentifier())?>
                         </td>
-                        <td style="width: 10%;"align = "center">
-                            <?php if(!$portalIsReadOnly):?>
-                                <a href="index.php?Page_Type=Edit_API_Authentication_Entity&amp;authentityid=<?php echo $authEnt->getId();?>">
-                                    <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
-                                </a>
-                            <?php endif;?>
+                        <td>
+                            <a href="index.php?Page_Type=User&amp;id=<?php xecho($APIAuthEnt->getUser()->getId())?>"
+                                title="<?php xecho($APIAuthEnt->getUser()->getFullname())?>">
+                                <?php xecho(substr($APIAuthEnt->getUser()->getSurname(),0,10))?>
+                            </a>
                         </td>
-                        <td style="width: 10%;"align = "center">
+                        <td style="width: 8%; text-align:center">
+                            <img height="22px" src=
+                                <?php if (($APIAuthEnt->getAllowAPIWrite())) {
+                                    echo '"'.\GocContextPath::getPath().'img/tick.png"';
+                                } else {
+                                    echo '"'.\GocContextPath::getPath().'img/cross.png"';
+                                } ?>
+                            />
+                        </td>
+                        <td style="width: 8%;"align = "center">
                             <?php if(!$portalIsReadOnly):?>
-                                <a href="index.php?Page_Type=Delete_API_Authentication_Entity&amp;authentityid=<?php echo $authEnt->getId();?>">
-                                    <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/>
-                                </a>
+                                <form action="index.php?Page_Type=Edit_API_Authentication_Entity&amp;authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
+                                    <button type="submit" <?php if ($disableButtons) echo "disabled"; ?>
+                                        >Edit</button>
+                                </form>
+                             <?php endif;?>
+                        </td>
+                        <td style="width: 8%;"align = "center">
+                            <?php if(!$portalIsReadOnly):?>
+                                <form action="index.php?Page_Type=Delete_API_Authentication_Entity&amp;authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
+                                    <button type="submit" <?php if ($disableButtons) echo "disabled"; ?>
+                                        >Delete</button>
+                                </form>
                             <?php endif;?>
                         </td>
                     </tr>
@@ -595,11 +628,11 @@ $extensionProperties = $site->getSiteProperties();
             </table>
 
             <?php if (!$portalIsReadOnly): ?>
-                <!-- Add new Downtime Link -->
+                <!-- Add new API credential -->
                 <a href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $site->getId()?>">
                     <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                        Add new API credential
+                        Add API credential
                     </span>
                 </a>
             <?php endif; ?>
