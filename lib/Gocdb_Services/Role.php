@@ -1,5 +1,8 @@
 <?php
 namespace org\gocdb\services;
+
+use Exception;
+
 /* Copyright © 2011 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,7 +23,6 @@ require_once __DIR__ . '/ServiceGroup.php';
 require_once __DIR__ . '/Project.php';
 require_once __DIR__ . '/RoleActionAuthorisationService.php';
 require_once __DIR__ . '/RoleActionMappingService.php';
-
 
 /**
  * GOCDB Stateless service facade (business routnes) for role objects.
@@ -182,8 +184,8 @@ class Role extends AbstractEntityService{
         //
         //$entityClassName= get_class($entity);
         require_once __DIR__.'/OwnedEntity.php';
-        $OwnedEntityService = new \org\gocdb\services\OwnedEntity();
-        $entityClassName = $OwnedEntityService->getOwnedEntityDerivedClassName($entity);
+        $ownedEntityService = new \org\gocdb\services\OwnedEntity();
+        $entityClassName = $ownedEntityService->getOwnedEntityDerivedClassName($entity);
 
         $dql = "SELECT rt.name
             FROM Role r
@@ -542,14 +544,15 @@ class Role extends AbstractEntityService{
             // getRoleTypeName throws a NoResultException if the roleType with the
             // specfied name don't exist in in the DB.
             $roleType = $this->getRoleTypeByName($roleTypeName);
-            $r = new \Role($roleType, $user, $entity, $roleStatus);
-            $this->em->persist($r);
+            $role = new \Role($roleType, $user, $entity, $roleStatus);
+            $this->em->persist($role);
+            $this->em->flush(); // See - https://github.com/GOCDB/gocdb/issues/255
 
             // Ensure roleId has been generated
             $this->em->flush();
 
             // create a RoleActionRecord after role has been persisted (to get id)
-            $rar = \RoleActionRecord::construct($user, $r, \RoleStatus::PENDING);
+            $rar = \RoleActionRecord::construct($user, $role, \RoleStatus::PENDING);
             $this->em->persist($rar);
 
             $this->em->flush();
@@ -559,7 +562,7 @@ class Role extends AbstractEntityService{
             $this->em->close();
             throw $e;
         }
-        return $r;
+        return $role;
     }
 
 
@@ -640,16 +643,18 @@ class Role extends AbstractEntityService{
             throw new \LogicException('Error - target entity of role is null');
         }
 
-        // if calling user is not the same person, need to check permissions
-        if ($role->getUser() != $callingUser) {
+        $roleUser = $role->getUser();
+        // check permission to revoke if calling user is not this role's owner
+        if ($roleUser != $callingUser) {
             // Revocation by 2nd party
             //$grantingRoles = $this->authorize Action(\Action::REVOKE_ROLE, $entity, $callingUser);
             if($this->roleActionAuthorisationService->authoriseAction(\Action::REVOKE_ROLE, $entity, $callingUser)->getGrantAction() == FALSE){
                 throw new \Exception('You do not have permission to revoke this role');
             }
-        } else {
-            // self revoke - user is allowed to revoke their own roles
         }
+        // Check that removing the role would not leave APIAuth credentials owned by the user
+        // who no longer has a role at the site.
+        $this->checkOrphanAPIAuth($role);
 
         if($role->getStatus() == \RoleStatus::PENDING){
             // if this role has not yet been granted, then new status is REJECTION
@@ -676,7 +681,40 @@ class Role extends AbstractEntityService{
         }
 
     }
+    /**
+     * Check that removing a site role from a user would not leave an orphaned API credential:
+     * attached to a site where the user no longer has a active role.
+     * @param \Role $role
+     * @throws \Exception If revoking the Role would leave an APIAuthentication
+     *                    credential owned by a user without a role at the site
+     */
+    public function checkOrphanAPIAuth (\Role $role) {
+        /** @var \OwnedEntity $entity */
+        $entity = $role->getOwnedEntity();
 
+        if ($entity->getType() == \OwnedEntity::TYPE_SITE) {
+            $site = $entity;
+            $roleUser = $role->getUser();
+            $userAPIEnts = $roleUser->getAPIAuthenticationEntities();
+            /** @var \APIAuthentication $cred */
+            foreach ($userAPIEnts as $cred) {
+                if ($cred->getParentSite() == $site) {
+                    $roleCount = count($this->getUserRoleNamesOverEntity($site, $roleUser, \RoleStatus::GRANTED));
+                    if ($roleCount <= 1) {
+                        throw new Exception("Request to remove role rejected: role removal would" .
+                            " leave one or more API credentials at the site which are owned by a user" .
+                            " who has no site role. Delete or reassign ownership of credentials" .
+                            " owned by this user from the site to enable revocation" .
+                            ". Site:" . $site->getShortName() .
+                            ". User:" . $roleUser->getFullName() .
+                            ". Role:" . $role->getRoleType()->getName());
+                    }
+                    return; // only need to check the first we find
+                }
+            }
+            // if we fall through to here, the user has no APIAuths for the role's site.
+        }
+    }
     /**
      * Calling user attempts to reject the given Role request.
      * Role rejection is slightly different revoking a role: a rejected is not

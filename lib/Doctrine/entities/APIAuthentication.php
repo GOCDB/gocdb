@@ -12,7 +12,7 @@
  * limitations under the License.
  */
 
- /**
+/**
   * The APIAuthenticationEntity defines a credential that can be used to makce
   * changes throught he API for a specific {@see Site}. Each site can have
   * 0-many APIAuthentication entities associated with it. Each entity has an ID,
@@ -46,6 +46,42 @@
     protected $identifier = null;
 
     /**
+     * The registered User that added this APIAuthentication entity
+     * One user may have zero or more APIAuthentication entities.
+     * If edited or renewed, this will be the user that did this.
+     *
+     * @ManyToOne(targetEntity="User", inversedBy="APIAuthenticationEntities")
+     * @JoinColumn(name="user_id", referencedColumnName="id", onDelete="CASCADE")
+     */
+    protected $user = null;
+
+     /**
+      * For new instances this is the time of creation. Existing entities
+      * pre-GOCDB5.8 do not have this field and are initialised with the
+      * time the schema is updated.
+      * @Column(type="datetime", nullable=false, options={"default" : "CURRENT_TIMESTAMP"})
+      */
+    protected $lastRenewTime = null;
+
+    /**
+     * When this APIAuthentication entity was most recently used.
+     * @Column(type="datetime", nullable=true)
+     */
+    protected $lastUseTime = null;
+
+    /**
+     * Existing entities pre-GOCDB5.8 do not have this field and are assumed
+     * to be write-enabled. New entities are assumed write-DISabled so the
+     * constructor behaviour differs from the Doctrine annotation.
+     * @Column(type="boolean", nullable=false, options={"default" : true})
+     */
+    protected $allowAPIWrite = false;
+
+    /**  */
+    public function __construct() {
+        $this->setLastRenewTime();
+    }
+    /**
      * Get PK of Authentication entity
      * @return int
      */
@@ -78,6 +114,34 @@
     }
 
     /**
+     * @return \User
+     */
+    public function getUser() {
+        return $this->user;
+    }
+
+    /**
+     * @return bool $allowAPIWrite
+     */
+    public function getAllowAPIWrite () {
+        return $this->allowAPIWrite;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getLastUseTime () {
+        return $this->lastUseTime;
+    }
+
+    /**
+     * @return \DateTime $time
+     */
+    protected function getLastRenewTime() {
+        return $this->lastRenewTime;
+    }
+
+    /**
      * Set the type of this authentication entity
      * @param string $name
      */
@@ -94,6 +158,45 @@
     }
 
     /**
+     * @param \DateTime $time if null, current UTC time is set
+     */
+    public function setLastUseTime (\DateTime $time = null) {
+
+        $useTime = $time;
+
+        if (is_null($time)) {
+            $useTime = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
+
+        $this->lastUseTime = $useTime;
+    }
+
+    /**
+     * @param \DateTime $time if null, current UTC time is set
+     */
+    public function setLastRenewTime(\DateTime $time = null) {
+
+        $renewTime = $time;
+
+        if (is_null($time)) {
+            $renewTime = new \DateTime('now', new \DateTimeZone('UTC'));
+        }
+
+        $this->lastRenewTime = $renewTime;
+    }
+
+    /**
+     *
+     * @param bool $allowAPIWrite
+     */
+    public function setAllowAPIWrite ($allowWrite) {
+        if (!is_bool($allowWrite)) {
+            throw new LogicException("Expected bool, received".gettype($allowWrite));
+        }
+        $this->allowAPIWrite = $allowWrite;
+    }
+
+    /**
      * Do not call in client code, always use the opposite
      * <code>$site->addAuthenticationEntityDoJoin($authenticationEntity)</code>
      * instead which internally calls this method to keep the bidirectional
@@ -104,7 +207,13 @@
      *
      * @param \Site $site
      */
-    public function _setParentSite($site){
+    public function _setParentSite(\Site $site){
         $this->parentSite = $site;
+    }
+    /**
+    * @param \User $user
+    */
+    public function _setUser(\User $user) {
+        $this->user = $user;
     }
   }

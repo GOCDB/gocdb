@@ -42,16 +42,16 @@ class User extends AbstractEntityService{
     /**
      * Gets a user object from the DB
      * @param $id User ID
-     * @return User object
+     * @return \User object
      */
     public function getUser($id) {
         return $this->em->find("User", $id);
     }
 
     /**
-     * Lookup a User object by user's ID string, stored in certificateDn.
-     * @param string $userPrinciple the user's principle ID string, e.g. DN.
-     * @return User object or null if no user can be found with the specified principle
+     * Lookup a User object by user's principle id string.
+     * @param string $userPrinciple the user's principle id string, e.g. DN.
+     * @return \User object or null if no user can be found with the specified principle
      */
     public function getUserByCertificateDn($userPrinciple) {
         if (empty($userPrinciple)) {

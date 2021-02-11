@@ -11,6 +11,7 @@ namespace org\gocdb\services;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+require_once __DIR__ . '/Factory.php';
 require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/RoleConstants.php';
@@ -71,7 +72,7 @@ class Site extends AbstractEntityService{
     /**
      * Finds a single site by ID and returns its entity
      * @param int $id the site ID
-     * @return Site a site object
+     * @return \Site a site object
      */
     public function getSite($id) {
         $dql = "SELECT s FROM Site s WHERE s.id = :id";
@@ -646,7 +647,7 @@ class Site extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         if(is_null($user)){
-            throw new Exception("Unregistered users may not add new sites");
+            throw new \Exception("Unregistered users may not add new sites");
         }
 
         // get the parent NGI entity
@@ -886,9 +887,7 @@ class Site extends AbstractEntityService{
     }
 
     private function checkNumberOfScopes(array $myArray){
-        require_once __DIR__ . '/Config.php';
-        $configService = new \org\gocdb\services\Config();
-        $minumNumberOfScopes = $configService->getMinimumScopesRequired('site');
+        $minumNumberOfScopes = $this->configService->getMinimumScopesRequired('site');
         if(sizeof($myArray)<$minumNumberOfScopes){
             throw new \Exception("A site must have at least " . $minumNumberOfScopes . " optional scope(s) assigned to it.");
         }
@@ -1114,7 +1113,7 @@ class Site extends AbstractEntityService{
         }
 
         //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
-        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        $extensionLimit = $this->configService->getExtensionsLimit();
         if ($propertyCount > $extensionLimit){
             throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
         }
@@ -1379,7 +1378,7 @@ class Site extends AbstractEntityService{
             if($authEnt->getIdentifier()==$identifier && $authEnt->getType() == $type) {
                 throw new \Exception(
                     "An authentication object of type \"$type\" and with identifier " .
-                    "\"$identifier\" already exists for" . $site->getName()
+                    "\"$identifier\" already exists for " . $site->getName()
                 );
             }
         }
@@ -1410,8 +1409,9 @@ class Site extends AbstractEntityService{
 
         $identifier = $newValues['IDENTIFIER'];
         $type = $newValues['TYPE'];
+        $allowWrite = $newValues['ALLOW_WRITE'];
 
-        //Check that an identifier ha been provided
+        //Check that an identifier has been provided
         if(empty($identifier)){
             throw new \Exception("A value must be provided for the identifier");
         }
@@ -1438,8 +1438,10 @@ class Site extends AbstractEntityService{
         try {
             $authEnt = new \APIAuthentication();
             $authEnt->setIdentifier($identifier);
+            $authEnt->setAllowAPIWrite($allowWrite);
             $authEnt->setType($type);
             $site->addAPIAuthenticationEntitiesDoJoin($authEnt);
+            $user->addAPIAuthenticationEntitiesDoJoin($authEnt);
             $this->em->persist($authEnt);
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -1457,8 +1459,9 @@ class Site extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         // Validate the user has permission to delete properties
-        if (!$this->userCanEditSite($user, $authEntity->getParentSite())) {
-            throw new \Exception("You don't have permission to add authentication entties to " . $site->getShortName());
+        $site = $authEntity->getParentSite();
+        if (!$this->userCanEditSite($user, $site)) {
+            throw new \Exception("You don't have permission to add authentication entities to " . $site->getShortName());
         }
 
         //delete the entity
@@ -1488,11 +1491,12 @@ class Site extends AbstractEntityService{
 
         // Validate the user has permission to edit properties
         if (!$this->userCanEditSite($user, $site)) {
-            throw new \Exception("You don't have permission to add authentication entties to " . $site->getShortName());
+            throw new \Exception("Permission denied: a site role is required to add authentication entities to " . $site->getShortName());
         }
 
         $identifier = $newValues['IDENTIFIER'];
         $type = $newValues['TYPE'];
+        $allowWrite = $newValues['ALLOW_WRITE'];
 
         //Check that an identifier ha been provided
         if(empty($identifier)){
@@ -1517,8 +1521,10 @@ class Site extends AbstractEntityService{
         /**
         * As long as something has changed, check there isn't already a
         * identifier of that type with that identifier for that Site
+        * Note: We might still be changing the allow API write value.
         */
-        if (!($authEntity->getIdentifier()==$identifier && $authEntity->getType() == $type)) {
+        if (!($authEntity->getIdentifier() == $identifier &&
+              $authEntity->getType() == $type)) {
             $this->uniqueAPIAuthEnt($site, $identifier, $type);
         }
 
@@ -1527,6 +1533,8 @@ class Site extends AbstractEntityService{
         try {
             $authEntity->setIdentifier($identifier);
             $authEntity->setType($type);
+            $authEntity->setAllowAPIWrite($allowWrite);
+            $user->addAPIAuthenticationEntitiesDoJoin($authEntity);
             $this->em->persist($authEntity);
             $this->em->flush();
             $this->em->getConnection()->commit();
