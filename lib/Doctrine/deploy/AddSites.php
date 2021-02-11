@@ -98,21 +98,7 @@ foreach($sites as $xmlSite) {
     }
     $doctrineSite->setCertificationStatus($certStatus);
 
-    // get the scope
-    $dql = "SELECT s FROM Scope s WHERE s.name = ?1";
-    $scopes = $entityManager->createQuery($dql)
-                                 ->setParameter(1, (string) $xmlSite->SCOPE)
-                                 ->getResult();
-    /* Error checking: ensure each Site's "SCOPE" refers to exactly
-     * one SCOPE */
-    if(count($scopes) !== 1) {
-        throw new Exception(count($scopes) . " SCOPEs found with name: " .
-            $xmlSite->SCOPE);
-    }
-    foreach($scopes as $scope) {
-        $scope = $scope;
-    }
-    $doctrineSite->addScope($scope);
+    $doctrineSite->addScope(getScope($entityManager, (string) $xmlSite->SCOPE));
 
     // get / set the country
     $dql = "SELECT c FROM Country c WHERE c.name = ?1";

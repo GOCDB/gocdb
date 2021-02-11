@@ -259,6 +259,10 @@ class APIAuthenticationService extends AbstractEntityService{
             throw new \Exception("Invalid x509 DN");
         }
 
+        //If the entity is of type OIDC subject, do a more thorough check again
+        if ($type == 'OIDC Subject' && !preg_match("/^([a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12})$/", $identifier)) {
+            throw new \Exception("Invalid OIDC Subject");
+        }
 
     }
 }

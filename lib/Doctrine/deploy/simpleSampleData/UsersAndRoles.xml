@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+    <EGEE_USER>
+        <FORENAME>Alpha</FORENAME>
+        <SURNAME>Beta</SURNAME>
+        <TITLE></TITLE>
+        <EMAIL>alpha.beta@beta.com</EMAIL>
+        <TEL>+01 2345 67 0000</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/CN=Alpha Beta</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>SITE-1</HOMESITE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>SITE-1</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI-1</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+</results>

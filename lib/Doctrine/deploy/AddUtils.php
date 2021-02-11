@@ -47,3 +47,23 @@ function isBad($site) {
         return true;
     }
 }
+/**
+ * Return a scope object given a scope name
+ * @param EntityManager $entityManager
+ * @param string $scope
+ * @return \Scope
+ */
+function getScope($entityManager, $scope) {
+    // get the scope
+    $dql = "SELECT s FROM Scope s WHERE s.name = ?1";
+    $scopes = $entityManager->createQuery($dql)
+                                ->setParameter(1, $scope)
+                                ->getResult();
+    /* Error checking: ensure each Site's "SCOPE" refers to exactly
+    * one SCOPE */
+    if(count($scopes) !== 1) {
+        throw new Exception(count($scopes) . " SCOPEs found with name: " . $scope);
+    }
+
+    return $scopes[0];
+}
