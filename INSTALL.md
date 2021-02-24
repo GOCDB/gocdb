@@ -319,7 +319,7 @@ PASSWORD_LIFE_TIME and PASSWORD_GRACE_TIME parameters in the DBA_PROFILES table:
 SELECT profile FROM dba_users WHERE username = 'GOCDB5';
 
 -- select the password expiry settings for the profile assigned to the GOCDB5 user
-select resource_name,resource_type, limit from dba_profiles where profile=DEFAULT;
+SELECT resource_name, resource_type, limit FROM dba_profiles WHERE profile='DEFAULT';
 ```
 
 If you prefer, you can update the default expiry from 180days to UNLIMITED using
