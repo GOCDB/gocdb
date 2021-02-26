@@ -15,17 +15,17 @@
 
     The GOCDB data consists mainly of:
     <ul>
-    <li class="no_border">Participating National Grid Initiatives (NGI)</li>
-    <li class="no_border">Grid Sites providing resources to the infrastructure</li>
+    <li class="no_border">Resource Providers providing the infrastructure</li>
     <li class="no_border">Resources and services, including maintenance plans for these resources</li>
-    <li class="no_border">Participating people, and their roles within EGI operations</li>
+    <li class="no_border">Participating people, and their roles within the infrastructure.</li>
     </ul>
-   Data are provided and updated by participating
-   NGIs, and are presented through this web portal.<br/><br/>
+   Data are provided and updated by the community,
+   and are presented through this web portal.<br/><br/>
+
 
         Please note:
         <ul>
-          <li>It is a "catch-all" service. This means it is centrally hosted on behalf of all NGIs.</li>
+          <li>It is a "catch-all" service. This means it is centrally hosted on behalf of the infrastructure.</li>
           <li>If an organisation deploys and uses their own system or a local GOCDB installation, their data won't appear here.</li>
         </ul>
 
