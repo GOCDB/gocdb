@@ -1,11 +1,11 @@
 <div class="rightPageContainer">
     <h1 class="startPage">Welcome to GOCDB</h1>
     <div class="start_page_body">
-    GOCDB is the official repository for storing and presenting <a href="http://www.egi.eu" target="_blank">EGI</a>
-    topology and resources information.
-
+    GOCDB is the official repository for storing and presenting topology and
+    resources information for the IRIS infrastructure.
 
     <br/><br/>
+
     <h2 class="startPage">What information is stored here?</h2>
     <br />
 
