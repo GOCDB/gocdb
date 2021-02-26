@@ -22,6 +22,8 @@
    Data are provided and updated by the community,
    and are presented through this web portal.<br/><br/>
 
+   For a list of services in the infrastructure, see
+   <a href="index.php?Page_Type=Services">here</a>.<br/><br/>
 
         Please note:
         <ul>
