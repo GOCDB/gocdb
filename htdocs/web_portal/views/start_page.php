@@ -5,11 +5,11 @@
       <img src="img/eosc_hub_thin.png" alt="The logo of the EOSC-hub Horizon 20 20 project" height="70">
     </h1>
     <div class="start_page_body">
-    GOCDB is the official repository for storing and presenting <a href="http://www.egi.eu" target="_blank">EGI</a>
-    topology and resources information.
-
+    GOCDB is the official repository for storing and presenting topology and
+    resources information for the Beta EOSC Core, deployed by EOSC-hub.
 
     <br/><br/>
+
     <h2 class="startPage">What information is stored here?</h2>
     <br />
 
