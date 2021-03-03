@@ -438,7 +438,7 @@
         <field>
             <fname>NAME</fname>
             <length>255</length>
-            <regex>/^([[:alpha:]]|[[:digit:]]|[_-])*$/</regex>
+            <regex>/^([[:alpha:]]|[[:digit:]]|[_\-\.])*$/</regex>
         </field>
         <field>
             <fname>DESCRIPTION</fname>
