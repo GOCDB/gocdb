@@ -41,7 +41,11 @@
           <div style="width: 80%; margin-left: auto; margin-right: auto;">
             <a href="/portal/" style="width:68%; font-size:1.7em" class="button">Access GOCDB using your IGTF X.509 Certificate</a>
             <p>or</p>
-            <p>Access GOCDB using one of the following:</p>
+            <p>
+               Access GOCDB using one of the following AAI Services.<br />
+               Note: if a client certificate has been provided to GOCDB, it 
+               will take precedence over these options.
+            </p>
             <div>
               <?php
                 $hostname = $_SERVER['HTTP_HOST'];
