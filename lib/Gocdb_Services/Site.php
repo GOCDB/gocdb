@@ -87,7 +87,7 @@ class Site extends AbstractEntityService{
      * cert status, NGI) in the DB.
      * Returns the object id of the updated site
      *
-     * Accepts an array $site_data as a parameter. $site_data's format is as follows:
+     * Accepts an array $siteData as a parameter. $siteData's format is as follows:
      *  Array
      *   (
      *      [Scope] => EGI
@@ -322,17 +322,17 @@ class Site extends AbstractEntityService{
      * checks in the gocdb_schema.xml and applies additional logic checks
      * that can't be described in the gocdb_schema.xml.
      *
-     * @param array $site_data containing all the fields for a GOCDB_SITE
+     * @param array $siteData containing all the fields for a GOCDB_SITE
      *                       object
      * @throws \Exception if the site data can't be
      *                   validated. The \Exception message will contain a human
      *                   readable description of which field failed validation.
      * @return null
      */
-    private function validate($site_data, $type) {
+    private function validate($siteData, $type) {
         require_once __DIR__.'/Validate.php';
         $serv = new \org\gocdb\services\Validate();
-        foreach($site_data as $field => $value) {
+        foreach($siteData as $field => $value) {
             $valid = $serv->validate($type, $field, $value);
             if(!$valid) {
                 $error = "$field contains an invalid value: $value";
@@ -341,11 +341,11 @@ class Site extends AbstractEntityService{
         }
 
         // Apply additional logic for validation that can't be captured solely using gocdb_schema.xml
-        if (!empty($site_data['IP_V6_RANGE'])) {
+        if (!empty($siteData['IP_V6_RANGE'])) {
             require_once __DIR__.'/validation/IPv6Validator.php';
             $validator = new \IPv6Validator();
             $errors = array();
-            $errors = $validator->validate($site_data['IP_V6_RANGE'], $errors);
+            $errors = $validator->validate($siteData['IP_V6_RANGE'], $errors);
             if (count($errors) > 0) {
                 throw new \Exception($errors[0]); // show the first message.
             }
@@ -820,10 +820,10 @@ class Site extends AbstractEntityService{
      * from the other.
      *
      * @param \site $site site to be moved
-     * @param \NGI $NGI NGI to which $site is to be moved
+     * @param \NGI $ngi NGI to which $site is to be moved
      * @return null
      */
-     public function moveSite(\Site $Site, \NGI $NGI, \User $user = null) {
+     public function moveSite(\Site $site, \NGI $ngi, \User $user = null) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
@@ -833,31 +833,31 @@ class Site extends AbstractEntityService{
         $this->em->getConnection()->beginTransaction(); // suspend auto-commit
         try {
             //If the NGI or site have no ID - throw logic exception
-            $site_id = $Site->getId();
-            if (empty($site_id)) {
-                throw new LogicException('Site has no ID');
+            $siteId = $site->getId();
+            if (empty($siteId)) {
+                throw new \LogicException('Site has no ID');
             }
-            $ngi_id = $NGI->getId();
-            if (empty($ngi_id)) {
-                throw new LogicException('NGI has no ID');
+            $ngiId = $ngi->getId();
+            if (empty($ngiId)) {
+                throw new \LogicException('NGI has no ID');
             }
             //find old NGI
-            $old_NGI = $Site->getNgi();
+            $oldNgi = $site->getNgi();
 
             //If the NGI has changed, then we move the site.
-            if ($old_NGI != $NGI) {
+            if ($oldNgi != $ngi) {
 
                  //Remove the site from the old NGI FIRST if it has an old NGI
-                if (!empty($old_NGI)) {
-                    $old_NGI->getSites()->removeElement($Site);
+                if (!empty($oldNgi)) {
+                    $oldNgi->getSites()->removeElement($site);
                 }
                 //Add site to new NGI
-                $NGI->addSiteDoJoin($Site);
-                //$Site->setNgiDoJoin($NGI);
+                $ngi->addSiteDoJoin($site);
+                //$site->setNgiDoJoin($ngi);
 
                 //persist
-                $this->em->merge($NGI);
-                $this->em->merge($old_NGI);
+                $this->em->merge($ngi);
+                $this->em->merge($oldNgi);
             }//close if
 
             $this->em->flush();
@@ -949,7 +949,7 @@ class Site extends AbstractEntityService{
     * Returns true if the user has permission to edit the Site
     *
     * @param \User $user
-    * @param \Site $Site
+    * @param \Site $site
     * @return boolian
     */
     public function userCanEditSite(\User $user, \Site $site) {
@@ -1281,18 +1281,18 @@ class Site extends AbstractEntityService{
 
         $scopeNamesNotShared = array_diff($childScopesNames, $parentScopesNames);
 
-        $ScopeNamesAndParentShareInfo = array();
+        $scopeNamesAndParentShareInfo = array();
         foreach($sharedScopesNames as $sharedScopesName){
-            $ScopeNamesAndParentShareInfo[$sharedScopesName]=true;
+            $scopeNamesAndParentShareInfo[$sharedScopesName]=true;
         }
         foreach($scopeNamesNotShared as $scopeNameNotShared){
-            $ScopeNamesAndParentShareInfo[$scopeNameNotShared]=false;
+            $scopeNamesAndParentShareInfo[$scopeNameNotShared]=false;
         }
 
-        //can be replaced with ksort($ScopeNamesAndParentShareInfo, SORT_NATURAL); in php>=5.5
-        uksort($ScopeNamesAndParentShareInfo, 'strcasecmp');
+        //can be replaced with ksort($scopeNamesAndParentShareInfo, SORT_NATURAL); in php>=5.5
+        uksort($scopeNamesAndParentShareInfo, 'strcasecmp');
 
-        return $ScopeNamesAndParentShareInfo;
+        return $scopeNamesAndParentShareInfo;
     }
 
     /**
@@ -1344,11 +1344,11 @@ class Site extends AbstractEntityService{
             $xmlSite->addAttribute('Longitude', $site->getLongitude());
                 }
 
-                $dom_sxe = dom_import_simplexml($xml);
+                $domXmlMapElement = dom_import_simplexml($xml);
                 $dom = new \DOMDocument('1.0');
                 $dom->encoding='UTF-8';
-                $dom_sxe = $dom->importNode($dom_sxe, true);
-                $dom_sxe = $dom->appendChild($dom_sxe);
+                $domXmlMapElement = $dom->importNode($domXmlMapElement, true);
+                $domXmlMapElement = $dom->appendChild($domXmlMapElement);
                 $dom->formatOutput = true;
                 $xmlString = $dom->saveXML();
 
