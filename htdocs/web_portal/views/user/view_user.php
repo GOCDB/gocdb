@@ -20,8 +20,7 @@
         if ($params['ShowEdit']) {?>
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Edit_User&amp;id=<?php echo $params['user']->getId()?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png"
-                            height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" class="pencil" />
                     <br />
                     <br />
                     <span>Edit</span>
@@ -46,8 +45,7 @@
                     echo ' title="Delete disabled: Remove API credentials before deleting this user."';
                 }
                 echo ' >'; # <a ...
-                    echo '<img src="' . \GocContextPath::getPath() . 'img/trash.png" ' .
-                            'height="25px" style="float: right; margin-right: 0.4em;" />';
+                    echo '<img src="' . \GocContextPath::getPath() . 'img/trash.png" class="trash" />';
                     echo '<br /><br /><span>Delete</span>';
                 echo '</a>';
                 echo '</div>';

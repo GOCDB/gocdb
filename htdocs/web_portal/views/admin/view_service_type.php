@@ -22,7 +22,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Admin_Edit_Service_Type&amp;id=<?php echo $id ?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" class="pencil" />
                     <br />
                     <br />
                     <span>Edit</span>
@@ -32,7 +32,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                    href="index.php?Page_Type=Admin_Delete_Service_Type<?php if($SEsCount!=0) {echo'_Denied';} ?>&id=<?php echo $id?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" class="trash" />
                     <br />
                     <br />
                     <span>Delete</span>

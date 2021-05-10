@@ -26,7 +26,7 @@
                     <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                     <a onclick="return confirmSubmit()"
                        href="index.php?Page_Type=Admin_Delete_NGI&amp;id=<?php echo $entityId ?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" class="trash" />
                         <br />
                         <span>Admin<br>Delete</span>
                     </a>
@@ -35,7 +35,7 @@
             <?php if($params['ShowEdit']):?>
                 <div style="float: right; margin-left: 2em;">
                     <a href="index.php?Page_Type=Edit_NGI&amp;id=<?php echo $entityId ?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" class="pencil" />
                         <br />
                         <br />
                         <span>Edit</span>

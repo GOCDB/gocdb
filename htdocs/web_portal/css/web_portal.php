@@ -774,3 +774,15 @@ img.person{
   vertical-align: middle;
   padding-right: 1em;
 }
+
+img.pencil {
+    height: 25px;
+    float: right;
+}
+
+
+img.trash {
+    height: 25px;
+    float: right;
+    margin-right: 0.4em;
+}
