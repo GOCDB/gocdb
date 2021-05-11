@@ -2,7 +2,7 @@
 /*______________________________________________________
  *======================================================
  * File: view_scope.php
- * Author: George Ryall, David Meredith
+ * Author: George Ryall, David Meredith, Elliott Kasoar
  * Description: Controller for displaying a scope and associated entities
  *
  * License information
@@ -18,32 +18,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  /*======================================================*/
-require_once __DIR__ . '/../utils.php';
-require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
+require_once __DIR__ . '/utils.php';
+require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
 
-function view_scope(){
-    //Check the user has permission to see the page, will throw exception
-    //if correct permissions are lacking
-    checkUserIsAdmin();
-    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ){
-        throw new Exception("An id must be specified");
+function view_scope() {
+
+    if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id']) ) {
+        throw new \Exception("An id must be specified");
     }
-    $dn = Get_User_Principle();
-    $user = \Factory::getUserService()->getUserByPrinciple($dn);
+    $idString = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($idString);
 
-    $serv= \Factory::getScopeService();
-    $scope =$serv ->getScope($_REQUEST['id']);
+    $params['UserIsAdmin'] = false;
+    if(!is_null($user)) {
+        $params['UserIsAdmin'] = $user->isAdmin();
+    }
 
-    $params['Name'] = $scope -> getName();
+    $serv = \Factory::getScopeService();
+    $scope = $serv ->getScope($_REQUEST['id']);
+
+    $params['Name'] = $scope->getName();
     $params['Description'] = $scope->getDescription();
-    $params['ID']= $scope ->getId();
-    $params['NGIs'] = $serv ->getNgisFromScope($scope);
-    $params['Sites'] = $serv ->getSitesFromScope($scope);
-    $params['ServiceGroups'] = $serv ->getServiceGroupsFromScope($scope);
-    $params['Services'] = $serv ->getServicesFromScope($scope);
+    $params['ID'] = $scope->getId();
+    $params['NGIs'] = $serv->getNgisFromScope($scope);
+    $params['Sites'] = $serv->getSitesFromScope($scope);
+    $params['ServiceGroups'] = $serv->getServiceGroupsFromScope($scope);
+    $params['Services'] = $serv->getServicesFromScope($scope);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
 
-    show_view("admin/scope.php", $params, $params['Name']);
+    show_view("scope.php", $params, $params['Name']);
     die();
 }
-

@@ -1,4 +1,3 @@
-
 <?php
 $name = $params['Name'];
 $id = $params['ID'];
@@ -13,7 +12,6 @@ $services = $params['Services'];
 $serviceCount = sizeof($services);
 $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
 ?>
-
 
 <div class="rightPageContainer">
 
@@ -36,8 +34,8 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
     </div>
 
     <!--Edit/Delete buttons-->
-    <!-- don't display in read only mode -->
-    <?php if(!$params['portalIsReadOnly']):?>
+    <!-- don't display in read only mode or if user is not admin -->
+    <?php if(!$params['portalIsReadOnly'] && $params['UserIsAdmin']):?>
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Admin_Edit_Scope&amp;id=<?php echo $id ?>">
@@ -59,7 +57,6 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             </div>
         </div>
     <?php endif; ?>
-
 
     <!--  NGIs -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
@@ -206,5 +203,4 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             </table>
         <?php endif; ?>
     </div>
-
 </div>

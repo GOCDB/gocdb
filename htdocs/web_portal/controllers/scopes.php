@@ -2,7 +2,7 @@
 /*______________________________________________________
  *======================================================
  * File: view_service_types.php
- * Author: George Ryall, David Meredith
+ * Author: George Ryall, David Meredith, Elliott Kasoar
  * Description: Controller for showing all scope tags available in GOCDB
  *
  * License information
@@ -19,23 +19,23 @@
  * limitations under the License.
  *
  /*====================================================== */
-require_once __DIR__ . '/../utils.php';
-require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
+require_once __DIR__.'/utils.php';
+require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
 
-function show_scopes(){
-    //Check the user has permission to see the page, will throw exception
-    //if correct permissions are lacking
-    checkUserIsAdmin();
+function show_scopes() {
 
     $scopes = \Factory::getScopeService()->getScopes();
-    $params['Scopes']= $scopes;
+    $params['Scopes'] = $scopes;
 
-
-
-    $dn = Get_User_Principle();
-    $user = \Factory::getUserService()->getUserByPrinciple($dn);
+    $idString = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($idString);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
 
-    show_view('admin/scopes.php', $params, 'Scopes');
+    $params['UserIsAdmin'] = false;
+    if(!is_null($user)) {
+        $params['UserIsAdmin'] = $user->isAdmin();
+    }
+
+    show_view('scopes.php', $params, 'Scopes');
     die();
 }
