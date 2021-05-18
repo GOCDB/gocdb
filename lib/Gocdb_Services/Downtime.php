@@ -523,6 +523,24 @@ class Downtime extends AbstractEntityService{
     }
 
     /**
+     * Check start of scheduled downtime is at least one day in the future
+     * @param $startTime
+     * @param $classification
+     * @throws \Exception if the downtime is not eligible for editing/deleting.
+     */
+    private function validateStartTime($startTime, $classification) {
+        if ($classification === "SCHEDULED") {
+            $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
+            $oneDay = \DateInterval::createFromDateString('1 days');
+            $tomorrowUtc = $nowUtc->add($oneDay);
+
+            if($startTime < $tomorrowUtc) {
+                throw new \Exception("Cannot edit or delete a SCHEDULED downtime starting within 24 hours.");
+            }
+        }
+    }
+
+    /**
      * Check with the business rules that the existing downtime's dates
      * allow editing of the downtime.
      * @link https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Downtime_shortening_and_extension downtime shortening and extension
