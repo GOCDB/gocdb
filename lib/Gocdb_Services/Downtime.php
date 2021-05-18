@@ -550,6 +550,12 @@ class Downtime extends AbstractEntityService{
         if($dt->hasStarted()) {
             throw new \Exception("This downtime has already started.");
         }
+
+        /* @var $startTime \DateTime */
+        $startTime = $dt->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
+
+        // Cannot delete dt if it starts within 24 hours
+        $this->validateStartTime($startTime, $dt->getClassification());
     }
 
     /**
@@ -688,7 +694,7 @@ class Downtime extends AbstractEntityService{
         $ses = $dt->getServices();
         $this->authorisation($ses, $user);
 
-        // Check dt is not on-going
+        // Check dt is not on-going or scheduled to start within 24 hours
         $this->deleteValidation($dt);
 
         $this->em->getConnection()->beginTransaction();
