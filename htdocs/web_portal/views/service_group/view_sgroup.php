@@ -72,7 +72,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                 ?>
                 <tr class="site_table_row_2" <?php echo $style ?>>
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal">Scope Tags</a>
+                        <a href="index.php?Page_Type=Scopes" style="word-wrap: normal">Scope Tags</a>
                     </td>
                     <td class="site_table">
             <textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($params['sGroup']->getScopeNamesAsString())?></textarea>
@@ -101,7 +101,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                 <th class="site_table">Hostname (service type)</th>
                 <th class="site_table">Description</th>
                 <th class="site_table">Production</th>
-                <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
+                <th class="site_table"><a href="index.php?Page_Type=Scopes">Scope(s)</a></th>
             </tr>
 
             <?php

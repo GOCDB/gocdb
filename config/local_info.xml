@@ -131,7 +131,6 @@
       <ServiceGroups>show</ServiceGroups>
       <AddSite>show</AddSite>
       <Scopes>show</Scopes>
-      <Scope_Help>show</Scope_Help>
     </menus>
 
     <!-- css

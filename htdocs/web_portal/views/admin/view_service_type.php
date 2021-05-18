@@ -57,7 +57,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                     <th class="site_table">Hostname</th>
                     <th class="site_table">Production</th>
                     <th class="site_table">Monitored</th>
-                    <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
+                    <th class="site_table"><a href="index.php?Page_Type=Scopes">Scope(s)</a></th>
                 </tr>
 
 

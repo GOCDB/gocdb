@@ -187,11 +187,6 @@ function Draw_Page($Page_Type) {
             require_once __DIR__ . '/controllers/project/view_project.php';
             show_project();
             break;
-        case "Scope_Help":
-            //rejectIfNotAuthenticated();
-            require_once __DIR__ . '/controllers/scope_help.php';
-            show_help();
-            break;
         case "Scopes":
             require_once __DIR__ . '/controllers/scopes.php';
             show_scopes();
