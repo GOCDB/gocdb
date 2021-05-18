@@ -541,6 +541,18 @@ class Downtime extends AbstractEntityService{
     }
 
     /**
+     * Check deletion of a downtime is allowed
+     * @param \Downtime $dt
+     * @throws \Exception if the downtime is not eligible for deletion.
+     */
+    public function deleteValidation(\Downtime $dt) {
+        // Cannot delete dt if already started
+        if($dt->hasStarted()) {
+            throw new \Exception("This downtime has already started.");
+        }
+    }
+
+    /**
      * Check with the business rules that the existing downtime's dates
      * allow editing of the downtime.
      * @link https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Downtime_shortening_and_extension downtime shortening and extension
@@ -676,12 +688,8 @@ class Downtime extends AbstractEntityService{
         $ses = $dt->getServices();
         $this->authorisation($ses, $user);
 
-        // Make sure all dates are treated as UTC!
-        //date_default_timezone_set("UTC");
-
-        if($dt->hasStarted()) {
-            throw new \Exception("This downtime has already started.");
-        }
+        // Check dt is not on-going
+        $this->deleteValidation($dt);
 
         $this->em->getConnection()->beginTransaction();
         try {
