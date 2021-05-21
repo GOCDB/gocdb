@@ -9,7 +9,7 @@
         <DESCRIPTION>
         </DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6653&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
+        <EMAIL>GriffinPeterson@sample.com</EMAIL>
         <TEL>+49 7247 82 0000</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -18,8 +18,8 @@
         <ACTIVE></ACTIVE>
         <HOMESITE>SWITCH</HOMESITE>
         <USER_ROLE>
-            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <USER_ROLE>EGI CSIRT Officer</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -31,7 +31,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
+        <EMAIL>AmyWong@sample.com</EMAIL>
         <TEL>+49 040 0000 1763</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -39,25 +39,9 @@
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>T3_CH_PSI</HOMESITE>
-
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
+            <USER_ROLE>Chief Operations Officer</USER_ROLE>
             <ON_ENTITY>EGI</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
-            <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
-            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
-            <USER_ROLE>Site Operations Manager</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -68,7 +52,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
+        <EMAIL>NevilleLongbottom@sample.com</EMAIL>
         <TEL>+49 040 0000 1763</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -78,22 +62,7 @@
         <HOMESITE>UZH</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
-            <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
-            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
-            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <USER_ROLE>NGI Operations Manager</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -106,7 +75,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
+        <EMAIL>DonnaMoss@sample.com</EMAIL>
         <TEL>+49 040 0000 1763</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -116,9 +85,14 @@
         <HOMESITE>UNIBE-LHEP</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>COD Staff</USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <ON_ENTITY>UNIBE-LHEP</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
 
@@ -128,7 +102,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
+        <EMAIL>RichardWinters@sample.com</EMAIL>
         <TEL>+49 040 0000 1763</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -137,10 +111,5 @@
         <ACTIVE></ACTIVE>
         <HOMESITE>UNIGE-DPNC</HOMESITE>
 
-        <USER_ROLE>
-            <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
     </EGEE_USER>
 </results>
