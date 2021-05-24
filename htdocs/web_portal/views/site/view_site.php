@@ -1,4 +1,6 @@
 <?php
+require_once __DIR__."/../../controllers/utils.php";
+
 $site = $params['site'];
 $downtimes = $params['Downtimes'];
 $parentNgiName = $site->getNgi()->getName();
@@ -59,7 +61,7 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="mailto:<?php xecho($site->getEmail()) ?>">
                 <?php xecho($site->getEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
@@ -67,7 +69,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getTelephone());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?></td>
         </tr>
         <tr class="site_table_row_1">
@@ -75,7 +77,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getEmergencyTel());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?></td>
         </tr>
         <tr class="site_table_row_2">
@@ -83,7 +85,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getCsirtTel());
             } else
-                echo('PROTECTED - Registration required')
+                echo(getInfoMessage())
                 ?></td>
         </tr>
         <tr class="site_table_row_1">
@@ -93,7 +95,7 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="mailto:<?php xecho($site->getCsirtEmail()) ?>">
                 <?php xecho($site->getCsirtEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
@@ -103,7 +105,7 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="mailto:<?php xecho($site->getEmergencyEmail()) ?>">
                 <?php xecho($site->getEmergencyEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
         </tr>
         <tr class="site_table_row_1">
@@ -113,7 +115,7 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="mailto:<?php xecho($site->getHelpdeskEmail()); ?>">
                 <?php xecho($site->getHelpdeskEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
@@ -155,7 +157,7 @@ $showPD = $params['authenticated']; // display Personal Data
                 <?php if (!$portalIsReadOnly): ?>
                 <a href="index.php?Page_Type=Edit_Certification_Status&amp;id=<?php echo($site->getId()) ?>">Change</a>
                 <?php endif; ?>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
 
@@ -204,7 +206,7 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="<?php xecho($site->getHomeUrl()) ?>">
                 <?php xecho($site->getHomeUrl()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
                 </tr>
                 <tr class="site_table_row_2">
@@ -214,7 +216,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getGiisUrl());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?>
                     </td>
                 </tr>
@@ -225,7 +227,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getIpRange());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?>
                     </td>
                 </tr>
@@ -236,7 +238,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getIpV6Range());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?>
                     </td>
                 </tr>
@@ -247,7 +249,7 @@ $showPD = $params['authenticated']; // display Personal Data
                             if ($showPD) {
                                 xecho($site->getDomain());
                             } else
-                                echo('PROTECTED - Registration required');
+                                echo(getInfoMessage());
                         ?>
                     </td>
                 </tr>
@@ -265,7 +267,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getCountry()->getName());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -276,7 +278,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getLatitude());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -287,7 +289,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getLongitude());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -298,7 +300,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getTimezoneId());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -309,7 +311,7 @@ $showPD = $params['authenticated']; // display Personal Data
             if ($showPD) {
                 xecho($site->getLocation());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -435,50 +437,49 @@ $showPD = $params['authenticated']; // display Personal Data
 
     <!--  Users -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
-        <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" class="decoration" />
 
-        <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Role</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($params['roles'] as $role) {
-                ?>
-                    <tr>
-                        <td>
-                            <div style="background-color: inherit;">
-                                <?php if ($showPD) { ?>
-                                <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
-                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
-                                    <?php xecho($role->getUser()->getFullName()) ?>
-                                </a>
-                                <?php
-                                } else {
-                                echo 'PROTECTED';
-                                }
-                                ?>
-                            </div>
-                        </td>
-                        <td>
-                            <?php
-                            if ($showPD) {
-                                xecho($role->getRoleType()->getName());
-                            } else {
-                                echo 'PROTECTED';
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                <?php
-                }
-                ?>
-            </tbody>
-        </table>
+        <?php
+            if ($showPD) { ?>
+                <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
+                <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" class="decoration" />
+                <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($params['roles'] as $role) {
+                        ?>
+                            <tr>
+                                <td>
+                                    <div style="background-color: inherit;">
+                                        <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
+                                            <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
+                                            <?php xecho($role->getUser()->getFullName()) ?>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <?php
+                                        xecho($role->getRoleType()->getName());
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+        <?php
+        } else {
+            echo '<span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">';
+            echo 'User personal data is hidden (' . getInfoMessage() . ') </span>';
+            echo '<img src="' . \GocContextPath::getPath() . 'img/people.png" class="decoration" />';
+        }
+        ?>
 
     <!-- Request Role Link -->
     <!--  only show this link if we're in read / write mode -->

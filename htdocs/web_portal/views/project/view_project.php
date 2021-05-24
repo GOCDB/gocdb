@@ -1,4 +1,7 @@
-<?php $ngiCount = sizeof($params['NGIs']) ?>
+<?php
+$ngiCount = sizeof($params['NGIs']);
+$showPD = $params['authenticated']; // display Personal Data
+?>
 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
 <!-- onclick="return confirmSubmit()" -->
 <div class="rightPageContainer">
@@ -108,52 +111,62 @@
 
     <!-- Roles -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-            Users (Click on name to manage roles)
-        </span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
-        <?php if (sizeof($params['Roles'])>0): ?>
 
-            <table id="usersTable" class="table table-striped table-condensed tablesorter">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th>Name</th>
-                        <th>Role</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php
-                    foreach($params['Roles'] as $role) {
-                    ?>
+        <?php
+        if ($showPD) { ?>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+            Users (Click on name to manage roles)
+            </span>
+            <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
+            <?php
+            if (sizeof($params['Roles'])>0) { ?>
+                <table id="usersTable" class="table table-striped table-condensed tablesorter">
+                    <thead>
                         <tr>
-                            <td>
-                                <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
-                            </td>
-                            <td>
-                                <?php
-                                if($params['authenticated']) {
-                                ?>
-                                    <a href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
-                                        <?php echo $role->getUser()->getFullName()?>
-                                    </a>
-                                <?php
-                                } else {
-                                    echo 'PROTECTED';
-                                } ?>
-                            </td>
-                            <td>
-                                <?php if($params['authenticated']) { xecho($role->getRoleType()->getName()); } else {echo('PROTECTED'); } ?>
-                            </td>
+                            <th></th>
+                            <th>Name</th>
+                            <th>Role</th>
                         </tr>
+                    </thead>
+                    <tbody>
                         <?php
-                            } // End of the foreach loop iterating over user roles
+                        foreach($params['Roles'] as $role) {
                         ?>
-                </tbody>
-            </table>
-        <?php else: echo "<br><br>&nbsp &nbsp There are currently no users with roles over this project<br>"; endif; ?>
+                            <tr>
+                                <td>
+                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
+                                </td>
+                                <td>
+                                    <?php
+                                    if($params['authenticated']) {
+                                    ?>
+                                        <a href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
+                                            <?php echo $role->getUser()->getFullName()?>
+                                        </a>
+                                    <?php
+                                    } else {
+                                        echo 'PROTECTED';
+                                    } ?>
+                                </td>
+                                <td>
+                                    <?php if($params['authenticated']) { xecho($role->getRoleType()->getName()); } else {echo('PROTECTED'); } ?>
+                                </td>
+                            </tr>
+                            <?php
+                                } // End of the foreach loop iterating over user roles
+                            ?>
+                    </tbody>
+                </table>
+            <?php
+            } else {
+                echo "<br><br>&nbsp &nbsp There are currently no users with roles over this project<br>";
+            }
+        } else {
+            require_once __DIR__.'/../fragments/hidePersonalData.php';
+        }
+        ?>
         <!-- don't allow role requests in read only mode -->
-        <?php if(!$params['portalIsReadOnly'] && $params['authenticated']):?>
+        <?php if(!$params['portalIsReadOnly'] && $showPD):?>
             <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['ID'];?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">

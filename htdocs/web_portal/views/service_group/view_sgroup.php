@@ -1,5 +1,8 @@
 <?php
+require_once __DIR__ . '/../../controllers/utils.php';
+
 $extensionProperties = $params['sGroup']->getServiceGroupProperties();
+$showPD = $params['authenticated'];
 ?>
 
 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
@@ -41,7 +44,7 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
         <?php endif; ?>
     <?php endif; ?>
 
-    <!-- Virtual Site Properties container div -->
+    <!-- Virtual Service Group Properties container div -->
     <div style="float: left; width: 100%; margin-top: 2em;">
         <!--  Data -->
         <div class="tableContainer" style="width: 55%; float: left;">
@@ -81,11 +84,11 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Contact E-Mail</td>
                     <td class="site_table">
-                        <?php if($params['authenticated']) { ?>
+                        <?php if($showPD) { ?>
                         <a href="mailto:<?php xecho($params['sGroup']->getEmail()); ?>">
                             <?php xecho($params['sGroup']->getEmail()); ?>
                         </a>
-                        <?php } else {echo('PROTECTED - Registration required');} ?>
+                        <?php } else {echo(getInfoMessage());} ?>
                     </td>
                 </tr>
             </table>
@@ -174,43 +177,44 @@ $extensionProperties = $params['sGroup']->getServiceGroupProperties();
 
     <!-- Roles -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
-        <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
-        <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
-                <th class="site_table">Name</th>
-                <th class="site_table">Role</th>
-            </tr>
-            <?php
-                $num = 2;
-                foreach($params['Roles'] as $role) {
-            ?>
-            <tr class="site_table_row_<?php echo $num ?>">
-                <td class="site_table">
-                    <div style="background-color: inherit;">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
-                        <?php if($params['authenticated']) { ?>
+        <?php
+        if ($showPD) { ?>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
+            <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
+            <table style="clear: both; width: 100%;">
+                <tr class="site_table_row_1">
+                    <th class="site_table">Name</th>
+                    <th class="site_table">Role</th>
+                </tr>
+                <?php
+                    $num = 2;
+                    foreach($params['Roles'] as $role) {
+                ?>
+                <tr class="site_table_row_<?php echo $num ?>">
+                    <td class="site_table">
+                        <div style="background-color: inherit;">
+                            <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
                             <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo $role->getUser()->getId()?>">
-                                <?php xecho($role->getUser()->getFullName())?>
+                                <?php xecho($role->getUser()->getFullName()); ?>
                             </a>
-                        <?php } else {echo 'PROTECTED'; } ?>
-                    </div>
-                </td>
-                <td class="site_table">
-                    <?php
-                    if($params['authenticated']) {
-                       xecho($role->getRoleType()->getName()) ;
-                    } else {echo 'PROTECTED'; }
-                    ?>
-                </td>
-            </tr>
-            <?php
-                if($num == 1) { $num = 2; } else { $num = 1; }
-                } // End of the foreach loop iterating over user roles
-            ?>
-        </table>
+                        </div>
+                    </td>
+                    <td class="site_table">
+                        <?php xecho($role->getRoleType()->getName()); ?>
+                    </td>
+                </tr>
+                <?php
+                    if($num == 1) { $num = 2; } else { $num = 1; }
+                    } // End of the foreach loop iterating over user roles
+                ?>
+            </table>
+        <?php
+        } else {
+            require_once __DIR__.'/../fragments/hidePersonalData.php';
+        }
+        ?>
         <!--  only show this link if we're in read / write mode -->
-        <?php if(!$params['portalIsReadOnly'] && $params['authenticated']): ?>
+        <?php if(!$params['portalIsReadOnly'] && $showPD): ?>
             <!-- Request role Link -->
             <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['sGroup']->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>

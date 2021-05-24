@@ -1,5 +1,6 @@
 <?php
 $endpoint = $params['endpoint'];
+$showPD = $params['authenticated'];
 $se = $endpoint->getService();
 $extensionProperties = $endpoint->getEndpointProperties();
 $epId = $endpoint->getId();
@@ -86,7 +87,15 @@ $epTxt = \Factory::getConfigService()->getNameMapping('Service','endpoint');
                     <td class="site_table">Id</td><td class="site_table"><?php echo $endpoint->getId() ?></td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">Contact E-mail</td><td class="site_table"><?php echo $endpoint->getEmail() ?></td>
+                    <td class="site_table">Contact E-mail</td><td class="site_table">
+                        <?php
+                            if ($showPD) {
+                                xecho ($endpoint->getEmail());
+                            } else {
+                                echo getInfoMessage();
+                            }
+                        ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Monitored</td>

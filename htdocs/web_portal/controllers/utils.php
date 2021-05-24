@@ -695,3 +695,63 @@ function getAPIAuthenticationFromWeb() {
     return $authEntityData;
 
 }
+/**
+ * Return information message text
+ *
+ * @return string short message, a dash, supplementary text
+ * e.g. "PROTECTED - Registration required"
+ */
+function getInfoMessage($code = null) {
+
+    if ($code == null) {
+        $code = 'privacy-1';
+    }
+
+    $messages = array();
+
+    switch (\Factory::getConfigService()->isRestrictPDByRole()) {
+        case true:
+            $messages['privacy-1'] = "PROTECTED - Role required";
+            break;
+        case false:
+            $messages['privacy-1'] = "PROTECTED - Registration required";
+            break;
+    }
+
+    if (!array_key_exists($code, $messages)) {
+        throw new LogicException("Information message code $code has not been defined. Please contact GOCDB administrators.");
+    }
+
+    return $messages[$code];
+
+}
+/**
+ * Helper function to set view parameters for deciding to show personal data
+ *
+ * @return array parameter array
+ */
+function getReadPDParams($user) {
+    require_once __DIR__.'/../../../lib/Doctrine/entities/User.php';
+
+    $userIsAdmin = false;
+    $authenticated = false;
+
+    /*  */
+    if(!is_null($user)) {
+        // User will only see personal data if they have a role somewhere
+        // ToDo: should this be restricted to role at a site?
+
+        if (!$user instanceof \User) {
+            throw new LogicException("Personal data read authorisation expected User object as input. Received ". get_class($user) . "'.");
+        }
+
+        if($user->isAdmin()) {
+            $userIsAdmin = true;
+            $authenticated = true;
+        }
+        elseif (\Factory::getUserService()->isAllowReadPD($user)) {
+            $authenticated = true;
+        }
+    }
+    return array($userIsAdmin, $authenticated);
+}

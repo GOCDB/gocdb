@@ -7,42 +7,32 @@ function view_site() {
     $serv = \Factory::getSiteService();
     $servServ  = \Factory::getServiceService();
     $userServ = \Factory::getUserService();
-    $configServ = \Factory::getConfigService();
     $authServ = \Factory::getRoleActionAuthorisationService();
 
     if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
         throw new Exception("An id must be specified");
     }
     $siteId = $_GET['id'];
-
     $site = $serv->getSite($siteId);
-    $allRoles = $site->getRoles();
-    $roles = array();
-    foreach ($allRoles as $role){
-        if($role->getStatus() == \RoleStatus::GRANTED){
-            $roles[] = $role;
-        }
-    }
 
     //get user for case that portal is read only and user is admin, so they can still see edit links
     $dn = Get_User_Principle();
     $user = $userServ->getUserByPrinciple($dn);
 
-    $params['UserIsAdmin'] = false;
-    $params['authenticated'] = false;
+    // Set values for showing personal data
+    $params = array();
+    list($params['UserIsAdmin'], $params['authenticated']) = getReadPDParams($user);
 
-    if(!is_null($user)) {
-        // Overload the 'authenticated' key for use to disable display of personal data
-        // User will only see personal data if they have a role somewhere
-        // ToDo: should this be restricted to role at a site?
-
-        if($user->isAdmin()) {
-            $params['UserIsAdmin'] = true;
-            $params['authenticated'] = true;
+    // Only load roles if personal data is being displayed
+    if ($params['authenticated']) {
+        $allRoles = $site->getRoles();
+        $roles = array();
+        foreach ($allRoles as $role){
+            if($role->getStatus() == \RoleStatus::GRANTED){
+                $roles[] = $role;
+            }
         }
-        elseif ($userServ->isAllowReadPD($user)) {
-            $params['authenticated'] = true;
-        }
+        $params['roles'] = $roles;
     }
 
     // Does current viewer have edit permissions over Site ?
@@ -66,7 +56,6 @@ function view_site() {
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
     $title = $site->getShortName();
     $params['site'] = $site;
-    $params['roles'] = $roles;
 
     $params['APIAuthEnts'] = $site->getAPIAuthenticationEntities();
 
