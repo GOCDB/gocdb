@@ -571,20 +571,17 @@ $showPD = $params['authenticated']; // display Personal Data
                 </thead>
                 <tbody>
                     <?php
+                    /** @var \APIAuthentication $APIAuthEnt */
                     foreach ($params['APIAuthEnts'] as $APIAuthEnt) {
-                        $disableButtons = false;
-                        /* TODO-irn Add configuration switch for disabling buttons - default for now
-                         * to enabled.
-                        if (($APIAuthEnt->getIdentifier() == $APIAuthEnt->getUser()->getCertificateDn())) {
-                            // This credential is the owning user's own.
-                            // isable edit and delete
-                            // for other users.
-                            // TODO-irn: decide if this is sensible??
-                            if ($params['userId'] == $APIAuthEnt->getUser()->getId()) {
-                                $disableButtons = true;
-                            }
+                        // Finer grain control of edit or delete could be put here
+                        // Currently work around pre-5.8 credentials having no owning user.
+                        $disableEdit = true;
+                        $disableDelete = true;
+                        if ($APIAuthEnt->getIdentifier() == Get_User_Principle()) {
+                            // If the owning user is making the request, we always allow them to
+                            // delete the credential
+                            $disableDelete = false;
                         }
-                        */
                     ?>
                     <tr>
                         <td>
@@ -594,10 +591,17 @@ $showPD = $params['authenticated']; // display Personal Data
                             <?php xecho($APIAuthEnt->getIdentifier())?>
                         </td>
                         <td>
-                            <a href="index.php?Page_Type=User&amp;id=<?php xecho($APIAuthEnt->getUser()->getId())?>"
-                                title="<?php xecho($APIAuthEnt->getUser()->getFullname())?>">
-                                <?php xecho(substr($APIAuthEnt->getUser()->getSurname(),0,10))?>
-                            </a>
+                            <?php
+                            $disableEdit = false;
+                            $disableDelete = false;
+                            if ($APIAuthEnt->getUser() != null) {
+                                // Credentials added prior to 5.8 have no owning user
+                                echo "<a href=\"index.php?Page_Type=User&amp;id=", $APIAuthEnt->getUser()->getId(), "\" ";
+                                echo "title=\"", $APIAuthEnt->getUser()->getFullname(), "\">";
+                                echo substr($APIAuthEnt->getUser()->getSurname(),0,10);
+                                echo "</a>";
+                            }
+                            ?>
                         </td>
                         <td style="width: 8%; text-align:center">
                             <img height="22px" src=
@@ -611,7 +615,7 @@ $showPD = $params['authenticated']; // display Personal Data
                         <td style="width: 8%;"align = "center">
                             <?php if(!$portalIsReadOnly):?>
                                 <form action="index.php?Page_Type=Edit_API_Authentication_Entity&amp;authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
-                                    <button type="submit" <?php if ($disableButtons) echo "disabled"; ?>
+                                    <button type="submit" <?php if ($disableEdit) echo "disabled"; ?>
                                         >Edit</button>
                                 </form>
                              <?php endif;?>
@@ -619,7 +623,7 @@ $showPD = $params['authenticated']; // display Personal Data
                         <td style="width: 8%;"align = "center">
                             <?php if(!$portalIsReadOnly):?>
                                 <form action="index.php?Page_Type=Delete_API_Authentication_Entity&amp;authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
-                                    <button type="submit" <?php if ($disableButtons) echo "disabled"; ?>
+                                    <button type="submit" <?php if ($disableDelete) echo "disabled"; ?>
                                         >Delete</button>
                                 </form>
                             <?php endif;?>

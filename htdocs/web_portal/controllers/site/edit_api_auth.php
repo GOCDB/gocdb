@@ -62,17 +62,13 @@ function draw(\User $user = null, \APIAuthentication $authEnt = null, \Site $sit
         throw new Exception("Unregistered users can't edit authentication credentials");
     }
 
+    $params = array();
     $params['site'] = $site;
     $params['authEnt'] = $authEnt;
     $params['authTypes'] = array();
     $params['authTypes'][]='X509';
     $params['authTypes'][]='OIDC Subject';
     $params['user'] = $user;
-    $params['allowWrite'] = $authEnt->getAllowAPIWrite();
-    // If the user is changing, send in the new user DN
-    if ($user->getId() != $authEnt->getUser()->getId()) {
-        $params['currentUserIdent'] = $authEnt->getUser()->getCertificateDn();
-    }
 
     show_view("site/edit_api_auth.php", $params);
     die();
@@ -87,6 +83,8 @@ function submit(\User $user, \APIAuthentication $authEnt, \Site $site, org\gocdb
         show_view('error.php', $e->getMessage());
         die();
     }
+
+    $params = array();
     $params['apiAuthenticationEntity'] = $authEnt;
     $params['site'] = $site;
     show_view("site/edited_api_auth.php", $params);

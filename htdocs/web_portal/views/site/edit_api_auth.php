@@ -1,20 +1,42 @@
 <div class="rightPageContainer">
-    <h1>Edit API credential for <?php xecho($params['site']->getName());?></h1>
-    <h4>This credential is linked to GOCDB user
-        <a href="<?php echo \GocContextPath::getPath()?>index.php?Page_Type=User&id=<?php echo $params['authEnt']->getUser()->getId()?>" >
-                <?php xecho($params['authEnt']->getUser()->getFullname())?>
-        </a>
-    </h4>
     <?php
-        // currentUserIdent is only initialised if the user is changing
-        if ($params['currentUserIdent']) {
+
+    $user = $params['user'];
+    $entUser = $params['authEnt']->getUser();
+
+    echo('<h1>Edit API credential for ');
+    xecho($params['site']->getName());
+    echo('</h1>');
+
+    if (!is_null($entUser)) {
+
+        echo('<h4>This credential is linked to GOCDB user ');
+        echo('<a href="');
+        xecho(\GocContextPath::getPath());
+        echo('index.php?Page_Type=User&id=');
+        xecho($entUser->getId());
+        echo('">');
+        xecho($entUser->getFullname());
+        echo('</a></h4>');
+
+        // entities created prior to GOCDB5.8 have a null owning user
+        if ($entUser->getId() != $user->getId()) {
             echo('<div class="input_warning">');
-            echo("WARNING: editing will change the linked identity from '");
-            xecho($params['currentUserIdent']);
+            echo("WARNING: editing will change the linked user from '");
+            xecho($entUser->getFullname());
             echo("' to '");
-            xecho($params['user']->getCertificateDn());
+            xecho($user->getFullname());
             echo("'. Click the browser Back button to cancel the edit.</div>");
-        }
+            }
+
+        } else {
+            // This clause should be deleted or replaced with exception after all
+            // authentication entities are assigned a user.
+            echo('<div class="input_warning">');
+            echo("WARNING: editing will link user '");
+            xecho($user->getFullname());
+            echo("' to this credential. Click the browser Back button to cancel the edit.</div>");
+    }
     ?>
     <form class="inputForm" method="post" action="index.php?Page_Type=Edit_API_Authentication_Entity&parentid=<?php echo($params['site']->getId())?>&authentityid=<?php xecho($params['authEnt']->getId())?>" name="addAPIAuthenticationEntity">
         <div style="margin-bottom: 0.5em;">
@@ -39,7 +61,7 @@
             <div class="input_checkbox">
                 <input type="checkbox" name="ALLOW_WRITE" id="ALLOW_WRITE" value="checked"
                     <?php
-                        if ($params['allowWrite']) { echo('checked="checked"');}
+                        if ($params['authEnt']->getAllowAPIWrite()) { echo('checked="checked"');}
                     ?>
                 />
                 <label class="input_label" for="ALLOW_WRITE">Allow API write</label>
