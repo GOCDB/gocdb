@@ -49,6 +49,7 @@ class Factory {
     private static $notificationService = null;
     private static $emailService = null;
     private static $linkIdentityService = null;
+    private static $APIAuthenticationService = null;
 
     public static $properties = array();
     //private static $properties = null;
@@ -398,6 +399,18 @@ class Factory {
             self::$emailService->setEntityManager(self::getEntityManager());
         }
         return self::$emailService;
+    }
+    /**
+     * Singleton APIAuthenticationService service
+     * @return org\gocdb\services\APIAuthenticationService
+     */
+    public static function getAPIAuthenticationService() {
+        if (self::$APIAuthenticationService == null) {
+            require_once __DIR__ . '/APIAuthenticationService.php';
+            self::$APIAuthenticationService = new org\gocdb\services\APIAuthenticationService();
+            self::$APIAuthenticationService->setEntityManager(self::getEntityManager());
+        }
+        return self::$APIAuthenticationService;
     }
 }
 
