@@ -32,7 +32,7 @@
  *
  * @author David Meredith <david.meredithh@stfc.ac.uk>
  * @author John Casson
- * @Entity @Table(name="Roles", uniqueConstraints={@UniqueConstraint(name="NoDuplicateRoles", columns={"user_id", "roleType_id", "ownedEntity_id"})})
+ * @Entity @Table(name="Roles", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"}, uniqueConstraints={@UniqueConstraint(name="NoDuplicateRoles", columns={"user_id", "roleType_id", "ownedEntity_id"})})
  *
  */
 class Role {

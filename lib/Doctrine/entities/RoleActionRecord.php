@@ -24,7 +24,7 @@
  * Once created, object is immutable.
  *
  * @author David Meredith <david.meredith@stfc.ac.uk>
- * @Entity @Table(name="RoleActionRecords")
+ * @Entity @Table(name="RoleActionRecords", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class RoleActionRecord {
 

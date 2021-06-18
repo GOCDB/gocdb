@@ -25,7 +25,7 @@ require_once __DIR__ . '/IScopedEntity.php';
  *
  * @author David Meredith <david.meredithh@stfc.ac.uk>
  * @author John Casson
- * @Entity @Table(name="Services")
+ * @Entity @Table(name="Services", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class Service implements IScopedEntity {
 

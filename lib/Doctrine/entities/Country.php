@@ -22,7 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @author John Casson
  * @author David Meredith <david.meredith@stfc.ac.uk>
  *
- * @Entity @Table(name="Countries")
+ * @Entity @Table(name="Countries", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class Country {
 

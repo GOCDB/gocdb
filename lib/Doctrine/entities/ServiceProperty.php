@@ -28,7 +28,7 @@
  *
  * @author James McCarthy
  * @author David Meredith
- * @Entity @Table(name="Service_Properties", uniqueConstraints={@UniqueConstraint(name="serv_keypairs", columns={"parentService_id", "keyName"})})
+ * @Entity @Table(name="Service_Properties", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"}, uniqueConstraints={@UniqueConstraint(name="serv_keypairs", columns={"parentService_id", "keyName"})})
  */
 class ServiceProperty {
 
