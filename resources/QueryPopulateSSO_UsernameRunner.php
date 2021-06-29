@@ -39,12 +39,10 @@ foreach ($users as $user) {
     ++$count;
     $cleanDN = cleanDN($user->getCertificateDn());
     if (!empty($cleanDN)) {
-        $url = "https://www.egi.eu/sso/api/user?dn=" . $cleanDN;
+        $url = "https://sso.egi.eu/admin/api/user?dn=" . $cleanDN;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_PROXY, 'http://wwwcache.rl.ac.uk');
-        curl_setopt($ch, CURLOPT_PROXYPORT, 8080);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); //return result instead of outputting it
         curl_setopt($ch, CURLOPT_TIMEOUT, 3); //3secs
