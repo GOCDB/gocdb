@@ -5,7 +5,9 @@ on: [push, pull_request]
 jobs:
 
   phpunit-sqlite:
-    name: "PHPUnit with SQLite"
+    # The SQLite version depends on the current environment. See documentation:
+    # https://github.com/actions/virtual-environments/tree/main/images/linux
+    name: "PHPUnit with SQLite, PHP: ${{ matrix.php-version }}"
     runs-on: ubuntu-latest
     # If true, allow this job to fail:
     continue-on-error: true
@@ -54,7 +56,7 @@ jobs:
 
 
   phpunit-mariadb:
-    name: "PHPUnit with MariaDB"
+    name: "PHPUnit with MariaDB: ${{ matrix.mariadb-version }}, PHP: ${{ matrix.php-version }}, extension: ${{ matrix.extension }}"
     runs-on: ubuntu-latest
     # If true, allow the job to fail:
     continue-on-error: ${{ matrix.experimental }}
