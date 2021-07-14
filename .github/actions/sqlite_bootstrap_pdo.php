@@ -15,9 +15,9 @@
  * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
  */
 function getConnectionToTestDB() {
-     $sqliteFile = '/tmp/gocdb.sqlite';
-     $pdo = new PDO("sqlite:" . $sqliteFile);
-     return new PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection($pdo, 'sqlite');
+    $sqliteFile = '/tmp/gocdb.sqlite';
+    $pdo = new PDO("sqlite:" . $sqliteFile);
+    return new PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection($pdo, 'sqlite');
 }
 
 ?>
