@@ -2,14 +2,14 @@
 
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
-                Scopes
+            Scopes
         </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
             Click on the name of a scope to <?=$params['UserIsAdmin'] ? "edit it and " : "";?> view objects with that scope tag.
         </span>
     </div>
-   <!-- hide add when read only or user is not admin -->
-   <?php if(!$params['portalIsReadOnly'] && $params['UserIsAdmin']):?>
+    <!-- hide add when read only or user is not admin -->
+    <?php if(!$params['portalIsReadOnly'] && $params['UserIsAdmin']):?>
         <div style="float: right;">
             <center>
                 <a href="index.php?Page_Type=Admin_Add_Scope">
@@ -19,7 +19,7 @@
                 </a>
             </center>
         </div>
-   <?php endif; ?>
+    <?php endif; ?>
 
     <?php $numberOfScopes = sizeof($params['Scopes'])?>
     <div class="listContainer">
@@ -54,8 +54,8 @@
                     <td class="site_table"><?= in_array($scope, $params['reservedScopes']) ? '&check;': '&cross;';?></td>
                     <?php if(!$params['portalIsReadOnly'] && $params['UserIsAdmin']):?>
                         <td class="site_table"  style="width: 10%">
-                             <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
-                             <a onclick="return confirmSubmit()" href="index.php?Page_Type=Admin_Remove_Scope&id=<?php echo $scope->getId() ?>">
+                            <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
+                            <a onclick="return confirmSubmit()" href="index.php?Page_Type=Admin_Remove_Scope&id=<?php echo $scope->getId() ?>">
                                 <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="22px" style="vertical-align: middle;" />
                             </a>
                         </td>

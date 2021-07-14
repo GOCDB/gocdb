@@ -1,7 +1,7 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: view_scope.php
+ * File: scope.php
  * Author: George Ryall, David Meredith, Elliott Kasoar
  * Description: Controller for displaying a scope and associated entities
  *
@@ -35,7 +35,7 @@ function view_scope() {
     }
 
     $serv = \Factory::getScopeService();
-    $scope = $serv ->getScope($_REQUEST['id']);
+    $scope = $serv->getScope($_REQUEST['id']);
 
     $params['Name'] = $scope->getName();
     $params['Description'] = $scope->getDescription();

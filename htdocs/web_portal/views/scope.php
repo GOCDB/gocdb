@@ -185,7 +185,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <?php endif; ?>
     </div>
 
-      <!--  Services - count and link -->
+    <!--  Services - count and link -->
     <div class="listContainer">
         <span class="header listHeader">
             There <?php if($serviceCount==1){echo "is";}else{echo "are";}?> <?php if ($serviceCount == 0){echo "no";} else{echo $serviceCount;} ?> service<?php if($serviceCount != 1) echo "s"?> with this scope
