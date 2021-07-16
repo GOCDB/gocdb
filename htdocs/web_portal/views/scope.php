@@ -3,13 +3,13 @@ $name = $params['Name'];
 $id = $params['ID'];
 $description = $params['Description'];
 $ngis = $params['NGIs'];
-$ngiCount = sizeof($ngis);
+$ngiCount = count($ngis);
 $sites = $params['Sites'];
-$siteCount = sizeof($sites);
+$siteCount = count($sites);
 $serviceGroups = $params['ServiceGroups'];
-$serviceGroupsCount = sizeof($serviceGroups);
+$serviceGroupsCount = count($serviceGroups);
 $services = $params['Services'];
-$serviceCount = sizeof($services);
+$serviceCount = count($services);
 $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
 ?>
 

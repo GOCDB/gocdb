@@ -21,10 +21,10 @@
         </div>
     <?php endif; ?>
 
-    <?php $numberOfScopes = sizeof($params['Scopes'])?>
+    <?php $numberOfScopes = count($params['Scopes'])?>
     <div class="listContainer">
         <span class="header listHeader">
-            <?php echo $numberOfScopes ?> Scope<?php if($numberOfScopes) echo "s"?>
+            <?php echo $numberOfScopes ?> Scope<?php if ($numberOfScopes !== 1) echo "s"?>
         </span>
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
@@ -37,7 +37,7 @@
             </tr>
             <?php
             $num = 2;
-            if(sizeof($numberOfScopes > 0)) {
+            if($numberOfScopes > 0) {
                 foreach($params['Scopes'] as $scope) {
                 ?>
                 <tr class="site_table_row_<?php echo $num ?>">
