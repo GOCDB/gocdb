@@ -118,7 +118,6 @@ class GetCertStatusChanges implements IPIQuery, IPIQueryPageable, IPIQueryRender
             ->Join('s.certificationStatus', 'cs')
             ->leftJoin('s.scopes', 'sc')
             ->Join('s.infrastructure', 'i')
-        //    ->orderBy('log.id', 'ASC')
         ;
 
 

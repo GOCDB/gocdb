@@ -23,6 +23,7 @@ require_once __DIR__ . '/IPIQueryRenderable.php';
 
 
 use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Return an XML document that encodes the downtimes with optional cursor-based paging.
@@ -168,7 +169,6 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
             ->join('s.ngi', 'n')
             ->join('s.country', 'c')
             ->join('se.serviceType', 'st')
-            //->orderBy('d.startDate', 'DESC')
             ; //try just joins!
 
 
@@ -714,7 +714,11 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
             $helpers->addIfNotEmpty($xmlDowntime, 'GOCDB_PORTAL_URL', $portalUrl);
 
             $xmlImpactedSE = $xmlDowntime->addChild('SERVICES');
-            foreach ($downtime->getServices() as $service) {
+
+            // Sort services
+            $orderedServices = $this->helpers->orderArrById($downtime->getServices());
+
+            foreach ($orderedServices as $service) {
                 $xmlServices = $xmlImpactedSE->addChild('SERVICE');
                 $helpers->addIfNotEmpty($xmlServices, 'PRIMARY_KEY', $service->getId() . 'G0');
                 $helpers->addIfNotEmpty($xmlServices, 'HOSTNAME', $service->getHostName());
@@ -724,8 +728,11 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                 $helpers->addIfNotEmpty($xmlServices, 'HOSTED_BY', $service->getParentSite()->getShortName());
                 if ($this->renderMultipleEndpoints) {
                     $xmlEndpoints = $xmlServices->addChild('AFFECTED_ENDPOINTS');
-                    //Loop through the affected endpoints
-                    foreach ($downtime->getEndpointLocations() as $endpoint) {
+
+                    // Sort endpoints
+                    $orderedEndpoints = $this->helpers->orderArrById($downtime->getEndpointLocations());
+
+                    foreach ($orderedEndpoints as $endpoint) {
                         // Only show the endpoint if is from the current service
                         if ($endpoint->getService() == $service) {
                             $xmlEndpoint = $xmlEndpoints->addChild('ENDPOINT');
@@ -767,7 +774,11 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
         }
 
         foreach ($downtimes as $downtime) {
-            foreach ($downtime->getServices() as $service) {
+
+            // Sort services
+            $orderedServices = $this->helpers->orderArrById($downtime->getServices());
+
+            foreach ($orderedServices as $service) {
                 $xmlDowntime = $xml->addChild('DOWNTIME');
                 // ID is the internal object id/sequence
                 $xmlDowntime->addAttribute("ID", $downtime->getId());
@@ -786,7 +797,11 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                     $xmlEndpoints = $xmlDowntime->addChild('AFFECTED_ENDPOINTS');
                     //Loop through all the endpoints of a downtime but only render
                     //those from the current service
-                    foreach ($downtime->getEndpointLocations() as $endpoint) {
+
+                    // Sort endpoints
+                    $orderedEndpoints = $this->helpers->orderArrById($downtime->getEndpointLocations());
+
+                    foreach ($orderedEndpoints as $endpoint) {
                         if (in_array($endpoint, $service->getEndpointLocations()->toArray())) {
                             $xmlEndpoint = $xmlEndpoints->addChild('ENDPOINT');
                             $xmlEndpoint->addChild('ID', $endpoint->getId());
@@ -850,7 +865,11 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
 
             //Iterate through the downtime's affected services
             $xmlImpactedSE = $xmlDowntime->addChild('SERVICES');
-            foreach ($downtimeArray ['services'] as $service) {
+
+            // Sort services - must be correct type for sorting
+            $orderedServices = $this->helpers->orderArrById(new ArrayCollection($downtimeArray['services']));
+
+            foreach ($orderedServices as $service) {
                 $xmlService = $xmlImpactedSE->addChild('SERVICE');
                 $helpers->addIfNotEmpty($xmlService, 'PRIMARY_KEY', $service['id'] . 'G0');
                 $helpers->addIfNotEmpty($xmlService, 'HOSTNAME', htmlspecialchars($service ['hostName']));
@@ -863,11 +882,18 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                 if ($this->renderMultipleEndpoints) {
                     // Slice the service's endpointLocations array and store just each endpointLocation's Id
                     $currentServiceEndpointIDs = array();
+
+                    // These endpoints are unsorted, but there is no benefit adding sorting here, as they are only used
+                    // to populate $currentServiceEndpointIDs, which itself is only passed to in_array()
                     foreach ($service['endpointLocations'] as $serviceEndpoint) {
                         $currentServiceEndpointIDs[] = $serviceEndpoint['id'];
                     }
                     $xmlEndpoints = $xmlService->addChild('AFFECTED_ENDPOINTS');
-                    foreach ($downtimeArray['endpointLocations'] as $dtEndpoint) {
+
+                    // Sort service endpoints
+                    $orderedDtEndpoints = $this->helpers->orderArrById(new ArrayCollection($downtimeArray['endpointLocations']));
+
+                    foreach ($orderedDtEndpoints as $dtEndpoint) {
                         // Does this downtimeEndpoint ALSO belong to the current current service?
                         // (we only want to render the current service's endpoints
                         // that are affected by the downtime, NOT all of the
@@ -909,7 +935,11 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
         $helpers = $this->helpers;
         $xml = new \SimpleXMLElement("<results/>");
         foreach ($downtimes as $downtimeArray) {
-            foreach ($downtimeArray ['services'] as $service) {
+
+            // Sort services - must be correct type for sorting
+            $orderedServices = $this->helpers->orderArrById(new ArrayCollection($downtimeArray['services']));
+
+            foreach ($orderedServices as $service) {
                 // <DOWNTIME> element and attributes start
                 $xmlDowntime = $xml->addChild('DOWNTIME');
                 $xmlDowntime->addAttribute("ID", $downtimeArray ['id']);
@@ -933,6 +963,9 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                 if ($this->renderMultipleEndpoints) {
                     // Slice the service's endpointLocations array and store just each endpointLocation's Id
                     $currentServiceEndpointIDs = array();
+
+                    // These endpoints are unsorted, but there is no benefit adding sorting here, as they are only used
+                    // to populate $currentServiceEndpointIDs, which itself is only passed to in_array()
                     foreach ($service['endpointLocations'] as $serviceEndpoint) {
                         $currentServiceEndpointIDs[] = $serviceEndpoint['id'];
                     }
@@ -941,7 +974,11 @@ class GetDowntime implements IPIQuery, IPIQueryPageable, IPIQueryRenderable
                     //$arrayData = print_r($downtimeArray['endpointLocations'], true);
                     //$xmlEndpoints = $xmlDowntime->addChild ( 'downtimesAffectedEndpoints', htmlspecialchars($arrayData));
                     $xmlEndpoints = $xmlDowntime->addChild('AFFECTED_ENDPOINTS');
-                    foreach ($downtimeArray['endpointLocations'] as $dtEndpoint) {
+
+                    // Sort downtime endpoints - must be correct type for sorting
+                    $orderedDtEndpoints = $this->helpers->orderArrById(new ArrayCollection($downtimeArray['endpointLocations']));
+
+                    foreach ($orderedDtEndpoints as $dtEndpoint) {
                         // Does this downtimeEndpoint ALSO belong to the current current service?
                         // (we only want to render the current service's endpoints
                         // that are affected by the downtime, NOT all of the
