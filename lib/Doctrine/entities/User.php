@@ -71,6 +71,12 @@ class User {
     /** @Column(type="datetime", nullable=true)  */
     protected $lastLoginDate;
 
+    /**
+     * Bidirectional - A User (INVERSE ORM SIDE) can have many identifiers
+     * @OneToMany(targetEntity="UserIdentifier", mappedBy="parentUser", cascade={"remove"})
+     */
+    protected $userIdentifiers = null;
+
     /*
      * TODO:
      * This entity will need to own a property bag (akin to custom props)
@@ -87,6 +93,7 @@ class User {
         $this->creationDate = new \DateTime("now");
         //$this->sites = new ArrayCollection();
         $this->roles = new ArrayCollection();
+        $this->userIdentifiers = new ArrayCollection();
     }
 
     /**
@@ -191,6 +198,15 @@ class User {
      */
     public function getLastLoginDate(){
         return $this->lastLoginDate;
+    }
+
+    /**
+     * The User's list of {@see UserIdentifier} extension objects. When the
+     * User is deleted, the userIdentifiers are also cascade deleted.
+     * @return ArrayCollection
+     */
+    public function getUserIdentifiers() {
+        return $this->userIdentifiers;
     }
 
     /**
@@ -341,6 +357,16 @@ class User {
      */
     public function getRoles() {
         return $this->roles;
+    }
+
+    /**
+     * Add a UserIdentifier entity to this User's collection of identifiers.
+     * This method also sets the UserIdentifier's parentUser.
+     * @param \UserIdentifier $userIdentifier
+     */
+    public function addUserIdentifierDoJoin($userIdentifier) {
+        $this->userIdentifiers[] = $userIdentifier;
+        $userIdentifier->_setParentUser($this);
     }
 
 }
