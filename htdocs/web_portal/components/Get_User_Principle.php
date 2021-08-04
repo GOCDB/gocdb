@@ -150,11 +150,19 @@ function Get_User_Principle(){
         MyStaticPrincipleHolder::getInstance()->setPrincipleString($principleString);
         MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth);
 
+        $serv = \Factory::getUserService();
+
+        // Get user by searching user identifiers
+        $user = $serv->getUserByPrinciple($principleString);
+
+        // If cannot find user, search certificate DNs instead
+        if ($user === null) {
+            $user = $serv->getUserByCertificateDn($principleString);
+
         // Is user registered/known in the DB? if true, update their last login time
         // once for the current request.
-        $user = \Factory::getUserService()->getUserByPrinciple($principleString);
-        if($user != null){
-            \Factory::getUserService()->updateLastLoginTime($user);
+        if ($user !== null) {
+            $serv->updateLastLoginTime($user);
         }
         return $principleString;
     }

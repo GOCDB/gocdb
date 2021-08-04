@@ -49,19 +49,37 @@ class User extends AbstractEntityService{
     }
 
     /**
-     * Lookup a User object by user's principle id string.
-     * @param string $userPrinciple the user's principle id string, e.g. DN.
+     * Lookup a User object by user's ID string, stored in certificateDn.
+     * @param string $userPrinciple the user's principle ID string, e.g. DN.
      * @return User object or null if no user can be found with the specified principle
      */
-    public function getUserByPrinciple($userPrinciple){
-       if(empty($userPrinciple)){
-           return null;
-       }
-       $dql = "SELECT u from User u WHERE u.certificateDn = :certDn";
-       $user = $this->em->createQuery($dql)
+    public function getUserByCertificateDn($userPrinciple) {
+        if (empty($userPrinciple)) {
+            return null;
+        }
+        $dql = "SELECT u from User u WHERE u.certificateDn = :certDn";
+        $user = $this->em->createQuery($dql)
                   ->setParameter(":certDn", $userPrinciple)
                   ->getOneOrNullResult();
-       return $user;
+        return $user;
+    }
+
+    /**
+     * Lookup a User object by user's principle ID string from UserIdentifier.
+     * @param string $userPrinciple the user's principle ID string, e.g. DN.
+     * @return User object or null if no user can be found with the specified principle
+     */
+    public function getUserByPrinciple($userPrinciple) {
+        if (empty($userPrinciple)) {
+            return null;
+        }
+
+        $dql = "SELECT u FROM User u JOIN u.userIdentifiers up WHERE up.keyValue = :keyValue";
+        $user = $this->em->createQuery($dql)
+                  ->setParameters(array('keyValue' => $userPrinciple))
+                  ->getOneOrNullResult();
+
+        return $user;
     }
 
     /**
