@@ -120,6 +120,18 @@ function Get_User_AuthToken(){
 }
 
 /**
+ * Get the auth type for the user.
+ * @return string or null if can't authenticate request */
+function Get_User_AuthType() {
+    $authType = null;
+    $auth = Get_User_AuthToken();
+    if ($auth !== null) {
+        $authType = $auth->getDetails()['AuthenticationRealm'][0];
+    }
+    return $authType;
+}
+
+/**
  * Get the user's principle string (x509 DN from certificate or from SAML attribute).
  * <p>
  * Called from the portal to allow authentication.
