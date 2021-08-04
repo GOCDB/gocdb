@@ -451,6 +451,144 @@ class User extends AbstractEntityService{
     }
 
     /**
+     * Adds an identifier to a user.
+     * @param \User $user user having identifier added
+     * @param array $identifierArr identifier name and value
+     * @param \User $currentUser user adding the identifier
+     * @throws \Exception
+     */
+    public function addUserIdentifier(\User $user, array $identifierArr, \User $currentUser) {
+        // Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        // Check to see whether the current user can edit this user
+        $this->editUserAuthorization($user, $currentUser);
+
+        // Add the identifier
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->addUserIdentifierLogic($user, $identifierArr);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+    /**
+     * Logic to add an identifier to a user.
+     * @param \User $user user having identifier added
+     * @param array $identifierArr identifier name and value
+     * @throws \Exception
+     */
+    protected function addUserIdentifierLogic(\User $user, array $identifierArr) {
+
+        // We will use this variable to track the keys as we go along, this will be used check they are all unique later
+        $keys = array();
+
+        $existingIdentifiers = $user->getUserIdentifiers();
+
+        // We will use this variable to track the final number of identifiers and ensure we do not exceede the specified limit
+        $identifierCount = count($existingIdentifiers);
+
+        // Trim off any trailing and leading whitespace
+        $keyName = trim($identifierArr[0]);
+        $keyValue = trim($identifierArr[1]);
+
+        // $this->addUserIdentifierValidation();
+
+        /* Find out if an identifier with the provided key already exists for this user
+        * If it does, we will throw an exception
+        */
+        $identifier = null;
+        foreach ($existingIdentifiers as $existIdentifier) {
+            if ($existIdentifier->getKeyName() === $keyName) {
+                $identifier = $existIdentifier;
+            }
+        }
+
+        /* If the identifier does not already exist, we add it
+        * If it already exists, we throw an exception
+        */
+        if (is_null($identifier)) {
+            $identifier = new \UserIdentifier();
+            $identifier->setKeyName($keyName);
+            $identifier->setKeyValue($keyValue);
+            $user->addUserIdentifierDoJoin($identifier);
+            $this->em->persist($identifier);
+
+            // Increment the identifier counter to enable check against extension limit
+            $identifierCount++;
+        } else {
+            throw new \Exception("An identifier with name \"$keyName\" already exists for this object, no identifiers were added.");
+        }
+
+        // Add the key to the keys array, to enable unique check
+        $keys[] = $keyName;
+
+        // Keys should be unique, create an exception if they are not
+        if (count(array_unique($keys)) !== count($keys)) {
+            throw new \Exception(
+                "Identifier names should be unique. The requested new identifiers include multiple identifiers with the same name."
+            );
+        }
+
+        // Check to see if adding the new identifiers will exceed the max limit defined in local_info.xml, and throw an exception if so
+        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        if ($identifierCount > $extensionLimit) {
+            throw new \Exception("Identifier could not be added due to the extension limit of $extensionLimit");
+        }
+    }
+
+    /**
+     * Migrates a user's identifier from certificateDn to UserIdentifiers.
+     * certificateDn is overwritten with a placeholder, before the user's
+     * ID string and its auth type are added as an identifier
+     * @param \User $user user having first identifier added
+     * @param array $identifierArr identifier name and value
+     * @param \User $currentUser user adding the identifier
+     * @throws \Exception
+     */
+    public function migrateUserCredentials(\User $user, array $identifierArr, \User $currentUser) {
+        // Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        // Check to see whether the current user can edit this user
+        $this->editUserAuthorization($user, $currentUser);
+
+        // Check the user identifier being added corresponds to the current certificateDn
+        $idString = trim($identifierArr[1]);
+        if ($idString !== $user->getCertificateDn()) {
+            throw new \Exception("ID string must match the current certificateDn");
+        }
+
+        // Overwrite certificateDn and add the identifier
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->setDefaultCertDn($user);
+            $this->addUserIdentifierLogic($user, $identifierArr);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+    /**
+     * Overwrites a user's certificateDn to a default value
+     * Currently set to the user's ID
+     * @param \User $user user having certificate DN overwritten
+     * @throws \Exception
+     */
+    private function setDefaultCertDn(\User $user) {
+        $user->setCertificateDn($user->getId());
+    }
+
+    /**
      * Changes the isAdmin user property.
      * @param \User $user           The user who's admin status is to change
      * @param \User $currentUser    The user making the change, who themselvess must be an admin
