@@ -284,6 +284,11 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/user/view_user.php';
             view_user();
             break;
+        case "Remove_User_Identifier":
+            rejectIfNotAuthenticated();
+            require_once __DIR__.'/controllers/user/delete_user_identifier.php';
+            delete_identifier();
+            break;
         case "Downtime":
             rejectIfNotAuthenticated();
             require_once __DIR__.'/controllers/downtime/view_downtime.php';
