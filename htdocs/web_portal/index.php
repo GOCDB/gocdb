@@ -487,10 +487,10 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/admin/users.php';
             show_users();
             break;
-        case "Admin_Edit_User_DN":
+        case "Admin_Edit_User_Identifier":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/admin/edit_user_dn.php';
-            edit_dn();
+            require_once __DIR__.'/controllers/admin/edit_user_identifier.php';
+            edit_identifier();
             break;
 //        case "Admin_Change_User_Admin_Status":
 //            rejectIfNotAuthenticated();

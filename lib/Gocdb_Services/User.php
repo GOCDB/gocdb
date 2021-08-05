@@ -399,46 +399,6 @@ class User extends AbstractEntityService{
     }
 
     /**
-     * Update a user's DN
-     * @param \User $user user to have DN updated
-     * @param string $dn new DN
-     * @param \User $currentUser User doing the updating
-     * @throws \Exception
-     * @throws \org\gocdb\services\Exception
-     */
-    public function editUserDN(\User $user, $dn, \User $currentUser = null){
-        //Authorisation - only GOCDB Admins shoud be able to change DNs (Throws exception if not)
-        $this->checkUserIsAdmin($currentUser);
-
-        //Check the DN is changed
-        if($dn == $user->getCertificateDn()) {
-            throw new \Exception("The specified certificate DN is the same as the current DN");
-        }
-
-        //Check the DN is unique (if not null)
-        if(!is_null($this->getUserByPrinciple($dn))) {
-            throw new \Exception("DN is already registered in GOCDB");
-        }
-
-        //Validate the DN
-        $dnInAnArray['CERTIFICATE_DN']= $dn;
-        $this->validateUser($dnInAnArray);
-
-        //Explicity demarcate our tx boundary
-        $this->em->getConnection()->beginTransaction();
-        try {
-            $user->setCertificateDn($dn);
-            $this->em->merge($user);
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
-            $this->em->close();
-            throw $e;
-        }
-    }
-
-    /**
      * Deletes a user
      * @param \User $user To be deleted
      * @param \User $currentUser Making the request
