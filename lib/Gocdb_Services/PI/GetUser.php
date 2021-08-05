@@ -271,6 +271,7 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
     private function getXML() {
         $helpers = $this->helpers;
         $users = $this->users;
+        $serv = \Factory::getUserService();
         $xml = new \SimpleXMLElement("<results />");
 
         // Calculate and add paging info
@@ -300,7 +301,14 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             $xmlUser->addChild('TEL', $user->getTelephone());
             $xmlUser->addChild('WORKING_HOURS_START', $user->getWorkingHoursStart());
             $xmlUser->addChild('WORKING_HOURS_END', $user->getWorkingHoursEnd());
-            $xmlUser->addChild('CERTDN', $user->getCertificateDn());
+
+            if (\Factory::getConfigService()->getAPIAllAuthRealms()) {
+                $xmlUser->addChild('CERTDN', $serv->getIdStringByAuthType($user, 'X.509'));
+                $xmlUser->addChild('EGICHECKIN', $serv->getIdStringByAuthType($user, 'EGI Proxy IdP'));
+                $xmlUser->addChild('IRISIAM', $serv->getIdStringByAuthType($user, 'IRIS IAM - OIDC'));
+            } else {
+                $xmlUser->addChild('CERTDN', $serv->getDefaultIdString($user));
+            }
 
             $ssousername = $user->getUsername1();
             if ($ssousername != null) {

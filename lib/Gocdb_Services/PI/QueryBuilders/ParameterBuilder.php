@@ -143,12 +143,28 @@ class ParameterBuilder {
     }
 
     if (isset($parameters ['dn'])) {
-        $qb->andWhere($qb->expr()->like('u.certificateDn', '?' . ++$bc));
+        ++$bc;
+        $qb->leftJoin('u.userIdentifiers', 'up');
+        $qb->andWhere($qb->expr()->orX(
+            $qb->expr()->andX(
+                $qb->expr()->like('up.keyValue', '?' . $bc),
+                $qb->expr()->like('up.keyName', $qb->expr()->literal('X.509'))
+            ),
+            $qb->expr()->like('u.certificateDn', '?' . $bc)
+        ));
         $this->binds[] = array($bc, $parameters ['dn']);
     }
 
     if (isset($parameters ['dnlike'])) {
-        $qb->andWhere($qb->expr()->like('u.certificateDn', '?' . ++$bc));
+        ++$bc;
+        $qb->leftJoin('u.userIdentifiers', 'up');
+        $qb->andWhere($qb->expr()->orX(
+            $qb->expr()->andX(
+                $qb->expr()->like('up.keyValue', '?' . $bc),
+                $qb->expr()->like('up.keyName', $qb->expr()->literal('X.509'))
+            ),
+            $qb->expr()->like('u.certificateDn', '?' . $bc)
+        ));
         $this->binds[] = array($bc, $parameters ['dnlike']);
     }
 
