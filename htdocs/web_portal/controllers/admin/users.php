@@ -20,7 +20,7 @@
  *
 /*====================================================== */
 
-function show_users(){
+function show_users() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
@@ -42,31 +42,30 @@ function show_users(){
     }
     $params["Forename"] = $forename;
 
-    $dn = null;
-    if(!empty($_REQUEST['DN'])) {
-        $dn = $_REQUEST['DN'];
+    $idString = null;
+    if (!empty($_REQUEST['IdString'])) {
+        $idString = $_REQUEST['IdString'];
     }
-    $params["DN"] = $dn;
+    $params["IdString"] = $idString;
 
     //Note that the true/false specified must be converted into boolean true/false.
     $isAdmin = null;
-    if(!empty($_REQUEST['IsAdmin'])) {
-       if($_REQUEST['IsAdmin']=="true"){
+    if (!empty($_REQUEST['IsAdmin'])) {
+       if ($_REQUEST['IsAdmin'] === "true") {
             $isAdmin = true;
        }
-       elseif ($_REQUEST['IsAdmin']=="false"){
+       elseif ($_REQUEST['IsAdmin'] === "false") {
            $isAdmin = false;
        }
     }
     $params["IsAdmin"] = $isAdmin;
 
-    $currentUserDN = Get_User_Principle();
-    $user = \Factory::getUserService()->getUserByPrinciple($currentUserDN);
+    $currentIdString = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($currentIdString);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
 
     //get users
-    $params["Users"] = \Factory::getUserService()->getUsers($surname, $forename, $dn, $isAdmin);
-
+    $params["Users"] = \Factory::getUserService()->getUsers($surname, $forename, $idString, $isAdmin);
 
     show_view("admin/users.php", $params, "Users");
 }
