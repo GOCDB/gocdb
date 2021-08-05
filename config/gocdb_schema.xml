@@ -246,11 +246,6 @@
 	    <regex>/^[a-zA-Z\s\-']*$/</regex>
 	</field>
 	<field>
-	    <fname>CERTIFICATE_DN</fname>
-	    <length>255</length>
-	    <!--<regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/\)\(]+)+$/</regex>-->
-	</field>
-	<field>
 	    <fname>WORKINGHOURS_START</fname>
 	</field>
 	<field>

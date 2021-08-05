@@ -779,7 +779,8 @@ class Site extends AbstractEntityService{
 
             // create a new CertStatusLog
             $certLog = new \CertificationStatusLog();
-            $certLog->setAddedBy($user->getCertificateDn());
+            $serv = \Factory::getUserService();
+            $certLog->setAddedBy($serv->getDefaultIdString($user));
             $certLog->setNewStatus($certStatus->getName());
             $certLog->setOldStatus(null);
             $certLog->setAddedDate($now);

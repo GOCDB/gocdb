@@ -42,18 +42,15 @@ foreach($usersRoles as $user) {
             throw new Exception("Not a doctrine role type");
         }
 
-        // Find the user
-        // get the user entity
-        $dql = "SELECT u FROM User u WHERE u.certificateDn = :certDn";
+        // Get user entity
+        $dql = "SELECT u FROM User u JOIN u.userIdentifiers up WHERE up.keyValue = :keyValue";
         $users = $entityManager->createQuery($dql)
-                                     ->setParameter('certDn', (string) $user->CERTDN)
-                                     ->getResult();
+                  ->setParameter('keyValue', trim((string) $user->CERTDN))
+                  ->getResult();
+
         // /* Error checking: ensure each "user" refers to exactly
          // * one user */
         if(count($users) !== 1) {
-            foreach($users as $u) {
-                echo "Certificate DN is " . $u->getCertificateDn() . "-------";
-            }
             throw new Exception(count($users) . " users found with DN: " .
                 $user->CERTDN);
         }
