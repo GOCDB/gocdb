@@ -425,17 +425,17 @@ class User extends AbstractEntityService{
      * forename and surname are handled case insensitivly
      * @param string $surname surname of users to be returned (matched case insensitivly)
      * @param string $forename forename of users to be returned (matched case insensitivly)
-     * @param string $dn dn of user to be returned. If specified only one user will be returned. Matched case sensitivly
+     * @param string $idString ID string of user to be returned. If specified only one user will be returned. Matched case sensitivly
      * @param mixed $isAdmin if null then admin status is ignored, if true only admin users are returned and if false only non admins
      * @return array An array of site objects
      */
-    public function getUsers($surname=null, $forename=null, $dn=null, $isAdmin=null) {
+    public function getUsers($surname=null, $forename=null, $idString=null, $isAdmin=null) {
 
         $dql =
-            "SELECT u FROM User u
+            "SELECT u FROM User u LEFT JOIN u.userIdentifiers up
              WHERE (UPPER(u.surname) LIKE UPPER(:surname) OR :surname is null)
              AND (UPPER(u.forename) LIKE UPPER(:forename) OR :forename is null)
-             AND (u.certificateDn LIKE :dn OR :dn is null)
+             AND (u.certificateDn LIKE :idString OR up.keyValue LIKE :idString OR :idString is null)
              AND (u.isAdmin = :isAdmin OR :isAdmin is null)
              ORDER BY u.surname";
 
@@ -443,7 +443,7 @@ class User extends AbstractEntityService{
             ->createQuery($dql)
             ->setParameter(":surname", $surname)
             ->setParameter(":forename", $forename)
-            ->setParameter(":dn", $dn)
+            ->setParameter(":idString", $idString)
             ->setParameter(":isAdmin", $isAdmin)
             ->getResult();
 
