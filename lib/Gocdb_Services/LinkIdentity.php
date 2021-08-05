@@ -35,7 +35,10 @@ class LinkIdentity extends AbstractEntityService {
             $isLinking = true;
         }
 
-        // $this->validate()
+        // Validate details. For most errors, return without throwing an error to avoid sharing info
+        if ($this->validate($primaryUser, $currentUser, $currentAuthType, $isLinking, $givenEmail) === 1) {
+            return;
+        }
 
         // Remove any existing requests involving either user
         $this->removeRelatedRequests($primaryUser, $currentUser, $primaryIdString, $currentIdString);
@@ -71,6 +74,48 @@ class LinkIdentity extends AbstractEntityService {
             $this->em->close();
             throw $e;
         }
+    }
+
+    /**
+     * Performs validation on request
+     * @param \User $primaryUser user who will have identifier added/updated
+     * @param \User $currentUser user creating the request
+     * @param string $currentAuthType auth type of current ID string
+     * @param bool $isLinking true if linking, false if recovering
+     * @param string $givenEmail email of primary user
+     */
+    private function validate($primaryUser, $currentUser, $currentAuthType, $isLinking, $givenEmail) {
+
+        if ($primaryUser === null) {
+            // Don't throw exception to limit info shared
+            return 1;
+        }
+
+        if ($primaryUser === $currentUser) {
+            // Can throw exception as it's their own ID string
+            throw new \Exception("The details entered are already associated with this account");
+        }
+
+        // Check the portal is not in read only mode, throws exception if it is
+        // If portal is read only, but the current user is an admin, we will still be able to proceed
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
+
+        // Check the given email address matches the one given
+        if (strcasecmp($primaryUser->getEmail(), $givenEmail)) {
+            // Don't throw exception to limit info shared
+            return 1;
+        }
+
+        // Prevent attempt to add duplicate auth type when linking
+        if ($isLinking) {
+            foreach ($primaryUser->getUserIdentifiers() as $identifier) {
+                if ($identifier->getKeyName() === $currentAuthType) {
+                    return 1;
+                }
+            }
+        }
+
+        return 0;
     }
 
     /**
