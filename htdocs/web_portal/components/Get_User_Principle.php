@@ -182,7 +182,7 @@ function Get_User_Principle(){
 
             // If identifier for current auth does not exist, add to user
             if (!$authExists) {
-                // Get type of auth logged in with e.g. IGTF)
+                // Get type of auth logged in with e.g. X.509)
                 $authType = $auth->getDetails()['AuthenticationRealm'][0];
                 $identifierArr = array($authType, $principleString);
                 $serv->migrateUserCredentials($user, $identifierArr, $user);
