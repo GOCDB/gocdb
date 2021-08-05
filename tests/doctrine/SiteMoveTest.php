@@ -133,7 +133,10 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
         $S2 = TestUtil::createSampleSite("Site2");
         $S3 = TestUtil::createSampleSite("Site3");
         $SE1= TestUtil::createSampleService("SEP1");
-        $dummy_user = TestUtil::createSampleUser('Test', 'User', '/Some/string');
+        $dummy_user = TestUtil::createSampleUser('Test', 'User');
+        $identifier= TestUtil::createSampleUserIdentifier('X.509', '/Some/string');
+        $dummy_user->addUserIdentifierDoJoin($identifier);
+        $this->em->persist($identifier);
 
         //Make dummy user a GOCDB admin so it can perfirm site moves etc.
         $dummy_user->setAdmin(true);

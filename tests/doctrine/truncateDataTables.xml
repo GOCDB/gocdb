@@ -57,6 +57,7 @@
     <Site_Properties/>
     <Service_Properties/>
     <Endpoint_Properties/>
+    <User_Identifiers/>
        
         <!-- Join tables that hold FKs must be deleted before the referencing tables above --> 
     <Projects_NGIs/>
@@ -69,7 +70,7 @@
     <Downtimes_EndpointLocations/>
         
     <Users/>
-    <RetrieveAccountRequests/>
+    <LinkIdentityRequests/>
     <RoleTypes/>
     <Roles/>
         

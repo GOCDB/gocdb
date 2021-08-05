@@ -125,7 +125,10 @@ class ServiceServiceTest extends PHPUnit_Extensions_Database_TestCase{
     $this->eMan->persist($service);
     $service->setParentSiteDoJoin($site);
 
-    $user = $util->createSampleUser("Test", "Testing", "/c=test");
+    $user = $util->createSampleUser("Test", "Testing");
+    $identifier= TestUtil::createSampleUserIdentifier("X.509", "/c=test");
+    $user->addUserIdentifierDoJoin($identifier);
+    $this->eMan->persist($identifier);
     $this->eMan->persist($user);
     $user->setAdmin(TRUE);
 

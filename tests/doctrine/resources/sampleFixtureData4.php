@@ -19,7 +19,10 @@ $this->em->persist($roleType1);
 $this->em->persist($roleType2);
 
 // Create a user
-$userWithRoles = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+$userWithRoles = TestUtil::createSampleUser("Test", "Testing");
+$identifier= TestUtil::createSampleUserIdentifier("X.509", "/c=test");
+$userWithRoles->addUserIdentifierDoJoin($identifier);
+$this->em->persist($identifier);
 $this->em->persist($userWithRoles);
 $userId = $userWithRoles->getId();
 

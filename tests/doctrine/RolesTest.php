@@ -125,7 +125,10 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase {
     $this->em->persist($rt);
 
     // Create a user
-    $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+    $u = TestUtil::createSampleUser("Test", "Testing");
+    $identifier= TestUtil::createSampleUserIdentifier("X.509", "/c=test");
+    $u->addUserIdentifierDoJoin($identifier);
+    $this->em->persist($identifier);
     $this->em->persist($u);
 
     // Create a site
@@ -160,7 +163,10 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase {
     $this->em->persist($rt);
 
     // Create a user
-    $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+    $u = TestUtil::createSampleUser("Test", "Testing");
+    $identifier= TestUtil::createSampleUserIdentifier("X.509", "/c=test");
+    $u->addUserIdentifierDoJoin($identifier);
+    $this->em->persist($identifier);
     $this->em->persist($u);
 
     // Create an NGI
@@ -197,7 +203,10 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase {
     $this->em->persist($rt);
 
     // Create a user
-    $u = TestUtil::createSampleUser("Test", "Testing", "/c=test");
+    $u = TestUtil::createSampleUser("Test", "Testing");
+    $identifier= TestUtil::createSampleUserIdentifier("X.509", "/c=test");
+    $u->addUserIdentifierDoJoin($identifier);
+    $this->em->persist($identifier);
     $this->em->persist($u);
 
     // Create an NGI
