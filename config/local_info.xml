@@ -10,6 +10,14 @@
              data by all users. This can be used for a read-only failover instance. -->
     <read_only>false</read_only>
 
+    <!-- Specify the URL and description of the Acceptable Use Policy -->
+    <aup>https://documents.egi.eu/public/RetrieveFile?docid=3600&amp;filename=EGI-SPG-AUP-V3.pdf&amp;version=3</aup>
+    <aup_title>EGI Acceptable Use Policy</aup_title>
+
+    <!-- Specify the URL and description of the Privacy Notice -->
+    <privacy_notice>/GOCDB_Privacy_Notice_20180809.pdf</privacy_notice>
+    <privacy_notice_title>GOCDB Privacy Notice</privacy_notice_title>
+
     <!-- Specify the URLs used to access your GOCDB web portal and PI.
       - It is important to update these values to match your deployment.
       - These values substitute placeholder variables and is used in both the

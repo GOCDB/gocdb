@@ -20,6 +20,7 @@
  *
  /*====================================================== */
 function view_user() {
+    require_once __DIR__.'/utils.php';
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
     require_once __DIR__.'/../../components/Get_User_Principle.php';
 
@@ -33,10 +34,14 @@ function view_user() {
     if ($user === null) {
        throw new Exception("No user with that ID");
     }
+
+    $params = [];
     $params['user'] = $user;
 
     // Check if user only has one identifier to disable unlinking
     $params['lastIdentifier'] = (count($user->getUserIdentifiers()) === 1);
+    // Add the display locations of the policy files.
+    getPolicyURLs($params);
 
     // 2D array, each element stores role and a child array holding project Ids
     $role_ProjIds = array();

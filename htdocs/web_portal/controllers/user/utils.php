@@ -55,3 +55,18 @@ function checkPortalIsNotReadOnly(){
         throw new \Exception("The portal is currently in read only mode, changes can not be made.");
     }
 }
+
+/**
+ * Populate the parameter array with the AUP and Privacy Notice policy URLs and descriptions
+ *
+ * @param array &$params
+ */
+function getPolicyURLs(&$params) {
+
+    $configServ = \Factory::getConfigService();
+
+    $params['aup']  = $configServ->getAUP();
+    $params['aup_title'] = $configServ->getAUPTitle();
+    $params['privacy_notice'] = $configServ->getPrivacyNotice();
+    $params['privacy_notice_title'] = $configServ->getPrivacyNoticeTitle();
+}

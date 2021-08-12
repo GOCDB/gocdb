@@ -737,6 +737,9 @@ label.error {
 /* Registration and User pages */
 img.new_window{
   height: 1em;
+  padding-left: 0.15em;
+  vertical-align: baseline;
+
 }
 
 img.person{

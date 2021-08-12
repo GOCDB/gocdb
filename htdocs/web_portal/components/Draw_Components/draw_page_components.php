@@ -120,6 +120,10 @@
     /* Draws a box showing the EGI and other logos */
     function Get_bottom_logos_Box_HTML()
     {
+        require_once __DIR__.'/../../controllers/user/utils.php';
+        $policyURLs = [];
+        getPolicyURLs($policyURLs);
+
         $HTML = "";
         $HTML .= '<div class="Left_Logo_Box left_box_menu">';
         $HTML .= '<div class="Left_Logo_Row">';
@@ -151,10 +155,10 @@
 
         $HTML .= '</div>';
         $HTML .= 'GOCDB is provided by <a href="https://stfc.ukri.org/">STFC</a> for <a href="https://egi.eu">EGI</a>, co-funded by <a href="https://egi.eu">EGI.eu</a> and <a href="https://www.eosc-hub.eu/">EOSC-hub.</a>';
-	      $HTML .= '<br>- ';
-        $HTML .= '<a href="/privacy.html">Privacy Notice</a>.';
-	      $HTML .= '<br>- ';
-        $HTML .= '<a href="/aup.html">Acceptable Use Policy</a>.';
+        $HTML .= '<br>- ';
+        $HTML .= '<a title="' . $policyURLs['privacy_notice_title'] . '" href="' . $policyURLs['privacy_notice'] . '">Privacy Notice</a>.';
+        $HTML .= '<br>- ';
+        $HTML .= '<a title="' . $policyURLs['aup_title'] . '" href="' . $policyURLs['aup'] . '">Acceptable Use Policy</a>.';
         $HTML .= '</div>';
 
         return $HTML;
