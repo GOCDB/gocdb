@@ -24,18 +24,18 @@
           </div>
           <div style="width: 80%; margin-left: auto; margin-right: auto;">
             <?php
-                echo '<p>Use of GOCDB is governed by the <a class="docLink hover" target="_blank" ';
-                echo 'href="' . $configServ->getAUP() . '" title="' . $configServ->getAUPTitle() . '"';
-                echo '>' . $configServ->getAUPTitle();
-                echo '<img alt="new window logo"  class="new_window" src="new_window.png">';
-                echo '</a> which places restrictions on your use of the service.</p>';
-                echo '<p>The <a class="docLink hover" target="_blank" ';
-                echo 'href="' . $configServ->getPrivacyNotice() . '" title="' . $configServ->getPrivacyNoticeTitle() . '"';
-                echo $configServ->getPrivacyNotice();
-                echo '>' . $configServ->getPrivacyNoticeTitle();
-                echo '<img alt="new window logo"  class="new_window" src="new_window.png">';
-                echo '</a> describes what personal data is collected and why, and your rights regarding this data.</p>';
-                echo '<p> Please read these documents before accessing GOCDB.</p>';
+              echo '<p>Use of GOCDB is governed by the <a class="docLink hover" target="_blank" ';
+              echo 'href="' . $configServ->getAUP() . '" title="' . $configServ->getAUPTitle() . '"';
+              echo '>' . $configServ->getAUPTitle();
+              echo '<img alt="new window logo"  class="new_window" src="/images/new_window.png">';
+              echo '</a> which places restrictions on your use of the service.</p>';
+              echo '<p>The <a class="docLink hover" target="_blank" ';
+              echo 'href="' . $configServ->getPrivacyNotice() . '" title="' . $configServ->getPrivacyNoticeTitle() . '"';
+              echo $configServ->getPrivacyNotice();
+              echo '>' . $configServ->getPrivacyNoticeTitle();
+              echo '<img alt="new window logo"  class="new_window" src="/images/new_window.png">';
+              echo '</a> describes what personal data is collected and why, and your rights regarding this data.</p>';
+              echo '<p> Please read these documents before accessing GOCDB.</p>';
             ?>
           </div>
           <div style="width: 80%; margin-left: auto; margin-right: auto;">
@@ -66,18 +66,18 @@
               <a href="https://stfc.ukri.org" class="Sponsor_Link" target="_blank">
                 <!-- Allow for STFC council symbol extending above the upper bound of the UKRI symbol -->
                 <img  style="height: 112%; margin-top: -12%;" class="Sponsor_Logo"
-                src="UKRI_STF_Council-Logo_Horiz-RGB.png"
+                src="/images/UKRI_STF_Council-Logo_Horiz-RGB.png"
                 alt="The logo of the Science and Technology Facilities Council" /></a>
               <a href="https://europa.eu/european-union/index_en" class="Sponsor_Link" target="_blank">
-                <img class="Sponsor_Logo" src="eu_flag_yellow_low_150.png"
+                <img class="Sponsor_Logo" src="/images/eu_flag_yellow_low_150.png"
                 alt="The logo of the European Union" />
               </a>
               <a href="https://www.egi.eu" class="Sponsor_Link" target="_blank">
-                <img class="Sponsor_Logo" src="egi_logo_no_background_150.png"
+                <img class="Sponsor_Logo" src="/images/egi_logo_no_background_150.png"
                 alt="The logo of the E G I Foundation" />
               </a>
               <a href="https://eosc-hub.eu/" class="Sponsor_Link" target="_blank">
-                <img class="Sponsor_Logo" src="eosc-hub-v-web_150.png"
+                <img class="Sponsor_Logo" src="/images/eosc-hub-v-web_150.png"
                 alt="The logo of the EOSC-hub Horizon 20 20 project" />
               </a>
           </div>

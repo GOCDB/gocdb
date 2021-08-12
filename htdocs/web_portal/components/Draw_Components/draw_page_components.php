@@ -131,25 +131,25 @@
         $HTML .= '<a href="https://stfc.ukri.org/" class="Sponsor_Link" target="_blank">'.
                     /* Allow for STFC council symbol extending above the upper bound of the UKRI symbol */
                     '<img style="height: 112%; margin-top: -12%" class="Sponsor_Logo" '.
-                    'src="'.\GocContextPath::getPath().'img/UKRI_STF_Council-Logo_Horiz-RGB_crop.png" '.
+                    'src="'.\GocContextPath::getPath().'/images/UKRI_STF_Council-Logo_Horiz-RGB_crop.png" '.
                     'alt="The logo of the Science and Technology Facilities Council" />'.
                     '</a>';
 
         $HTML .= '<a href="https://europa.eu/european-union/index_en" class="Sponsor_Link" target="_blank">'.
                     '<img class="Sponsor_Logo" '.
-                    'src="'.\GocContextPath::getPath().'img/eu_flag_yellow_low_150.png" '.
+                    'src="'.\GocContextPath::getPath().'/images/eu_flag_yellow_low_150.png" '.
                     'alt="The logo of the European Union" />'.
                     '.</a>';
 
         $HTML .= '<a href="https://www.egi.eu" class="Sponsor_Link" target="_blank">'.
                     '<img class="Sponsor_Logo" '.
-                    'src="'.\GocContextPath::getPath().'img/egi_logo_no_background_150.png" '.
+                    'src="'.\GocContextPath::getPath().'/images/egi_logo_no_background_150.png" '.
                     'alt="The logo of the E G I Foundation" />
                     </a>';
 
         $HTML .= '<a href="https://www.eosc-hub.eu/" class="Sponsor_Link" target="_blank">'.
                     '<img class="Sponsor_Logo" '.
-                    'src="'.\GocContextPath::getPath().'img/eosc-hub-v-web_150.png" '.
+                    'src="'.\GocContextPath::getPath().'/images/eosc-hub-v-web_150.png" '.
                     'alt="The logo of the EOSC-hub Horizon 20 20 project" />'.
                     '</a>';
 
