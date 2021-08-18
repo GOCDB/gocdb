@@ -26,7 +26,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author John Casson
  *
- * @Entity @Table(name="EndpointLocations")
+ * @Entity @Table(name="EndpointLocations", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class EndpointLocation {
 

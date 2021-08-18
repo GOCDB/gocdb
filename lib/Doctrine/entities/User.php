@@ -19,7 +19,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @author John Casson
  * @author David Meredith <david.meredith@stfc.ac.uk>
  *
- * @Entity @Table(name="Users", options={"collate"="utf8_bin"})
+ * @Entity @Table(name="Users", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class User {
 

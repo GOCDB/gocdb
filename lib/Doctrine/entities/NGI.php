@@ -27,7 +27,7 @@ require_once 'IScopedEntity.php';
  * @author David Meredith <david.meredithh@stfc.ac.uk>
  * @author John Casson
  *
- * @Entity @Table(name="NGIs")
+ * @Entity @Table(name="NGIs", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class NGI extends OwnedEntity implements IScopedEntity {
 

@@ -24,7 +24,7 @@
  *
  * @author John Casson
  *
- * @Entity @Table(name="PrimaryKeys")
+ * @Entity @Table(name="PrimaryKeys", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class PrimaryKey {
 

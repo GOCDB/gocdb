@@ -28,7 +28,7 @@
  *
  * @author David Meredith <david.meredith@stfc.ac.uk>
  *
- * @Entity @Table(name="Endpoint_Properties", uniqueConstraints={@UniqueConstraint(name="endpointproperty_keypairs", columns={"parentEndpoint_id", "keyName"})})
+ * @Entity @Table(name="Endpoint_Properties", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"}, uniqueConstraints={@UniqueConstraint(name="endpointproperty_keypairs", columns={"parentEndpoint_id", "keyName"})})
  */
 class EndpointProperty {
 

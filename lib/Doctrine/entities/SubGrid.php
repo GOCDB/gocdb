@@ -17,7 +17,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @deprecated since version 5.4
  * @author John Casson
- * @Entity @Table(name="SubGrids")
+ * @Entity @Table(name="SubGrids", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class SubGrid {
 

@@ -28,7 +28,7 @@
  *
  * @author James McCarthy
  * @author David Meredith
- * @Entity @Table(name="Site_Properties",uniqueConstraints={@UniqueConstraint(name="site_keypairs", columns={"parentSite_id", "keyName"})})
+ * @Entity @Table(name="Site_Properties", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"}, uniqueConstraints={@UniqueConstraint(name="site_keypairs", columns={"parentSite_id", "keyName"})})
  */
 class SiteProperty {
 

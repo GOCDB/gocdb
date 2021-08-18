@@ -23,7 +23,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @author David Meredith <david.meredith@stfc.ac.uk>
  *
- * @Entity @Table(name="Projects")
+ * @Entity @Table(name="Projects", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class Project extends OwnedEntity {
 

@@ -16,7 +16,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 /**
  * @deprecated since version 5.4
  * @author John Casson
- * @Entity @Table(name="Tiers")
+ * @Entity @Table(name="Tiers", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class Tier {
 
