@@ -266,6 +266,12 @@
 	    <length>255</length>
 	    <regex>/^(\+?[0-9\-\.\s\)\(]+)?$/</regex>
 	</field>
+	<field>
+	    <!-- Need a schema entry to pass validation of inputs through editUser in the User Service.
+	         Should ultimately not be needed once no Users have Home Sites, which is no longer
+	         a supported feature. -->
+	    <fname>UNLINK_HOMESITE</fname>
+	</field>
     </entity>
 
     <!-- ==========================================================  -->

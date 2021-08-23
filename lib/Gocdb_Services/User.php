@@ -256,6 +256,9 @@ class User extends AbstractEntityService{
             $user->setSurname($newValues['SURNAME']);
             $user->setEmail($newValues['EMAIL']);
             $user->setTelephone($newValues['TELEPHONE']);
+            if (key_exists("UNLINK_HOMESITE", $newValues)) {
+                $user->setHomeSiteDoJoin(null);
+            }
             $this->em->merge($user);
             $this->em->flush();
             $this->em->getConnection()->commit();
