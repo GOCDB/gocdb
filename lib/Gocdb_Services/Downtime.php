@@ -288,10 +288,11 @@ class Downtime extends AbstractEntityService{
     /**
      * Validate the passed downtime data's dates
      * @param \DateTime $start Start time
-     * @return \DateTime $end End date
+     * @param \DateTime $end End date
+     * @param \DateTime $oldStart Original start time, if editing a downtime
      * @throws \Exception With a human readable message if the dates are invalid
      */
-    private function validateDates(\DateTime $start, \DateTime $end) {
+    private function validateDates(\DateTime $start, \DateTime $end, \DateTime $oldStart=null) {
         $now = new \DateTime(null, new \DateTimeZone('UTC'));
         $start->setTimezone(new \DateTimeZone('UTC'));
         $end->setTimezone(new \DateTimeZone('UTC'));
@@ -302,10 +303,22 @@ class Downtime extends AbstractEntityService{
         $di = \DateInterval::createFromDateString('2 days');
         $twoDaysAgo = $now->sub($di);
 
-        // check that start date is later than the threshold limit
+        // If editing a downtime, check if the start time has changed
+        $isEditing = ($oldStart !== null);
+        $startChanged = false;
+        if ($isEditing) {
+            $startDiff = abs($oldStart->getTimestamp() - $start->getTimestamp());
+            $startChanged = ($startDiff !== 0);
+        }
+
         // Downtimes are only allowed to be declared up to 48 hours in the past
-        if ($start < $twoDaysAgo) {
-            throw new \Exception ("Error - The requested start time of the downtime must be within the last 48 hrs"); //"Downtimes can't be declared more than 48 hours in the past.");
+        if ($start < $twoDaysAgo && !$isEditing) {
+            throw new \Exception ("Error - The requested start time of the downtime must be within the last 48 hrs");
+        }
+
+        // Prevent start date being edited if downtime began over 48 hours in the past
+        if ($oldStart < $twoDaysAgo && $startChanged) {
+            throw new \Exception ("Start time cannot be changed if downtime started over 48 hours ago");
         }
     }
 
@@ -466,7 +479,7 @@ class Downtime extends AbstractEntityService{
         // check the new start/end times of the downtime are valid according
         // to GOCDB business rules
         $this->editValidation($dt, $newStart, $newEnd);
-        $this->validateDates($newStart, $newEnd);
+        $this->validateDates($newStart, $newEnd, $dt->getStartDate()->setTimezone(new \DateTimeZone('UTC')));
 
         // recalculate classification
         $nowPlus1Day = new \DateTime(null, new \DateTimeZone('UTC'));
@@ -582,6 +595,11 @@ class Downtime extends AbstractEntityService{
             throw new \Exception("Downtime start date can only be changed to a date in the future"); //Downtime can't start in the past.");
         }
 
+        // New end date cannot be in the past
+        if ($newEnd < $now) {
+            throw new \Exception("Downtime end date can only be changed to a date in the future");
+        }
+
         $oneDay = \DateInterval::createFromDateString('1 days');
         $tomorrow = $now->add($oneDay);
 
@@ -620,7 +638,6 @@ class Downtime extends AbstractEntityService{
         $sixtySecs = \DateInterval::createFromDateString('1 minutes');
         $now = new \DateTime(null, new \DateTimeZone('UTC'));
         $sixtySecsFromNow = $now->add($sixtySecs);
-        //$this->validateDates($dt->getStartDate(), $end);
 
         // dt start date is in the future
         if ($dt->getStartDate()->setTimezone(new \DateTimeZone('UTC')) >= $sixtySecsFromNow) {
