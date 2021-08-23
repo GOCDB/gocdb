@@ -6,9 +6,15 @@
 require_once __DIR__ . '/tests.php';
 
 echo "<p>URLs as defined by local_info.xml</p>";
-echo "<p>PI URL is: ".PI_URL."</p>";
-echo "<p>Portal URl is: ".PORTAL_URL."</p>";
-echo "<p>Server Base URL is: ".SERVER_BASE_URL."</p>";
+
+$piUrl = Factory::getConfigService()->GetPiUrl().get_testPiMethod();
+echo "<p>PI URL is: ".$piUrl."</p>";
+
+$portalUrl = Factory::getConfigService()->GetPortalURL();
+echo "<p>Portal URl is: ".$portalUrl."</p>";
+
+$baseUrl = Factory::getConfigService()->getServerBaseUrl();
+echo "<p>Server Base URL is: ".$baseUrl."</p>";
 
 // GOCDB5 DB connection
 $res = test_db_connection();
@@ -16,12 +22,12 @@ $test_statuses["GOCDB5 DB connection"] = $res["status"];
 $test_messages["GOCDB5 DB connection"] = $res["message"];
 
 // GOCDBPI v5
-$res = test_url(PI_URL);
+$res = test_url($piUrl);
 $test_statuses["GOCDBPI_v5 availability"] = $res["status"];
 $test_messages["GOCDBPI_v5 availability"] = $res["message"];
 
 // GOCDB5 web portal
-$res = test_url(SERVER_BASE_URL);
+$res = test_url($portalUrl);
 $test_statuses["GOCDB5 central portal availability"] = $res["status"];
 $test_messages["GOCDB5 central portal availability"] = $res["message"];
 

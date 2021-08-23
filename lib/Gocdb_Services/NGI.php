@@ -521,8 +521,7 @@ class NGI extends AbstractEntityService{
     }
 
     private function checkNumberOfScopes($scopeIds){
-        require_once __DIR__ . '/Config.php';
-        $minumNumberOfScopes = $this->$configService->getMinimumScopesRequired('ngi');
+        $minumNumberOfScopes = $this->configService->getMinimumScopesRequired('ngi');
         if(sizeof($scopeIds)<$minumNumberOfScopes){
             throw new \Exception("A NGI must have at least " . $minumNumberOfScopes . " scope(s) assigned to it.");
         }

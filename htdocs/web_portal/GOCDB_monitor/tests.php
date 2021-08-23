@@ -1,18 +1,10 @@
 <?php
+require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
-$localInfoLocation = __DIR__."/../../../config/local_info.xml";
-$localInfoXML = simplexml_load_file($localInfoLocation);
-$webPortalURL = $localInfoXML->local_info->web_portal_url;
-$piURL = $localInfoXML->local_info->pi_url; // e.g. https://localhost/gocdbpi
-$baseURL = $localInfoXML->local_info->server_base_url;
-
-
-define("PI_URL", $piURL."/public/?method=get_site_list"); //https://localhost/gocdbpi/public/?method=get_site_list
-define("PORTAL_URL", $webPortalURL);
-define("SERVER_BASE_URL", $baseURL);
-//define("SERVER_SSLCERT", "/etc/grid-security/hostcert.pem");
-//define("SERVER_SSLKEY", "/etc/pki/tls/private/hostkey.pem");
-
+// Initialise the configuration service.
+// If non-default location for xml configuration file is needed
+// use Factory::ConfigService->setLocalInfoFileLocation(...)
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
 
 $test_statuses =  array(
         "GOCDB5 DB connection" 						=> "unknown",
@@ -40,16 +32,14 @@ $test_messages =  array(
 );
 
 $disp = array(
-        "unknown" => "<td align='center' bgcolor='#A0A0A0'><font size='1'><i>unknown</i></font></td>",
-        "warn" => "<td align='center' bgcolor='#FFAA00'><font size='1'>WARNING</font></td>",
-        "error" => "<td align='center' bgcolor='#F00000'><font size='1'>ERROR</font></td>",
-        "ok" => "<td align='center' bgcolor='#00D000'><font size='1'>OK</font></td>",
+        "unknown"   => "<td align='center' bgcolor='#A0A0A0'><font size='1'><i>unknown</i></font></td>",
+        "warn"      => "<td align='center' bgcolor='#FFAA00'><font size='1'>WARNING</font></td>",
+        "error"     => "<td align='center' bgcolor='#F00000'><font size='1'>ERROR</font></td>",
+        "ok"        => "<td align='center' bgcolor='#00D000'><font size='1'>OK</font></td>",
 );
 
 // Test the connection to the database using Doctrine
 function test_db_connection(){
-    require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
-
     try {
         $entityManager = Factory::getNewEntityManager();
         $entityManager->getConnection()->connect();
@@ -78,18 +68,32 @@ function test_url($url) {
 }
 
 function get_https2($url){
+
     $curloptions = array (
-            CURLOPT_RETURNTRANSFER => false,
-            CURLOPT_HEADER         => false,
-            CURLOPT_FOLLOWLOCATION => false,
-            CURLOPT_MAXREDIRS      => 1,
-            CURLOPT_SSL_VERIFYHOST => 2,
-            CURLOPT_SSL_VERIFYPEER => 0,
-            CURLOPT_USERAGENT      => 'GOCDB monitor',
-            CURLOPT_VERBOSE        => false,
-            CURLOPT_URL            => $url,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_CAPATH => '/etc/grid-security/certificates/'
+        // In addition to transfer failures, check inside the HTTP response for an error
+        // response code (HTTP > 400)
+        CURLOPT_FAILONERROR    => true,
+        CURLOPT_HEADER         => false,
+        // No client authentication is being attempted. Any request to access a 'protected'
+        // resource is currently redirected (HTTP 301/2) to the Shibboleth authentication
+        // service which, if followed, results in a 'server error' (HTTP 500) response .
+        // With this option set to false, a 'successful' request is actually just the
+        // receipt of the 'redirect' HTTP 301/2.
+        CURLOPT_FOLLOWLOCATION => false,
+        CURLOPT_MAXREDIRS      => 0,
+        // VERIFYHOST checks that the CN in the certificate matches what we asked for
+        CURLOPT_SSL_VERIFYHOST => true,
+        // VERIFYPEER checks that we trust the certificate's issuer (CA)
+        // If you are testing with a self-signed host certificate, you will have to
+        // copy the host's .pem certificate into CURLOPT_CAPATH or
+        // set SSL_VERIFYPEER to false
+        CURLOPT_SSL_VERIFYPEER => true,
+        CURLOPT_USERAGENT      => 'GOCDB monitor',
+        CURLOPT_VERBOSE        => false,
+        CURLOPT_URL            => $url,
+        // Return either the string response or a bool false for failure.
+        CURLOPT_RETURNTRANSFER => true,
+        CURLOPT_CAPATH => '/etc/grid-security/certificates/'
     );
     if( defined('SERVER_SSLCERT') && defined('SERVER_SSLKEY') ){
       $curloptions[CURLOPT_SSLCERT] = SERVER_SSLCERT;
@@ -100,7 +104,14 @@ function get_https2($url){
     curl_setopt_array($handle, $curloptions);
 
     $return = curl_exec($handle);
-    if (curl_errno($handle)) {
+    $httpResponse = curl_getinfo($handle, CURLINFO_HTTP_CODE);
+
+    if (!is_string($return)) {
+        if (curl_errno($handle) == 22) {
+            // CURLOPT_FAILONERROR detected HTTP response error
+            // See man page for curl --fail option
+            throw new Exception("http response code: $httpResponse");
+        }
         throw new Exception("curl error:".curl_error($handle));
     }
     curl_close($handle);
@@ -110,6 +121,10 @@ function get_https2($url){
     }
 
     return $return;
+}
+
+function get_testPiMethod () {
+    return  "/public/?method=get_site_list";
 }
 
 ?>
