@@ -119,8 +119,7 @@ class NotificationService extends AbstractEntityService {
     * Return the PortalURL to enable an accurate link to the role approval view to be created
     */
     private function get_webPortalURL() {
-        $localInfoXML = simplexml_load_file(__DIR__ . "/../../config/local_info.xml");
-        return $localInfoXML->local_info->web_portal_url;
+        return \Factory::getConfigService()->GetPortalURL();
     }
 
 
@@ -128,8 +127,7 @@ class NotificationService extends AbstractEntityService {
     * Return whether send_email is enabled in the config file
     */
     private function get_config_send_email() {
-        $localInfoXML = simplexml_load_file(__DIR__ . "/../../config/local_info.xml");
-        return strtolower($localInfoXML->local_info->send_email) === 'true';
+        return \Factory::getConfigService()->getSendEmails();
     }
 
 
