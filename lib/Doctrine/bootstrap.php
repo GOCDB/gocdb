@@ -30,7 +30,6 @@ require_once $entitiesPath."/Downtime.php";
 require_once $entitiesPath."/Project.php";
 require_once $entitiesPath."/ServiceGroup.php";
 require_once $entitiesPath."/ServiceGroupProperty.php";
-require_once $entitiesPath."/RetrieveAccountRequest.php";
 require_once $entitiesPath."/PrimaryKey.php";
 require_once $entitiesPath."/ArchivedNGI.php";
 require_once $entitiesPath."/ArchivedService.php";
@@ -40,6 +39,7 @@ require_once $entitiesPath."/EndpointProperty.php";
 require_once $entitiesPath."/RoleActionRecord.php";
 require_once $entitiesPath."/APIAuthentication.php";
 require_once $entitiesPath."/UserIdentifier.php";
+require_once $entitiesPath."/LinkIdentityRequest.php";
 
 //if (!class_exists("Doctrine\Common\Version", false)) {
 //    require_once __DIR__."/bootstrap_doctrine.php";
