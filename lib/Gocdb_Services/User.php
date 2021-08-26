@@ -83,6 +83,27 @@ class User extends AbstractEntityService{
     }
 
     /**
+     * Lookup a User object by user's principle ID string and auth type from UserIdentifier.
+     * @param string $userPrinciple the user's principle ID string, e.g. DN.
+     * @param string $authType the authorisation type e.g. X.509.
+     * @return User object or null if no user can be found with the specified principle
+     */
+    public function getUserByPrincipleAndType($userPrinciple, $authType) {
+        if (empty($userPrinciple) || empty($authType)) {
+            return null;
+        }
+
+        $dql = "SELECT u FROM User u JOIN u.userIdentifiers up
+                WHERE up.keyName = :keyName
+                AND up.keyValue = :keyValue";
+        $user = $this->em->createQuery($dql)
+                  ->setParameters(array('keyName' => $authType, 'keyValue' => $userPrinciple))
+                  ->getOneOrNullResult();
+
+        return $user;
+    }
+
+    /**
      * Updates the users last login time to the current time in UTC.
      * @param \User $user
      */
@@ -468,6 +489,68 @@ class User extends AbstractEntityService{
             ->getResult();
 
         return $users;
+    }
+
+    /**
+     * Returns a single user identifier from its ID
+     * @param $id ID of user identifier
+     * @return \UserIdentifier
+     */
+    public function getIdentifierById($id) {
+        $dql = "SELECT p FROM UserIdentifier p WHERE p.id = :ID";
+        $identifier = $this->em->createQuery($dql)->setParameter('ID', $id)->getOneOrNullResult();
+        return $identifier;
+    }
+
+    /**
+     * Returns a single user identifier from its ID string
+     * @param $idString ID string of user identifier
+     * @return \UserIdentifier
+     */
+    public function getIdentifierByIdString($idString) {
+        $dql = "SELECT p FROM UserIdentifier p WHERE p.keyValue = :IDSTRING";
+        $identifier = $this->em->createQuery($dql)->setParameter('IDSTRING', $idString)->getOneOrNullResult();
+        return $identifier;
+    }
+
+    /**
+     * Returns list of authentication types
+     * List composed of AuthenticationRealms defined within tokens
+     * Order of tokens determined by order listed in MyConfig1
+     * Order of realms hardcoded based on order within tokens
+     * @param bool $reducedRealms if true only return the "main" authentication types
+     * @return array of authentication types
+     */
+    public function getAuthTypes($reducedRealms=true) {
+
+        require_once __DIR__ . '/../Authentication/_autoload.php';
+        // Get list of tokens in order they are currently used
+        $myConfig1 = new \org\gocdb\security\authentication\MyConfig1();
+        $authTokenNames = $myConfig1->getAuthTokenClassList();
+
+        // Hardcoded authentication realms in same order as in token definitions
+        $x509Realms = ['X.509'];
+        if ($reducedRealms) {
+            $shibRealms = ['EGI Proxy IdP'];
+        } else {
+            $shibRealms = ['EUDAT_SSO_IDP', 'UK_ACCESS_FED', 'EGI Proxy IdP'];
+        }
+        $irisRealms = ['IRIS IAM - OIDC'];
+
+        // Add auth types to a list in the correct order
+        $authTypes = array();
+        foreach ($authTokenNames as $authTokenName) {
+            if (strpos($authTokenName, 'Shib') !== false) {
+                $authTypes = array_merge($authTypes, $shibRealms);
+            }
+            if (strpos($authTokenName, 'X509') !== false) {
+                $authTypes = array_merge($authTypes, $x509Realms);
+            }
+            if (strpos($authTokenName, 'IAM') !== false) {
+                $authTypes = array_merge($authTypes, $irisRealms);
+            }
+        }
+        return $authTypes;
     }
 
     /**
