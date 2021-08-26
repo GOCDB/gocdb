@@ -262,7 +262,7 @@ class User extends AbstractEntityService{
         $this->editUserAuthorization($user, $currentUser);
 
         // validate the input fields for the user
-        $this->validateUser($newValues);
+        $this->validate($newValues, 'user');
 
         //Explicity demarcate our tx boundary
         $this->em->getConnection()->beginTransaction();
@@ -320,12 +320,12 @@ class User extends AbstractEntityService{
      *                   validated. The \Exception message will contain a human
      *                   readable description of which field failed validation.
      * @return null */
-    private function validateUser($userData) {
+    private function validate($userData, $type) {
         require_once __DIR__ .'/Validate.php';
         $serv = new \org\gocdb\services\Validate();
         foreach($userData as $field => $value) {
-            $valid = $serv->validate('user', $field, $value);
-            if(!$valid) {
+            $valid = $serv->validate($type, $field, $value);
+            if (!$valid) {
                 $error = "$field contains an invalid value: $value";
                 throw new \Exception($error);
             }
@@ -351,13 +351,7 @@ class User extends AbstractEntityService{
      */
     public function register($userValues, $userIdentifierValues) {
         // validate the input fields for the user
-        $this->validateUser($values);
-
-        // Check the DN isn't already registered
-        $user = $this->getUserByPrinciple($values['CERTIFICATE_DN']);
-        if(!is_null($user)) {
-            throw new \Exception("DN is already registered in GOCDB");
-        }
+        $this->validate($userValues, 'user');
 
         //Explicity demarcate our tx boundary
         $this->em->getConnection()->beginTransaction();
@@ -523,7 +517,7 @@ class User extends AbstractEntityService{
         $keyName = trim($identifierArr[0]);
         $keyValue = trim($identifierArr[1]);
 
-        // $this->addUserIdentifierValidation();
+        $this->addUserIdentifierValidation($keyName, $keyValue);
 
         /* Find out if an identifier with the provided key already exists for this user
         * If it does, we will throw an exception
@@ -612,6 +606,197 @@ class User extends AbstractEntityService{
      */
     private function setDefaultCertDn(\User $user) {
         $user->setCertificateDn($user->getId());
+    }
+
+    /**
+     * Validation when adding a user identifier
+     * @param string $keyName
+     * @param string $keyValue
+     * @throws \Exception
+     */
+    protected function addUserIdentifierValidation($keyName, $keyValue) {
+        // Validate against schema
+        $validateArray['NAME'] = $keyName;
+        $validateArray['VALUE'] = $keyValue;
+        $this->validate($validateArray, 'useridentifier');
+
+        // Check the ID string does not already exist
+        $this->valdidateUniqueIdString($keyValue);
+
+        // Check auth type is valid
+        $this->valdidateAuthType($keyName);
+    }
+
+    /**
+     * Edit a user's identifier.
+     * @param \User $user user that owns the identifier
+     * @param \UserIdentifier $identifier identifier being edited
+     * @param array $newIdentifierArr new key and/or value for the identifier
+     * @param \User $currentUser user editing the identifier
+     * @throws \Exception
+     */
+    public function editUserIdentifier(\User $user, \UserIdentifier $identifier, array $newIdentifierArr, \User $currentUser) {
+        // Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
+
+        // Check to see whether the current user can edit this user
+        $this->editUserAuthorization($user, $currentUser);
+
+        // Make the change
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->editUserIdentifierLogic($user, $identifier, $newIdentifierArr);
+            $this->em->flush ();
+            $this->em->getConnection ()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection ()->rollback();
+            $this->em->close ();
+            throw $e;
+        }
+    }
+
+    /**
+     * Logic to edit a user's identifier, without the user validation.
+     * Validation of the edited identifier values is performed by a seperate function.
+     * @param \User $user user that owns the identifier
+     * @param \UserIdentifier $identifier identifier being edited
+     * @param array $newIdentifierArr new key and/or value for the identifier
+     * @throws \Exception
+     */
+    protected function editUserIdentifierLogic(\User $user, \UserIdentifier $identifier, array $newIdentifierArr) {
+
+        // Trim off trailing and leading whitespace
+        $keyName = trim($newIdentifierArr[0]);
+        $keyValue = trim($newIdentifierArr[1]);
+
+        // Validate new identifier
+        $this->editUserIdentifierValidation($user, $identifier, $keyName, $keyValue);
+
+        // Set the user identifier values
+        $identifier->setKeyName($keyName);
+        $identifier->setKeyValue($keyValue);
+        $this->em->merge($identifier);
+    }
+
+    /**
+     * Validation when editing a user's identifier
+     * @param \User $user
+     * @param \UserIdentifier $identifier
+     * @param string $keyName
+     * @param string $keyValue
+     * @throws \Exception
+     */
+    protected function editUserIdentifierValidation(\User $user, \UserIdentifier $identifier, $keyName, $keyValue) {
+
+        // Validate new values against schema
+        $validateArray['NAME'] = $keyName;
+        $validateArray['VALUE'] = $keyValue;
+        $this->validate($validateArray, 'useridentifier');
+
+        // Check that the identifier is owned by the user
+        if ($identifier->getParentUser() !== $user) {
+            $id = $identifier->getId();
+            throw new \Exception("Identifier {$id} does not belong to the specified user");
+        }
+
+        // Check the identifier has changed
+        if ($keyName === $identifier->getKeyName() && $keyValue === $identifier->getKeyValue()) {
+            throw new \Exception("The specified user identifier is the same as the current user identifier");
+        }
+
+        // Check the ID string is unique if it is being changed
+        if ($keyValue !== $identifier->getKeyValue()) {
+            $this->valdidateUniqueIdString($keyValue);
+        }
+
+        // Check auth type is valid
+        $this->valdidateAuthType($keyName);
+
+        // If the identifiers key has changed, check there isn't an existing identifier with that key
+        if ($keyName !== $identifier->getKeyName()) {
+            $existingIdentifiers = $user->getUserIdentifiers();
+            foreach ($existingIdentifiers as $existingIdentifier) {
+                if ($existingIdentifier->getKeyName() === $keyName) {
+                    throw new \Exception("An identifier with that name already exists for this object");
+                }
+            }
+        }
+    }
+
+    /**
+     * Validate authentication type based on known list.
+     * @param string $authType
+     * @throws \Exception
+     */
+    protected function valdidateAuthType($authType) {
+        if (!in_array($authType, $this->getAuthTypes(false))) {
+            throw new \Exception("The authentication type entered is invalid");
+        }
+    }
+
+    /**
+     * Validate ID string is unique.
+     * Checks both user identifiers and certificateDns
+     * @param string $idString
+     * @throws \Exception
+     */
+    protected function valdidateUniqueIdString($idString) {
+        $oldUser = $this->getUserByCertificateDn($idString);
+        $newUser = $this->getUserByPrinciple($idString);
+        if (!is_null($oldUser) || !is_null($newUser)) {
+            throw new \Exception("ID string is already registered in GOCDB");
+        }
+    }
+
+    /**
+     * Delete a user identifier
+     * Validates the user has permission, then calls the required logic
+     * @param \User $user user having the identifier deleted
+     * @param \UserIdentifier $identifier identifier being deleted
+     * @param \User $currentUser user deleting the identifier
+     */
+    public function deleteUserIdentifier(\User $user, \UserIdentifier $identifier, \User $currentUser) {
+        //Check the portal is not in read only mode, throws exception if it is
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        // Check to see whether the current user can edit this user
+        $this->editUserAuthorization($user, $currentUser);
+
+        // Make the change
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->deleteUserIdentifierLogic($user, $identifier);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
+    /**
+     * Logic to delete a user's identifier
+     * Before deletion a check is done to confirm the identifier is from the parent user
+     * specified by the request, and an exception is thrown if this is not the case
+     * @param \User $user user having the identifier deleted
+     * @param \UserIdentifier $identifier identifier being deleted
+     */
+    protected function deleteUserIdentifierLogic(\User $user, \UserIdentifier $identifier) {
+        // Check that the identifier's parent user is the same as the one given
+        if ($identifier->getParentUser() !== $user) {
+            $id = $identifier->getId();
+            throw new \Exception("Identifier {$id} does not belong to the specified user");
+        }
+        // Check the user has more than one identifier
+        if (count($user->getUserIdentifiers()) < 2) {
+            throw new \Exception("Users must have at least one identity string.");
+        }
+        // User is the owning side so remove elements from the user
+        $user->getUserIdentifiers()->removeElement($identifier);
+
+        // Once relationship is removed, delete the actual element
+        $this->em->remove($identifier);
     }
 
     /**
