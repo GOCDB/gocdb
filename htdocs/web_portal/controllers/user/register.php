@@ -44,12 +44,12 @@ function register() {
  */
 function draw() {
     $serv = \Factory::getUserService();
-    $dn = Get_User_Principle();
-    if(empty($dn)){
+    $idString = Get_User_Principle();
+    if (empty($idString)) {
         show_view('error.php', "Could not authenticate user - null user principle");
     die();
     }
-    $user = $serv->getUserByPrinciple($dn);
+    $user = $serv->getUserByPrinciple($idString);
 
     if(!is_null($user)) {
     show_view('error.php', "Only unregistered users can register");
@@ -70,29 +70,30 @@ function draw() {
     $params['given_name'] = $_SERVER['OIDC_CLAIM_given_name'];
     $params['family_name'] = $_SERVER['OIDC_CLAIM_family_name'];
     $params['email'] = $userEmail;
-    $params['dn'] = $dn;
+    $params['idString'] = $idString;
     show_view('user/register.php', $params);
 }
 
 function submit() {
-    $values = getUserDataFromWeb();
+    $userValues = getUserDataFromWeb();
 
-    $dn = Get_User_Principle();
-    if(empty($dn)){
+    $idString = Get_User_Principle();
+    if (empty($idString)) {
         show_view('error.php', "Could not authenticate user - null user principle");
     die();
     }
-    $values['CERTIFICATE_DN'] = $dn;
+    $userIdentifierValues['VALUE'] = $idString;
 
-    // todo: on registering, we also want to persist the authAttributes, this
-    // will require new UserProperty records owned by the User.php entity.
     /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
-    //$authToken = Get_User_AuthToken();
-    //$params['authAttributes'] = $authToken->getDetails();
+    $authToken = Get_User_AuthToken();
+    $params['authAttributes'] = $authToken->getDetails();
+    $authType = $params['authAttributes']['AuthenticationRealm'][0];
+
+    $userIdentifierValues['NAME'] = $authType;
 
     $serv = \Factory::getUserService();
     try {
-        $user = $serv->register($values);
+        $user = $serv->register($userValues, $userIdentifierValues);
         $params = array('user' => $user);
         show_view('user/registered.php', $params);
     } catch(Exception $e) {
