@@ -553,6 +553,61 @@ class User extends AbstractEntityService{
     }
 
     /**
+     * Get one of the user's unique ID strings, favouring certain types
+     * If user does not have user identifiers, returns certificateDn
+     * @param \User $user User whose ID string we want
+     * @return string
+     */
+    public function getDefaultIdString($user) {
+
+        $authTypes = $this->getAuthTypes();
+        $idString = null;
+
+        // For each ordered auth type, check if an identifier matches
+        // Gets certifcateDn if no user identifiers and X.509 listed
+        foreach ($authTypes as $authType) {
+            $idString = $this->getIdStringByAuthType($user, $authType);
+            if ($idString !== null) {
+                break;
+            }
+        }
+
+        // If user only has unlisted identifiers, return first identifier
+        if ($idString === null) {
+            $idString = $user->getUserIdentifiers()[0]->getKeyValue();
+        }
+
+        return $idString;
+    }
+
+    /**
+     * Get a user's ID string of specified authentication type
+     * If user does not have user identifiers, returns certificateDn for X.509
+     * @param \User $user User whose ID string we want
+     * @param $authType authentication type of ID string we want
+     * @return string
+     */
+    public function getIdStringByAuthType($user, $authType) {
+
+        $identifiers = $user->getUserIdentifiers();
+        $idString = null;
+
+        // For each auth type, check if an identifier matches
+        foreach ($identifiers as $identifier) {
+            if ($identifier->getKeyName() === $authType) {
+                $idString = $identifier->getKeyValue();
+            }
+        }
+
+        // If no user identifiers and want X.509, return certificateDn
+        if (count($identifiers) === 0 && $authType === 'X.509') {
+            $idString = $user->getCertificateDn();
+        }
+
+        return $idString;
+    }
+
+    /**
      * Adds an identifier to a user.
      * @param \User $user user having identifier added
      * @param array $identifierArr identifier name and value
