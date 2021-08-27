@@ -47,7 +47,7 @@ class User {
     /** @Column(type="string", nullable=true)  */
     protected $workingHoursEnd = null;
 
-    /** @Column(type="string", unique=true)  */
+    /** @Column(type="string", nullable=true)  */
     protected $certificateDn = null;
 
     /** @Column(type="string", nullable=true)  */
@@ -158,7 +158,7 @@ class User {
 
     /**
      * Get the user's unique ID string, typically an x509 DN string.
-     * @todo This needs to be renamed to getAccountID
+     * This should return null once the user has user identifiers.
      * @return string
      */
     public function getCertificateDn() {
@@ -274,8 +274,9 @@ class User {
     }
 
     /**
-     * Set the user's unique account ID, typcially and x509 DN string. Required.
-     * @todo Needs renaming to setAccountID
+     * Set the user's unique ID string, typically an x509 DN string.
+     * This should only be used to set the value to null
+     * when user identifiers are first added to an old user.
      * @param string $certificateDn
      */
     public function setCertificateDn($certificateDn) {
