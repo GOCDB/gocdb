@@ -42,7 +42,6 @@ class NotificationService extends AbstractEntityService {
 
         // Now for each role get the user
         foreach ( $roles as $role ) {
-            $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $role->getUser())->getGrantingRoles();
             if ($entity instanceof \Site) {
                 // If the site has no site adminstrators to approve the role request then send an email to the parent NGI users to approve the request
                 if ($roles == null) {
@@ -61,6 +60,7 @@ class NotificationService extends AbstractEntityService {
                 }
             }
 
+            $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $role->getUser())->getGrantingRoles();
             // Get the user id and add it to the array if they have an enabling role
             if (count ( $enablingRoles ) > 0) {
                 $authorising_user_ids [] = $role->getUser ()->getId ();
