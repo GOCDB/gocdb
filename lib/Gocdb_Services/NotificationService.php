@@ -54,9 +54,11 @@ class NotificationService extends AbstractEntityService {
         // we will email the parent entity for approval.
         if (count($authorising_user_ids) == 0) {
             if ($entity instanceof \Site) {
+                // Sites can only have a single parent NGI.
                 $this->roleRequest ( $role_requested, $requesting_user, $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
             } else if ($entity instanceof \NGI) {
                 /*
+                 * NGIs can belong to multiple Projects.
                  * It is important to remove duplicate projects here otherwise we will spam the same addresses as we recursively call this method.
                  */
                 $projects = $entity->getProjects (); // set project with the NGI's parent project and later recurse with this
