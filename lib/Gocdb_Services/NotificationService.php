@@ -33,7 +33,9 @@ class NotificationService extends AbstractEntityService {
         $authorising_user_ids = null;
         $projectIds = null;
 
-        // Get the roles from the entity
+        // Get the roles from the entity, if any.
+        $roles = [];
+
         foreach ( $entity->getRoles () as $role ) {
             $roles [] = $role;
         }
