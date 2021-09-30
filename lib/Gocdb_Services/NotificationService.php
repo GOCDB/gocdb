@@ -28,9 +28,9 @@ class NotificationService extends AbstractEntityService {
      *
      * @param Site/ServiceGroup/NGI/Project $entity
      */
-    public function roleRequest ($role_requested, $requesting_user, $entity) {
+    public function roleRequest ($roleRequested, $requestingUser, $entity) {
         $project = null;
-        $authorising_user_ids = [];
+        $authorisingUserIds = [];
         $projectIds = null;
 
         // For each role the entity has.
@@ -46,16 +46,16 @@ class NotificationService extends AbstractEntityService {
             // If they can, add their user id to the list of authorising user
             // ids.
             if (count($enablingRoles) > 0) {
-                $authorising_user_ids [] = $user->getId();
+                $authorisingUserIds [] = $user->getId();
             }
         }
 
         // If there are no users that are able to grant the role over this entity,
         // we will email the parent entity for approval.
-        if (count($authorising_user_ids) == 0) {
+        if (count($authorisingUserIds) == 0) {
             if ($entity instanceof \Site) {
                 // Sites can only have a single parent NGI.
-                $this->roleRequest ( $role_requested, $requesting_user, $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
+                $this->roleRequest ( $roleRequested, $requestingUser, $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
             } else if ($entity instanceof \NGI) {
                 /*
                  * NGIs can belong to multiple Projects.
@@ -73,13 +73,13 @@ class NotificationService extends AbstractEntityService {
             // If the entity has valid users who can approve the role then send the email notification.
 
             // Remove duplicate user ids from array
-            $authorising_user_ids = array_unique ( $authorising_user_ids );
+            $authorisingUserIds = array_unique ( $authorisingUserIds );
 
             // Send email to all users who can approve this role request
-            if (!empty($authorising_user_ids)) {
-                foreach ( $authorising_user_ids as $user_id ) {
-                    $approving_user = \Factory::getUserService()->getUser($user_id);
-                    $this->send_email($role_requested, $requesting_user, $entity->getName(), $approving_user);
+            if (!empty($authorisingUserIds)) {
+                foreach ( $authorisingUserIds as $userId ) {
+                    $approvingUser = \Factory::getUserService()->getUser($userId);
+                    $this->sendEmail($roleRequested, $requestingUser, $entity->getName(), $approvingUser);
                 }
             }
         }
@@ -92,7 +92,7 @@ class NotificationService extends AbstractEntityService {
         if ($projectIds != null) {
             foreach ( $projectIds as $pid ) {
                 $project = \Factory::getOwnedEntityService ()->getOwnedEntityById ( $pid );
-                $this->roleRequest ( $role_requested, $requesting_user, $project );
+                $this->roleRequest ( $roleRequested, $requestingUser, $project );
 
             }
         }
@@ -102,7 +102,7 @@ class NotificationService extends AbstractEntityService {
     /**
     * Return the PortalURL to enable an accurate link to the role approval view to be created
     */
-    private function get_webPortalURL() {
+    private function getWebPortalURL() {
         return \Factory::getConfigService()->GetPortalURL();
     }
 
@@ -110,29 +110,29 @@ class NotificationService extends AbstractEntityService {
     /**
     * Return whether send_email is enabled in the config file
     */
-    private function get_config_send_email() {
+    private function getConfigSendEmail() {
         return \Factory::getConfigService()->getSendEmails();
     }
 
 
-    private function mock_mail($to, $subject, $message, $additional_headers = "", $additional_parameters = "") {
+    private function mockMail($to, $subject, $message, $additionalHeaders = "", $additionalParameters = "") {
         echo "<!--\n";
         echo "Sending mail disabled, but would have sent:\n";
-        echo "$additional_headers\n";
+        echo "$additionalHeaders\n";
         echo "To: $to\n";
         echo "Subject: $subject\n";
         echo "\n$message\n";
-        echo "\nAdditional Parameters: $additional_parameters\n";
+        echo "\nAdditional Parameters: $additionalParameters\n";
         echo "-->\n";
         return True;
     }
 
 
-    private function send_email($role_requested, $requesting_user, $entity_name, $approving_user) {
+    private function sendEmail($roleRequested, $requestingUser, $entityName, $approvingUser) {
         $subject = sprintf(
             'GocDB: A Role request from %1$s over %2$s requires your attention',
-            $requesting_user->getForename(),
-            $role_requested->getOwnedEntity()->getName()
+            $requestingUser->getForename(),
+            $roleRequested->getOwnedEntity()->getName()
         );
 
         $body = sprintf(
@@ -145,20 +145,20 @@ class NotificationService extends AbstractEntityService {
                 '',
                 'Note: This role could already have been approved or denied by another GocDB User',
             )),
-            $approving_user->getForename(),
-            $requesting_user->getForename(),
-            $role_requested->getRoleType()->getName(),
-            $role_requested->getOwnedEntity()->getName(),
-            $this->get_webPortalURL()
+            $approvingUser->getForename(),
+            $requestingUser->getForename(),
+            $roleRequested->getRoleType()->getName(),
+            $roleRequested->getOwnedEntity()->getName(),
+            $this->getWebPortalURL()
         );
 
         $email = $approving_user->getEmail();
         $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
 
-        if ($this->get_config_send_email()) {
+        if ($this->getConfigSendEmail()) {
             mail($email, $subject, $body, $headers);
         } else {
-            $this->mock_mail($email, $subject, $body, $headers);
+            $this->mockMail($email, $subject, $body, $headers);
         }
     }
 }
