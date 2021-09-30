@@ -26,7 +26,8 @@ class NotificationService extends AbstractEntityService {
      * send an email to those users to approve. It does this by passing the parent entity back into this method recursively.
      *
      *
-     * @param Site/ServiceGroup/NGI/Project $entity
+     * @param OwnedEntity $entity An instance of Site,Service,NGI,Project or other OwnedEntity.
+     * @return void
      */
     public function roleRequest ($roleRequested, $requestingUser, $entity) {
         $project = null;
