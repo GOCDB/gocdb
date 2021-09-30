@@ -153,7 +153,7 @@ class NotificationService extends AbstractEntityService {
         $subject = sprintf(
             'GocDB: A Role request from %1$s over %2$s requires your attention',
             $requesting_user->getForename(),
-            $entity_name
+            $role_requested->getOwnedEntity()->getName()
         );
 
         $body = sprintf(
