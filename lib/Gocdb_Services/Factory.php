@@ -48,6 +48,7 @@ class Factory {
     private static $OwnedEntityService = null;
     private static $exService = null;
     private static $notificationService = null;
+    private static $emailService = null;
 
     public static $properties = array();
     //private static $properties = null;
@@ -384,6 +385,19 @@ class Factory {
             self::$notificationService->setEntityManager(self::getEntityManager());
         }
         return self::$notificationService;
+    }
+
+    /**
+     * Singleton EmailService
+     * @return org\gocdb\services\EmailService
+     */
+    public static function getEmailService() {
+        if (self::$emailService == null) {
+            require_once __DIR__ . '/EmailService.php';
+            self::$emailService = new org\gocdb\services\EmailService();
+            self::$emailService->setEntityManager(self::getEntityManager());
+        }
+        return self::$emailService;
     }
 }
 

@@ -106,28 +106,6 @@ class NotificationService extends AbstractEntityService {
         return \Factory::getConfigService()->GetPortalURL();
     }
 
-
-    /**
-    * Return whether send_email is enabled in the config file
-    */
-    private function getConfigSendEmail() {
-        return \Factory::getConfigService()->getSendEmails();
-    }
-
-
-    private function mockMail($to, $subject, $message, $additionalHeaders = "", $additionalParameters = "") {
-        echo "<!--\n";
-        echo "Sending mail disabled, but would have sent:\n";
-        echo "$additionalHeaders\n";
-        echo "To: $to\n";
-        echo "Subject: $subject\n";
-        echo "\n$message\n";
-        echo "\nAdditional Parameters: $additionalParameters\n";
-        echo "-->\n";
-        return True;
-    }
-
-
     private function sendEmail($roleRequested, $requestingUser, $entityName, $approvingUser) {
         $subject = sprintf(
             'GocDB: A Role request from %1$s over %2$s requires your attention',
@@ -152,13 +130,9 @@ class NotificationService extends AbstractEntityService {
             $this->getWebPortalURL()
         );
 
-        $email = $approving_user->getEmail();
+        $emailAddress = $approvingUser->getEmail();
         $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
 
-        if ($this->getConfigSendEmail()) {
-            mail($email, $subject, $body, $headers);
-        } else {
-            $this->mockMail($email, $subject, $body, $headers);
-        }
+        \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
     }
 }
