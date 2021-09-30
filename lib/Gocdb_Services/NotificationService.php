@@ -109,7 +109,7 @@ class NotificationService extends AbstractEntityService {
 
     private function sendEmail($roleRequested, $requestingUser, $entityName, $approvingUser) {
         $subject = sprintf(
-            'GocDB: A Role request from %1$s over %2$s requires your attention',
+            'GOCDB: A Role request from %1$s over %2$s requires your attention',
             $requestingUser->getForename(),
             $roleRequested->getOwnedEntity()->getName()
         );
@@ -122,7 +122,7 @@ class NotificationService extends AbstractEntityService {
                 'You can approve or deny the request here:',
                 '    %5$s/index.php?Page_Type=Role_Requests',
                 '',
-                'Note: This role could already have been approved or denied by another GocDB User',
+                'Note: This role could already have been approved or denied by another GOCDB User',
             )),
             $approvingUser->getForename(),
             $requestingUser->getForename(),
