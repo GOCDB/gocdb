@@ -30,29 +30,29 @@ class NotificationService extends AbstractEntityService {
      */
     public function roleRequest ($role_requested, $requesting_user, $entity) {
         $project = null;
-        $authorising_user_ids = null;
+        $authorising_user_ids = [];
         $projectIds = null;
 
-        // Get the roles from the entity, if any.
-        $roles = [];
+        // For each role the entity has.
+        foreach ($entity->getRoles() as $role) {
+            // Get the corresponding user.
+            $user = $role->getUser();
 
-        foreach ( $entity->getRoles () as $role ) {
-            $roles [] = $role;
-        }
+            // Determine if that user has roles that can approve role requests,
+            // this role may not be the same as the one currently in the $role
+            // variable.
+            $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $user)->getGrantingRoles();
 
-        // Now for each role get the user
-        foreach ( $roles as $role ) {
-            $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $role->getUser())->getGrantingRoles();
-            // Get the user id and add it to the array if they have an enabling role
-            if (count ( $enablingRoles ) > 0) {
-                $authorising_user_ids [] = $role->getUser ()->getId ();
+            // If they can, add their user id to the list of authorising user
+            // ids.
+            if (count($enablingRoles) > 0) {
+                $authorising_user_ids [] = $user->getId();
             }
         }
 
-        /*
-         * No users are able to grant the role or there are no users over this entity. In this case we will email the parent entity for approval
-         */
-        if ($authorising_user_ids == null || count($authorising_user_ids) == 0) {
+        // If there are no users that are able to grant the role over this entity,
+        // we will email the parent entity for approval.
+        if (count($authorising_user_ids) == 0) {
             if ($entity instanceof \Site) {
                 $this->roleRequest ( $role_requested, $requesting_user, $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
             } else if ($entity instanceof \NGI) {
