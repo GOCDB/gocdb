@@ -42,24 +42,6 @@ class NotificationService extends AbstractEntityService {
 
         // Now for each role get the user
         foreach ( $roles as $role ) {
-            if ($entity instanceof \Site) {
-                // If the site has no site adminstrators to approve the role request then send an email to the parent NGI users to approve the request
-                if ($roles == null) {
-                    $this->roleRequest ( $role_requested, $requesting_user, $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
-                }
-            } else if ($entity instanceof \NGI) {
-                $projects = $entity->getProjects (); // set project with the NGI's parent project and later recurse with this
-
-                // Only send emails to Project users if there are no users with grant_roles over the NGI
-                if ($roles == null) {
-                    // Get the ID's of each project so we can remove duplicates
-                    foreach ( $projects as $project ) {
-                        $projectIds [] = $project->getId ();
-                    }
-                    $projectIds = array_unique ( $projectIds );
-                }
-            }
-
             $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $role->getUser())->getGrantingRoles();
             // Get the user id and add it to the array if they have an enabling role
             if (count ( $enablingRoles ) > 0) {
