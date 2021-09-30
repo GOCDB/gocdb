@@ -108,11 +108,8 @@ class NotificationService extends AbstractEntityService {
         if ($projectIds != null) {
             foreach ( $projectIds as $pid ) {
                 $project = \Factory::getOwnedEntityService ()->getOwnedEntityById ( $pid );
-                if(sendMail){
-                    $this->roleRequest ( $role_requested, $requesting_user, $project );
-                } else {
-                    echo $project->getName () . "<br>";
-                }
+                $this->roleRequest ( $role_requested, $requesting_user, $project );
+
             }
         }
     }
