@@ -109,23 +109,26 @@ class NotificationService extends AbstractEntityService {
 
     private function sendEmail($roleRequested, $requestingUser, $entityName, $approvingUser) {
         $subject = sprintf(
-            'GOCDB: A Role request from %1$s over %2$s requires your attention',
+            'GOCDB: A Role request from %1$s %2$s over %3$s requires your attention',
             $requestingUser->getForename(),
+            $requestingUser->getSurname(),
             $roleRequested->getOwnedEntity()->getName()
         );
 
         $body = sprintf(
             implode("\n", array(
                 'Dear %1$s,',
-                '%2$s requested %3$s on %4$s which requires your attention.',
+                '',
+                '%2$s %3$s requested the "%4$s" role over %5$s which requires your attention.',
                 '',
                 'You can approve or deny the request here:',
-                '    %5$s/index.php?Page_Type=Role_Requests',
+                '    %6$s/index.php?Page_Type=Role_Requests',
                 '',
                 'Note: This role could already have been approved or denied by another GOCDB User',
             )),
             $approvingUser->getForename(),
             $requestingUser->getForename(),
+            $requestingUser->getSurname(),
             $roleRequested->getRoleType()->getName(),
             $roleRequested->getOwnedEntity()->getName(),
             $this->getWebPortalURL()
