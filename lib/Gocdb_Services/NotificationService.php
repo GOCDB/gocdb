@@ -77,11 +77,9 @@ class NotificationService extends AbstractEntityService {
             $authorisingUserIds = array_unique ( $authorisingUserIds );
 
             // Send email to all users who can approve this role request
-            if (!empty($authorisingUserIds)) {
-                foreach ( $authorisingUserIds as $userId ) {
-                    $approvingUser = \Factory::getUserService()->getUser($userId);
-                    $this->sendEmail($roleRequested, $requestingUser, $entity->getName(), $approvingUser);
-                }
+           foreach ( $authorisingUserIds as $userId ) {
+                $approvingUser = \Factory::getUserService()->getUser($userId);
+                $this->sendEmail($roleRequested, $requestingUser, $entity->getName(), $approvingUser);
             }
         }
 
