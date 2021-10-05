@@ -6,6 +6,7 @@ namespace org\gocdb\services;
  */
 require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/Factory.php';
+require_once __DIR__ . '/User.php';
 
 /**
  * A service layer to aid the sending of notification emails
@@ -25,65 +26,40 @@ class NotificationService extends AbstractEntityService {
      * send an email to those users to approve. It does this by passing the parent entity back into this method recursively.
      *
      *
-     * @param Site/ServiceGroup/NGI/Project $entity
+     * @param OwnedEntity $entity An instance of Site,Service,NGI,Project or other OwnedEntity.
+     * @return void
      */
-    public function roleRequest($entity) {
+    public function roleRequest ($roleRequested, $requestingUser, $entity) {
         $project = null;
-        $emails = null;
+        $authorisingUserIds = [];
         $projectIds = null;
 
-        // Get the roles from the entity
-        foreach ( $entity->getRoles () as $role ) {
-            $roles [] = $role;
-        }
+        // For each role the entity has.
+        foreach ($entity->getRoles() as $role) {
+            // Get the corresponding user.
+            $user = $role->getUser();
 
-        // Now for each role get the user
-        foreach ( $roles as $role ) {
-            $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $role->getUser())->getGrantingRoles();
-            if ($entity instanceof \Site) {
-                //$enablingRoles = \Factory::getSiteService ()->authorize Action ( \Action::GRANT_ROLE, $entity, $role->getUser () );
+            // Determine if that user has roles that can approve role requests,
+            // this role may not be the same as the one currently in the $role
+            // variable.
+            $enablingRoles = \Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::GRANT_ROLE, $entity, $user)->getGrantingRoles();
 
-                // If the site has no site adminstrators to approve the role request then send an email to the parent NGI users to approve the request
-                if ($roles == null) {
-                    $this->roleRequest ( $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
-                }
-            } else if ($entity instanceof \ServiceGroup) {
-                //$enablingRoles = \Factory::getServiceGroupService ()->authorize Action ( \Action::GRANT_ROLE, $entity, $role->getUser () );
-            } else if ($entity instanceof \Project) {
-                //$enablingRoles = \Factory::getProjectService ()->authorize Action ( \Action::GRANT_ROLE, $entity, $role->getUser () );
-            } else if ($entity instanceof \NGI) {
-                //$enablingRoles = \Factory::getNgiService ()->authorize Action ( \Action::GRANT_ROLE, $entity, $role->getUser () );
-                $projects = $entity->getProjects (); // set project with the NGI's parent project and later recurse with this
-
-                // Only send emails to Project users if there are no users with grant_roles over the NGI
-                if ($roles == null) {
-                    // Get the ID's of each project so we can remove duplicates
-                    foreach ( $projects as $project ) {
-                        $projectIds [] = $project->getId ();
-                    }
-                    $projectIds = array_unique ( $projectIds );
-                }
-            }
-
-            // remove admin from enabling roles
-            /*$position = array_search ( 'GOCDB_ADMIN', $enablingRoles );
-            if ($position != null) {
-                unset ( $enablingRoles [$position] );
-            }*/
-            // Get the users email and add it to the array if they have an enabling role
-            if (count ( $enablingRoles ) > 0) {
-                $emails [] = $role->getUser ()->getEmail ();
+            // If they can, add their user id to the list of authorising user
+            // ids.
+            if (count($enablingRoles) > 0) {
+                $authorisingUserIds [] = $user->getId();
             }
         }
 
-        /*
-         * No users are able to grant the role or there are no users over this entity. In this case we will email the parent entity for approval
-         */
-        if ($emails == null || count($emails) == 0) {
+        // If there are no users that are able to grant the role over this entity,
+        // we will email the parent entity for approval.
+        if (count($authorisingUserIds) == 0) {
             if ($entity instanceof \Site) {
-                $this->roleRequest ( $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
+                // Sites can only have a single parent NGI.
+                $this->roleRequest ( $roleRequested, $requestingUser, $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
             } else if ($entity instanceof \NGI) {
                 /*
+                 * NGIs can belong to multiple Projects.
                  * It is important to remove duplicate projects here otherwise we will spam the same addresses as we recursively call this method.
                  */
                 $projects = $entity->getProjects (); // set project with the NGI's parent project and later recurse with this
@@ -97,34 +73,13 @@ class NotificationService extends AbstractEntityService {
         } else {
             // If the entity has valid users who can approve the role then send the email notification.
 
-            // Remove duplicate emails from array
-            $emails = array_unique ( $emails );
+            // Remove duplicate user ids from array
+            $authorisingUserIds = array_unique ( $authorisingUserIds );
 
-            // Get the PortalURL to create an accurate link to the role approval view
-            $localInfoLocation = __DIR__ . "/../../config/local_info.xml";
-            $localInfoXML = simplexml_load_file ( $localInfoLocation );
-            $webPortalURL = $localInfoXML->local_info->web_portal_url;
-
-            // Email content
-            $headers = "From: no-reply@goc.egi.eu";
-            $subject = "GocDB: A Role request requires attention";
-
-            $body = "Dear GOCDB User,\n\n" . "A user has requested a role that requires attention.\n\n" .
-                    "You can approve or deny this request here:\n\n" . $webPortalURL . "/index.php?Page_Type=Role_Requests\n\n" .
-                    "Note: This role may already have been approved or denied by another GocDB User";
-
-            $sendMail = TRUE;
             // Send email to all users who can approve this role request
-            if ($emails != null) {
-                foreach ( $emails as $email ) {
-                    if($sendMail){
-                       mail($email, $subject, $body, $headers);
-                    } else {
-                       echo "Email: " . $email . "<br>";
-                       echo "Subject: " . $subject . "<br>";
-                       echo "Body: " . $body . "<br>";
-                    }
-                }
+           foreach ( $authorisingUserIds as $userId ) {
+                $approvingUser = \Factory::getUserService()->getUser($userId);
+                $this->sendEmail($roleRequested, $requestingUser, $entity->getName(), $approvingUser);
             }
         }
 
@@ -136,12 +91,50 @@ class NotificationService extends AbstractEntityService {
         if ($projectIds != null) {
             foreach ( $projectIds as $pid ) {
                 $project = \Factory::getOwnedEntityService ()->getOwnedEntityById ( $pid );
-                if(sendMail){
-                    $this->roleRequest ( $project );
-                } else {
-                    echo $project->getName () . "<br>";
-                }
+                $this->roleRequest ( $roleRequested, $requestingUser, $project );
+
             }
         }
+    }
+
+
+    /**
+    * Return the PortalURL to enable an accurate link to the role approval view to be created
+    */
+    private function getWebPortalURL() {
+        return \Factory::getConfigService()->GetPortalURL();
+    }
+
+    private function sendEmail($roleRequested, $requestingUser, $entityName, $approvingUser) {
+        $subject = sprintf(
+            'GOCDB: A Role request from %1$s %2$s over %3$s requires your attention',
+            $requestingUser->getForename(),
+            $requestingUser->getSurname(),
+            $roleRequested->getOwnedEntity()->getName()
+        );
+
+        $body = sprintf(
+            implode("\n", array(
+                'Dear %1$s,',
+                '',
+                '%2$s %3$s requested the "%4$s" role over %5$s which requires your attention.',
+                '',
+                'You can approve or deny the request here:',
+                '    %6$s/index.php?Page_Type=Role_Requests',
+                '',
+                'Note: This role could already have been approved or denied by another GOCDB User',
+            )),
+            $approvingUser->getForename(),
+            $requestingUser->getForename(),
+            $requestingUser->getSurname(),
+            $roleRequested->getRoleType()->getName(),
+            $roleRequested->getOwnedEntity()->getName(),
+            $this->getWebPortalURL()
+        );
+
+        $emailAddress = $approvingUser->getEmail();
+        $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
+
+        \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
     }
 }
