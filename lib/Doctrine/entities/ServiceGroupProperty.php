@@ -28,7 +28,7 @@
  *
  * @author James McCarthy
  * @author David Meredith <david.meredith@stfc.ac.uk>
- * @Entity @Table(name="ServiceGroup_Properties", uniqueConstraints={@UniqueConstraint(name="sgroup_keypairs", columns={"parentServiceGroup_id", "keyName"})})
+ * @Entity @Table(name="ServiceGroup_Properties", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"}, uniqueConstraints={@UniqueConstraint(name="sgroup_keypairs", columns={"parentServiceGroup_id", "keyName"})})
  */
 class ServiceGroupProperty {
 

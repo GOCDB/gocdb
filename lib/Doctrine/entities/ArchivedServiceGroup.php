@@ -19,7 +19,7 @@
  *
  * @author George Ryall
  * @author David Meredith <david.meredith@stfc.ac.uk>
- * @Entity @Table(name="ArchivedServiceGroups")
+ * @Entity @Table(name="ArchivedServiceGroups", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class ArchivedServiceGroup {
 

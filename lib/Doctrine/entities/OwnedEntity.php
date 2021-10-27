@@ -26,7 +26,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * @author David Meredith <david.meredithh@stfc.ac.uk>
  * @author John Casson
  *
- * @Entity  @Table(name="OwnedEntities")
+ * @Entity  @Table(name="OwnedEntities", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  * @InheritanceType("JOINED")
  * @DiscriminatorColumn(name="discr", type="string")
  * @DiscriminatorMap({"site" = "Site", "ngi" = "NGI", "project" = "Project",

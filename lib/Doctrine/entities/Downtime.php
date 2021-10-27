@@ -27,7 +27,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @author David Meredith <david.meredithh@stfc.ac.uk>
  * @author John Casson
- * @Entity @Table(name="Downtimes")
+ * @Entity @Table(name="Downtimes", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class Downtime {
 
