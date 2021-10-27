@@ -20,7 +20,7 @@
   *
   * @author George Ryall (github.com/GRyall)
   *
-  * @Entity @Table(name="APIAuthenticationEntities",uniqueConstraints={@UniqueConstraint(name="siteIdentifier", columns={"parentSite_id", "type", "identifier"})})
+  * @Entity @Table(name="APIAuthenticationEntities", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"}, uniqueConstraints={@UniqueConstraint(name="siteIdentifier", columns={"parentSite_id", "type", "identifier"})})
   */
    class APIAuthentication
   {

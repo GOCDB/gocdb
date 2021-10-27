@@ -20,7 +20,7 @@
  * @author John Casson
  * @author David Meredith <david.meredith@stfc.ac.uk>
  *
- * @Entity @Table(name="RoleTypes")
+ * @Entity @Table(name="RoleTypes", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class RoleType {
 

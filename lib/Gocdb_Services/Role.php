@@ -520,6 +520,9 @@ class Role extends AbstractEntityService{
             $roleType = $this->getRoleTypeByName($roleTypeName);
             $r = new \Role($roleType, $user, $entity, $roleStatus);
             $this->em->persist($r);
+            
+            // Ensure roleId has been generated
+            $this->em->flush();
 
             // create a RoleActionRecord after role has been persisted (to get id)
             $rar = \RoleActionRecord::construct($user, $r, \RoleStatus::PENDING);

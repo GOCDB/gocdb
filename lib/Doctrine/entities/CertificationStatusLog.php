@@ -19,7 +19,7 @@
  * Site's certStatusLogs are also cascade deleted.
  *
  * @author David Meredith <david.meredith@stfc.ac.uk>
- * @Entity @Table(name="CertificationStatusLogs")
+ * @Entity @Table(name="CertificationStatusLogs", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class CertificationStatusLog {
 

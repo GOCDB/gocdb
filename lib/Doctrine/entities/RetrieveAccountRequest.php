@@ -22,7 +22,7 @@
  *
  * @author John Casson
  * @author David Meredith <david.meredith@stfc.ac.uk>
- * @Entity @Table(name="RetrieveAccountRequests")
+ * @Entity @Table(name="RetrieveAccountRequests", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class RetrieveAccountRequest {
 

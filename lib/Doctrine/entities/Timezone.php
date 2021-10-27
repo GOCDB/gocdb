@@ -7,7 +7,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  * Entities such as Sites should specify their timezone directly as attributes
  * on the owning entity rather than joining to this entity.
  * @deprecated since version 5.4
- * @Entity @Table(name="Timezones")
+ * @Entity @Table(name="Timezones", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
 class Timezone {
 
