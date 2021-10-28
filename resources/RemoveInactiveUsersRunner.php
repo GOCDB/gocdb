@@ -36,7 +36,7 @@ foreach ($users as $user) {
 
     if ($elapsedMonths > 18){ // Delete user
         echo "Deleting user\n";
-	    deleteUser($user);
+	    deleteUser($user, $em);
     } 
     elseif ($elapsedMonths > 17){ // Warn user
         echo "Requesting user warning email.\n";
@@ -52,8 +52,19 @@ foreach ($users as $user) {
 $em->flush();
 echo "Completed ok: ".date('D, d M Y H:i:s');
     
-function deleteUser($user){
-    echo "User deleted.";
+function deleteUser($user, $em){
+    $em->getConnection()->beginTransaction();
+    try {
+        $em->remove($user);
+        $em->flush();
+        $em->getConnection()->commit();
+        echo "User deleted.\n";
+    } catch (\Exception $e) {
+        $em->getConnection()->rollback();
+        $em->close();
+        echo "User not deleted.\n";
+        throw $e;
+    }
 }
 
 function sendWarningEmail($user){
