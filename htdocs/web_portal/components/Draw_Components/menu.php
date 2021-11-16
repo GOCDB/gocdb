@@ -45,7 +45,10 @@ function xml_to_menu($menu_name, $menus_xml)
     $html .= "<ul class=\"Smaller_Left_Padding Smaller_Top_Margin\">";
     foreach($menus_xml->$menu_name->children() as $key => $value)
     {
-        $html .= add_menu_item($value) . "\n";
+        // Check if display of menu is overridden in the local configuration
+        if (\Factory::getConfigService()->showMenu($key)) {
+            $html .= add_menu_item($value) . "\n";
+        }
     }
     $html .= "</ul>";
     return $html;

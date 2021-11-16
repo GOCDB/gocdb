@@ -35,7 +35,7 @@
         <?php } ?>
 
     <form id="sesToAdd" action="index.php?Page_Type=Add_Service_Group_SEs" method="POST" class="empty" style="margin-top: 1em; float: left;">
-        <input class="input_button leftFloat topMargin2" type="submit" value="Add SEs to Service Group"  />
+        <input class="input_button leftFloat topMargin2" type="submit" value="Add Services to Service Group"  />
         <input type="hidden" name="id" value="<?php echo $params['sg']->getId(); ?>" />
     </form>
     </div>

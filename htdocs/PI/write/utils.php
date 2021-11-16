@@ -1,9 +1,9 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: index.php
+ * File: utils.php
  * Author: George Ryall
- * Description: Entry point for the write programmatic interface
+ * Description: utils for the write programmatic interface
  *
  * License information
  *
@@ -19,17 +19,6 @@
  * limitations under the License.
  *
 /*====================================================== */
-
-/*
-* http_response_code() is implemented in php from php 5.4.0 onwards, when we
-* upgrade, this block (and the associated file) can be deleted (having checked that  http_response_code
-* implments all the status codes that we may wish to use).
-* See http://stackoverflow.com/questions/3258634/php-how-to-send-http-response-code
-* and http://php.net/http_response_code#107261
-*/
-if (!function_exists('http_response_code')) {
-    require_once __DIR__ . '/responseCode.php';
-}
 
 /**
  * following the processign of a write-api request, this function returns any
@@ -53,4 +42,20 @@ function returnJsonWriteAPIResult ($httpResponseCode, $object) {
     if (!is_null($object)) {
         echo json_encode($object);
     }
+}
+
+/**
+ * Get the authentication information for the user making an API requests
+ *
+ * @return array type of user identifier and identifier string
+ */
+function getAuthenticationInfo () {
+  require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
+  #Only x509 authentication is currently supported. If in the future we support
+  #API keys then I suggest we only look for a x509 DN if an API key isn't presented
+  $identifierType = 'X509';
+  #This will return null if no cert is presented
+  $identifier = Get_User_Principle_PI();
+
+  return array('userIdentifier'=>$identifier,'userIdentifierType'=>$identifierType);
 }

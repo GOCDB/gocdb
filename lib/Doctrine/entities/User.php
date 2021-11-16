@@ -279,9 +279,17 @@ class User {
     /**
      * Set the user's home Site, Legacy and optional.
      * @deprecated since version 5.4
-     * @param Site $homeSite
+     * @param mixed $homeSite
      */
-    public function setHomeSiteDoJoin(Site $homeSite) {
+    public function setHomeSiteDoJoin($homeSite) {
+
+        // Allow homesite to be unset. No joining is done since 5.4.
+        // In production $homesite should never be a Site instance, but
+        //  legacy test datasets still invoke this function.
+        if ($homeSite != null && !$homeSite instanceof \Site) {
+            throw new LogicException("Expected null for deprecated Home Site value.");
+        }
+
         $this->homeSite = $homeSite;
     }
 

@@ -1,3 +1,16 @@
+<?php
+require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
+header("Content-type: text/css");
+// Load variable values from local configuration //
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+
+$background_direction = \Factory::getConfigService()->getBackgroundDirection();
+$background_colour1 = \Factory::getConfigService()->getBackgroundColour1();
+$background_colour2 = \Factory::getConfigService()->getBackgroundColour2();
+$background_colour3 = \Factory::getConfigService()->getBackgroundColour3();
+$header_text_colour = \Factory::getConfigService()->getHeadingTextColour();
+
+?>
 /* table.sorter plugin, http://tablesorter.com/docs/ */
 table.tablesorter {
     background-color: #CDCDCD;
@@ -37,8 +50,25 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 
 
 
-body {  
-    background: linear-gradient(to bottom left,#F7F9FE, #DEE9FB, #D0DFF9);
+body {
+    background: linear-gradient(
+    <?php
+        // Build the linear gradient input
+        $out = '';
+        if ($background_colour3 != '') {
+            $out = ','.$background_colour3;
+        }
+        if ($background_colour2 != '') {
+            $out = ','.$background_colour2 . $out;
+        }
+        if ($background_colour1 != '') {
+            $out = ','.$background_colour1 . $out;
+        }
+        $out = $background_direction . $out;
+
+        echo $out;
+    ?>
+    );
     color: #272A4B;
     font-family: 'PT Sans', sans-serif;
     font-size: 10pt;
@@ -59,7 +89,7 @@ a img {
 }
 
 h1,th,h2,h3,h4 {
-    color: #00AC00;
+    color: <?=$header_text_colour?>;
     text-decoration: none;
     font-weight:normal;
     margin-top: 0em;
@@ -105,14 +135,14 @@ h1 {
 }
 
 
- 
+
 /*
     *	Containing DIV's
 	*	Page Container is the whole page
 	*	Left Box is the menu
 	*	Right Box is the smaller page contents
 	*/
-.page_container { 
+.page_container {
     position: relative;
     margin-left: auto;
     margin-right: auto;
@@ -166,8 +196,14 @@ div.Left_Logo_Row {
     margin-bottom: 5px;
 }
 
-img.Left_Logo_Image {
-    max-height: 100%;
+a.Sponsor_Link img.Sponsor_Logo {
+    display:inline-block;
+    vertical-align: bottom;
+    height: 100%;
+}
+
+a.Sponsor_Link:hover {
+    text-decoration: none;
 }
 
 div.Indented {
@@ -186,7 +222,7 @@ div.Indented {
 
 .Logo_Text {
     display: inline;
-} 
+}
 
 .logo_image {
     display: inline;
@@ -258,16 +294,20 @@ li {
     margin-bottom: 0.3em;
 }
 
-.input_input_text {
+.input_input_text,
+.input_input_date,
+.input_input_check {
+    margin-left: 2em;
+}
+
+.input_input_text,
+.input_input_date {
     width: 90%;
     margin-bottom: 1em;
-    margin-left: 2em;
 }
 
 .input_input_date {
     width: 30%;
-    margin-bottom: 1em;
-    margin-left: 2em;
 }
 
 .table_row_1,.table_header {
@@ -468,7 +508,7 @@ select.Downtime_Select {
 }
 
 .header {
-    color: #009000;
+    color: <?=$header_text_colour?>;
     padding:0.9em;
 }
 
@@ -512,8 +552,8 @@ img.decoration {
 
 img.titleIcon{
     height:25px;
-    float: right; 
-    margin:2% 1% 1% 0%; 
+    float: right;
+    margin:2% 1% 1% 0%;
 }
 
 input.vSiteSearch {
@@ -576,7 +616,7 @@ img.centered {
 
 span.topMargin {
     margin-top: 1em;
-}	
+}
 
 span.block {
     display: block;
@@ -647,7 +687,7 @@ div.rightPageContainer {
     border: 1px solid #B4B4B4;
     padding: 1em;
     border-radius: 0.4em;
-    
+
 }
 
 div.tableContainer {
@@ -673,8 +713,8 @@ div.tableContainer {
 
 .smallLabelText{
     margin-left:8px;
-    font-size:11px; 
-    font-weight: normal; 
+    font-size:11px;
+    font-weight: normal;
     font-style:italic;
     display:inline-block;
 }
@@ -688,14 +728,15 @@ label.error {
 }
 
 .selectService{
-    background-color: #D5D5D5;	
+    background-color: #D5D5D5;
 }
 
 .selectEndpoint{
 }
-/* Registration page */
+
+/* Registration and User pages */
 img.new_window{
-  height: 0.75em;
+  height: 1em;
 }
 
 img.person{

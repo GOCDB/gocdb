@@ -79,7 +79,7 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)+$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)+$/</regex>
 	</field>
 	<field>
 	    <fname>CONTACTTEL</fname>
@@ -94,7 +94,7 @@
 	<field>
 	    <fname>CSIRTEMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>CSIRTTEL</fname>
@@ -104,12 +104,12 @@
 	<field>
 	    <fname>EMERGENCYEMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>HELPDESKEMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)*$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)*$/</regex>
 	</field>
 	<field>
 	    <fname>TIMEZONE</fname>
@@ -161,7 +161,7 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)+$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)+$/</regex>
 	</field>
   <field>
       <fname>URL</fname>
@@ -243,7 +243,7 @@
 	<field>
 	    <fname>TITLE</fname>
 	    <length>255</length>
-	    <regex>/^[a-zA-Z\s\-']+$/</regex>
+	    <regex>/^[a-zA-Z\s\-']*$/</regex>
 	</field>
 	<field>
 	    <fname>CERTIFICATE_DN</fname>
@@ -259,12 +259,18 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}){1}$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*){1}$/</regex>
 	</field>
 	<field>
 	    <fname>TELEPHONE</fname>
 	    <length>255</length>
 	    <regex>/^(\+?[0-9\-\.\s\)\(]+)?$/</regex>
+	</field>
+	<field>
+	    <!-- Need a schema entry to pass validation of inputs through editUser in the User Service.
+	         Should ultimately not be needed once no Users have Home Sites, which is no longer
+	         a supported feature. -->
+	    <fname>UNLINK_HOMESITE</fname>
 	</field>
     </entity>
 
@@ -285,22 +291,22 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>ROD_EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>HELPDESK_EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>SECURITY_EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	</field>
 	<field>
 	    <fname>GGUS_SU</fname>
@@ -324,7 +330,7 @@
 	</field>
 	<field>
 	    <fname>EMAIL</fname>
-	    <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6})?$/</regex>
+	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
 	    <length>255</length>
 	</field>
 	<field>
@@ -370,7 +376,7 @@
     <field>
         <fname>EMAIL</fname>
         <length>255</length>
-        <regex>/^(([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}[,;]?)*$/</regex>
+        <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)*$/</regex>
     </field>
     <field>
         <fname>MONITORED</fname>
@@ -394,7 +400,7 @@
 	<field>
 	    <fname>EMAIL</fname>
 	    <length>255</length>
-	    <regex>/^([0-9a-zA-Z]+[-._])*[0-9a-zA-Z]+@([-0-9a-zA-Z]+[.])+[a-zA-Z]{2,6}$/</regex>
+	    <regex>/^(([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*);)*([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*);?$/</regex>
 	</field>
     </entity>
     <!-- ==========================================================  -->
@@ -494,7 +500,7 @@
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
         <!--Allows most chracters, leading and trailing white space, but rewuires at least one non-whitespace chracter -->
-        <regex>/^(\s*[^`'\"&lt;&gt;\s]+\s*)+$/</regex>
+        <regex>/^(\s*[^`'\"\s]+\s*)+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
 	</field>

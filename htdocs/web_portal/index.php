@@ -75,13 +75,24 @@ function rejectIfNotAuthenticated($message = null){
 // on per-page basis as below)
 //rejectIfNotAuthenticated();
 
+// Initialise the configuration service with the host url of the incoming request.
+// Allows the overriding of configuration values. Do not use 'new' to create a new 
+// instance after this.
+
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+
 try {
     Draw_Page($Page_Type);
+
+} catch (ErrorException $e) {
+    /* ErrorExceptions may be thrown by an invalid configuration so it is
+       not safe to try to give a pretty output. Set 'raw' to true. */
+    show_view('error.php', $e->getMessage(), NULL, TRUE);
+    die();
 } catch(Exception $e) {
-    show_view('error.php', $e->getMessage());
+    show_view('error.php', $e->getMessage(), NULL, FALSE);
     die();
 }
-
 /**
  * If a page type has been set then return this value. If it hasn't,
  * return an empty string.
@@ -127,61 +138,61 @@ function Draw_Page($Page_Type) {
             view_endpoint();
             break;
         case "Service_Groups":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/service_group/view_all.php';
-        showAllServiceGroups();
-        break;
-    case "Service_Group":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/service_group/view_sgroup.php';
-        showServiceGroup();
-        break;
-    case "Site":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/site/view_site.php';
-        view_site();
-        break;
-    case "NGI":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/ngi/view_ngi.php';
-        view_ngi();
-        break;
-    case "Service":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/service/view_service.php';
-        view_se();
-        break;
-    case "Services":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/service/view_all.php';
-        drawSEs();
-        break;
-    case "NGIs":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/ngi/view_ngis.php';
-        view_ngis();
-        break;
-    case "Sites":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/site/view_all.php';
-        showAllSites();
-        break;
-    case "Projects":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/project/view_all.php';
-        show_all_projects();
-        break;
-    case "Project":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/project/view_project.php';
-        show_project();
-        break;
-    case "Scope_Help":
-        //rejectIfNotAuthenticated();
-        require_once __DIR__ . '/controllers/scope_help.php';
-        show_help();
-        break;
-    case "Site_Geo_xml" :
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service_group/view_all.php';
+            showAllServiceGroups();
+            break;
+        case "Service_Group":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service_group/view_sgroup.php';
+            showServiceGroup();
+            break;
+        case "Site":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/view_site.php';
+            view_site();
+            break;
+        case "NGI":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/ngi/view_ngi.php';
+            view_ngi();
+            break;
+        case "Service":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service/view_service.php';
+            view_se();
+            break;
+        case "Services":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/service/view_all.php';
+            drawSEs();
+            break;
+        case "NGIs":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/ngi/view_ngis.php';
+            view_ngis();
+            break;
+        case "Sites":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/site/view_all.php';
+            showAllSites();
+            break;
+        case "Projects":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/project/view_all.php';
+            show_all_projects();
+            break;
+        case "Project":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/project/view_project.php';
+            show_project();
+            break;
+        case "Scope_Help":
+            //rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/scope_help.php';
+            show_help();
+            break;
+        case "Site_Geo_xml" :
             //rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/sitesForMapXML.php';
             show_xml ();
@@ -199,12 +210,11 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/search.php';
             search();
             break;
-    case "View_Role_Action_Mappings":
-            //rejectIfNotAuthenticated();
-        require_once __DIR__.'/controllers/political_role/view_role_action_mappings.php';
-        view_role_action_mappings();
-        break;
-
+        case "View_Role_Action_Mappings":
+                //rejectIfNotAuthenticated();
+            require_once __DIR__.'/controllers/political_role/view_role_action_mappings.php';
+            view_role_action_mappings();
+            break;
 
         // CrUD Pages - These pages MUST have authentication enabled so
         // the calls to rejectIfNotAuthenticated() must be used.
@@ -638,11 +648,11 @@ function Draw_Page($Page_Type) {
             delete_entity();
             break;
         default:
-            // require auth by default
-            rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/start_page.php';
-            startPage();
-            break;
+        // require auth by default
+        rejectIfNotAuthenticated();
+        require_once __DIR__.'/controllers/start_page.php';
+        startPage();
+        break;
     }
 }
 

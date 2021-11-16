@@ -13,7 +13,7 @@
             <ul>
                <li>By registering a GOCDB account you are agreeing to abide by the <a href="/aup.html" target="_blank" title="opens in new window">GOCDB Acceptable Use Policy and Conditions of Use <img src="/portal/img/new_window.png" alt="new window logo" class="new_window"></a>.
                </li>
-               <li>Personal data, which you provide below and that is collected when you use GOCDB, will be processed in accordance with the <a href="/privacy.html" target="_blank" title="opens in new window">GOCDB Privacy Notice <img src="/portal/img/new_window.png" alt="new window logo"  class="new_window"></a>. 
+               <li>Personal data, which you provide below and that is collected when you use GOCDB, will be processed in accordance with the <a href="/privacy.html" target="_blank" title="opens in new window">GOCDB Privacy Notice <img src="/portal/img/new_window.png" alt="new window logo"  class="new_window"></a>.
                </li><br>
                <li>Please read both the above documents before registering your account.
               </li>
@@ -42,14 +42,15 @@
         <span class="input_name">
             Title
         </span>
-
+        <?php
+            $titles = array('', 'Dr', 'Miss', 'Mr', 'Mrs',  'Ms', 'Mx', 'Prof');
+        ?>
         <select name="TITLE" class="add_edit_form">
-            <option value="Mr">Mr</option>
-            <option value="Mrs">Mrs</option>
-            <option value="Miss">Miss</option>
-            <option value="Ms">Ms</option>
-            <option value="Prof">Prof</option>
-            <option value="Dr">Dr</option>
+          <?php
+            foreach($titles as $title) {
+              echo '<option value="'.$title.'">'.$title.'</option>';
+            }
+          ?>
         </select>
 
         <span class="input_name">

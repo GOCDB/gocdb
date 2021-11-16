@@ -13,7 +13,7 @@ function get_standard_header($title = null) {
     }
     $header .= '
         <link rel="SHORTCUT ICON" href="'.GocContextPath::getPath().'img/Logo-1.4-FavIcon-32x32.regional.ico" />
-        <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/jquery/jquery-1.10.min.js"></script>
+        <script src="https://code.jquery.com/jquery-1.12.4.min.js" integrity="sha256-ZosEbRLbNQzLpnKIkEdrPv7lOy9C27hHQ+Xp8a4MxAQ=" crossorigin="anonymous"></script>
         <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/moment/moment-with-locales.min.js"></script>
         <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/bootstrap/js/bootstrap-3.1.min.js"></script>
         <script type="text/javascript" src="'.GocContextPath::getPath().'javascript/bootstrap/js/bootstrap-select.min.js"></script>
@@ -24,7 +24,7 @@ function get_standard_header($title = null) {
         <link rel="stylesheet" href="'.GocContextPath::getPath().'javascript/bootstrap/css/bootstrap.css" />
         <link rel="stylesheet" href="'.GocContextPath::getPath().'javascript/datetimepicker/css/bootstrap-datetimepicker.min.css" />
         <link rel="stylesheet" href="'.GocContextPath::getPath().'javascript/bootstrap/css/bootstrap-select.min.css" />
-        <link rel="stylesheet" type="text/css" href="'.GocContextPath::getPath().'css/web_portal.css" />
+        <link rel="stylesheet" type="text/css" href="'.GocContextPath::getPath().'css/web_portal.php" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans">
     <link rel="stylesheet" type="text/css" href="'.GocContextPath::getPath().'css/multiple-select.css"/>
     </head>

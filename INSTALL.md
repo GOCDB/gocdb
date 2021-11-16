@@ -26,7 +26,9 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 * [Database server](#database-server)
   * Oracle 11g+ or MariaDB/MySQL
-  * (note: the free Oracle 11g XE Express Editions which comes with a free license is perfectly suitable)
+    * (note: the free Oracle 11g XE Express Editions which comes with a free license is perfectly suitable)
+  * MariaDB/MySQL
+    * package `mariadb-server`
 
 * [Doctrine and DBAL](#doctrine)
   * doctrine 2.4.8 (newer versions should be fine but are untested)
@@ -68,7 +70,10 @@ extension_dir => /usr/lib64/php/modules/ => /usr/lib64/php/modules/
 
 $ php -i | grep libxml2
 libxml2 Version => 2.7.6
-
+```
+If you are planning to use Oracle, compile and install the php oci8 extension as described [below](#compilinginstalling-oci8).</br>
+oci8 is not required for MariaDB/MySQL
+```
 $ php -i | grep -i oci8
 oci8
 OCI8 Support => enabled
@@ -76,7 +81,9 @@ OCI8 Support => enabled
 $ php -i | grep DOM
 DOM/XML => enabled
 DOM/XML API Version => 20031129
-
+```
+The PDO driver for MariaDB/MySQL is provided by package `php-mysql`
+```
 $ php -i | grep PDO
 PDO
 PDO support => enabled
@@ -99,7 +106,6 @@ need to periodically install/update `timezonedb.so|dll` as described at:
 To do this, download the timezonedb lib to your extensions directory and
 update your php.ini by adding `extension=[php_]timezonedb.so|dll` (note, Win prefix `php_`).
 * All dates are stored as UTC in the DB and converted from local timezones.
-* If you are planning to use Oracle, you need the php oci8 extension, which must be compiled. ([php oci8](http://php.net/manual/en/book.oci8.php))  
 * Do not forget to configure your timezone settings correctly.
 
 ### Apache and x509 Host cert <a id="apache"></a>
@@ -114,7 +120,7 @@ Note that, depending on Apache/httpd version, the "Require all granted" statemen
 GOCDB uses a DB abstraction layer (Doctrine) and with some configuration should be deployable on different RDBMS platforms that are supported for Doctrine. Instructions are provided here for Oracle (the free Oracle 11g is perfectly suitable) and MySQL/MariaDB.
 
 #### Oracle 11g
-The free to use XE/11g Oracle DB can be used to host run GOCDB on Win/nix. To use Oracle on nix systems, the OCI8 extension/driver needs to be compiled and installed.  
+The free to use XE/11g Oracle DB can be used to host run GOCDB on Win/nix. To use Oracle on nix systems, the OCI8 extension/driver needs to be compiled and installed.
 
 ##### Compiling/Installing OCI8
 The OCI8 extension/driver for php needs to be installed, see: http://php.net/oci8
@@ -149,38 +155,21 @@ echo 'extension=oci8.so' > /etc/php.d/oci8.ini
 Confirm it is working with ```php -i | grep -i oci8```
 
 #### MariaDB/MySQL
-The following instructions are to set up a local MariaDB/MySQL database for GOCDB. They have not been tested in a production enviroment and are currently intended for test instances.
+The following instructions are to set up a MariaDB/MySQL database for GOCDB. They have not been tested in a production enviroment and are currently intended for test instances only.
 
-First you will need to install the MariaDB/MySQL server and client. Then start the 'mariadb'/'mysqld' service.
-
-1. Access the CLI for MariaDB/MySQL
-
-    ```
-    $ mysql
-    ```
-
-1. Create a database to use
-
-    ````
-    CREATE DATABASE gocdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;
-    ````
-
-1. Create a user to access it and give that user a password
-
-    ````
-    CREATE USER 'gocdbuser'@'localhost' IDENTIFIED BY 'PASSWORD_GOES_HERE';
-    ````
-
-1. Grant the user permissions over the database. Note: these permissions are wider than is strictly required and deployment into a production environment would first require revising these permissions more in line with those given for Oracle in the set up instructions.
-
-    ````
-    GRANT ALL PRIVILEGES ON gocdb.* TO 'gocdbuser'@'localhost';
-    FLUSH PRIVILEGES;
-    ````
+##### Install the MariaDB server
+Install package `mariadb-server`, start the service, enable at boot and configure the root user with a password:
+```
+$ yum install mariadb-server
+$ systemctl start mariadb
+$ systemctl enable mariadb
+$ mysql_secure_installation
+```
+If the database instance is not local to the GOCDB webserver host, ensure that port 3306 is open for connection.
 
 You are now good to continue the installation.
 
-### Doctrine <a id="doctrine"></a>   
+### Doctrine <a id="doctrine"></a>
 
 Install Doctrine ORM and DBAL using one of the methods below and make sure doctrine is available on the command
 line. Note, Doctrine can be installed either globally using PEAR or as a project
@@ -223,8 +212,8 @@ specific dependency using composer.
 
 * The composer.json and lock files are provided for you so you can simply run `composer install`
 * Running `composer install` will create a `vendor` directory in the GOCDB root
-directory and will download doctrine into that dir.  
-* Add full path to your `vendor/bin` dir to your `$PATH` environment variable.    
+directory and will download doctrine into that dir.
+* Add full path to your `vendor/bin` dir to your `$PATH` environment variable.
 
 #### Install Doctrine Via Pear
 
@@ -254,18 +243,17 @@ see: [pear installation](http://pear.php.net/manual/en/installation.getting.php)
 
 #### Check Doctrine installation
 
-  Whichever way you installed Doctrine, ensure that your `$PATH` environment variable is updated to run the doctrine command line client.
-
-  Note: you need to run `$doctrine --version` from within the `gocDBSrcHome/lib/Doctrine` directory.
+  Ensure that your `$PATH` environment variable is updated to run the doctrine command line client (which must be run from the `Doctrine` directory). Assuming the default location of `/usr/share/gocdb` was used, use the following commands to check the installation -
 
   ```bash
-  $ export PATH=$PATH:/home/djm76/programming/php/gocdb5_mep/gocdb/vendor/bin
+  $ cd /usr/share/gocdb
+  $ export PATH=$PATH:`pwd`/vendor/bin
   $ cd lib/Doctrine
   $ doctrine --version
   Doctrine Command Line Interface version 2.4.8
   $ doctrine-dbal --version
   Doctrine Command Line Interface version 2.5.4
-  ```  
+  ```
 
 #### Paginator fix <a id="doctrineFix"></a>
 
@@ -282,9 +270,9 @@ However only the two changes at line 17 (adding  `use Doctrine\DBAL\Platforms\Or
 Once you have all the pre-requisites installed, you are ready to move ahead with the
 deployment of your GOCDB instance:
 
-* [Create DB User/Account](#create-db)  
+* [Create DB User/Account](#create-db)
 * [Configure Doctrine DB Connection](#configure-doctrine-db)
-* [Deploy Tables/Schema via Doctrine](#deploy-schema)  
+* [Deploy Tables/Schema via Doctrine](#deploy-schema)
 * [Deploy Required Data](#deploy-required-data)
 * [Deploy Sample Data](#deploy-sample-data) (optional)
 
@@ -293,9 +281,7 @@ deployment of your GOCDB instance:
 
 If you intend to populate the database from a dump of an existing GOCDB5 instance you do NOT need to create the GOCDB5 user. Simply deploy the data as described at ["Deploy and existing DB"](#deploy-existing-dump) below remembering that you might want to ALTER the password for the GOCDB5 user after the import.
 
-We advise that you create a dedicated GOCDB5 user. For Oracle, you can create
-the user with the following script (substitute GOCDB5 for your username and
-a sensible password). Run this script as the Oracle admin/system user:
+Create a dedicated GOCDB5 user using the following script (substitute GOCDB5 for your username and a secure password). Run this script as the Oracle admin/system user:
 
 ```
 -- Manage GOCDB5 user if already exists (optional) --
@@ -333,7 +319,7 @@ PASSWORD_LIFE_TIME and PASSWORD_GRACE_TIME parameters in the DBA_PROFILES table:
 SELECT profile FROM dba_users WHERE username = 'GOCDB5';
 
 -- select the password expiry settings for the profile assigned to the GOCDB5 user
-select resource_name,resource_type, limit from dba_profiles where profile=DEFAULT;
+SELECT resource_name, resource_type, limit FROM dba_profiles WHERE profile='DEFAULT';
 ```
 
 If you prefer, you can update the default expiry from 180days to UNLIMITED using
@@ -346,20 +332,45 @@ ALTER PROFILE DEFAULT LIMIT PASSWORD_LIFE_TIME UNLIMITED;
 
 #### MySQL
 
-Coming soon
+##### Create the GOCDB database and user
+On the MariaDB server, using the root user and password assigned in the previous step:
+```
+$ mysql -u root -p <<EOF
+> CREATE DATABASE gocdb DEFAULT CHARACTER SET utf8 DEFAULT COLLATE utf8_bin;
+> CREATE USER 'GOCDB5'@'WEBSERVER-HOSTNAME-HERE' IDENTIFIED BY 'PASSWORD-HERE';
+> GRANT ALL PRIVILEGES ON gocdb.* TO 'GOCDB5'@'WEBSERVER-HOSTNAME-HERE';
+> FLUSH PRIVILEGES;
+> EOF
+```
+* **_These permissions are wider than is strictly required and deployment into a production environment would first require revising these permissions more in line with those given for Oracle in the set up instructions._**
+* If the database instance is local to the GOCDB webserver host, use 'localhost' for 'WEBSERVER-HOSTNAME-HERE'
+`
+##### Test client/webserver access
+Optionally, but recommended, on the GOCDB webserver host, install the MariaDB client tools:
+```
+$ yum install mariadb
+```
+Check connectivity from the client:
+```
+$ mysql -u GOCDB5 -h WEBSERVER-HOSTNAME-HERE -p <<EOF
+> show databases;
+> EOF
+```
+The client should connect to the database and show the 'gocdb' database in the response from the server.</br>
+The `mariadb` package can, optionally, be uninstalled after testing the connection.
 
 ### Configure Doctrine DB Connection <a id="configure-doctrine-db"></a>
 
 The database schema is deployed to your database using Doctrine.
 
-* Navigate to to `<gocDBSrcHome>/lib/Doctrine` folder
-* Locate the provided template file: `bootstrap_doctrine_TEMPLATE.php`. In this
-file you will find three blocks of code commented out, once for each of the
-supported database, SQLite, Oracle and MySQL.
-* Copy this file to `bootstrap_doctrine.php` in the same dir and modify (including commenting out the "die" statement at the top of the file) to
-specify your chosen DB connection details (see file for more details, including
-how to compile Doctrine proxy objects for better performance for production usage).
-* Check that doctrine can connect to the DB running the following (still in the <gocDBSrcHome>/lib/Doctrine directory):
+* Navigate to the `lib/Doctrine` folder (e.g. /usr/share/gocdb/lib/Doctrine).
+* Copy the file `bootstrap_doctrine_TEMPLATE.php` to `bootstrap_doctrine.php` in the same directory.
+* Modify `bootstrap_doctrine.php`:
+* Comment out the "die" statement at the top of the file.
+* For MariaDB/MySQL comment out the line -</br>`use Doctrine\DBAL\Event\Listeners\OracleSessionInit;`</br>- also at the top of the file.
+* Uncomment one of the three blocks of code relevant to the target database - SQLite, Oracle or MariaDB/MySQL.
+* Optionally, follow the instructions in the file for how to compile Doctrine proxy objects for better performance (for production usage).
+* Check that doctrine can connect to the DB running the following (still in the Doctrine directory):
 
   ```
   $ doctrine orm:schema-tool:update
@@ -390,15 +401,15 @@ By default, these are compiled into the system's TMP dir. This is not recommende
 For production deployments, you can specify where these proxy objects should be stored
 using `$config->setProxyDir('pathToYourProxyDir');` in your `bootstrap_doctrine.php` file.
 If you specify the ProxyDir, then you also need to manually compile your proxy objects
-into the specified ProxyDir using the doctrine command line:  
+into the specified ProxyDir using the doctrine command line:
 
 ```bash
 $ cd lib/Doctrine
 $ mkdir compiledEntities
-$ doctrine orm:generate-proxies compiledEntities/   
+$ doctrine orm:generate-proxies compiledEntities/
 ```
 
-GocDB can then be deployed as a blank instance wit h only required lookup data or
+GocDB can then be deployed as a blank instance with only required lookup data or
 as a sample instance with a small amount of example data to demonstrate GocDB.
 
 ### Deploy Required Data<a id="deploy-required-data"></a>
@@ -421,7 +432,7 @@ $ cd lib/Doctrine
 $ php deploy/DeploySampleDataRunner.php sampleData
 ```
 
-### Deploy an existing DB .dmp file to populate your DB<a id="deploy-existing-dump"></a>
+### ORACLE ONLY: Deploy an existing DB .dmp file to populate your DB<a id="deploy-existing-dump"></a>
 
 You may want to deploy an existing dump/backup of the DB rather than deploying the
 DDL and seeding the empty DB with required data and sample data. Oracle provides the
@@ -456,7 +467,7 @@ You may need to change different arguments for your install such as modifying th
   ORA-29283: invalid file operation
   ```
 
-* To generate statistics after importing the dmp file (this improves performance):  
+* To generate statistics after importing the dmp file (this improves performance):
 
     ```
     SQL> EXEC DBMS_STATS.gather_schema_stats('GOCDB5');
@@ -520,7 +531,7 @@ The users table has a field called `isAdmin` which by default is set to 0.
 To change a user to admin set this to 1. Below is a sample of the SQL query:
 
 ```
-SQL> update users set isadmin=1 where forename='John' and surname='Doe';
+SQL> update Users set isadmin=1 where forename='John' and surname='Doe';
 1 row updated.
 SQL> commit;
 Commit complete.
@@ -533,7 +544,7 @@ do not require any user-authentication,
 and protected pages which require user authentication. You can specify which
 pages are permitAll and which are protected by editing `htdocs/web_portal/index.php`
 and editing which URL page mappings use the `rejectIfNotAuthenticated()` invocation
-(see the switch/case block in the index page for details).  
+(see the switch/case block in the index page for details).
 
 ### Authentication
 
@@ -554,13 +565,17 @@ before running a production GocDB instance. See `tests/README.md` for details.
 
 If you modify the `lib/Doctrine/entities` objects, to add new values for example,
 you will need to update your DB schema. This can be done using the doctrine
-command line tool. For example:
+command line tool (first stop GOCDB running so there are no active DB connections). For example:
 
 ```
 $ cd lib/Doctrine
 $ vim entities/Site.php     # modify the Site entity object, e.g. add a new 'timezoneId' value
 $ doctrine orm:schema-tool:update --dump-sql
 ALTER TABLE SITES ADD (timezoneId VARCHAR2(255) DEFAULT NULL)
+```
+For production environments you should now sanity check the outputted SQL before running it against your database using the relevant CLI tool. Alternatively, in testing environments, you can simply run the following to execute the code:
+
+```
 $ doctrine orm:schema-tool:update --force
 Updating database schema...
 Database schema updated successfully! "1" queries were executed
@@ -580,4 +595,4 @@ If you are using the unit tests, you will need to drop the existing tables and r
 
 Newer releases of Gocdb require updating the DB schema and updating the legacy
 data to be compliant with the newer version. A number of scripts are provided
-to assist with this. Please see `lib/Doctrine/versionUpdateScripts/README.md` for details.  
+to assist with this. Please see `lib/Doctrine/versionUpdateScripts/README.md` for details.

@@ -24,7 +24,19 @@
             ?>
                 <tr>
                     <td style="width: 35%;"><?php xecho($prop->getKeyName()); ?></td>
-                    <td style="width: 35%;"><?php xecho($prop->getKeyValue()); ?></td>
+                    <td style="width: 35%;">
+                    <?php
+                        // Wrap value in a hyperlink when it looks like a URL
+                        $value = $prop->getKeyValue();
+                        if(filter_var($value, FILTER_VALIDATE_URL)) {
+                            echo "<a href = ".xssafe($value).">";
+                            xecho($value);
+                            echo "</a>";
+                        } else {
+                            xecho($value);
+                        }
+                    ?>
+                    </td>
                     <?php if(!$params['portalIsReadOnly']): ?>
                         <td style="width: 10%;">
                             <a href="index.php?Page_Type=<?php echo $editPropertyPage;?>&amp;propertyid=<?php echo $prop->getId();?>&amp;id=<?php echo $parent->getId();?>">

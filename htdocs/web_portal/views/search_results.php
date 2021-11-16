@@ -167,7 +167,7 @@
                                         if ($params['authenticated']) {
                                             xecho($user->getEmail());
                                         } else {
-                                            echo 'PROTECTED - Authentication required';
+                                            echo 'PROTECTED - Registration required';
                                         }
                                     ?>
                                 </td>

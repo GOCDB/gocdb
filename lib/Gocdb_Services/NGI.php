@@ -39,7 +39,7 @@ class NGI extends AbstractEntityService{
     function __construct(/*$roleActionAuthorisationService*/) {
         parent::__construct();
         //$this->roleActionAuthorisationService = $roleActionAuthorisationService;
-        $this->configService = new Config();
+        $this->configService = \Factory::getConfigService();
     }
 
     /**
@@ -521,9 +521,7 @@ class NGI extends AbstractEntityService{
     }
 
     private function checkNumberOfScopes($scopeIds){
-        require_once __DIR__ . '/Config.php';
-        $configService = new \org\gocdb\services\Config();
-        $minumNumberOfScopes = $configService->getMinimumScopesRequired('ngi');
+        $minumNumberOfScopes = $this->configService->getMinimumScopesRequired('ngi');
         if(sizeof($scopeIds)<$minumNumberOfScopes){
             throw new \Exception("A NGI must have at least " . $minumNumberOfScopes . " scope(s) assigned to it.");
         }

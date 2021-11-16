@@ -4,7 +4,7 @@ $se = $endpoint->getService();
 $extensionProperties = $endpoint->getEndpointProperties();
 $epId = $endpoint->getId();
 $seId = $se->getId();
-
+$epTxt = \Factory::getConfigService()->getNameMapping('Service','endpoint');
 ?>
 
 <div class="rightPageContainer rounded">
@@ -12,7 +12,7 @@ $seId = $se->getId();
         <img src="<?php echo \GocContextPath::getPath() ?>img/serviceEndpoint.png" class="pageLogo" />
     </div>
     <div style="float: left; width: 50em;">
-        <h1 style="float: left; margin-left: 0em;"><?php xecho('Service Endpoint: ' . $endpoint->getName()) ?> </h1>
+        <h1 style="float: left; margin-left: 0em;"><?php xecho('Service '.ucfirst($epTxt).': '. $endpoint->getName()) ?> </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
         <?php xecho($endpoint->getDescription()) ?>
         </span>
@@ -67,7 +67,7 @@ $seId = $se->getId();
     <div style="float: left; width: 100%; margin-top: 2em;">
         <!--  System -->
         <div class="tableContainer rounded" style="width: 100%; float: left;">
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Endpoint</span>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;"><?php echo(ucfirst($epTxt)) ?></span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/serviceEndpoint.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">

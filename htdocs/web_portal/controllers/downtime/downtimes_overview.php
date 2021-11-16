@@ -39,10 +39,18 @@ function view() {
     $windowStart = date("Y-m-d");
     $windowEnd = date_add(date_create(date("Y-m-d")), date_interval_create_from_date_string($days.' days'));
 
-    $downtimesA = \Factory::getDowntimeService()->getActiveDowntimes();
-    $downtimesI = \Factory::getDowntimeService()->getImminentDowntimes($windowStart,$windowEnd);
+    $filterScope = NUll;
+
+    if (\Factory::getConfigService()->getDefaultFilterByScope()) {
+        $filterScope = \Factory::getConfigService()->getDefaultScopeName();
+    }
+
+    $downtimesA = \Factory::getDowntimeService()->getActiveDowntimes($filterScope);
+    $downtimesI = \Factory::getDowntimeService()->getImminentDowntimes($windowStart,$windowEnd,$filterScope);
+
     $params['timePeriod'] = $timePeriod;
     $params['downtimesActive'] = $downtimesA;
     $params['downtimesImmenent'] = $downtimesI;
+    $params['filterScope'] = $filterScope;
     show_view("downtime/downtimes_overview.php", $params);
 }

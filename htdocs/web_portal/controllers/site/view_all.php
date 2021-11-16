@@ -83,17 +83,27 @@ function showAllSites(){
     $filterParams['scope_match'] = '';
     $selectedScopes = array();
     if(!empty($_GET['mscope'])) {
-    $scopeStringParam = '';
-    foreach($_GET['mscope'] as $key => $scopeVal){
-        $scopeStringParam .= $scopeVal.',';
+        $scopeStringParam = '';
+        foreach($_GET['mscope'] as $key => $scopeVal){
+            $scopeStringParam .= $scopeVal.',';
+            $selectedScopes[] = $scopeVal;
+        }
+        $filterParams['scope'] = $scopeStringParam;
+            $scopeMatch = 'all';
+        if(isset($_GET['scopeMatch'])) {
+            $scopeMatch = $_GET['scopeMatch'];
+        }
+        $filterParams['scope_match'] = $scopeMatch;
+
+    // If there are more HTTP variables than "Page_Type=Sites" we assume the user
+    // clicked the [Filter] button and had all the paramter dialogues set as they required,
+    // so we aim to  filter by defualt scope only when the left Sites menu is clicked.
+
+    } elseif ((count($_GET) == 1) and \Factory::getConfigService()->getDefaultFilterByScope()) {
+        $scopeVal = \Factory::getConfigService()->getDefaultScopeName();
         $selectedScopes[] = $scopeVal;
-    }
-    $filterParams['scope'] = $scopeStringParam;
-        $scopeMatch = 'all';
-    if(isset($_GET['scopeMatch'])) {
-        $scopeMatch = $_GET['scopeMatch'];
-    }
-    $filterParams['scope_match'] = $scopeMatch;
+        $filterParams['scope'] = $scopeVal;
+        $filterParams['scope_match'] = 'all';
     }
 
     $serv = \Factory::getSiteService();

@@ -64,6 +64,12 @@ function xecho($data) {
     echo xssafe($data);
 }
 
+// Initialise the configuration service with the host url of the incoming request.
+// Allows the overriding of configuration values. Do not use 'new' to create a new 
+// instance after this.
+
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+
 $piReq = new PIRequest();
 $piReq->process();
 
@@ -166,7 +172,6 @@ class PIRequest {
                     break;
                 case "get_site_security_info":
                     require_once($directory . 'GetSiteSecurityInfo.php');
-                    //$this->authAcl();
                     $this->authAnyCert();
                     $getSiteSecurityInfo = new GetSiteSecurityInfo($em, $this->baseApiUrl);
                     $getSiteSecurityInfo->setDefaultPaging($this->defaultPaging);
@@ -358,21 +363,6 @@ class PIRequest {
             die("An error has occured, please contact the GOCDB administrators at gocdb-admins@egi.eu");
         }
         return $xml;
-    }
-
-    /* Authorise a user against an access control list */
-
-    function authAcl() {
-        $accessList = simplexml_load_file(__DIR__ . '/../../config/PI/access_control_list.xml');
-
-        $users = $accessList->children();
-        foreach ($users as $user) {
-            if ((string) $user->dn == $this->dn)
-                return;
-        }
-
-        die("Your Certificate DN is not authorized to access this resource." .
-                " Certificate DN: <b>$this->dn</b><br />");
     }
 
     /* Authorize a user based on their certificate */

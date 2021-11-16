@@ -53,45 +53,42 @@ $configService = \Factory::getConfigService();
                     <td class="site_table">Host name</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                             xecho($se->getHostName());
-                        } else echo('PROTECTED - Auth required'); ?>
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">IP Address</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                           xecho($se->getIpAddress());
-                        }else echo('PROTECED - Auth required');  ?>
+                        }else echo('PROTECTED - Registration required');  ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">IP v6 Address</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                             xecho($se->getIpV6Address());
-                        } else echo('PROTECED - Auth required'); ?>
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Operating System</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                             xecho($se->getOperatingSystem());
-                        } else echo('PROTECTED - Auth required'); ?>
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Architecture</td><td class="site_table">
                         <?php if ($params['authenticated']) {
                             xecho($se->getArchitecture());
-                        } else echo('PROTECTED - Auth required'); ?>
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Contact E-Mail</td><td class="site_table">
-                    <?php if (!$params['authenticated']) : ?>
-                            PROTECTED - Auth required
-                    <?php endif; ?>
-                    <?php if ($params['authenticated']) : ?>
-                            <?php xecho($se->getEmail()) ?>
-                    <?php endif; ?>
+                        <?php if ($params['authenticated']) {
+                            xecho($se->getEmail());
+                        } else echo('PROTECTED - Registration required'); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
@@ -119,7 +116,7 @@ $configService = \Factory::getConfigService();
                         <div style="word-wrap: break-word;">
                                 <?php if ($params['authenticated']) {
                                     xecho($se->getDn()) ;
-                                } else echo('PROTECTED - Auth required'); ?>
+                                } else echo('PROTECTED - Registration required'); ?>
                         </div>
                     </td>
                 </tr>
@@ -263,11 +260,19 @@ $configService = \Factory::getConfigService();
      <!-- Service Endpoints -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-            Service Endpoints
+            <?php
+                // Translate "endpoint" based on local configuration
+                $epTxt = $configService->getNameMapping('Service','endpoint');
+                echo ('Service '.ucfirst($epTxt)."s");
+            ?>
             <a href="#" id="serviceEndpointLink" data-toggle="tooltip" data-placement="right"
-                title="A Service may define optional Endpoint objects which
+                title="A Service may define optional <?php echo ucfirst($epTxt) ?> objects which
                 model network locations for different service-functionalities
-                that can't be described by the main ServiceType and URL alone.">(endpoints?)</a>
+                that can't be described by the main ServiceType and URL alone.">
+                    <?php
+                        echo ('('.$epTxt.'s?)');
+                    ?>
+            </a>
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/serviceEndpoint.png" class="titleIcon"/>
         <table style="clear: both; width: 100%;">
@@ -318,7 +323,7 @@ $configService = \Factory::getConfigService();
             <a href="index.php?Page_Type=Add_Service_Endpoint&amp;se=<?php echo $se->getId();?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                        Add Endpoint
+                        Add <?php echo( ucfirst($epTxt)) ?>
                 </span>
             </a>
         <?php endif; ?>

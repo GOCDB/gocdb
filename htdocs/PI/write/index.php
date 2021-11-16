@@ -23,11 +23,17 @@ namespace org\gocdb\services;
 
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/PIWriteRequest.php';
-require_once __DIR__ . '/resultReturnFunctions.php';
+require_once __DIR__ . '/utils.php';
 
 #services for request
 $siteServ = \Factory::getSiteService();
 $serviceServ = \Factory::getServiceService();
+
+// Initialise the configuration service with the host url of the incoming request.
+// Allows the overriding of configuration values. Do not use 'new' to create a new 
+// instance after this.
+
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
 
 #Request method
 $requestMethod = $_SERVER['REQUEST_METHOD'];
@@ -47,10 +53,13 @@ else {
 #see http://php.net/manual/en/wrappers.php.php
 $requestContents = file_get_contents('php://input');
 
+#Get authentication details
+$authArray = getAuthenticationInfo();
+
 #Run the request
 $piReq = new PIWriteRequest();
 $piReq->setServiceService($serviceServ);
-$returnArray = $piReq->processRequest($requestMethod, $baseUrl, $requestContents, $siteServ);
+$returnArray = $piReq->processRequest($requestMethod, $baseUrl, $requestContents, $siteServ, $authArray);
 
 #Return the object to the user
 returnJsonWriteAPIResult($returnArray['httpResponseCode'],$returnArray['returnObject']);
