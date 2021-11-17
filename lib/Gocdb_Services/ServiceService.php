@@ -64,7 +64,7 @@ class ServiceService extends AbstractEntityService {
      * Finds a single service by ID and returns its entity
      *
      * @param int $id the service ID
-     * @return Service a service object
+     * @return \Service a service object
      */
     public function getService($id) {
         $dql = "SELECT s FROM Service s
@@ -955,7 +955,7 @@ class ServiceService extends AbstractEntityService {
      * Gets a service type by ID
      *
      * @param integer $id The service type ID
-     * @return ServiceType
+     * @return \ServiceType
      */
     private function getServiceType($id) {
         $dql = "SELECT st FROM ServiceType st WHERE st.id = :id";
