@@ -9,9 +9,8 @@ $res[2] = test_url(
             \Factory::getConfigService()->GetPiUrl().
             get_testPiMethod()
             );
-//$res[3] = test_url(PORTAL_URL);
 $res[3] = test_url(
-            \Factory::getConfigService()->getServerBaseUrl()
+            \Factory::getConfigService()->GetPortalURL()
             );
 
 

@@ -3,13 +3,10 @@ require_once "tests.php";
 
 // function returns associative array
 $res[1] = test_db_connection();
-//$res[2] = test_url(PI_URL);
+
 $res[2] = test_url(Factory::getConfigService()->GetPiUrl().get_testPiMethod());
 
-//$res[3] = test_url(PORTAL_URL);
-
-//$res[3] = test_url(SERVER_BASE_URL);
-$res[3] = test_url(Factory::getConfigService()->getServerBaseUrl());
+$res[3] = test_url(Factory::getConfigService()->GetPortalURL());
 
 $counts=array(
         "ok" => 0,
