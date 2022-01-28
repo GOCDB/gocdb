@@ -4,7 +4,7 @@
  * File: Get_User_Principle.php
  * Author: David Meredith
  * Description: Returns the user's principle ID string or AuthToken for the user that's currently
- *				connected (for x509 this is a DN).
+ *				connected (for X.509 this is a DN).
  *
  * License information
  *
@@ -137,7 +137,7 @@ function Get_User_AuthType() {
 }
 
 /**
- * Get the user's principle string (x509 DN from certificate or from SAML attribute).
+ * Get the user's principle string (X.509 DN from certificate or from SAML attribute).
  * <p>
  * Called from the portal to allow authentication.
  * This method serves as the global integration point for all authentication requests.
@@ -204,7 +204,7 @@ function Get_User_Principle(){
 }
 
 /**
- * Get the DN from an x509 cert, Principle from oidc token, or null if neither can be loaded.
+ * Get the DN from an X.509 cert, Principle from oidc token, or null if neither can be loaded.
  * Called from the PI to authenticate requests using certificates or oidc.
  * @return string or null if can't authenticate request
  */

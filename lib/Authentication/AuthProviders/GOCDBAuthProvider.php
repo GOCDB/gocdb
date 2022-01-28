@@ -77,7 +77,7 @@ class GOCDBAuthProvider implements IAuthenticationProvider {
         // between the returned $userDetails object and the given $auth token.
         // Note, getPassword() never returns null, even for auth mechanisms that
         // don't use a password in which case an empty string is returned. This
-        // allows the same auth logic across different mechanisms (e.g. x509).
+        // allows the same auth logic across different mechanisms (e.g. X.509).
         if($userDetails->getUsername() == $auth->getPrinciple() &&
                 $userDetails->getPassword() == $auth->getCredentials()){
 

@@ -33,7 +33,7 @@ interface IAuthentication {
      * resolution process for automatic submission to
      * <code>AuthenticationManager.authenticate(Authentication)</code>.
      * <p>
-     * X509 is an example of a pre-authentication token - the server establishes
+     * X.509 is an example of a pre-authentication token - the server establishes
      * that the user has provided a valid and trustworthy certificate before
      * reaching the underlying app (which means the token can be automatically
      * created during token resolution and authenticated).
@@ -50,7 +50,7 @@ interface IAuthentication {
      * The identity of the principal being authenticated.
      * Note, this will vary according to differet authentication mechansisms.
      * In the case of an authentication request (<code>IAuthenticationManager.authentication($authToken)</code>)
-     * with username and password, this would be the username. For X509
+     * with username and password, this would be the username. For X.509
      * it would be the certificate DN. Callers are expected to populate the
      * principal for an authentication request (<code>IAuthenticationManager.authentication($authToken)</code>).
      * <p>
@@ -65,7 +65,7 @@ interface IAuthentication {
 
     /**
      * Get current principal's credentials (usually a password). Never null. When a password is not
-     * used for the chosen auth scheme (e.g. X509), return an empty string.
+     * used for the chosen auth scheme (e.g. X.509), return an empty string.
      * @return object never null
      */
     public function getCredentials();
@@ -113,7 +113,7 @@ interface IAuthentication {
     * Implementations MUST throw an AuthenticationException if the token's internal state becomes
     * invalid due to whatever change (required since instances are mutable).
     * <p>
-    * For example, in the case of a cached x509 token, the client may freely change
+    * For example, in the case of a cached X.509 token, the client may freely change
     * their certificate in their browser by clearing the browser ssl
     * cache and refreshing the page. In this case, the DN may change from the
     * initial DN used when constructing the token.

@@ -390,7 +390,7 @@ class PIRequest {
             // Check if it is registered API Authentication credential.
 
             $authEntServ = \Factory::getAPIAuthenticationService();
-            $authEnt = $authEntServ->getAPIAuthentication($this->dn, "X509");
+            $authEnt = $authEntServ->getAPIAuthentication($this->dn, "X.509");
 
             if (!is_null($authEnt)) {
                 $authEntServ->updateLastUseTime($authEnt);

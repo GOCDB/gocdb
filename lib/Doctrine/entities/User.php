@@ -164,7 +164,7 @@ class User {
     }
 
     /**
-     * Get the user's unique ID string, typically an x509 DN string.
+     * Get the user's unique ID string, typically an X.509 DN string.
      * This should return null once the user has user identifiers.
      * @return string
      */
@@ -281,7 +281,7 @@ class User {
     }
 
     /**
-     * Set the user's unique ID string, typically an x509 DN string.
+     * Set the user's unique ID string, typically an X.509 DN string.
      * This should only be used to set the value to null
      * when user identifiers are first added to an old user.
      * @param string $certificateDn

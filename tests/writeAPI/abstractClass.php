@@ -179,7 +179,7 @@ abstract class AbstractWriteAPITestClass extends PHPUnit_Extensions_Database_Tes
             $urlString .= '/' . $entKey;
         }
 
-        return $this->arbitaryValuesWriteAPICall($method, $urlString, $requestContents, 'X509', $authIdent);
+        return $this->arbitaryValuesWriteAPICall($method, $urlString, $requestContents, 'X.509', $authIdent);
     }
 
   /**
@@ -234,7 +234,7 @@ abstract class AbstractWriteAPITestClass extends PHPUnit_Extensions_Database_Tes
       #We need a credential that can access the writeAPI associated with the sites
         $authEnt = new \APIAuthentication();
         $authEnt->setIdentifier($this->validAuthIdent);
-        $authEnt->setType('X509');
+        $authEnt->setType('X.509');
         $site->addAPIAuthenticationEntitiesDoJoin($authEnt);
 
       #And then we get Doctrine to update the DB

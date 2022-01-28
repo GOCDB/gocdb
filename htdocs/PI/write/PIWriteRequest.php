@@ -118,7 +118,7 @@ class PIWriteRequest {
    * @param  string $requestUrl url used to access API, only the last section
    * @param  string|null $requestContents contents of the request (JSON String or null)
    * @param  Site $siteService Site Service
-   * @param array ('userIdentifier'=><Identifier of user>,'userIdentifierType'=><Type of identifier e.g. X509>)
+   * @param array ('userIdentifier'=><Identifier of user>,'userIdentifierType'=><Type of identifier e.g. X.509>)
    * @return array ('httpResponseCode'=><code>,'returnObject'=><object to return to user>)
    */
   public function processRequest($method, $requestUrl, $requestContents, Site $siteService, $authArray) {
@@ -620,10 +620,10 @@ class PIWriteRequest {
    */
   private function checkUserAuthenticated () {
     if (empty($this->userIdentifier)) {
-      #yes 403 - 401 is not appropriate for X509 authentication
+      #yes 403 - 401 is not appropriate for X.509 authentication
       $this->exceptionWithResponseCode(403,
         "You need to be authenticated to access this resource. " .
-        "Please provide a valid IGTF X509 Certificate"
+        "Please provide a valid IGTF X.509 Certificate"
       );
     }
   }
@@ -632,7 +632,7 @@ class PIWriteRequest {
     try {
       $siteService->checkAuthorisedAPIIdentifier($site, $identifier, $indentifierType);
     } catch (\Exception $e) {
-      #yes 403 - 401 is not appropriate for X509 authentication
+      #yes 403 - 401 is not appropriate for X.509 authentication
       $this->httpResponseCode = 403;
       throw $e;
     }

@@ -16,7 +16,7 @@
   * The APIAuthenticationEntity defines a credential that can be used to makce
   * changes throught he API for a specific {@see Site}. Each site can have
   * 0-many APIAuthentication entities associated with it. Each entity has an ID,
-  * type, identifier (e.g. DN for x509) and parent site.
+  * type, identifier (e.g. DN for X.509) and parent site.
   *
   * @author George Ryall (github.com/GRyall)
   *
@@ -36,12 +36,12 @@
     protected $parentSite = null;
 
     /**
-    * Defines the type of the authentication entity (e.g 'x509').
+    * Defines the type of the authentication entity (e.g 'X.509').
     * @Column(type="string", nullable=false) */
     protected $type = null;
 
     /**
-    * The unique identifier for the authentication (e.g. DN for x509)
+    * The unique identifier for the authentication (e.g. DN for X.509)
     * @Column(type="string", nullable=false) */
     protected $identifier = null;
 

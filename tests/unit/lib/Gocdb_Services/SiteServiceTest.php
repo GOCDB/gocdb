@@ -212,7 +212,7 @@ class siteServiceTest extends PHPUnit_Extensions_Database_TestCase
             $site,
             $user,
             array('IDENTIFIER' => '/CN=A Dummy Subject' ,
-                              'TYPE' => 'X509',
+            'TYPE' => 'X.509',
             'ALLOW_WRITE' => false)
         );
 

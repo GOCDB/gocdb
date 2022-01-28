@@ -204,12 +204,13 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
             $this->user,
             array(
             "IDENTIFIER" => $this->user->getUserIdentifiers()[0]->getKeyValue(),
-            "TYPE" => "X509",
+            "TYPE" => "X.509",
             "ALLOW_WRITE" => false
             )
         );
         return;
     }
+
   /**
    * Tests begin here
    */
