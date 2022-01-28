@@ -72,9 +72,9 @@ class IAMAuthToken implements IAuthentication {
     public function getPrinciple() {
        return $this->principal;
     }
-    
-    
-    
+
+
+
     private function getAttributesInitToken(){
         if(isset($_SERVER['OIDC_access_token'])){
             # Token issuer could be either https://iris-iam.stfc.ac.uk/ or https://iris-iam.stfc.ac.uk
