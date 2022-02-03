@@ -35,8 +35,8 @@ class MyConfig1 implements IConfigFirewallComponent {
 
        $this->tokenClassList = array();
        $this->tokenClassList[] = 'org\gocdb\security\authentication\X509AuthenticationToken';
-       $this->tokenClassList[] = 'org\gocdb\security\authentication\IAMAuthToken';
-       //$this->tokenClassList[] = 'org\gocdb\security\authentication\ShibAuthToken';
+       //$this->tokenClassList[] = 'org\gocdb\security\authentication\IAMAuthToken';
+       $this->tokenClassList[] = 'org\gocdb\security\authentication\ShibAuthToken';
        //$this->tokenClassList[] = 'org\gocdb\security\authentication\SimpleSamlPhpAuthToken';
        //$this->tokenClassList[] = 'org\gocdb\security\authentication\UsernamePasswordAuthenticationToken';
     }
