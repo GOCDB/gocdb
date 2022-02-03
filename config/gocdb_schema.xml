@@ -589,7 +589,7 @@
         <field>
             <fname>TYPE</fname>
             <length>255</length>
-            <regex>/^X509$/</regex>
+            <regex>/^(X509|OIDC Subject)$/</regex>
         </field>
     </entity>
 </schema>

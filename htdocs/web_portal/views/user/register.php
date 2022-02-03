@@ -57,19 +57,19 @@
             Forename *
             <span class="input_syntax" >(unaccentuated letters, spaces, dashes and quotes)</span>
         </span>
-        <input class="input_input_text" type="text" name="FORENAME" />
+        <input class="input_input_text" type="text" name="FORENAME" value="<?php  xecho($params['given_name']) ?>" />
 
         <span class="input_name">
             Surname *
             <span class="input_syntax" >(unaccentuated letters, spaces, dashes and quotes)</span>
         </span>
-        <input class="input_input_text" type="text" name="SURNAME" />
+        <input class="input_input_text" type="text" name="SURNAME" value="<?php  xecho($params['family_name']) ?>" />
 
         <span class="input_name">
             E-Mail *
             <span class="input_syntax" >(valid e-mail format)</span>
         </span>
-        <input class="input_input_text" type="text" name="EMAIL" />
+        <input class="input_input_text" type="text" name="EMAIL" value="<?php  xecho($params['email']) ?>" />
 
         <span class="input_name">
             Telephone Number

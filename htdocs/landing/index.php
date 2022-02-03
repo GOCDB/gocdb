@@ -21,7 +21,28 @@
             <p>Use of GOCDB is governed by the <a class="docLink hover" href="aup.html">EGI Acceptable Use Policy</a> which places restrictions on your use of the service.</p>
             <p>The <a class="docLink hover" href="privacy.html">GOCDB Privacy Notice</a> describes what personal data is collected and why, and your rights regarding this data.</p>
             <p> Please read these documents before accessing GOCDB.</p>
-            <a href="/portal/" class="button">Access GOCDB</a>
+          </div>
+          <div style="width: 80%; margin-left: auto; margin-right: auto;">
+            <a href="/portal/" style="width:68%; font-size:1.7em" class="button">Access GOCDB using your IGTF X.509 Certificate</a>
+            <p>or</p>
+            <p>Access GOCDB using one of the following:</p>
+            <div>
+                <?php
+                $hostname = $_SERVER['HTTP_HOST'];
+                $egi_target = urlencode("https://" . $hostname . "/portal/");
+                $egi_redirect = "https://" . $hostname . "/Shibboleth.sso/Login?target=" . $egi_target;
+                if($_SERVER['REQUEST_URI'] === "/"){
+                    $iam_target = "target_link_uri=" . urlencode("https://" . $hostname . "/portal/");
+                }
+                else{
+                    $iam_target=ltrim($_SERVER['REQUEST_URI'], '/?');
+                }
+                $iris_url = urlencode("https://iris-iam.stfc.ac.uk/");
+                $iam_redirect = "https://" . $hostname . "/portal/redirect_uri?iss=" . $iris_url . "&" . $iam_target;
+                ?>
+                <a style="width:30%; display:inline-block; font-size:1.5em" href="<?php echo $egi_redirect; ?>" class="button">EGI Check-In</a>
+                <a style="width:30%; display:inline-block; font-size:1.5em"  href="<?php echo $iam_redirect ?>" class="button">IRIS IAM</a>
+            </div>
             <p>Browse the <a href="https://wiki.egi.eu/wiki/GOCDB" class="docLink hover">GOCDB documentation index</a> on the EGI wiki.</p>
           </div>
 

@@ -59,6 +59,7 @@ function draw(\User $user = null, \Site $site = null) {
     $params['site'] = $site;
     $params['authTypes'] = array();
     $params['authTypes'][]='X509';
+    $params['authTypes'][]='OIDC Subject';
 
     show_view("site/add_api_auth.php", $params);
     die();

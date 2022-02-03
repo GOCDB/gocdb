@@ -4,7 +4,7 @@
     <b>Caution: it is possible to delete information using the write functionality of the API.</b>
     <br/>
     <form class="inputForm" method="post" action="index.php?Page_Type=Add_API_Authentication_Entity&parentid=<?php echo($params['site']->getId());?>" name="addAPIAuthenticationEntity">
-        <span class="input_name">Identifier (e.g. Certificate DN)*</span>
+        <span class="input_name">Identifier (e.g. Certificate DN or OIDC Subject)*</span>
         <input type="text" value="" name="IDENTIFIER" class="input_input_text">
         <br />
         <span class="input_name">Credential type*</span>
