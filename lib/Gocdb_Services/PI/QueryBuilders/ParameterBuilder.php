@@ -146,10 +146,7 @@ class ParameterBuilder {
         ++$bc;
         $qb->leftJoin('u.userIdentifiers', 'up');
         $qb->andWhere($qb->expr()->orX(
-            $qb->expr()->andX(
-                $qb->expr()->like('up.keyValue', '?' . $bc),
-                $qb->expr()->like('up.keyName', $qb->expr()->literal('X.509'))
-            ),
+            $qb->expr()->like('up.keyValue', '?' . $bc),
             $qb->expr()->like('u.certificateDn', '?' . $bc)
         ));
         $this->binds[] = array($bc, $parameters ['dn']);
@@ -159,10 +156,7 @@ class ParameterBuilder {
         ++$bc;
         $qb->leftJoin('u.userIdentifiers', 'up');
         $qb->andWhere($qb->expr()->orX(
-            $qb->expr()->andX(
-                $qb->expr()->like('up.keyValue', '?' . $bc),
-                $qb->expr()->like('up.keyName', $qb->expr()->literal('X.509'))
-            ),
+            $qb->expr()->like('up.keyValue', '?' . $bc),
             $qb->expr()->like('u.certificateDn', '?' . $bc)
         ));
         $this->binds[] = array($bc, $parameters ['dnlike']);
