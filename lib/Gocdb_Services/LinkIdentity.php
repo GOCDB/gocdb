@@ -304,7 +304,7 @@ class LinkIdentity extends AbstractEntityService {
         $primaryBody = $composedPrimaryEmail['body'];
 
         // If "sendmail_from" is set in php.ini, use second line ($headers = '';):
-        $headers = "From: no-reply@goc.egi.eu";
+        $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
 
         // Mail command returns boolean. False if message not accepted for delivery.
         if (!mail($primaryUser->getEmail(), $primarySubject, $primaryBody, $headers)) {
