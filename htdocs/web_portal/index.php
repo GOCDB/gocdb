@@ -284,6 +284,11 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/user/view_user.php';
             view_user();
             break;
+        case "Remove_User_Identifier":
+            rejectIfNotAuthenticated();
+            require_once __DIR__.'/controllers/user/delete_user_identifier.php';
+            delete_identifier();
+            break;
         case "Downtime":
             rejectIfNotAuthenticated();
             require_once __DIR__.'/controllers/downtime/view_downtime.php';
@@ -412,11 +417,6 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/site/edit_cert_status.php';
             edit();
             break;
-        case "Retrieve_Account":
-            rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/user/retrieve_account.php';
-            retrieve();
-            break;
         case "Remove_Project_NGIs":
             rejectIfNotAuthenticated();
             require_once __DIR__.'/controllers/project/remove_ngis.php';
@@ -487,10 +487,10 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/admin/users.php';
             show_users();
             break;
-        case "Admin_Edit_User_DN":
+        case "Admin_Edit_User_Identifier":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/admin/edit_user_dn.php';
-            edit_dn();
+            require_once __DIR__.'/controllers/admin/edit_user_identifier.php';
+            edit_identifier();
             break;
 //        case "Admin_Change_User_Admin_Status":
 //            rejectIfNotAuthenticated();
@@ -531,11 +531,6 @@ function Draw_Page($Page_Type) {
             rejectIfNotAuthenticated();
             require_once __DIR__.'/controllers/admin/delete_ngi.php';
             delete_ngi();
-            break;
-        case "User_Validate_DN_Change" :
-            rejectIfNotAuthenticated();
-            require_once __DIR__ . '/controllers/user/retrieve_account_user_validate.php';
-            validate_dn_change ();
             break;
         case "Add_Site_Properties" :
             rejectIfNotAuthenticated();
@@ -646,6 +641,16 @@ function Draw_Page($Page_Type) {
             rejectIfNotAuthenticated();
             require_once __DIR__ . '/controllers/site/delete_api_auth.php';
             delete_entity();
+            break;
+        case "Link_Identity" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/user/link_identity.php';
+            link_identity();
+            break;
+        case "User_Validate_Identity_Link" :
+            rejectIfNotAuthenticated();
+            require_once __DIR__ . '/controllers/user/link_identity_user_validate.php';
+            validate_identity_link();
             break;
         default:
         // require auth by default

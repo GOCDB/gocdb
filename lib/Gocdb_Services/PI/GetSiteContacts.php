@@ -274,6 +274,7 @@ class GetSiteContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderable 
      */
     private function getXML(){
         $helpers = $this->helpers;
+        $serv = \Factory::getUserService();
 
         $sites = $this->sites;
         $xml = new \SimpleXMLElement("<results />");
@@ -309,7 +310,15 @@ class GetSiteContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderable 
                         $xmlContact->addChild ( 'TITLE', $user->getTitle () );
                         $xmlContact->addChild ( 'EMAIL', $user->getEmail () );
                         $xmlContact->addChild ( 'TEL', $user->getTelephone () );
-                        $xmlContact->addChild ( 'CERTDN', $user->getCertificateDn () );
+
+                        if (\Factory::getConfigService()->getAPIAllAuthRealms()) {
+                            $xmlContact->addChild ( 'CERTDN', $serv->getIdStringByAuthType ( $user, 'X.509' ) );
+                            $xmlContact->addChild ( 'EGICHECKIN', $serv->getIdStringByAuthType ( $user, 'EGI Proxy IdP' ) );
+                            $xmlContact->addChild ( 'IRISIAM', $serv->getIdStringByAuthType ( $user, 'IRIS IAM - OIDC' ) );
+                        } else {
+                            $xmlContact->addChild ( 'CERTDN', $serv->getDefaultIdString ( $user ) );
+                        }
+
                         $xmlContact->addChild ( 'ROLE_NAME', $role->getRoleType ()->getName () );
                     }
                 }

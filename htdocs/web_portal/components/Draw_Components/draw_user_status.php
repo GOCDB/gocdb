@@ -31,16 +31,17 @@
         $user = \Factory::getUserService()->getUserByPrinciple($dn);
         if($user == null) {
             $HTML .= "Unregistered user<br />";
-            $HTML .= 	"<br/><a href=\"index.php?Page_Type=Register\">".
+            $HTML .= "<br/><a href=\"index.php?Page_Type=Register\">".
                 "Register</a><br/>".
-                "<a href=\"index.php?Page_Type=Retrieve_Account\">".
-                "Retrieve Old Account</a><br/>";
+                "<a href=\"index.php?Page_Type=Link_Identity\">".
+                "Link Identity/Recover Account</a>";
 
             $HTML .="</div>";
             return $HTML;
         }
         $HTML .= "Registered as: <br />".$user->getForename() . " " . $user->getSurname() . "<br /><br />";
         $HTML .= Get_User_Info_HTML($user);
+        $HTML .= "<br/><a href=\"index.php?Page_Type=Link_Identity\">" . "Link Identity/Recover Account</a><br/>";
         $HTML .= "</div>";
         return $HTML;
     }

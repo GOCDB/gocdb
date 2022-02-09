@@ -186,7 +186,6 @@ class RoleActionRecord {
     public static function construct(\User $callingUser, \Role $role, $newStatus) {
         $rar = new self(
                 $callingUser->getId(),
-                /* $callingUser->getCertificateDn(), */
                 $callingUser->getFullName(),
                 $role->getId(),
                 $role->getStatus(),

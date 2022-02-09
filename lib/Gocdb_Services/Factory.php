@@ -42,13 +42,13 @@ class Factory {
     private static $configService = null;
     private static $validateService = null;
     private static $certStatusService = null;
-    private static $retrieveAccountService = null;
     private static $serviceTypeService = null;
     private static $projectService = null;
     private static $OwnedEntityService = null;
     private static $exService = null;
     private static $notificationService = null;
     private static $emailService = null;
+    private static $linkIdentityService = null;
 
     public static $properties = array();
     //private static $properties = null;
@@ -336,16 +336,16 @@ class Factory {
     }
 
     /**
-     * Singleton Retrieve Account service
-     * @return org\gocdb\services\RetrieveAccount
+     * Singleton Link Identity service
+     * @return org\gocdb\services\LinkIdentity
      */
-    public static function getRetrieveAccountService() {
-        if (self::$retrieveAccountService == null) {
-            require_once __DIR__ . '/RetrieveAccount.php';
-            self::$retrieveAccountService = new org\gocdb\services\RetrieveAccount();
-            self::$retrieveAccountService->setEntityManager(self::getEntityManager());
+    public static function getLinkIdentityService() {
+        if (self::$linkIdentityService == null) {
+            require_once __DIR__ . '/LinkIdentity.php';
+            self::$linkIdentityService = new org\gocdb\services\LinkIdentity();
+            self::$linkIdentityService->setEntityManager(self::getEntityManager());
         }
-        return self::$retrieveAccountService;
+        return self::$linkIdentityService;
     }
 
      /**

@@ -3,7 +3,7 @@
           onsubmit="return confirm('Click OK to confirm your agreement to the terms and conditions of GOCDB account registration.');">
         <h1>Register</h1>
         <br />
-        Register Unique Identity: <b> <?php echo($params['dn']); ?> </b>
+        Register Unique Identity: <b> <?php echo($params['idString']); ?> </b>
         <br/>
         <br/>
 

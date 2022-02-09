@@ -120,6 +120,18 @@ function Get_User_AuthToken(){
 }
 
 /**
+ * Get the auth type for the user.
+ * @return string or null if can't authenticate request */
+function Get_User_AuthType() {
+    $authType = null;
+    $auth = Get_User_AuthToken();
+    if ($auth !== null) {
+        $authType = $auth->getDetails()['AuthenticationRealm'][0];
+    }
+    return $authType;
+}
+
+/**
  * Get the user's principle string (x509 DN from certificate or from SAML attribute).
  * <p>
  * Called from the portal to allow authentication.
@@ -150,11 +162,31 @@ function Get_User_Principle(){
         MyStaticPrincipleHolder::getInstance()->setPrincipleString($principleString);
         MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth);
 
+        $serv = \Factory::getUserService();
+
+        // Get user by searching user identifiers
+        $user = $serv->getUserByPrinciple($principleString);
+
+        // If cannot find user, search certificate DNs instead
+        if ($user === null) {
+            $user = $serv->getUserByCertificateDn($principleString);
+            $authExists = False;
+        } else {
+            $authExists = True;
+        }
+
         // Is user registered/known in the DB? if true, update their last login time
         // once for the current request.
-        $user = \Factory::getUserService()->getUserByPrinciple($principleString);
-        if($user != null){
-            \Factory::getUserService()->updateLastLoginTime($user);
+        if ($user !== null) {
+            $serv->updateLastLoginTime($user);
+
+            // If identifier for current auth does not exist, add to user
+            if (!$authExists) {
+                // Get type of auth logged in with e.g. X.509)
+                $authType = $auth->getDetails()['AuthenticationRealm'][0];
+                $identifierArr = array($authType, $principleString);
+                $serv->migrateUserCredentials($user, $identifierArr, $user);
+            }
         }
         return $principleString;
     }

@@ -93,9 +93,7 @@ function submitRoleRequest($roleName, $entityId, \User $user =null) {
 
    // Create a new Role linking user, entity and roletype. The addRole
    // perfoms role validation and throws exceptios accordingly.
-   $newRole = \Factory::getRoleService()->addRole($roleName, $user, $entity);
-
-   \Factory::getNotificationService()->roleRequest($newRole, $user, $entity);
+   $newRole = \Factory::getRoleService()->requestRole($roleName, $user, $entity);
 
    show_view('political_role/new_request.php');
 }

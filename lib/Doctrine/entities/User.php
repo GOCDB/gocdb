@@ -47,7 +47,7 @@ class User {
     /** @Column(type="string", nullable=true)  */
     protected $workingHoursEnd = null;
 
-    /** @Column(type="string", unique=true)  */
+    /** @Column(type="string", nullable=true)  */
     protected $certificateDn = null;
 
     /** @Column(type="string", nullable=true)  */
@@ -71,6 +71,12 @@ class User {
     /** @Column(type="datetime", nullable=true)  */
     protected $lastLoginDate;
 
+    /**
+     * Bidirectional - A User (INVERSE ORM SIDE) can have many identifiers
+     * @OneToMany(targetEntity="UserIdentifier", mappedBy="parentUser", cascade={"remove"})
+     */
+    protected $userIdentifiers = null;
+
     /*
      * TODO:
      * This entity will need to own a property bag (akin to custom props)
@@ -87,6 +93,7 @@ class User {
         $this->creationDate = new \DateTime("now");
         //$this->sites = new ArrayCollection();
         $this->roles = new ArrayCollection();
+        $this->userIdentifiers = new ArrayCollection();
     }
 
     /**
@@ -151,7 +158,7 @@ class User {
 
     /**
      * Get the user's unique ID string, typically an x509 DN string.
-     * @todo This needs to be renamed to getAccountID
+     * This should return null once the user has user identifiers.
      * @return string
      */
     public function getCertificateDn() {
@@ -191,6 +198,15 @@ class User {
      */
     public function getLastLoginDate(){
         return $this->lastLoginDate;
+    }
+
+    /**
+     * The User's list of {@see UserIdentifier} extension objects. When the
+     * User is deleted, the userIdentifiers are also cascade deleted.
+     * @return ArrayCollection
+     */
+    public function getUserIdentifiers() {
+        return $this->userIdentifiers;
     }
 
     /**
@@ -258,8 +274,9 @@ class User {
     }
 
     /**
-     * Set the user's unique account ID, typcially and x509 DN string. Required.
-     * @todo Needs renaming to setAccountID
+     * Set the user's unique ID string, typically an x509 DN string.
+     * This should only be used to set the value to null
+     * when user identifiers are first added to an old user.
      * @param string $certificateDn
      */
     public function setCertificateDn($certificateDn) {
@@ -341,6 +358,16 @@ class User {
      */
     public function getRoles() {
         return $this->roles;
+    }
+
+    /**
+     * Add a UserIdentifier entity to this User's collection of identifiers.
+     * This method also sets the UserIdentifier's parentUser.
+     * @param \UserIdentifier $userIdentifier
+     */
+    public function addUserIdentifierDoJoin($userIdentifier) {
+        $this->userIdentifiers[] = $userIdentifier;
+        $userIdentifier->_setParentUser($this);
     }
 
 }
