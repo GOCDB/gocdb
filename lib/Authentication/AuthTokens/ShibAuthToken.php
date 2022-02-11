@@ -166,6 +166,47 @@ class ShibAuthToken implements IAuthentication {
             $this->userDetails = array('AuthenticationRealm' => array('EGI Proxy IdP'));
             return;
         }
+        else if($idp == 'https://aai-demo.eosc-portal.eu/proxy/saml2/idp/metadata.php'){
+            if( empty($_SERVER['epuid'])){
+                die('Did not receive required ePUID attributes from the EOSC Demo Proxy Identity Provider to complete authentication, please contact gocdb-admins');
+            }
+            if(empty($_SERVER['entitlement'])){
+                die('Did not receive the required entitlement attribute from the EOSC Demo Proxy Identity Provider, please contact gocdb-admins');
+            }
+            $entitlementValuesArray = explode(';', $_SERVER['entitlement']);
+            if( !in_array('FOO BAR', $entitlementValuesArray) ){
+                 $HTML = '<ul><li>You authenticated to the EOSC Demo Proxy Identity Provider using a method that does not provide a GOCDB entitlement.</li><li>Login is required with a GOCDB entitlement.</li><li>To gain access, you will need to login to the Proxy IdP using a scheme that provides a gocdb entitlement.</li><li>Please logout or restart your browser and attempt to login again.</li></ul>';
+                 $HTML .= "<div style='text-align: center;'>";
+                 $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
+                 $HTML .= "</div>";
+                 echo ($HTML);
+                 die();
+            }
+            $this->principal = $_SERVER['epuid'];
+            $this->userDetails = array('AuthenticationRealm' => array('EOSC Demo Proxy IdP'));
+            return;
+        }
+        else if($idp == 'https://aai.eosc-portal.eu/proxy/saml2/idp/metadata.php'){
+            if( empty($_SERVER['epuid'])){
+                die('Did not receive required ePUID attributes from the EOSC Proxy Identity Provider to complete authentication, please contact gocdb-admins');
+            }
+            if(empty($_SERVER['entitlement'])){
+                die('Did not receive the required entitlement attribute from the EOSC Proxy Identity Provider, please contact gocdb-admins');
+            }
+            $entitlementValuesArray = explode(';', $_SERVER['entitlement']);
+            if( !in_array('FOO BAR', $entitlementValuesArray) ){
+                 $HTML = '<ul><li>You authenticated to the EOSC Proxy Identity Provider using a method that does not provide a GOCDB entitlement.</li><li>Login is required with a GOCDB entitlement.</li><li>To gain access, you will need to login to the Proxy IdP using a scheme that provides a gocdb entitlement.</li><li>Please logout or restart your browser and attempt to login again.</li></ul>';
+                 $HTML .= "<div style='text-align: center;'>";
+                 $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
+                 $HTML .= "</div>";
+                 echo ($HTML);
+                 die();
+            }
+            $this->principal = $_SERVER['epuid'];
+            $this->userDetails = array('AuthenticationRealm' => array('EOSC Proxy IdP'));
+            return;
+        }
+
 
 
 //        else {
