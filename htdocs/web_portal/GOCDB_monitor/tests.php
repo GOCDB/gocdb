@@ -40,6 +40,7 @@ $disp = array(
 
 // Test the connection to the database using Doctrine
 function test_db_connection(){
+    $retval = [];
     try {
         $entityManager = Factory::getNewEntityManager();
         $entityManager->getConnection()->connect();
@@ -55,6 +56,7 @@ function test_db_connection(){
 }
 
 function test_url($url) {
+    $retval = [];
     try{
         get_https2($url);
         $retval["status"] = "ok";
@@ -96,8 +98,8 @@ function get_https2($url){
         CURLOPT_CAPATH => '/etc/grid-security/certificates/'
     );
     if( defined('SERVER_SSLCERT') && defined('SERVER_SSLKEY') ){
-      $curloptions[CURLOPT_SSLCERT] = SERVER_SSLCERT;
-      $curloptions[CURLOPT_SSLKEY] = SERVER_SSLKEY;
+      $curloptions[CURLOPT_SSLCERT] = constant("SERVER_SSLCERT");
+      $curloptions[CURLOPT_SSLKEY] = constant("SERVER_SSLKEY");
     }
 
     $handle = curl_init();
@@ -126,5 +128,43 @@ function get_https2($url){
 function get_testPiMethod () {
     return  "/public/?method=get_site_list";
 }
+/**
+ * Run the standard 3 GOCDB monitoring tests
+ *
+ * @param   string    &$message     Returned error messages or ''
+ * @return  int                     Count of failed tests
+ */
+function run_tests (&$message) {
 
+
+    $errorCount = 0;
+    $messages = [];
+
+    $res = test_db_connection();
+
+    if ($res["status"] != "ok") {
+        $errorCount++;
+        $messages[] = "Database connection test failed: " . $res["message"];
+    }
+
+    $res= test_url(Factory::getConfigService()->GetPiUrl().
+                    get_testPiMethod()
+                );
+
+    if ($res["status"] != "ok") {
+        $errorCount++;
+        $messages[] = "PI interface test failed: " . $res["message"];
+    }
+
+    $res = test_url(Factory::getConfigService()->GetPortalURL());
+
+    if ($res["status"] != "ok") {
+        $errorCount++;
+        $messages[] = "Server base URL test failed: " . $res["message"];
+    }
+
+    $message = join(" | ", $messages);
+
+    return $errorCount;
+}
 ?>
