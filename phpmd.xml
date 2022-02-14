@@ -39,13 +39,12 @@
             <property name="exceptions" value="Factory,TestUtil,ServiceTestUtil" />
         </properties>
     </rule>
-    <!--
     <rule ref="rulesets/cleancode.xml/MissingImport">
+        <!-- Add the rule back with modifications -->
         <properties>
             <property name="ignore-global" value="true" />
         </properties>
     </rule>
-    -->
 
     <rule ref="rulesets/naming.xml">
         <exclude name="ShortVariable" />
@@ -54,16 +53,11 @@
         <!-- Allow common GOCDB exceptions for Entity Manager, cert DN etc. -->
         <properties>
             <property name="exceptions" value="em,dn,id" />
-            <!-- Alternative syntax is
-            <property name="exceptions">
-                <value>em,dn</value>
-            </property>
-            -->
         </properties>
     </rule>
 
     <rule ref="rulesets/design.xml">
-        <!-- <exclude name="ExitExpression"/> Current GOCDB practice -->
+        <exclude name="ExitExpression"/> <!-- Current GOCDB practice -->
     </rule>
 
 
