@@ -56,7 +56,7 @@ class NotificationService extends AbstractEntityService {
         if (count($authorisingUserIds) == 0) {
             if ($entity instanceof \Site) {
                 // Sites can only have a single parent NGI.
-                $this->roleRequest ( $roleRequested, $requestingUser, $entity->getNgi () ); // Recursivly call this function to send email to the NGI 
+                $this->roleRequest ( $roleRequested, $requestingUser, $entity->getNgi () ); // Recursivly call this function to send email to the NGI users
             } else if ($entity instanceof \NGI) {
                 /*
                  * NGIs can belong to multiple Projects.
@@ -77,7 +77,7 @@ class NotificationService extends AbstractEntityService {
 
             // Remove duplicate user ids from array
             $authorisingUserIds = array_unique ( $authorisingUserIds );
-			
+
             // Send email to all users who can approve this role request
            foreach ( $authorisingUserIds as $userId ) {
                 $approvingUser = \Factory::getUserService()->getUser($userId);
@@ -164,7 +164,7 @@ class NotificationService extends AbstractEntityService {
             $this->getWebPortalURL()
         );
 
-        $emailAddress = "jounaidruhomaun@googlemail.com";
+        $emailAddress = "gocdb-admins@mailman.egi.eu";
         $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
 
         \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
