@@ -116,7 +116,7 @@
         <!-- Scopes (bottom right) -->
         <div class="tableContainer" style="width: 42%; float: right; margin-top: 1.6em" >
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em; word-wrap: normal">
-                <a href="index.php?Page_Type=Scope_Help">Scope Tags</a>
+                <a href="index.php?Page_Type=Scopes">Scope Tags</a>
             </span>
             <table style="clear: both; width: 100%; table-layout: fixed;">
 

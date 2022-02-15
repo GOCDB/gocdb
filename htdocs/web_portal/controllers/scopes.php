@@ -1,9 +1,9 @@
 <?php
 /*______________________________________________________
  *======================================================
- * File: view_user.php
- * Author: George Ryall, David Meredith
- * Description: Retrieves and draws the data for a user
+ * File: scopes.php
+ * Author: George Ryall, David Meredith, Elliott Kasoar
+ * Description: Controller for showing all scope tags available in GOCDB
  *
  * License information
  *
@@ -17,11 +17,23 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- *
- /*====================================================== */
-require_once __DIR__.'/utils.php';
-function show_help() {
-    //$params['Scopes'] = \Factory::getScopeService()->getScopes();
+ /*======================================================*/
+require_once __DIR__ . '/utils.php';
+require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
+
+function show_scopes() {
+
+    $scopes = \Factory::getScopeService()->getScopes();
+    $params['Scopes'] = $scopes;
+
+    $idString = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($idString);
+    $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
+
+    $params['UserIsAdmin'] = false;
+    if(!is_null($user)) {
+        $params['UserIsAdmin'] = $user->isAdmin();
+    }
 
     $optionalScopes = \Factory::getScopeService()->getScopesFilterByParams(
                     array('excludeReserved' => true), null);
@@ -31,5 +43,6 @@ function show_help() {
     $params['optionalScopes'] = $optionalScopes;
     $params['reservedScopes'] = $reservedScopes;
 
-    show_view("scope_help.php", $params, "Scopes");
+    show_view('scopes.php', $params, 'Scopes');
+    die();
 }

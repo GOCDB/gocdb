@@ -91,7 +91,7 @@
 
 
         <div class="topMargin leftFloat siteFilter">
-        <span class=""><a href="index.php?Page_Type=Scope_Help">Service Scopes:</a> </span>
+        <span class=""><a href="index.php?Page_Type=Scopes">Service Scopes:</a> </span>
         <select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
             <?php foreach ($params['scopes'] as $scope) { ?>
             <option value="<?php xecho($scope->getName()); ?>"

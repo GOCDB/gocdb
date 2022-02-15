@@ -89,7 +89,7 @@
         <div style="display: inline; float: none;">
             <span class="input_name" style="">
                Is this service visible to EGI?
-               <a href=""index.php?Page_Type=Scope_Help"">
+               <a href=""index.php?Page_Type=Scopes"">
                    (Help)
                </a>
             </span>

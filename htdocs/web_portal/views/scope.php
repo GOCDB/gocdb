@@ -1,19 +1,17 @@
-
 <?php
 $name = $params['Name'];
 $id = $params['ID'];
 $description = $params['Description'];
 $ngis = $params['NGIs'];
-$ngiCount = sizeof($ngis);
+$ngiCount = count($ngis);
 $sites = $params['Sites'];
-$siteCount = sizeof($sites);
+$siteCount = count($sites);
 $serviceGroups = $params['ServiceGroups'];
-$serviceGroupsCount = sizeof($serviceGroups);
+$serviceGroupsCount = count($serviceGroups);
 $services = $params['Services'];
-$serviceCount = sizeof($services);
+$serviceCount = count($services);
 $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
 ?>
-
 
 <div class="rightPageContainer">
 
@@ -36,8 +34,8 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
     </div>
 
     <!--Edit/Delete buttons-->
-    <!-- don't display in read only mode -->
-    <?php if(!$params['portalIsReadOnly']):?>
+    <!-- don't display in read only mode or if user is not admin -->
+    <?php if(!$params['portalIsReadOnly'] && $params['UserIsAdmin']):?>
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Admin_Edit_Scope&amp;id=<?php echo $id ?>">
@@ -59,7 +57,6 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             </div>
         </div>
     <?php endif; ?>
-
 
     <!--  NGIs -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
@@ -188,7 +185,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <?php endif; ?>
     </div>
 
-      <!--  Services - count and link -->
+    <!--  Services - count and link -->
     <div class="listContainer">
         <span class="header listHeader">
             There <?php if($serviceCount==1){echo "is";}else{echo "are";}?> <?php if ($serviceCount == 0){echo "no";} else{echo $serviceCount;} ?> service<?php if($serviceCount != 1) echo "s"?> with this scope
@@ -206,5 +203,4 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             </table>
         <?php endif; ?>
     </div>
-
 </div>

@@ -137,7 +137,7 @@ $dt = $params['downtime'];
                     <th class="site_table">Service Hostname (service type)</th>
                     <th class="site_table">Description</th>
                     <th class="site_table">Production</th>
-                    <th class="site_table"><a href="index.php?Page_Type=Scope_Help">Scope(s)</a></th>
+                    <th class="site_table"><a href="index.php?Page_Type=Scopes">Scope(s)</a></th>
                 </tr>
 
                 <?php

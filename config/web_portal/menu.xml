@@ -45,7 +45,7 @@
     <Scopes>
       <show_on_instance>all</show_on_instance>
       <name>Scopes</name>
-      <link>index.php?Page_Type=Scope_Help</link>
+      <link>index.php?Page_Type=Scopes</link>
     </Scopes>
 
     <RoleActionMappings>
@@ -148,12 +148,6 @@
       <name>Move Site</name>
       <link>index.php?Page_Type=Admin_Move_Site</link>
     </MoveSite>
-    
-    <AdminScopes>
-	  <show_on_instance>admin</show_on_instance>
-      <name>Scopes</name>
-      <link>index.php?Page_Type=Admin_Scopes</link>
-    </AdminScopes>
     
     <ServiceTypes>
 	  <show_on_instance>admin</show_on_instance>

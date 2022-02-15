@@ -149,7 +149,7 @@ $configService = \Factory::getConfigService();
                         }
                         ?>
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Scope_Help" style="word-wrap: normal"
+                        <a href="index.php?Page_Type=Scopes" style="word-wrap: normal"
                             title="Note, Scope(x) indicates the parent Site does not share this scope">
                             Scope Tags
                         </a>
