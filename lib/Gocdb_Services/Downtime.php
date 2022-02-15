@@ -523,6 +523,42 @@ class Downtime extends AbstractEntityService{
     }
 
     /**
+     * Check start of scheduled downtime is at least one day in the future
+     * @param $startTime
+     * @param $classification
+     * @throws \Exception if the downtime is not eligible for editing/deleting.
+     */
+    private function validateStartTime($startTime, $classification) {
+        if ($classification === "SCHEDULED") {
+            $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
+            $oneDay = \DateInterval::createFromDateString('1 days');
+            $tomorrowUtc = $nowUtc->add($oneDay);
+
+            if($startTime < $tomorrowUtc) {
+                throw new \Exception("Cannot edit or delete a SCHEDULED downtime starting within 24 hours.");
+            }
+        }
+    }
+
+    /**
+     * Check deletion of a downtime is allowed
+     * @param \Downtime $dt
+     * @throws \Exception if the downtime is not eligible for deletion.
+     */
+    public function deleteValidation(\Downtime $dt) {
+        // Cannot delete dt if already started
+        if($dt->hasStarted()) {
+            throw new \Exception("This downtime has already started.");
+        }
+
+        /* @var $startTime \DateTime */
+        $startTime = $dt->getStartDate()->setTimezone(new \DateTimeZone('UTC'));
+
+        // Cannot delete dt if it starts within 24 hours
+        $this->validateStartTime($startTime, $dt->getClassification());
+    }
+
+    /**
      * Check with the business rules that the existing downtime's dates
      * allow editing of the downtime.
      * @link https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Downtime_shortening_and_extension downtime shortening and extension
@@ -543,15 +579,8 @@ class Downtime extends AbstractEntityService{
             throw new \Exception("Can't edit a downtime that has already finished.");
         }
 
-        $oneDay = \DateInterval::createFromDateString('1 days');
-        $tomorrowUtc = $nowUtc->add($oneDay);
-
-        if($dt->getClassification() == "SCHEDULED") {
-            // Can't edit dt if it start within 24 hours
-            if($oldStart < $tomorrowUtc) {
-                throw new \Exception("Can't edit a SCHEDULED downtime starting within 24 hours.");
-            }
-        }
+        // Cannot edit dt if it starts within 24 hours
+        $this->validateStartTime($oldStart, $dt->getClassification());
     }
 
     /**
@@ -582,16 +611,8 @@ class Downtime extends AbstractEntityService{
             throw new \Exception("Downtime start date can only be changed to a date in the future"); //Downtime can't start in the past.");
         }
 
-        $oneDay = \DateInterval::createFromDateString('1 days');
-        $tomorrow = $now->add($oneDay);
-
-        // Rules specific to scheduled downtimes
-        if($dt->getClassification() == "SCHEDULED") {
-            // A scheduled downtime can't start less than 24 hours from now.
-            if($newStart < $tomorrow) {
-                throw new \Exception("A SCHEDULED downtime can't start less than 24 hours from now.");
-            }
-        }
+        // A scheduled downtime cannot start less than 24 hours from now.
+        $this->validateStartTime($newStart, $dt->getClassification());
     }
 
 
@@ -658,12 +679,8 @@ class Downtime extends AbstractEntityService{
         $ses = $dt->getServices();
         $this->authorisation($ses, $user);
 
-        // Make sure all dates are treated as UTC!
-        //date_default_timezone_set("UTC");
-
-        if($dt->hasStarted()) {
-            throw new \Exception("This downtime has already started.");
-        }
+        // Check dt is not on-going or scheduled to start within 24 hours
+        $this->deleteValidation($dt);
 
         $this->em->getConnection()->beginTransaction();
         try {
