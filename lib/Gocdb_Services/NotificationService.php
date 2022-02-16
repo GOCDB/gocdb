@@ -140,8 +140,7 @@ class NotificationService extends AbstractEntityService {
         \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
     }
 
-    private function sendGocdbAdminsEmail($roleRequested, $requestingUser)
-    {
+    private function sendGocdbAdminsEmail($roleRequested, $requestingUser) {
         $subject = sprintf(
             'GOCDB: A Role request from %1$s %2$s over %3$s has no approving users',
             $requestingUser->getForename(),
@@ -153,8 +152,8 @@ class NotificationService extends AbstractEntityService {
             implode("\n", array(
                 'Dear GOCDB Admins,',
                 '',
-                '%1$s %2$s requested the "%3$s" role over %4$s, and there are no 
-		approving users available for the request.',
+                '%1$s %2$s requested the "%3$s" role over %4$s, and there are no '.
+                'approving users available for the request.',
                 '',
                 'You can approve or deny the request here:',
                 '    %5$s/index.php?Page_Type=Role_Requests',
