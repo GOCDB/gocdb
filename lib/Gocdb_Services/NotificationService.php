@@ -107,8 +107,7 @@ class NotificationService extends AbstractEntityService {
         return \Factory::getConfigService()->GetPortalURL();
     }
 
-    private function sendEmail($roleRequested, $requestingUser, $entityName, $approvingUser) 
-    {
+    private function sendEmail($roleRequested, $requestingUser, $entityName, $approvingUser) {
         $subject = sprintf(
             'GOCDB: A Role request from %1$s %2$s over %3$s requires your attention',
             $requestingUser->getForename(),
@@ -141,7 +140,7 @@ class NotificationService extends AbstractEntityService {
         \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
     }
 
-    private function sendGocdbAdminsEmail($roleRequested, $requestingUser) 
+    private function sendGocdbAdminsEmail($roleRequested, $requestingUser)
     {
         $subject = sprintf(
             'GOCDB: A Role request from %1$s %2$s over %3$s has no approving users',
