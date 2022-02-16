@@ -70,8 +70,8 @@ class NotificationService extends AbstractEntityService {
                 }
                 $projectIds = array_unique ( $projectIds );
             }
-			// Also send email to GOCDB Admins
-			$this->sendGocdbAdminsEmail($roleRequested, $requestingUser, $entity->getName());
+                // Also send email to GOCDB Admins
+                $this->sendGocdbAdminsEmail($roleRequested, $requestingUser, $entity->getName());
         } else {
             // If the entity has valid users who can approve the role then send the email notification.
 
@@ -107,7 +107,8 @@ class NotificationService extends AbstractEntityService {
         return \Factory::getConfigService()->GetPortalURL();
     }
 
-    private function sendEmail($roleRequested, $requestingUser, $entityName, $approvingUser) {
+    private function sendEmail($roleRequested, $requestingUser, $entityName, $approvingUser) 
+    {
         $subject = sprintf(
             'GOCDB: A Role request from %1$s %2$s over %3$s requires your attention',
             $requestingUser->getForename(),
@@ -139,10 +140,11 @@ class NotificationService extends AbstractEntityService {
 
         \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
     }
-	
-	private function sendGocdbAdminsEmail($roleRequested, $requestingUser, $entityName) {
+
+    private function sendGocdbAdminsEmail($roleRequested, $requestingUser) 
+    {
         $subject = sprintf(
-            'GOCDB: A Role request from %1$s %2$s over %3$s has no approving',
+            'GOCDB: A Role request from %1$s %2$s over %3$s has no approving users',
             $requestingUser->getForename(),
             $requestingUser->getSurname(),
             $roleRequested->getOwnedEntity()->getName()
@@ -152,7 +154,8 @@ class NotificationService extends AbstractEntityService {
             implode("\n", array(
                 'Dear GOCDB Admins,',
                 '',
-                '%1$s %2$s requested the "%3$s" role over %4$s, and there are no approving users available for the request.',
+                '%1$s %2$s requested the "%3$s" role over %4$s, and there are no 
+		approving users available for the request.',
                 '',
                 'You can approve or deny the request here:',
                 '    %5$s/index.php?Page_Type=Role_Requests',
