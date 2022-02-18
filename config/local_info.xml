@@ -115,7 +115,7 @@
     <send_email>false</send_email>
     
     <!-- Email list for GOCDB admins -->
-	  <admins_email>gocdb-admins@mailman.egi.eu</admins_email>
+    <admins_email>gocdb-admins@mailman.egi.eu</admins_email>
 
     <!-- menus
       Give the xml element names from config/web_portal/menu.xml
