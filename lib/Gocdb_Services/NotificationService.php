@@ -165,7 +165,7 @@ class NotificationService extends AbstractEntityService {
             $this->getWebPortalURL()
         );
 
-        $emailAddress = "gocdb-admins@mailman.egi.eu";
+        $emailAddress = \Factory::getConfigService()->getGocdbAdminsEmail();
         $headers = "From: GOCDB";
 
         \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
