@@ -79,11 +79,11 @@ class ShibAuthToken implements IAuthentication {
     public function getPrinciple() {
        return $this->principal;
     }
-    
-    
-    
+
+
+
     private function getAttributesInitToken(){
-        $hostname = $_SERVER['HTTP_HOST']; // don't use $_SERVER['SERVER_NAME'] as this don't support DNS 
+        $hostname = $_SERVER['HTTP_HOST']; // don't use $_SERVER['SERVER_NAME'] as this don't support DNS
         // specify location of the Shib Logout handler
         \Factory::$properties['LOGOUTURL'] = 'https://'.$hostname.'/Shibboleth.sso/Logout';
         $idp = isset($_SERVER['Shib-Identity-Provider']) ? $_SERVER['Shib-Identity-Provider'] : '';
@@ -152,8 +152,8 @@ class ShibAuthToken implements IAuthentication {
             }
             if(empty($_SERVER['entitlement'])){
                 die('Did not receive the required entitlement attribute from the EGI Dev Proxy IdP, please contact gocdb-admins');
-            } 
-            $entitlementValuesArray = explode(';', $_SERVER['entitlement']); 
+            }
+            $entitlementValuesArray = explode(';', $_SERVER['entitlement']);
             if( !in_array('urn:mace:egi.eu:res:gocdb#aai.egi.eu', $entitlementValuesArray) ){
                  $HTML = '<ul><li>You authenticated to the EGI Dev Identity Provider using a method that does not provide a GOCDB entitlement.</li><li>Login is required with a gocdb entitlement.</li><li>To gain access, you will need to login to the Proxy IdP using a scheme that provides a gocdb entitlement.</li><li>Please logout or restart your browser and attempt to login again.</li></ul>';
                  $HTML .= "<div style='text-align: center;'>";
