@@ -167,8 +167,8 @@ class ShibAuthToken implements IAuthentication {
             return;
         }
         else if($idp == 'https://aai-demo.eosc-portal.eu/proxy/saml2/idp/metadata.php'){
-            if( empty($_SERVER['epuid'])){
-                die('Did not receive required ePUID attributes from the EOSC Demo Proxy Identity Provider to complete authentication, please contact gocdb-admins');
+            if( empty($_SERVER['voPersonID'])){
+                die('Did not receive required voPersonID attributes from the EOSC Demo Proxy Identity Provider to complete authentication, please contact gocdb-admins');
             }
             if(empty($_SERVER['entitlement'])){
                 die('Did not receive the required entitlement attribute from the EOSC Demo Proxy Identity Provider, please contact gocdb-admins');
@@ -182,13 +182,13 @@ class ShibAuthToken implements IAuthentication {
                  echo ($HTML);
                  die();
             }
-            $this->principal = $_SERVER['epuid'];
+            $this->principal = $_SERVER['voPersonID'];
             $this->userDetails = array('AuthenticationRealm' => array('EOSC Demo Proxy IdP'));
             return;
         }
         else if($idp == 'https://aai.eosc-portal.eu/proxy/saml2/idp/metadata.php'){
-            if( empty($_SERVER['epuid'])){
-                die('Did not receive required ePUID attributes from the EOSC Proxy Identity Provider to complete authentication, please contact gocdb-admins');
+            if( empty($_SERVER['voPersonID'])){
+                die('Did not receive required voPersonID attributes from the EOSC Proxy Identity Provider to complete authentication, please contact gocdb-admins');
             }
             if(empty($_SERVER['entitlement'])){
                 die('Did not receive the required entitlement attribute from the EOSC Proxy Identity Provider, please contact gocdb-admins');
@@ -202,7 +202,7 @@ class ShibAuthToken implements IAuthentication {
                  echo ($HTML);
                  die();
             }
-            $this->principal = $_SERVER['epuid'];
+            $this->principal = $_SERVER['voPersonID'];
             $this->userDetails = array('AuthenticationRealm' => array('EOSC Proxy IdP'));
             return;
         }
