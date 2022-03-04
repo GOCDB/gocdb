@@ -174,7 +174,7 @@ class ShibAuthToken implements IAuthentication {
                 die('Did not receive the required entitlement attribute from the EOSC Demo Proxy Identity Provider, please contact gocdb-admins');
             }
             $entitlementValuesArray = explode(';', $_SERVER['entitlement']);
-            if( !in_array('FOO BAR', $entitlementValuesArray) ){
+            if( !in_array('urn:geant:eosc-portal.eu:res:gocdb#aai.eosc-portal.eu', $entitlementValuesArray) ){
                  $HTML = '<ul><li>You authenticated to the EOSC Demo Proxy Identity Provider using a method that does not provide a GOCDB entitlement.</li><li>Login is required with a GOCDB entitlement.</li><li>To gain access, you will need to login to the Proxy IdP using a scheme that provides a gocdb entitlement.</li><li>Please logout or restart your browser and attempt to login again.</li></ul>';
                  $HTML .= "<div style='text-align: center;'>";
                  $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
@@ -194,7 +194,7 @@ class ShibAuthToken implements IAuthentication {
                 die('Did not receive the required entitlement attribute from the EOSC Proxy Identity Provider, please contact gocdb-admins');
             }
             $entitlementValuesArray = explode(';', $_SERVER['entitlement']);
-            if( !in_array('FOO BAR', $entitlementValuesArray) ){
+            if( !in_array('urn:geant:eosc-portal.eu:res:gocdb#aai.eosc-portal.eu', $entitlementValuesArray) ){
                  $HTML = '<ul><li>You authenticated to the EOSC Proxy Identity Provider using a method that does not provide a GOCDB entitlement.</li><li>Login is required with a GOCDB entitlement.</li><li>To gain access, you will need to login to the Proxy IdP using a scheme that provides a gocdb entitlement.</li><li>Please logout or restart your browser and attempt to login again.</li></ul>';
                  $HTML .= "<div style='text-align: center;'>";
                  $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
