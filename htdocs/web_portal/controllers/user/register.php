@@ -56,23 +56,35 @@ function draw() {
     die();
     }
 
-    //Extract users email from oidc claims
-    $authDetails = $_SERVER['OIDC_CLAIM_external_authn'];
-    $startPos = 3+strpos($authDetails, ":", (strpos($authDetails, "MAIL")));
-    $endPos = strpos($authDetails, "\"", 3+$startPos);
-    $length = $endPos-$startPos;
-    $userEmail = substr($authDetails, $startPos, $length);
     $params = [];
+
+    //Extract users email from oidc claims
+    $params['email'] = '';
+    if (key_exists('OIDC_CLAIM_external_authn', $_SERVER)) {
+        $authDetails = $_SERVER['OIDC_CLAIM_external_authn'];
+        $startPos = 3+strpos($authDetails, ":", (strpos($authDetails, "MAIL")));
+        $endPos = strpos($authDetails, "\"", 3+$startPos);
+        $length = $endPos-$startPos;
+        $params['email'] = substr($authDetails, $startPos, $length);
+    }
+
     getPolicyURLs($params);
 
     /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
     $authToken = Get_User_AuthToken();
     $params['authAttributes'] = $authToken->getDetails();
 
-    $params['given_name'] = $_SERVER['OIDC_CLAIM_given_name'];
-    $params['family_name'] = $_SERVER['OIDC_CLAIM_family_name'];
-    $params['email'] = $userEmail;
+    $params['given_name'] = '';
+    if (key_exists('OIDC_CLAIM_given_name', $_SERVER)) {
+        $params['given_name'] = $_SERVER['OIDC_CLAIM_given_name'];
+    }
+    $params['family_name'] = '';
+    if (key_exists('OIDC_CLAIM_family_name', $_SERVER)) {
+        $params['family_name'] = $_SERVER['OIDC_CLAIM_family_name'];
+    }
+
     $params['idString'] = $idString;
+
     show_view('user/register.php', $params);
 }
 

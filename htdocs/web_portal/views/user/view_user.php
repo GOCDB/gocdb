@@ -118,7 +118,7 @@
                         </div>
                     </td>
                 </tr>-->
-                <?php if (sizeof($params['user']->getHomeSite()) != 0) { ?>
+                <?php if ($params['user']->getHomeSite() != null) { ?>
                     <tr class="site_table_row_2">
                         <td class="site_table">Home Site</td>
                         <td class="site_table">
