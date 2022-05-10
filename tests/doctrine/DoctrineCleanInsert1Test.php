@@ -464,7 +464,7 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
    * first have to delete the services that holds the FK to the site (one site
    * to many services).
    *
-   * @expectedException \Doctrine\DBAL\DBALException
+   * @expectedException \Doctrine\DBAL\Exception
    */
   public function testExpectedFK_ViolationOnSiteDeleteWithoutCascade(){
     print __METHOD__ . "\n";
@@ -496,7 +496,7 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
     // services first as we have no cascade-delete option set.
     $this->em->remove($refetchedSite);
     $this->em->flush();
-    $this->fail('Should not get to this point - DBALException expected');
+    $this->fail('Should not get to this point - \Doctrine\DBAL\Exception expected');
 
   }
 
@@ -659,7 +659,7 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
    * association to a downtime (this relationship would need to be deleted first
    * to allow the endpoint to be deleted cleanly by the cascade).
    *
-   * @expectedException \Doctrine\DBAL\DBALException
+   * @expectedException \Doctrine\DBAL\Exception
    */
   public function testExpectedFK_ViolationOnServiceToEndpointCascadeDelete_WithDTs(){
     print __METHOD__ . "\n";
@@ -707,7 +707,7 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
     // services first as we have no cascade-delete option set.
     $this->em->remove($se);
     $this->em->flush();
-    $this->fail('Should not get to this point - DBALException expected');
+    $this->fail('Should not get to this point - \Doctrine\DBAL\Exception expected');
   }
 
   /**
