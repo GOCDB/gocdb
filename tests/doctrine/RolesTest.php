@@ -215,7 +215,7 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase
    * Add a role type, user, NGI and a role linking
    * them all together. Assert that $newRole->getOwnedEntity()
    * returns an instance of NGI.
-   * @expectedException \Doctrine\DBAL\DBALException
+   * @expectedException \Doctrine\DBAL\Exception
    */
     public function testRoleTypeIntegrityConstraint()
     {
@@ -248,7 +248,7 @@ class RolesTest extends PHPUnit_Extensions_Database_TestCase
 
   /**
    * Ensure no duplicate role types are inserted
-   * @expectedException \Doctrine\DBAL\DBALException
+   * @expectedException \Doctrine\DBAL\Exception
    */
     public function testDuplicateRoleTypes()
     {
