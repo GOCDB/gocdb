@@ -182,11 +182,11 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase {
     $this->em->persist($site);
     // After persist, Doctrine querying does not return our site until we flush, hence we get 0
     // returned from our repository.
-    $this->assertEquals(0, count($this->em->getRepository('Site')->findOneBy(array('shortName' => 'site' . $n))));
+    $this->assertEquals(0, count($this->em->getRepository('Site')->findBy(array('shortName' => 'site' . $n))));
     // When we flush or commit we get one.
     $this->em->commit();
     $this->em->flush();
-    $this->assertEquals(1, count($this->em->getRepository('Site')->findOneBy(array('shortName' => 'site' . $n))));
+    $this->assertEquals(1, count($this->em->getRepository('Site')->findBy(array('shortName' => 'site' . $n))));
   }
 
 
