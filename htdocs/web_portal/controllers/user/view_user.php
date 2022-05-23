@@ -28,12 +28,15 @@ function view_user() {
     }
     $userId =  $_GET['id'];
 
-    $user = \Factory::getUserService()->getUser($userId);
-    if($user === null){
+    $serv = \Factory::getUserService();
+    $user = $serv->getUser($userId);
+    if ($user === null) {
        throw new Exception("No user with that ID");
     }
     $params['user'] = $user;
 
+    // Check if user only has one identifier to disable unlinking
+    $params['lastIdentifier'] = (count($user->getUserIdentifiers()) === 1);
 
     // 2D array, each element stores role and a child array holding project Ids
     $role_ProjIds = array();
@@ -41,7 +44,9 @@ function view_user() {
     // get the targetUser's roles
     $roles = \Factory::getRoleService()->getUserRoles($user, \RoleStatus::GRANTED); //$user->getRoles();
 
-    $callingUser = \Factory::getUserService()->getUserByPrinciple(Get_User_Principle());
+    $currentIdString = Get_User_Principle();
+    $params['currentIdString'] = $currentIdString;
+    $callingUser = $serv->getUserByPrinciple($currentIdString);
 
     // can the calling user revoke the targetUser's roles?
     /* @var $r \Role */
@@ -107,15 +112,13 @@ function view_user() {
 
     // Check to see if the current calling user has permission to edit the target user
     try {
-        \Factory::getUserService()->editUserAuthorization($user, $callingUser);
+        $serv->editUserAuthorization($user, $callingUser);
         $params['ShowEdit'] = true;
     } catch (Exception $e) {
         $params['ShowEdit'] = false;
     }
 
-    /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
-    $authToken = Get_User_AuthToken();
-    $params['authAttributes'] = $authToken->getDetails();
+    $params['idString'] = $serv->getDefaultIdString($user);
 
     $params['projectNamesIds'] = $projectNamesIds;
     $params['role_ProjIds'] = $role_ProjIds;

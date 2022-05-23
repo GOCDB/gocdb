@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="GOCDB rule set for PHP Mess Detector"
+         xmlns="http://pmd.sf.net/ruleset/1.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://pmd.sf.net/ruleset/1.0.0 http://pmd.sf.net/ruleset_xml_schema.xsd"
+         xsi:noNamespaceSchemaLocation="http://pmd.sf.net/ruleset_xml_schema.xsd">
+    <description>
+        GOCDB rule set for PHP Mess Detector. (https://phpmd.org/documentation/creating-a-ruleset.html)
+    </description>
+
+    <rule ref="rulesets/unusedcode.xml"/> <!-- add the whole ruleset-->
+
+    <rule ref="rulesets/controversial.xml">
+        <exclude name="CamelCaseMethodName" /> <!-- add the whole ruleset except this rule -->
+    </rule>
+    <rule ref="rulesets/controversial.xml/CamelCaseMethodName"> <!-- Add the rule back with modifications -->
+        <properties>
+            <property name="allow-underscore" value="true" />
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/codesize.xml">
+        <exclude name="TooManyFields" />
+    </rule>
+    <rule ref="rulesets/codesize.xml/TooManyFields">
+        <properties>
+            <property name="maxfields"  value="20" />
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/cleancode.xml">
+        <exclude name="ElseExpression" />
+        <exclude name="StaticAccess" />
+        <exclude name="MissingImport" />
+    </rule>
+    <rule ref="rulesets/cleancode.xml/StaticAccess">
+        <!-- Allow Services Factory and some test helpers -->
+        <properties>
+            <property name="exceptions" value="Factory,TestUtil,ServiceTestUtil" />
+        </properties>
+    </rule>
+    <rule ref="rulesets/cleancode.xml/MissingImport">
+        <!-- Add the rule back with modifications -->
+        <properties>
+            <property name="ignore-global" value="true" />
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/naming.xml">
+        <exclude name="ShortVariable" />
+    </rule>
+    <rule ref="rulesets/naming.xml/ShortVariable">
+        <!-- Allow common GOCDB exceptions for Entity Manager, cert DN etc. -->
+        <properties>
+            <property name="exceptions" value="em,dn,id" />
+        </properties>
+    </rule>
+
+    <rule ref="rulesets/design.xml">
+        <exclude name="ExitExpression"/> <!-- Current GOCDB practice -->
+    </rule>
+
+</ruleset>

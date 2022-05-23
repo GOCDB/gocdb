@@ -149,7 +149,10 @@ class ServiceDAOTest extends PHPUnit_Extensions_Database_TestCase {
     print __METHOD__ . "\n";
     include __DIR__ . '/resources/sampleFixtureData1.php';
 
-    $adminUser = TestUtil::createSampleUser('some', 'admin', '/some/admin');
+    $adminUser = TestUtil::createSampleUser('some', 'admin');
+    $identifier= TestUtil::createSampleUserIdentifier('X.509', '/some/admin');
+    $adminUser->addUserIdentifierDoJoin($identifier);
+    $this->em->persist($identifier);
     $adminUser->setAdmin(TRUE);
     $this->em->persist($adminUser);
 

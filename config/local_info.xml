@@ -131,7 +131,6 @@
       <ServiceGroups>show</ServiceGroups>
       <AddSite>show</AddSite>
       <Scopes>show</Scopes>
-      <AdminScopes>show</AdminScopes>
     </menus>
 
     <!-- css
@@ -173,6 +172,12 @@
         <endpoint>endpoint</endpoint>
       </Service>
     </name_mapping>
+
+    <!-- If set to true, output individual tags for CERTDN, EGICHECKIN and IRISIAM in API
+    If set to false, output single ID string in CERTDN tag, with preference defined by
+    order of tokens in MyConfig1 if user has multiple identifiers -->
+    <API_all_auth_realms>false</API_all_auth_realms>
+
   </local_info>
 
   <!--

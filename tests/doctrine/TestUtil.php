@@ -60,11 +60,10 @@ class TestUtil {
         return $rtype;
     }
 
-    public static function createSampleUser($forename, $surname, $dn) {
+    public static function createSampleUser($forename, $surname) {
         $user = new User();
         $user->setForename($forename);
         $user->setSurname($surname);
-        $user->setCertificateDn($dn);
         $user->setAdmin(FALSE);
         return $user;
     }
@@ -139,6 +138,13 @@ class TestUtil {
         $scope->setDescription($description);
         $scope->setName($name);
         return $scope;
+    }
+
+    public static function createSampleUserIdentifier($name, $key) {
+        $identifier = new UserIdentifier();
+        $identifier->setKeyName($name);
+        $identifier->setKeyValue($key);
+        return $identifier;
     }
 
 }

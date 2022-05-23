@@ -116,7 +116,24 @@ function Get_User_AuthToken(){
         MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth);
         return $auth;
     }
-    return null;
+
+    // We don't want the portal to be exposed without authentication (even
+    // though no actual info is displayed to an unauthenticated user),
+    // so if we have not set the principle/userDetails,
+    // re-direct to our Discovery Service.
+    redirectUserToDiscoveryPage();
+}
+
+/**
+ * Get the auth type for the user.
+ * @return string or null if can't authenticate request */
+function Get_User_AuthType() {
+    $authType = null;
+    $auth = Get_User_AuthToken();
+    if ($auth !== null) {
+        $authType = $auth->getDetails()['AuthenticationRealm'][0];
+    }
+    return $authType;
 }
 
 /**
@@ -150,36 +167,81 @@ function Get_User_Principle(){
         MyStaticPrincipleHolder::getInstance()->setPrincipleString($principleString);
         MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth);
 
+        $serv = \Factory::getUserService();
+
+        // Get user by searching user identifiers
+        $user = $serv->getUserByPrinciple($principleString);
+
+        // If cannot find user, search certificate DNs instead
+        if ($user === null) {
+            $user = $serv->getUserByCertificateDn($principleString);
+            $authExists = False;
+        } else {
+            $authExists = True;
+        }
+
         // Is user registered/known in the DB? if true, update their last login time
         // once for the current request.
-        $user = \Factory::getUserService()->getUserByPrinciple($principleString);
-        if($user != null){
-            \Factory::getUserService()->updateLastLoginTime($user);
+        if ($user !== null) {
+            $serv->updateLastLoginTime($user);
+
+            // If identifier for current auth does not exist, add to user
+            if (!$authExists) {
+                // Get type of auth logged in with e.g. X.509)
+                $authType = $auth->getDetails()['AuthenticationRealm'][0];
+                $identifierArr = array($authType, $principleString);
+                $serv->migrateUserCredentials($user, $identifierArr, $user);
+            }
         }
         return $principleString;
     }
-    return null;
+
+    // We don't want the portal to be exposed without authentication (even
+    // though no actual info is displayed to an unauthenticated user),
+    // so if we have not set the principle/userDetails,
+    // re-direct to our Discovery Service.
+    redirectUserToDiscoveryPage();
 }
 
 /**
- * Get the DN from an x509 cert or null if a user certificate can't be loaded.
- * Called from the PI to authenticate requests using certificates only.
+ * Get the DN from an x509 cert, Principle from oidc token, or null if neither can be loaded.
+ * Called from the PI to authenticate requests using certificates or oidc.
  * @return string or null if can't authenticate request
  */
 function Get_User_Principle_PI() {
     $fwMan = \org\gocdb\security\authentication\FirewallComponentManager::getInstance();
     $firewallArray = $fwMan->getFirewallArray();
-    try {
+    try{
        $x509Token = new org\gocdb\security\authentication\X509AuthenticationToken();
        $auth = $firewallArray['fwC1']->authenticate($x509Token);
        return $auth->getPrinciple();
     } catch(org\gocdb\security\authentication\AuthenticationException $ex){
+       // failed auth, so attempt OIDC auth
+        try{
+            $token = new org\gocdb\security\authentication\IAMAuthToken();
+            $auth = $firewallArray['fwC1']->authenticate($token);
+            return $auth->getPrinciple();
+        } catch(org\gocdb\security\authentication\AuthenticationException $ex){
        // failed auth, so return null and let calling page decide to allow
        // access or not (some PI methods don't need to be authenticated with a cert)
+        }
     }
+
+    // Returning null here is necessary, because parts of the API are exposed
+    // publicly, without authentication.
     return null;
 }
 
+/*
+ * Prevent the current page from being loaded and redirect the user
+ * to the IdP discovery page (a.k.a the landing page).
+ */
+function redirectUserToDiscoveryPage()
+{
+    $url = \Factory::getConfigService()->getServerBaseUrl();
+    header("Location: " . $url);
+    die();
+}
 
 
 

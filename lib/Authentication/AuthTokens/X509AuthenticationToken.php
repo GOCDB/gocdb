@@ -26,7 +26,7 @@ class X509AuthenticationToken implements IAuthentication {
         //$this->logger->pushHandler(new StreamHandler(__DIR__.'/../../../gocdb.log', Logger::DEBUG));
 
         $this->initialDN = $this->getDN();
-        $this->userDetails = array('AuthenticationRealm' => array('IGTF'));
+        $this->userDetails = array('AuthenticationRealm' => array('X.509'));
     }
 
     /**

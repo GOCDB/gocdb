@@ -92,7 +92,7 @@
 
 
             <div class="col-sm-2">
-                <span><a href="index.php?Page_Type=Scope_Help">Service scopes:</a> </span>
+                <span><a href="index.php?Page_Type=Scopes">Service scopes:</a> </span>
 <!--                <input type="checkbox" id="scopeMatch" value="and"-->
 <!--                <span style="float:right">Match:</span>-->
 

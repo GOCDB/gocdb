@@ -244,6 +244,7 @@ class GetNGIContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
      */
     private function getXML(){
         $helpers = $this->helpers;
+        $serv = \Factory::getUserService();
 
         $ngis = $this->ngis;
 
@@ -279,7 +280,14 @@ class GetNGIContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
                         $xmlContact->addChild('TITLE', $user->getTitle());
                         $xmlContact->addChild('EMAIL', $user->getEmail());
                         $xmlContact->addChild('TEL', $user->getTelephone());
-                        $xmlContact->addChild('CERTDN', $user->getCertificateDn());
+
+                        if (\Factory::getConfigService()->getAPIAllAuthRealms()) {
+                            $xmlContact->addChild('CERTDN', $serv->getIdStringByAuthType($user, 'X.509'));
+                            $xmlContact->addChild('EGICHECKIN', $serv->getIdStringByAuthType($user, 'EGI Proxy IdP'));
+                            $xmlContact->addChild('IRISIAM', $serv->getIdStringByAuthType($user, 'IRIS IAM - OIDC'));
+                        } else {
+                            $xmlContact->addChild('CERTDN', $serv->getDefaultIdString($user));
+                        }
 
                         $roleName = $role->getRoleType()->getName();
                         $xmlContact->addChild('ROLE_NAME', $roleName);

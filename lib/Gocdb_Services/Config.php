@@ -437,6 +437,12 @@ class Config {
         return $sendEmail;
     }
 
+    public function getAPIAllAuthRealms() {
+        if (strtolower($this->GetLocalInfoXML()->API_all_auth_realms) === 'true') {
+            return true;
+        }
+        return false;
+    }
 }
 
 

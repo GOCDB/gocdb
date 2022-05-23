@@ -16,7 +16,7 @@
     if(!$params['portalIsReadOnly']) {
     ?>
     <div style="float: right;">
-        <?php if($params['ShowEdit']):?>
+        <?php if ($params['ShowEdit']):?>
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Edit_User&amp;id=<?php echo $params['user']->getId()?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
@@ -69,10 +69,10 @@
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
-                    <td class="site_table">Identity String</td>
+                    <td class="site_table">Default ID String</td>
                     <td class="site_table">
                         <div style="word-wrap: break-word;">
-                            <?php xecho($params['user']->getCertificateDn()) ?>
+                            <?php xecho($params['idString']) ?>
                         </div>
                     </td>
                 </tr>
@@ -105,22 +105,55 @@
         </div>
     </div>
 
+    <!-- ID strings from user identifiers -->
+    <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
+        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+            Identifiers
+        </span>
 
+        <table style="clear: both; width: 100%;">
+            <tr class="site_table_row_1">
+                <th class="site_table">ID String</th>
+                <th class="site_table">Authentication type</th>
+                <?php if (!$params['portalIsReadOnly'] && $params['ShowEdit']):?>
+                    <th class="site_table">Remove Identifier</th>
+                <?php endif; ?>
+            </tr>
+            <?php
+            $num = 2;
+            // Loop through each user identifier
+            foreach ($params['user']->getUserIdentifiers() as $identifier): ?>
 
-    <div class="listContainer">
-        <b>Authentication Attributes:</b>
-        <br>
-        <?php
-        foreach ($params['authAttributes'] as $key => $val) {
-            $attributeValStr = '';
-            foreach ($val as $v) {
-                $attributeValStr .= ', '.$v;
-            }
-            if(strlen($attributeValStr) > 2){$attributeValStr = substr($attributeValStr, 2);}
-            xecho('[' . $key . ']  [' . $attributeValStr . ']');
-            echo '<br>';
-        }
-        ?>
+                <tr class="site_table_row_<?php echo $num ?>">
+                    <td class="site_table" style="width: 40%">
+                        <div style="background-color: inherit;">
+                            <?php xecho($identifier->getKeyValue())?>
+                        </div>
+                    </td>
+                    <td class="site_table">
+                        <div style="background-color: inherit;">
+                            <?php xecho($identifier->getKeyName())?>
+                        </div>
+                    </td>
+                    <?php if (!$params['portalIsReadOnly'] && $params['ShowEdit']):?>
+                        <td class="site_table">
+                            <form action="index.php?Page_Type=Remove_User_Identifier&amp;id=<?php echo $params['user']->getId(); ?>&amp;identifierId=<?php echo $identifier->getId(); ?>" method="post">
+                                <div class="btn-like"
+                                    <?php if ($params['lastIdentifier']) echo "title='Cannot remove all identifiers from a user'";?>
+                                    <?php if ($params['currentIdString'] === $identifier->getKeyValue()) echo "title='Cannot remove the identifier you are using'";?>
+                                >
+                                    <input
+                                        id="revokeButton" type="submit" value="Remove" class="btn btn-sm btn-danger" onclick="return confirmSubmit()"
+                                        <?php if ($params['lastIdentifier'] || $params['currentIdString'] === $identifier->getKeyValue()) echo "disabled";?>
+                                    >
+                                </div>
+                            </form>
+                        </td>
+                    <?php endif;?>
+                </tr>
+                <?php if ($num == 1) { $num = 2; } else { $num = 1; }
+            endforeach;?>
+        </table>
     </div>
 
     <div style="float: left; width: 100%; margin-top: 2em;" class="alert alert-info" role="alert">
@@ -301,3 +334,12 @@
     //    $('#revokeButton').tooltip();
     //});
 </script>
+
+<style>
+    div.btn-like {
+        padding: 0px 0px;
+        display: inline-block;
+        margin-bottom: 0;
+        font-size: 12px;
+    }
+</style>

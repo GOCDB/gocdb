@@ -1,8 +1,32 @@
 <div class="rightPageContainer">
-    <h1>Resource Scoping</h1>
-    <br />
 
-    <div>
+    <div style="float: left;">
+        <h1 style="float: left; margin-left: 0em;">
+            Scopes
+        </h1>
+        <span style="clear: both; float: left; padding-bottom: 0.4em;">All Scopes in GOCDB</span>
+        <br /><br />
+        <span style="float: left; padding-bottom: 0.4em;">
+            <a id="helpLink" style="cursor: pointer; float: left; padding-top: 0.3em;">
+                Click here for more information.
+            </a>
+        </span>
+    </div>
+
+    <!-- hide add when read only or user is not admin -->
+    <?php if(!$params['portalIsReadOnly'] && $params['UserIsAdmin']):?>
+        <div style="float: right; margin-left: 1.5em">
+            <center>
+                <a href="index.php?Page_Type=Admin_Add_Scope">
+                    <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="25px" />
+                    <br />
+                    <span>Add Scope</span>
+                </a>
+            </center>
+        </div>
+    <?php endif; ?>
+
+    <div id="helpContainer" class="siteContainer" style="margin-bottom: 1em;">
         <h2>What are scope tags?</h2>
         <ul>
             <li>
@@ -62,47 +86,11 @@
                 <pre>?method=get_site&amp;scope=EGI,ProjX&amp;scope_match=any</pre>
                 (Fetch all sites tagged with <b>either</b> 'EGI' or ProjX)
             </li>
-             <li>
+            <li>
                 <pre>?method=get_site&amp;scope=</pre>
                 (Fetch <b>all sites</b> regardless of scope tags)
             </li>
         </ul>
-    </div>
-
-    <div>
-        <h2>What scope tags are available?</h2>
-        <div>
-            <table class="table table-striped table-condensed">
-                <thead>
-                    <tr>
-                        <th>Tag name</th>
-                        <th>Description</th>
-                        <th>Reserved?</th>
-                    </tr>
-                </thead>
-                <tbody>
-                <?php foreach($params['optionalScopes'] as $scope){ ?>
-                    <tr>
-                        <td><?php xecho($scope->getName());?></td>
-                        <td><?php xecho($scope->getDescription()); ?></td>
-                        <td>&cross;</td>
-                    </tr>
-                <?php } ?>
-                <?php foreach($params['reservedScopes'] as $scope){ ?>
-                    <tr>
-                        <td><?php xecho($scope->getName());?></td>
-                        <td><?php xecho($scope->getDescription()); ?></td>
-                        <td>&check;</td>
-                    </tr>
-                <?php } ?>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-
-
-    <div>
         <h2>What does having the EGI scope applied mean?</h2>
         <ul>
             <li>
@@ -128,4 +116,77 @@
         </ul>
     </div>
 
+    <span style="clear: both; float: left; padding-top: 0.5em;">
+        Click on the name of a scope to <?=$params['UserIsAdmin'] ? "edit it and " : "";?> view objects with that scope tag.
+    </span>
+
+    <?php $numberOfScopes = count($params['Scopes'])?>
+    <div class="listContainer">
+        <span class="header listHeader">
+            <?php echo $numberOfScopes ?> Scope<?php if ($numberOfScopes !== 1) echo "s"?>
+        </span>
+        <table class="vSiteResults" id="selectedSETable">
+            <tr class="site_table_row_1">
+                <th class="site_table">Name</th>
+                <th class="site_table">Description</th>
+                <th class="site_table">Reserved?</th>
+                <?php if(!$params['portalIsReadOnly'] && $params['UserIsAdmin']):?>
+                    <th class="site_table" style="width: 10%">Remove</th>
+                <?php endif; ?>
+            </tr>
+            <?php
+            $num = 2;
+            if($numberOfScopes > 0) {
+                foreach($params['Scopes'] as $scope) {
+                ?>
+                <tr class="site_table_row_<?php echo $num ?>">
+                    <td class="site_table">
+                        <div style="background-color: inherit;">
+                            <span style="vertical-align: middle;">
+                                <a href="index.php?Page_Type=Scope&amp;id=<?php echo $scope->getId() ?>">
+                                    <?php xecho($scope->getName()); ?>
+                                </a>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="site_table"><?php xecho($scope->getDescription()); ?></td>
+                    <td class="site_table"><?= in_array($scope, $params['reservedScopes']) ? '&check;': '&cross;';?></td>
+                    <?php if(!$params['portalIsReadOnly'] && $params['UserIsAdmin']):?>
+                        <td class="site_table"  style="width: 10%">
+                            <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
+                            <a onclick="return confirmSubmit()" href="index.php?Page_Type=Admin_Remove_Scope&id=<?php echo $scope->getId() ?>">
+                                <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="22px" style="vertical-align: middle;" />
+                            </a>
+                        </td>
+                    <?php endif ?>
+                </tr>
+                <?php
+                    if($num == 1) { $num = 2; } else { $num = 1; }
+                    } // End of the foreach loop iterating over scopes
+            }
+            ?>
+        </table>
+    </div>
 </div>
+
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        // Hide the help div
+        $('#helpContainer').hide();
+
+        // Toggle the help div on click
+        $('#helpLink').click(function () {
+            $('#helpContainer').toggle();
+
+            // Toggle the help text
+            var currentHelpText = $('#helpLink').text();
+            if (currentHelpText.trim() === "Click here for more information.") {
+                $('#helpLink').text("Click here to hide information.");
+            } else {
+                $('#helpLink').text("Click here for more information.");
+            }
+        });
+    })
+
+</script>

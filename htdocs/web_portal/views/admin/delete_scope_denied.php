@@ -7,7 +7,7 @@
 <div class="rightPageContainer">
     <h1 class="Success">Scope In Use</h1><br />
     The scope '
-    <a href="index.php?Page_Type=Admin_Scope&amp;id=<?php echo $scopeId;?>">
+    <a href="index.php?Page_Type=Scope&amp;id=<?php echo $scopeId;?>">
         <?php xecho($params['Name']);?>
     </a>'
     is currently in use. If you are absolutely sure you still want to delete it,

@@ -26,6 +26,7 @@
  */
 require_once dirname(__FILE__) . "/../lib/Doctrine/bootstrap.php";
 require dirname(__FILE__) . '/../lib/Doctrine/bootstrap_doctrine.php';
+require_once dirname(__FILE__) . '/../lib/Gocdb_Services/Factory.php';
 
 echo "Querying for EGI sso username\n";
 
@@ -33,18 +34,19 @@ $em = $entityManager;
 $dql = "SELECT u FROM User u";
 $users = $entityManager->createQuery($dql)->getResult();
 
+$serv = \Factory::getUserService();
+
 echo "Starting update of EGI SSO usernames at: ".date('D, d M Y H:i:s')."\n";
 $count = 0;
 foreach ($users as $user) {
     ++$count;
-    $cleanDN = cleanDN($user->getCertificateDn());
+    $dn = $serv->getIdStringByAuthType($user, 'X.509');
+    $cleanDN = cleanDN($dn);
     if (!empty($cleanDN)) {
-        $url = "https://www.egi.eu/sso/api/user?dn=" . $cleanDN;
+        $url = "https://sso.egi.eu/admin/api/user?dn=" . $cleanDN;
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_URL, $url);
-        curl_setopt($ch, CURLOPT_PROXY, 'http://wwwcache.rl.ac.uk');
-        curl_setopt($ch, CURLOPT_PROXYPORT, 8080);
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 2);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true); //return result instead of outputting it
         curl_setopt($ch, CURLOPT_TIMEOUT, 3); //3secs
@@ -58,7 +60,6 @@ foreach ($users as $user) {
         if ($httpcode != 200) {
             $ssousername = null;
         }
-        //echo $count . ' ' . $user->getCertificateDn() . "  " . $ssousername . "\n";
         //echo $count.",";
         if($ssousername != null){
           $user->setUsername1($ssousername);

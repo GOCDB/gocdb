@@ -2,7 +2,7 @@
     <h1>Edit API credential for <?php xecho($params['site']->getName());?></h1>
     <br />
     <form class="inputForm" method="post" action="index.php?Page_Type=Edit_API_Authentication_Entity&parentid=<?php echo($params['site']->getId())?>&authentityid=<?php echo($params['authEnt']->getId())?>" name="addAPIAuthenticationEntity">
-        <span class="input_name">Identifier (e.g. Certificate DN)*</span>
+        <span class="input_name">Identifier (e.g. Certificate DN or OIDC Subject)*</span>
         <input type="text" value="<?php xecho($params['authEnt']->getIdentifier()) ?>" name="IDENTIFIER" class="input_input_text">
         <br />
         <span class="input_name">Credential type*</span>

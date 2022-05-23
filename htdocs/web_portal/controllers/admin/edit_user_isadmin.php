@@ -3,7 +3,7 @@
  *======================================================
  * File: edit_user_isadmin.php
  * Author: George Ryall, John Casson, David Meredith
- * Description: Allows GOCD Admins to promote and demote other admins.
+ * Description: Allows GOCDB Admins to promote and demote other admins.
  *
  * License information
  *
@@ -38,7 +38,7 @@ function make_admin() {
 }
 
 /**
- * Draws the edit user DN form
+ * Draws the edit user admin status form
  * @return null
  */
 function draw() {
@@ -60,7 +60,6 @@ function draw() {
     $params["ID"]=$user->getId();
     $params["Forename"]=$user->getForename();
     $params["Surname"]=$user->getSurname();
-    $params["CertDN"]=$user->getCertificateDn();
     $params["IsAdmin"]=$user->isAdmin();
 
     if($params["IsAdmin"]){
@@ -104,8 +103,8 @@ function submit() {
    }
 
     //get the user data for the set user isAdmin function (so it can check permissions)
-    $currentUserDN = Get_User_Principle();
-    $currentUser = $serv->getUserByPrinciple($currentUserDN);
+    $currentIdString = Get_User_Principle();
+    $currentUser = $serv->getUserByPrinciple($currentIdString);
 
     try {
         //function will through error if user does not have the correct permissions
