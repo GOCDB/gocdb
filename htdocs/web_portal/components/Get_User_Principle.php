@@ -116,7 +116,12 @@ function Get_User_AuthToken(){
         MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth);
         return $auth;
     }
-    return null;
+
+    // We don't want the portal to be exposed without authentication (even
+    // though no actual info is displayed to an unauthenticated user),
+    // so if we have not set the principle/userDetails,
+    // re-direct to our Discovery Service.
+    redirectUserToDiscoveryPage();
 }
 
 /**
@@ -190,7 +195,12 @@ function Get_User_Principle(){
         }
         return $principleString;
     }
-    return null;
+
+    // We don't want the portal to be exposed without authentication (even
+    // though no actual info is displayed to an unauthenticated user),
+    // so if we have not set the principle/userDetails,
+    // re-direct to our Discovery Service.
+    redirectUserToDiscoveryPage();
 }
 
 /**
@@ -217,9 +227,21 @@ function Get_User_Principle_PI() {
         }
     }
 
+    // Returning null here is necessary, because parts of the API are exposed
+    // publicly, without authentication.
     return null;
 }
 
+/*
+ * Prevent the current page from being loaded and redirect the user
+ * to the IdP discovery page (a.k.a the landing page).
+ */
+function redirectUserToDiscoveryPage()
+{
+    $url = \Factory::getConfigService()->getServerBaseUrl();
+    header("Location: " . $url);
+    die();
+}
 
 
 
