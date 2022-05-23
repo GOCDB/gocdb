@@ -227,8 +227,8 @@ function Get_User_Principle_PI() {
         }
     }
 
-    # Returning null here is necessary, because parts of the API are exposed
-    # publically, without authentication.
+    // Returning null here is necessary, because parts of the API are exposed
+    // publicly, without authentication.
     return null;
 }
 
