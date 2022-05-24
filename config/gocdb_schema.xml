@@ -514,7 +514,7 @@
 	    <fname>VALUE</fname>
 	    <length>255</length>
 	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-        <!--Allows most chracters, leading and trailing white space, but rewuires at least one non-whitespace chracter -->
+        <!--Allows most characters, leading and trailing white space, but requires at least one non-whitespace character -->
         <regex>/^(\s*[^`'\"\s]+\s*)+$/</regex>
 	    <!-- positive regex - more strict -->
 	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
