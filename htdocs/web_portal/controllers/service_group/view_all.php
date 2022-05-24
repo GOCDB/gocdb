@@ -29,17 +29,29 @@ function showAllServiceGroups(){
     // which is same as the PI. If the 'scope' param is not set, then it would fall
     // back to the default scope (if set), but this is not what we want in this interface.
     $filterParams['scope'] = '';
+
     $selectedScopes = array();
-    if(!empty($_GET['mscope'])) {
-    $scopeStringParam = '';
-    foreach($_GET['mscope'] as $key => $scopeVal){
-        $scopeStringParam .= $scopeVal.',';
+
+    if (!empty($_GET['mscope'])) {
+        $scopeStringParam = '';
+        foreach (array_values($_GET['mscope']) as $scopeVal) {
+            $scopeStringParam .= $scopeVal . ',';
+            $selectedScopes[] = $scopeVal;
+        }
+
+    } elseif (\Factory::getConfigService()->getDefaultFilterByScope()) {
+        $scopeVal = \Factory::getConfigService()->getDefaultScopeName();
+        $scopeStringParam = $scopeVal;
         $selectedScopes[] = $scopeVal;
     }
-    $filterParams['scope'] = $scopeStringParam;
-    $filterParams['scope_match'] = 'all';
-    }
 
+    $filterParams['scope'] = $scopeStringParam;
+
+    $scopeMatch = "";
+    if(isset($_GET['scopeMatch'])) {
+        $scopeMatch = $_GET['scopeMatch'];
+        $filterParams['scope_match'] = $scopeMatch;
+    }
 
     // extension property (currently only support filtering by one ext prop)
     // Can add filtering by many like scopes in future
@@ -70,11 +82,13 @@ function showAllServiceGroups(){
     }
     $keynames = array_unique($keynames);
 
+    $params = array();
     $params['sGroups'] = $sGroups;
-    $params['scopes']=$scopes;
-    $params['selectedScopes']=$selectedScopes; //$scope;
-    $params['selectedExtKeyName']= $extensionPropName; //$sgKeyNames;
-    $params['selectedExtKeyValue']= $extensionPropValue; //$sgKeyValues;
-    $params['extKeyName']=$keynames;
+    $params['scopes'] = $scopes;
+    $params['scopeMatch'] = $scopeMatch;
+    $params['selectedScopes']= $selectedScopes; //$scope;
+    $params['selectedExtKeyName'] = $extensionPropName; //$sgKeyNames;
+    $params['selectedExtKeyValue'] = $extensionPropValue; //$sgKeyValues;
+    $params['extKeyName'] = $keynames;
     show_view("service_group/view_all.php", $params);
 }

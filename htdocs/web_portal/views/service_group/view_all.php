@@ -23,42 +23,50 @@
         <input type="hidden" name="Page_Type" value="Service_Groups" />
 
         <span class="header leftFloat">
-        Filter <a href="index.php?Page_Type=Service_Groups">&nbsp;&nbsp;(clear)</a>
+            Filter <a href="index.php?Page_Type=Service_Groups">&nbsp;&nbsp;(clear)</a>
         </span>
 
         <div class="topMargin leftFloat siteFilter clearLeft">
-        <span class=""><a href="index.php?Page_Type=Scopes">Scopes:</a> </span>
-        <select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
-            <?php foreach ($params['scopes'] as $scope) { ?>
-            <option value="<?php xecho($scope->getName()); ?>"
-                <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
-                <?php xecho($scope->getName()); ?>
-            </option>
-            <?php } ?>
-        </select>
+            <span class="">
+                <a href="index.php?Page_Type=Scope_Help">Scopes: </a>
+            </span>
+            <select id="scopeSelect" multiple="multiple" name="mscope[]" style="width: 200px">
+                <?php foreach ($params['scopes'] as $scope) { ?>
+                <option value="<?php xecho($scope->getName()); ?>"
+                    <?php if(in_array($scope->getName(), $params['selectedScopes'])){ echo ' selected';}?> >
+                    <?php xecho($scope->getName()); ?>
+                </option>
+                <?php } ?>
+            </select>
+            <span class="">Scope match: </span>
+            <select id="scopeMatchSelect" name="scopeMatch">
+                <option value="all"<?php if ($params['scopeMatch'] == "all") {
+                    echo ' selected';
+                } ?>>all (selected tags are AND'd)</option>
+                <option value="any"<?php if ($params['scopeMatch'] == "any") {
+                    echo ' selected';
+                } ?>>any (selected tags are OR'd)</option>
+            </select>
         </div>
 
         <div class="topMargin leftFloat siteFilter">
-        <span class="">Extension Name:</span>
-                <select name="extKeyNames">
-            <option value="">(none)</option>
-            <?php foreach ($params['extKeyName'] as $extensions) { ?>
-                <option value="<?php echo $extensions; ?>"
-            <?php if ($params['selectedExtKeyName'] == $extensions){ echo " selected";} ?>>
-                <?php echo $extensions; ?>
-            </option>
-            <?php } ?>
-                </select>
+            <span class="middle">Extension Name: </span>
+            <select name="extKeyNames">
+                <option value="">(none)</option>
+                <?php foreach ($params['extKeyName'] as $extensions) { ?>
+                    <option value="<?php echo $extensions; ?>"
+                <?php if ($params['selectedExtKeyName'] == $extensions){ echo " selected";} ?>>
+                    <?php echo $extensions; ?>
+                </option>
+                <?php } ?>
+            </select>
+            <span class="middle">Extension Value: </span>
+            <input class="middle" type="text" name="selectedExtKeyValue"
+            <?php if (isset($params['selectedExtKeyValue'])){ echo "value=\"{$params['selectedExtKeyValue']}\""; } ?>/>
         </div>
 
-            <div class="topMargin leftFloat siteFilter">
-                    <span class="middle" style="margin-right: 0.4em">Extension Value: </span>
-                    <input class="middle" type="text" name="selectedExtKeyValue"
-            <?php if (isset($params['selectedExtKeyValue'])){ echo "value=\"{$params['selectedExtKeyValue']}\""; } ?>/>
-            </div>
-
         <div class="topMargin leftFloat siteFilter clearLeft">
-        <input type="submit" value="Filter ServiceGroups">
+            <input type="submit" value="Filter ServiceGroups">
         </div>
         </form>
     </div>
