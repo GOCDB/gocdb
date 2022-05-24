@@ -1,14 +1,17 @@
 <?php
 require_once "tests.php";
 
+// Initialise local_info.xml configuration overrides
+\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+
 $res[1] = test_db_connection();
 $res[2] = test_url(
-            Factory::getConfigService()->GetPiUrl().
+            \Factory::getConfigService()->GetPiUrl().
             get_testPiMethod()
             );
 //$res[3] = test_url(PORTAL_URL);
 $res[3] = test_url(
-            Factory::getConfigService()->getServerBaseUrl()
+            \Factory::getConfigService()->getServerBaseUrl()
             );
 
 
@@ -22,8 +25,10 @@ foreach ($res as $r){
 }
 
 if ($counts["error"] != 0) {
+    $url = \Factory::getConfigService()->GetPortalURL() . "/GOCDB_monitor/";
+
     echo("An error has been detected while checking GOCDB services. ".
-        "Please check https://goc.egi.eu/portal/GOCDB_monitor/ to find out more\n");
+        "Please check $url to find out more\n");
     exit(2); // return Nagios error code for CRITICAL
 }
 else if ($counts["warn"] != 0) {
