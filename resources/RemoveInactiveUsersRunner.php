@@ -73,7 +73,7 @@ function sendWarningEmail($user){
 
     // Email content
     $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
-    $subject = "GocDB: User account deletion notice";
+    $subject = "GOCDB: User account deletion notice";
 
     //$webPortalURL = "gocdb-portal-address";
     $localInfoLocation = __DIR__ . "/../config/local_info.xml";
