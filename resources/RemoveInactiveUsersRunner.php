@@ -26,7 +26,7 @@ foreach ($users as $user) {
     } else { // This might only be run once, since new users always have field filled.
         echo "User has no lastLoginDate (it may have been a very long time.)\n";
         echo "Deleting user.\n";
-	    deleteUser($user, $em);
+        deleteUser($user, $em);
         echo "\n";
         return;
     }
@@ -36,11 +36,11 @@ foreach ($users as $user) {
 
     if ($elapsedMonths > 18){ // Delete user
         echo "Deleting user\n";
-	    deleteUser($user, $em);
+        deleteUser($user, $em);
     }
     elseif ($elapsedMonths > 17){ // Warn user
         echo "Requesting user warning email.\n";
-	    sendWarningEmail($user);
+        sendWarningEmail($user);
     }
     elseif ($elapsedMonths < 17){ // Do Nothing
         echo "Doing nothing.\n";
