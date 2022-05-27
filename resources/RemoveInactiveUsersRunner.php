@@ -37,13 +37,11 @@ foreach ($users as $user) {
         echo "Deleting user\n";
         deleteUser($user, $entityManager);
     } elseif ($elapsedMonths > 17) { // Warn user
-        echo "Requesting user warning email.\n";
+        echo "Sending user warning email.\n";
         sendWarningEmail($user);
     } elseif ($elapsedMonths < 17) { // Do Nothing
         echo "Doing nothing.\n";
     }
-
-    echo "\n\n";
 }
 
 $entityManager->flush();
