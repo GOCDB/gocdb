@@ -10,7 +10,6 @@ $users = $entityManager->createQuery($dql)->getResult();
 echo "Scanning user login dates in database at: ".date('D, d M Y H:i:s')."\n";
 
 $today = new DateTime();
-echo $today->format('Y-m-d H:i:s');
 
 foreach ($users as $user) {
     echo 'User ID: ' . $user->getId() . "\n";
