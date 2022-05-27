@@ -37,11 +37,11 @@ foreach ($users as $user) {
     if ($elapsedMonths > 18){ // Delete user
         echo "Deleting user\n";
 	    deleteUser($user, $em);
-    } 
+    }
     elseif ($elapsedMonths > 17){ // Warn user
         echo "Requesting user warning email.\n";
 	    sendWarningEmail($user);
-    } 
+    }
     elseif ($elapsedMonths < 17){ // Do Nothing
         echo "Doing nothing.\n";
     }
@@ -51,7 +51,7 @@ foreach ($users as $user) {
 
 $em->flush();
 echo "Completed ok: ".date('D, d M Y H:i:s');
-    
+
 function deleteUser($user, $em){
     $em->getConnection()->beginTransaction();
     try {
@@ -79,12 +79,12 @@ function sendWarningEmail($user){
     $localInfoLocation = __DIR__ . "/../config/local_info.xml";
     $localInfoXML = simplexml_load_file ( $localInfoLocation );
     $webPortalURL = $localInfoXML->local_info->web_portal_url;
-   
+
     $body = "Dear GOCDB User,\n\n" . "Your account (ID:". $certDn .") has not"
             . "signed in for the past 17 months and is due for deletion in 30"
             . "days.\n\n" . "You can prevent this by visiting" . $webPortalURL
             . "while authenticated with the above credential.\n\n";
-   
+
     // Handle all mail related printing/debugging
     \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
 }
