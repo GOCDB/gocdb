@@ -73,8 +73,8 @@ function sendWarningEmail($user)
 
     $body = "Dear ". $user->getForename() .",\n\n" .
             "Your GOCDB account, associated with the following identifiers, " .
-            "has not been signed into during the last 17 months and is due " .
-            "for deletion in 30 days.\n\n";
+            "has not been signed into during the last 17 months and will be " .
+            "when this period of inactivity reaches 18 months.\n\n";
 
     $body .= "Identifiers:\n";
     foreach ($user->getUserIdentifiers() as $identifier) {
