@@ -72,7 +72,7 @@ function sendWarningEmail($user){
     $certDn = $user->getCertificateDn();
 
     // Email content
-    $headers = "From: no-reply@goc.egi.eu";
+    $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
     $subject = "GocDB: User account deletion notice";
 
     //$webPortalURL = "gocdb-portal-address";
