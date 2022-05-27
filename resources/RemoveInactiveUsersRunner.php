@@ -26,7 +26,8 @@ foreach ($users as $user) {
         echo "Deleting user.\n";
         deleteUser($user, $entityManager);
         echo "\n";
-        return;
+        // Move onto the next users.
+        continue;
     }
 
     $elapsedMonths = (int) $interval->format('%a') / 30;
