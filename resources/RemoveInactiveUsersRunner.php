@@ -68,21 +68,26 @@ function deleteUser($user, $entityManager)
 function sendWarningEmail($user)
 {
     $emailAddress = $user->getEmail();
-    $certDn = $user->getCertificateDn();
 
     // Email content
     $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
     $subject = "GOCDB: User account deletion notice";
 
-    //$webPortalURL = "gocdb-portal-address";
-    $localInfoLocation = __DIR__ . "/../config/local_info.xml";
-    $localInfoXML = simplexml_load_file($localInfoLocation);
-    $webPortalURL = $localInfoXML->local_info->web_portal_url;
+    $body = "Dear ". $user->getForename() .",\n\n" .
+            "Your GOCDB account, associated with the following identifiers, " .
+            "has not been signed into during the last 17 months and is due " .
+            "for deletion in 30 days.\n\n";
 
-    $body = "Dear GOCDB User,\n\n" . "Your account (ID:". $certDn .") has not"
-            . "signed in for the past 17 months and is due for deletion in 30"
-            . "days.\n\n" . "You can prevent this by visiting" . $webPortalURL
-            . "while authenticated with the above credential.\n\n";
+    $body .= "Identifiers:\n";
+    foreach ($user->getUserIdentifiers() as $identifier) {
+        $body .= "  - " . $identifier->getKeyName() .": " . $identifier->getKeyValue(). "\n";
+    }
+
+    $body .= "\n";
+    $body .= "You can prevent the deletion of this account by visiting the " .
+             "GOCDB portal while authenticated with one of the above " .
+             "identifiers.\n";
+
 
     // Handle all mail related printing/debugging
     \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
