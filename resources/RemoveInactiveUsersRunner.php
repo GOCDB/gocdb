@@ -15,8 +15,8 @@ echo $today->format('Y-m-d H:i:s');
 foreach ($users as $user) {
     echo 'User ID: ' . $user->getId() . "\n";
 
-    $CreationDate = $user->getCreationDate();
-    $CreationStr = $CreationDate->format('Y-m-d H:i:s');
+    $creationDate = $user->getCreationDate();
+    $creationStr = $creationDate->format('Y-m-d H:i:s');
 
     $lastLoginDate = $user->getLastLoginDate();
 
