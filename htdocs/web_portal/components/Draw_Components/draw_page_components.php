@@ -149,7 +149,7 @@ function Get_bottom_logos_Box_HTML()
                 '<img class="Sponsor_Logo" ' .
                 'src="' . $contextPath . '/images/eu_flag_yellow_low_150.png" ' .
                 'alt="The logo of the European Union" />' .
-                '.</a>';
+                '</a>';
 
     $html .= '<a href="https://www.egi.eu" class="Sponsor_Link" target="_blank">' .
                 '<img class="Sponsor_Logo" ' .
