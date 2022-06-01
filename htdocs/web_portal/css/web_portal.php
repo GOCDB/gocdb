@@ -194,6 +194,7 @@ div.Left_User_Status_Box {
 div.Left_Logo_Box {
     float: left;
     clear: left;
+    margin-top: 0em;
 }
 
 div.Left_Logo_Row {
