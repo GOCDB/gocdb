@@ -207,6 +207,7 @@ a.Sponsor_Link img.Sponsor_Logo {
     display:inline-block;
     vertical-align: bottom;
     height: 25px;
+    margin: 2px;
 }
 
 a.Sponsor_Link:hover {
