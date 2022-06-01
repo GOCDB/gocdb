@@ -199,7 +199,6 @@ div.Left_Logo_Box {
 }
 
 div.Left_Logo_Row {
-    height: 25px;
     text-align: center;
     margin-bottom: 5px;
 }
@@ -207,7 +206,7 @@ div.Left_Logo_Row {
 a.Sponsor_Link img.Sponsor_Logo {
     display:inline-block;
     vertical-align: bottom;
-    height: 100%;
+    height: 25px;
 }
 
 a.Sponsor_Link:hover {

@@ -140,33 +140,52 @@ function Get_bottom_logos_Box_HTML()
 
     $html .= '<a href="https://stfc.ukri.org/" class="Sponsor_Link" target="_blank">' .
                 /* Allow for STFC council symbol extending above the upper bound of the UKRI symbol */
-                '<img style="height: 112%; margin-top: -12%" class="Sponsor_Logo" ' .
-                'src="' . $contextPath . '/images/UKRI_STF_Council-Logo_Horiz-RGB_crop.png" ' .
+                '<img style="height: 28px; class="Sponsor_Logo" ' .
+                'src="' . $contextPath . '/images/logos/ukri_stfc.png" ' .
                 'alt="The logo of the Science and Technology Facilities Council" />' .
                 '</a>';
 
     $html .= '<a href="https://europa.eu/european-union/index_en" class="Sponsor_Link" target="_blank">' .
                 '<img class="Sponsor_Logo" ' .
-                'src="' . $contextPath . '/images/eu_flag_yellow_low_150.png" ' .
+                'src="' . $contextPath . '/images/flags/eu.png" ' .
                 'alt="The logo of the European Union" />' .
                 '</a>';
 
+    /**
+     * Force the following logos onto a new line, so one doesn't appear
+     * above the others.
+     */
+    $html .= "<br>";
+
     $html .= '<a href="https://www.egi.eu" class="Sponsor_Link" target="_blank">' .
                 '<img class="Sponsor_Logo" ' .
-                'src="' . $contextPath . '/images/egi_logo_no_background_150.png" ' .
-                'alt="The logo of the E G I Foundation" />
-                    </a>';
+                'src="' . $contextPath . '/images/logos/egi.png" ' .
+                'alt="The logo of the E G I Foundation" />' .
+                '</a>';
 
-    $html .= '<a href="https://www.eosc-hub.eu/" class="Sponsor_Link" target="_blank">' .
+    $html .= '<a href="https://eoscfuture.eu/" class="Sponsor_Link" target="_blank">' .
+                '<img class="Sponsor_Logo" '.
+                'src="' . $contextPath . '/images/logos/eosc_future.png" ' .
+                'alt="The logo of the EOSC Future Horizon 20 20 project" />' .
+                '</a>';
+
+    $html .= '<a href="https://www.iris.ac.uk/" class="Sponsor_Link" target="_blank">' .
                 '<img class="Sponsor_Logo" ' .
-                'src="' . $contextPath . '/images/eosc-hub-v-web_150.png" ' .
-                'alt="The logo of the EOSC-hub Horizon 20 20 project" />' .
+                'src="' . $contextPath . '/images/logos/iris_ac_uk.png" ' .
+                'alt="The logo of the IRIS Community" />' .
                 '</a>';
 
     $html .= '</div>';
-    $html .= 'GOCDB is provided by <a href="https://stfc.ukri.org/">STFC</a> ' .
-                'for <a href="https://egi.eu">EGI</a>, co-funded by <a href="https://egi.eu">EGI.eu</a> ' .
-                    'and <a href="https://www.eosc-hub.eu/">EOSC-hub.</a>';
+    $html .= 'GOCDB is provided by <a href="https://stfc.ukri.org/">STFC</a> and is co-funded by:';
+    $html .= '<br>- ';
+    $html .= '<a href="https://egi.eu">EGI</a> via <a href="https://www.egi.eu/project/egi-ace/">EGI-ACE</a>';
+    $html .= '<br>- ';
+    $html .= '<a href="https://eoscfuture.eu/">EOSC-Future</a>';
+    $html .= '<br>- ';
+    $html .= 'The <a href="https://www.iris.ac.uk/">IRIS</a> community';
+
+
+    $html .= '<br><br>End User Policy Notices:';
     $html .= '<br>- ';
     $html .= '<a title="' . $policyURLs['privacy_notice_title'] . '" href="' .
                 $policyURLs['privacy_notice'] . '">Privacy Notice</a>.';
