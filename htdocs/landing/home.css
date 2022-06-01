@@ -160,3 +160,15 @@ div.policyText {
     margin-bottom: auto;
     text-align: justify;
 }
+
+div.Left_Logo_Row {
+    text-align: center;
+    margin-bottom: 5px;
+}
+
+a.Sponsor_Link img.Sponsor_Logo {
+    display:inline-block;
+    vertical-align: bottom;
+    height: 28px;
+    margin: 2px;
+}
