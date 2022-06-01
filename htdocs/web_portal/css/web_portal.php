@@ -134,12 +134,13 @@ h3.Standard_Padding {
 h1 {
     font-size: 2.5em;
 }
+
 /*
-*   Containing DIV's
-*   Page Container is the whole page
-*   Left Box is the menu
-*   Right Box is the smaller page contents
-*/
+ * Containing DIV's
+ * - Page Container is the whole page
+ * - Left Box is the menu
+ * - Right Box is the smaller page contents
+ */
 .page_container {
     position: relative;
     margin-left: auto;
