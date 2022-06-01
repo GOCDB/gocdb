@@ -206,7 +206,7 @@ div.Left_Logo_Row {
 a.Sponsor_Link img.Sponsor_Logo {
     display:inline-block;
     vertical-align: bottom;
-    height: 25px;
+    height: 28px;
     margin: 2px;
 }
 

@@ -140,7 +140,7 @@ function Get_bottom_logos_Box_HTML()
 
     $html .= '<a href="https://stfc.ukri.org/" class="Sponsor_Link" target="_blank">' .
                 /* Allow for STFC council symbol extending above the upper bound of the UKRI symbol */
-                '<img style="height: 28px; margin: 2px; class="Sponsor_Logo" ' .
+                '<img style="height: 32px; margin: 2px; class="Sponsor_Logo" ' .
                 'src="' . $contextPath . '/images/logos/ukri_stfc.png" ' .
                 'alt="The logo of the Science and Technology Facilities Council" />' .
                 '</a>';
