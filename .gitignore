@@ -5,6 +5,7 @@
 
 # Project specific
 # ====================
+aup.pdf
 bootstrap_doctrine.php
 bootstrap_pdo.php
 bootstrap_doctrine_mysql.php
@@ -16,6 +17,7 @@ composer.bat
 composer
 gocdb.log
 tests/coverageReports/
+privacy.pdf
 /.htaccess
 
 # Eclipse: https://github.com/github/gitignore/blob/master/Global/Eclipse.gitignore
