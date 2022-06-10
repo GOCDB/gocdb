@@ -62,6 +62,8 @@ function draw() {
     $endPos = strpos($authDetails, "\"", 3+$startPos);
     $length = $endPos-$startPos;
     $userEmail = substr($authDetails, $startPos, $length);
+    $params = [];
+    getPolicyURLs($params);
 
     /* @var $authToken \org\gocdb\security\authentication\IAuthentication */
     $authToken = Get_User_AuthToken();

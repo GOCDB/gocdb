@@ -10,6 +10,14 @@
              data by all users. This can be used for a read-only failover instance. -->
     <read_only>false</read_only>
 
+    <!-- Specify the URL and description of the Acceptable Use Policy -->
+    <aup>AUP location</aup>
+    <aup_title>AUP title</aup_title>
+
+    <!-- Specify the URL and description of the Privacy Notice -->
+    <privacy_notice>PN location</privacy_notice>
+    <privacy_notice_title>PN title</privacy_notice_title>
+
     <!-- Specify the URLs used to access your GOCDB web portal and PI.
       - It is important to update these values to match your deployment.
       - These values substitute placeholder variables and is used in both the

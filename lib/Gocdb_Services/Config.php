@@ -226,7 +226,34 @@ class Config {
 
         return false;
     }
-
+    /**
+     * returns the url of the Acceptable Use Policy for display on the landing page
+     * @return string
+     */
+    public function getAUP() {
+        return  $this->GetLocalInfoXML()->aup;
+    }
+    /**
+     * returns the title string describing the Acceptable Use Policy for display on the landing page
+     * @return string
+     */
+    public function getAUPTitle() {
+        return  $this->GetLocalInfoXML()->aup_title;
+    }
+    /**
+     * returns the url of the Privacy Notice for display on the landing page
+     * @return string
+     */
+    public function getPrivacyNotice() {
+        return  $this->GetLocalInfoXML()->privacy_notice;
+    }
+    /**
+     * returns the title string describing the Privacy Notice for display on the landing page
+     * @return string
+     */
+    public function getPrivacyNoticeTitle() {
+        return  $this->GetLocalInfoXML()->privacy_notice_title;
+    }
     /**
      * returns true if the given menu is to be shown according to local_info.xml
      * @return boolean
