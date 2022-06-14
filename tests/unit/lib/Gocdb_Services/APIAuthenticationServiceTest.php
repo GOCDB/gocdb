@@ -91,6 +91,9 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase 
   protected function setUp() {
     parent::setUp();
     $this->entityManager = $this->createEntityManager();
+    // Pass the Entity Manager into the Factory to allow Gocdb_Services
+    // to use other Gocdb_Services.
+    \Factory::setEntityManager($this->entityManager);
   }
 
   /**

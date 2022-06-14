@@ -99,6 +99,9 @@ class siteServiceTest extends PHPUnit_Extensions_Database_TestCase {
     parent::setUp();
     $this->entityManager = $this->createEntityManager();
     $this->testUtil = new TestUtil();
+    // Pass the Entity Manager into the Factory to allow Gocdb_Services
+    // to use other Gocdb_Service.
+    \Factory::setEntityManager($this->entityManager);
   }
 
   /**

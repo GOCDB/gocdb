@@ -113,6 +113,18 @@ class Factory {
     }
 
     /**
+     * Set an externally provided Entity Manager.
+     * ++ONLY++ used for initialising phpunit tests. Allows Factory services to
+     * create and use other Factory services.
+     * Without this, the include paths inside Gocdb_Services code require the
+     * presence of a second bootstrap_doctrine.php file.
+     * @param \Doctrine\ORM\EntityManager $entityManager
+     */
+    public static function setEntityManager($entityManager){
+        self::$em = $entityManager;
+    }
+
+    /**
      * Sinlgeton Site service
      * @return org\gocdb\services\Site
      */
