@@ -76,8 +76,8 @@
                 </tr>
                 <?php
                 $num = 2;
-                if(sizeof($params['myRequests'] > 0)) {
-                foreach($params['myRequests'] as $request) {
+                if (is_array($params['myRequests']) && sizeof($params['myRequests']) > 0) {
+                    foreach ($params['myRequests'] as $request) {
                 ?>
                 <tr class="site_table_row_<?php echo $num ?>">
                     <td class="site_table" style="width: 50%">
@@ -144,8 +144,8 @@
                 </tr>
                 <?php
                 $num = 2;
-                if(sizeof($params['allRequests'] > 0)) {
-                foreach($params['allRequests'] as $request) {
+                if (is_array($params['allRequests']) && sizeof($params['allRequests']) > 0) {
+                    foreach ($params['allRequests'] as $request) {
                 ?>
                 <tr class="site_table_row_<?php echo $num ?>">
                     <td class="site_table">

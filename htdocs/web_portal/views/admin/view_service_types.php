@@ -34,7 +34,7 @@
             </tr>
             <?php
             $num = 2;
-            if(sizeof($numberOfServiceTypes > 0)) {
+            if($numberOfServiceTypes > 0) {
                 foreach($params['ServiceTypes'] as $serviceType) {
                 ?>
                 <tr class="site_table_row_<?php echo $num ?>">
