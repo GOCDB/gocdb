@@ -5,7 +5,7 @@ if [[ $GITHUB_ACTIONS ]]; then
     git diff --name-only --diff-filter=ACMRTUXB HEAD^ | grep '\.php$' | xargs -r -n 1 php -l || exit 1
 
     # Run test suite
-    vendor/bin/phpunit --coverage-clover=coverage.xml tests/DoctrineTestSuite1.php
+    vendor/bin/phpunit -c tests/phpunit.xml --coverage-clover=coverage.xml tests/DoctrineTestSuite1.php
 else
     echo 'ABORTED: NOT RUNNING ON GITHUB ACTIONS'
     exit 2
