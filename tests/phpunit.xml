@@ -24,7 +24,7 @@ PHPUnit configuration file for tests.
          cacheTokens="false"
          colors="false"
          convertErrorsToExceptions="true"
-         convertNoticesToExceptions="false"
+         convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          forceCoversAnnotation="false"
          mapTestClassNameToCoveredClassName="false"
