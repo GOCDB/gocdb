@@ -490,9 +490,9 @@ class User extends AbstractEntityService{
         // Hardcoded authentication realms in same order as in token definitions
         $x509Realms = ['X.509'];
         if ($reducedRealms) {
-            $shibRealms = ['EGI Proxy IdP'];
+            $shibRealms = ['EGI Proxy IdP', 'EOSC Proxy IdP'];
         } else {
-            $shibRealms = ['EUDAT_SSO_IDP', 'UK_ACCESS_FED', 'EGI Proxy IdP'];
+            $shibRealms = ['EUDAT_SSO_IDP', 'UK_ACCESS_FED', 'EGI Proxy IdP', 'EOSC Proxy IdP'];
         }
         $irisRealms = ['IRIS IAM - OIDC'];
 
