@@ -721,9 +721,6 @@ class User extends AbstractEntityService{
 
         // Check the ID string does not already exist
         $this->valdidateUniqueIdString($keyValue);
-
-        // Check auth type is valid
-        $this->valdidateAuthType($keyName);
     }
 
     /**
@@ -808,9 +805,6 @@ class User extends AbstractEntityService{
             $this->valdidateUniqueIdString($keyValue);
         }
 
-        // Check auth type is valid
-        $this->valdidateAuthType($keyName);
-
         // If the identifiers key has changed, check there isn't an existing identifier with that key
         if ($keyName !== $identifier->getKeyName()) {
             $existingIdentifiers = $user->getUserIdentifiers();
@@ -819,17 +813,6 @@ class User extends AbstractEntityService{
                     throw new \Exception("An identifier with that name already exists for this object");
                 }
             }
-        }
-    }
-
-    /**
-     * Validate authentication type based on known list.
-     * @param string $authType
-     * @throws \Exception
-     */
-    protected function valdidateAuthType($authType) {
-        if (!in_array($authType, $this->getAuthTypes(false))) {
-            throw new \Exception("The authentication type entered is invalid");
         }
     }
 
