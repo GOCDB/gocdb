@@ -1,6 +1,6 @@
 # GOCDB
 
-[![Build Status](https://travis-ci.org/GOCDB/gocdb.svg?branch=dev)](https://travis-ci.org/GOCDB/gocdb)
+[![_Continuous Integration](https://github.com/GOCDB/gocdb/actions/workflows/continuous-integration.yml/badge.svg)](https://github.com/GOCDB/gocdb/actions/workflows/continuous-integration.yml)
 
 Grid Operations Configuration Management Database. A Repository, Portal and REST style API for managing Grid and Cloud topology objects including; projects, administrative domains, sites, services, service-endpoints, service-groups, downtimes, users, roles and business rules.
 
