@@ -9,12 +9,12 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * @author David Meredith <david.meredith@stfc.ac.uk> 
+ *
+ * @author David Meredith <david.meredith@stfc.ac.uk>
  */-->
 
-<!-- 
-PHPUnit configuration file for tests. 
+<!--
+PHPUnit configuration file for tests.
 -->
 <phpunit
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -24,7 +24,7 @@ PHPUnit configuration file for tests.
          cacheTokens="false"
          colors="false"
          convertErrorsToExceptions="true"
-         convertNoticesToExceptions="true"
+         convertNoticesToExceptions="false"
          convertWarningsToExceptions="true"
          forceCoversAnnotation="false"
          mapTestClassNameToCoveredClassName="false"
@@ -43,7 +43,7 @@ PHPUnit configuration file for tests.
          <!--printerFile="/path/to/ResultPrinter.php"-->
          <!--testSuiteLoaderFile="/path/to/StandardTestSuiteLoader.php"-->
          <!--bootstrap="/path/to/bootstrap.php" -->
-  
+
 <filter>
   <!--<blacklist>
     <directory suffix=".php">/path/to/files</directory>
@@ -53,12 +53,12 @@ PHPUnit configuration file for tests.
       <file>/path/to/file</file>
     </exclude>
   </blacklist>-->
-  
-  <!-- 
-  Name the core packages to be included in coverage reports. 
+
+  <!--
+  Name the core packages to be included in coverage reports.
   It is not desirable to produce coverage for every package, it is not useful
-  to do so. We have to be selective on which tests to write for which packages.  
-  --> 
+  to do so. We have to be selective on which tests to write for which packages.
+  -->
   <whitelist processUncoveredFilesFromWhitelist="true">
     <directory suffix=".php">../lib/Doctrine/entities/</directory>
     <directory suffix=".php">../lib/DAOs/</directory>
@@ -71,5 +71,5 @@ PHPUnit configuration file for tests.
     </exclude>
   </whitelist>
 </filter>
-  
+
 </phpunit>
