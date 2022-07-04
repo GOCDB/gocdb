@@ -60,12 +60,15 @@ function draw(\User $user = null, \Site $site = null) {
     $params['authTypes'] = array();
     $params['authTypes'][]='X509';
     $params['authTypes'][]='OIDC Subject';
+    $params['user'] = $user;
+    $params['allowWrite'] = false;
 
     show_view("site/add_api_auth.php", $params);
+
     die();
 }
 
-function submit(\User $user = null, \Site $site, $serv) {
+function submit(\User $user = null, \Site $site, \org\gocdb\services\Site $serv) {
     $newValues = getAPIAuthenticationFromWeb();
 
     try {

@@ -106,69 +106,9 @@ class RoleActionAuthorisationService  extends AbstractEntityService  {
          if(is_null($user->getId())){
             return new AuthoriseActionResult();
         }
-        // If we limit the actions, then its hard to test using some sample
-        // roleActionMapping files. Need to decide to include this.
-//        if(!in_array($action, \Action::getAsArray())){
-//            throw new \LogicException('Coding Error - Invalid action not known');
-//        }
 
-//         IGNORE THIS COMMENT BLOCK - DECLARING DIFFERENT ROLE ACTION MAPPINGS PER
-//       PROJECT MAY BE NEEDED IN FUTURE, BUT RIGHT NOW IT ADDS UNNECESSARY COMPLEXITY.
-//       IF THE NEED ARISES, THIS STUFF WILL BE USEFUL:
-//       =======================================================================
-//       // Get a list of DB projects that are 'reachable' from the given entity
-//       // by moving up the OwnedEntity hierarchy.
-//       // Note, some objects don't come under the remit of a Project, e.g.
-//       // ServiceGroups, so dbProjects may be empty (this is normal).
-//       //$dbProjects = $this->getReachableProjectsFromOwnedEntity($targetEntity);
-//
-//        // TODO?
-//        // iterate the dbProjects and exclude those that are not mapped in the
-//        // roleActionMappings file
-//        foreach($dbProjects as $dbProj){
-//           if($this->roleActionMappingService->isProjectMapped($dbProj->getName())){
-//              $dbProjects[] = $dbProj;
-//           }
-//        }
-//
-//        if(count($dbProjects) > 0){
-//            // If there is an ancestor project, then we ignore the default role action mappings
-//            foreach ($dbProjects as $dbProject) {
-//                //print_r('reachable project: ['.$dbProject->getName()."] \n");
-//                // Lookup the role type mappings for this project (['RoleTypeName'] => 'overOwnedEntity').
-//                // throws LogicException if the dbProjectName does not exist in the
-//                // mapping file! (not so with action or entity-type)
-//                // For example, the following role-types over the specified object
-//                // types could enable 'actionX':
-//                // array (
-//                //   ['Site Administrator'] => 'Site',
-//                //   ['NGI Operations Manager'] => 'Ngi',
-//                //   ['Chief Operations Officer'] => 'Project'
-//                // );
-//                $roleTypeMappingsForProj = $this->roleActionMappingService->
-//                        getRoleTypeNamesThatEnableActionOnTargetObjectType(
-//                        $action, $targetEntity->getType(), $dbProject->getName());
-//                //print_r('roleTypeMappings for reachable project: ['.$dbProject->getName()."] \n");
-//                //print_r($roleTypeMappingsForProj);
-//
-//                // If there are roles that enable the action, store the roles for the project
-//                if (count($roleTypeMappingsForProj) > 0) {
-//                    $requiredRoleTypesPerProj[] = $roleTypeMappingsForProj;
-//                }
-//            }
-//        } else {
-//            // The entity dont come under a Project, e.g. the entity was
-//            // Project agnostic like a ServiceGroup, or there was an instance of
-//            // an orphan NGI or Site, therefore get the default RoleActionMappings.
-//            $requiredRoleTypesPerProj[] = $this->roleActionMappingService->
-//                    getRoleTypeNamesThatEnableActionOnTargetObjectType(
-//                        $action, $targetEntity->getType(), null);
-//            //print_r($requiredRoleTypesPerProj); // e.g.
-//            // Array ( [0] => Array ( [Service Group Administrator] => ServiceGroup ) )
-//        }
-//       =======================================================================
-
-
+        //  16-Dec-2020 - There was a large block of commented code here related to
+        //                role action mappings per project. Deleted.
 
         // Lookup+store the role type mappings that enable
         // the action on the specified entity type (mappings stored in RoleActionMappings XML).

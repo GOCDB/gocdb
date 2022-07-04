@@ -133,9 +133,6 @@ h3.Standard_Padding {
 h1 {
     font-size: 2.5em;
 }
-
-
-
 /*
     *	Containing DIV's
 	*	Page Container is the whole page
@@ -254,6 +251,26 @@ h4.menu_title {
 .input_name {
     display: block;
     font-size: 0.9em;
+}
+
+.input_checkbox {
+    display: inline;
+    margin-left: 2em;
+}
+
+.input_label {
+    font-size: 0.9em;
+    font-weight: normal;
+    vertical-align: middle;
+}
+
+.input_warning {
+    font-weight: bold;
+    word-break: normal;
+    margin-right: 10%;
+    padding-left: 5em; /* Hanging indent */
+    text-indent: -5em;
+    margin-bottom: 0.5em;
 }
 
 .input_syntax {

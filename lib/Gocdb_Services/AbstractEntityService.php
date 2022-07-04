@@ -74,8 +74,8 @@ abstract class AbstractEntityService {
     private function portalIsReadOnly() {
         require_once __DIR__ . '/Config.php';
 
-        $configServ = new \org\gocdb\services\Config();
-        return $configServ->IsPortalReadOnly();
+        return \Factory::getConfigService()->IsPortalReadOnly();
+
     }
 
     /**
@@ -121,10 +121,13 @@ abstract class AbstractEntityService {
         #TODO: this may be more effecient as a DQL query
         foreach($site->getAPIAuthenticationEntities() as $authEnt) {
             if ($authEnt->getType() == $type && $authEnt->getIdentifier() == $identifier) {
-                return true;
+                // Honour the legacy behaviour where any registered auth cred could write
+                if (!\Factory::getConfigService()->isRestrictPDByRole()) {
+                    return true;
+                }
+                return $authEnt->getAllowAPIWrite();
             }
         }
-
         return false;
     }
 

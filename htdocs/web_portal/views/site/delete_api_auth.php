@@ -6,7 +6,7 @@ $site = $params['site'];
     <h1 class="Success">Delete API Authentication Credential</h1><br/>
     <p>
     You are about to delete the following API authorisation credential:<br/>
-    Creedential identifier: <b><?php xecho($authEnt->getIdentifier());?><br/></b>
+    Credential identifier: <b><?php xecho($authEnt->getIdentifier());?><br/></b>
     Credential type: <b><?php xecho($authEnt->getType());?><br/></b>
     Site Name: <b><?php xecho($site->getName());?><br/></b>
     </p>

@@ -52,10 +52,8 @@ function show_project() {
 //       $params['ShowEdit'] = true;
 //    }
 
-    $params['authenticated'] = false;
-    if($user != null){
-        $params['authenticated'] = true;
-    }
+    // Overload the 'authenticated' key for use to disable display of personal data
+    list(, $params['authenticated']) = getReadPDParams($user);
 
     // Add RoleActionRecords to params
     $params['RoleActionRecords'] = \Factory::getRoleService()->getRoleActionRecordsById_Type($project->getId(), 'project');

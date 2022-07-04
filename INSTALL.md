@@ -422,15 +422,23 @@ $ cd lib/Doctrine
 $ php deploy/DeployRequiredDataRunner.php requiredData
 ```
 
-### Deploy Sample Data<a id="deploy-sample-data"></a>
+### OPTIONAL: Deploy Sample Data<a id="deploy-sample-data"></a>
 
-Optional - you can deploy some sample data to seed your DB with sample users,
-sites and services.
+You can choose to deploy some sample data to seed your DB with sample users,
+sites and services. Two sample data sets are available. Choose one of -
 
-```bash
-$ cd lib/Doctrine
-$ php deploy/DeploySampleDataRunner.php sampleData
-```
+1. Minimal - just enough to get going with no real-world associations.
+
+    ```bash
+    $ cd lib/Doctrine
+    $ php deploy/DeploySampleDataRunner.php simpleSampleData
+    ```
+1. "Real World" - a small subset derived from real data.
+
+    ```bash
+    $ cd lib/Doctrine
+    $ php deploy/DeploySampleDataRunner.php sampleData
+    ```
 
 ### ORACLE ONLY: Deploy an existing DB .dmp file to populate your DB<a id="deploy-existing-dump"></a>
 

@@ -42,16 +42,16 @@ class User extends AbstractEntityService{
     /**
      * Gets a user object from the DB
      * @param $id User ID
-     * @return User object
+     * @return \User object
      */
     public function getUser($id) {
         return $this->em->find("User", $id);
     }
 
     /**
-     * Lookup a User object by user's ID string, stored in certificateDn.
-     * @param string $userPrinciple the user's principle ID string, e.g. DN.
-     * @return User object or null if no user can be found with the specified principle
+     * Lookup a User object by user's principle id string.
+     * @param string $userPrinciple the user's principle id string, e.g. DN.
+     * @return \User object or null if no user can be found with the specified principle
      */
     public function getUserByCertificateDn($userPrinciple) {
         if (empty($userPrinciple)) {
@@ -102,7 +102,36 @@ class User extends AbstractEntityService{
 
         return $user;
     }
+    /**
+     * Check if a user is allowed to read personal data at sites.
+     * @param \User The user to check for
+     * @return Boolean true if allowed, else false;
+     */
+    public function isAllowReadPD(\User $user) {
 
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        if (!\Factory::getConfigService()->isRestrictPDByRole()) {
+            return true;
+        }
+
+        $sites = $this->getSitesFromRoles($user, \RoleStatus::GRANTED);
+        $authServ = \Factory::getRoleActionAuthorisationService();
+
+        foreach ($sites as $site) {
+            if ($authServ->authoriseAction(\Action::READ_PERSONAL_DATA, $site, $user)
+                ->getGrantAction()
+            ) {
+                // exit the first time we find a grant as we don't support
+                // site-level viewing granularity.
+                return true;
+            }
+        }
+        // No site was found with an authorisation.
+        return false;
+    }
     /**
      * Updates the users last login time to the current time in UTC.
      * @param \User $user
@@ -408,6 +437,15 @@ class User extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
 
         $this->editUserAuthorization($user, $currentUser);
+
+        if (!$user->getAPIAuthenticationEntities()->isEmpty()) {
+            // Must remove attached API credentials before removal
+            $userName = $user->getFullName();
+            throw new \Exception("Request to delete user $userName rejected:" .
+                " Delete or reassign API credentials owned by user" .
+                " from sites before deletion.");
+        }
+
         $this->em->getConnection()->beginTransaction();
         try {
             $this->em->remove($user);

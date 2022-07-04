@@ -12,103 +12,103 @@
 * See the License for the specific language governing permissions and
 * limitations under the License.
 */
-@author David Meredith 
---> 
+@author David Meredith
+-->
 
-<xs:schema targetNamespace="http://goc.egi.eu/2015/03/spec1.0_r1" 
+<xs:schema targetNamespace="http://goc.egi.eu/2015/03/spec1.0_r1"
            version="1.0"
            xmlns="http://www.w3.org/2001/XMLSchema"
            xmlns:xs="http://www.w3.org/2001/XMLSchema"
-           xmlns:goc="http://goc.egi.eu/2015/03/spec1.0_r1" 
+           xmlns:goc="http://goc.egi.eu/2015/03/spec1.0_r1"
            elementFormDefault="qualified"
-           attributeFormDefault="unqualified"> 
+           attributeFormDefault="unqualified">
 
     <xs:element name="RoleActionMappingRules">
         <annotation>
             <documentation>
 <![CDATA[
-This XSD defines role-action mapping rules for GOCDB projects stored in the DB 
+This XSD defines role-action mapping rules for GOCDB projects stored in the DB
 ==============================================================================
-Authorisation decisions are made by comparing a user's actual roles 
-held over different {@see \OwnedEntity} objects (OEs) in the DB, with the role 
-action mapping rules defined in an instance doc of this XSD. 
-- Only the relevant user's Roles that are included in this comparison which 
-  includes those that are 'reachable' from the target entity when ASCENDING 
-  the OE domain graph. 
-- The relevant role-action-mapping rules are those defined for the PARENT/ANCESTOR 
-  Project(s) of the target entity;  parent/ancestor projects are those that are 
+Authorisation decisions are made by comparing a user's actual roles
+held over different {@see \OwnedEntity} objects (OEs) in the DB, with the role
+action mapping rules defined in an instance doc of this XSD.
+- Only the relevant user's Roles that are included in this comparison which
+  includes those that are 'reachable' from the target entity when ASCENDING
+  the OE domain graph.
+- The relevant role-action-mapping rules are those defined for the PARENT/ANCESTOR
+  Project(s) of the target entity;  parent/ancestor projects are those that are
   'reachable' from the target entity when ASCENDING the OE domain graph.
 
-The root element is <RoleActionMappingRules>. It defines one 
-<RoleActionMapping>s. The mapping defines a set of role-action mapping rules 
-that apply to all projects in the DB. A single <RoleActionMapping> declares which 
-Actions the different Role types enable over the different types of target object. 
+The root element is <RoleActionMappingRules>. It defines one
+<RoleActionMapping>s. The mapping defines a set of role-action mapping rules
+that apply to all projects in the DB. A single <RoleActionMapping> declares which
+Actions the different Role types enable over the different types of target object.
 
 Domain Model
 ------------
-The domain model is hierarchical; a parent object links to child objects in a 
-tree like structure. It is not a strict tree since many-to-many 
-relationships can exist, e.g. between Project and NGI where a single Project can 
-link many child NGIs while a single NGI can link to many parent Projects.  
+The domain model is hierarchical; a parent object links to child objects in a
+tree like structure. It is not a strict tree since many-to-many
+relationships can exist, e.g. between Project and NGI where a single Project can
+link many child NGIs while a single NGI can link to many parent Projects.
 The basic domain model is illustrated below:
 
-- Users own Roles of different types (r1,r2,r3...) that are held over/link-to 
-  OwnedEntity (OE) implementations. 
-- The multiplicity of the relationships between domain objects is: 
-  '1' = one, '*' = many 
+- Users own Roles of different types (r1,r2,r3...) that are held over/link-to
+  OwnedEntity (OE) implementations.
+- The multiplicity of the relationships between domain objects is:
+  '1' = one, '*' = many
 
-      r1->Project(OE)         UserA owns: r1,r2,r3,r4,r5,r6 
-           |*               
-           |*  
-      r2->Ngi(OE)  
-           |1 
+      r1->Project(OE)         UserA owns: r1,r2,r3,r4,r5,r6
+           |*
+           |*
+      r2->Ngi(OE)
+           |1
            |*
       r3->Site(OE)  ServiceGroup(OE)<-r5,r6
            |1      /1
            |*     /*
       r4->Service
-           |1     \1  
-           |*      | 
+           |1     \1
+           |*      |
       EndpointLoc  |
-            \*     |*  
+            \*     |*
              \* Downtime
 
-The role-action mappings for a particular project propagate to all its children 
+The role-action mappings for a particular project propagate to all its children
 -------------------------------------------------------------------------------
 If a domain object is 'reachable' from a project by navigating down through
-the OE object graph, this object and all its descendents become subject to the 
-mapping rules of that particular project. For example: 
+the OE object graph, this object and all its descendents become subject to the
+mapping rules of that particular project. For example:
 
-  p1   p2      Domain graph: p = project, n = ngi, s = site 
-  |    |      
-  n1   n2      Each project's role-action-mappings are defined separately.  
-  |    | 
-  s1   s2 
+  p1   p2      Domain graph: p = project, n = ngi, s = site
+  |    |
+  n1   n2      Each project's role-action-mappings are defined separately.
+  |    |
+  s1   s2
 
   n1 gets linked to p2, n1 and s1 then become subject to the role action mapping
-  rules of both p1 and p2: 
+  rules of both p1 and p2:
 
-  p1   p2      The role-action mappings for a particular project propagate to all   
-  |  / |       children (p2's mapping rules apply to n1,n2,s1,s2). 
-  n1   n2    
-  |    | 
-  s1   s2 
+  p1   p2      The role-action mappings for a particular project propagate to all
+  |  / |       children (p2's mapping rules apply to n1,n2,s1,s2).
+  n1   n2
+  |    |
+  s1   s2
 
 
 Sample Instance Document
 ------------------------
 
-<RoleActionMappingRules     
+<RoleActionMappingRules
     xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance'
     xmlns='http://goc.egi.eu/2015/03/spec1.0_r1'
-    xsi:schemaLocation='http://goc.egi.eu/2015/03/spec1.0_r1 ../../../../config/RoleActionMappingsSchema.xsd'> 
+    xsi:schemaLocation='http://goc.egi.eu/2015/03/spec1.0_r1 ../../../../config/RoleActionMappingsSchema.xsd'>
 
-    <!-- 
-    RoleMapping 1: 'RoleH' held over a 'Project' enables action 'AZ' on sites and the project. 
-    RoleMapping 2: 'RoleN' held over a 'Ngi' enables action 'AY' on ngis and sites.  
+    <!--
+    RoleMapping 1: 'RoleH' held over a 'Project' enables action 'AZ' on sites and the project.
+    RoleMapping 2: 'RoleN' held over a 'Ngi' enables action 'AY' on ngis and sites.
     -->
 
-    <RoleActionMapping> 
+    <RoleActionMapping>
 
         <RoleNames over="Project">
             <Role id="RH">RoleH</Role>
@@ -116,7 +116,7 @@ Sample Instance Document
         <RoleNames over="Ngi">
             <Role id="RN">RoleN</Role>
         </RoleNames>
-        
+
         <RoleMapping>
             <Roles>
                 <RoleRef idRef="RH"/>
@@ -142,22 +142,22 @@ Sample Instance Document
                 <Target>site</Target>
             </EnabledActions>
         </RoleMapping>
-    </RoleActionMapping> 
+    </RoleActionMapping>
  </RoleActionMappingRules>
 ]]>
             </documentation>
         </annotation>
         <xs:complexType>
             <xs:sequence>
-                <xs:element ref="goc:RoleActionMapping" minOccurs="1" maxOccurs="1"></xs:element> 
+                <xs:element ref="goc:RoleActionMapping" minOccurs="1" maxOccurs="1"></xs:element>
             </xs:sequence>
-        </xs:complexType> 
+        </xs:complexType>
         <!--
         <xs:unique name="testRoleActionMappingTargetProjectUnique">
             <xs:annotation>
                 <xs:documentation>
-<![CDATA[ Declares a unique constraint on the value of <TargetProject> 
-to ensure only ONE <RoleActionMapping> applies to a particular project. 
+<![CDATA[ Declares a unique constraint on the value of <TargetProject>
+to ensure only ONE <RoleActionMapping> applies to a particular project.
 ]]>
                 </xs:documentation>
             </xs:annotation>
@@ -166,19 +166,19 @@ to ensure only ONE <RoleActionMapping> applies to a particular project.
         </xs:unique>
 	-->
     </xs:element>
-    
+
     <xs:element name="RoleActionMapping">
         <xs:annotation>
             <xs:documentation>
 <![CDATA[ Defines the role-to-action mappings for a set of projects named by
-the nested <TargetProject> elements. The basic structure of the element is as follows: 
+the nested <TargetProject> elements. The basic structure of the element is as follows:
 
-<RoleActionMapping> 
-    <RoleNames/>     (0..*) 
-    <RoleMapping/>   (0..*)   
-</RoleActionMapping> 
+<RoleActionMapping>
+    <RoleNames/>     (0..*)
+    <RoleMapping/>   (0..*)
+</RoleActionMapping>
 ]]>
-            </xs:documentation> 
+            </xs:documentation>
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
@@ -186,28 +186,28 @@ the nested <TargetProject> elements. The basic structure of the element is as fo
                 <xs:element name="TargetProject" minOccurs="0" maxOccurs="unbounded">
                     <xs:annotation>
                         <xs:documentation>
-<![CDATA[ Optional; used to name which project(s) this <RoleActionMapping> applies to. 
-There can be only one <RoleActionMapping> that does not define any 
-<TargetProject> elements, and this serves as the default. 
+<![CDATA[ Optional; used to name which project(s) this <RoleActionMapping> applies to.
+There can be only one <RoleActionMapping> that does not define any
+<TargetProject> elements, and this serves as the default.
 ]]>
-                        </xs:documentation> 
+                        </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
                         <xs:simpleContent>
                             <xs:extension base="xs:string">
                             </xs:extension>
                         </xs:simpleContent>
-                    </xs:complexType>  
+                    </xs:complexType>
                 </xs:element>
 		-->
-                <xs:element ref="goc:RoleNames" minOccurs="0" maxOccurs="unbounded"></xs:element> 
+                <xs:element ref="goc:RoleNames" minOccurs="0" maxOccurs="unbounded"></xs:element>
                 <xs:element ref="goc:RoleMapping" minOccurs="0" maxOccurs="unbounded"/>
             </xs:sequence>
             <!--<xs:attribute name="forProjects" type="string"/>-->
-        </xs:complexType> 
-        <!-- 
-        Ensure that Role values are unique within the context of any single RoleActionMapping. 
-        This allows different RoleActionMapping elements to define the same Role values.   
+        </xs:complexType>
+        <!--
+        Ensure that Role values are unique within the context of any single RoleActionMapping.
+        This allows different RoleActionMapping elements to define the same Role values.
         -->
         <xs:unique name="testRolesUniqueInRoleActionMapping">
             <xs:selector xpath="goc:RoleNames/goc:Role"/>
@@ -222,21 +222,21 @@ There can be only one <RoleActionMapping> that does not define any
     <xs:element name="RoleNames">
         <xs:annotation>
             <xs:documentation>
-<![CDATA[ Defines the role names that apply 'over' a specified 
-{@see \OwnedObject} type. The value of the 'over' attribute is case 
-insensitive. Nests zero or more <Role> elements.   
+<![CDATA[ Defines the role names that apply 'over' a specified
+{@see \OwnedObject} type. The value of the 'over' attribute is case
+insensitive. Nests zero or more <Role> elements.
 ]]>
-            </xs:documentation> 
+            </xs:documentation>
         </xs:annotation>
         <xs:complexType>
             <xs:sequence>
                 <xs:element name="Role" minOccurs="0" maxOccurs="unbounded">
                     <xs:annotation>
                         <xs:documentation>
-<![CDATA[ Defines a role name as the element value, case insensitive.  
-The id attribute is used to reference this role name throughout the document. 
+<![CDATA[ Defines a role name as the element value, case insensitive.
+The id attribute is used to reference this role name throughout the document.
 ]]>
-                        </xs:documentation> 
+                        </xs:documentation>
                     </xs:annotation>
                     <xs:complexType>
                         <xs:simpleContent>
@@ -246,19 +246,19 @@ The id attribute is used to reference this role name throughout the document.
                             </xs:extension>
                         </xs:simpleContent>
                     </xs:complexType>
-                </xs:element> 
-            </xs:sequence>    
+                </xs:element>
+            </xs:sequence>
             <xs:attribute name="over" type="string"/>
-        </xs:complexType> 
+        </xs:complexType>
     </xs:element>
-  
+
     <element name="RoleMapping">
         <xs:annotation>
             <xs:documentation>
-<![CDATA[ Used to specify which roles enable a set of actions over the 
-specified target object(s), i.e. it actually defines the role-to-action mapping. 
+<![CDATA[ Used to specify which roles enable a set of actions over the
+specified target object(s), i.e. it actually defines the role-to-action mapping.
 ]]>
-            </xs:documentation> 
+            </xs:documentation>
         </xs:annotation>
         <complexType>
             <sequence>
@@ -268,11 +268,30 @@ specified target object(s), i.e. it actually defines the role-to-action mapping.
                         <xs:sequence>
                             <xs:element name="RoleRef" minOccurs="0" maxOccurs="unbounded">
                                 <xs:complexType>
-                                    <xs:attribute name="idRef" type="xs:IDREF" use="required" />
-                                </xs:complexType> 
+                                    <xs:attribute name="idRef" use="required">
+                                        <xs:simpleType>
+                                            <xs:restriction base="xs:string">
+                                                <xs:enumeration value="COD_ADMIN"/>
+                                                <xs:enumeration value="COD_STAFF"/>
+                                                <xs:enumeration value="COO"/>
+                                                <xs:enumeration value="EGI_CSIRT_OFFICER"/>
+                                                <xs:enumeration value="NGI_OPS_DEP_MAN"/>
+                                                <xs:enumeration value="NGI_OPS_MAN"/>
+                                                <xs:enumeration value="NGI_SEC_OFFICER"/>
+                                                <xs:enumeration value="REG_FIRST_LINE_SUPPORT"/>
+                                                <xs:enumeration value="REG_STAFF_ROD"/>
+                                                <xs:enumeration value="SERVICE_GROUP_ADMIN"/>
+                                                <xs:enumeration value="SITE_ADMIN"/>
+                                                <xs:enumeration value="SITE_OPS_DEP_MAN"/>
+                                                <xs:enumeration value="SITE_OPS_MAN"/>
+                                                <xs:enumeration value="SITE_SECOFFICER"/>
+                                        </xs:restriction>
+                                        </xs:simpleType>
+                                    </xs:attribute>
+                                </xs:complexType>
                             </xs:element>
                         </xs:sequence>
-                    </xs:complexType> 
+                    </xs:complexType>
                 </xs:element>
                 <element name="EnabledActions" minOccurs="0" maxOccurs="unbounded">
                     <complexType>
@@ -281,14 +300,24 @@ specified target object(s), i.e. it actually defines the role-to-action mapping.
                                 <xs:annotation>
                                     <xs:documentation>
 <![CDATA[ This RoleMapping enables the listed Actions ]]>
-                                    </xs:documentation> 
+                                    </xs:documentation>
                                 </xs:annotation>
                                 <xs:complexType>
                                     <xs:sequence>
                                         <xs:element name="Action" minOccurs="0" maxOccurs="unbounded">
                                             <xs:simpleType>
                                                 <xs:restriction base="xs:string">
-                                                    <xs:pattern value="[a-zA-Z0-9_\s]+"/>
+                                                    <xs:enumeration value="ACTION_APPLY_RESERVED_SCOPE_TAG"/>
+                                                    <xs:enumeration value="ACTION_EDIT_OBJECT"/>
+                                                    <xs:enumeration value="ACTION_GRANT_ROLE"/>
+                                                    <xs:enumeration value="ACTION_NGI_ADD_SITE"/>
+                                                    <xs:enumeration value="ACTION_REJECT_ROLE"/>
+                                                    <xs:enumeration value="ACTION_REVOKE_ROLE"/>
+                                                    <xs:enumeration value="ACTION_NGI_EDIT_CERT_STATUS"/>
+                                                    <xs:enumeration value="ACTION_SITE_ADD_SERVICE"/>
+                                                    <xs:enumeration value="ACTION_SITE_DELETE_SERVICE"/>
+                                                    <xs:enumeration value="ACTION_SITE_EDIT_CERT_STATUS"/>
+                                                    <xs:enumeration value="ACTION_READ_PERSONAL_DATA"/>
                                                 </xs:restriction>
                                             </xs:simpleType>
                                         </xs:element>
@@ -298,21 +327,23 @@ specified target object(s), i.e. it actually defines the role-to-action mapping.
                             <element name="Target" minOccurs="1" maxOccurs="unbounded">
                                 <xs:annotation>
                                     <xs:documentation>
-<![CDATA[ The type-name of the object in the domain model that 
+<![CDATA[ The type-name of the object in the domain model that
 this RoleMapping applies. Case-insenstive. ]]>
-                                    </xs:documentation> 
+                                    </xs:documentation>
                                 </xs:annotation>
-                                <xs:complexType>
-                                    <xs:simpleContent>
-                                        <xs:extension base="xs:string">
-                                        </xs:extension>
-                                    </xs:simpleContent>
-                                </xs:complexType>  
+                                <xs:simpleType>
+                                    <xs:restriction base="xs:string">
+                                        <xs:enumeration value="Ngi"/>
+                                        <xs:enumeration value="Project"/>
+                                        <xs:enumeration value="ServiceGroup"/>
+                                        <xs:enumeration value="Site"/>
+                                    </xs:restriction>
+                                </xs:simpleType>
                             </element>
                         </sequence>
-                    </complexType> 
-                </element>  
-            </sequence> 
+                    </complexType>
+                </element>
+            </sequence>
         </complexType>
     </element>
 

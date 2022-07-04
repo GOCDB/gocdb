@@ -1,5 +1,7 @@
 <?php
 function showServiceGroup() {
+
+    require_once __DIR__.'/../../../../lib/Doctrine/entities/ServiceGroup.php';
     require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
     require_once __DIR__ . '/../utils.php';
 
@@ -8,6 +10,7 @@ function showServiceGroup() {
     }
     $sGroupId = $_GET['id'];
 
+    /* @var $sGroup \ServiceGroup */
     $sGroup = \Factory::getServiceGroupService()->getServiceGroup($sGroupId);
     $params['sGroup'] = $sGroup;
 
@@ -22,10 +25,7 @@ function showServiceGroup() {
 
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
 
-    $params['authenticated'] = false;
-    if($user != null){
-        $params['authenticated'] = true;
-    }
+    list(, $params['authenticated']) = getReadPDParams($user);
 
     $allRoles = $sGroup->getRoles();
     $roles = array();

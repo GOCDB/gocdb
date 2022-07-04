@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Required tag seed data for scoping Sites and SEs -->
+<results>
+    <tag grid_id="0">
+        <name key="primary">Local</name>
+    </tag>
+    <tag grid_id="0">
+        <name key="primary">EGI</name>
+    </tag>
+</results>

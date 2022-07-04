@@ -22,7 +22,7 @@ if(isset($argv[1])) {
     die("Please specify your data directory (sampleData) \n");
 }
 
-print_r("Deploying Sample Data\n");
+print_r("Deploying Sample Data from ".$GLOBALS['dataDir']."\n");
 
 require __DIR__."/AddProjects.php";
 echo "Added Projects OK\n";
@@ -50,3 +50,6 @@ echo "Added NGI level Roles OK\n";
 
 require __DIR__."/AddEgiRoles.php";
 echo "Added EGI level Roles OK\n";
+
+require __DIR__."/AddServiceGroups.php";
+echo "Added Service Groups OK\n";
