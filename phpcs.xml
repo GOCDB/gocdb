@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ruleset name="GOCDB rule set for PHP CodeSniffer"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="phpcs.xsd">
+    <description>GOCDb rule set for PHP CodeSniffer.</description>
+
+    <!-- Include the PSR-12 standard. The CodeSniffer ruleset for PSR-12 includes PSR-1.
+    Published PSR-12 standard:
+    https://www.php-fig.org/psr/psr-12/
+
+    Ruleset definition here:
+    https://github.com/squizlabs/PHP_CodeSniffer/blob/master/src/Standards/PSR12/ruleset.xml
+    -->
+    <rule ref="PSR12"/>
+
+</ruleset>
