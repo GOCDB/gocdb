@@ -103,7 +103,7 @@ class User extends AbstractEntityService{
         return $user;
     }
     /**
-     * Check if a user is allowed to read personal data at sites.
+     * Check if a user is allowed to read personal data at sites, ngis or projects.
      * @param \User The user to check for
      * @return Boolean true if allowed, else false;
      */
@@ -118,18 +118,53 @@ class User extends AbstractEntityService{
         }
 
         $sites = $this->getSitesFromRoles($user, \RoleStatus::GRANTED);
+
+        if ($this->checkAllowReadPD($user, $sites)) {
+            return true;
+        }
+
+        // No site was found with an authorisation.
+        // Check suitable role at an NGI
+
+        $ngis = $this->getNgisFromRoles($user, \RoleStatus::GRANTED);
+
+        if ($this->checkAllowReadPD($user, $ngis)) {
+            return true;
+        }
+
+        // No ngi was found with an authorisation.
+        // Check suitable role at an Project
+
+        $projects = $this->getProjectsFromRoles($user, \RoleStatus::GRANTED);
+
+        if ($this->checkAllowReadPD($user, $projects)) {
+            return true;
+        }
+
+        return false;
+    }
+    /**
+     * Check if the user has any role at one of the input entities which allows
+     * reading of personal data.
+     * @param \User $user
+     * @param \OwnedEntity[] $entities
+     * @return boolean Return true is any role allows reading of personal data,
+     *                 else return false
+     */
+    private function checkAllowReadPD(\User $user, array $entities) {
+
         $authServ = \Factory::getRoleActionAuthorisationService();
 
-        foreach ($sites as $site) {
-            if ($authServ->authoriseAction(\Action::READ_PERSONAL_DATA, $site, $user)
+        foreach ($entities as $entity) {
+            if ($authServ->authoriseAction(\Action::READ_PERSONAL_DATA, $entity, $user)
                 ->getGrantAction()
             ) {
                 // exit the first time we find a grant as we don't support
-                // site-level viewing granularity.
+                // site or ngi-level viewing granularity.
                 return true;
             }
         }
-        // No site was found with an authorisation.
+
         return false;
     }
     /**

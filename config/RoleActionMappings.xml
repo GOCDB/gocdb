@@ -89,6 +89,7 @@
                     <Action>ACTION_GRANT_ROLE</Action>
                     <Action>ACTION_REJECT_ROLE</Action>
                     <Action>ACTION_REVOKE_ROLE</Action>
+                    <Action>ACTION_READ_PERSONAL_DATA</Action>
                 </Actions>
                 <Target>Project</Target>
             </EnabledActions>
@@ -130,6 +131,7 @@
                     <Action>ACTION_GRANT_ROLE</Action>
                     <Action>ACTION_REJECT_ROLE</Action>
                     <Action>ACTION_REVOKE_ROLE</Action>
+                    <Action>ACTION_READ_PERSONAL_DATA</Action>
                 </Actions>
                 <Target>Ngi</Target>
             </EnabledActions>
