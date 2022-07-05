@@ -1,3 +1,6 @@
+<?php
+    $showPD = $params['authenticated'];
+?>
 <div class="rightPageContainer">
     <div style="float: left;">
         <img src="<?php echo \GocContextPath::getPath()?>img/ngi/fullSize/<?php echo $params['ngi']->getName() ?>.jpg" class="pageLogo" />
@@ -50,45 +53,45 @@
                 <table style="clear: both; width: 100%; table-layout: fixed;">
                     <tr class="site_table_row_1">
                         <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <a href="mailto:<?php xecho($params['ngi']->getEmail()) ?>">
                                 <?php xecho($params['ngi']->getEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_2">
                         <td class="site_table" style="width: 30%">ROD E-Mail</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <a href="mailto:<?php xecho($params['ngi']->getRodEmail()) ?>">
                             <?php xecho($params['ngi']->getRodEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_1">
                         <td class="site_table" style="width: 30%">Helpdesk E-Mail</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <a href="mailto:<?php xecho($params['ngi']->getHelpdeskEmail()) ;?>">
                             <?php xecho($params['ngi']->getHelpdeskEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_2">
                         <td class="site_table" style="width: 30%">Security E-Mail</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <a href="mailto:<?php echo $params['ngi']->getSecurityEmail() ?>">
                             <?php xecho($params['ngi']->getSecurityEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_1">
                         <td class="site_table" style="width: 30%">GGUS Support Unit</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <?php xecho($params['ngi']->getGgus_Su()) ?>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                 </table>
@@ -195,6 +198,7 @@
 
     <!--  Users and Roles -->
     <div class="listContainer">
+        <?php if ($showPD) { ?>
         <span class="header listHeader">
            Users (Click on name to manage roles)
         </span>
@@ -212,35 +216,28 @@
                 ?>
                     <tr>
                         <td>
-                            <?php
-                            if ($params['authenticated']) {
-                            ?>
                                 <a href="index.php?Page_Type=User&amp;id=<?php echo $role->getUser()->getId() ?>">
                                     <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
                                     <?php xecho($role->getUser()->getFullName()) ?>
                                 </a>
-                            <?php
-                            } else {
-                                echo 'PROTECTED';
-                            }
-                            ?>
                         </td>
 
-                        <td>
-                            <?php
-                            if ($params['authenticated']) {
-                                xecho($role->getRoleType()->getName());
-                            } else {
-                                echo 'PROTECTED';
-                            }
-                            ?>
-                        </td>
+                            <td> <?php xecho($role->getRoleType()->getName()); ?> </td>
                     </tr>
                 <?php
-                } // End of the foreach loop iterating over sites
+                    } // End of the foreach loop iterating over roles
                 ?>
             </tbody>
         </table>
+        <?php
+            } else {
+                echo '<span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">';
+                echo 'User personal data is hidden (' . getInfoMessage() . ') </span>';
+                echo '<img src="' . \GocContextPath::getPath() . 'img/people.png" class="decoration" />';
+                echo '</span>';
+            }
+        ?>
+
         <!-- Don't show role request in read only mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['authenticated']):?>
             <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
