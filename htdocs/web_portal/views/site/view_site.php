@@ -2,6 +2,7 @@
 require_once __DIR__."/../../controllers/utils.php";
 
 $site = $params['site'];
+$entityId = $site->getId();
 $downtimes = $params['Downtimes'];
 $parentNgiName = $site->getNgi()->getName();
 $portalIsReadOnly = $params['portalIsReadOnly'];
@@ -27,7 +28,7 @@ $showPD = $params['authenticated']; // display Personal Data
         <div style="float: right; margin-left: 2em; text-align:center;">
             <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
             <a onclick="return confirmSubmit()"
-               href="index.php?Page_Type=Delete_Site&id=<?php echo($site->getId()); ?>">
+               href="index.php?Page_Type=Delete_Site&id=<?php echo($entityId); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/trash.png" height="25px"/>
             <br/>
             <span>Admin<br>Delete</span>
@@ -36,7 +37,7 @@ $showPD = $params['authenticated']; // display Personal Data
         <?php endif; ?>
         <?php if ($params['ShowEdit']): ?>
         <div style="float: right; margin-left: 2em;">
-            <a href="index.php?Page_Type=Edit_Site&amp;id=<?php echo($site->getId()) ?>">
+            <a href="index.php?Page_Type=Edit_Site&amp;id=<?php echo($entityId) ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/pencil.png" height="25px" style="float: right;" />
             <br />
             <br />
@@ -155,7 +156,7 @@ $showPD = $params['authenticated']; // display Personal Data
                 &nbsp;
                 <!--  only show this link if we're in read / write mode -->
                 <?php if (!$portalIsReadOnly): ?>
-                <a href="index.php?Page_Type=Edit_Certification_Status&amp;id=<?php echo($site->getId()) ?>">Change</a>
+                <a href="index.php?Page_Type=Edit_Certification_Status&amp;id=<?php echo($entityId) ?>">Change</a>
                 <?php endif; ?>
             <?php } else echo(getInfoMessage()); ?>
                     </td>
@@ -425,7 +426,7 @@ $showPD = $params['authenticated']; // display Personal Data
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
         <!-- Add new Service Link -->
-        <a href="index.php?Page_Type=Add_Service&amp;siteId=<?php echo($site->getId()); ?>">
+        <a href="index.php?Page_Type=Add_Service&amp;siteId=<?php echo($entityId); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
             Add Service
@@ -474,32 +475,22 @@ $showPD = $params['authenticated']; // display Personal Data
                     </tbody>
                 </table>
         <?php
-        } else {
-            echo '<span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">';
-            echo 'User personal data is hidden (' . getInfoMessage() . ') </span>';
-            echo '<img src="' . \GocContextPath::getPath() . 'img/people.png" class="decoration" />';
-        }
+            } else {
+                require_once __DIR__.'/../fragments/hidePersonalData.php';
+            }
         ?>
 
-    <!-- Request Role Link -->
-    <!--  only show this link if we're in read / write mode -->
-    <?php if (!$portalIsReadOnly && $showPD): ?>
-        <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
-            <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo($site->getId()); ?>">
-            <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                Request Role
-            </span>
-            </a>
-        </div>
-    <?php endif; ?>
+        <!-- Request Role Link -->
+        <?php if (!$portalIsReadOnly) {
+            require_once __DIR__.'/../fragments/requestRole.php';
+        } ?>
     </div>
 
     <!--  Downtimes -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
             Recent Downtimes Affecting <?php xecho($site->getShortName()) ?> Sevices and Endpoints
-            <a href="index.php?Page_Type=Site_Downtimes&amp;id=<?php echo($site->getId()); ?>">
+            <a href="index.php?Page_Type=Site_Downtimes&amp;id=<?php echo($entityId); ?>">
                 (View all Downtimes)
             </a>
         </span>
@@ -535,7 +526,7 @@ $showPD = $params['authenticated']; // display Personal Data
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
         <!-- Add new Downtime Link -->
-        <a href="index.php?Page_Type=Add_Downtime&amp;site=<?php echo($site->getId()); ?>">
+        <a href="index.php?Page_Type=Add_Downtime&amp;site=<?php echo($entityId); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
             Add Downtime
@@ -635,7 +626,7 @@ $showPD = $params['authenticated']; // display Personal Data
 
             <?php if (!$portalIsReadOnly): ?>
                 <!-- Add new API credential -->
-                <a href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $site->getId()?>">
+                <a href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $entityId?>">
                     <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add API credential

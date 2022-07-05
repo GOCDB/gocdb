@@ -1,4 +1,5 @@
 <?php
+$entityId = $params['ID'];
 $ngiCount = sizeof($params['NGIs']);
 $showPD = $params['authenticated']; // display Personal Data
 ?>
@@ -21,7 +22,7 @@ $showPD = $params['authenticated']; // display Personal Data
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <?php if($params['ShowEdit']){?>
-                    <a href="index.php?Page_Type=Edit_Project&amp;id=<?php echo $params['ID']?>">
+                    <a href="index.php?Page_Type=Edit_Project&amp;id=<?php echo $entityId?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                         <br />
                         <br />
@@ -33,7 +34,7 @@ $showPD = $params['authenticated']; // display Personal Data
                 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <?php if($params['ShowEdit']){?>
                     <a onclick="return confirmSubmit()"
-                        href="index.php?Page_Type=Delete_Project&id=<?php echo $params['ID']?>">
+                        href="index.php?Page_Type=Delete_Project&id=<?php echo $entityId?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
                         <br />
                         <br />
@@ -86,7 +87,7 @@ $showPD = $params['authenticated']; // display Personal Data
         <?php if(!$params['portalIsReadOnly']):?>
             <!-- Add NGI link -->
             <?php if($params['ShowEdit']){?>
-                <a href="index.php?Page_Type=Add_Project_NGIs&amp;id=<?php echo $params['ID'];?>">
+                <a href="index.php?Page_Type=Add_Project_NGIs&amp;id=<?php echo $entityId;?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                             Add NGIs
@@ -97,7 +98,7 @@ $showPD = $params['authenticated']; // display Personal Data
             <?php if ($ngiCount > 0): ?>
                 <!-- Remove NGI Link -->
                 <?php if($params['ShowEdit']){?>
-                    <a href="index.php?Page_Type=Remove_Project_NGIs&amp;id=<?php echo $params['ID'];?>">
+                    <a href="index.php?Page_Type=Remove_Project_NGIs&amp;id=<?php echo $entityId;?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                         <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                                 Remove NGIs
@@ -166,14 +167,9 @@ $showPD = $params['authenticated']; // display Personal Data
         }
         ?>
         <!-- don't allow role requests in read only mode -->
-        <?php if(!$params['portalIsReadOnly'] && $showPD):?>
-            <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['ID'];?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                        Request Role
-                </span>
-            </a>
-        <?php endif; ?>
+        <?php if (!$params['portalIsReadOnly']) {
+            require_once __DIR__.'/../fragments/requestRole.php';
+        } ?>
 
     </div>
 
