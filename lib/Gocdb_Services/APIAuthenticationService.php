@@ -37,21 +37,19 @@ class APIAuthenticationService extends AbstractEntityService{
      * Returns the APIAuthentication entity associated with the given identifier.
      *
      * @param string $ident Identifier (e.g. X.509 DN as string)
-     * @param string $type  Identifyer type (e.g. "X.509")
      * @return \APIAuthentication APIAuthentication associated with this identifier
      */
-    public function getAPIAuthentication($ident, $type) {
+    public function getAPIAuthentication($ident) {
 
         if (!is_string($ident)) {
             throw new \LogicException("Expected string APIAuthentication identifier.");
         }
 
         $dql = "SELECT a FROM APIAuthentication a " .
-                "WHERE (a.identifier = :ident AND a.type = :type)" ;
+                "WHERE (a.identifier = :ident)" ;
 
         $qry = $this->em->createQuery($dql);
         $qry->setParameter('ident', $ident);
-        $qry->setParameter('type', $type);
 
         $apiAuth = $qry->getOneOrNullResult();
 

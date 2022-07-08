@@ -172,29 +172,31 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
         $type = 'X.509';
       // Start with no APIAuthentication entities to be found
         $this->assertNull(
-            $authEntServ->getAPIAuthentication($ident, $type),
+            $authEntServ->getAPIAuthentication($ident),
             "Non-null value returned when searching for APIAuthentication entity " .
-            "for id:{$ident} with type:{$type} when expected none."
+            "for id:{$ident} when expected none."
         );
 
         $authEnt = $siteService->addAPIAuthEntity(
             $site,
             $user,
-            array('IDENTIFIER' =>  $ident,
-                              'TYPE' => $type,
-            'ALLOW_WRITE' => false)
+            array(
+                'IDENTIFIER' =>  $ident,
+                'TYPE' => $type,
+                'ALLOW_WRITE' => false
+            )
         );
 
         $this->assertTrue(
             $authEnt instanceof \APIAuthentication,
-            "Failed to add APIAuthentication entity for id:{$ident} with type:{$type}."
+            "Failed to add APIAuthentication entity for id:{$ident}."
         );
 
-        $authEntMatched = $authEntServ->getAPIAuthentication($ident, $type);
+        $authEntMatched = $authEntServ->getAPIAuthentication($ident);
 
         $this->assertTrue(
             $authEnt === $authEntMatched,
-            "Failed to return APIAuthentication entity for id:{$ident} with type:{$type}."
+            "Failed to return APIAuthentication entity for id:{$ident}."
         );
     }
 }
