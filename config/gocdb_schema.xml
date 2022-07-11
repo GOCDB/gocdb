@@ -604,7 +604,7 @@
         <field>
             <fname>TYPE</fname>
             <length>255</length>
-            <regex>/^(X.509|OIDC Subject)$/</regex>
+            <regex>/^(X\.509|OIDC Subject)$/</regex>
         </field>
 		<field>
 			<fname>ALLOW_WRITE</fname>
