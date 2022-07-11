@@ -160,7 +160,7 @@ class User extends AbstractEntityService{
                 ->getGrantAction()
             ) {
                 // exit the first time we find a grant as we don't support
-                // site or ngi-level viewing granularity.
+                // site, ngi or project-level viewing granularity.
                 return true;
             }
         }
