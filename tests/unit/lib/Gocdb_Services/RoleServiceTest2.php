@@ -35,6 +35,7 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
     private $dbOpsFactory;
     private $user;
     private $site;
+    private $ngi;
 
     function __construct()
     {
@@ -118,8 +119,14 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
         $this->user->addUserIdentifierDoJoin($identifier);
         $this->entityManager->persist($this->user);
 
+        $this->ngi = $this->util->createSampleNGI('NGI1');
+
         $this->site = $this->util->createSampleSite("Site1");
+
+        $this->ngi->addSiteDoJoin($this->site);
+
         $this->entityManager->persist($this->site);
+        $this->entityManager->persist($this->ngi);
 
         $this->roleServ = new \org\gocdb\services\Role();
         $this->roleServ->setEntityManager($this->entityManager);
@@ -220,18 +227,17 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
 
         $roles = $this->createTestRoles(array("Manager","Administrator"));
 
-      // No APIAuthentication credentials are yet assigned so the
-      // check should pass.
-        $this->assertNull($this->roleServ->checkOrphanAPIAuth($roles[0]));
+        // No APIAuthentication credentials are yet assigned so the
+        // check should pass.
+        $this->assertCount(0, $this->roleServ->checkOrphanAPIAuth($roles[0]));
 
-        $this->addAPIAuthEntity();
+          $this->addAPIAuthEntity();
 
-      // User has two roles so the check should pass.
-        $this->assertNull($this->roleServ->checkOrphanAPIAuth($roles[0]));
+        // User has two roles so the check should pass.
+        $this->assertCount(0, $this->roleServ->checkOrphanAPIAuth($roles[0]));
     }
   /**
-   * @depends testNullCheckOrphanAPIAuth
-   * @expectedException Exception
+   * @depends testCheckOrphanAPIAuth
    */
     public function testFailCheckOrphanAPIAuth()
     {
@@ -241,7 +247,7 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
 
         $this->addAPIAuthEntity();
 
-      // Should fail because there is only one role.
-        $this->roleServ->checkOrphanAPIAuth($roles[0]);
+        // Should fail because there is only one role.
+        $this->assertCount(1, $this->roleServ->checkOrphanAPIAuth($roles[0]));
     }
 }

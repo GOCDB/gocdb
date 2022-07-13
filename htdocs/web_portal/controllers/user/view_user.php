@@ -81,46 +81,47 @@ function view_user() {
     foreach ($roles as $r) {
 
         $decoratorString = '';
-        $disableButton = '';
 
         /** @var \OwnedEntity $roleOwnedEntity */
         $roleOwnedEntity = $r->getOwnedEntity();
 
-        try {
-            // only meaningful for Site entities, but there is an
-            // internal check in the function.
-            $roleService->checkOrphanAPIAuth($r);
-        } catch (Exception $e) {
-            $disableButton = 'disabled';
-        }
+        // check that revoking this role will not leave an API credential owned by
+        // a the user at a site over which they no longer have a role.
+        $blockingSites = $roleService->checkOrphanAPIAuth($r);
 
-        $authorisingRoles = \Factory::getRoleActionAuthorisationService()
-            ->authoriseAction(\Action::REVOKE_ROLE, $roleOwnedEntity, $callingUser)
-            ->getGrantingRoles();
-
-        if ($user != $callingUser) {
-            // determine if callingUser can REVOKE this role instance
-            if ($callingUser->isAdmin()) {
-                $decoratorString .= 'GOCDB_ADMIN';
-                if (count($authorisingRoles) >= 1) {
-                    $decoratorString .= ': ' ;
-                }
-            }
-            if (count($authorisingRoles) >= 1) {
-                /** @var \Role $authRole */
-                $roleNames = array();
-                foreach ($authorisingRoles as $authRole) {
-                    $roleNames[] = $authRole->getRoleType()->getName();
-                }
-                $decoratorString .= '[' . implode(', ', $roleNames) . '] ';
-            }
+        // Assign the decorator revokeMessage key value to be either the list of roles permitting
+        // the role revocation or the list of sites with potentially orphaned API credentials
+        // blocking the revocation
+        if (count($blockingSites) > 0) {
+            $r->setDecoratorObject(array("revokeButton" => "disabled",
+                                         "revokeMessage" => implode(', ', array_keys($blockingSites))));
         } else {
-            // current user is viewing their own roles, so they can revoke their own roles
-            $decoratorString = '[Self revoke own role]';
-        }
+            $authorisingRoles = \Factory::getRoleActionAuthorisationService()
+                ->authoriseAction(\Action::REVOKE_ROLE, $roleOwnedEntity, $callingUser)
+                ->getGrantingRoles();
 
-        if (strlen($decoratorString) > 0 || $disableButton == 'disabled') {
-            $r->setDecoratorObject(array("revokeButton" => $disableButton, "revokeMessage" => $decoratorString));
+            if ($user != $callingUser) {
+                // determine if callingUser can REVOKE this role instance
+                if ($callingUser->isAdmin()) {
+                    $decoratorString .= 'GOCDB_ADMIN';
+                    if (count($authorisingRoles) >= 1) {
+                        $decoratorString .= ': ' ;
+                    }
+                }
+                if (count($authorisingRoles) >= 1) {
+                    /** @var \Role $authRole */
+                    $roleNames = array();
+                    foreach ($authorisingRoles as $authRole) {
+                        $roleNames[] = $authRole->getRoleType()->getName();
+                    }
+                    $decoratorString .= '[' . implode(', ', $roleNames) . '] ';
+                }
+            } else {
+                // current user is viewing their own roles, so they can revoke their own roles
+                $decoratorString = '[Self revoke own role]';
+            }
+
+            $r->setDecoratorObject(array("revokeButton" => "", "revokeMessage" => $decoratorString));
         }
 
         // Get the names of the parent project(s) for this role so we can

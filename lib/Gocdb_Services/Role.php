@@ -2,6 +2,8 @@
 namespace org\gocdb\services;
 
 use Exception;
+use Doctrine\Common\Collections\ArrayCollection;
+use org\gocdb\services\OwnedEntity as OwnedEntityService;
 
 /* Copyright © 2011 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +21,7 @@ require_once __DIR__ . '/RoleConstants.php';
 require_once __DIR__ . '/Downtime.php';
 require_once __DIR__ . '/Site.php';
 require_once __DIR__ . '/NGI.php';
+require_once __DIR__ . '/OwnedEntity.php';
 require_once __DIR__ . '/ServiceGroup.php';
 require_once __DIR__ . '/Project.php';
 require_once __DIR__ . '/RoleActionAuthorisationService.php';
@@ -32,6 +35,7 @@ require_once __DIR__ . '/RoleActionMappingService.php';
  * @author David Meredith
  */
 class Role extends AbstractEntityService{
+
     private $downtimeService;
     private $roleActionAuthorisationService;
     private $roleActionMappingService;
@@ -183,8 +187,8 @@ class Role extends AbstractEntityService{
         // which would cause an issue with dql query below.
         //
         //$entityClassName= get_class($entity);
-        require_once __DIR__.'/OwnedEntity.php';
-        $ownedEntityService = new \org\gocdb\services\OwnedEntity();
+
+        $ownedEntityService = new OwnedEntityService();
         $entityClassName = $ownedEntityService->getOwnedEntityDerivedClassName($entity);
 
         $dql = "SELECT rt.name
@@ -654,7 +658,19 @@ class Role extends AbstractEntityService{
         }
         // Check that removing the role would not leave APIAuth credentials owned by the user
         // who no longer has a role at the site.
-        $this->checkOrphanAPIAuth($role);
+        $blockingSites = $this->checkOrphanAPIAuth($role);
+
+        if (count($blockingSites) > 0) {
+            $msg = "Request to remove role rejected: role removal would" .
+            " leave one or more API credentials at sites which are owned by a user" .
+            " who has no site role. Delete or reassign ownership of credentials" .
+            " owned by this user from the sites to enable revocation. Sites: ";
+            $msgArray = array();
+            foreach ($blockingSites as $siteName => $credCount) {
+                $msgArray[] = "$siteName($credCount)";
+            }
+            throw new \Exception($msg . implode(', ', $msgArray));
+        }
 
         if($role->getStatus() == \RoleStatus::PENDING){
             // if this role has not yet been granted, then new status is REJECTION
@@ -683,37 +699,60 @@ class Role extends AbstractEntityService{
     }
     /**
      * Check that removing a site role from a user would not leave an orphaned API credential:
-     * attached to a site where the user no longer has a active role.
-     * @param \Role $role
-     * @throws \Exception If revoking the Role would leave an APIAuthentication
-     *                    credential owned by a user without a role at the site
+     * attached to a site where the user no longer has a active role at the site or owning NGI.
+     * @param \Role $role       Role to be revoked
+     * @return array            Array of siteName => count, where count is the number of credentials
+     *                          at each of the named site(s) which are blocking removal.
      */
     public function checkOrphanAPIAuth (\Role $role) {
         /** @var \OwnedEntity $entity */
         $entity = $role->getOwnedEntity();
+        $roleUser = $role->getUser();
+        $userAPIEnts = $roleUser->getAPIAuthenticationEntities();
+        $credSites = array();   // Sites for are blocking this role revokation
+
+        if (count($userAPIEnts) > 0) {
+            // Collection of all sites associated with the role either the role's site
+            // itself or on of the NGI's sites
+            $sites = new ArrayCollection();
+
+            if ($entity->getType() == \OwnedEntity::TYPE_NGI) {
+                /** @var \ngi $ngi */
+                $ngi = $entity;
+                $sites = $ngi->getSites();
+            }
 
         if ($entity->getType() == \OwnedEntity::TYPE_SITE) {
+                /** @var \site $site */
             $site = $entity;
-            $roleUser = $role->getUser();
-            $userAPIEnts = $roleUser->getAPIAuthenticationEntities();
+                $sites[] = $site;
+            }
+
             /** @var \APIAuthentication $cred */
             foreach ($userAPIEnts as $cred) {
-                if ($cred->getParentSite() == $site) {
-                    $roleCount = count($this->getUserRoleNamesOverEntity($site, $roleUser, \RoleStatus::GRANTED));
+
+                $credSite = $cred->getParentSite();
+
+                if ($sites->contains($credSite)) {
+                    // The role's user owns an API credential at the role's site or one of the role NGI's sites
+                    // Make sure they have more than one role covering the API credential's site.
+                    $roleCount = count($this->getUserRoleNamesOverEntity($credSite, $roleUser, \RoleStatus::GRANTED));
+
+                    $roleCount += count(
+                        $this->getUserRoleNamesOverEntity($credSite->getNgi(), $roleUser, \RoleStatus::GRANTED)
+                    );
+
                     if ($roleCount <= 1) {
-                        throw new Exception("Request to remove role rejected: role removal would" .
-                            " leave one or more API credentials at the site which are owned by a user" .
-                            " who has no site role. Delete or reassign ownership of credentials" .
-                            " owned by this user from the site to enable revocation" .
-                            ". Site:" . $site->getShortName() .
-                            ". User:" . $roleUser->getFullName() .
-                            ". Role:" . $role->getRoleType()->getName());
+                        $siteName = $credSite->getShortName();
+                        if (!key_exists($siteName, $credSites)) {
+                            $credSites[$siteName] = 0;
+                        }
+                        ++$credSites[$siteName];
                     }
-                    return; // only need to check the first we find
                 }
             }
-            // if we fall through to here, the user has no APIAuths for the role's site.
         }
+        return $credSites;
     }
     /**
      * Calling user attempts to reject the given Role request.

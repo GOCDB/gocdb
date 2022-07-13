@@ -260,7 +260,8 @@
                     <?php
                         if(!$params['portalIsReadOnly'] &&
                             is_array($decorator) && $decorator["revokeButton"] == 'disabled') {
-                                echo 'Remove or reassign API credentials from site before revoking this role.';
+                                echo 'Remove or reassign API credentials from site(s) before revoking this role. ';
+                                echo 'Sites: ' . $decorator["revokeMessage"];
                         }
                     ?>
                 </td>
