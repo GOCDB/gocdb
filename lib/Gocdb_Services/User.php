@@ -151,14 +151,12 @@ class User extends AbstractEntityService{
      * @return boolean Return true is any role allows reading of personal data,
      *                 else return false
      */
-    private function checkAllowReadPD(\User $user, array $entities) {
-
+    private function checkAllowReadPD(\User $user, array $entities)
+    {
         $authServ = \Factory::getRoleActionAuthorisationService();
 
         foreach ($entities as $entity) {
-            if ($authServ->authoriseAction(\Action::READ_PERSONAL_DATA, $entity, $user)
-                ->getGrantAction()
-            ) {
+            if ($authServ->authoriseAction(\Action::READ_PERSONAL_DATA, $entity, $user)->getGrantAction()) {
                 // exit the first time we find a grant as we don't support
                 // site, ngi or project-level viewing granularity.
                 return true;
