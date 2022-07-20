@@ -1,4 +1,5 @@
 <?php
+
 /*______________________________________________________
  *======================================================
  * File: view_user.php
@@ -19,21 +20,22 @@
  * limitations under the License.
  *
  /*====================================================== */
-function view_user() {
-    require_once __DIR__.'/utils.php';
-    require_once __DIR__.'/../../../../lib/Gocdb_Services/User.php';
-    require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
-    require_once __DIR__.'/../../components/Get_User_Principle.php';
+function view_user()
+{
+    require_once __DIR__ . '/utils.php';
+    require_once __DIR__ . '/../../../../lib/Gocdb_Services/User.php';
+    require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
+    require_once __DIR__ . '/../../components/Get_User_Principle.php';
 
-    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
+    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
         throw new Exception("An id must be specified");
     }
 
     $userService = \Factory::getUserService();
     $user = $userService->getUser($_GET['id']);
 
-    if($user === null){
-       throw new Exception("No user with that ID");
+    if ($user === null) {
+        throw new Exception("No user with that ID");
     }
 
     $params = array();
@@ -55,18 +57,21 @@ function view_user() {
 
     // Restrict users to see only their own data unless authorised.
     // User objects are not 'owned' so we check their authz at connected sites.
-    if (is_null($callingUser) ||
-        (!$callingUser->isAdmin() &&
-         $user !== $callingUser &&
-        !$userService->isAllowReadPD($callingUser)))
-        {
+    if (
+        is_null($callingUser)
+        || (
+            !$callingUser->isAdmin()
+            && $user !== $callingUser
+            && !$userService->isAllowReadPD($callingUser)
+            )
+    ) {
             throw new Exception('You are not authorised to read other users\' personal data.');
-        }
+    }
 
     $params['user'] = $user;
 
     // 2D array, each element stores role and a child array holding project Ids
-    $role_ProjIds = array();
+    $roleProjectIds = array();
 
     // get the targetUser's roles
     $roleService = \Factory::getRoleService();
@@ -79,7 +84,6 @@ function view_user() {
     /** @var \Role $r */
 
     foreach ($roles as $r) {
-
         $decoratorString = '';
 
         /** @var \OwnedEntity $roleOwnedEntity */
@@ -126,21 +130,21 @@ function view_user() {
 
         // Get the names of the parent project(s) for this role so we can
         // group by project in the view
-        $parentProjectsForRole = \Factory::getRoleActionAuthorisationService()
+        $roleParentProjects = \Factory::getRoleActionAuthorisationService()
             ->getReachableProjectsFromOwnedEntity($r->getOwnedEntity());
         $projIds = array();
-        foreach ($parentProjectsForRole as $_proj) {
-            $projIds[] = $_proj->getId();
+        foreach ($roleParentProjects as $proj) {
+            $projIds[] = $proj->getId();
         }
 
         // store role and parent projIds in a 2D array for viewing
-        $role_ProjIds[] = array($r, $projIds);
+        $roleProjectIds[] = array($r, $projIds);
     }// end iterating roles
 
     // Get a list of the projects and their Ids for grouping roles by proj in view
     $projectNamesIds = array();
     $projects = \Factory::getProjectService()->getProjects();
-    foreach($projects as $proj){
+    foreach ($projects as $proj) {
         $projectNamesIds[$proj->getId()] = $proj->getName();
     }
 
@@ -154,7 +158,7 @@ function view_user() {
 
     $params['idString'] = $userService->getDefaultIdString($user);
     $params['projectNamesIds'] = $projectNamesIds;
-    $params['role_ProjIds'] = $role_ProjIds;
+    $params['role_ProjIds'] = $roleProjectIds;
     $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();
     $params['APIAuthEnts'] = $user->getAPIAuthenticationEntities();
     $title = $user->getFullName();
