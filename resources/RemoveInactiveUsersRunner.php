@@ -47,6 +47,13 @@ foreach ($users as $user) {
 
     $lastLoginDate = $user->getLastLoginDate();
 
+    if (!$user->getAPIAuthenticationEntities()->isEmpty()) {
+       // Prevent creating orphaned API credentials.
+       echo "Cannot delete a user with attached API credentials.\n";
+       // Move onto the next users.
+       continue;
+    }
+
     if ($lastLoginDate) { // null lastLoginDate check
         $interval = $today->diff($lastLoginDate);
     } else { // This might only be run once, since new users always have field filled.
