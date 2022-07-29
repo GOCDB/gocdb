@@ -1,3 +1,6 @@
+<?php
+    $showPD = $params['authenticated'];
+?>
 <div class="rightPageContainer">
     <div style="float: left;">
         <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" class="pageLogo" />
@@ -72,7 +75,12 @@
                             </a>
                         </td>
                         <td class="site_table">
-                            <?php echo $ngi->getEmail(); ?>
+                            <?php
+                                if ($showPD) {
+                                    xecho($ngi->getEmail());
+                                } else
+                                    echo(getInfoMessage());
+                            ?>
                         </td>
                         <td class="site_table">
                             <textarea readonly="true" style="height: 25px;"><?php xecho($ngi->getScopeNamesAsString()); ?></textarea>

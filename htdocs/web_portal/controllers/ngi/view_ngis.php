@@ -21,6 +21,8 @@
  /*====================================================== */
 
 function view_ngis() {
+
+    require_once __DIR__ . '/../utils.php';
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 
     $filterParams = array();
@@ -55,12 +57,16 @@ function view_ngis() {
     $scopes = \Factory::getScopeService()->getScopes();
 
     $ngis = \Factory::getNgiService()->getNGIsFilterByParams($filterParams);
-    //$ngis = \Factory::getNgiService()->getNGIs($scope);
 
+    // Set values for showing personal data
+    $dn = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($dn);
+
+    $params = array();
+    list($params['UserIsAdmin'], $params['authenticated']) = getReadPDParams($user);
 
     $params['ngis'] = $ngis;
     $params['scopes']=$scopes;
-    //$params['selectedScope']=$scope;
     $params['selectedScopes']=$selectedScopes;
     show_view('ngi/view_ngis.php', $params, "NGIs");
 }
