@@ -4,6 +4,34 @@ require dirname(__FILE__) . '/../lib/Doctrine/bootstrap_doctrine.php';
 require_once dirname(__FILE__) . '/../lib/Gocdb_Services/User.php';
 require_once dirname(__FILE__) . '/../lib/Gocdb_Services/Factory.php';
 
+// Configure script options
+$longOptions = array(
+    // Required Option. After this many months, users will receive email warnings.
+    "warning_threshold:",
+    // Required Option. After this many months, users will be deleted.
+    "deletion_threshold:",
+);
+
+$options = getopt("", $longOptions);
+
+// Handle the cases where options were not passed.
+
+if (isset($options["warning_threshold"])) {
+    $warningThreshold = $options["warning_threshold"];
+} else {
+    echo "Error: warning_threshold option must be set.\n";
+    usage();
+    return;
+};
+
+if (isset($options["deletion_threshold"])) {
+    $deletionThreshold = $options["deletion_threshold"];
+} else {
+    echo "Error: deletion_threshold option must be set.\n";
+    usage();
+    return;
+};
+
 $dql = "SELECT u FROM User u";
 $users = $entityManager->createQuery($dql)->getResult();
 
@@ -33,19 +61,36 @@ foreach ($users as $user) {
     $elapsedMonths = (int) $interval->format('%a') / 30;
     echo 'Months elapsed since last login: ' . $elapsedMonths . "\n";
 
-    if ($elapsedMonths > 18) { // Delete user
+    if ($elapsedMonths > $deletionThreshold) { // Delete user
         echo "Deleting user\n";
         deleteUser($user, $entityManager);
-    } elseif ($elapsedMonths > 17) { // Warn user
+    } elseif ($elapsedMonths > $warningThreshold) { // Warn user
         echo "Sending user warning email.\n";
-        sendWarningEmail($user);
-    } elseif ($elapsedMonths < 17) { // Do Nothing
+        sendWarningEmail($user, $elapsedMonths, $deletionThreshold);
+    } elseif ($elapsedMonths < $warningThreshold) { // Do Nothing
         echo "Doing nothing.\n";
     }
 }
 
 $entityManager->flush();
 echo "Completed ok: ".date('D, d M Y H:i:s');
+
+function usage() {
+    echo "Usage: " .
+         "RemoveInactiveUsersRunner.php " .
+         "--warning_threshold X " .
+         "--deletion_threshold Y" .
+         "\n\n";
+    echo "Options:\n\n";
+    echo "--warning_threshold X " .
+        "    After this many months, users will receive email warnings." .
+        "\n";
+    echo "--deletion_threshold Y" .
+        "    After this many months, users will be deleted." .
+        "\n";
+
+    echo "\n";
+};
 
 function deleteUser($user, $entityManager)
 {
@@ -63,7 +108,7 @@ function deleteUser($user, $entityManager)
     }
 }
 
-function sendWarningEmail($user)
+function sendWarningEmail($user, $elapsedMonths, $deletionThreshold)
 {
     $emailAddress = $user->getEmail();
 
@@ -72,9 +117,11 @@ function sendWarningEmail($user)
     $subject = "GOCDB: User account deletion notice";
 
     $body = "Dear ". $user->getForename() .",\n\n" .
-            "Your GOCDB account, associated with the following identifiers, " .
-            "has not been signed into during the last 17 months and will be " .
-            "deleted when this period of inactivity reaches 18 months.\n\n";
+            "Your GOCDB account, associated with the following " .
+            "identifiers, has not been signed into during the last " .
+            floor($elapsedMonths) . " months and will be deleted when " .
+            "this period of inactivity reaches " .
+            $deletionThreshold . " months.\n\n";
 
     $body .= "Identifiers:\n";
     foreach ($user->getUserIdentifiers() as $identifier) {
