@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2015 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -21,149 +22,179 @@ use Doctrine\ORM\EntityManager;
  *
  * @author Ian Neilson (after David Meredith)
  */
-class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase {
-  private $entityManager;
-  private $dbOpsFactory;
+class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
+{
+    private $entityManager;
+    private $dbOpsFactory;
 
-  function __construct() {
-    parent::__construct();
-    // Use a local instance to avoid Mess Detector's whinging about avoiding
-    // static access.
-    $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
-  }
+    function __construct()
+    {
+        parent::__construct();
+      // Use a local instance to avoid Mess Detector's whinging about avoiding
+      // static access.
+        $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
+    }
   /**
   * Overridden.
   */
-  public static function setUpBeforeClass() {
-    parent::setUpBeforeClass();
-    echo "\n\n-------------------------------------------------\n";
-    echo "Executing APIAuthEntServiceTest. . .\n";
-  }
+    public static function setUpBeforeClass()
+    {
+        parent::setUpBeforeClass();
+        echo "\n\n-------------------------------------------------\n";
+        echo "Executing APIAuthEntServiceTest. . .\n";
+    }
 
   /**
   * Overridden. Returns the test database connection.
   * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
   */
-  protected function getConnection() {
-    require_once __DIR__ . '/../../../doctrine/bootstrap_pdo.php';
-    return getConnectionToTestDB();
-  }
+    protected function getConnection()
+    {
+        require_once __DIR__ . '/../../../doctrine/bootstrap_pdo.php';
+        return getConnectionToTestDB();
+    }
 
   /**
   * Overridden. Returns the test dataset.
   * Defines how the initial state of the database should look before each test is executed.
   * @return PHPUnit_Extensions_Database_DataSet_IDataSet
   */
-  protected function getDataSet() {
-    $dataset = $this->createFlatXMLDataSet(__DIR__ . '/../../../doctrine/truncateDataTables.xml');
-    return $dataset;
-    // Use below to return an empty data set if we don't want to truncate and seed
-    //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
-  }
+    protected function getDataSet()
+    {
+        $dataset = $this->createFlatXMLDataSet(__DIR__ . '/../../../doctrine/truncateDataTables.xml');
+        return $dataset;
+      // Use below to return an empty data set if we don't want to truncate and seed
+      //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
+    }
 
   /**
   * Overridden.
   */
-  protected function getSetUpOperation() {
-    // CLEAN_INSERT is default
-    //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
-    //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
-    //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-    //
-    // Issue a DELETE from <table> which is more portable than a
-    // TRUNCATE table <table> (some DBs require high privileges for truncate statements
-    // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
-    return $this->dbOpsFactory->DELETE_ALL();
-  }
+    protected function getSetUpOperation()
+    {
+      // CLEAN_INSERT is default
+      //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
+      //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
+      //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
+      //
+      // Issue a DELETE from <table> which is more portable than a
+      // TRUNCATE table <table> (some DBs require high privileges for truncate statements
+      // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
+        return $this->dbOpsFactory->DELETE_ALL();
+    }
 
   /**
   * Overridden.
   */
-  protected function getTearDownOperation() {
-    // NONE is default
-    return $this->dbOpsFactory->NONE();
-  }
+    protected function getTearDownOperation()
+    {
+      // NONE is default
+        return $this->dbOpsFactory->NONE();
+    }
 
   /**
   * Sets up the fixture, e.g create a new entityManager for each test run
   * This method is called before each test method is executed.
   */
-  protected function setUp() {
-    parent::setUp();
-    $this->entityManager = $this->createEntityManager();
-    // Pass the Entity Manager into the Factory to allow Gocdb_Services
-    // to use other Gocdb_Services.
-    \Factory::setEntityManager($this->entityManager);
-  }
-
+    protected function setUp()
+    {
+        parent::setUp();
+        $this->entityManager = $this->createEntityManager();
+      // Pass the Entity Manager into the Factory to allow Gocdb_Services
+      // to use other Gocdb_Services.
+        \Factory::setEntityManager($this->entityManager);
+    }
+  /**
+   * Run after each test function to prevent pile-up of database connections.
+   */
+    protected function tearDown()
+    {
+        parent::tearDown();
+        if (!is_null($this->entityManager)) {
+            $this->entityManager->getConnection()->close();
+        }
+    }
   /**
   * @return EntityManager
   */
-  private function createEntityManager(){
-    $entityManager = null; // Initialise in local scope to avoid unused variable warnings
-    require __DIR__ . '/../../../doctrine/bootstrap_doctrine.php';
-    return $entityManager;
-  }
+    private function createEntityManager()
+    {
+        $entityManager = null; // Initialise in local scope to avoid unused variable warnings
+        require __DIR__ . '/../../../doctrine/bootstrap_doctrine.php';
+        return $entityManager;
+    }
 
   /**
   * Called after setUp() and before each test. Used for common assertions
   * across all tests.
   */
-  protected function assertPreConditions() {
-    $con = $this->getConnection();
-    $fixture = __DIR__ . '/../../../doctrine/truncateDataTables.xml';
-    $tables = simplexml_load_file($fixture);
+    protected function assertPreConditions()
+    {
+        $con = $this->getConnection();
+        $fixture = __DIR__ . '/../../../doctrine/truncateDataTables.xml';
+        $tables = simplexml_load_file($fixture);
 
-    foreach($tables as $tableName) {
-      $sql = "SELECT * FROM ".$tableName->getName();
-      $result = $con->createQueryTable('results_table', $sql);
-      if($result->getRowCount() != 0){
-        throw new RuntimeException("Invalid fixture. Table has rows: ".$tableName->getName());
-      }
+        foreach ($tables as $tableName) {
+            $sql = "SELECT * FROM " . $tableName->getName();
+            $result = $con->createQueryTable('results_table', $sql);
+            if ($result->getRowCount() != 0) {
+                throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
+            }
+        }
     }
-  }
-  public function testGetAPIAuthentication () {
-    print __METHOD__ . "\n";
+    public function testGetAPIAuthentication()
+    {
+        print __METHOD__ . "\n";
 
-    $siteData = ServiceTestUtil::getSiteData($this->entityManager);
-    $siteService = ServiceTestUtil::getSiteService($this->entityManager);
-    $site = ServiceTestUtil::createAndAddSite($this->entityManager, $siteData);
+        $siteData = ServiceTestUtil::getSiteData($this->entityManager);
+        $siteService = ServiceTestUtil::getSiteService($this->entityManager);
+        $site = ServiceTestUtil::createAndAddSite($this->entityManager, $siteData);
 
-    $user = TestUtil::createSampleUser('Beta','User');
-    $user->setAdmin(true);
+        $user = TestUtil::createSampleUser('Beta', 'User');
+        $user->setAdmin(true);
 
-    $identifier = TestUtil::createSampleUserIdentifier('X.509','/Beta.User');
-    ServiceTestUtil::persistAndFlush($this->entityManager, $identifier);
+        $identifier = TestUtil::createSampleUserIdentifier('X.509', '/Beta.User');
+        ServiceTestUtil::persistAndFlush($this->entityManager, $identifier);
 
-    $user->addUserIdentifierDoJoin($identifier);
+        $user->addUserIdentifierDoJoin($identifier);
 
-    ServiceTestUtil::persistAndFlush($this->entityManager, $user);
+        ServiceTestUtil::persistAndFlush($this->entityManager, $user);
 
-    $authEntServ = new org\gocdb\services\APIAuthenticationService();
-    $authEntServ->setEntityManager($this->entityManager);
+        $authEntServ = new org\gocdb\services\APIAuthenticationService();
+        $authEntServ->setEntityManager($this->entityManager);
 
-    $this->assertTrue($authEntServ instanceof org\gocdb\services\APIAuthenticationService,
-                        'Failed to create APIAuthenticationService');
+        $this->assertTrue(
+            $authEntServ instanceof org\gocdb\services\APIAuthenticationService,
+            'Failed to create APIAuthenticationService'
+        );
 
-    $ident = '/CN=A Dummy Subject';
-    $type = 'X509';
-    // Start with no APIAuthentication entities to be found
-    $this->assertNull($authEntServ->getAPIAuthentication($ident, $type),
-                        "Non-null value returned when searching for APIAuthentication entity " .
-                        "for id:{$ident} with type:{$type} when expected none.");
+        $ident = '/CN=A Dummy Subject';
+        $type = 'X509';
+      // Start with no APIAuthentication entities to be found
+        $this->assertNull(
+            $authEntServ->getAPIAuthentication($ident, $type),
+            "Non-null value returned when searching for APIAuthentication entity " .
+            "for id:{$ident} with type:{$type} when expected none."
+        );
 
-    $authEnt = $siteService->addAPIAuthEntity($site, $user,
-                              array('IDENTIFIER' =>  $ident,
+        $authEnt = $siteService->addAPIAuthEntity(
+            $site,
+            $user,
+            array('IDENTIFIER' =>  $ident,
                               'TYPE' => $type,
-                              'ALLOW_WRITE' => false));
+            'ALLOW_WRITE' => false)
+        );
 
-    $this->assertTrue($authEnt instanceof \APIAuthentication,
-                      "Failed to add APIAuthentication entity for id:{$ident} with type:{$type}.");
+        $this->assertTrue(
+            $authEnt instanceof \APIAuthentication,
+            "Failed to add APIAuthentication entity for id:{$ident} with type:{$type}."
+        );
 
-    $authEntMatched = $authEntServ->getAPIAuthentication($ident, $type);
+        $authEntMatched = $authEntServ->getAPIAuthentication($ident, $type);
 
-    $this->assertTrue($authEnt === $authEntMatched,
-                      "Failed to return APIAuthentication entity for id:{$ident} with type:{$type}.");
-
-  }
+        $this->assertTrue(
+            $authEnt === $authEntMatched,
+            "Failed to return APIAuthentication entity for id:{$ident} with type:{$type}."
+        );
+    }
 }
