@@ -1,4 +1,5 @@
 <?php
+
 //use org\gocdb\services\NGI;
 //use org\gocdb\services\Site;
 //require_once 'PHPUnit/Extensions/Database/TestCase.php';
@@ -19,17 +20,19 @@ require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/ServiceService.php';
  * @author David Meredith
  * @author John Casson
  */
-class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
-   private $em;
-   private $egiScope;
-   private $localScope;
-   private $eudatScope;
+class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase
+{
+    private $em;
+    private $egiScope;
+    private $localScope;
+    private $eudatScope;
 
 
     /**
      * Overridden.
      */
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass()
+    {
         parent::setUpBeforeClass();
         echo "\n\n-------------------------------------------------\n";
         echo "Executing SiteMoveTest. . .\n";
@@ -39,7 +42,8 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
      * Overridden. Returns the test database connection.
      * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
      */
-    protected function getConnection() {
+    protected function getConnection()
+    {
         require_once dirname(__FILE__) . '/bootstrap_pdo.php';
         return getConnectionToTestDB();
     }
@@ -49,7 +53,8 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
      * Defines how the initial state of the database should look before each test is executed.
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
-    protected function getDataSet() {
+    protected function getDataSet()
+    {
         return $this->createFlatXMLDataSet(dirname(__FILE__) . '/truncateDataTables.xml');
         // Use below to return an empty data set if we don't want to truncate and seed
         //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
@@ -58,7 +63,8 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
     /**
      * Overridden.
      */
-    protected function getSetUpOperation() {
+    protected function getSetUpOperation()
+    {
         // CLEAN_INSERT is default
         //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
         //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
@@ -73,7 +79,8 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
     /**
      * Overridden.
      */
-    protected function getTearDownOperation() {
+    protected function getTearDownOperation()
+    {
         // NONE is default
         return PHPUnit_Extensions_Database_Operation_Factory::NONE();
     }
@@ -82,18 +89,29 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
      * Sets up the fixture, e.g create a new entityManager for each test run
      * This method is called before each test method is executed.
      */
-    protected function setUp() {
+    protected function setUp()
+    {
         parent::setUp();
         $this->em = $this->createEntityManager();
     }
-
+  /**
+   * Run after each test function to prevent pile-up of database connections.
+   */
+    protected function tearDown()
+    {
+        parent::tearDown();
+        if (!is_null($this->em)) {
+            $this->em->getConnection()->close();
+        }
+    }
     /**
      * @todo Still need to setup connection to different databases.
      * @return EntityManager
      */
-    private function createEntityManager(){
+    private function createEntityManager()
+    {
         //require dirname(__FILE__).'/../lib/Doctrine/bootstrap.php';
-        require dirname(__FILE__).'/bootstrap_doctrine.php';
+        require dirname(__FILE__) . '/bootstrap_doctrine.php';
         return $entityManager;
     }
 
@@ -101,18 +119,20 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
      * Called after setUp() and before each test. Used for common assertions
      * across all tests.
      */
-    protected function assertPreConditions() {
+    protected function assertPreConditions()
+    {
         $con = $this->getConnection();
         $fixture = dirname(__FILE__) . '/truncateDataTables.xml';
         $tables = simplexml_load_file($fixture);
 
-        foreach($tables as $tableName) {
+        foreach ($tables as $tableName) {
             //print $tableName->getName() . "\n";
-            $sql = "SELECT * FROM ".$tableName->getName();
+            $sql = "SELECT * FROM " . $tableName->getName();
             $result = $con->createQueryTable('results_table', $sql);
             //echo 'row count: '.$result->getRowCount() ;
-            if($result->getRowCount() != 0)
-                throw new RuntimeException("Invalid fixture. Table has rows: ".$tableName->getName());
+            if ($result->getRowCount() != 0) {
+                throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
+            }
         }
     }
 
@@ -122,7 +142,8 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
      *  Moves two of the sites between NGIs.
      *  Checks the sites are under the right NGIs.
      */
-    public function testSiteMoves() {
+    public function testSiteMoves()
+    {
 
         print __METHOD__ . "\n";
 
@@ -132,9 +153,9 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
         $S1 = TestUtil::createSampleSite("Site1");
         $S2 = TestUtil::createSampleSite("Site2");
         $S3 = TestUtil::createSampleSite("Site3");
-        $SE1= TestUtil::createSampleService("SEP1");
+        $SE1 = TestUtil::createSampleService("SEP1");
         $dummy_user = TestUtil::createSampleUser('Test', 'User');
-        $identifier= TestUtil::createSampleUserIdentifier('X.509', '/Some/string');
+        $identifier = TestUtil::createSampleUserIdentifier('X.509', '/Some/string');
         $dummy_user->addUserIdentifierDoJoin($identifier);
         $this->em->persist($identifier);
 
@@ -181,17 +202,17 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
             /*
              * Check each site is: present, has the right ID & parent NGI
              */
-            $S1_id= $S1->getId();
+            $S1_id = $S1->getId();
             $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site1' AND ID = '$S1_id' AND NGI_ID = '$N1_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
-            $S2_id= $S2->getId();
+            $S2_id = $S2->getId();
             $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site2' AND ID = '$S2_id' AND NGI_ID = '$N2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
 
-            $S3_id= $S3->getId();
+            $S3_id = $S3->getId();
             $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
             $result = $con->createQueryTable('', $sql);
             $this->assertEquals(1, $result->getRowCount());
@@ -204,9 +225,9 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
         //Move sites
         $serv =  new org\gocdb\services\Site();
         $serv->setEntityManager($this->em);
-        $serv->moveSite($S1,$N2, $dummy_user);
-        $serv->moveSite($S2,$N1, $dummy_user);
-        $serv->moveSite($S3,$N2, $dummy_user); //No change
+        $serv->moveSite($S1, $N2, $dummy_user);
+        $serv->moveSite($S2, $N1, $dummy_user);
+        $serv->moveSite($S3, $N2, $dummy_user); //No change
 
 
         //flush movement
@@ -221,17 +242,17 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
             //Check correct sites for each NGI
                 //NGI1
                 $ngisites = $N1->getSites();
-                foreach ($ngisites as $site){
-                    $this->assertEquals($S2, $site);
-                }
+        foreach ($ngisites as $site) {
+            $this->assertEquals($S2, $site);
+        }
                 //NGI2
                 $ngisites = $N2->getSites();
-                foreach ($ngisites as $site){
-                    $this->assertTrue(($site==$S1) or ($site==$S3));
-                }
+        foreach ($ngisites as $site) {
+            $this->assertTrue(($site == $S1) or ($site == $S3));
+        }
 
             //check Service End Point
-            $this->assertEquals($S1,$SE1->getParentSite());
+            $this->assertEquals($S1, $SE1->getParentSite());
 
 
         //Use database connection to check movememrnt
@@ -273,8 +294,5 @@ class SiteMoveTest extends PHPUnit_Extensions_Database_TestCase {
                 $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site3' AND ID = '$S3_id' AND NGI_ID = '$N2_ID'";
                 $result = $con->createQueryTable('', $sql);
                 $this->assertEquals(1, $result->getRowCount());
-
     }//close function
 }//close class
-
-?>
