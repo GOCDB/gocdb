@@ -197,7 +197,7 @@ class Service implements IScopedEntity {
     }
 
     /**
-     * Defines the DN of the services x509 certificate.
+     * Defines the DN of the services X.509 certificate.
      * @return string or null
      */
     public function getDn() {

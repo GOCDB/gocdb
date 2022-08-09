@@ -37,7 +37,7 @@ class APIAuthenticationService extends AbstractEntityService{
      * Returns the APIAuthentication entity associated with the given identifier.
      *
      * @param string $ident Identifier (e.g. X.509 DN as string)
-     * @param string $type  Identifyer type (e.g. "X509")
+     * @param string $type  Identifyer type (e.g. "X.509")
      * @return \APIAuthentication APIAuthentication associated with this identifier
      */
     public function getAPIAuthentication($ident, $type) {
@@ -253,10 +253,10 @@ class APIAuthenticationService extends AbstractEntityService{
                 throw new \Exception($error);
             }
         }
-        //If the entity is of type X509, do a more thorough check than the validate service (as we know the type)
+        //If the entity is of type X.509, do a more thorough check than the validate service (as we know the type)
         //Note that we are allowing ':' as they can appear in robot DN's
-        if ($type == 'X509' && !preg_match("/^(\/[A-Za-z]+=[a-zA-Z0-9\/\-\_\s\.,'@:\/]+)*$/", $identifier)) {
-            throw new \Exception("Invalid x509 DN");
+        if ($type == 'X.509' && !preg_match("/^(\/[A-Za-z]+=[a-zA-Z0-9\/\-\_\s\.,'@:\/]+)*$/", $identifier)) {
+            throw new \Exception("Invalid X.509 DN");
         }
 
         //If the entity is of type OIDC subject, do a more thorough check again

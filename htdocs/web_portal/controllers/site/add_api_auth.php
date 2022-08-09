@@ -58,7 +58,7 @@ function draw(\User $user = null, \Site $site = null) {
 
     $params['site'] = $site;
     $params['authTypes'] = array();
-    $params['authTypes'][]='X509';
+    $params['authTypes'][]='X.509';
     $params['authTypes'][]='OIDC Subject';
     $params['user'] = $user;
     $params['allowWrite'] = false;

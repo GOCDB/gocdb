@@ -208,7 +208,7 @@ class UserServiceTest extends PHPUnit_Extensions_Database_TestCase
 
         $authEnt = new \APIAuthentication();
         $authEnt->setIdentifier($userIdentifier['VALUE']);
-        $authEnt->setType("X509");
+        $authEnt->setType("X.509");
 
         $user = $userService->getUserByPrinciple($userIdentifier['VALUE']);
 

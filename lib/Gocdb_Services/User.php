@@ -573,6 +573,8 @@ class User extends AbstractEntityService{
             if (strpos($authTokenName, 'Shib') !== false) {
                 $authTypes = array_merge($authTypes, $shibRealms);
             }
+            // This checks AuthToken class names, so 'X509' (not 'X.509' is
+            // needed here).
             if (strpos($authTokenName, 'X509') !== false) {
                 $authTypes = array_merge($authTypes, $x509Realms);
             }

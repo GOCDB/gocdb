@@ -52,7 +52,7 @@ function returnJsonWriteAPIResult ($httpResponseCode, $object) {
 function getAuthenticationInfo () {
   require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
   #Check if associated cert/token is set to define identifier type
-  if(isset($_SERVER['SSL_CLIENT_CERT'])){$identifierType = 'X509';}
+  if(isset($_SERVER['SSL_CLIENT_CERT'])){$identifierType = 'X.509';}
   if(isset($_SERVER['OIDC_access_token'])){$identifierType = 'OIDC Subject';}
 
   #This will return null if no cert is presented

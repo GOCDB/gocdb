@@ -169,7 +169,7 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
         );
 
         $ident = '/CN=A Dummy Subject';
-        $type = 'X509';
+        $type = 'X.509';
       // Start with no APIAuthentication entities to be found
         $this->assertNull(
             $authEntServ->getAPIAuthentication($ident, $type),

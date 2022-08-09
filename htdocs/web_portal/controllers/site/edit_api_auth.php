@@ -66,7 +66,7 @@ function draw(\User $user = null, \APIAuthentication $authEnt = null, \Site $sit
     $params['site'] = $site;
     $params['authEnt'] = $authEnt;
     $params['authTypes'] = array();
-    $params['authTypes'][]='X509';
+    $params['authTypes'][]='X.509';
     $params['authTypes'][]='OIDC Subject';
     $params['user'] = $user;
 
