@@ -328,7 +328,7 @@ class PIRequest {
                     break;
                 case "get_cert_status_date" :
                     require_once($directory . 'GetCertStatusDate.php');
-                    $this->authByIdentifier();
+                    $this->authByAnyIdentifier();
                     $getCertStatusDate = new GetCertStatusDate($em, $this->baseApiUrl);
                     $getCertStatusDate->setDefaultPaging($this->defaultPaging);
                     $getCertStatusDate->setPageSize($this->defaultPageSize);
@@ -413,6 +413,13 @@ class PIRequest {
         }
     }
 
+    function authByAnyIdentifier()
+    {
+        if (empty($this->identifier)) {
+            die("No valid identifier found. Try accessing the " .
+                "resource through the private interface.");
+        }
+    }
 }
 
 ?>
