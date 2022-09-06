@@ -328,7 +328,7 @@ class PIRequest {
                     break;
                 case "get_cert_status_date" :
                     require_once($directory . 'GetCertStatusDate.php');
-                    $this->authByIdentifier();
+                    $this->authByAnyIdentifier();
                     $getCertStatusDate = new GetCertStatusDate($em, $this->baseApiUrl);
                     $getCertStatusDate->setDefaultPaging($this->defaultPaging);
                     $getCertStatusDate->setPageSize($this->defaultPageSize);
@@ -362,8 +362,7 @@ class PIRequest {
                     break;
             }
         } catch (\Exception $e) {
-            print_r($e->getMessage());
-            die("An error has occured, please contact the GOCDB administrators at gocdb-admins@egi.eu");
+            die($e->getMessage());
         }
         return $xml;
     }
@@ -413,6 +412,15 @@ class PIRequest {
         }
     }
 
+    function authByAnyIdentifier()
+    {
+        if (empty($this->identifier)) {
+            throw new \Exception(
+                "No valid identifier found. Try accessing the resource " .
+                "through the private interface."
+            );
+        }
+    }
 }
 
 ?>
