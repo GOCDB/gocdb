@@ -81,7 +81,7 @@ class PIRequest {
     private $method = null;
     private $output = null;
     private $params = array();
-    private $dn = null;
+    private $identifier = null;
     private $baseUrl;
     private $baseApiUrl;
 
@@ -126,7 +126,7 @@ class PIRequest {
 
         $testDN = Get_User_Principle_PI();
         if (empty($testDN) == FALSE) {
-            $this->dn = $testDN;
+            $this->identifier = $testDN;
         }
 
         if (count($_GET) > 0)
@@ -143,7 +143,7 @@ class PIRequest {
             switch ($this->method) {
                 case "get_site":
                     require_once($directory . 'GetSite.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getSite = new GetSite($em, $this->baseUrl, $this->baseApiUrl);
                     $getSite->setDefaultPaging($this->defaultPaging);
                     $getSite->setPageSize($this->defaultPageSize);
@@ -164,7 +164,7 @@ class PIRequest {
                     break;
                 case "get_site_contacts":
                     require_once($directory . 'GetSiteContacts.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getSiteContacts = new GetSiteContacts($em, $this->baseApiUrl);
                     $getSiteContacts->setDefaultPaging($this->defaultPaging);
                     $getSiteContacts->setPageSize($this->defaultPageSize);
@@ -175,7 +175,7 @@ class PIRequest {
                     break;
                 case "get_site_security_info":
                     require_once($directory . 'GetSiteSecurityInfo.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getSiteSecurityInfo = new GetSiteSecurityInfo($em, $this->baseApiUrl);
                     $getSiteSecurityInfo->setDefaultPaging($this->defaultPaging);
                     $getSiteSecurityInfo->setPageSize($this->defaultPageSize);
@@ -202,7 +202,7 @@ class PIRequest {
                     break;
                 case "get_roc_contacts":
                     require_once($directory . 'GetNGIContacts.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getNGIContacts = new GetNGIContacts($em, $this->baseUrl, $this->baseApiUrl);
                     $getNGIContacts->setDefaultPaging($this->defaultPaging);
                     $getNGIContacts->setPageSize($this->defaultPageSize);
@@ -273,7 +273,7 @@ class PIRequest {
                     break;
                 case "get_user":
                     require_once($directory . 'GetUser.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService(), $this->baseUrl, $this->baseApiUrl);
                     $getUser->setDefaultPaging($this->defaultPaging);
                     $getUser->setPageSize($this->defaultPageSize);
@@ -284,7 +284,7 @@ class PIRequest {
                     break;
                 case "get_project_contacts":
                     require_once($directory . 'GetProjectContacts.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getProjCon = new GetProjectContacts($em, $this->baseApiUrl);
                     $getProjCon->setDefaultPaging($this->defaultPaging);
                     $getProjCon->setPageSize($this->defaultPageSize);
@@ -295,7 +295,7 @@ class PIRequest {
                     break;
                 case "get_ngi":
                     require_once($directory . 'GetNGI.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getNGI = new GetNGI($em, $this->baseApiUrl);
                     $getNGI->setDefaultPaging($this->defaultPaging);
                     $getNGI->setPageSize($this->defaultPageSize);
@@ -306,7 +306,7 @@ class PIRequest {
                     break;
                 case "get_service_group" :
                     require_once($directory . 'GetServiceGroup.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getServiceGroup = new GetServiceGroup($em, $this->baseUrl, $this->baseApiUrl);
                     $getServiceGroup->setDefaultPaging($this->defaultPaging);
                     $getServiceGroup->setPageSize($this->defaultPageSize);
@@ -317,7 +317,7 @@ class PIRequest {
                     break;
                 case "get_service_group_role" :
                     require_once($directory . 'GetServiceGroupRole.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getServiceGroupRole = new GetServiceGroupRole($em, $this->baseUrl, $this->baseApiUrl);
                     $getServiceGroupRole->setDefaultPaging($this->defaultPaging);
                     $getServiceGroupRole->setPageSize($this->defaultPageSize);
@@ -328,7 +328,7 @@ class PIRequest {
                     break;
                 case "get_cert_status_date" :
                     require_once($directory . 'GetCertStatusDate.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getCertStatusDate = new GetCertStatusDate($em, $this->baseApiUrl);
                     $getCertStatusDate->setDefaultPaging($this->defaultPaging);
                     $getCertStatusDate->setPageSize($this->defaultPageSize);
@@ -339,7 +339,7 @@ class PIRequest {
                     break;
                 case "get_cert_status_changes":
                     require_once($directory . 'GetCertStatusChanges.php');
-                    $this->authByCert();
+                    $this->authByIdentifier();
                     $getCertStatusChanges = new GetCertStatusChanges($em, $this->baseApiUrl);
                     $getCertStatusChanges->setDefaultPaging($this->defaultPaging);
                     $getCertStatusChanges->setPageSize($this->defaultPageSize);
@@ -368,29 +368,28 @@ class PIRequest {
         return $xml;
     }
 
-    /* Authorize a user based on their certificate */
+    /* Authorize a request based on the supplied identifier */
 
-    function authByCert() {
+    function authByIdentifier() {
         require_once __DIR__.'/../web_portal/controllers/utils.php';
         require_once __DIR__.'/../../lib/Doctrine/entities/APIAuthentication.php';
 
-        if (empty($this->dn)) {
-            throw new \Exception("No valid certificate found. A trusted certificate is " .
-                    "required to access this resource. Try accessing the " .
+        if (empty($this->identifier)) {
+            throw new \Exception("No valid identifier found. Try accessing the " .
                     "resource through the private interface.");
         }
 
         $admin = false;
         $authenticated = false;
 
-        $user = \Factory::getUserService()->getUserByPrinciple($this->dn);
+        $user = \Factory::getUserService()->getUserByPrinciple($this->identifier);
 
         if ($user == null) {
             // Incoming credential is not that of a registered user.
             // Check if it is registered API Authentication credential.
 
             $authEntServ = \Factory::getAPIAuthenticationService();
-            $authEnt = $authEntServ->getAPIAuthentication($this->dn, "X.509");
+            $authEnt = $authEntServ->getAPIAuthentication($this->identifier);
 
             if (!is_null($authEnt)) {
                 $authEntServ->updateLastUseTime($authEnt);
@@ -398,7 +397,7 @@ class PIRequest {
             }
 
             if (!\Factory::getConfigService()->isRestrictPDByRole()) {
-                // Only a 'valid' (IGTF) certificate is needed.
+                // Only a 'valid' identifier is needed.
                 $authenticated = true;
             }
         } else {
