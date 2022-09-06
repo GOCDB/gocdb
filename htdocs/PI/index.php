@@ -362,8 +362,7 @@ class PIRequest {
                     break;
             }
         } catch (\Exception $e) {
-            print_r($e->getMessage());
-            die("An error has occured, please contact the GOCDB administrators at gocdb-admins@egi.eu");
+            die($e->getMessage());
         }
         return $xml;
     }
@@ -416,8 +415,10 @@ class PIRequest {
     function authByAnyIdentifier()
     {
         if (empty($this->identifier)) {
-            die("No valid identifier found. Try accessing the " .
-                "resource through the private interface.");
+            throw new \Exception(
+                "No valid identifier found. Try accessing the resource " .
+                "through the private interface."
+            );
         }
     }
 }
