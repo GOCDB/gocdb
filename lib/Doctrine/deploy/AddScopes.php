@@ -13,12 +13,19 @@ $scopes = simplexml_load_file($scopesFileName);
 foreach($scopes as $scope) {
     $doctrineScope = new Scope();
     $name = "";
+    $reserved = false;
     foreach($scope as $key => $value) {
-        if($key == "name") {
-            $name = (string) $value;
-        }
+      switch ($key) {
+        case "name":
+          $name = (string) $value;
+          break;
+        case "reserved":
+          $reserved = ( $value == 1 );
+          break;
+      }
     }
     $doctrineScope->setName($name);
+    $doctrineScope->setReserved($reserved);
     $entityManager->persist($doctrineScope);
 }
 

@@ -36,6 +36,9 @@ class Scope {
 
     /** @Column(type="string", nullable=true)  */
     protected $description;
+    
+    /** @Column(type="boolean", options={"default": false}) */
+    protected $reserved = false;
 
     /**
      * @return int The PK of this entity or null if not persisted
@@ -59,6 +62,14 @@ class Scope {
     public function getDescription() {
         return $this->description;
     }
+    
+    /**
+     * Get the reserved status of this scope.
+     * @return boolean
+     */
+    public function getReserved() {
+        return $this->reserved;
+    }
 
     /**
      * Set the unique name of this Scope instance.
@@ -75,7 +86,15 @@ class Scope {
     public function setDescription($description) {
         $this->description = $description;
     }
-
+    
+    /**
+     * Set the reserved status of this scope.
+     * @param boolean $reserved
+     */
+    public function setReserved($reserved) {
+        $this->reserved = $reserved;
+    }
+    
     /**
      * Returns the unique name of this Scope instance.
      * @return string

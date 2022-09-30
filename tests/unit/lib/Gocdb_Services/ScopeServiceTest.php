@@ -138,9 +138,12 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase
     {
         $scopeCount = 10;
         $scopes = array();
-      // create scopes and persist
-        for ($i = 0; $i < $scopeCount; $i++) {
-            $scopes[] = TestUtil::createSampleScope("scope " . $i, "Scope" . $i);
+        // create scopes and persist
+        for($i=0; $i<$scopeCount; $i++){
+            $scopes[] = TestUtil::createSampleScope("scope ".$i, "Scope".$i);
+            if($i <= 3){
+              $scopes[$i]->setReserved(TRUE);
+            }
             $this->em->persist($scopes[$i]);
         }
     }
@@ -178,7 +181,7 @@ class ScopeServiceTest extends PHPUnit_Extensions_Database_TestCase
 
       // exclude all the 'Reserved' scopes
         $filterParams = array('excludeReserved' => true);
-        $excludedScopeNames = $configService->getReservedScopeList();//'Scope0', 'Scope1', 'Scope2', 'Scope3'
+        $excludedScopeNames = array('Scope0', 'Scope1', 'Scope2', 'Scope3');
         $filteredScopes = $scopeService->getScopesFilterByParams($filterParams, null);
         foreach ($filteredScopes as $scope) {
             if (in_array($scope->getName(), $excludedScopeNames)) {

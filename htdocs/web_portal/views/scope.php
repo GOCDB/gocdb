@@ -4,6 +4,7 @@ $id = $params['ID'];
 $description = $params['Description'];
 $ngis = $params['NGIs'];
 $ngiCount = count($ngis);
+$reserved = $params['Reserved'];
 $sites = $params['Sites'];
 $siteCount = count($sites);
 $serviceGroups = $params['ServiceGroups'];
@@ -19,6 +20,9 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;">Scope: <?php echo $name?></h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php echo $description ?></span>
+        <span style="clear: both; float: left; padding-bottom: 0.4em;">
+            This scope is <?php echo(($reserved) ? 'reserved' : 'not reserved') ?>.
+        </span>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
             <?php if($totalCount>0):?>
                 In total, there are <?php if($totalCount==1){echo "is";}else{echo "are";}?>

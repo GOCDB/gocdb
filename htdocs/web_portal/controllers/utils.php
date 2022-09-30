@@ -113,7 +113,7 @@ function getEntityScopesAsJSON2($targetScopedEntity = null, $parentScopedEntity 
         $parentScopes = $parentScopedEntity->getScopes()->toArray();
     }
 
-    $reservedScopeNames = \Factory::getConfigService()->getReservedScopeList();
+    // $reservedScopeNames = \Factory::getConfigService()->getReservedScopeList();
     $allScopes = \Factory::getScopeService()->getScopes();
     $optionalScopeIds = array();
     $reservedOptionalScopeIds = array();
@@ -139,7 +139,7 @@ function getEntityScopesAsJSON2($targetScopedEntity = null, $parentScopedEntity 
         }
 
         // Is scope tag in the reserved list ?
-        if(in_array($scope->getName(), $reservedScopeNames)){
+        if($scope->getReserved()){
             // A reserved scope tag:
             if($parentChecked || $targetChecked){
                 if($parentChecked){
@@ -656,6 +656,10 @@ function getDateFormat() {
 function getScopeDataFromWeb() {
     $scopeData ['Name'] = trim($_REQUEST ['Name']);
     $scopeData ['Description'] = trim($_REQUEST ['Description']);
+    // 'Reserved' value is a checkbox ==>> absent if not checked
+    if (array_key_exists('Reserved', $_REQUEST)){
+      $scopeData ['Reserved'] = ($_REQUEST ['Reserved'] == '1');
+    }
     if (array_key_exists('Id', $_REQUEST)){
         $scopeData ['Id'] = $_REQUEST ['Id'];
     }

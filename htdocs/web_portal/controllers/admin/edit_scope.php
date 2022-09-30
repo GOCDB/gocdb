@@ -57,7 +57,8 @@ function draw() {
 
     $params = array('Name' => $scope->getName(),
                     'Id' => $scope->getId(),
-                    'Description' => $scope->getDescription());
+                    'Description' => $scope->getDescription(),
+                    'Reserved' => $scope->getReserved());
 
     //show the add service type view
     show_view("admin/edit_scope.php", $params, "Edit Scope");
@@ -83,12 +84,13 @@ function submit() {
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
     try {
-        //function will through error if user does not have the correct permissions
+        //function will throw an error if user does not have the correct permissions
         $scope = $serv->editScope($scope, $values, $user);
         $params = array('Name' => $scope->getName(),
                         'ID'=> $scope->getId(),
-                        'Description' => $scope->getDescription());
-        show_view("admin/edited_scope.php", $params, $params['Name']. " succesffully updated");
+                        'Description' => $scope->getDescription(),
+                        'Reserved' => $scope->getReserved());
+        show_view("admin/edited_scope.php", $params, $params['Name']. " successfully updated");
     } catch (Exception $e) {
          show_view('error.php', $e->getMessage());
          die();
