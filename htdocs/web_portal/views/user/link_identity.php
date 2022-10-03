@@ -120,55 +120,57 @@
 
                 <h2>What happens next?</h2>
                 <div>
-                    <li>
-                        Once you have submitted this form, you will receive a confirmation
-                        e-mail containing instructions on how to validate the request.
-                    </li>
-                    <li>
-                        Any existing linking or recovery requests you have made will expire.
-                    </li>
+                    <ul>
+                        <li>
+                            Once you have submitted this form, you will receive a confirmation
+                            e-mail containing instructions on how to validate the request.
+                        </li>
+                        <li>
+                            Any existing linking or recovery requests you have made will expire.
+                        </li>
 
-                    <li class="hidden" id="linkingDetails"> If you successfully validate your <b>linking</b> request:
-                        <ul>
-                            <li>
-                                Your <b>current ID string</b> and <b>authentication type</b> will be added as an alternative identifier to the account being linked.
-                            </li>
-                            </li>
-                            <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
-                                Any roles you have with the account you are currently using will be requested
-                                for the account being linked.
-                            </li>
-                            <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
-                                These roles will be approved automatically if either account has permission to do so.
-                            </li>
-                            <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
-                                <b>The account you are currently using will be deleted.</b>
-                            </li>
-                        </ul>
-                    </li>
+                        <li class="hidden" id="linkingDetails"> If you successfully validate your <b>linking</b> request:
+                            <ul>
+                                <li>
+                                    Your <b>current ID string</b> and <b>authentication type</b> will be added as an alternative identifier to the account being linked.
+                                </li>
+                                </li>
+                                <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
+                                    Any roles you have with the account you are currently using will be requested
+                                    for the account being linked.
+                                </li>
+                                <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
+                                    These roles will be approved automatically if either account has permission to do so.
+                                </li>
+                                <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
+                                    <b>The account you are currently using will be deleted.</b>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li id="recoveryDetails"> If you successfully validate your <b>recovery</b> request:
-                        <ul>
-                            <li>
-                                The <b>ID string</b> of your old account that matches your <b>current authentication type</b> will be updated to your <b>current ID string</b>.
-                            </li>
-                            <li>
-                                <b>You will no longer be able to log in with your old ID string</b>.
-                            </li>
-                            <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
-                                Any roles you have with the account you are currently using will be requested for your old account.
-                            </li>
-                            <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
-                                These roles will be approved automatically if either account has permission to do so.
-                            </li>
+                        <li id="recoveryDetails"> If you successfully validate your <b>recovery</b> request:
+                            <ul>
+                                <li>
+                                    The <b>ID string</b> of your old account that matches your <b>current authentication type</b> will be updated to your <b>current ID string</b>.
+                                </li>
+                                <li>
+                                    <b>You will no longer be able to log in with your old ID string</b>.
+                                </li>
+                                <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
+                                    Any roles you have with the account you are currently using will be requested for your old account.
+                                </li>
+                                <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
+                                    These roles will be approved automatically if either account has permission to do so.
+                                </li>
 
-                            <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
-                                <b>The account you are currently using will be deleted.</b>
-                            </li>
-                        </ul>
-                    </li>
+                                <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
+                                    <b>The account you are currently using will be deleted.</b>
+                                </li>
+                            </ul>
+                        </li>
 
-                    <li class="hidden invis" id="requestPlaceholder"></li>
+                        <li class="hidden invis" id="requestPlaceholder"></li>
+                    </ul>
                 </div>
 
                 <br />
