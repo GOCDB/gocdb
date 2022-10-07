@@ -141,6 +141,10 @@ class PIRequest {
             $em = \Factory::getEntityManager();
 
             switch ($this->method) {
+                case "access_test":
+                    $this->authByIdentifier(true);
+                    return "<success/>\n";
+                break;
                 case "get_site":
                     require_once($directory . 'GetSite.php');
                     $this->authByIdentifier();
@@ -367,9 +371,14 @@ class PIRequest {
         return $xml;
     }
 
-    /* Authorize a request based on the supplied identifier */
+    /* 
+     * Authorize a request based on the supplied identifier 
+     * @param boolean $forceStrictForHosts If true, restriction of
+     *                                     personal data is forced
+     *                                     for hosts.
+     */
 
-    function authByIdentifier() {
+    function authByIdentifier($forceStrictForHosts = false) {
         require_once __DIR__.'/../web_portal/controllers/utils.php';
         require_once __DIR__.'/../../lib/Doctrine/entities/APIAuthentication.php';
 
@@ -395,7 +404,7 @@ class PIRequest {
                 $authenticated = true;
             }
 
-            if (!\Factory::getConfigService()->isRestrictPDByRole()) {
+            if (!\Factory::getConfigService()->isRestrictPDByRole($forceStrictForHosts)) {
                 // Only a 'valid' identifier is needed.
                 $authenticated = true;
             }

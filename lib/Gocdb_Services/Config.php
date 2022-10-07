@@ -334,9 +334,14 @@ class Config {
     /**
      * How Personal Data is restricted;
      * See description in local_info.xml but in brief:
+     * @param boolean $forceStrict If true, restriction of personal data
+     *                             is forced.
      * @returns false for legacy behaviour, true for role-based personal data restriction
      */
-    public function isRestrictPDByRole() {
+    public function isRestrictPDByRole($forceStrict = false) {
+        if ($forceStrict === true)
+            return true;
+
         $localInfo = $this->GetLocalInfoXML();
         $value = $localInfo->restrict_personal_data;
         if((string) $value == "true") {
