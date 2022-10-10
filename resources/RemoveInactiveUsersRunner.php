@@ -10,6 +10,8 @@ $longOptions = array(
     "warning_threshold:",
     // Required Option. After this many months, users will be deleted.
     "deletion_threshold:",
+    // Not required. If this option is added, it will be a dry run. Else it won't be.
+    "dry_run"
 );
 
 $options = getopt("", $longOptions);
@@ -32,21 +34,34 @@ if (isset($options["deletion_threshold"])) {
     return;
 };
 
+if (isset($options["dry_run"])) {
+    $dryRun = 1; // If the dry_run option is added, variable dryRun set to 1.
+    echo "Dry run is on.\n";
+} else {
+    $dryRun = 0; // If the dry_run option isn't added, variable dryRun set to 0.
+    echo "Dry run is off.\n";
+};
+
 $dql = "SELECT u FROM User u";
 $users = $entityManager->createQuery($dql)->getResult();
 
-echo "Scanning user login dates in database at: ".date('D, d M Y H:i:s')."\n";
+echo "\nScanning user login dates in database at: ".date('D, d M Y H:i:s')."\n\n";
+
+if ($dryRun == '1') {  // If dry run option has been selected
+    file_put_contents("InactiveUsersToBeDeleted.txt", "These are the users that " .
+    "would have been deleted during the dry run on: ".date('D, d M Y H:i:s')."\n");
+    // Text is overwritten to InactiveUsersToBeDeleted.txt
+};
 
 $today = new DateTime();
 
 foreach ($users as $user) {
-    echo 'User ID: ' . $user->getId() . "\n";
+    echo "\nUser ID: " . $user->getId() . "\n";
 
     $creationDate = $user->getCreationDate();
     $creationStr = $creationDate->format('Y-m-d H:i:s');
 
     $lastLoginDate = $user->getLastLoginDate();
-
     if (!$user->getAPIAuthenticationEntities()->isEmpty()) {
        // Prevent creating orphaned API credentials.
        echo "Cannot delete a user with attached API credentials.\n";
@@ -57,36 +72,58 @@ foreach ($users as $user) {
     if ($lastLoginDate) { // null lastLoginDate check
         $interval = $today->diff($lastLoginDate);
     } else { // This might only be run once, since new users always have field filled.
-        echo "User has no lastLoginDate (it may have been a very long time.)\n";
-        echo "Deleting user.\n";
+        echo "Deleting this user as it has no last login date " .
+        "(it may have been a very long time). \n";
+        //writing to file to say who would have been deleted
+        file_put_contents("InactiveUsersToBeDeleted.txt", "The user " .
+        "with Id ".$user->getId()." would have been deleted as it " .
+        "has no last login date.\n", FILE_APPEND);
         deleteUser($user, $entityManager);
         echo "\n";
         // Move onto the next users.
         continue;
     }
 
-    $elapsedMonths = (int) $interval->format('%a') / 30;
-    echo 'Months elapsed since last login: ' . $elapsedMonths . "\n";
+    $elapsedMonths = (int) $interval->format('%a') / 30.4375; // 30.4375 is 365.25/12
+    echo 'Months elapsed since last login: ' . round($elapsedMonths,2) . "\n";
+    // Rounded months since last login to 2 decimal places for easier reading.
 
-    if ($elapsedMonths > $deletionThreshold) { // Delete user
-        echo "Deleting user\n";
-        deleteUser($user, $entityManager);
+    if ($elapsedMonths > $deletionThreshold) // Delete user
+        // Check if it is a dry run
+        if ($dryRun == '1') {
+            // Dry run option is set, so append user to be deleted to the file
+            echo "This user will be deleted when it isn't a dry run. \n\n";
+            file_put_contents("InactiveUsersToBeDeleted.txt", "The user with " .
+            "Id ".$user->getId()." would have been deleted as they last " .
+            "logged in ".floor($elapsedMonths)." months ago.\n", FILE_APPEND); 
+        } else {  // Delete user as dry run option not set.
+            echo "Deleting user. \n";
+            deleteUser($user, $entityManager);
     } elseif ($elapsedMonths > $warningThreshold) { // Warn user
-        echo "Sending user warning email.\n";
+        echo "Sending user warning email.\n\n";
         sendWarningEmail($user, $elapsedMonths, $deletionThreshold);
+        echo "\n";
     } elseif ($elapsedMonths < $warningThreshold) { // Do Nothing
         echo "Doing nothing.\n";
     }
 }
 
 $entityManager->flush();
-echo "Completed ok: ".date('D, d M Y H:i:s');
+if ($dryRun == '1') {  // Check if it is a dry run
+    // Telling the user to check the file we appended to see who would have been deleted
+    echo "\nView the contents of InactiveUsersToBeDeleted.txt to see the list of users " .
+    "who would have been deleted had this not have been a dry run.\n";
+};  // No else statement needed
+
+echo "\nCompleted ok: ".date('D, d M Y H:i:s')."\n\n";
+
 
 function usage() {
     echo "Usage: " .
          "RemoveInactiveUsersRunner.php " .
          "--warning_threshold X " .
-         "--deletion_threshold Y" .
+         "--deletion_threshold Y " .
+         "--dry_run" .
          "\n\n";
     echo "Options:\n\n";
     echo "--warning_threshold X " .
@@ -95,7 +132,8 @@ function usage() {
     echo "--deletion_threshold Y" .
         "    After this many months, users will be deleted." .
         "\n";
-
+    echo "--dry_run" .
+        "                 Use dry_run option if you want a dry run.\n";
     echo "\n";
 };
 
@@ -144,3 +182,4 @@ function sendWarningEmail($user, $elapsedMonths, $deletionThreshold)
     // Handle all mail related printing/debugging
     \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
 }
+
