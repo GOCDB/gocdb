@@ -35,22 +35,21 @@ if (isset($options["deletion_threshold"])) {
 };
 
 if (isset($options["dry_run"])) {
-    $dryRun = 1; // If the dry_run option is added, variable dryRun set to 1.
+    $dryRun = true; // If the dry_run option is added, variable dryRun set to true.
     echo "Dry run is on.\n";
 } else {
-    $dryRun = 0; // If the dry_run option isn't added, variable dryRun set to 0.
+    $dryRun = false; // If the dry_run option isn't added, variable dryRun set to false.
     echo "Dry run is off.\n";
 };
 
 $dql = "SELECT u FROM User u";
 $users = $entityManager->createQuery($dql)->getResult();
 
-echo "\nScanning user login dates in database at: ".date('D, d M Y H:i:s')."\n\n";
+echo "\nScanning user login dates in database at: " . date('D, d M Y H:i:s') . "\n\n";
 
-if ($dryRun == '1') {  // If dry run option has been selected
-    file_put_contents("InactiveUsersToBeDeleted.txt", "These are the users that " .
-    "would have been deleted during the dry run on: ".date('D, d M Y H:i:s')."\n");
+if ($dryRun == true) {  // If dry run option has been selected
     // Text is overwritten to InactiveUsersToBeDeleted.txt
+    file_put_contents("InactiveUsersToBeDeleted.txt", "userID, lastLoginDate, elapsedMonths\n");
 };
 
 $today = new DateTime();
@@ -74,10 +73,11 @@ foreach ($users as $user) {
     } else { // This might only be run once, since new users always have field filled.
         echo "Deleting this user as it has no last login date " .
         "(it may have been a very long time). \n";
-        //writing to file to say who would have been deleted
-        file_put_contents("InactiveUsersToBeDeleted.txt", "The user " .
-        "with Id ".$user->getId()." would have been deleted as it " .
-        "has no last login date.\n", FILE_APPEND);
+        if ($dryRun == true) {  // If dry run option has been selected        
+             //writing to file to say who would have been deleted
+            file_put_contents("InactiveUsersToBeDeleted.txt", $user->getId() . ", `null`, " .
+            "`?`\n", FILE_APPEND);
+        };  // no else needed.
         deleteUser($user, $entityManager);
         echo "\n";
         // Move onto the next users.
@@ -85,20 +85,21 @@ foreach ($users as $user) {
     }
 
     $elapsedMonths = (int) $interval->format('%a') / 30.4375; // 30.4375 is 365.25/12
-    echo 'Months elapsed since last login: ' . round($elapsedMonths,2) . "\n";
-    // Rounded months since last login to 2 decimal places for easier reading.
+    // Rounded months since last login to 2 decimal places on line below for easier reading.
+    echo 'Months elapsed since last login: ' . round($elapsedMonths, 2) . "\n";
 
-    if ($elapsedMonths > $deletionThreshold) // Delete user
+    if ($elapsedMonths > $deletionThreshold) { // Delete user
         // Check if it is a dry run
-        if ($dryRun == '1') {
+        if ($dryRun == true) {
             // Dry run option is set, so append user to be deleted to the file
             echo "This user will be deleted when it isn't a dry run. \n\n";
-            file_put_contents("InactiveUsersToBeDeleted.txt", "The user with " .
-            "Id ".$user->getId()." would have been deleted as they last " .
-            "logged in ".floor($elapsedMonths)." months ago.\n", FILE_APPEND); 
+            file_put_contents("InactiveUsersToBeDeleted.txt", $user->getId() . "," .
+            " " . $lastLoginDate->format("D d M Y H:i:s") . "," .
+            " " . floor($elapsedMonths) . "\n", FILE_APPEND);
         } else {  // Delete user as dry run option not set.
             echo "Deleting user. \n";
             deleteUser($user, $entityManager);
+        };
     } elseif ($elapsedMonths > $warningThreshold) { // Warn user
         echo "Sending user warning email.\n\n";
         sendWarningEmail($user, $elapsedMonths, $deletionThreshold);
@@ -109,13 +110,13 @@ foreach ($users as $user) {
 }
 
 $entityManager->flush();
-if ($dryRun == '1') {  // Check if it is a dry run
+if ($dryRun == true) {  // Check if it is a dry run
     // Telling the user to check the file we appended to see who would have been deleted
     echo "\nView the contents of InactiveUsersToBeDeleted.txt to see the list of users " .
     "who would have been deleted had this not have been a dry run.\n";
 };  // No else statement needed
 
-echo "\nCompleted ok: ".date('D, d M Y H:i:s')."\n\n";
+echo "\nCompleted ok: " . date('D, d M Y H:i:s') . "\n\n";
 
 
 function usage() {
