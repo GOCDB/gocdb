@@ -73,7 +73,7 @@ foreach ($users as $user) {
     } else { // This might only be run once, since new users always have field filled.
         echo "Deleting this user as it has no last login date " .
         "(it may have been a very long time). \n";
-        if ($dryRun == true) {  // If dry run option has been selected        
+        if ($dryRun == true) {  // If dry run option has been selected
              //writing to file to say who would have been deleted
             file_put_contents("InactiveUsersToBeDeleted.txt", $user->getId() . ", `null`, " .
             "`?`\n", FILE_APPEND);
