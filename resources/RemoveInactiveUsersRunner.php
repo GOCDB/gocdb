@@ -183,4 +183,3 @@ function sendWarningEmail($user, $elapsedMonths, $deletionThreshold)
     // Handle all mail related printing/debugging
     \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
 }
-
