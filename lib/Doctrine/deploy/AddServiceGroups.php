@@ -10,6 +10,15 @@ require_once __DIR__."/AddUtils.php";
 $stFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/ServiceGroups.xml";
 $sts = simplexml_load_file($stFileName);
 
+// Checking the XML file has parsed correctly
+if ($sts === FALSE) {
+    echo "There were errors parsing the XML file.\n";
+    foreach(libxml_get_errors() as $error) {
+        echo $error->message;
+    }
+    exit;
+}
+
 foreach($sts as $st) {
     $instance = new ServiceGroup();
     $name = "";
@@ -36,9 +45,10 @@ foreach($sts as $st) {
                 $scope = (string) $value;
                 break;
             default:
-                throw new LogicException("Unknown ServiceGroup key in input XML: ". $key);
+                break;
         }
     }
+
     $instance->setName($name);
     $instance->setDescription($desc);
     $instance->setMonitored($monitored);
@@ -49,3 +59,4 @@ foreach($sts as $st) {
 }
 
 $entityManager->flush();
+?>
