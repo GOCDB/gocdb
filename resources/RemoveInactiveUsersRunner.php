@@ -131,9 +131,16 @@ function sendWarningEmail($user, $elapsedMonths, $deletionThreshold)
             $deletionThreshold . " months.\n\n";
 
     $body .= "Identifiers:\n";
-    foreach ($user->getUserIdentifiers() as $identifier) {
-        $body .= "  - " . $identifier->getKeyName() .": " . $identifier->getKeyValue(). "\n";
-    }
+    
+    $user_ids = $user->getUserIdentifiers();
+    // If a user has identifiers, show the user them in the warning email. If not, show the cert DN.
+    if (!$user_ids->isEmpty()) {
+        foreach ($user_ids as $identifier) {
+            $body .= "  - " . $identifier->getKeyName() .": " . $identifier->getKeyValue(). "\n";
+        };
+    } else {
+        $body .= "  - ". $user->getCertificateDn() . "\n";
+    }; 
 
     $body .= "\n";
     $body .= "You can prevent the deletion of this account by visiting the " .
