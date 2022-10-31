@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+    <SERVICE_ENDPOINT PRIMARY_KEY="44657G0">
+        <SITENAME>SITE-1</SITENAME>
+        <HOSTNAME>service-1.site-1.org</HOSTNAME>
+        <SERVICE_TYPE>CE</SERVICE_TYPE>
+        <IN_PRODUCTION>Y</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SCOPE>Local</SCOPE>
+        <HOSTDN>/DC=org/DC=site-1/CN=service-1.site-1.org</HOSTDN>
+        <HOST_IP>127.0.0.01</HOST_IP>
+        <HOST_OS>SL5</HOST_OS>
+        <HOST_ARCH>64 bit</HOST_ARCH>
+        <DESCRIPTION>A service on Site 1</DESCRIPTION>
+
+        <URL></URL>
+        <!--
+        <PRIMARY_KEY>44657G0</PRIMARY_KEY>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=26149&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <BETA>N</BETA>
+        <CORE></CORE>
+        <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
+        <COUNTRY_CODE>CH</COUNTRY_CODE>
+        <ROC_NAME>NGI_CH</ROC_NAME> -->
+    </SERVICE_ENDPOINT>
+</results>

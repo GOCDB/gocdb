@@ -59,11 +59,6 @@ try {
             $doctrineUser->setHomeSiteDoJoin($homeSite);
         }
 
-        // Make Dave an admin
-        if ($user->CERTDN === "/C=UK/O=eScience/OU=CLRC/L=DL/CN=david meredith") {
-            $doctrineUser->setAdmin(true);
-        }
-
         $em->persist($doctrineUser);
         $em->flush();
         $serv->addUserIdentifier($doctrineUser, $identifierArr, $doctrineUser);

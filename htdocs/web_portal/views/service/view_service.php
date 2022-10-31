@@ -1,12 +1,12 @@
 <?php
-$se = $params['se'];
-//throw new \Exception(var_dump(get_class($se)));
+require_once __DIR__."/../../controllers/utils.php";
 
-//throw new \Exception(var_dump($se));
+$se = $params['se'];
 $parentSiteName = $se->getParentSite()->getName();
 $extensionProperties = $se->getServiceProperties();
 $seId = $se->getId();
 $configService = \Factory::getConfigService();
+$showPD = $params['authenticated'];
 ?>
 <div class="rightPageContainer rounded">
     <div style="float: left; text-align: center;">
@@ -51,44 +51,44 @@ $configService = \Factory::getConfigService();
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <td class="site_table">Host name</td><td class="site_table">
-                        <?php if ($params['authenticated']) {
+                        <?php if ($showPD) {
                             xecho($se->getHostName());
-                        } else echo('PROTECTED - Registration required'); ?>
+                        } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">IP Address</td><td class="site_table">
-                        <?php if ($params['authenticated']) {
+                        <?php if ($showPD) {
                           xecho($se->getIpAddress());
-                        }else echo('PROTECTED - Registration required');  ?>
+                        } else echo(getInfoMessage());  ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">IP v6 Address</td><td class="site_table">
-                        <?php if ($params['authenticated']) {
+                        <?php if ($showPD) {
                             xecho($se->getIpV6Address());
-                        } else echo('PROTECTED - Registration required'); ?>
+                        } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Operating System</td><td class="site_table">
-                        <?php if ($params['authenticated']) {
+                        <?php if ($showPD) {
                             xecho($se->getOperatingSystem());
-                        } else echo('PROTECTED - Registration required'); ?>
+                        } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Architecture</td><td class="site_table">
-                        <?php if ($params['authenticated']) {
+                        <?php if ($showPD) {
                             xecho($se->getArchitecture());
-                        } else echo('PROTECTED - Registration required'); ?>
+                        } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">Contact E-Mail</td><td class="site_table">
-                        <?php if ($params['authenticated']) {
-                            xecho($se->getEmail());
-                        } else echo('PROTECTED - Registration required'); ?>
+                    <?php if ($showPD) {
+                        xecho($se->getEmail());
+                    } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
                 <tr class="site_table_row_1">
@@ -114,9 +114,9 @@ $configService = \Factory::getConfigService();
                 <tr class="site_table_row_1">
                     <td class="site_table" style="width: 5em;">Host DN</td><td class="site_table">
                         <div style="word-wrap: break-word;">
-                                <?php if ($params['authenticated']) {
+                                <?php if ($showPD) {
                                     xecho($se->getDn()) ;
-                                } else echo('PROTECTED - Registration required'); ?>
+                                } else echo(getInfoMessage()); ?>
                         </div>
                     </td>
                 </tr>

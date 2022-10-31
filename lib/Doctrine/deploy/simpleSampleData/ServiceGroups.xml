@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+  <SERVICE_GROUP>
+    <NAME>Group1_Services</NAME>
+    <DESCRIPTION>A test service group</DESCRIPTION>
+    <MONITORED>Y</MONITORED>
+    <CONTACT_EMAIL>contact@site-1.org</CONTACT_EMAIL>
+    <SCOPE>Local</SCOPE>
+    <!--
+      <SERVICE_ENDPOINT>
+      <HOSTNAME>service-1.site-1.org</HOSTNAME>
+      <SERVICE_TYPE>CE</SERVICE_TYPE>
+      <HOST_IP>127.0.0.01</HOST_IP>
+      <IN_PRODUCTION>Y</IN_PRODUCTION>
+      <NODE_MONITORED>Y</NODE_MONITORED>
+    </SERVICE_ENDPOINT>
+    -->
+  </SERVICE_GROUP>
+</results>

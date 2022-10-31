@@ -4,7 +4,7 @@
  * File: Get_User_Principle.php
  * Author: David Meredith
  * Description: Returns the user's principle ID string or AuthToken for the user that's currently
- *				connected (for x509 this is a DN).
+ *				connected (for X.509 this is a DN).
  *
  * License information
  *
@@ -137,7 +137,7 @@ function Get_User_AuthType() {
 }
 
 /**
- * Get the user's principle string (x509 DN from certificate or from SAML attribute).
+ * Get the user's principle string (X.509 DN from certificate or from SAML attribute).
  * <p>
  * Called from the portal to allow authentication.
  * This method serves as the global integration point for all authentication requests.
@@ -204,7 +204,7 @@ function Get_User_Principle(){
 }
 
 /**
- * Get the DN from an x509 cert, Principle from oidc token, or null if neither can be loaded.
+ * Get the DN from an X.509 cert, Principle from oidc token, or null if neither can be loaded.
  * Called from the PI to authenticate requests using certificates or oidc.
  * @return string or null if can't authenticate request
  */
@@ -242,78 +242,5 @@ function redirectUserToDiscoveryPage()
     header("Location: " . $url);
     die();
 }
-
-
-
-/*function Get_User_Principle_back()
-{
-    // Return hard wired user's principle string (DN) e.g. for testing
-    // =======================================================
-    //return '/C=UK/O=eScience/OU=CLRC/L=DL/CN=david meredith';
-
-    // Check if an authentication token has been set in the SecurityContext class
-    // by higher level code, eg Symfony Security which provides a Firewall component
-    // may have been used to intercept the HTTP request and authenticate the
-    // user (using whatever auth scheme was configured in the Firewall). A
-    // Symfony controller can then subsequently set the token in the SecurityContext
-    // before invoking the GOCDB code.
-    // =======================================================
-    require_once __DIR__.'/../../../lib/Gocdb_Services/SecurityContextSource.php';
-    if(\SecurityContextSource::getContext() != null){
-       $token = \SecurityContextSource::getContext()->getToken();
-       return str_replace("emailAddress=", "Email=", $token->getUser()->getUserName());
-    }
-
-    // ================Use x509 Authentication=======================
-    //if(!isset($_SERVER['SSL_CLIENT_CERT']))
-    //	return "";
-    //$Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
-    //$Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
-    //$User_DN = $Plain_Client_Cerfificate['name'];
-    // harmonise display of the "email" field that can be different depending on
-    // used version of SSL
-    //$User_DN = str_replace("emailAddress=", "Email=", $User_DN);
-    //return $User_DN;
-    if (isset($_SERVER['SSL_CLIENT_CERT'])) {
-        $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
-        if (isset($Raw_Client_Certificate)) {
-            $Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
-            $User_DN = $Plain_Client_Cerfificate['name'];
-            if (isset($User_DN)) {
-                // harmonise "email" field that can be different depending on version of SSL
-                $dn = str_replace("emailAddress=", "Email=", $User_DN);
-                if ($dn != null && $dn != '') {
-                    return $dn;
-                }
-            }
-        }
-    }
-
-
-    // Fall back to try saml authentication (simplesaml)
-    // =======================================================
-    if(false){ // disable by default - to use saml requires install of simplesamlphp and config below
-        require_once('/var/simplesamlphp/lib/_autoload.php');
-        $as = new SimpleSAML_Auth_Simple('default-sp');
-        $as->requireAuth();
-        \Factory::$properties['LOGOUTURL'] = $as->getLogoutURL('https://gocdb-test.esc.rl.ac.uk');
-        $attributes = $as->getAttributes();
-        if(!empty($attributes)){
-            //return $attributes['eduPersonPrincipalName'][0];
-            $dnAttribute = $attributes['urn:oid:1.3.6.1.4.1.11433.2.2.1.9'][0];
-            if(!empty($dnAttribute)){
-                return str_replace("emailAddress=", "Email=", $dnAttribute);
-            } else {
-                die('Did not retrieve a valid certificate DN from identify provider - your SSO '
-                        . 'account needs to be associated with a certificate to login via this route');
-            }
-        }
-    }
-
-    // Couldn't authetnicate the user, so finally return null
-    return null;
-}*/
-
-
 
 ?>

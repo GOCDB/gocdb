@@ -2,6 +2,9 @@
 
 namespace org\gocdb\services;
 
+use Factory;
+use LogicException;
+
 /* ______________________________________________________
  * ======================================================
  * File: index.php
@@ -65,7 +68,7 @@ function xecho($data) {
 }
 
 // Initialise the configuration service with the host url of the incoming request.
-// Allows the overriding of configuration values. Do not use 'new' to create a new 
+// Allows the overriding of configuration values. Do not use 'new' to create a new
 // instance after this.
 
 \Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
@@ -78,7 +81,7 @@ class PIRequest {
     private $method = null;
     private $output = null;
     private $params = array();
-    private $dn = null;
+    private $identifier = null;
     private $baseUrl;
     private $baseApiUrl;
 
@@ -123,7 +126,7 @@ class PIRequest {
 
         $testDN = Get_User_Principle_PI();
         if (empty($testDN) == FALSE) {
-            $this->dn = $testDN;
+            $this->identifier = $testDN;
         }
 
         if (count($_GET) > 0)
@@ -140,7 +143,7 @@ class PIRequest {
             switch ($this->method) {
                 case "get_site":
                     require_once($directory . 'GetSite.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getSite = new GetSite($em, $this->baseUrl, $this->baseApiUrl);
                     $getSite->setDefaultPaging($this->defaultPaging);
                     $getSite->setPageSize($this->defaultPageSize);
@@ -161,7 +164,7 @@ class PIRequest {
                     break;
                 case "get_site_contacts":
                     require_once($directory . 'GetSiteContacts.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getSiteContacts = new GetSiteContacts($em, $this->baseApiUrl);
                     $getSiteContacts->setDefaultPaging($this->defaultPaging);
                     $getSiteContacts->setPageSize($this->defaultPageSize);
@@ -172,7 +175,7 @@ class PIRequest {
                     break;
                 case "get_site_security_info":
                     require_once($directory . 'GetSiteSecurityInfo.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getSiteSecurityInfo = new GetSiteSecurityInfo($em, $this->baseApiUrl);
                     $getSiteSecurityInfo->setDefaultPaging($this->defaultPaging);
                     $getSiteSecurityInfo->setPageSize($this->defaultPageSize);
@@ -199,7 +202,7 @@ class PIRequest {
                     break;
                 case "get_roc_contacts":
                     require_once($directory . 'GetNGIContacts.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getNGIContacts = new GetNGIContacts($em, $this->baseUrl, $this->baseApiUrl);
                     $getNGIContacts->setDefaultPaging($this->defaultPaging);
                     $getNGIContacts->setPageSize($this->defaultPageSize);
@@ -270,7 +273,7 @@ class PIRequest {
                     break;
                 case "get_user":
                     require_once($directory . 'GetUser.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService(), $this->baseUrl, $this->baseApiUrl);
                     $getUser->setDefaultPaging($this->defaultPaging);
                     $getUser->setPageSize($this->defaultPageSize);
@@ -281,7 +284,7 @@ class PIRequest {
                     break;
                 case "get_project_contacts":
                     require_once($directory . 'GetProjectContacts.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getProjCon = new GetProjectContacts($em, $this->baseApiUrl);
                     $getProjCon->setDefaultPaging($this->defaultPaging);
                     $getProjCon->setPageSize($this->defaultPageSize);
@@ -292,7 +295,7 @@ class PIRequest {
                     break;
                 case "get_ngi":
                     require_once($directory . 'GetNGI.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getNGI = new GetNGI($em, $this->baseApiUrl);
                     $getNGI->setDefaultPaging($this->defaultPaging);
                     $getNGI->setPageSize($this->defaultPageSize);
@@ -303,7 +306,7 @@ class PIRequest {
                     break;
                 case "get_service_group" :
                     require_once($directory . 'GetServiceGroup.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getServiceGroup = new GetServiceGroup($em, $this->baseUrl, $this->baseApiUrl);
                     $getServiceGroup->setDefaultPaging($this->defaultPaging);
                     $getServiceGroup->setPageSize($this->defaultPageSize);
@@ -314,7 +317,7 @@ class PIRequest {
                     break;
                 case "get_service_group_role" :
                     require_once($directory . 'GetServiceGroupRole.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getServiceGroupRole = new GetServiceGroupRole($em, $this->baseUrl, $this->baseApiUrl);
                     $getServiceGroupRole->setDefaultPaging($this->defaultPaging);
                     $getServiceGroupRole->setPageSize($this->defaultPageSize);
@@ -325,7 +328,7 @@ class PIRequest {
                     break;
                 case "get_cert_status_date" :
                     require_once($directory . 'GetCertStatusDate.php');
-                    $this->authAnyCert();
+                    $this->authByAnyIdentifier();
                     $getCertStatusDate = new GetCertStatusDate($em, $this->baseApiUrl);
                     $getCertStatusDate->setDefaultPaging($this->defaultPaging);
                     $getCertStatusDate->setPageSize($this->defaultPageSize);
@@ -336,7 +339,7 @@ class PIRequest {
                     break;
                 case "get_cert_status_changes":
                     require_once($directory . 'GetCertStatusChanges.php');
-                    $this->authAnyCert();
+                    $this->authByIdentifier();
                     $getCertStatusChanges = new GetCertStatusChanges($em, $this->baseApiUrl);
                     $getCertStatusChanges->setDefaultPaging($this->defaultPaging);
                     $getCertStatusChanges->setPageSize($this->defaultPageSize);
@@ -359,21 +362,65 @@ class PIRequest {
                     break;
             }
         } catch (\Exception $e) {
-            print_r($e->getMessage());
-            die("An error has occured, please contact the GOCDB administrators at gocdb-admins@egi.eu");
+            die($e->getMessage());
         }
         return $xml;
     }
 
-    /* Authorize a user based on their certificate */
+    /* Authorize a request based on the supplied identifier */
 
-    function authAnyCert() {
-        if (empty($this->dn))
-            die("<No valid credentials provided. A suitable credential is " .
-                    "required to access this resource. Try accessing this " .
+    function authByIdentifier() {
+        require_once __DIR__.'/../web_portal/controllers/utils.php';
+        require_once __DIR__.'/../../lib/Doctrine/entities/APIAuthentication.php';
+
+        if (empty($this->identifier)) {
+            throw new \Exception("No valid identifier found. Try accessing the " .
                     "resource through the private interface.");
+        }
+
+        $admin = false;
+        $authenticated = false;
+
+        $user = \Factory::getUserService()->getUserByPrinciple($this->identifier);
+
+        if ($user == null) {
+            // Incoming credential is not that of a registered user.
+            // Check if it is registered API Authentication credential.
+
+            $authEntServ = \Factory::getAPIAuthenticationService();
+            $authEnt = $authEntServ->getAPIAuthentication($this->identifier);
+
+            if (!is_null($authEnt)) {
+                $authEntServ->updateLastUseTime($authEnt);
+                $authenticated = true;
+            }
+
+            if (!\Factory::getConfigService()->isRestrictPDByRole()) {
+                // Only a 'valid' identifier is needed.
+                $authenticated = true;
+            }
+        } else {
+            // $authenticated will be set to indicate whether the user can read Personal Data under the
+            // current configuration -
+            // i.e. a combination of local_info.xml restrict_personal_data element and whether
+            // the user has a role that permits.
+
+            list($admin, $authenticated) = getReadPDParams($user);
+        }
+        if (!($admin || $authenticated)) {
+            throw new \Exception("Authorisation required to read personal data (". getInfoMessage(). "). ");
+        }
     }
 
+    function authByAnyIdentifier()
+    {
+        if (empty($this->identifier)) {
+            throw new \Exception(
+                "No valid identifier found. Try accessing the resource " .
+                "through the private interface."
+            );
+        }
+    }
 }
 
 ?>

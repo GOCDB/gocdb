@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+    <result>
+        <UNIX_TIME>1262304001</UNIX_TIME>
+        <SITE>SITE_1</SITE>
+        <OLD_STATUS>Uncertified</OLD_STATUS>
+        <NEW_STATUS>Certified</NEW_STATUS>
+        <CHANGED_BY>/CN=SOME CN</CHANGED_BY>
+        <COMMENT>Record of a change of status</COMMENT>
+    </result>
+</results>

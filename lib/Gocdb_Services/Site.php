@@ -11,6 +11,7 @@ namespace org\gocdb\services;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+require_once __DIR__ . '/Factory.php';
 require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/Role.php';
 require_once __DIR__ . '/RoleConstants.php';
@@ -71,7 +72,7 @@ class Site extends AbstractEntityService{
     /**
      * Finds a single site by ID and returns its entity
      * @param int $id the site ID
-     * @return Site a site object
+     * @return \Site a site object
      */
     public function getSite($id) {
         $dql = "SELECT s FROM Site s WHERE s.id = :id";
@@ -407,12 +408,14 @@ class Site extends AbstractEntityService{
      * @param integer $siteId Site id or null
      * @param string $siteExtPropKeyName Site extension property name
      * @param string $siteExtPropKeyValue Site extension property value
+     * @param string $apiAuthId Authentication entity identifier
      * @return array An array of site objects with joined entities.
      */
     public function getSitesBy(
             $ngiName=NULL, $prodStatus=NULL, $certStatus=NULL,
             $scopeName=NULL, $showClosed=NULL, $siteId=NULL,
-            $siteExtPropKeyName=NULL, $siteExtPropKeyValue=NULL) {
+            $siteExtPropKeyName=NULL, $siteExtPropKeyValue=NULL,
+            $apiAuthId=NULL) {
 
         $qb = $this->em->createQueryBuilder();
         $qb ->select('DISTINCT s', 'sc', 'n', 'i')
@@ -470,6 +473,17 @@ class Site extends AbstractEntityService{
             $qb ->setParameter(':keyname', $siteExtPropKeyName)
             ->setParameter(':keyvalue', $siteExtPropKeyValue);
 
+        }
+
+        if ($apiAuthId != null && $apiAuthId != '%%') {
+            $sQ = $this->em->createQueryBuilder();
+            $sQ ->select('s1'.'.id')
+            ->from('Site', 's1')
+            ->join('s1.APIAuthenticationEntities', 'authEnt')
+            ->andWhere($sQ->expr()->eq('authEnt.identifier', ':authid'));
+
+            $qb->andWhere($qb->expr()->in('s', $sQ->getDQL()));
+            $qb->setParameter('authid', $apiAuthId);
         }
 
         $query = $qb->getQuery();
@@ -646,7 +660,7 @@ class Site extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         if(is_null($user)){
-            throw new Exception("Unregistered users may not add new sites");
+            throw new \Exception("Unregistered users may not add new sites");
         }
 
         // get the parent NGI entity
@@ -886,9 +900,7 @@ class Site extends AbstractEntityService{
     }
 
     private function checkNumberOfScopes(array $myArray){
-        require_once __DIR__ . '/Config.php';
-        $configService = new \org\gocdb\services\Config();
-        $minumNumberOfScopes = $configService->getMinimumScopesRequired('site');
+        $minumNumberOfScopes = $this->configService->getMinimumScopesRequired('site');
         if(sizeof($myArray)<$minumNumberOfScopes){
             throw new \Exception("A site must have at least " . $minumNumberOfScopes . " optional scope(s) assigned to it.");
         }
@@ -969,11 +981,16 @@ class Site extends AbstractEntityService{
     * @return boolian
     */
     public function userCanEditSite(\User $user, \Site $site) {
-        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE) {
+
+        if (is_null($user)) {
             return false;
-        } else {
+        }
+
+        if ($this->roleActionAuthorisationService->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == TRUE) {
             return true;
         }
+
+        return false;
     }
 
     /**
@@ -1114,7 +1131,7 @@ class Site extends AbstractEntityService{
         }
 
         //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
-        $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
+        $extensionLimit = $this->configService->getExtensionsLimit();
         if ($propertyCount > $extensionLimit){
             throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
         }
@@ -1371,20 +1388,6 @@ class Site extends AbstractEntityService{
         return $xmlString;
     }
 
-    private function uniqueAPIAuthEnt(\Site $site, $identifier, $type) {
-        //TODO: This would probably be more effecient as a DQL query
-        $existingAuthEnts = $site->getAPIAuthenticationEntities();
-
-        foreach ($existingAuthEnts as $authEnt) {
-            if($authEnt->getIdentifier()==$identifier && $authEnt->getType() == $type) {
-                throw new \Exception(
-                    "An authentication object of type \"$type\" and with identifier " .
-                    "\"$identifier\" already exists for" . $site->getName()
-                );
-            }
-        }
-    }
-
     /**
      * Finds a single API authentication entity by ID and returns its entity
      * @param int $id the authentication entity ID
@@ -1400,114 +1403,47 @@ class Site extends AbstractEntityService{
     }
 
     public function addAPIAuthEntity(\Site $site, \User $user, $newValues) {
-        //Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         // Validate the user has permission to add properties
-        if (!$this->userCanEditSite($user, $site)) {
-            throw new \Exception("You don't have permission to add authentication entties to " . $site->getShortName());
-        }
+        $this->checkUserAuthz ($user, $site);
 
-        $identifier = $newValues['IDENTIFIER'];
-        $type = $newValues['TYPE'];
+        $authEntServ = \Factory::getAPIAuthenticationService();
+        $authEntServ->setEntityManager($this->em);
 
-        //Check that an identifier ha been provided
-        if(empty($identifier)){
-            throw new \Exception("A value must be provided for the identifier");
-        }
-
-        //validate the values against the schema
-        $this->validate($newValues,'APIAUTHENTICATION');
-
-        //If the entity is of type X509, do a more thorough check than the validate service (as we know the type)
-        //Note that we are allowing ':' as they can appear in robot DN's
-        if ($type == 'X509' && !preg_match("/^(\/[A-Za-z]+=[a-zA-Z0-9\/\-\_\s\.,'@:\/]+)*$/", $identifier)) {
-            throw new \Exception("Invalid x509 DN");
-        }
-        
-        //If the entity is of type OIDC subject, do a more thorough check again
-        if ($type == 'OIDC Subject' && !preg_match("/^([a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12})$/", $identifier)) {
-            throw new \Exception("Invalid OIDC Subject");
-        }
-
-        //Check there isn't already a identifier of that type with that identifier for that Site
-        $this->uniqueAPIAuthEnt($site, $identifier, $type);
-
-        //Add the properties
-        $this->em->getConnection()->beginTransaction();
-        try {
-            $authEnt = new \APIAuthentication();
-            $authEnt->setIdentifier($identifier);
-            $authEnt->setType($type);
-            $site->addAPIAuthenticationEntitiesDoJoin($authEnt);
-            $this->em->persist($authEnt);
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
-            $this->em->close();
-            throw $e;
-        }
+        $authEnt = $authEntServ->addAPIAuthentication($site, $user, $newValues);
 
         return $authEnt;
     }
 
     public function deleteAPIAuthEntity(\APIAuthentication $authEntity, \User $user) {
-        //Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         // Validate the user has permission to delete properties
-        if (!$this->userCanEditSite($user, $authEntity->getParentSite())) {
-            throw new \Exception("You don't have permission to add authentication entties to " . $site->getShortName());
-        }
+        $parentSite = $authEntity->getParentSite();
 
-        //delete the entity
-        $this->em->getConnection()->beginTransaction();
-        try {
-            $parentSite = $authEntity->getParentSite();
+        // Check the user can do this. Thows exception if not.
+        $this->checkUserAuthz($user, $parentSite);
 
-            //Remove the authentication entity from the site then remove the entity
-            $parentSite->getAPIAuthenticationEntities()->removeElement($authEntity);
-            $this->em->remove($authEntity);
+        $authEntServ = \Factory::getAPIAuthenticationService();
+        $authEntServ->setEntityManager($this->em);
 
-            $this->em->persist($parentSite);
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
-            $this->em->close();
-            throw $e;
-        }
+        $authEntServ->deleteAPIAuthentication($authEntity);
     }
 
     public function editAPIAuthEntity(\APIAuthentication $authEntity, \User $user, $newValues) {
-        //Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        $site = $authEntity->getParentSite();
+        $parentSite = $authEntity->getParentSite();
 
-        // Validate the user has permission to edit properties
-        if (!$this->userCanEditSite($user, $site)) {
-            throw new \Exception("You don't have permission to add authentication entties to " . $site->getShortName());
-        }
+        // Check the user can do this. Thows exception if not.
+        $this->checkUserAuthz($user, $parentSite);
 
         $identifier = $newValues['IDENTIFIER'];
         $type = $newValues['TYPE'];
 
-        //Check that an identifier ha been provided
-        if(empty($identifier)){
-            throw new \Exception("A value must be provided for the identifier");
-        }
-
-        //validate the values against the schema
-        $this->validate($newValues,'APIAUTHENTICATION');
-
-
-        //If the entity is of type X509, do a more thorough check than the validate service (as we know the type)
-        //Note that we are allowing ':' as they can appear in robot DN's
-        if ($type == 'X509' && !preg_match("/^(\/[A-Za-z]+=[a-zA-Z0-9\/\-\_\s\.,'@:\/]+)*$/", $identifier)) {
-            throw new \Exception("Invalid x509 DN");
-        }
+        /**
+        @var org\gocdb\services\APIAuthenticationService
+        */
+        $authEntServ = \Factory::getAPIAuthenticationService();
+        $authEntServ->setEntityManager($this->em);
 
         //If the entity is of type OIDC subject, do a more thorough check again
         if ($type == 'OIDC Subject' && !preg_match("/^([a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12})$/", $identifier)) {
@@ -1515,27 +1451,31 @@ class Site extends AbstractEntityService{
         }
 
         /**
-        * As long as something has changed, check there isn't already a
-        * identifier of that type with that identifier for that Site
+        * If identifier or type has changed, check the credential is not
+        * already registered.
         */
-        if (!($authEntity->getIdentifier()==$identifier && $authEntity->getType() == $type)) {
-            $this->uniqueAPIAuthEnt($site, $identifier, $type);
+        if (!($authEntity->getIdentifier() == $identifier &&
+              $authEntity->getType() == $type)) {
+            $authEntServ->uniqueAPIAuthEnt($parentSite, $identifier, $type);
         }
 
-        //Edit the property
-        $this->em->getConnection()->beginTransaction();
-        try {
-            $authEntity->setIdentifier($identifier);
-            $authEntity->setType($type);
-            $this->em->persist($authEntity);
-            $this->em->flush();
-            $this->em->getConnection()->commit();
-        } catch (\Exception $e) {
-            $this->em->getConnection()->rollback();
-            $this->em->close();
-            throw $e;
-        }
+        $authEntServ->editAPIAuthentication($authEntity, $user, $newValues);
 
         return $authEntity;
+    }
+    /**
+     * Helper combines admin check and authz check to make sure a user
+     * can modify properties of the site.
+     *
+     * @throws \Exception
+     */
+    private function checkUserAuthz (\User $user, \Site $site) {
+
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
+        // Validate the user has permission to edit properties
+        if (!$this->userCanEditSite($user, $site)) {
+            throw new \Exception("Permission denied: a site role is required to modify authentication entities on site " . $site->getShortName());
+        }
     }
 }

@@ -34,17 +34,11 @@ function view_ngi() {
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
+    $params = array();
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
 
-    $params['UserIsAdmin']=false;
-    if(!is_null($user)) {
-        $params['UserIsAdmin']=$user->isAdmin();
-    }
-
-    $params['authenticated'] = false;
-    if($user != null){
-        $params['authenticated'] = true;
-    }
+    // Set values for showing personal data
+    list($params['UserIsAdmin'], $params['authenticated']) = getReadPDParams($user);
 
     $ngiServ = \Factory::getNgiService();
     $siteServ = \Factory::getSiteService();

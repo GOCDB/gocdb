@@ -1,9 +1,13 @@
 <?php
+require_once __DIR__."/../../controllers/utils.php";
+
 $site = $params['site'];
+$entityId = $site->getId();
 $downtimes = $params['Downtimes'];
 $parentNgiName = $site->getNgi()->getName();
 $portalIsReadOnly = $params['portalIsReadOnly'];
 $extensionProperties = $site->getSiteProperties();
+$showPD = $params['authenticated']; // display Personal Data
 ?>
 <div class="rightPageContainer">
     <div style="float: left; text-align: center;">
@@ -24,7 +28,7 @@ $extensionProperties = $site->getSiteProperties();
         <div style="float: right; margin-left: 2em; text-align:center;">
             <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
             <a onclick="return confirmSubmit()"
-               href="index.php?Page_Type=Delete_Site&id=<?php echo($site->getId()); ?>">
+               href="index.php?Page_Type=Delete_Site&id=<?php echo($entityId); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/trash.png" height="25px"/>
             <br/>
             <span>Admin<br>Delete</span>
@@ -33,7 +37,7 @@ $extensionProperties = $site->getSiteProperties();
         <?php endif; ?>
         <?php if ($params['ShowEdit']): ?>
         <div style="float: right; margin-left: 2em;">
-            <a href="index.php?Page_Type=Edit_Site&amp;id=<?php echo($site->getId()) ?>">
+            <a href="index.php?Page_Type=Edit_Site&amp;id=<?php echo($entityId) ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/pencil.png" height="25px" style="float: right;" />
             <br />
             <br />
@@ -54,65 +58,65 @@ $extensionProperties = $site->getSiteProperties();
         <table style="clear: both; width: 100%; table-layout: fixed;">
         <tr class="site_table_row_1">
             <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="mailto:<?php xecho($site->getEmail()) ?>">
                 <?php xecho($site->getEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
             <td class="site_table">Telephone</td><td class="site_table"><?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getTelephone());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?></td>
         </tr>
         <tr class="site_table_row_1">
             <td class="site_table">Emergency Tel</td><td class="site_table"><?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getEmergencyTel());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?></td>
         </tr>
         <tr class="site_table_row_2">
             <td class="site_table">CSIRT Tel</td><td class="site_table"><?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getCsirtTel());
             } else
-                echo('PROTECTED - Registration required')
+                echo(getInfoMessage())
                 ?></td>
         </tr>
         <tr class="site_table_row_1">
             <td class="site_table">CSIRT E-Mail</td>
             <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="mailto:<?php xecho($site->getCsirtEmail()) ?>">
                 <?php xecho($site->getCsirtEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
             <td class="site_table">Emergency E-Mail</td>
             <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="mailto:<?php xecho($site->getEmergencyEmail()) ?>">
                 <?php xecho($site->getEmergencyEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
         </tr>
         <tr class="site_table_row_1">
             <td class="site_table">Helpdesk E-Mail</td>
             <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="mailto:<?php xecho($site->getHelpdeskEmail()); ?>">
                 <?php xecho($site->getHelpdeskEmail()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
@@ -147,14 +151,14 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Certification Status</td>
                     <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <?php xecho($site->getCertificationStatus()->getName()) ?>
                 &nbsp;
                 <!--  only show this link if we're in read / write mode -->
                 <?php if (!$portalIsReadOnly): ?>
-                <a href="index.php?Page_Type=Edit_Certification_Status&amp;id=<?php echo($site->getId()) ?>">Change</a>
+                <a href="index.php?Page_Type=Edit_Certification_Status&amp;id=<?php echo($entityId) ?>">Change</a>
                 <?php endif; ?>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
 
@@ -199,21 +203,21 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Home URL</td>
             <td class="site_table">
-            <?php if ($params['authenticated']) { ?>
+            <?php if ($showPD) { ?>
                 <a href="<?php xecho($site->getHomeUrl()) ?>">
                 <?php xecho($site->getHomeUrl()) ?>
                 </a>
-            <?php } else echo('PROTECTED - Registration required'); ?>
+            <?php } else echo(getInfoMessage()); ?>
             </td>
                 </tr>
                 <tr class="site_table_row_2">
                     <td class="site_table">GIIS URL</td>
                     <td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getGiisUrl());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?>
                     </td>
                 </tr>
@@ -221,10 +225,10 @@ $extensionProperties = $site->getSiteProperties();
                     <td class="site_table">IP Range</td>
                     <td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getIpRange());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?>
                     </td>
                 </tr>
@@ -232,10 +236,10 @@ $extensionProperties = $site->getSiteProperties();
                     <td class="site_table" style="width:20%">IP v6 Range</td>
                     <td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getIpV6Range());
             } else
-                echo('PROTECTED - Registration required');
+                echo(getInfoMessage());
             ?>
                     </td>
                 </tr>
@@ -243,10 +247,10 @@ $extensionProperties = $site->getSiteProperties();
                     <td class="site_table">Domain</td>
                     <td class="site_table">
                         <?php
-                            if ($params['authenticated']) {
+                            if ($showPD) {
                                 xecho($site->getDomain());
                             } else
-                                echo('PROTECTED - Registration required');
+                                echo(getInfoMessage());
                         ?>
                     </td>
                 </tr>
@@ -261,10 +265,10 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Country</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getCountry()->getName());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -272,10 +276,10 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_2">
                     <td class="site_table">Latitude</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getLatitude());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -283,10 +287,10 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Longitude</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getLongitude());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -294,10 +298,10 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_2">
                     <td class="site_table">Time Zone</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getTimezoneId());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -305,10 +309,10 @@ $extensionProperties = $site->getSiteProperties();
                 <tr class="site_table_row_1">
                     <td class="site_table">Location</td><td class="site_table">
             <?php
-            if ($params['authenticated']) {
+            if ($showPD) {
                 xecho($site->getLocation());
             } else {
-                echo 'PROTECTED';
+                echo getInfoMessage();
             }
             ?>
                     </td>
@@ -422,7 +426,7 @@ $extensionProperties = $site->getSiteProperties();
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
         <!-- Add new Service Link -->
-        <a href="index.php?Page_Type=Add_Service&amp;siteId=<?php echo($site->getId()); ?>">
+        <a href="index.php?Page_Type=Add_Service&amp;siteId=<?php echo($entityId); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
             Add Service
@@ -434,70 +438,59 @@ $extensionProperties = $site->getSiteProperties();
 
     <!--  Users -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
-        <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
-        <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" class="decoration" />
 
-        <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
-            <thead>
-                <tr>
-                    <th>Name</th>
-                    <th>Role</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php
-                foreach ($params['roles'] as $role) {
-                ?>
-                    <tr>
-                        <td>
-                            <div style="background-color: inherit;">
-                                <?php if ($params['authenticated']) { ?>
-                                <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
-                                    <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
-                                    <?php xecho($role->getUser()->getFullName()) ?>
-                                </a>
-                                <?php
-                                } else {
-                                echo 'PROTECTED';
-                                }
-                                ?>
-                            </div>
-                        </td>
-                        <td>
-                            <?php
-                            if ($params['authenticated']) {
-                                xecho($role->getRoleType()->getName());
-                            } else {
-                                echo 'PROTECTED';
-                            }
-                            ?>
-                        </td>
-                    </tr>
-                <?php
-                }
-                ?>
-            </tbody>
-        </table>
+        <?php
+            if ($showPD) { ?>
+                <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
+                <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" class="decoration" />
+                <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php
+                        foreach ($params['roles'] as $role) {
+                        ?>
+                            <tr>
+                                <td>
+                                    <div style="background-color: inherit;">
+                                        <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
+                                            <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
+                                            <?php xecho($role->getUser()->getFullName()) ?>
+                                        </a>
+                                    </div>
+                                </td>
+                                <td>
+                                    <?php
+                                        xecho($role->getRoleType()->getName());
+                                    ?>
+                                </td>
+                            </tr>
+                        <?php
+                        }
+                        ?>
+                    </tbody>
+                </table>
+        <?php
+            } else {
+                require_once __DIR__.'/../fragments/hidePersonalData.php';
+            }
+        ?>
 
-    <!-- Request Role Link -->
-    <!--  only show this link if we're in read / write mode -->
-    <?php if (!$portalIsReadOnly && $params['authenticated']): ?>
-        <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
-            <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo($site->getId()); ?>">
-            <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                Request Role
-            </span>
-            </a>
-        </div>
-    <?php endif; ?>
+        <!-- Request Role Link -->
+        <?php if (!$portalIsReadOnly) {
+            require_once __DIR__.'/../fragments/requestRole.php';
+        } ?>
     </div>
 
     <!--  Downtimes -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
             Recent Downtimes Affecting <?php xecho($site->getShortName()) ?> Sevices and Endpoints
-            <a href="index.php?Page_Type=Site_Downtimes&amp;id=<?php echo($site->getId()); ?>">
+            <a href="index.php?Page_Type=Site_Downtimes&amp;id=<?php echo($entityId); ?>">
                 (View all Downtimes)
             </a>
         </span>
@@ -533,7 +526,7 @@ $extensionProperties = $site->getSiteProperties();
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
         <!-- Add new Downtime Link -->
-        <a href="index.php?Page_Type=Add_Downtime&amp;site=<?php echo($site->getId()); ?>">
+        <a href="index.php?Page_Type=Add_Downtime&amp;site=<?php echo($entityId); ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
             <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
             Add Downtime
@@ -553,40 +546,77 @@ $extensionProperties = $site->getSiteProperties();
     <?php if($params['ShowEdit']):?>
         <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-                Credentials authorised to use the GOCDB write API (Only shown if you have the relevant permissions)
+                Credentials authorised to use the GOCDB read and write APIs (Only shown if you have the relevant permissions)
             </span>
+            <img src="<?php echo \GocContextPath::getPath() ?>img/key.png" class="decoration" />
             <table id="AuthenticatedEntities" class="table table-striped table-condensed tablesorter">
                 <thead>
                     <tr>
                         <th>Type</th>
                         <th>Identifier</th>
-                        <th>Edit</th>
-                        <th>Delete</th>
+                        <th>User</th>
+                        <th style="text-align:center">API Write</th>
+                        <th style="text-align:center">Edit</th>
+                        <th style="text-align:center">Delete</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    foreach ($params['APIAuthenticationEntities'] as $authEnt) {
+                    /** @var \APIAuthentication $APIAuthEnt */
+                    foreach ($params['APIAuthEnts'] as $APIAuthEnt) {
+                        // Finer grain control of edit or delete could be put here
+                        // Currently work around pre-5.8 credentials having no owning user.
+                        $disableEdit = true;
+                        $disableDelete = true;
+                        if ($APIAuthEnt->getIdentifier() == Get_User_Principle()) {
+                            // If the owning user is making the request, we always allow them to
+                            // delete the credential
+                            $disableDelete = false;
+                        }
                     ?>
                     <tr>
                         <td>
-                            <?php xecho($authEnt->getType())?>
+                            <?php xecho($APIAuthEnt->getType())?>
                         </td>
                         <td>
-                            <?php xecho($authEnt->getIdentifier())?>
+                            <?php xecho($APIAuthEnt->getIdentifier())?>
                         </td>
-                        <td style="width: 10%;"align = "center">
-                            <?php if(!$portalIsReadOnly):?>
-                                <a href="index.php?Page_Type=Edit_API_Authentication_Entity&amp;authentityid=<?php echo $authEnt->getId();?>">
-                                    <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/pencil.png"/>
-                                </a>
-                            <?php endif;?>
+                        <td>
+                            <?php
+                            $disableEdit = false;
+                            $disableDelete = false;
+                            if ($APIAuthEnt->getUser() != null) {
+                                // Credentials added prior to 5.8 have no owning user
+                                echo "<a href=\"index.php?Page_Type=User&amp;id=", $APIAuthEnt->getUser()->getId(), "\" ";
+                                echo "title=\"", $APIAuthEnt->getUser()->getFullname(), "\">";
+                                echo substr($APIAuthEnt->getUser()->getSurname(),0,10);
+                                echo "</a>";
+                            }
+                            ?>
                         </td>
-                        <td style="width: 10%;"align = "center">
+                        <td style="width: 8%; text-align:center">
+                            <img height="22px" src=
+                                <?php if (($APIAuthEnt->getAllowAPIWrite())) {
+                                    echo '"'.\GocContextPath::getPath().'img/tick.png"';
+                                } else {
+                                    echo '"'.\GocContextPath::getPath().'img/cross.png"';
+                                } ?>
+                            />
+                        </td>
+                        <td style="width: 8%;"align = "center">
                             <?php if(!$portalIsReadOnly):?>
-                                <a href="index.php?Page_Type=Delete_API_Authentication_Entity&amp;authentityid=<?php echo $authEnt->getId();?>">
-                                    <img height="25px" src="<?php echo \GocContextPath::getPath()?>img/cross.png"/>
-                                </a>
+                                <form action="index.php?Page_Type=Edit_API_Authentication_Entity&amp;authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
+                                    <button type="submit" <?php if ($disableEdit) echo "disabled"; ?>
+                                        >Edit</button>
+                                </form>
+                             <?php endif;?>
+                        </td>
+                        <td style="width: 8%;"align = "center">
+                            <?php if(!$portalIsReadOnly):?>
+                                <form action="index.php?Page_Type=Delete_API_Authentication_Entity&amp;authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
+                                    <button type="submit" <?php if ($disableDelete) echo "disabled"; ?>
+                                        >Delete</button>
+                                </form>
                             <?php endif;?>
                         </td>
                     </tr>
@@ -595,11 +625,11 @@ $extensionProperties = $site->getSiteProperties();
             </table>
 
             <?php if (!$portalIsReadOnly): ?>
-                <!-- Add new Downtime Link -->
-                <a href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $site->getId()?>">
+                <!-- Add new API credential -->
+                <a href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $entityId?>">
                     <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
                     <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                        Add new API credential
+                        Add API credential
                     </span>
                 </a>
             <?php endif; ?>

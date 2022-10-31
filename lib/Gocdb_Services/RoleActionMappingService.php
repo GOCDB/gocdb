@@ -32,10 +32,14 @@ namespace org\gocdb\services;
  */
 class RoleActionMappingService /* extends AbstractEntityService */ {
 
-    private $roleActionMappingsXmlPath;
-    private $roleActionMappingsXsdPath;
+    private $roleActionMappingsXmlPath; // path to xml data file
+    private $roleActionMappingsXsdPath; // path to xsd schema file
+    private $roleActionMapXmlDom;       // DOM object loaded from xml data path
 
     const ROLE_ACTION_MAPPING_NS = 'http://goc.egi.eu/2015/03/spec1.0_r1';
+
+    const FAILED_TO_READ_XML_DATA = 1;   // Constants to distinguish exception cases
+    const FAILED_TO_READ_XML_SCHEMA = 2;
 
     /**
      * Service for querying the Role-Action mappings defined in the RoleActionMappingRules XML file.
@@ -44,6 +48,7 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
         //parent::__construct();
         $this->roleActionMappingsXmlPath = __DIR__ . '/../../config/RoleActionMappings.xml';
         $this->roleActionMappingsXsdPath = __DIR__ . '/../../config/RoleActionMappingsSchema.xsd';
+        $this->roleActionMapXmlDom = null;
     }
 
     /**
@@ -53,6 +58,7 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
      */
     public function setRoleActionMappingsXmlPath($xmlDocPath) {
         $this->roleActionMappingsXmlPath = $xmlDocPath;
+        $this->roleActionMapXmlDom = null;
     }
 
     /**
@@ -62,58 +68,83 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
      */
     public function setRoleActionMappingsXsdPath($xsdDocPath) {
         $this->roleActionMappingsXsdPath = $xsdDocPath;
+        $this->roleActionMapXmlDom = null;
     }
 
     /**
      * Validate the XML file located at $roleActionMappingsXmlPath with the XSD
      * located at $roleActionMappingsXsdPath.
+     * Only used for debug and testing schema and validation logic, use
+     * loadRoleActionsXmlFile for most purposes
      *
-     * @return array an array with LibXMLError objects if there are any errors
-     * or an empty array otherwise.
-     * @throws \LogicException if XML/XSD fiels can't be loaded
-     * @throws \Exception If the role action mapping file is invalid against its XSD.
+     * @return array Array of LibXMLError objects, or empty
+     * @throws \LogicException if XML file can't be loaded
      */
     public function validateRoleActionMappingFileAgainstXsd() {
-        // http://stackoverflow.com/questions/12368453/domdocumentschemavalidate-throwing-warning-errors
-        //libxml_use_internal_errors(true);
-        $xml = new \DOMDocument();
-        if (FALSE === $xml->load($this->roleActionMappingsXmlPath)) {
-            throw new \LogicException("Couldn't load RoleActionMappings file, "
-            . "invalid roleActionMappingsXmlPath: [$this->roleActionMappingsXmlPath]");
-        }
-        return $this->_validateRoleActionMappingFileAgainstXsd($xml);
-    }
 
-    private function _validateRoleActionMappingFileAgainstXsd(\DOMDocument $xml){
-        if (!$xml->schemaValidate($this->roleActionMappingsXsdPath)) {
-            return libxml_get_errors();
+        try {
+            $this->loadRoleActionsXmlFile();
+        } catch (\LogicException $e) {
+            // Trap the schema validation error and return the error stack.
+            if ($e->getCode() == $this->FAILED_TO_READ_XML_SCHEMA) {
+                return libxml_get_errors();
+            }
+            throw $e;
         }
         return array();
     }
+    /**
+     * Helper function for xml schema validation
+     * @param \DOMDocument $dom DOM object to validate
+     * @param string $xmlDocPath Path to data used to generate the DOM (for error message only).
+     * @param string $xsdDocPath Path to schema file to be used for data validation
+     * @throws \LogicException with code FAILED_TO_READ_XML_SCHEMA on failure to validate
+     */
+    private function _validateRoleActionMappingFileAgainstXsd(\DOMDocument $dom, $xmlDocPath, $xsdDocPath) {
 
+        if (!$dom->schemaValidate($xsdDocPath)) {
+            throw new \LogicException("Failed validate RoleActionMappings against schema. xml:[{$xmlDocPath}] xsd:[{$xsdDocPath}]",
+                        $this->FAILED_TO_READ_XML_SCHEMA);
+        }
+    }
+    /**
+     * Helper function for xml schema validation
+     * @param \DOMDocument $dom DOM object to validate
+     * @param string $xmlDocPath Path to data used to generate the DOM (for error message only).
+     * @param string $xsdDocPath Path to schema file to be used for data validation
+     * @throws \LogicException Exception with code FAILED_TO_READ_XML_DATA on failure to validate
+     * @return \DOMDocument
+     */
+    private function _loadRoleActionsXmlFile($xmlDocPath) {
+
+        $dom = new \DOMDocument();
+
+        if (!$dom->load($xmlDocPath)) {
+            throw new \LogicException("Failed to load RoleActionMappings. xml:[{$xmlDocPath}]",
+                            $this->FAILED_TO_READ_XML_DATA);
+        }
+        return $dom;
+    }
 
     /**
      * Load and validate the role actions xml file referenced from $roleActionMappingsXmlPath;
      * @return \DOMDocument
      * @throws \LogicException
      */
-    private function loadRoleActionsXmlFile(){
-        //http://stackoverflow.com/questions/12368453/domdocumentschemavalidate-throwing-warning-errors
-        //libxml_use_internal_errors(true);
-        // load file
-        $roleActionMapXmlDom = new \DOMDocument();
-        if (FALSE === $roleActionMapXmlDom->load($this->roleActionMappingsXmlPath)) {
-            throw new \LogicException("Couldn't load RoleActionMappings file, "
-            . "invalid roleActionMappingsXmlPath: [$this->roleActionMappingsXmlPath].");
+    private function loadRoleActionsXmlFile()
+    {
+        if (is_null($this->roleActionMapXmlDom)) {
+            // Throws LogicException if the file can't be loaded
+            // Exception code can distinguish between them if wanted.
+            $this->roleActionMapXmlDom = $this->_loadRoleActionsXmlFile($this->roleActionMappingsXmlPath);
+
+            // Throws LogicException is the schema doesn't validate
+            $this->_validateRoleActionMappingFileAgainstXsd($this->roleActionMapXmlDom,
+                                                            $this->roleActionMappingsXmlPath,
+                                                            $this->roleActionMappingsXsdPath);
         }
 
-        $errors = $this->_validateRoleActionMappingFileAgainstXsd($roleActionMapXmlDom);
-        if(count($errors) > 0){
-            throw new \LogicException("Invalid RoleActionMappingsFile "
-                    . "[$this->roleActionMappingsXmlPath], use libxml_get_errors() "
-                    . "for error details.");
-        }
-        return $roleActionMapXmlDom;
+        return $this->roleActionMapXmlDom;
     }
 
 
@@ -354,7 +385,7 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
         // Iterate RoleMapping elements and identify/collect those that have a child
         // 'EnabledActions' element that groups together BOTH the required  Target $entityType
         // AND the required $action listed in <Actions> e.g.
-        // if $action = ACtion_EDIT_OBJECT and $entityType = SERviceGroup a
+        // if $action = ACTION_EDIT_OBJECT and $entityType = ServiceGroup a
         // conforming element would be:
         //
         //  <EnabledActions>
@@ -364,7 +395,7 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
         //            <Action>ACTION_REJECT_ROLE</Action>
         //            <Action>ACTION_REVOKE_ROLE</Action>
         //      </Actions>
-        //      <Target>SERviceGroup</Target>
+        //      <Target>ServiceGroup</Target>
         //  </EnabledActions>
         //
         $inScopeRoleMappings = array();
@@ -396,7 +427,7 @@ class RoleActionMappingService /* extends AbstractEntityService */ {
                     }
                 }
 //                // when actions were listed as a single text node value using comma sep list e.g.
-//                //  <Actions>ACtion_EDIT_OBJECT,ACTION_GRANT_ROLE, ACTION_REJECT_ROLE, ACTION_REVOKE_ROLE</Actions>
+//                //  <Actions>ACTION_EDIT_OBJECT,ACTION_GRANT_ROLE, ACTION_REJECT_ROLE, ACTION_REVOKE_ROLE</Actions>
 //                $actionsNodes = $xpath->query('goc:Actions[text()]', $enabledAction);
 //                foreach ($actionsTextNodes as $actionsText) {
 //                    //print_r($actionsText->nodeValue. "\n");

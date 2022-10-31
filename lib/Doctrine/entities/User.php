@@ -77,6 +77,12 @@ class User {
      */
     protected $userIdentifiers = null;
 
+    /**
+     * Bidirectional - A User can have many APIAuthenication Entities.
+     * @OneToMany(targetEntity="APIAuthentication", mappedBy="user")
+     */
+    protected $APIAuthenticationEntities = null;
+
     /*
      * TODO:
      * This entity will need to own a property bag (akin to custom props)
@@ -94,6 +100,7 @@ class User {
         //$this->sites = new ArrayCollection();
         $this->roles = new ArrayCollection();
         $this->userIdentifiers = new ArrayCollection();
+        $this->APIAuthenticationEntities = new ArrayCollection();
     }
 
     /**
@@ -157,7 +164,7 @@ class User {
     }
 
     /**
-     * Get the user's unique ID string, typically an x509 DN string.
+     * Get the user's unique ID string, typically an X.509 DN string.
      * This should return null once the user has user identifiers.
      * @return string
      */
@@ -274,7 +281,7 @@ class User {
     }
 
     /**
-     * Set the user's unique ID string, typically an x509 DN string.
+     * Set the user's unique ID string, typically an X.509 DN string.
      * This should only be used to set the value to null
      * when user identifiers are first added to an old user.
      * @param string $certificateDn
@@ -370,4 +377,22 @@ class User {
         $userIdentifier->_setParentUser($this);
     }
 
+    /**
+     * Keep track of the authentication entities associated with this user,
+     * including updating the entity itself as the owning side of the
+     * relation.
+     * @param \APIAuthentication $authenticationEntity
+     */
+    public function addAPIAuthenticationEntitiesDoJoin (\APIAuthentication $authenticationEntity) {
+        $this->APIAuthenticationEntities->add($authenticationEntity);
+        //$this->APIAuthenticationEntities[] = $authenticationEntity;
+        $authenticationEntity->_setUser($this);
+    }
+    /**
+     * Get the user's API credentials
+     * @return ArrayCollection
+     */
+    public function getAPIAuthenticationEntities () {
+        return $this->APIAuthenticationEntities;
+    }
 }

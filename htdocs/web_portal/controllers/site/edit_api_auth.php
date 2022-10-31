@@ -45,6 +45,11 @@ function edit_entity() {
     $authEnt = $serv->getAPIAuthenticationEntity($_REQUEST['authentityid']);
     $site = $authEnt->getParentSite();
 
+    // Validate the user has permission to edit properties
+    if (!$serv->userCanEditSite($user, $site)) {
+        throw new \Exception("Permission denied: a site role is required to edit authentication entities at " . $site->getShortName());
+    }
+
     if($_POST) {     // If we receive a POST request it's to edit an authentication entity
         submit($user, $authEnt, $site, $serv);
     } else { // If there is no post data, draw the edit authentication entity form
@@ -57,17 +62,19 @@ function draw(\User $user = null, \APIAuthentication $authEnt = null, \Site $sit
         throw new Exception("Unregistered users can't edit authentication credentials");
     }
 
+    $params = array();
     $params['site'] = $site;
     $params['authEnt'] = $authEnt;
     $params['authTypes'] = array();
-    $params['authTypes'][]='X509';
+    $params['authTypes'][]='X.509';
     $params['authTypes'][]='OIDC Subject';
+    $params['user'] = $user;
 
     show_view("site/edit_api_auth.php", $params);
     die();
 }
 
-function submit(\User $user, \APIAuthentication $authEnt, \Site $site, $serv) {
+function submit(\User $user, \APIAuthentication $authEnt, \Site $site, org\gocdb\services\Site $serv) {
     $newValues = getAPIAuthenticationFromWeb();
 
     try {
@@ -76,6 +83,8 @@ function submit(\User $user, \APIAuthentication $authEnt, \Site $site, $serv) {
         show_view('error.php', $e->getMessage());
         die();
     }
+
+    $params = array();
     $params['apiAuthenticationEntity'] = $authEnt;
     $params['site'] = $site;
     show_view("site/edited_api_auth.php", $params);

@@ -10,6 +10,14 @@
              data by all users. This can be used for a read-only failover instance. -->
     <read_only>false</read_only>
 
+    <!-- Specify the URL and description of the Acceptable Use Policy -->
+    <aup>AUP location</aup>
+    <aup_title>AUP title</aup_title>
+
+    <!-- Specify the URL and description of the Privacy Notice -->
+    <privacy_notice>PN location</privacy_notice>
+    <privacy_notice_title>PN title</privacy_notice_title>
+
     <!-- Specify the URLs used to access your GOCDB web portal and PI.
       - It is important to update these values to match your deployment.
       - These values substitute placeholder variables and is used in both the
@@ -177,6 +185,17 @@
     If set to false, output single ID string in CERTDN tag, with preference defined by
     order of tokens in MyConfig1 if user has multiple identifiers -->
     <API_all_auth_realms>false</API_all_auth_realms>
+
+    <!-- restrict_personal_data
+      Whether or not to honour legacy behaviour for showing personal data
+      If false, a user need only be self-registered with an acceptable certificate
+              i.e. authenticated and registered
+      If true, display of personal data depends on the role assignment xml schema
+              i.e. authenticated, registered AND have ACTION_READ_PERSONAL_DATA enabled
+              in config/RoleActionMappings.xml
+
+    -->
+    <restrict_personal_data>false</restrict_personal_data>
 
   </local_info>
 

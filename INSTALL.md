@@ -22,7 +22,7 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 * [Apache Http](#apache-and-x509-host-cert)
   * Version 2.2 or higher with `mod_ssl` module
-  * X509 host certificate.
+  * X.509 host certificate.
 
 * [Database server](#database-server)
   * Oracle 11g+ or MariaDB/MySQL
@@ -108,7 +108,7 @@ update your php.ini by adding `extension=[php_]timezonedb.so|dll` (note, Win pre
 * All dates are stored as UTC in the DB and converted from local timezones.
 * Do not forget to configure your timezone settings correctly.
 
-### Apache and x509 Host cert <a id="apache"></a>
+### Apache and X.509 Host cert <a id="apache"></a>
 
 A sample Apache config file is provided `config/gocdbssl.conf`. This file
 defines a sample apache virtual host for serving your GocDB portal, including URL mappings/aliases and SSL settings.
@@ -422,15 +422,23 @@ $ cd lib/Doctrine
 $ php deploy/DeployRequiredDataRunner.php requiredData
 ```
 
-### Deploy Sample Data<a id="deploy-sample-data"></a>
+### OPTIONAL: Deploy Sample Data<a id="deploy-sample-data"></a>
 
-Optional - you can deploy some sample data to seed your DB with sample users,
-sites and services.
+You can choose to deploy some sample data to seed your DB with sample users,
+sites and services. Two sample data sets are available. Choose one of -
 
-```bash
-$ cd lib/Doctrine
-$ php deploy/DeploySampleDataRunner.php sampleData
-```
+1. Minimal - just enough to get going with no real-world associations.
+
+    ```bash
+    $ cd lib/Doctrine
+    $ php deploy/DeploySampleDataRunner.php simpleSampleData
+    ```
+1. "Real World" - a small subset derived from real data.
+
+    ```bash
+    $ cd lib/Doctrine
+    $ php deploy/DeploySampleDataRunner.php sampleData
+    ```
 
 ### ORACLE ONLY: Deploy an existing DB .dmp file to populate your DB<a id="deploy-existing-dump"></a>
 
@@ -549,7 +557,7 @@ and editing which URL page mappings use the `rejectIfNotAuthenticated()` invocat
 ### Authentication
 
 Authentication is handled by the `lib/Authentication` package, and is configured
-for x509 client certificate authentication by default. Different authentication
+for X.509 client certificate authentication by default. Different authentication
 schemes can be configured using the abstractions in this package such as SAML2
 for integration with Federated Identity Management.
 See `lib/Authentication/README.md` for details.

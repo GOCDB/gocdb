@@ -1,3 +1,8 @@
+<?php
+  require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
+  $configServ = \Factory::getConfigService();
+  $configServ->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+?>
 <!doctype html>
 <html lang="en">
 <head>
@@ -18,16 +23,27 @@
             <h1 class="Landing_Welcome">Welcome to GOCDB</h1>
           </div>
           <div style="width: 80%; margin-left: auto; margin-right: auto;">
-            <p>Use of GOCDB is governed by the <a class="docLink hover" href="aup.html">EGI Acceptable Use Policy</a> which places restrictions on your use of the service.</p>
-            <p>The <a class="docLink hover" href="privacy.html">GOCDB Privacy Notice</a> describes what personal data is collected and why, and your rights regarding this data.</p>
-            <p> Please read these documents before accessing GOCDB.</p>
+            <?php
+              echo '<p>Use of GOCDB is governed by the <a class="docLink hover" target="_blank" ';
+              echo 'href="' . $configServ->getAUP() . '" title="' . $configServ->getAUPTitle() . '"';
+              echo '>' . $configServ->getAUPTitle();
+              echo '<img alt="new window logo"  class="new_window" src="/images/new_window.png">';
+              echo '</a> which places restrictions on your use of the service.</p>';
+              echo '<p>The <a class="docLink hover" target="_blank" ';
+              echo 'href="' . $configServ->getPrivacyNotice() . '" title="' . $configServ->getPrivacyNoticeTitle() . '"';
+              echo $configServ->getPrivacyNotice();
+              echo '>' . $configServ->getPrivacyNoticeTitle();
+              echo '<img alt="new window logo"  class="new_window" src="/images/new_window.png">';
+              echo '</a> describes what personal data is collected and why, and your rights regarding this data.</p>';
+              echo '<p> Please read these documents before accessing GOCDB.</p>';
+            ?>
           </div>
           <div style="width: 80%; margin-left: auto; margin-right: auto;">
             <a href="/portal/" style="width:68%; font-size:1.7em" class="button">Access GOCDB using your IGTF X.509 Certificate</a>
             <p>or</p>
             <p>Access GOCDB using one of the following:</p>
             <div>
-                <?php
+              <?php
                 $hostname = $_SERVER['HTTP_HOST'];
                 $egi_target = urlencode("https://" . $hostname . "/portal/");
                 $egi_redirect = "https://" . $hostname . "/Shibboleth.sso/Login?target=" . $egi_target;
@@ -39,7 +55,7 @@
                 }
                 $iris_url = urlencode("https://iris-iam.stfc.ac.uk/");
                 $iam_redirect = "https://" . $hostname . "/portal/redirect_uri?iss=" . $iris_url . "&" . $iam_target;
-                ?>
+              ?>
                 <a style="width:30%; display:inline-block; font-size:1.5em" href="<?php echo $egi_redirect; ?>" class="button">EGI Check-In</a>
                 <a style="width:30%; display:inline-block; font-size:1.5em"  href="<?php echo $iam_redirect ?>" class="button">IRIS IAM</a>
             </div>
@@ -50,18 +66,18 @@
               <a href="https://stfc.ukri.org" class="Sponsor_Link" target="_blank">
                 <!-- Allow for STFC council symbol extending above the upper bound of the UKRI symbol -->
                 <img  style="height: 112%; margin-top: -12%;" class="Sponsor_Logo"
-                src="UKRI_STF_Council-Logo_Horiz-RGB.png"
+                src="/images/UKRI_STF_Council-Logo_Horiz-RGB.png"
                 alt="The logo of the Science and Technology Facilities Council" /></a>
               <a href="https://europa.eu/european-union/index_en" class="Sponsor_Link" target="_blank">
-                <img class="Sponsor_Logo" src="eu_flag_yellow_low_150.png"
+                <img class="Sponsor_Logo" src="/images/eu_flag_yellow_low_150.png"
                 alt="The logo of the European Union" />
               </a>
               <a href="https://www.egi.eu" class="Sponsor_Link" target="_blank">
-                <img class="Sponsor_Logo" src="egi_logo_no_background_150.png"
+                <img class="Sponsor_Logo" src="/images/egi_logo_no_background_150.png"
                 alt="The logo of the E G I Foundation" />
               </a>
               <a href="https://eosc-hub.eu/" class="Sponsor_Link" target="_blank">
-                <img class="Sponsor_Logo" src="eosc-hub-v-web_150.png"
+                <img class="Sponsor_Logo" src="/images/eosc-hub-v-web_150.png"
                 alt="The logo of the EOSC-hub Horizon 20 20 project" />
               </a>
           </div>

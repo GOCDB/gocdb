@@ -198,6 +198,7 @@ class Site extends OwnedEntity implements IScopedEntity{
         $this->scopes = new ArrayCollection();
         $this->users = new ArrayCollection();
         $this->certificationStatusLog = new ArrayCollection();
+        $this->APIAuthenticationEntities = new ArrayCollection();
     }
 
 
@@ -583,7 +584,7 @@ class Site extends OwnedEntity implements IScopedEntity{
     }
 
     /**
-     * Add an API authentication entity to this Site's collection of autherntication
+     * Add an API authentication entity to this Site's collection of authentication
      * entities. This method also sets the authentication entity's parentSite.
      * @param \APIAuthentication $authenticationEntity
      */

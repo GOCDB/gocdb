@@ -15,10 +15,8 @@ function view_se() {
 
     $serv = \Factory::getServiceService();
 
-    $params['authenticated'] = false;
-    if($user != null){
-        $params['authenticated'] = true;
-    }
+    // Set values for showing personal data
+    list( , $params['authenticated']) = getReadPDParams($user);
 
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
     $se = $serv->getService($id);

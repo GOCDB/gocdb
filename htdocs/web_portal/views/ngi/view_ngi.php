@@ -1,3 +1,7 @@
+<?php
+    $showPD = $params['authenticated'];
+    $entityId = $params['ngi']->getId();
+?>
 <div class="rightPageContainer">
     <div style="float: left;">
         <img src="<?php echo \GocContextPath::getPath()?>img/ngi/fullSize/<?php echo $params['ngi']->getName() ?>.jpg" class="pageLogo" />
@@ -21,7 +25,7 @@
                 <div style="float: right; margin-left: 2em; text-align:center;">
                     <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                     <a onclick="return confirmSubmit()"
-                       href="index.php?Page_Type=Admin_Delete_NGI&amp;id=<?php echo $params['ngi']->getId() ?>">
+                       href="index.php?Page_Type=Admin_Delete_NGI&amp;id=<?php echo $entityId ?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" />
                         <br />
                         <span>Admin<br>Delete</span>
@@ -30,7 +34,7 @@
             <?php endif; ?>
             <?php if($params['ShowEdit']):?>
                 <div style="float: right; margin-left: 2em;">
-                    <a href="index.php?Page_Type=Edit_NGI&amp;id=<?php echo $params['ngi']->getId() ?>">
+                    <a href="index.php?Page_Type=Edit_NGI&amp;id=<?php echo $entityId ?>">
                         <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
                         <br />
                         <br />
@@ -50,45 +54,45 @@
                 <table style="clear: both; width: 100%; table-layout: fixed;">
                     <tr class="site_table_row_1">
                         <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <a href="mailto:<?php xecho($params['ngi']->getEmail()) ?>">
                                 <?php xecho($params['ngi']->getEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_2">
                         <td class="site_table" style="width: 30%">ROD E-Mail</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <a href="mailto:<?php xecho($params['ngi']->getRodEmail()) ?>">
                             <?php xecho($params['ngi']->getRodEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_1">
                         <td class="site_table" style="width: 30%">Helpdesk E-Mail</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <a href="mailto:<?php xecho($params['ngi']->getHelpdeskEmail()) ;?>">
                             <?php xecho($params['ngi']->getHelpdeskEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_2">
                         <td class="site_table" style="width: 30%">Security E-Mail</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <a href="mailto:<?php echo $params['ngi']->getSecurityEmail() ?>">
                             <?php xecho($params['ngi']->getSecurityEmail()) ?>
                             </a>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                     <tr class="site_table_row_1">
                         <td class="site_table" style="width: 30%">GGUS Support Unit</td><td class="site_table">
-                            <?php if($params['authenticated']) { ?>
+                            <?php if($showPD) { ?>
                             <?php xecho($params['ngi']->getGgus_Su()) ?>
-                            <?php } else {echo('PROTECTED - Registration required');} ?>
+                            <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
                 </table>
@@ -195,6 +199,7 @@
 
     <!--  Users and Roles -->
     <div class="listContainer">
+        <?php if ($showPD) { ?>
         <span class="header listHeader">
            Users (Click on name to manage roles)
         </span>
@@ -212,46 +217,28 @@
                 ?>
                     <tr>
                         <td>
-                            <?php
-                            if ($params['authenticated']) {
-                            ?>
                                 <a href="index.php?Page_Type=User&amp;id=<?php echo $role->getUser()->getId() ?>">
                                     <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
                                     <?php xecho($role->getUser()->getFullName()) ?>
                                 </a>
-                            <?php
-                            } else {
-                                echo 'PROTECTED';
-                            }
-                            ?>
                         </td>
 
-                        <td>
-                            <?php
-                            if ($params['authenticated']) {
-                                xecho($role->getRoleType()->getName());
-                            } else {
-                                echo 'PROTECTED';
-                            }
-                            ?>
-                        </td>
+                            <td> <?php xecho($role->getRoleType()->getName()); ?> </td>
                     </tr>
                 <?php
-                } // End of the foreach loop iterating over sites
+                    } // End of the foreach loop iterating over roles
                 ?>
             </tbody>
         </table>
-        <!-- Don't show role request in read only mode -->
-        <?php if(!$params['portalIsReadOnly'] && $params['authenticated']):?>
-            <div style="padding: 1em; padding-left: 1.4em; overflow: hidden;">
-                <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['ngi']->getId();?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="20px" style="float: left; vertical-align: middle; padding-right: 1em;">
-                    <span class="header" style="vertical-align:middle; float: left; padding-top: 0.2em;">
-                            Request Role
-                    </span>
-                </a>
-            </div>
-        <?php endif; ?>
+        <?php
+            } else {
+                require_once __DIR__.'/../fragments/hidePersonalData.php';
+            }
+        ?>
+        <!-- Request Role Link -->
+        <?php if (!$params['portalIsReadOnly']) {
+            require_once __DIR__.'/../fragments/requestRole.php';
+        } ?>
     </div>
 
     <!-- Show RoleActionRecords if user has permissions over this NGI -->

@@ -226,7 +226,34 @@ class Config {
 
         return false;
     }
-
+    /**
+     * returns the url of the Acceptable Use Policy for display on the landing page
+     * @return string
+     */
+    public function getAUP() {
+        return  $this->GetLocalInfoXML()->aup;
+    }
+    /**
+     * returns the title string describing the Acceptable Use Policy for display on the landing page
+     * @return string
+     */
+    public function getAUPTitle() {
+        return  $this->GetLocalInfoXML()->aup_title;
+    }
+    /**
+     * returns the url of the Privacy Notice for display on the landing page
+     * @return string
+     */
+    public function getPrivacyNotice() {
+        return  $this->GetLocalInfoXML()->privacy_notice;
+    }
+    /**
+     * returns the title string describing the Privacy Notice for display on the landing page
+     * @return string
+     */
+    public function getPrivacyNoticeTitle() {
+        return  $this->GetLocalInfoXML()->privacy_notice_title;
+    }
     /**
      * returns true if the given menu is to be shown according to local_info.xml
      * @return boolean
@@ -304,7 +331,20 @@ class Config {
         $url = $localInfo->web_portal_url;
         return strval($url);
     }
-
+    /**
+     * How Personal Data is restricted;
+     * See description in local_info.xml but in brief:
+     * @returns false for legacy behaviour, true for role-based personal data restriction
+     */
+    public function isRestrictPDByRole() {
+        $localInfo = $this->GetLocalInfoXML();
+        $value = $localInfo->restrict_personal_data;
+        if((string) $value == "true") {
+            return true;
+        } else {
+            return false;
+        }
+    }
     /**
      * The PI URL as recorded in local_info.xml.
      */
@@ -325,7 +365,7 @@ class Config {
     }
 
     /**
-     * The wtite API documentation URL as recorded in local_info.xml.
+     * The write API documentation URL as recorded in local_info.xml.
      * This URL is given to users of the write API in error messages
      */
     public function getWriteApiDocsUrl(){

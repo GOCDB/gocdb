@@ -62,23 +62,6 @@
 
 ## Maybe Todo 
 * Add LoA attribute to AuthToken details  
-* Support account linking where a user would need to authenticate multiple times using the different 
-  AAI supported methods in order to link those identities to a single (possibly existing) account:
-  * Update DB schema so that a user account has one-to-many identities rather than a single ID 
-  * Record additional information about which login-route/security-realm is associated with each ID 
-  * Modify the authentication lib so that the authentication-context can handle 
-a collection of AuthTokens rather than a single AuthToken during the same HTTP session 
-  * Enable linking a new/unregistered ID to an existing account: On registering, 
-provide an option to allow the new ID to be associated with an existing account 
-rather than creating a new/separate account. 
-  * Link two existing accounts together: Provide interface to allow joining/merging 
-two existing accounts (will need to merge existing roles, remove duplicate roles etc) 
-  * To perform either of these account linking scenarios, user will be required to 
-authenticate for all the authentication-mechanisms during the same HTTP session 
-(e.g. authenticate with x509, then re-authenticate via IdP). Only after successfully 
-authenticating with the multiple login mechanisms, should they be able to link those accounts together. 
-  * Or use Unity / Perun to do the account linking for us? 
-
 * Add filtering of resources by 'project' ?  
 * Add 'project' URL param to PI get_project, get_site, get_service, get_downtime ? 
 * Introduce READ action for roles? - currently, once a user is authenticated, all info can 

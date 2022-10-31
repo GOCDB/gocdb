@@ -42,16 +42,16 @@ class User extends AbstractEntityService{
     /**
      * Gets a user object from the DB
      * @param $id User ID
-     * @return User object
+     * @return \User object
      */
     public function getUser($id) {
         return $this->em->find("User", $id);
     }
 
     /**
-     * Lookup a User object by user's ID string, stored in certificateDn.
-     * @param string $userPrinciple the user's principle ID string, e.g. DN.
-     * @return User object or null if no user can be found with the specified principle
+     * Lookup a User object by user's principle id string.
+     * @param string $userPrinciple the user's principle id string, e.g. DN.
+     * @return \User object or null if no user can be found with the specified principle
      */
     public function getUserByCertificateDn($userPrinciple) {
         if (empty($userPrinciple)) {
@@ -102,7 +102,69 @@ class User extends AbstractEntityService{
 
         return $user;
     }
+    /**
+     * Check if a user is allowed to read personal data at sites, ngis or projects.
+     * @param \User The user to check for
+     * @return Boolean true if allowed, else false;
+     */
+    public function isAllowReadPD(\User $user) {
 
+        if ($user->isAdmin()) {
+            return true;
+        }
+
+        if (!\Factory::getConfigService()->isRestrictPDByRole()) {
+            return true;
+        }
+
+        $sites = $this->getSitesFromRoles($user, \RoleStatus::GRANTED);
+
+        if ($this->checkAllowReadPD($user, $sites)) {
+            return true;
+        }
+
+        // No site was found with an authorisation.
+        // Check suitable role at an NGI
+
+        $ngis = $this->getNgisFromRoles($user, \RoleStatus::GRANTED);
+
+        if ($this->checkAllowReadPD($user, $ngis)) {
+            return true;
+        }
+
+        // No ngi was found with an authorisation.
+        // Check suitable role at an Project
+
+        $projects = $this->getProjectsFromRoles($user, \RoleStatus::GRANTED);
+
+        if ($this->checkAllowReadPD($user, $projects)) {
+            return true;
+        }
+
+        return false;
+    }
+    /**
+     * Check if the user has any role at one of the input entities which allows
+     * reading of personal data.
+     * @param \User $user
+     * @param \OwnedEntity[] $entities
+     * @return boolean Return true is any role allows reading of personal data,
+     *                 else return false
+     */
+    private function checkAllowReadPD(\User $user, array $entities)
+    {
+        $authServ = \Factory::getRoleActionAuthorisationService();
+
+        foreach ($entities as $entity) {
+            if ($authServ->authoriseAction(\Action::READ_PERSONAL_DATA, $entity, $user)->getGrantAction()) {
+                // exit the first time we find a grant as we don't support
+                // site, ngi or project-level viewing granularity.
+                return true;
+            }
+        }
+
+        return false;
+    }
     /**
      * Updates the users last login time to the current time in UTC.
      * @param \User $user
@@ -408,6 +470,15 @@ class User extends AbstractEntityService{
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
 
         $this->editUserAuthorization($user, $currentUser);
+
+        if (!$user->getAPIAuthenticationEntities()->isEmpty()) {
+            // Must remove attached API credentials before removal
+            $userName = $user->getFullName();
+            throw new \Exception("Request to delete user $userName rejected:" .
+                " Delete or reassign API credentials owned by user" .
+                " from sites before deletion.");
+        }
+
         $this->em->getConnection()->beginTransaction();
         try {
             $this->em->remove($user);
@@ -502,6 +573,8 @@ class User extends AbstractEntityService{
             if (strpos($authTokenName, 'Shib') !== false) {
                 $authTypes = array_merge($authTypes, $shibRealms);
             }
+            // This checks AuthToken class names, so 'X509' (not 'X.509' is
+            // needed here).
             if (strpos($authTokenName, 'X509') !== false) {
                 $authTypes = array_merge($authTypes, $x509Realms);
             }

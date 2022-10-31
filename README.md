@@ -1,14 +1,14 @@
 # GOCDB
 
-[![Build Status](https://travis-ci.org/GOCDB/gocdb.svg?branch=dev)](https://travis-ci.org/GOCDB/gocdb)
+[![_Continuous Integration](https://github.com/GOCDB/gocdb/actions/workflows/continuous-integration.yml/badge.svg?branch=dev)](https://github.com/GOCDB/gocdb/actions/workflows/continuous-integration.yml?query=branch%3Adev)
 
 Grid Operations Configuration Management Database. A Repository, Portal and REST style API for managing Grid and Cloud topology objects including; projects, administrative domains, sites, services, service-endpoints, service-groups, downtimes, users, roles and business rules.
 
 <span>
-  <img alt="STFC logo" src="htdocs/web_portal/img/UKRI_STF_Council-Logo_Horiz-RGB_crop.png" height=57/>
-  <img alt="EU flag" src="htdocs/web_portal/img/eu_flag_yellow_low_150.png" height=57 />
-  <img alt="EGI logo" src="htdocs/web_portal/img/egi_logo.jpg" height=57 />
-  <img alt="EOSC-hub logo" src="htdocs/web_portal/img/eosc-hub-v-web_150.png" height=57 />
+  <img alt="STFC logo" src="htdocs/images/UKRI_STF_Council-Logo_Horiz-RGB_crop.png" height=57/>
+  <img alt="EU flag" src="htdocs/images/eu_flag_yellow_low_150.png" height=57 />
+  <img alt="EGI logo" src="htdocs/images/egi_logo.jpg" height=57 />
+  <img alt="EOSC-hub logo" src="htdocs/images/eosc-hub-v-web_150.png" height=57 />
 </span>
 
 GOCDB is provided by [STFC](https://stfc.ukri.org/) for [EGI](https://www.egi.eu/federation/), co-funded by [EGI.eu](https://www.egi.eu/) and [EOSC-hub](https://www.eosc-hub.eu/). Licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0).

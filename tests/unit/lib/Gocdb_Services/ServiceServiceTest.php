@@ -84,7 +84,16 @@ class ServiceServiceTest extends PHPUnit_Extensions_Database_TestCase{
     parent::setUp();
     $this->eMan = $this->createEntityManager();
   }
-
+  /**
+   * Run after each test function to prevent pile-up of database connections.
+   */
+  protected function tearDown()
+  {
+      parent::tearDown();
+      if (!is_null($this->eMan)) {
+          $this->eMan->getConnection()->close();
+      }
+  }
   /**
   * @todo Still need to setup connection to different databases.
   * @return EntityManager

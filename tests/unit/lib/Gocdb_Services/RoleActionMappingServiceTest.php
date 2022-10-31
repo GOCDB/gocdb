@@ -170,6 +170,7 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
   public function testGetEnablingRolesForTargetedAction2(){
     print __METHOD__ . "\n";
     $roleActionService = new org\gocdb\services\RoleActionMappingService();
+    $roleActionService->setRoleActionMappingsXsdPath(__DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings4.xsd");
     $roleActionService->setRoleActionMappingsXmlPath(__DIR__."/../../resources/roleActionMappingSamples/TestRoleActionMappings4.xml");
 
     // to do action 'AX' on a 'site' requires roles:
@@ -214,6 +215,7 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
   public function testGetEnabledActionsForRoleType1() {
     print __METHOD__ . "\n";
     $roleActionService = new org\gocdb\services\RoleActionMappingService();
+    $roleActionService->setRoleActionMappingsXsdPath(__DIR__ . "/../../resources/roleActionMappingSamples/TestRoleActionMappings4.xsd");
     $roleActionService->setRoleActionMappingsXmlPath(__DIR__ . "/../../resources/roleActionMappingSamples/TestRoleActionMappings4.xml");
 
     $enabledActionsOnTargets = $roleActionService->getEnabledActionsForRoleType('RoleA');
@@ -265,8 +267,8 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
     $expectedActionsOnTargets[] = array('ACTION_SITE_ADD_SERVICE', 'Site');
     $expectedActionsOnTargets[] = array('ACTION_SITE_DELETE_SERVICE', 'Site');
     $expectedActionsOnTargets[] = array('ACTION_GRANT_ROLE', 'Site');
-    $expectedActionsOnTargets[] = array(' ACTION_REJECT_ROLE', 'Site');
-    $expectedActionsOnTargets[] = array(' ACTION_REVOKE_ROLE', 'Site');
+    $expectedActionsOnTargets[] = array('ACTION_REJECT_ROLE', 'Site');
+    $expectedActionsOnTargets[] = array('ACTION_REVOKE_ROLE', 'Site');
     $expectedActionsOnTargets[] = array('ACTION_SITE_EDIT_CERT_STATUS', 'Site');
     // assert
     $this->assertEquals($expectedActionsOnTargets, $enabledActionsOnTargets);

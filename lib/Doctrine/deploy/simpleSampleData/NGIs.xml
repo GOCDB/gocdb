@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<results>
+  <NGI>
+    <NAME>NGI-1</NAME>
+    <DESCRIPTION>A sample NGI</DESCRIPTION>
+    <EMAIL>ngi-contact@ngi-1.org</EMAIL>
+    <SECURITY_EMAIL>ngi-1-security@ngi-1.org</SECURITY_EMAIL>
+  </NGI>
+</results>

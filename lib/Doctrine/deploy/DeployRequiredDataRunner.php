@@ -29,12 +29,6 @@ echo "Added Infrastructures OK\n";
 require __DIR__."/AddCountries.php";
 echo "Added Countries OK\n";
 
-//require __DIR__."/AddTimezones.php";
-//echo "Added Timezones OK\n";
-
-require __DIR__."/AddTiers.php";
-echo "Added Tiers OK\n";
-
 require __DIR__."/AddRoleTypes.php";
 echo "Added Roles OK\n";
 

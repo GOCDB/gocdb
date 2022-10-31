@@ -35,6 +35,8 @@ function view_endpoint() {
        $params['ShowEdit'] = true;
     }
 
+    list(, $params['authenticated']) = getReadPDParams($user);
+
     $title = $endpoint->getName();
     $params['endpoint'] = $endpoint;
     //$params['sGroups'] = $se->getServiceGroups();

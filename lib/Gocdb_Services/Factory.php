@@ -49,6 +49,7 @@ class Factory {
     private static $notificationService = null;
     private static $emailService = null;
     private static $linkIdentityService = null;
+    private static $APIAuthenticationService = null;
 
     public static $properties = array();
     //private static $properties = null;
@@ -109,6 +110,18 @@ class Factory {
             self::$em = $entityManager;
         }
         return self::$em;
+    }
+
+    /**
+     * Set an externally provided Entity Manager.
+     * ++ONLY++ used for initialising phpunit tests. Allows Factory services to
+     * create and use other Factory services.
+     * Without this, the include paths inside Gocdb_Services code require the
+     * presence of a second bootstrap_doctrine.php file.
+     * @param \Doctrine\ORM\EntityManager $entityManager
+     */
+    public static function setEntityManager($entityManager){
+        self::$em = $entityManager;
     }
 
     /**
@@ -398,6 +411,18 @@ class Factory {
             self::$emailService->setEntityManager(self::getEntityManager());
         }
         return self::$emailService;
+    }
+    /**
+     * Singleton APIAuthenticationService service
+     * @return org\gocdb\services\APIAuthenticationService
+     */
+    public static function getAPIAuthenticationService() {
+        if (self::$APIAuthenticationService == null) {
+            require_once __DIR__ . '/APIAuthenticationService.php';
+            self::$APIAuthenticationService = new org\gocdb\services\APIAuthenticationService();
+            self::$APIAuthenticationService->setEntityManager(self::getEntityManager());
+        }
+        return self::$APIAuthenticationService;
     }
 }
 

@@ -3,38 +3,6 @@
 require_once __DIR__."/../bootstrap.php";
 require_once __DIR__."/AddUtils.php";
 
-/**
- * AddNGIs.php: Loads a list of NGIs from an XML file and inserts them into
- * the doctrine prototype.
- * XML format is the output from get_roc_list PI query, e.g:
-
-
- <EGEE_USER USER_ID=" " PRIMARY_KEY="63777G0">
-        <FORENAME>Patricia</FORENAME>
-        <SURNAME>Gomes</SURNAME>
-        <TITLE>Miss</TITLE>
-        <DESCRIPTION></DESCRIPTION>
-        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=113158&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>pgomes@cbpf.br</EMAIL>
-        <TEL>+55(21)21417419</TEL>
-        <WORKING_HOURS_START></WORKING_HOURS_START>
-        <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=BR/O=ICPEDU/O=UFF BrGrid CA/O=CBPF/OU=LAFEX/CN=Patricia Gomes</CERTDN>
-        <APPROVED></APPROVED>
-        <ACTIVE></ACTIVE>
-        <HOMESITE></HOMESITE>
-        <USER_ROLE>
-            <USER_ROLE>Regional First Line Support</USER_ROLE>
-            <ON_ENTITY>ROC_LA</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
-            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
-            <ON_ENTITY>CBPF</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
-        </USER_ROLE>
-    </EGEE_USER>
- */
 $usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);
 

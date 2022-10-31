@@ -7,7 +7,7 @@ require_once __DIR__ . '/../IAuthentication.php';
 //use Monolog\Handler\StreamHandler;
 
 /**
- * An implementation of <code>IAuthentication</code> for use with X509 certificates.
+ * An implementation of <code>IAuthentication</code> for use with X.509 certificates.
  *
  * @see IAuthentication
  * @author David Meredith
@@ -21,10 +21,6 @@ class X509AuthenticationToken implements IAuthentication {
     //private $logger;
 
     public function __construct() {
-        // create logger
-        //$this->logger = new Logger('X509AuthenticationTokenLogger');
-        //$this->logger->pushHandler(new StreamHandler(__DIR__.'/../../../gocdb.log', Logger::DEBUG));
-
         $this->initialDN = $this->getDN();
         $this->userDetails = array('AuthenticationRealm' => array('X.509'));
     }
@@ -45,7 +41,7 @@ class X509AuthenticationToken implements IAuthentication {
 
     /**
      * {@see IAuthentication::getCredentials()}
-     * @return string An empty string as passwords are not used in X509.
+     * @return string An empty string as passwords are not used in X.509.
      */
     public function getCredentials() {
         return "";
@@ -53,10 +49,10 @@ class X509AuthenticationToken implements IAuthentication {
 
     /**
      * {@see IAuthentication::eraseCredentials()}
-     * Does nothing, passwords not ussed in X509.
+     * Does nothing, passwords not ussed in X.509.
      */
     public function eraseCredentials() {
-        // do nothing, password not used for X509
+        // do nothing, password not used for X.509
     }
 
     /**
@@ -153,4 +149,3 @@ class X509AuthenticationToken implements IAuthentication {
 
 
 }
-

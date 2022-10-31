@@ -27,13 +27,27 @@
             </div>
             <div style="float: right;">
                 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
-                <a onclick="return confirmSubmit()"
-                    href="index.php?Page_Type=Delete_User&id=<?php echo $params['user']->getId() ?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
-                    <br />
-                    <br />
-                    <span>Delete</span>
-                </a>
+                <?php
+                    # If the user owns any API Credentials we grey and disable the delete-user icon
+                    $opacity = "1.0";
+                    if (!$params['APIAuthEnts']->isEmpty()) {
+                        $opacity = "0.5";
+                    }
+                    echo '<div style="opacity: '. $opacity . '" >';
+                        echo '<a ';
+                            if ($params['APIAuthEnts']->isEmpty()) {
+                                echo ' onclick="return confirmSubmit()"';
+                                echo ' href="index.php?Page_Type=Delete_User&id='. $params['user']->getId() . '"';
+                            } else {
+                                echo ' title="Delete disabled: Remove API credentials before deleting this user."';
+                            }
+                        echo ' >'; # <a ...
+                            echo '<img src="' . \GocContextPath::getPath() .'img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />';
+                            echo '<br /><br /><span>Delete</span>';
+                        echo '</a>';
+                    echo '</div>';
+
+                ?>
             </div>
         <?php endif; ?>
     </div>
@@ -44,8 +58,12 @@
     <div style="float: left; width: 100%; margin-top: 2em;">
          <div class="alert alert-warning" role="alert">
             <ul>
-              <li>By registering a GOCDB account you have agreed to abide by the <a href="/aup.html" target="_blank" title="opens in new window">GOCDB Acceptable Use Policy and Conditions of Use <img src="/portal/img/new_window.png" alt="new window logo" class="new_window"></a>.</li>
-              <li>Personal data, which you provide and is collected when you use GOCDB, is processed in accordance with the <a href="/privacy.html" target="_blank" title="opens in new window">GOCDB Privacy Notice <img src="/portal/img/new_window.png" alt="new window logo"  class="new_window"></a>.</li>
+              <li>By registering a GOCDB account you have agreed to abide by the
+                <?php require __DIR__ . '/../fragments/aupLink.php'; ?>
+              </li>
+              <li>Personal data, which you provide and is collected when you use GOCDB, is processed in accordance with the
+                <?php require __DIR__ . '/../fragments/privacyNoticeLink.php'; ?>
+              </li>
             </ul>
         </div>
 
@@ -177,7 +195,8 @@
                 <th class="site_table">Role Type <!--[roleId] --></th>
                 <th class="site_table">Held Over</th>
                 <?php if(!$params['portalIsReadOnly']):?>
-                    <th class="site_table">Revoke Role</th>
+                    <th class="site_table" style="width: 8em; text-align:center">Revoke Role</th>
+                    <th><!--Disabled revoke button message--></th>
                 <?php endif; ?>
             </tr>
             <?php
@@ -224,16 +243,27 @@
                        </a>
                     <?php } ?>
                 </td>
-                <td class="site_table">
-                    <?php if(!$params['portalIsReadOnly'] && $role->getDecoratorObject() != null):?>
-                        <form action="index.php?Page_Type=Revoke_Role" method="post">
-                            <input type="hidden" name="id" value="<?php echo $role->getId()?>" />
-                            <input id="revokeButton" type="submit" value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()"
-                                   title="Your roles allowing revoke: <?php xecho($role->getDecoratorObject()); ?>" >
-                        </form>
-                    <?php endif;?>
+                <td class="site_table" style="text-align:center">
+                    <?php
+                        $decorator = $role->getDecoratorObject();
+                        if(!$params['portalIsReadOnly'] && $decorator != null) {
+                            echo '<form action="index.php?Page_Type=Revoke_Role" method="post">';
+                                echo "<input type='hidden' name='id' value='{$role->getId()}'/>";
+                                echo "<input id='revokeButton' type='submit' {$decorator["revokeButton"]} " .
+                                        "value='Revoke' class='btn btn-sm btn-danger' onclick='return confirmSubmit()' " .
+                                        "title='Your roles allowing revoke: {$decorator['revokeMessage']}'/>";
+                            echo '</form>';
+                        };
+                    ?>
                 </td>
-
+                <td class="site_table" style="width: 26%; padding-left:0em">
+                    <?php
+                        if(!$params['portalIsReadOnly'] &&
+                            is_array($decorator) && $decorator["revokeButton"] == 'disabled') {
+                                echo 'Remove or reassign API credentials from site before revoking this role.';
+                        }
+                    ?>
+                </td>
             </tr>
             <?php
               if($num == 1) { $num = 2; } else { $num = 1; }
@@ -312,7 +342,7 @@
                         <form action="index.php?Page_Type=Revoke_Role" method="post">
                             <input type="hidden" name="id" value="<?php echo $role->getId()?>" />
                             <input id="revokeButton" type="submit" value="Revoke" class="btn btn-sm btn-danger" onclick="return confirmSubmit()"
-                                   title="Your roles allowing revoke: <?php xecho($role->getDecoratorObject()); ?>" >
+                                   title="Your roles allowing revoke: <?php xecho($decorator); ?>" >
                         </form>
                     <?php endif;?>
                 </td>
@@ -326,7 +356,46 @@
             ?>
         </table>
     </div>
-
+    <?php if (!$params['APIAuthEnts']->isEmpty()) { ?>
+        <!-- API credentials -->
+        <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                Owned API Credentials (Add and remove credentials by clicking the relevant Site.)
+            </span>
+            <img src="<?php echo \GocContextPath::getPath()?>img/key.png" class="decoration" />
+            <table style="clear: both; width: 100%;">
+                <tr class="site_table_row_1">
+                    <th class="site_table">Type</th>
+                    <th class="site_table">Identifier</th>
+                    <th class="site_table">Site</th>
+                    <th class="site_table" style="width:10%">API Write</th>
+                </tr>
+                <?php
+                    foreach ($params['APIAuthEnts'] as $APIAuthEnt) { ?>
+                        <tr>
+                            <td class="site_table"><?php xecho($APIAuthEnt->getType());?></td>
+                            <td class="site_table"><?php xecho($APIAuthEnt->getIdentifier());?></td>
+                            <td class="site_table">
+                                <a href="index.php?Page_Type=Site&amp;id=<?php xecho($APIAuthEnt->getParentSite()->getId())?>"
+                                    title="<?php xecho($APIAuthEnt->getParentSite()->getShortName())?>">
+                                    <?php xecho(substr($APIAuthEnt->getParentSite()->getShortName(),0,16));?>
+                                </a>
+                            </td>
+                            <td class="site_table" style="width: 8%; text-align:center">
+                                <img height="22px" src=
+                                    <?php if (($APIAuthEnt->getAllowAPIWrite())) {
+                                        echo '"'.\GocContextPath::getPath().'img/tick.png"';
+                                    } else {
+                                        echo '"'.\GocContextPath::getPath().'img/cross.png"';
+                                    } ?>
+                                />
+                            </td>
+                        </tr>
+                <?php
+                    } ?>
+            </table>
+        </div>
+    <?php } ?>
 </div>
 
  <script type="text/javascript">

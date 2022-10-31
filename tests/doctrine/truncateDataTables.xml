@@ -8,21 +8,21 @@
         With the default operation of CLEAN_INSERT, you can specify that you
         want to TRUNCATE a table and not insert any values by listing that
         table as an element without any attributes (to ensure an empty table).
-        
+
         Impt: You can specify DELETE_ALL rather than TRUNCATE in your fixture (see getSetUpOperation())
-        to issue a DELETE from <table> which is more portable than a 
-        TRUNCATE table <table> (some DBs require high privileges for truncate statements 
-        and also do not allow truncates across tables with FK contstraints e.g. Oracle). 
-        
+        to issue a DELETE from <table> which is more portable than a
+        TRUNCATE table <table> (some DBs require high privileges for truncate statements
+        and also do not allow truncates across tables with FK contstraints e.g. Oracle).
+
         Ordering of the table elements below is SIGNIFICANT. You must consider
-        foreign key constraints when deleting data from tables. When 
+        foreign key constraints when deleting data from tables. When
         DELETE_ALL is used, the order of the tables below is read in REVERSE
-        by phpunit (so the last table specified is truncated/delete_all first). 
-        
-        Therefore, entities that hold/own the FKs must be deleted FIRST, e.g. 
-        Site has many Services, therefore since Services holds 
-        the FK (as it is on the 'many' side), this table MUST be cleared before Site ! 
-        
+        by phpunit (so the last table specified is truncated/delete_all first).
+
+        Therefore, entities that hold/own the FKs must be deleted FIRST, e.g.
+        Site has many Services, therefore since Services holds
+        the FK (as it is on the 'many' side), this table MUST be cleared before Site !
+
         The most common reason you would want to ensure an empty table as
         a part of your fixture is when your test should be inserting data to
         that table.
@@ -30,26 +30,27 @@
 
 <dataset>
 
-    <PrimaryKeys/>    
-    <Timezones/> 
+    <PrimaryKeys/>
+    <Timezones/>
     <Tiers/>
-        
+
     <Countries/>
     <CertificationStatuses/>
-    <Infrastructures/> 
+    <Infrastructures/>
     <Scopes/>
-        
+
+    <APIAuthenticationEntities/>
     <OwnedEntities/>
     <Projects/>
-    <NGIs/> 
-    <SubGrids/> 
+    <NGIs/>
+    <SubGrids/>
     <ServiceTypes/>
     <Sites/>
         <!--<PROMSiteId/>-->
-    <ServiceGroups/> 
+    <ServiceGroups/>
     <Services/>
         <!--<PROMSEId/>-->
-    <EndpointLocations/>  
+    <EndpointLocations/>
     <Downtimes/>
     <CertificationStatusLogs/>
 
@@ -58,26 +59,26 @@
     <Service_Properties/>
     <Endpoint_Properties/>
     <User_Identifiers/>
-       
-        <!-- Join tables that hold FKs must be deleted before the referencing tables above --> 
+
+        <!-- Join tables that hold FKs must be deleted before the referencing tables above -->
     <Projects_NGIs/>
-    <NGIs_Scopes/> 
+    <NGIs_Scopes/>
     <Sites_Scopes/>
     <Services_Scopes/>
-    <ServiceGroups_Scopes/>  
-    <ServiceGroups_Services/> 
+    <ServiceGroups_Scopes/>
+    <ServiceGroups_Services/>
     <Downtimes_Services/>
     <Downtimes_EndpointLocations/>
-        
+
     <Users/>
     <LinkIdentityRequests/>
     <RoleTypes/>
     <Roles/>
-        
+
     <ArchivedNGIs/>
     <ArchivedServices/>
     <ArchivedServiceGroups/>
-    <ArchivedSites/> 
+    <ArchivedSites/>
     <RoleActionRecords/>
-    
+
 </dataset>
