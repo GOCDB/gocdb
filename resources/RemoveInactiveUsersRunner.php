@@ -133,7 +133,7 @@ function sendWarningEmail($user, $elapsedMonths, $deletionThreshold)
     $body .= "Identifiers:\n";
     
     $user_ids = $user->getUserIdentifiers();
-    // If a user has identifiers, use them in the email. If not, use the cert DN field.
+    // If a user has identifiers, show the user them in the warning email. If not, show the cert DN.
     if (!$user_ids->isEmpty()) {
         foreach ($user_ids as $identifier) {
             $body .= "  - " . $identifier->getKeyName() .": " . $identifier->getKeyValue(). "\n";
