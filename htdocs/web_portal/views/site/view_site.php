@@ -1,6 +1,6 @@
 <?php
-require_once __DIR__."/../../controllers/utils.php";
-require_once __DIR__."/../../../../lib/Doctrine/entities/APIAuthentication.php";
+require_once __DIR__ . "/../../controllers/utils.php";
+require_once __DIR__ . "/../../../../lib/Doctrine/entities/APIAuthentication.php";
 
 $site = $params['site'];
 $entityId = $site->getId();
@@ -23,9 +23,9 @@ $showPD = $params['authenticated']; // display Personal Data
 
     <!--  Edit Site link -->
     <!--  only show this link if we're in read / write mode -->
-    <?php if (!$portalIsReadOnly): ?>
+    <?php if (!$portalIsReadOnly) : ?>
         <div style="float: right;">
-        <?php if ($params['UserIsAdmin']): ?>
+        <?php if ($params['UserIsAdmin']) : ?>
         <div style="float: right; margin-left: 2em; text-align:center;">
             <script type="text/javascript" src="<?php echo \GocContextPath::getPath() ?>javascript/confirm.js"></script>
             <a onclick="return confirmSubmit()"
@@ -36,7 +36,7 @@ $showPD = $params['authenticated']; // display Personal Data
             </a>
         </div>
         <?php endif; ?>
-        <?php if ($params['ShowEdit']): ?>
+        <?php if ($params['ShowEdit']) : ?>
         <div style="float: right; margin-left: 2em;">
             <a href="index.php?Page_Type=Edit_Site&amp;id=<?php echo($entityId) ?>">
             <img src="<?php echo \GocContextPath::getPath() ?>img/pencil.png" height="25px" style="float: right;" />
@@ -54,7 +54,9 @@ $showPD = $params['authenticated']; // display Personal Data
     <div style="float: left; width: 100%; margin-top: 2em;">
         <!--  Contacts -->
         <div class="tableContainer" style="width: 55%; float: left;" >
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Contact Info</span>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                Contact Info
+            </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/contact_card.png" class="decoration" />
         <table style="clear: both; width: 100%; table-layout: fixed;">
         <tr class="site_table_row_1">
@@ -63,32 +65,37 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="mailto:<?php xecho($site->getEmail()) ?>">
                 <?php xecho($site->getEmail()) ?>
                 </a>
-            <?php } else echo(getInfoMessage()); ?>
+            <?php } else {
+                echo(getInfoMessage());
+            } ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
             <td class="site_table">Telephone</td><td class="site_table"><?php
             if ($showPD) {
                 xecho($site->getTelephone());
-            } else
+            } else {
                 echo(getInfoMessage());
+            }
             ?></td>
         </tr>
         <tr class="site_table_row_1">
             <td class="site_table">Emergency Tel</td><td class="site_table"><?php
             if ($showPD) {
                 xecho($site->getEmergencyTel());
-            } else
+            } else {
                 echo(getInfoMessage());
+            }
             ?></td>
         </tr>
         <tr class="site_table_row_2">
             <td class="site_table">CSIRT Tel</td><td class="site_table"><?php
             if ($showPD) {
                 xecho($site->getCsirtTel());
-            } else
-                echo(getInfoMessage())
-                ?></td>
+            } else {
+                echo(getInfoMessage());
+            }
+            ?></td>
         </tr>
         <tr class="site_table_row_1">
             <td class="site_table">CSIRT E-Mail</td>
@@ -97,7 +104,9 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="mailto:<?php xecho($site->getCsirtEmail()) ?>">
                 <?php xecho($site->getCsirtEmail()) ?>
                 </a>
-            <?php } else echo(getInfoMessage()); ?>
+            <?php } else {
+                echo(getInfoMessage());
+            } ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
@@ -107,7 +116,9 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="mailto:<?php xecho($site->getEmergencyEmail()) ?>">
                 <?php xecho($site->getEmergencyEmail()) ?>
                 </a>
-            <?php } else echo(getInfoMessage()); ?>
+            <?php } else {
+                echo(getInfoMessage());
+            } ?>
             </td>
         </tr>
         <tr class="site_table_row_1">
@@ -117,14 +128,16 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="mailto:<?php xecho($site->getHelpdeskEmail()); ?>">
                 <?php xecho($site->getHelpdeskEmail()) ?>
                 </a>
-            <?php } else echo(getInfoMessage()); ?>
+            <?php } else {
+                echo(getInfoMessage());
+            } ?>
             </td>
         </tr>
         <tr class="site_table_row_2">
             <td class="site_table">Notifications</td>
             <td class="site_table">
                 <img src="<?php echo(\GocContextPath::getPath());
-                if($site->getNotify()) {
+                if ($site->getNotify()) {
                     echo('img/tick.png');
                 } else {
                     echo('img/cross.png');
@@ -136,7 +149,9 @@ $showPD = $params['authenticated']; // display Personal Data
 
         <!--  Project Data -->
         <div class="tableContainer" style="width: 42%; float: right;">
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Project Data</span>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                Project Data
+            </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/project.png" class="decoration" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
@@ -147,7 +162,10 @@ $showPD = $params['authenticated']; // display Personal Data
             </td>
                 </tr>
                 <tr class="site_table_row_2">
-                    <td class="site_table">Infrastructure</td><td class="site_table"><?php xecho($site->getInfrastructure()->getName()) ?></td>
+                    <td class="site_table">Infrastructure</td>
+                    <td class="site_table">
+                        <?php xecho($site->getInfrastructure()->getName()) ?>
+                    </td>
                 </tr>
                 <tr class="site_table_row_1">
                     <td class="site_table">Certification Status</td>
@@ -156,29 +174,31 @@ $showPD = $params['authenticated']; // display Personal Data
                 <?php xecho($site->getCertificationStatus()->getName()) ?>
                 &nbsp;
                 <!--  only show this link if we're in read / write mode -->
-                <?php if (!$portalIsReadOnly): ?>
+                <?php if (!$portalIsReadOnly) : ?>
                 <a href="index.php?Page_Type=Edit_Certification_Status&amp;id=<?php echo($entityId) ?>">Change</a>
                 <?php endif; ?>
-            <?php } else echo(getInfoMessage()); ?>
+            <?php } else {
+                echo(getInfoMessage());
+            } ?>
                     </td>
                 </tr>
 
                 <tr class="site_table_row_2">
                     <?php
-            $count = 0;
-            $numScopes = sizeof($params['Scopes']);
-            $scopeString = '';
-            foreach ($params['Scopes'] as $scopeName => $sharedWithParent) {
-                if ($sharedWithParent) {
-                $scopeString .= $scopeName;
-                } else {
-                $scopeString .= $scopeName . '(x)';
-                }
-                if (++$count != $numScopes) {
-                $scopeString .= ", ";
-                }
-            }
-            ?>
+                    $count = 0;
+                    $numScopes = sizeof($params['Scopes']);
+                    $scopeString = '';
+                    foreach ($params['Scopes'] as $scopeName => $sharedWithParent) {
+                        if ($sharedWithParent) {
+                            $scopeString .= $scopeName;
+                        } else {
+                            $scopeString .= $scopeName . '(x)';
+                        }
+                        if (++$count != $numScopes) {
+                            $scopeString .= ", ";
+                        }
+                    }
+                    ?>
                     <td class="site_table">
                         <a href="index.php?Page_Type=Scopes" style="word-wrap: normal"
                            title="Note, Scope(x) indicates the parent NGI does not share this scope">
@@ -198,7 +218,9 @@ $showPD = $params['authenticated']; // display Personal Data
     <div style="float: left; width: 100%; margin-top: 3em;">
         <!--  Networking -->
         <div class="tableContainer" style="width: 55%; float: left;">
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Networking</span>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                Networking
+            </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/network.png" class="decoration" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
@@ -208,7 +230,9 @@ $showPD = $params['authenticated']; // display Personal Data
                 <a href="<?php xecho($site->getHomeUrl()) ?>">
                 <?php xecho($site->getHomeUrl()) ?>
                 </a>
-            <?php } else echo(getInfoMessage()); ?>
+            <?php } else {
+                echo(getInfoMessage());
+            } ?>
             </td>
                 </tr>
                 <tr class="site_table_row_2">
@@ -217,8 +241,9 @@ $showPD = $params['authenticated']; // display Personal Data
             <?php
             if ($showPD) {
                 xecho($site->getGiisUrl());
-            } else
+            } else {
                 echo(getInfoMessage());
+            }
             ?>
                     </td>
                 </tr>
@@ -228,8 +253,9 @@ $showPD = $params['authenticated']; // display Personal Data
             <?php
             if ($showPD) {
                 xecho($site->getIpRange());
-            } else
+            } else {
                 echo(getInfoMessage());
+            }
             ?>
                     </td>
                 </tr>
@@ -239,8 +265,9 @@ $showPD = $params['authenticated']; // display Personal Data
             <?php
             if ($showPD) {
                 xecho($site->getIpV6Range());
-            } else
+            } else {
                 echo(getInfoMessage());
+            }
             ?>
                     </td>
                 </tr>
@@ -248,10 +275,11 @@ $showPD = $params['authenticated']; // display Personal Data
                     <td class="site_table">Domain</td>
                     <td class="site_table">
                         <?php
-                            if ($showPD) {
-                                xecho($site->getDomain());
-                            } else
-                                echo(getInfoMessage());
+                        if ($showPD) {
+                            xecho($site->getDomain());
+                        } else {
+                            echo(getInfoMessage());
+                        }
                         ?>
                     </td>
                 </tr>
@@ -260,7 +288,9 @@ $showPD = $params['authenticated']; // display Personal Data
 
         <!-- Location Data -->
         <div class="tableContainer" style="width: 42%; float: right;">
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Location</span>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                Location
+            </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/pin.png" class="decoration" />
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
@@ -354,9 +384,9 @@ $showPD = $params['authenticated']; // display Personal Data
             <?php
             $num = 2;
             foreach ($params['ServicesAndScopes'] as $serviceAndScopes) {
-            $se = $serviceAndScopes['Service'];
-            $scopes = $serviceAndScopes['Scopes'];
-            ?>
+                $se = $serviceAndScopes['Service'];
+                $scopes = $serviceAndScopes['Scopes'];
+                ?>
                 <tr>
                     <td>
                         <a href="index.php?Page_Type=Service&amp;id=<?php echo($se->getId()) ?>">
@@ -364,37 +394,35 @@ $showPD = $params['authenticated']; // display Personal Data
                         </a>
                     </td>
                     <td>
-                        <textarea readonly="true" style="height: 25px;"><?php xecho((string) $se->getUrl()) ?></textarea>
+                        <textarea readonly="true" style="height: 25px;">
+                            <?php xecho((string) $se->getUrl()) ?>
+                        </textarea>
                     </td>
                     <td>
                         <?php
                         switch ($se->getProduction()) {
-                        case true:
-                            ?>
-                        <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
-                            <?php
-                            break;
-                        case false:
-                            ?>
-                        <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
-                            <?php
-                            break;
+                            case true:
+                                echo '<img src="' . \GocContextPath::getPath() .
+                                    'img/tick.png" height="22px" style="vertical-align: middle;" />';
+                                break;
+                            case false:
+                                echo '<img src="' . \GocContextPath::getPath() .
+                                    'img/cross.png" height="22px" style="vertical-align: middle;" />';
+                                break;
                         }
                         ?>
                     </td>
                     <td>
                         <?php
                         switch ($se->getMonitored()) {
-                        case true:
-                            ?>
-                        <img src="<?php echo \GocContextPath::getPath() ?>img/tick.png" height="22px" style="vertical-align: middle;" />
-                            <?php
-                            break;
-                        case false:
-                            ?>
-                        <img src="<?php echo \GocContextPath::getPath() ?>img/cross.png" height="22px" style="vertical-align: middle;" />
-                            <?php
-                            break;
+                            case true:
+                                echo '<img src="' . \GocContextPath::getPath() .
+                                    'img/tick.png" height="22px" style="vertical-align: middle;" />';
+                                break;
+                            case false:
+                                echo '<img src="' . \GocContextPath::getPath() .
+                                    'img/cross.png" height="22px" style="vertical-align: middle;" />';
+                                break;
                         }
                         ?>
                     </td>
@@ -404,22 +432,22 @@ $showPD = $params['authenticated']; // display Personal Data
                         $numScopes = sizeof($scopes);
                         $scopeString = '';
                         foreach ($scopes as $scopeName => $sharedWithParent) {
-                        if ($sharedWithParent) {
-                            $scopeString .= $scopeName;
-                        } else {
-                            $scopeString .= $scopeName . '(x)';
-                        }
-                        if (++$count != $numScopes) {
-                            $scopeString .= ", ";
-                        }
+                            if ($sharedWithParent) {
+                                $scopeString .= $scopeName;
+                            } else {
+                                $scopeString .= $scopeName . '(x)';
+                            }
+                            if (++$count != $numScopes) {
+                                $scopeString .= ", ";
+                            }
                         }
                         ?>
                         <textarea readonly="true" style="height: 25px;"><?php xecho($scopeString); ?></textarea>
                         </td>
                     </tr>
                 <?php
-                } // End of the foreach loop iterating over ServicesAndScopes
-                ?>
+            } // End of the foreach loop iterating over ServicesAndScopes
+            ?>
             </tbody>
         </table>
 
@@ -428,21 +456,30 @@ $showPD = $params['authenticated']; // display Personal Data
     <?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
         <!-- Add new Service Link -->
         <a href="index.php?Page_Type=Add_Service&amp;siteId=<?php echo($entityId); ?>">
-            <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-            Add Service
+            <img
+                src="<?php echo \GocContextPath::getPath() ?>img/add.png"
+                height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"
+            />
+            <span
+                class="header"
+                style="vertical-align:middle; float: left;
+                        padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;"
+            >
+                Add Service
             </span>
         </a>
     <?php endif; ?>
     </div>
 
-
     <!--  Users -->
     <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
 
         <?php
-            if ($showPD) { ?>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
+        if ($showPD) {
+            ?>
+            <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
+                Users (Click on name to manage roles)
+            </span>
                 <img src="<?php echo \GocContextPath::getPath() ?>img/people.png" class="decoration" />
                 <table id="siteUsersTable" class="table table-striped table-condensed tablesorter">
                     <thead>
@@ -454,12 +491,16 @@ $showPD = $params['authenticated']; // display Personal Data
                     <tbody>
                         <?php
                         foreach ($params['roles'] as $role) {
-                        ?>
+                            ?>
                             <tr>
                                 <td>
                                     <div style="background-color: inherit;">
-                                        <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=<?php echo($role->getUser()->getId()) ?>">
-                                            <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
+                                    <a style="vertical-align: middle;" href="index.php?Page_Type=User&id=
+                                        <?php echo($role->getUser()->getId()) ?>">
+                                        <img
+                                            src="<?php echo \GocContextPath::getPath()?>img/person.png"
+                                            class="person"
+                                        />
                                             <?php xecho($role->getUser()->getFullName()) ?>
                                         </a>
                                     </div>
@@ -470,20 +511,20 @@ $showPD = $params['authenticated']; // display Personal Data
                                     ?>
                                 </td>
                             </tr>
-                        <?php
+                            <?php
                         }
                         ?>
                     </tbody>
                 </table>
-        <?php
-            } else {
-                require_once __DIR__.'/../fragments/hidePersonalData.php';
-            }
+            <?php
+        } else {
+            require_once __DIR__ . '/../fragments/hidePersonalData.php';
+        }
         ?>
 
         <!-- Request Role Link -->
         <?php if (!$portalIsReadOnly) {
-            require_once __DIR__.'/../fragments/requestRole.php';
+            require_once __DIR__ . '/../fragments/requestRole.php';
         } ?>
     </div>
 
@@ -508,28 +549,37 @@ $showPD = $params['authenticated']; // display Personal Data
             <tbody>
                 <?php
                 foreach ($downtimes as $dt) {
-                ?>
+                    ?>
                     <tr>
                         <td>
-                            <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo($dt->getId()) ?>">
+                            <a
+                                style="padding-right: 1em;"
+                                href="index.php?Page_Type=Downtime&id=<?php echo($dt->getId()) ?>"
+                                >
                             <?php xecho($dt->getDescription()) ?>
                             </a>
                         </td>
                         <td><?php echo($dt->getStartDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
                         <td><?php echo($dt->getEndDate()->format('Y-m-d H:i'/*$dt::DATE_FORMAT*/)) ?></td>
                     </tr>
-                <?php
+                    <?php
                 }
                 ?>
             </tbody>
         </table>
 
     <!--  only show this link if we're in read / write mode -->
-    <?php if (!$portalIsReadOnly && $params['ShowEdit']): ?>
+    <?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
         <!-- Add new Downtime Link -->
         <a href="index.php?Page_Type=Add_Downtime&amp;site=<?php echo($entityId); ?>">
-            <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-            <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+            <img
+                src="<?php echo \GocContextPath::getPath() ?>img/add.png"
+                height="50px"
+                style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+            <span
+                class="header"
+                style="vertical-align:middle; float: left;
+                        padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
             Add Downtime
             </span>
         </a>
@@ -544,10 +594,11 @@ $showPD = $params['authenticated']; // display Personal Data
     ?>
 
     <!-- Display API Authentication entities for this site -->
-    <?php if($params['ShowEdit']):?>
+    <?php if ($params['ShowEdit']) :?>
         <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-                Credentials authorised to use the GOCDB read and write APIs (Only shown if you have the relevant permissions)
+                Credentials authorised to use the GOCDB read and write APIs
+                (Only shown if you have the relevant permissions)
             </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/key.png" class="decoration" />
             <table id="AuthenticatedEntities" class="table table-striped table-condensed tablesorter">
@@ -575,7 +626,7 @@ $showPD = $params['authenticated']; // display Personal Data
                             // delete the credential
                             $disableDelete = false;
                         }
-                    ?>
+                        ?>
                     <tr>
                         <td>
                             <?php xecho($APIAuthEnt->getType())?>
@@ -589,9 +640,11 @@ $showPD = $params['authenticated']; // display Personal Data
                             $disableDelete = false;
                             if ($APIAuthEnt->getUser() != null) {
                                 // Credentials added prior to 5.8 have no owning user
-                                echo "<a href=\"index.php?Page_Type=User&amp;id=", $APIAuthEnt->getUser()->getId(), "\" ";
+                                echo "<a href=\"index.php?Page_Type=User&amp;id=",
+                                        $APIAuthEnt->getUser()->getId(),
+                                        "\" ";
                                 echo "title=\"", $APIAuthEnt->getUser()->getFullname(), "\">";
-                                echo substr($APIAuthEnt->getUser()->getSurname(),0,10);
+                                echo substr($APIAuthEnt->getUser()->getSurname(), 0, 10);
                                 echo "</a>";
                             }
                             ?>
@@ -611,26 +664,32 @@ $showPD = $params['authenticated']; // display Personal Data
                         <td style="width: 8%; text-align:center">
                             <img height="22px" src=
                                 <?php if (($APIAuthEnt->getAllowAPIWrite())) {
-                                    echo '"'.\GocContextPath::getPath().'img/tick.png"';
+                                    echo '"' . \GocContextPath::getPath() . 'img/tick.png"';
                                     echo 'title="API write enabled"';
                                 } else {
-                                    echo '"'.\GocContextPath::getPath().'img/cross.png"';
+                                    echo '"' . \GocContextPath::getPath() . 'img/cross.png"';
                                     echo 'title="API write disabled"';
                                 } ?>
                             />
                         </td>
                         <td style="width: 8%;"align = "center">
-                            <?php if(!$portalIsReadOnly):?>
-                                <form action="index.php?Page_Type=Edit_API_Authentication_Entity&amp;authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
-                                    <button type="submit" <?php if ($disableEdit) echo "disabled"; ?>
+                            <?php if (!$portalIsReadOnly) :?>
+                                <form action="index.php?Page_Type=Edit_API_Authentication_Entity&amp;
+                                    authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
+                                    <button type="submit" <?php if ($disableEdit) {
+                                        echo "disabled";
+                                                          } ?>
                                         >Edit</button>
                                 </form>
-                             <?php endif;?>
+                            <?php endif;?>
                         </td>
                         <td style="width: 8%;"align = "center">
-                            <?php if(!$portalIsReadOnly):?>
-                                <form action="index.php?Page_Type=Delete_API_Authentication_Entity&amp;authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
-                                    <button type="submit" <?php if ($disableDelete) echo "disabled"; ?>
+                            <?php if (!$portalIsReadOnly) :?>
+                                <form action="index.php?Page_Type=Delete_API_Authentication_Entity&amp;
+                                    authentityid=<?php echo $APIAuthEnt->getId();?>" method="post">
+                                    <button type="submit" <?php if ($disableDelete) {
+                                        echo "disabled";
+                                                          } ?>
                                         >Delete</button>
                                 </form>
                             <?php endif;?>
@@ -640,11 +699,17 @@ $showPD = $params['authenticated']; // display Personal Data
                 </tbody>
             </table>
 
-            <?php if (!$portalIsReadOnly): ?>
+            <?php if (!$portalIsReadOnly) : ?>
                 <!-- Add new API credential -->
                 <a href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $entityId?>">
-                    <img src="<?php echo \GocContextPath::getPath() ?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                    <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+                    <img
+                        src="<?php echo \GocContextPath::getPath() ?>img/add.png"
+                        height="50px"
+                        style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
+                    <span
+                        class="header"
+                        style="vertical-align:middle; float: left; padding-top: 1.1em;
+                                padding-left: 1em; padding-bottom: 0.9em;">
                         Add API credential
                     </span>
                 </a>
