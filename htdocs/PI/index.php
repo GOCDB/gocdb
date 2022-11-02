@@ -418,15 +418,6 @@ class PIRequest
 
         if ($user == null) {
             // Incoming credential is not that of a registered user.
-            // Check if it is registered API Authentication credential.
-
-            $authEntServ = \Factory::getAPIAuthenticationService();
-            $authEnts = $authEntServ->getAPIAuthentication($this->identifier);
-
-            if (count($authEnts) > 0) {
-                $authEntServ->updateLastUseTime($authEnts);
-                $authenticated = true;
-            }
 
             if (!\Factory::getConfigService()->isRestrictPDByRole($forceStrictForHosts)) {
                 // Only a 'valid' identifier is needed.
