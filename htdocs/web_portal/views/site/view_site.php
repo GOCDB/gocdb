@@ -1,5 +1,6 @@
 <?php
 require_once __DIR__."/../../controllers/utils.php";
+require_once __DIR__."/../../../../lib/Doctrine/entities/APIAuthentication.php";
 
 $site = $params['site'];
 $entityId = $site->getId();
@@ -555,8 +556,9 @@ $showPD = $params['authenticated']; // display Personal Data
                         <th>Type</th>
                         <th>Identifier</th>
                         <th>User</th>
-                        <th style="text-align:center">API Write</th>
-                        <th style="text-align:center">Edit</th>
+                        <th style="text-align:center;white-space: nowrap">Last Used</th>
+                        <th style="text-align:center">Write</th>
+                        <th style="text-align:center;">Edit</th>
                         <th style="text-align:center">Delete</th>
                     </tr>
                 </thead>
@@ -594,12 +596,26 @@ $showPD = $params['authenticated']; // display Personal Data
                             }
                             ?>
                         </td>
+                        <td style="text-align:center">
+                            <?php
+                            $useTime = $APIAuthEnt->getLastUseTime();
+                            if ($useTime == null) {
+                                $titleStr = 'Created/Renewed ' . $APIAuthEnt->getLastRenewTime()->format('d-m-Y H:iTP');
+                                echo '<div title="' . $titleStr . '">Unused</div>';
+                            } else {
+                                $titleStr = 'Last used ' . $useTime->format('d-m-Y H:iTP');
+                                echo '<div title="' . $titleStr . '">' . $useTime->format('d-m-y') . '</div>';
+                            }
+                            ?>
+                        </td>
                         <td style="width: 8%; text-align:center">
                             <img height="22px" src=
                                 <?php if (($APIAuthEnt->getAllowAPIWrite())) {
                                     echo '"'.\GocContextPath::getPath().'img/tick.png"';
+                                    echo 'title="API write enabled"';
                                 } else {
                                     echo '"'.\GocContextPath::getPath().'img/cross.png"';
+                                    echo 'title="API write disabled"';
                                 } ?>
                             />
                         </td>

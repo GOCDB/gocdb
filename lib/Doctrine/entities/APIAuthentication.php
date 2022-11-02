@@ -137,7 +137,7 @@
     /**
      * @return \DateTime $time
      */
-    protected function getLastRenewTime() {
+    public function getLastRenewTime() {
         return $this->lastRenewTime;
     }
 
