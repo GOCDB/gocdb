@@ -455,6 +455,11 @@ class Config {
         return $sendEmail;
     }
 
+    public function getGocdbAdminsEmail(){
+        $gocdbAdminEmail = $this->GetLocalInfoXML()->admins_email;
+        return $gocdbAdminEmail;
+    }
+
     public function getAPIAllAuthRealms() {
         if (strtolower($this->GetLocalInfoXML()->API_all_auth_realms) === 'true') {
             return true;

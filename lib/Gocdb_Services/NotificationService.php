@@ -70,6 +70,8 @@ class NotificationService extends AbstractEntityService {
                 }
                 $projectIds = array_unique ( $projectIds );
             }
+                // Also send email to GOCDB Admins
+                $this->sendGocdbAdminsEmail($roleRequested, $requestingUser, $entity->getName());
         } else {
             // If the entity has valid users who can approve the role then send the email notification.
 
@@ -134,6 +136,37 @@ class NotificationService extends AbstractEntityService {
 
         $emailAddress = $approvingUser->getEmail();
         $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
+
+        \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
+    }
+
+    private function sendGocdbAdminsEmail($roleRequested, $requestingUser) {
+        $subject = sprintf(
+            'GOCDB: A Role request from %1$s %2$s over %3$s has no approving users',
+            $requestingUser->getForename(),
+            $requestingUser->getSurname(),
+            $roleRequested->getOwnedEntity()->getName()
+        );
+
+        $body = sprintf(
+            implode("\n", array(
+                'Dear GOCDB Admins,',
+                '',
+                '%1$s %2$s requested the "%3$s" role over %4$s, and there are no '.
+                'approving users available for the request.',
+                '',
+                'You can approve or deny the request here:',
+                '    %5$s/index.php?Page_Type=Role_Requests',
+            )),
+            $requestingUser->getForename(),
+            $requestingUser->getSurname(),
+            $roleRequested->getRoleType()->getName(),
+            $roleRequested->getOwnedEntity()->getName(),
+            $this->getWebPortalURL()
+        );
+
+        $emailAddress = \Factory::getConfigService()->getGocdbAdminsEmail();
+        $headers = "From: GOCDB";
 
         \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
     }
