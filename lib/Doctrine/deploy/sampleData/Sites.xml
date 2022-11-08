@@ -1,195 +1,478 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <results>
-  <SITE ID="605003" PRIMARY_KEY="251G0" NAME="SWITCH" COBJECTID="251">
+  <SITE ID="698213" PRIMARY_KEY="481G0" NAME="Torch IT" COBJECTID="481">
     <PRIMARY_KEY>251G0</PRIMARY_KEY>
-    <SHORT_NAME>SWITCH</SHORT_NAME>
-    <OFFICIAL_NAME>SWITCH</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>Switch, the Swiss foundation which provides IT services to the members of the higher education sector in Switzerland</SITE_DESCRIPTION>
-    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=251&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.switch.ch/</HOME_URL>
-    <CONTACT_EMAIL>sample@switch.ch</CONTACT_EMAIL>
-    <CONTACT_TEL>+41 44 0000 05</CONTACT_TEL>
-    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
-    <COUNTRY>Switzerland</COUNTRY>
-    <ROC>NGI_CH</ROC>
-    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
-    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
-    <TIMEZONE>Europe/Zurich</TIMEZONE>
-    <LATITUDE>47</LATITUDE>
-    <LONGITUDE>8</LONGITUDE>
-    <CSIRT_EMAIL>sample@switch.ch</CSIRT_EMAIL>
-    <IP_RANGE>130.59.000.31/130.59.000.38</IP_RANGE>
-    <CSIRTTEL>+41 44 000 15 40</CSIRTTEL>
-    <EMERGENCYTEL>+41 44 000 15 05</EMERGENCYTEL>
-    <SCOPE>EGI</SCOPE>
-    <DOMAIN>
-      <DOMAIN_NAME>switch.ch</DOMAIN_NAME>
-    </DOMAIN>
-  </SITE>
-  <SITE ID="3605006" PRIMARY_KEY="476G0" NAME="UNIBE-LHEP" COBJECTID="476">
-    <PRIMARY_KEY>476G0</PRIMARY_KEY>
-    <SHORT_NAME>UNIBE-LHEP</SHORT_NAME>
-    <OFFICIAL_NAME>Grid computing cluster of the LHEP department at the University of Bern</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>ATLAS Tier-2 at the University of Bern</SITE_DESCRIPTION>
-    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=476&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.lhep.unibe.ch</HOME_URL>
-    <CONTACT_EMAIL>sample@lhep.unibe.ch</CONTACT_EMAIL>
-    <CONTACT_TEL>+41 31 000 4069</CONTACT_TEL>
-    <GIIS_URL>ldap://bdii.lhep.unibe.ch:0000/mds-vo-name=UNIBE-LHEP,o=grid</GIIS_URL>
+    <SHORT_NAME>Torch</SHORT_NAME>
+    <OFFICIAL_NAME>Torchit</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Torch IT is a Swiss foundation providing IT services around the country from their headquaters in Zurich</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=481&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.torchit.ch/</HOME_URL>
+    <CONTACT_EMAIL>contact@torchit.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 65 0299 36</CONTACT_TEL>
     <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
     <COUNTRY>Switzerland</COUNTRY>
     <ROC>NGI_CH</ROC>
     <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
     <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
     <TIMEZONE>Europe/Zurich</TIMEZONE>
-    <LATITUDE>46.57</LATITUDE>
-    <LONGITUDE>7.28</LONGITUDE>
-    <CSIRT_EMAIL>sample@lhep.unibe.ch</CSIRT_EMAIL>
-    <IP_RANGE>0.0.0.0/255.000.255.255</IP_RANGE>
-    <LOCATION>Bern, Switzerland</LOCATION>
-    <CSIRTTEL>+41 31 000 4069</CSIRTTEL>
-    <HELPDESKEMAIL>sample@lhep.unibe.ch</HELPDESKEMAIL>
+    <LATITUDE>47.360389</LATITUDE>
+    <LONGITUDE>8.547948</LONGITUDE>
+    <CSIRT_EMAIL>csirt@torchit.ch</CSIRT_EMAIL>
+    <IP_RANGE>135.99.000.62/135.99.000.69</IP_RANGE>
+    <LOCATION>Zurich, Switzerland</LOCATION>
+    <CSIRTTEL>+41 65 717 55 13</CSIRTTEL>
+    <EMERGENCYTEL>+41 65 324 15 06</EMERGENCYTEL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>unibe.ch</DOMAIN_NAME>
+      <DOMAIN_NAME>torchit.ch</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
-  <SITE ID="3055006" PRIMARY_KEY="312G0" NAME="T3_CH_PSI" COBJECTID="312">
-    <PRIMARY_KEY>312G0</PRIMARY_KEY>
-    <SHORT_NAME>T3_CH_PSI</SHORT_NAME>
-    <OFFICIAL_NAME>AIT Group, Paul Scherrer Institut, CH-5232 Villigen PSI, CH</OFFICIAL_NAME>
-    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=312&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <CONTACT_EMAIL>sample@lists.psi.ch</CONTACT_EMAIL>
-    <CONTACT_TEL>+41 56 000 47 33</CONTACT_TEL>
-    <GIIS_URL>ldap://t3bdii.psi.ch:0000/mds-vo-name=T3_CH_PSI,o=grid</GIIS_URL>
-    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
-    <COUNTRY>Switzerland</COUNTRY>
-    <ROC>NGI_CH</ROC>
-    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
-    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
-    <TIMEZONE>Europe/Zurich</TIMEZONE>
-    <LATITUDE>0</LATITUDE>
-    <LONGITUDE>0</LONGITUDE>
-    <CSIRT_EMAIL>sample@lists.psi.ch</CSIRT_EMAIL>
-    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
-    <CSIRTTEL>+41 56 000 84 00</CSIRTTEL>
-    <EMERGENCYTEL>+41 56 000 84 00</EMERGENCYTEL>
-    <SCOPE>EGI</SCOPE>
-    <DOMAIN>
-      <DOMAIN_NAME>psi.ch</DOMAIN_NAME>
-    </DOMAIN>
-  </SITE>
-  <SITE ID="12" PRIMARY_KEY="237G0" NAME="CSCS-LCG2" COBJECTID="237">
-    <PRIMARY_KEY>237G0</PRIMARY_KEY>
-    <SHORT_NAME>CSCS-LCG2</SHORT_NAME>
-    <OFFICIAL_NAME>CSCS, Swiss National Supercomputing Centre</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>Tier2 within WLCG, serving the swiss HEP community (CHIPP)</SITE_DESCRIPTION>
-    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=237&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <CONTACT_EMAIL>sample@cscs.ch</CONTACT_EMAIL>
-    <CONTACT_TEL>+41 91 610 8238</CONTACT_TEL>
-    <GIIS_URL>ldap://bdii.lcg.cscs.ch:0000/mds-vo-name=CSCS-LCG2,o=grid</GIIS_URL>
+  <SITE ID="1184334" PRIMARY_KEY="145G0" NAME="University of Lucerne" COBJECTID="145">
+    <PRIMARY_KEY>145G0</PRIMARY_KEY>
+    <SHORT_NAME>unilu</SHORT_NAME>
+    <OFFICIAL_NAME>University of Lucerne Grid Infrastructure</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>ATLAS Tier-2 grid tools for research and development at the University of Lucerne</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=145&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.unilu.grid.ch</HOME_URL>
+    <CONTACT_EMAIL>enquiries@unilu.grid.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 403 66 1112</CONTACT_TEL>
     <TIER>2</TIER>
     <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
     <COUNTRY>Switzerland</COUNTRY>
     <ROC>NGI_CH</ROC>
-    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
     <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
     <TIMEZONE>Europe/Zurich</TIMEZONE>
-    <LATITUDE>46.02</LATITUDE>
-    <LONGITUDE>8.92</LONGITUDE>
-    <CSIRT_EMAIL>sample@cscs.ch</CSIRT_EMAIL>
-    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
-    <LOCATION>Lugano, Switzerland</LOCATION>
-    <CSIRTTEL>+41 91 000 8238</CSIRTTEL>
-    <EMERGENCYTEL>+41 91 000 8222</EMERGENCYTEL>
+    <LATITUDE>47.050618</LATITUDE>
+    <LONGITUDE>8.312448</LONGITUDE>
+    <CSIRT_EMAIL>csirtcontatc@unilu.grid.ch</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/155.000.255.255</IP_RANGE>
+    <LOCATION>Luzern, Switzerland</LOCATION>
+    <CSIRTTEL>+41 403 59 881</CSIRTTEL>
+    <HELPDESKEMAIL>help@unilu.grid.ch</HELPDESKEMAIL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>cscs.ch</DOMAIN_NAME>
+      <DOMAIN_NAME>unilu.grid.ch</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
-    <SITE ID="3555007" PRIMARY_KEY="354G0" NAME="UNIGE-DPNC" COBJECTID="354">
-    <PRIMARY_KEY>354G0</PRIMARY_KEY>
-    <SHORT_NAME>UNIGE-DPNC</SHORT_NAME>
-    <OFFICIAL_NAME>Grid computing cluster of the DPNC department at the University of Geneva</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>ATLAS Tier-3 at the University of Geneva</SITE_DESCRIPTION>
-    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=354&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://atlasgrid.unige.ch/</HOME_URL>
-    <CONTACT_EMAIL>dpnc-grid@unige.ch</CONTACT_EMAIL>
-    <CONTACT_TEL>0041 22 000 7935</CONTACT_TEL>
-    <GIIS_URL>ldap://gridvm2.unige.ch:0000/mds-vo-name=UNIGE-DPNC,o=grid</GIIS_URL>
-    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
-    <COUNTRY>Switzerland</COUNTRY>
-    <ROC>NGI_CH</ROC>
-    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
-    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
-    <TIMEZONE>Europe/Zurich</TIMEZONE>
-    <LATITUDE>46.2</LATITUDE>
-    <LONGITUDE>6.14</LONGITUDE>
-    <CSIRT_EMAIL>sample@unige.ch</CSIRT_EMAIL>
-    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
-    <LOCATION>University of Geneva, Switzerland</LOCATION>
-    <CSIRTTEL>0041 76 000 1146</CSIRTTEL>
-    <EMERGENCYTEL>0041 76 000 1146</EMERGENCYTEL>
-    <HELPDESKEMAIL>sample@unige.ch</HELPDESKEMAIL>
-    <SCOPE>EGI</SCOPE>
-    <DOMAIN>
-      <DOMAIN_NAME>unige.ch</DOMAIN_NAME>
-    </DOMAIN>
-  </SITE>
-    <SITE ID="7255007" PRIMARY_KEY="34933G0" NAME="UZH" COBJECTID="21715">
-    <PRIMARY_KEY>34933G0</PRIMARY_KEY>
-    <SHORT_NAME>UZH</SHORT_NAME>
-    <OFFICIAL_NAME>University of Zurich</OFFICIAL_NAME>
-    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=21715&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.gc3.uzh.ch/index.html</HOME_URL>
-    <CONTACT_EMAIL>sergio.maffioletti@gc3.uzh.ch</CONTACT_EMAIL>
-    <CONTACT_TEL>0041-044 000 4222</CONTACT_TEL>
-    <ALARM_EMAIL>sample@gc3.uzh.ch</ALARM_EMAIL>
+  <SITE ID="8644512" PRIMARY_KEY="512G0" NAME="Lake Geneva Hydro-Particle Research Facility" COBJECTID="512">
+    <PRIMARY_KEY>512G0</PRIMARY_KEY>
+    <SHORT_NAME>LGHPRF</SHORT_NAME>
+    <OFFICIAL_NAME>Lake Geneva Hydro-Particle Research Facility</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Between Lausanne and Geneva on the banks of Lake Geneva in Nyon, this research facility specialises on how particle physics interacts with water.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=512&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <CONTACT_EMAIL>contact@lakegenevahprf.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 313 22 45 6773</CONTACT_TEL>
+    <GIIS_URL>ldap://t3bdii.lakegenevahprf.ch:0000/mds-vo-name=LGHPRF,o=grid</GIIS_URL>
     <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
     <COUNTRY>Switzerland</COUNTRY>
     <ROC>NGI_CH</ROC>
     <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
     <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
     <TIMEZONE>Europe/Zurich</TIMEZONE>
-    <LATITUDE>0</LATITUDE>
-    <LONGITUDE>0</LONGITUDE>
-    <CSIRT_EMAIL>sample@gc3.uzh.ch</CSIRT_EMAIL>
-    <CSIRTTEL>0041-044 000 4222</CSIRTTEL>
-    <EMERGENCYTEL>0041-000 000 4222</EMERGENCYTEL>
-    <EMERGENCYEMAIL>sample@gc3.uzh.ch</EMERGENCYEMAIL>
-    <HELPDESKEMAIL>sample@gc3.uzh.ch</HELPDESKEMAIL>
+    <LATITUDE>46.370746</LATITUDE>
+    <LONGITUDE>6.231138</LONGITUDE>
+    <IP_RANGE>122.0.0.0/255.255.255.255</IP_RANGE>
+    <CSIRTTEL>+41 81 91 122 05</CSIRTTEL>
+    <EMERGENCYTEL>+41 81 91 112 06</EMERGENCYTEL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>uzh.ch</DOMAIN_NAME>
+      <DOMAIN_NAME>lakegenevahprf.ch</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
-  <SITE ID="3605007" PRIMARY_KEY="489G0" NAME="UNIBE-ID" COBJECTID="489">
-    <PRIMARY_KEY>489G0</PRIMARY_KEY>
-    <SHORT_NAME>UNIBE-ID</SHORT_NAME>
-    <OFFICIAL_NAME>Grid computing cluster of the Computer Service Department at the University of Bern</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>General university cluster also providing ATLAS Tier-3 resources at the University of Bern</SITE_DESCRIPTION>
-    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=489&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.id.unibe.ch</HOME_URL>
-    <CONTACT_EMAIL>grid-admin@id.unibe.ch</CONTACT_EMAIL>
-    <CONTACT_TEL>+41 31 000 8797</CONTACT_TEL>
-    <GIIS_URL>ldap://nordugrid.unibe.ch:0000/ds-vo-name=UNIBE-ID,o=grid</GIIS_URL>
+  <SITE ID="34412" PRIMARY_KEY="963G0" NAME="Switzerland Mountain Research Facility" COBJECTID="963">
+    <PRIMARY_KEY>963G0</PRIMARY_KEY>
+    <SHORT_NAME>SMRF</SHORT_NAME>
+    <OFFICIAL_NAME>Switzerland Mountain Research Facility</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Based at the base of the alps with observation posts and a further facility at an altitude of 3200m up in the mountains, the Switzerland Mountain Research Facility is a specialist site of high importance.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=963&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <CONTACT_EMAIL>contact@SMRF.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 326 77 212 19</CONTACT_TEL>
+    <GIIS_URL>ldap://SMRF.ch:0000/mds-vo-name=SMRF,o=grid</GIIS_URL>
+    <TIER>2</TIER>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>46.624098</LATITUDE>
+    <LONGITUDE>8.033742</LONGITUDE>
+    <CSIRT_EMAIL>csirt@SMRF.ch</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>Grindelwald, Switzerland</LOCATION>
+    <CSIRTTEL>+41 88 712 52</CSIRTTEL>
+    <EMERGENCYTEL>+41 88 454 322</EMERGENCYTEL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>SMRF.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+    <SITE ID="8007230" PRIMARY_KEY="801G0" NAME="Brunnen GS" COBJECTID="801">
+    <PRIMARY_KEY>801G0</PRIMARY_KEY>
+    <SHORT_NAME>Brunnen GS</SHORT_NAME>
+    <OFFICIAL_NAME>Brunnen Grid Services</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Based in Brunnen, Brunnen GS provides grid services across central Switzerland. It has a strong link to the University of Lucerne, a short ferry or train ride away.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=801&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://brunnengs.ch</HOME_URL>
+    <CONTACT_EMAIL>contact@brunnengs.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 12 443 99 81</CONTACT_TEL>
     <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
     <COUNTRY>Switzerland</COUNTRY>
     <ROC>NGI_CH</ROC>
     <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
     <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
     <TIMEZONE>Europe/Zurich</TIMEZONE>
-    <LATITUDE>46.57</LATITUDE>
-    <LONGITUDE>7.28</LONGITUDE>
-    <CSIRT_EMAIL>sample@id.unibe.ch</CSIRT_EMAIL>
+    <LATITUDE>46.994606</LATITUDE>
+    <LONGITUDE>8.603412</LONGITUDE>
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
-    <LOCATION>Bern, Switzerland</LOCATION>
-    <CSIRTTEL>+41 31 000 8797</CSIRTTEL>
-    <HELPDESKEMAIL>sample@id.unibe.ch</HELPDESKEMAIL>
+    <LOCATION>Brunnen, Switzerland</LOCATION>
+    <EMERGENCYTEL>+41 223 11 963</EMERGENCYTEL>
+    <HELPDESKEMAIL>help@brunnengs.ch</HELPDESKEMAIL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>unibe.ch</DOMAIN_NAME>
+      <DOMAIN_NAME>brunnengs.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+    <SITE ID="41144" PRIMARY_KEY="414G0" NAME="Mechnik IT" COBJECTID="414">
+    <PRIMARY_KEY>414G0</PRIMARY_KEY>
+    <SHORT_NAME>Mechnik IT</SHORT_NAME>
+    <OFFICIAL_NAME>Mechnik IT</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Based in Horgen near Zurich, Switzerland, Mechnik IT is a well known technological company specilaising in grid tools and infrastructure.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=414&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.mechnikit.ch/index.html</HOME_URL>
+    <CONTACT_EMAIL>home@mechnikit.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 289 22 71</CONTACT_TEL>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>47.261098</LATITUDE>
+    <LONGITUDE>8.595042</LONGITUDE>
+    <LOCATION>Horgen, Switzerland</LOCATION>
+    <HELPDESKEMAIL>support@mechnikit.ch</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>mechnikit.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="55236" PRIMARY_KEY="523G0" NAME="UNIBERN-GRID" COBJECTID="523">
+    <PRIMARY_KEY>523G0</PRIMARY_KEY>
+    <SHORT_NAME>UNIBERN-GRID</SHORT_NAME>
+    <OFFICIAL_NAME>University of Bern Grid Computing</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Bern University's grid computing department, used for research and development. It also provides ATLAS Tier-3 resources.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=523&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.unibern-grid.ch</HOME_URL>
+    <CONTACT_EMAIL>grid@unibern-grid.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 99 200 16</CONTACT_TEL>
+    <TIER>3</TIER>
+    <GIIS_URL>ldap://unibern-grid.ch:0000/ds-vo-name=UNIBERN-GRID,o=grid</GIIS_URL>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>46.953677</LATITUDE>
+    <LONGITUDE>7.440551</LONGITUDE>
+    <CSIRT_EMAIL>csirt@unibern-grid.ch</CSIRT_EMAIL>
+    <LOCATION>Bern, Switzerland</LOCATION>
+    <CSIRTTEL>+41 45 601 0028</CSIRTTEL>
+    <HELPDESKEMAIL>helpdesk@unibern-grid.ch</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>unibern-grid.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="1012" PRIMARY_KEY="200G0" NAME="Basel Infrastructure" COBJECTID="200">
+    <PRIMARY_KEY>200G0</PRIMARY_KEY>
+    <SHORT_NAME>Basel Infrastructure</SHORT_NAME>
+    <OFFICIAL_NAME>Basel Infrastructure Services</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Basel Infrastructure Services work on the infrastructure and grid services for Switzerland and southern Germany.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=200&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.basel-infrastructure.ch</HOME_URL>
+    <CONTACT_EMAIL>contact@basel-infrastructure.ch</CONTACT_EMAIL>
+    <CONTACT_TEL>+41 300 200 9916</CONTACT_TEL>
+    <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
+    <COUNTRY>Switzerland</COUNTRY>
+    <ROC>NGI_CH</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Zurich</TIMEZONE>
+    <LATITUDE>47.560146</LATITUDE>
+    <LONGITUDE>7.587857</LONGITUDE>
+    <CSIRT_EMAIL>csirt@basel-infrastructure.ch</CSIRT_EMAIL>
+    <LOCATION>Basel, Switzerland</LOCATION>
+    <CSIRTTEL>+41 300 200 7172</CSIRTTEL>
+    <HELPDESKEMAIL>help@basel-infrastructure.ch</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>basel-infrastructure.ch</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="4794939" PRIMARY_KEY="351G0" NAME="Slovenia Science Council" COBJECTID="351">
+    <PRIMARY_KEY>351G0</PRIMARY_KEY>
+    <SHORT_NAME>SSC</SHORT_NAME>
+    <OFFICIAL_NAME>Slovenia Science Council</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The primary science council for Slovenia, specialising in physics and space.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=351&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.sloveniasciencecouncil.co.sl</HOME_URL>
+    <CONTACT_EMAIL>contact@ssc.sl</CONTACT_EMAIL>
+    <CONTACT_TEL>+386 94 010 8495</CONTACT_TEL>
+    <TIER>1</TIER>
+    <GIIS_URL>ldap://grid.ssc.sl:0000/ds-vo-name=SSC,o=grid</GIIS_URL>
+    <COUNTRY_CODE>Slovenia</COUNTRY_CODE>
+    <COUNTRY>Slovenia</COUNTRY>
+    <ROC>NGI_SL</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Ljubljana</TIMEZONE>
+    <LATITUDE>45.949879</LATITUDE>
+    <LONGITUDE>14.654570</LONGITUDE>
+    <CSIRT_EMAIL>csirt@ssc.sl</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>Grosuplje, Slovenia</LOCATION>
+    <CSIRTTEL>+386 31 000 4151</CSIRTTEL>
+    <HELPDESKEMAIL>helpdesk@ssc.sl</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>ssc.sl</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="367311" PRIMARY_KEY="119G0" NAME="Izola Marine Research Facility" COBJECTID="119">
+    <PRIMARY_KEY>119G0</PRIMARY_KEY>
+    <SHORT_NAME>Izola MRF</SHORT_NAME>
+    <OFFICIAL_NAME>Izola Marine Research Facility</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Situated right on Slovenia's small coastline of the Adriatic Sea, the Izola Marine Research Facility is Slovenia's hub for all things ocean research.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=119&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.izolamrf.co.sl</HOME_URL>
+    <CONTACT_EMAIL>contact@izolamrf.sl</CONTACT_EMAIL>
+    <CONTACT_TEL>+386 45 310 1393</CONTACT_TEL>
+    <TIER>3</TIER>
+    <GIIS_URL>ldap://grid.izolamrf.sl:0000/ds-vo-name=IzolaMRF,o=grid</GIIS_URL>
+    <COUNTRY_CODE>Slovenia</COUNTRY_CODE>
+    <COUNTRY>Slovenia</COUNTRY>
+    <ROC>NGI_SL</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Ljubljana</TIMEZONE>
+    <LATITUDE>45.541431</LATITUDE>
+    <LONGITUDE>13.662742</LONGITUDE>
+    <CSIRT_EMAIL>csirt@izolamrf.sl</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>Izola, Slovenia</LOCATION>
+    <CSIRTTEL>+386 41 000 2994</CSIRTTEL>
+    <HELPDESKEMAIL>help@izolamrf.sl</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>izolamrf.sl</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="827892" PRIMARY_KEY="956G0" NAME="Univerza v Ljubljani" COBJECTID="956">
+    <PRIMARY_KEY>956G0</PRIMARY_KEY>
+    <SHORT_NAME>uni-lj</SHORT_NAME>
+    <OFFICIAL_NAME>Univerza v Ljubljani</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The primary research facility at the University of Ljubljana, Slovenia.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=956&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>https://www.uni-lj.si/</HOME_URL>
+    <CONTACT_EMAIL>rektorat@uni-lj.si</CONTACT_EMAIL>
+    <CONTACT_TEL>+386 1 241 85 00</CONTACT_TEL>
+    <GIIS_URL>ldap://grid.uni-lj.sl:0000/ds-vo-name=uni-lj,o=grid</GIIS_URL>
+    <COUNTRY_CODE>Slovenia</COUNTRY_CODE>
+    <COUNTRY>Slovenia</COUNTRY>
+    <ROC>NGI_SL</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Ljubljana</TIMEZONE>
+    <LATITUDE>46.050835</LATITUDE>
+    <LONGITUDE>14.503670</LONGITUDE>
+    <CSIRT_EMAIL>csirt@uni-lj.sl</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>University of Ljubljana, Slovenia</LOCATION>
+    <HELPDESKEMAIL>enquiries@uni-lj.sl</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>uni-lj.sl</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="2030844" PRIMARY_KEY="203G0" NAME="Ptuj Research and Production Centre" COBJECTID="203">
+    <PRIMARY_KEY>203G0</PRIMARY_KEY>
+    <SHORT_NAME>PtujRPC</SHORT_NAME>
+    <OFFICIAL_NAME>Ptuj Research and Production Centre </OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The research and production site for Eastern Slovenia, this research centre is on the banks of the Ptujsko jezero in Ptuj.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=203&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.ptuj-research-production-centre.sl</HOME_URL>
+    <CONTACT_EMAIL>grid-team@ptujrpc.sl</CONTACT_EMAIL>
+    <CONTACT_TEL>+386 81 110 5643</CONTACT_TEL>
+    <COUNTRY_CODE>Slovenia</COUNTRY_CODE>
+    <COUNTRY>Slovenia</COUNTRY>
+    <ROC>NGI_SL</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Ljubljana</TIMEZONE>
+    <LATITUDE>46.414151</LATITUDE>
+    <LONGITUDE>15.877531</LONGITUDE>
+    <CSIRT_EMAIL>csirt@ptujrpc</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>Ptuj, Slovenia</LOCATION>
+    <HELPDESKEMAIL>help@ptujrpc.sl</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>ptujrpc.sl</DOMAIN_NAME>
     </DOMAIN> 
-	</SITE>
-	
-  </results>
+  </SITE>
+  <SITE ID="243789" PRIMARY_KEY="761G0" NAME="Budapest Institute of National Research" COBJECTID="761">
+    <PRIMARY_KEY>761G0</PRIMARY_KEY>
+    <SHORT_NAME>Budapest Institute</SHORT_NAME>
+    <OFFICIAL_NAME>Budapest Institute of National Research - Grid Operations Team</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The Grid Operations team within the Budapest Institute of National Research put Hungary at the forefront of global development and research.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=761&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.budapestinstitute-gridoperations.hu</HOME_URL>
+    <CONTACT_EMAIL>gridoperations@budapestinstitute.hu</CONTACT_EMAIL>
+    <CONTACT_TEL>+36 99 1000 863</CONTACT_TEL>
+    <TIER>2</TIER>
+    <COUNTRY_CODE>Hungary</COUNTRY_CODE>
+    <COUNTRY>Hungary</COUNTRY>
+    <ROC>NGI_HU</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Budapest</TIMEZONE>
+    <LATITUDE>47.496346</LATITUDE>
+    <LONGITUDE>19.048320</LONGITUDE>
+    <CSIRT_EMAIL>csirt@budapestinstitute-gridoperations.hu</CSIRT_EMAIL>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>Budapest, Hungary</LOCATION>
+    <HELPDESKEMAIL>support@budapestinstitute-gridoperations.hu</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>budapestinstitute-gridoperations.hu</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="4765436" PRIMARY_KEY="997G0" NAME="Lake Balaton Research Facility" COBJECTID="997">
+    <PRIMARY_KEY>997G0</PRIMARY_KEY>
+    <SHORT_NAME>Balaton RF</SHORT_NAME>
+    <OFFICIAL_NAME>Lake Balaton Research Facility</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The research facility on the banks of Lake Balaton is a thriving and influential institution.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=997&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.lakebalatonresearch.hu</HOME_URL>
+    <CONTACT_EMAIL>reach@lakebalatonresearch.hu</CONTACT_EMAIL>
+    <CONTACT_TEL>+36 4004 76 53</CONTACT_TEL>
+    <COUNTRY_CODE>Hungary</COUNTRY_CODE>
+    <COUNTRY>Hungary</COUNTRY>
+    <ROC>NGI_HU</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Budapest</TIMEZONE>
+    <LATITUDE>46.912739</LATITUDE>
+    <LONGITUDE>17.892514</LONGITUDE>
+    <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>Tihany, Hungary</LOCATION>
+    <HELPDESKEMAIL>help@lakebalatonresearch.hu</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>lakebalatonresearch.hu</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="863436" PRIMARY_KEY="974G0" NAME="Sandbox IT" COBJECTID="974">
+    <PRIMARY_KEY>974G0</PRIMARY_KEY>
+    <SHORT_NAME>Sandbox IT</SHORT_NAME>
+    <OFFICIAL_NAME>Sandbox IT</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>This company in eastern Hungary started small but is now one of the country's leading developers in technology and grid services.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=974&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.sandboxit.hu</HOME_URL>
+    <CONTACT_EMAIL>contact@sandboxit.hu</CONTACT_EMAIL>
+    <CONTACT_TEL>+36 4419 500 500</CONTACT_TEL>
+    <COUNTRY_CODE>Hungary</COUNTRY_CODE>
+    <COUNTRY>Hungary</COUNTRY>
+    <ROC>NGI_HU</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Budapest</TIMEZONE>
+    <LATITUDE>47.963616</LATITUDE>
+    <LONGITUDE>21.730284</LONGITUDE>
+    <CSIRT_EMAIL>csirt@sandboxit.hu</CSIRT_EMAIL>
+    <LOCATION>Nyiregyhaza, Hungary</LOCATION>
+    <HELPDESKEMAIL>help@sandboxit.hu</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>sandboxit.hu</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="698445" PRIMARY_KEY="188G0" NAME="Debrecen Technologies" COBJECTID="188">
+    <PRIMARY_KEY>188G0</PRIMARY_KEY>
+    <SHORT_NAME>Debrecen Tech</SHORT_NAME>
+    <OFFICIAL_NAME>Debrecen Technologies</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Debrecen Technologies pride themselves on their influential developments in transforming Hungarian technology and services.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=188&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.debrecentech.hu</HOME_URL>
+    <CONTACT_EMAIL>us@debrecentech.hu</CONTACT_EMAIL>
+    <CONTACT_TEL>+36 300 300 7834</CONTACT_TEL>
+    <TIER>3</TIER>
+    <COUNTRY_CODE>Hungary</COUNTRY_CODE>
+    <COUNTRY>Hungary</COUNTRY>
+    <ROC>NGI_HU</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Budapest</TIMEZONE>
+    <LATITUDE>47.509323</LATITUDE>
+    <LONGITUDE>21.653454</LONGITUDE>
+    <LOCATION>Debrecen, Hungary</LOCATION>
+    <HELPDESKEMAIL>support@debrecentech.hu</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>debrecentech.hu</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="698658" PRIMARY_KEY="662G0" NAME="Barcs-Drava Science and Technology Facility" COBJECTID="662">
+    <PRIMARY_KEY>662G0</PRIMARY_KEY>
+    <SHORT_NAME>Barcs-Drava STF</SHORT_NAME>
+    <OFFICIAL_NAME>Barcs-Drava Science and Technology Facility</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>Right on the border between Hungary and Croatia, and on the banks of the river Drava, this Hungarian facility specialises in scientific and technological research and discovery.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=662&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.barcs-drava-stf.hu</HOME_URL>
+    <CONTACT_EMAIL>contact@barcs-drava-stf.hu</CONTACT_EMAIL>
+    <CONTACT_TEL>+36 0400 501 216</CONTACT_TEL>
+    <COUNTRY_CODE>Hungary</COUNTRY_CODE>
+    <COUNTRY>Hungary</COUNTRY>
+    <ROC>NGI_HU</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Budapest</TIMEZONE>
+    <LATITUDE>45.952190</LATITUDE>
+    <LONGITUDE>17.435154</LONGITUDE>
+    <LOCATION>Barcs, Hungary</LOCATION>
+    <HELPDESKEMAIL>helpdesk@barcs-drava-stf.hu</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>barcs-drava-stf.hu</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+  <SITE ID="288443" PRIMARY_KEY="284G0" NAME="Danube Institute of National Research" COBJECTID="284">
+    <PRIMARY_KEY>284G0</PRIMARY_KEY>
+    <SHORT_NAME>Danube Institute</SHORT_NAME>
+    <OFFICIAL_NAME>Danube Institute of National Research</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The Danube Institute of National Research lies in southern Hungary in Baja, and specialises in particle research.</SITE_DESCRIPTION>
+    <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=284&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
+    <HOME_URL>http://www.danubeinstitute.hu</HOME_URL>
+    <CONTACT_EMAIL>contact@danubeinstitute.hu</CONTACT_EMAIL>
+    <CONTACT_TEL>+36 30 40 6004</CONTACT_TEL>
+    <TIER>2</TIER>
+    <COUNTRY_CODE>Hungary</COUNTRY_CODE>
+    <COUNTRY>Hungary</COUNTRY>
+    <ROC>NGI_HU</ROC>
+    <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
+    <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
+    <TIMEZONE>Europe/Budapest</TIMEZONE>
+    <LATITUDE>46.188430</LATITUDE>
+    <LONGITUDE>18.931670</LONGITUDE>
+    <LOCATION>Baja, Hungary</LOCATION>
+    <HELPDESKEMAIL>help@danubeinstitute.hu</HELPDESKEMAIL>
+    <SCOPE>EGI</SCOPE>
+    <DOMAIN>
+      <DOMAIN_NAME>danubeinstitute.hu</DOMAIN_NAME>
+    </DOMAIN>
+  </SITE>
+
+</results>

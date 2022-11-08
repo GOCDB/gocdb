@@ -1,15 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <results>
-  <NGI PRIMARY_KEY="33001G0" NAME="NGI_CH">
-    <PRIMARY_KEY>33001G0</PRIMARY_KEY>
+  <NGI PRIMARY_KEY="41915G0" NAME="NGI_CH">
+    <PRIMARY_KEY>41915G0</PRIMARY_KEY>
     <NAME>NGI_CH</NAME>
-    <OBJECT_ID>20724</OBJECT_ID>
-    <DESCRIPTION/>
-    <EMAIL>ngi-contact@swing-grid.ch</EMAIL>
+    <OBJECT_ID>91811</OBJECT_ID>
+    <DESCRIPTION>An NGI based in Switzerland.</DESCRIPTION>
+    <EMAIL>ngi-ch-contact@grid.ch</EMAIL>
     <GGUS_SU/>
     <ROD_EMAIL/>
     <HELPDESK_EMAIL/>
-    <SECURITY_EMAIL>cert@switch.ch</SECURITY_EMAIL>
-    <SITE_COUNT>7</SITE_COUNT>
+    <SECURITY_EMAIL>cert@grid.ch</SECURITY_EMAIL>
+    <SITE_COUNT>8</SITE_COUNT>
   </NGI>
+
+  <NGI PRIMARY_KEY="94735D8" NAME="NGI_SL">
+    <PRIMARY_KEY>94735D8</PRIMARY_KEY>
+    <NAME>NGI_SL</NAME>
+    <OBJECT_ID>11463</OBJECT_ID>
+    <DESCRIPTION>An NGI based in Slovenia.</DESCRIPTION>
+    <EMAIL>ngi-sl-contact@swing-grid.sl</EMAIL>
+    <GGUS_SU/>
+    <ROD_EMAIL/>
+    <HELPDESK_EMAIL>ngi-sl-helpdesk@swing-grid.sl</HELPDESK_EMAIL>
+    <SECURITY_EMAIL>ngi-sl-security@swing-grid.sl</SECURITY_EMAIL>
+    <SITE_COUNT>4</SITE_COUNT>
+  </NGI>
+
+  <NGI PRIMARY_KEY="22601S3" NAME="NGI_HU">
+    <PRIMARY_KEY>22601S3</PRIMARY_KEY>
+    <NAME>NGI_HU</NAME>
+    <OBJECT_ID>67518</OBJECT_ID>
+    <DESCRIPTION>An NGI based in Hungary.</DESCRIPTION>
+    <EMAIL>hu-ngi@grid.hu</EMAIL>
+    <GGUS_SU/>
+    <ROD_EMAIL/>rod@grid.hu
+    <HELPDESK_EMAIL>helpdesk@grid.hu</HELPDESK_EMAIL>
+    <SECURITY_EMAIL>security@grid.hu</SECURITY_EMAIL>
+    <SITE_COUNT>6</SITE_COUNT>
+  </NGI>
+
 </results>
