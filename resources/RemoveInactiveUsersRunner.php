@@ -64,10 +64,10 @@ foreach ($users as $user) {
 
     $lastLoginDate = $user->getLastLoginDate();
     if (!$user->getAPIAuthenticationEntities()->isEmpty()) {
-       // Prevent creating orphaned API credentials.
-       echo "Cannot delete a user with attached API credentials.\n\n";
-       // Move onto the next users.
-       continue;
+        // Prevent creating orphaned API credentials.
+        echo "Cannot delete a user with attached API credentials.\n\n";
+        // Move onto the next users.
+        continue;
     }
 
     if ($lastLoginDate) {
