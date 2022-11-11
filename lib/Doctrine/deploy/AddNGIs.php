@@ -56,21 +56,19 @@ foreach($ngis as $xmlNgi) {
             $securityEmail = (string) $value;
         }
 
-	if((string) $key == "OBJECT_ID") {
-	    $objectID = (string) $value;
-	}
+        if((string) $key == "OBJECT_ID") {
+            $objectID = (string) $value;
+        }
 
         if((string) $key == "CDATEON") {
             // $cdateonString has the following format: '12-JAN-10 14.12.56.000000'
             $cdateonString = (string) $value;
 
             //convert to date time
-            $creationDate = DateTime::createFromFormat('d-M-y G.i.s.u',
-            $cdateonString, new DateTimeZone('UTC'));
+            $creationDate = DateTime::createFromFormat('d-M-y G.i.s.u', $cdateonString, new DateTimeZone('UTC'));
 
             if ($creationDate == false) {
-            throw new LogicException("Datetime in unexpected format. datetime: '" .
-            $cdateonString . "'");
+            throw new LogicException("Datetime in unexpected format. datetime: '" . $cdateonString . "'");
             }
         }
 
@@ -83,7 +81,6 @@ foreach($ngis as $xmlNgi) {
     $doctrineNgi->setHelpdeskEmail($helpdeskEmail);
     $doctrineNgi->setSecurityEmail($securityEmail);
 
-
     // TODO
     //if($cdateon == null) throw new Exception("CDATEON is null");
     //$doctrineNgi->setCreationDate($cdateon);
@@ -92,8 +89,8 @@ foreach($ngis as $xmlNgi) {
     if ($objectID == "67518") {
         $doctrineNgi->addScope($localScope);
         $entityManager->persist($doctrineNgi);
-    }
-    else {
+    } else {
+        // add NGI to EGI project and give it EGI scope
         $egiProject->addNgi($doctrineNgi);
         $doctrineNgi->addScope($egiScope);
         $entityManager->persist($doctrineNgi);
