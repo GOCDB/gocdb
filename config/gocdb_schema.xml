@@ -493,7 +493,7 @@
 	    <!-- negation regex - allow all chars except negated -->
         <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
         <!-- <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex> -->
-        <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
+        <regex>/^[^`\"&lt;&gt;\s]+(\s*[^`\"&lt;&gt;\s]+)*$/</regex>
 	</field>
     </entity>
     <!-- ==========================================================  -->
