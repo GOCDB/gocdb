@@ -345,7 +345,7 @@
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
     <LOCATION>Budapest, Hungary</LOCATION>
     <HELPDESKEMAIL>support@budapestinstitute-gridoperations.hu</HELPDESKEMAIL>
-    <SCOPE>EGI</SCOPE>
+    <SCOPE>Local</SCOPE>
     <DOMAIN>
       <DOMAIN_NAME>budapestinstitute-gridoperations.hu</DOMAIN_NAME>
     </DOMAIN>
@@ -370,7 +370,7 @@
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
     <LOCATION>Tihany, Hungary</LOCATION>
     <HELPDESKEMAIL>help@lakebalatonresearch.hu</HELPDESKEMAIL>
-    <SCOPE>EGI</SCOPE>
+    <SCOPE>Local</SCOPE>
     <DOMAIN>
       <DOMAIN_NAME>lakebalatonresearch.hu</DOMAIN_NAME>
     </DOMAIN>
@@ -395,7 +395,7 @@
     <CSIRT_EMAIL>csirt@sandboxit.hu</CSIRT_EMAIL>
     <LOCATION>Nyiregyhaza, Hungary</LOCATION>
     <HELPDESKEMAIL>help@sandboxit.hu</HELPDESKEMAIL>
-    <SCOPE>EGI</SCOPE>
+    <SCOPE>Local</SCOPE>
     <DOMAIN>
       <DOMAIN_NAME>sandboxit.hu</DOMAIN_NAME>
     </DOMAIN>
@@ -420,7 +420,7 @@
     <LONGITUDE>21.653454</LONGITUDE>
     <LOCATION>Debrecen, Hungary</LOCATION>
     <HELPDESKEMAIL>support@debrecentech.hu</HELPDESKEMAIL>
-    <SCOPE>EGI</SCOPE>
+    <SCOPE>Local</SCOPE>
     <DOMAIN>
       <DOMAIN_NAME>debrecentech.hu</DOMAIN_NAME>
     </DOMAIN>
@@ -444,7 +444,7 @@
     <LONGITUDE>17.435154</LONGITUDE>
     <LOCATION>Barcs, Hungary</LOCATION>
     <HELPDESKEMAIL>helpdesk@barcs-drava-stf.hu</HELPDESKEMAIL>
-    <SCOPE>EGI</SCOPE>
+    <SCOPE>Local</SCOPE>
     <DOMAIN>
       <DOMAIN_NAME>barcs-drava-stf.hu</DOMAIN_NAME>
     </DOMAIN>
@@ -469,7 +469,7 @@
     <LONGITUDE>18.931670</LONGITUDE>
     <LOCATION>Baja, Hungary</LOCATION>
     <HELPDESKEMAIL>help@danubeinstitute.hu</HELPDESKEMAIL>
-    <SCOPE>EGI</SCOPE>
+    <SCOPE>Local</SCOPE>
     <DOMAIN>
       <DOMAIN_NAME>danubeinstitute.hu</DOMAIN_NAME>
     </DOMAIN>
