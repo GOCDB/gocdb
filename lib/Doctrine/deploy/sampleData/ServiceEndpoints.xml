@@ -293,7 +293,7 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="73445G0">
         <PRIMARY_KEY>73445G0</PRIMARY_KEY>
-        <HOSTNAME>419bdii.ssc.sl</HOSTNAME>
+        <HOSTNAME>419bdii.ssc.si</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=73445&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
@@ -304,13 +304,13 @@
         <NODE_MONITORED>Y</NODE_MONITORED>
         <SITENAME>SSC</SITENAME>
         <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
-        <COUNTRY_CODE>SL</COUNTRY_CODE>
-        <ROC_NAME>NGI_SL</ROC_NAME>
+        <COUNTRY_CODE>SI</COUNTRY_CODE>
+        <ROC_NAME>NGI_SI</ROC_NAME>
         <URL></URL>
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="6674G0">
         <PRIMARY_KEY>6674G0</PRIMARY_KEY>
-        <HOSTNAME>419LFC.ssc.sl</HOSTNAME>
+        <HOSTNAME>419LFC.ssc.si</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6674&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>site LFC</DESCRIPTION>
         <SERVICE_TYPE>Local-LFC</SERVICE_TYPE>
@@ -321,13 +321,13 @@
         <NODE_MONITORED>Y</NODE_MONITORED>
         <SITENAME>SSC</SITENAME>
         <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
-        <COUNTRY_CODE>SL</COUNTRY_CODE>
-        <ROC_NAME>NGI_SL</ROC_NAME>
+        <COUNTRY_CODE>SI</COUNTRY_CODE>
+        <ROC_NAME>NGI_SI</ROC_NAME>
         <URL></URL>
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="73221G0">
         <PRIMARY_KEY>73221G0</PRIMARY_KEY>
-        <HOSTNAME>srm.ssc.sl</HOSTNAME>
+        <HOSTNAME>srm.ssc.si</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=73221&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>srm</DESCRIPTION>
         <SERVICE_TYPE>SRM</SERVICE_TYPE>
@@ -338,13 +338,13 @@
         <NODE_MONITORED>Y</NODE_MONITORED>
         <SITENAME>SSC</SITENAME>
         <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
-        <COUNTRY_CODE>SL</COUNTRY_CODE>
-        <ROC_NAME>NGI_SL</ROC_NAME>
+        <COUNTRY_CODE>SI</COUNTRY_CODE>
+        <ROC_NAME>NGI_SI</ROC_NAME>
         <URL></URL>
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="9980G0">
         <PRIMARY_KEY>9980G0</PRIMARY_KEY>
-        <HOSTNAME>bdii4.izolamrf.sl</HOSTNAME>
+        <HOSTNAME>bdii4.izolamrf.si</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=9980&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
@@ -355,13 +355,13 @@
         <NODE_MONITORED>Y</NODE_MONITORED>
         <SITENAME>Izola MRF</SITENAME>
         <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
-        <COUNTRY_CODE>SL</COUNTRY_CODE>
-        <ROC_NAME>NGI_SL</ROC_NAME>
+        <COUNTRY_CODE>SI</COUNTRY_CODE>
+        <ROC_NAME>NGI_SI</ROC_NAME>
         <URL></URL>
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="9933G0">
         <PRIMARY_KEY>9933G0</PRIMARY_KEY>
-        <HOSTNAME>ce01.izolamrf.sl</HOSTNAME>
+        <HOSTNAME>ce01.izolamrf.si</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=9933&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>arc-ce</DESCRIPTION>
         <SERVICE_TYPE>ARC-CE</SERVICE_TYPE>
@@ -372,13 +372,13 @@
         <NODE_MONITORED>Y</NODE_MONITORED>
         <SITENAME>Izola MRF</SITENAME>
         <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
-        <COUNTRY_CODE>SL</COUNTRY_CODE>
-        <ROC_NAME>NGI_SL</ROC_NAME>
+        <COUNTRY_CODE>SI</COUNTRY_CODE>
+        <ROC_NAME>NGI_SI</ROC_NAME>
         <URL></URL>
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="10007G0">
         <PRIMARY_KEY>10007G0</PRIMARY_KEY>
-        <HOSTNAME>uni-bdii.uni-lj.sl</HOSTNAME>
+        <HOSTNAME>uni-bdii.uni-lj.si</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=10007&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>university site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
@@ -389,13 +389,13 @@
         <NODE_MONITORED>Y</NODE_MONITORED>
         <SITENAME>uni-lj</SITENAME>
         <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
-        <COUNTRY_CODE>SL</COUNTRY_CODE>
-        <ROC_NAME>NGI_SL</ROC_NAME>
+        <COUNTRY_CODE>SI</COUNTRY_CODE>
+        <ROC_NAME>NGI_SI</ROC_NAME>
         <URL></URL>
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="10041G0">
         <PRIMARY_KEY>10041G0</PRIMARY_KEY>
-        <HOSTNAME>ptuj-bdii.ptujrpc.sl</HOSTNAME>
+        <HOSTNAME>ptuj-bdii.ptujrpc.si</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=10041&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>Site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
@@ -406,13 +406,13 @@
         <NODE_MONITORED>Y</NODE_MONITORED>
         <SITENAME>PtujRPC</SITENAME>
         <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
-        <COUNTRY_CODE>SL</COUNTRY_CODE>
-        <ROC_NAME>NGI_SL</ROC_NAME>
+        <COUNTRY_CODE>SI</COUNTRY_CODE>
+        <ROC_NAME>NGI_SI</ROC_NAME>
         <URL></URL>
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="12066G0">
         <PRIMARY_KEY>12066G0</PRIMARY_KEY>
-        <HOSTNAME>ptuj-ce.ptujrpc.sl</HOSTNAME>
+        <HOSTNAME>ptuj-ce.ptujrpc.si</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=12066&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>CE for Ptuj</DESCRIPTION>
         <SERVICE_TYPE>ARC-CE</SERVICE_TYPE>
@@ -423,8 +423,8 @@
         <NODE_MONITORED>Y</NODE_MONITORED>
         <SITENAME>PtujRPC</SITENAME>
         <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
-        <COUNTRY_CODE>SL</COUNTRY_CODE>
-        <ROC_NAME>NGI_SL</ROC_NAME>
+        <COUNTRY_CODE>SI</COUNTRY_CODE>
+        <ROC_NAME>NGI_SI</ROC_NAME>
         <URL></URL>
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="1142G0">

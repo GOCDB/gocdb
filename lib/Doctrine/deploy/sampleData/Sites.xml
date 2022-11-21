@@ -218,27 +218,27 @@
     <OFFICIAL_NAME>Slovenia Science Council</OFFICIAL_NAME>
     <SITE_DESCRIPTION>The primary science council for Slovenia, specialising in physics and space.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=351&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.sloveniasciencecouncil.co.sl</HOME_URL>
-    <CONTACT_EMAIL>contact@ssc.sl</CONTACT_EMAIL>
+    <HOME_URL>http://www.sloveniasciencecouncil.co.si</HOME_URL>
+    <CONTACT_EMAIL>contact@ssc.si</CONTACT_EMAIL>
     <CONTACT_TEL>+386 94 010 8495</CONTACT_TEL>
     <TIER>1</TIER>
-    <GIIS_URL>ldap://grid.ssc.sl:0000/ds-vo-name=SSC,o=grid</GIIS_URL>
+    <GIIS_URL>ldap://grid.ssc.si:0000/ds-vo-name=SSC,o=grid</GIIS_URL>
     <COUNTRY_CODE>Slovenia</COUNTRY_CODE>
     <COUNTRY>Slovenia</COUNTRY>
-    <ROC>NGI_SL</ROC>
+    <ROC>NGI_SI</ROC>
     <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
     <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
     <TIMEZONE>Europe/Ljubljana</TIMEZONE>
     <LATITUDE>45.949879</LATITUDE>
     <LONGITUDE>14.654570</LONGITUDE>
-    <CSIRT_EMAIL>csirt@ssc.sl</CSIRT_EMAIL>
+    <CSIRT_EMAIL>csirt@ssc.si</CSIRT_EMAIL>
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
     <LOCATION>Grosuplje, Slovenia</LOCATION>
     <CSIRTTEL>+386 31 000 4151</CSIRTTEL>
-    <HELPDESKEMAIL>helpdesk@ssc.sl</HELPDESKEMAIL>
+    <HELPDESKEMAIL>helpdesk@ssc.si</HELPDESKEMAIL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>ssc.sl</DOMAIN_NAME>
+      <DOMAIN_NAME>ssc.si</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
   <SITE ID="367311" PRIMARY_KEY="119G0" NAME="Izola Marine Research Facility" COBJECTID="119">
@@ -247,27 +247,27 @@
     <OFFICIAL_NAME>Izola Marine Research Facility</OFFICIAL_NAME>
     <SITE_DESCRIPTION>Situated right on Slovenia's small coastline of the Adriatic Sea, the Izola Marine Research Facility is Slovenia's hub for all things ocean research.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=119&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.izolamrf.co.sl</HOME_URL>
-    <CONTACT_EMAIL>contact@izolamrf.sl</CONTACT_EMAIL>
+    <HOME_URL>http://www.izolamrf.co.si</HOME_URL>
+    <CONTACT_EMAIL>contact@izolamrf.si</CONTACT_EMAIL>
     <CONTACT_TEL>+386 45 310 1393</CONTACT_TEL>
     <TIER>3</TIER>
-    <GIIS_URL>ldap://grid.izolamrf.sl:0000/ds-vo-name=IzolaMRF,o=grid</GIIS_URL>
+    <GIIS_URL>ldap://grid.izolamrf.si:0000/ds-vo-name=IzolaMRF,o=grid</GIIS_URL>
     <COUNTRY_CODE>Slovenia</COUNTRY_CODE>
     <COUNTRY>Slovenia</COUNTRY>
-    <ROC>NGI_SL</ROC>
+    <ROC>NGI_SI</ROC>
     <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
     <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
     <TIMEZONE>Europe/Ljubljana</TIMEZONE>
     <LATITUDE>45.541431</LATITUDE>
     <LONGITUDE>13.662742</LONGITUDE>
-    <CSIRT_EMAIL>csirt@izolamrf.sl</CSIRT_EMAIL>
+    <CSIRT_EMAIL>csirt@izolamrf.si</CSIRT_EMAIL>
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
     <LOCATION>Izola, Slovenia</LOCATION>
     <CSIRTTEL>+386 41 000 2994</CSIRTTEL>
-    <HELPDESKEMAIL>help@izolamrf.sl</HELPDESKEMAIL>
+    <HELPDESKEMAIL>help@izolamrf.si</HELPDESKEMAIL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>izolamrf.sl</DOMAIN_NAME>
+      <DOMAIN_NAME>izolamrf.si</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
   <SITE ID="827892" PRIMARY_KEY="956G0" NAME="Univerza v Ljubljani" COBJECTID="956">
@@ -279,22 +279,22 @@
     <HOME_URL>https://www.uni-lj.si/</HOME_URL>
     <CONTACT_EMAIL>rektorat@uni-lj.si</CONTACT_EMAIL>
     <CONTACT_TEL>+386 1 241 85 00</CONTACT_TEL>
-    <GIIS_URL>ldap://grid.uni-lj.sl:0000/ds-vo-name=uni-lj,o=grid</GIIS_URL>
+    <GIIS_URL>ldap://grid.uni-lj.si:0000/ds-vo-name=uni-lj,o=grid</GIIS_URL>
     <COUNTRY_CODE>Slovenia</COUNTRY_CODE>
     <COUNTRY>Slovenia</COUNTRY>
-    <ROC>NGI_SL</ROC>
+    <ROC>NGI_SI</ROC>
     <PRODUCTION_INFRASTRUCTURE>Test</PRODUCTION_INFRASTRUCTURE>
     <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
     <TIMEZONE>Europe/Ljubljana</TIMEZONE>
     <LATITUDE>46.050835</LATITUDE>
     <LONGITUDE>14.503670</LONGITUDE>
-    <CSIRT_EMAIL>csirt@uni-lj.sl</CSIRT_EMAIL>
+    <CSIRT_EMAIL>csirt@uni-lj.si</CSIRT_EMAIL>
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
     <LOCATION>University of Ljubljana, Slovenia</LOCATION>
-    <HELPDESKEMAIL>enquiries@uni-lj.sl</HELPDESKEMAIL>
+    <HELPDESKEMAIL>enquiries@uni-lj.si</HELPDESKEMAIL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>uni-lj.sl</DOMAIN_NAME>
+      <DOMAIN_NAME>uni-lj.si</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
   <SITE ID="2030844" PRIMARY_KEY="203G0" NAME="Ptuj Research and Production Centre" COBJECTID="203">
@@ -303,25 +303,25 @@
     <OFFICIAL_NAME>Ptuj Research and Production Centre </OFFICIAL_NAME>
     <SITE_DESCRIPTION>The research and production site for Eastern Slovenia, this research centre is on the banks of the Ptujsko jezero in Ptuj.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=203&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.ptuj-research-production-centre.sl</HOME_URL>
-    <CONTACT_EMAIL>grid-team@ptujrpc.sl</CONTACT_EMAIL>
+    <HOME_URL>http://www.ptuj-research-production-centre.si</HOME_URL>
+    <CONTACT_EMAIL>grid-team@ptujrpc.si</CONTACT_EMAIL>
     <CONTACT_TEL>+386 81 110 5643</CONTACT_TEL>
     <COUNTRY_CODE>Slovenia</COUNTRY_CODE>
     <COUNTRY>Slovenia</COUNTRY>
-    <ROC>NGI_SL</ROC>
+    <ROC>NGI_SI</ROC>
     <PRODUCTION_INFRASTRUCTURE>Production</PRODUCTION_INFRASTRUCTURE>
     <CERTIFICATION_STATUS>Certified</CERTIFICATION_STATUS>
     <TIMEZONE>Europe/Ljubljana</TIMEZONE>
     <LATITUDE>46.414151</LATITUDE>
     <LONGITUDE>15.877531</LONGITUDE>
-    <CSIRT_EMAIL>csirt@ptujrpc</CSIRT_EMAIL>
+    <CSIRT_EMAIL>csirt@ptujrpc.si</CSIRT_EMAIL>
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
     <LOCATION>Ptuj, Slovenia</LOCATION>
-    <HELPDESKEMAIL>help@ptujrpc.sl</HELPDESKEMAIL>
+    <HELPDESKEMAIL>help@ptujrpc.si</HELPDESKEMAIL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>ptujrpc.sl</DOMAIN_NAME>
-    </DOMAIN> 
+      <DOMAIN_NAME>ptujrpc.si</DOMAIN_NAME>
+    </DOMAIN>
   </SITE>
   <SITE ID="243789" PRIMARY_KEY="761G0" NAME="Budapest Institute of National Research" COBJECTID="761">
     <PRIMARY_KEY>761G0</PRIMARY_KEY>

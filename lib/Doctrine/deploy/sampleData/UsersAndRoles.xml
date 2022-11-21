@@ -142,7 +142,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Yuki.Tsunoda@izolamrf.sl</EMAIL>
+        <EMAIL>Yuki.Tsunoda@izolamrf.si</EMAIL>
         <TEL>+49 432 0030 8324</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -153,7 +153,7 @@
 
         <USER_ROLE>
             <USER_ROLE>Chief Operations Officer</USER_ROLE>
-            <ON_ENTITY>NGI_SL</ON_ENTITY>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -196,7 +196,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Gwei.Jai@izolamrf.sl</EMAIL>
+        <EMAIL>Gwei.Jai@izolamrf.si</EMAIL>
         <TEL>+44 040 3636 3600</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -207,12 +207,12 @@
 
         <USER_ROLE>
             <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>NGI_SL</ON_ENTITY>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Site Operations Manager</USER_ROLE>
-            <ON_ENTITY>NGI_SL</ON_ENTITY>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -250,7 +250,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Dante.Meloni@ssc.sl</EMAIL>
+        <EMAIL>Dante.Meloni@ssc.si</EMAIL>
         <TEL>+01 040 0331 3231</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -261,7 +261,7 @@
 
         <USER_ROLE>
             <USER_ROLE>Regional Staff</USER_ROLE>
-            <ON_ENTITY>NGI_SL</ON_ENTITY>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -272,7 +272,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Elliott.Youngson@ptujrpc.sl</EMAIL>
+        <EMAIL>Elliott.Youngson@ptujrpc.si</EMAIL>
         <TEL>+44 129 8789 7578</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -283,7 +283,7 @@
 
         <USER_ROLE>
             <USER_ROLE>Site Operations Manager</USER_ROLE>
-            <ON_ENTITY>NGI_SL</ON_ENTITY>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
@@ -326,7 +326,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Cai.Lamity@uni-lj.sl</EMAIL>
+        <EMAIL>Cai.Lamity@uni-lj.si</EMAIL>
         <TEL>+44 360 68680 9094</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -337,7 +337,7 @@
 
         <USER_ROLE>
             <USER_ROLE>Regional First Line Support</USER_ROLE>
-            <ON_ENTITY>NGI_SL</ON_ENTITY>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -397,7 +397,7 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Beth.Westley@ssc.sl</EMAIL>
+        <EMAIL>Beth.Westley@ssc.si</EMAIL>
         <TEL>+91 4453 22 945</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -408,12 +408,12 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_SL</ON_ENTITY>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Regional Staff</USER_ROLE>
-            <ON_ENTITY>NGI_SL</ON_ENTITY>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>

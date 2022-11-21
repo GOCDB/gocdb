@@ -13,16 +13,16 @@
     <SITE_COUNT>8</SITE_COUNT>
   </NGI>
 
-  <NGI PRIMARY_KEY="94735D8" NAME="NGI_SL">
+  <NGI PRIMARY_KEY="94735D8" NAME="NGI_SI">
     <PRIMARY_KEY>94735D8</PRIMARY_KEY>
-    <NAME>NGI_SL</NAME>
+    <NAME>NGI_SI</NAME>
     <OBJECT_ID>11463</OBJECT_ID>
     <DESCRIPTION>An NGI based in Slovenia.</DESCRIPTION>
-    <EMAIL>ngi-sl-contact@swing-grid.sl</EMAIL>
+    <EMAIL>ngi-si-contact@swing-grid.si</EMAIL>
     <GGUS_SU/>
     <ROD_EMAIL/>
-    <HELPDESK_EMAIL>ngi-sl-helpdesk@swing-grid.sl</HELPDESK_EMAIL>
-    <SECURITY_EMAIL>ngi-sl-security@swing-grid.sl</SECURITY_EMAIL>
+    <HELPDESK_EMAIL>ngi-si-helpdesk@swing-grid.si</HELPDESK_EMAIL>
+    <SECURITY_EMAIL>ngi-si-security@swing-grid.si</SECURITY_EMAIL>
     <SITE_COUNT>4</SITE_COUNT>
   </NGI>
 
