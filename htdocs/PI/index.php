@@ -404,6 +404,16 @@ class PIRequest
         $admin = false;
         $authenticated = false;
 
+        // Check if incoming identifier is a registered API Authentication credential.
+
+        $authEntServ = \Factory::getAPIAuthenticationService();
+        $authEnt = $authEntServ->getAPIAuthentication($this->identifier);
+
+        if (!is_null($authEnt)) {
+            $authEntServ->updateLastUseTime($authEnt);
+            $authenticated = true;
+        }
+
         $user = \Factory::getUserService()->getUserByPrinciple($this->identifier);
 
         if ($user == null) {

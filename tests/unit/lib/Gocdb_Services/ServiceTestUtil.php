@@ -2,6 +2,8 @@
 
 require_once __DIR__ . "/../../../doctrine/TestUtil.php";
 
+use org\gocdb\services\APIAuthenticationService;
+
 /**
  *  Helper functions for GOCDB_Services tests
  *
@@ -125,4 +127,33 @@ class ServiceTestUtil {
 
     return $scopeService;
   }
+  public static function createGocdbEntities($entityManager)
+  {
+    /**
+     * Set up the site, user and service objects shared by
+     * some tests.
+     *
+     * @return array Created User, Site and SiteService instances
+     */
+
+    $siteData = ServiceTestUtil::getSiteData($entityManager);
+    $siteService = ServiceTestUtil::getSiteService($entityManager);
+    $site = ServiceTestUtil::createAndAddSite($entityManager, $siteData);
+
+    $user = TestUtil::createSampleUser('Beta', 'User');
+    $user->setAdmin(true);
+
+    $identifier = TestUtil::createSampleUserIdentifier('X.509', '/Beta.User');
+    ServiceTestUtil::persistAndFlush($entityManager, $identifier);
+
+    $user->addUserIdentifierDoJoin($identifier);
+
+    ServiceTestUtil::persistAndFlush($entityManager, $user);
+
+    $authEntServ = new APIAuthenticationService();
+    $authEntServ->setEntityManager($entityManager);
+
+    return [$user, $site, $siteService, $authEntServ];
+  }
+
 }
