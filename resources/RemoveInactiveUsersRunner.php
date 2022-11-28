@@ -85,8 +85,6 @@ foreach ($users as $user) {
         } else {
             // As dry run option is false, user can be deleted.
             deleteUser($user, $entityManager);
-            // Move onto the next users.
-            continue;
         }
         continue;
     }
@@ -165,11 +163,11 @@ function deleteUser($user, $entityManager)
         $entityManager->remove($user);
         $entityManager->flush();
         $entityManager->getConnection()->commit();
-        echo "User deleted.\n";
+        echo "User deleted.\n\n";
     } catch (\Exception $e) {
         $entityManager->getConnection()->rollback();
         $entityManager->close();
-        echo "User not deleted.\n";
+        echo "User not deleted.\n\n";
         throw $e;
     }
 }
