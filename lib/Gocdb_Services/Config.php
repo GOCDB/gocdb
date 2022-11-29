@@ -1,5 +1,7 @@
 <?php
+
 namespace org\gocdb\services;
+
 /* Copyright © 2011 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -19,26 +21,33 @@ namespace org\gocdb\services;
  *
  * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author John Casson
+ *
+ * @SuppressWarnings(PHPMD.CamelCaseMethodName)
+ * @phpcs:disable PSR1.Methods.CamelCapsMethodName.NotCamelCaps
+ *
  */
-class Config {
-    private $gocdb_schemaFile;
-    private $local_infoFile;
-    private $local_info_xml = NULL;
-    private $local_info_override = NULL;
+class Config
+{
+    private $gocdbSchemaFile;
+    private $localInfoFile;
+    private $localInfoXml = null;
+    private $localInfoOverride = null;
 
 
-    public function __construct() {
-        $this->gocdb_schemaFile = __DIR__."/../../config/gocdb_schema.xml";
+    public function __construct()
+    {
+        $this->gocdbSchemaFile = __DIR__ . "/../../config/gocdb_schema.xml";
 
-        $this->setLocalInfoFileLocation(__DIR__."/../../config/local_info.xml");
+        $this->setLocalInfoFileLocation(__DIR__ . "/../../config/local_info.xml");
     }
 
     /**
      * Get the full path to the gocdb_schema.xml config file.
      * @return string
      */
-    public function getSchemaFileLocation(){
-       return $this->gocdb_schemaFile;
+    public function getSchemaFileLocation()
+    {
+        return $this->gocdbSchemaFile;
     }
 
     /**
@@ -50,19 +59,21 @@ class Config {
      * @param string $filePath
      * @throws \LogicException If not a string
      */
-    public function setSchemaFileLocation($filePath){
-        if(!is_string($filePath)){
+    public function setSchemaFileLocation($filePath)
+    {
+        if (!is_string($filePath)) {
             throw new \LogicException("Invalid filePath given for gocdb_schema.xml file");
         }
-        $this->gocdb_schemaFile = $filePath;
+        $this->gocdbSchemaFile = $filePath;
     }
 
     /**
      * Get the full path to the local_info.xml config file.
      * @return string
      */
-    public function getLocalInfoFileLocation(){
-        return $this->local_infoFile;
+    public function getLocalInfoFileLocation()
+    {
+        return $this->localInfoFile;
     }
 
     /**
@@ -74,17 +85,17 @@ class Config {
      * @param string $filePath
      * @throws \ErrorException If not a string
      */
-    public function setLocalInfoFileLocation($filePath){
-        if(!is_string($filePath)){
+    public function setLocalInfoFileLocation($filePath)
+    {
+        if (!is_string($filePath)) {
             throw new \ErrorException("Invalid filePath given for local_info.xml file");
         }
         // If this is the first time in or the path has changed save the filepath
         // and force any existing cached object to be discarded.
-            if ($this->local_infoFile == NULL or $this->local_infoFile !== $filePath){
-            $this->local_infoFile = $filePath;
-            $this->local_info_xml = NULL;
+        if ($this->localInfoFile == null or $this->localInfoFile !== $filePath) {
+            $this->localInfoFile = $filePath;
+            $this->localInfoXml = null;
         }
-
     }
 
     /**
@@ -94,22 +105,24 @@ class Config {
      * @param string $filePath
      * @throws \LogicException If not a string
      */
-    public function setLocalInfoOverride ($url){
-        if(!is_string($url)){
+    public function setLocalInfoOverride($url)
+    {
+        if (!is_string($url)) {
             throw new \LogicException("Invalid url given for local_info override.");
         }
-        $this->local_info_override = $url;
+        $this->localInfoOverride = $url;
         /**
          *  Force the cached object to be discarded as the file has changed
          */
-        $this->local_info_xml = NULL;
+        $this->localInfoXml = null;
     }
 
     /**
      * Opens the gocdb_schema.xml file for reading, returning a simplexml object.
      * @return simple xml object
      */
-    public function GetSchemaXML() {
+    public function GetSchemaXML()
+    {
         return simplexml_load_file($this->getSchemaFileLocation());
     }
 
@@ -117,13 +130,16 @@ class Config {
      * Returns a simplexml object representing the local_info.xml file
      * @return simple xml object
      */
-    private function GetLocalInfoXML() {
-        if ($this->local_info_xml == NULL) {
-            if (!($this->local_info_xml = $this->readLocalInfoXML($this->getLocalInfoFileLocation(), $this->local_info_override))) {
-                throw new \ErrorException("Failed to load xml configuration file: ".$this->getLocalInfoFileLocation());
+    private function GetLocalInfoXML()
+    {
+        if ($this->localInfoXml == null) {
+            $this->localInfoXml = $this->readLocalInfoXML($this->getLocalInfoFileLocation(), $this->localInfoOverride);
+            if (!$this->localInfoXml) {
+                throw new \ErrorException("Failed to load xml configuration file: " .
+                                            $this->getLocalInfoFileLocation());
             }
         }
-        return $this->local_info_xml;
+        return $this->localInfoXml;
     }
 
     /**
@@ -131,25 +147,32 @@ class Config {
      * adjusted based on the url attribute provided.
      * @return simple xml object
      */
-    private function readLocalInfoXML ($path, $url = NULL) {
+    private function readLocalInfoXML($path, $url = null)
+    {
 
         libxml_use_internal_errors(true);
 
-        if (($base = simplexml_load_file($path)) == FALSE) {
-            $this->throwXmlErrors('Failed to load configuration file '.$path);
+        $base = simplexml_load_file($path);
+
+        if (!$base) {
+            $this->throwXmlErrors('Failed to load configuration file ' . $path);
         }
 
         // Search the input XML for a 'local_info' section that does NOT have a url attribute
         // specified. This is the default spec.
-        if (($unqualified = $base->xpath("//local_info[not(@url)]")) == FALSE) {
-            throw new \ErrorException('Failed to find local_info section without url in configuration file '.$path);
+        $unqualified = $base->xpath("//local_info[not(@url)]");
+        if (!$unqualified) {
+            throw new \ErrorException('Failed to find local_info section without url in configuration file ' . $path);
         }
 
         if (count($unqualified) != 1) {
-            throw new \ErrorException('Only one local_info element without url attribute is allowed in configuration file '.$path);
+            throw new \ErrorException(
+                'Only one local_info element without url attribute is allowed in configuration file ' .
+                $path
+            );
         }
 
-        $default_info = $unqualified[0];
+        $defaultInfo = $unqualified[0];
 
         if (!is_null($url)) {
             // Find any elements matching the given url
@@ -157,25 +180,28 @@ class Config {
 
             if (count($qualified) != 0) {
                 if (count($qualified) != 1) {
-                    throw new \ErrorException('Duplicate local_info elements with same url attribute found in configuration file '.$path);
+                    throw new \ErrorException(
+                        'Duplicate local_info elements with same url attribute found in configuration file ' .
+                         $path
+                    );
                 }
 
-                $iterator = new \SimpleXmlIterator ($qualified[0]->asXML());
+                $iterator = new \SimpleXmlIterator($qualified[0]->asXML());
 
                 $keys = array();
 
-                $this->descendXml($iterator, $keys, $default_info);
-
+                $this->descendXml($iterator, $keys, $defaultInfo);
             }
         }
-        return $default_info;
+        return $defaultInfo;
     }
     /**
      * Throws an ErrorException after appending libxml errors to the input message.
      */
-    private function throwXmlErrors ($message) {
+    private function throwXmlErrors($message)
+    {
         foreach (libxml_get_errors() as $err) {
-            $message .= " ".$err->message;
+            $message .= " " . $err->message;
         }
         libxml_clear_errors();
         throw new \ErrorException($message);
@@ -185,30 +211,36 @@ class Config {
      * SimpleXmlElement with the values found in the iterator.
      * Note: The elements in the iterator MUST exist in the input element.
      */
-    private function descendXml (\SimpleXmlIterator $iterator, $keys, \SimpleXmlElement $default_info) {
+    private function descendXml(\SimpleXmlIterator $iterator, $keys, \SimpleXmlElement $defaultInfo)
+    {
 
         for ($iterator->rewind(); $iterator->valid(); $iterator->next()) {
-
             $keys[] = $iterator->key();
 
             if ($iterator->hasChildren()) {
-                $this->descendXml($iterator->getChildren(), $keys, $default_info);
+                $this->descendXml($iterator->getChildren(), $keys, $defaultInfo);
             } else {
-                $p = implode("/",$keys);
-                if (($elem = $default_info->xpath($p)) == FALSE) {
-                    throw new \ErrorException("Did not find elements $p in input configuration file.");
+                $elemPath = implode("/", $keys);
+                $elem = $defaultInfo->xpath($elemPath);
+                if (!$elem) {
+                    throw new \ErrorException("Did not find elements $elemPath in input configuration file.");
                 }
                 if (count($elem)) {
                     if (count($elem) != 1) {
-                        throw new \ErrorException('Duplicate input configuration file element specifications ('.count($elem).') for "'.implode('/',$keys).'"');
+                        throw new \ErrorException(
+                            'Duplicate input configuration file element specifications (' . count($elem) .
+                            ') for "' . implode('/', $keys) . '"'
+                        );
                     }
                     # ???? How else to force a self-reference rather than override the array value ????
                     $elem[0][0] = (string)$iterator->current();
                 } else {
                     // Do we want to create it here ??
-                    throw new \ErrorException("Input configuration file override element $p not found in default section: ".$iterator->key().' => '.$iterator->current());
+                    throw new \ErrorException(
+                        "Input configuration file override element $elemPath not found in default section: " .
+                        $iterator->key() . ' => ' . $iterator->current()
+                    );
                 }
-
             }
             array_pop($keys);
         }
@@ -218,9 +250,10 @@ class Config {
      * returns true if the portal has ben set to read only mode in local_info.xml
      * @return boolean
      */
-    public function IsPortalReadOnly(){
+    public function IsPortalReadOnly()
+    {
         $localInfo = $this->GetLocalInfoXML();
-        if (strtolower($localInfo->read_only) == 'true'){
+        if (strtolower($localInfo->read_only) == 'true') {
             return true;
         }
 
@@ -230,44 +263,49 @@ class Config {
      * returns the url of the Acceptable Use Policy for display on the landing page
      * @return string
      */
-    public function getAUP() {
+    public function getAUP()
+    {
         return  $this->GetLocalInfoXML()->aup;
     }
     /**
      * returns the title string describing the Acceptable Use Policy for display on the landing page
      * @return string
      */
-    public function getAUPTitle() {
+    public function getAUPTitle()
+    {
         return  $this->GetLocalInfoXML()->aup_title;
     }
     /**
      * returns the url of the Privacy Notice for display on the landing page
      * @return string
      */
-    public function getPrivacyNotice() {
+    public function getPrivacyNotice()
+    {
         return  $this->GetLocalInfoXML()->privacy_notice;
     }
     /**
      * returns the title string describing the Privacy Notice for display on the landing page
      * @return string
      */
-    public function getPrivacyNoticeTitle() {
+    public function getPrivacyNoticeTitle()
+    {
         return  $this->GetLocalInfoXML()->privacy_notice_title;
     }
     /**
      * returns true if the given menu is to be shown according to local_info.xml
      * @return boolean
      */
-    public function showMenu($menuName) {
+    public function showMenu($menuName)
+    {
 
         if (empty($this->GetLocalInfoXML()->menus->$menuName)) {
             return true;
         }
 
         switch (strtolower((string) $this->GetLocalInfoXML()->menus->$menuName)) {
-            case 'false';
-            case 'hide';
-            case 'no';
+            case 'false':
+            case 'hide':
+            case 'no':
                 return false;
         }
         return true;
@@ -276,32 +314,38 @@ class Config {
      * returns the relevant name mapping according to local_info.xml
      * @return string
      */
-    public function getNameMapping($entityType, $key) {
+    public function getNameMapping($entityType, $key)
+    {
         if (empty($this->GetLocalInfoXML()->name_mapping->$entityType)) {
             return $key;
         }
         switch ($entityType) {
             case 'Service':
-                return $this->GetLocalInfoXML()->name_mapping->$entityType->{str_replace(' ','',$key)};
+                return $this->GetLocalInfoXML()->name_mapping->$entityType->{str_replace(' ', '', $key)};
         }
     }
     /**
      * accessor function for css colour values from local_info.xml
      * @return string
      */
-    public function getBackgroundDirection() {
+    public function getBackgroundDirection()
+    {
         return $this->GetLocalInfoXML()->css->backgroundDirection;
     }
-    public function getBackgroundColour1() {
+    public function getBackgroundColour1()
+    {
         return $this->GetLocalInfoXML()->css->backgroundColour1;
     }
-    public function getBackgroundColour2() {
+    public function getBackgroundColour2()
+    {
         return $this->GetLocalInfoXML()->css->backgroundColour2;
     }
-    public function getBackgroundColour3() {
+    public function getBackgroundColour3()
+    {
         return $this->GetLocalInfoXML()->css->backgroundColour3;
     }
-    public function getHeadingTextColour() {
+    public function getHeadingTextColour()
+    {
         return $this->GetLocalInfoXML()->css->headingTextColour;
     }
 
@@ -311,10 +355,11 @@ class Config {
      *  XML child element under <local_info><optional_features>
      * @return boolean true if the element is present, otherwise false.
      */
-    public function IsOptionalFeatureSet($featureName) {
+    public function IsOptionalFeatureSet($featureName)
+    {
         $localInfo = $this->GetLocalInfoXML();
-        $feature= $localInfo->optional_features->$featureName;
-        if((string) $feature == "true") {
+        $feature = $localInfo->optional_features->$featureName;
+        if ((string) $feature == "true") {
             return true;
         } else {
             return false;
@@ -326,7 +371,8 @@ class Config {
      * within the PI query output.
      * @return string
      */
-    public function GetPortalURL() {
+    public function GetPortalURL()
+    {
         $localInfo = $this->GetLocalInfoXML();
         $url = $localInfo->web_portal_url;
         return strval($url);
@@ -336,10 +382,11 @@ class Config {
      * See description in local_info.xml but in brief:
      * @returns false for legacy behaviour, true for role-based personal data restriction
      */
-    public function isRestrictPDByRole() {
+    public function isRestrictPDByRole()
+    {
         $localInfo = $this->GetLocalInfoXML();
         $value = $localInfo->restrict_personal_data;
-        if((string) $value == "true") {
+        if ((string) $value == "true") {
             return true;
         } else {
             return false;
@@ -348,7 +395,8 @@ class Config {
     /**
      * The PI URL as recorded in local_info.xml.
      */
-    public function getPiUrl(){
+    public function getPiUrl()
+    {
         $localInfo = $this->GetLocalInfoXML();
         $url = $localInfo->pi_url;
         return strval($url);
@@ -358,7 +406,8 @@ class Config {
      * The base server URL as recorded in local_info.xml. This URL is used with the
      * PI query output, e.g. for building paging/HATEOAS links.
      */
-    public function getServerBaseUrl(){
+    public function getServerBaseUrl()
+    {
         $localInfo = $this->GetLocalInfoXML();
         $url = $localInfo->server_base_url;
         return strval($url);
@@ -368,106 +417,109 @@ class Config {
      * The write API documentation URL as recorded in local_info.xml.
      * This URL is given to users of the write API in error messages
      */
-    public function getWriteApiDocsUrl(){
+    public function getWriteApiDocsUrl()
+    {
         $localInfo = $this->GetLocalInfoXML();
         $url = $localInfo->write_api_user_docs_url;
         return strval($url);
     }
 
-    public function getDefaultScopeName(){
+    public function getDefaultScopeName()
+    {
         //$scopeName = $this->GetLocalInfoXML()->local_info->default_scope->name;
         $scopeName = $this->GetLocalInfoXML()->default_scope->name;
 
-        if (empty($scopeName)){
+        if (empty($scopeName)) {
             $scopeName = '';
         }
 
         return strval($scopeName);
     }
 
-    public function getDefaultScopeMatch(){
+    public function getDefaultScopeMatch()
+    {
         $scopeMatch = $this->GetLocalInfoXML()->default_scope_match;
 
-        if (empty($scopeMatch)){
+        if (empty($scopeMatch)) {
             $scopeMatch = 'all';
         }
 
         return strval($scopeMatch);
     }
 
-    public function  getMinimumScopesRequired($entityType){
+    public function getMinimumScopesRequired($entityType)
+    {
         $supportedEntities = array('ngi', 'site', 'service', 'service_group');
 
-        if(!in_array($entityType, $supportedEntities)){
+        if (!in_array($entityType, $supportedEntities)) {
             throw new \LogicException("Function does not support entity type");
         }
 
         $numScopesRequired = $this->GetLocalInfoXML()->minimum_scopes->$entityType;
 
-        if (empty($numScopesRequired)){
+        if (empty($numScopesRequired)) {
             $numScopesRequired = 0;
         }
 
         return intval($numScopesRequired);
     }
 
-    public function getDefaultFilterByScope () {
+    public function getDefaultFilterByScope()
+    {
 
-        if (strtolower($this->GetLocalInfoXML()->default_filter_by_scope) == 'true'){
+        if (strtolower($this->GetLocalInfoXML()->default_filter_by_scope) == 'true') {
             return true;
         }
 
         return false;
     }
 
-    public function getShowMapOnStartPage(){
+    public function getShowMapOnStartPage()
+    {
         $showMapString = $this->GetLocalInfoXML()->show_map_on_start_page;
 
-        if(empty($showMapString)){
+        if (empty($showMapString)) {
             $showMap = false;
-        }
-        elseif(strtolower($showMapString) == 'true'){
+        } elseif (strtolower($showMapString) == 'true') {
             $showMap = true;
-        }
-        else{
+        } else {
             $showMap = false;
         }
 
         return $showMap;
     }
 
-    public function getExtensionsLimit(){
+    public function getExtensionsLimit()
+    {
         return $this->GetLocalInfoXML()->extensions->max;
     }
 
 
-    public function getSendEmails(){
+    public function getSendEmails()
+    {
         $sendEmailString = $this->GetLocalInfoXML()->send_email;
-         if(empty($sendEmailString)){
+        if (empty($sendEmailString)) {
             $sendEmail = false;
-        }
-        elseif(strtolower($sendEmailString) == 'true'){
+        } elseif (strtolower($sendEmailString) == 'true') {
             $sendEmail = true;
-        }
-        else{
+        } else {
             $sendEmail = false;
         }
         return $sendEmail;
     }
 
-    public function getAPIAllAuthRealms() {
+    public function getAPIAllAuthRealms()
+    {
         if (strtolower($this->GetLocalInfoXML()->API_all_auth_realms) === 'true') {
             return true;
         }
         return false;
     }
 
-    public function getPageBanner() {
+    public function getPageBanner()
+    {
         $bannerText = $this->GetLocalInfoXML()->page_banner;
 
         return $bannerText;
     }
 }
-
-
-?>
