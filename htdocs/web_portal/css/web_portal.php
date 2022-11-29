@@ -150,6 +150,14 @@ h1 {
     background-color: transparent;
 }
 
+.page_banner {
+    background-color: red;
+    color: white;
+    text-align: center;
+    font-size: 2em;
+    font-weight: normal;
+}
+
 /* Credit for this section of CSS goes to Matt Lira of STFC, 2009 */
 .left_box_menu {
     float: left;

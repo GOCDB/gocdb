@@ -24,18 +24,25 @@
     function Get_Standard_Top_Section_HTML($title=null)
     {
         require_once __DIR__."/../../static_php/standard_header.php";
+
+        $configService = \Factory::getConfigService();
+
         $HTML = "";
 
         $HTML .= get_standard_header($title);
 
+        // banner if requested
+        $banner = $configService->getPageBanner();
+        if (!empty($banner)) {
+            $HTML .= Get_Banner($banner);
+        }
         // container for the page
         $HTML .= "<div class=\"page_container\">";
-
         // menu bar
         $HTML .= "<div class=\"left_box_menu\">";
         $HTML .= Get_File_Contents(__DIR__."/../../static_html/goc5_logo.html");
         //Insert a portal is in read only warning message, if it is
-        if(\Factory::getConfigService()->IsPortalReadOnly()){
+        if($configService->IsPortalReadOnly()){
             $HTML.= Get_File_Contents(__DIR__."/../../static_html/read_only_warning.html");
         }
         require_once "menu.php";
@@ -163,8 +170,6 @@
 
         return $HTML;
     }
-
-
        /**
         * Opens the file specified in $Filename, gets the file contents and returns content
         */
@@ -176,4 +181,14 @@
            return $File_Contents;
        }
 
+    function Get_Banner($banner) {
+
+        $html = "<div class = \"page_banner\">";
+
+        $html .= $banner;
+
+        $html .= "</div>";
+
+        return $html;
+    }
 ?>

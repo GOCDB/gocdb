@@ -461,6 +461,12 @@ class Config {
         }
         return false;
     }
+
+    public function getPageBanner() {
+        $bannerText = $this->GetLocalInfoXML()->page_banner;
+
+        return $bannerText;
+    }
 }
 
 
