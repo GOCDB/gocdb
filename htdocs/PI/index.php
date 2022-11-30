@@ -142,9 +142,10 @@ class PIRequest {
 
             switch ($this->method) {
                 case "access_test":
+                    require_once($directory . 'AccessTest.php');
                     $this->authByIdentifier(true);
-                    return "<success/>\n";
-                break;
+                    $xml = (new AccessTest())->getRenderingOutput();
+                    break;
                 case "get_site":
                     require_once($directory . 'GetSite.php');
                     $this->authByIdentifier();
@@ -371,8 +372,8 @@ class PIRequest {
         return $xml;
     }
 
-    /* 
-     * Authorize a request based on the supplied identifier 
+    /*
+     * Authorize a request based on the supplied identifier
      * @param boolean $forceStrictForHosts If true, restriction of
      *                                     personal data is forced
      *                                     for hosts.
