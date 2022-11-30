@@ -1,15 +1,16 @@
 <?php
-require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
-header("Content-type: text/css");
-// Load variable values from local configuration //
-\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+    require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
-$background_direction = \Factory::getConfigService()->getBackgroundDirection();
-$background_colour1 = \Factory::getConfigService()->getBackgroundColour1();
-$background_colour2 = \Factory::getConfigService()->getBackgroundColour2();
-$background_colour3 = \Factory::getConfigService()->getBackgroundColour3();
-$header_text_colour = \Factory::getConfigService()->getHeadingTextColour();
+    header("Content-type: text/css");
 
+    // Load variable values from local configuration //
+    \Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+
+    $background_direction = \Factory::getConfigService()->getBackgroundDirection();
+    $background_colour1 = \Factory::getConfigService()->getBackgroundColour1();
+    $background_colour2 = \Factory::getConfigService()->getBackgroundColour2();
+    $background_colour3 = \Factory::getConfigService()->getBackgroundColour3();
+    $header_text_colour = \Factory::getConfigService()->getHeadingTextColour();
 ?>
 /* table.sorter plugin, http://tablesorter.com/docs/ */
 table.tablesorter {
@@ -55,15 +56,15 @@ body {
     <?php
         // Build the linear gradient input
         $out = '';
-        if ($background_colour3 != '') {
-            $out = ','.$background_colour3;
-        }
-        if ($background_colour2 != '') {
-            $out = ','.$background_colour2 . $out;
-        }
-        if ($background_colour1 != '') {
-            $out = ','.$background_colour1 . $out;
-        }
+    if ($background_colour3 != '') {
+        $out = ',' . $background_colour3;
+    }
+    if ($background_colour2 != '') {
+        $out = ',' . $background_colour2 . $out;
+    }
+    if ($background_colour1 != '') {
+        $out = ',' . $background_colour1 . $out;
+    }
         $out = $background_direction . $out;
 
         echo $out;
@@ -134,11 +135,11 @@ h1 {
     font-size: 2.5em;
 }
 /*
-    *	Containing DIV's
-	*	Page Container is the whole page
-	*	Left Box is the menu
-	*	Right Box is the smaller page contents
-	*/
+*   Containing DIV's
+*   Page Container is the whole page
+*   Left Box is the menu
+*   Right Box is the smaller page contents
+*/
 .page_container {
     position: relative;
     margin-left: auto;
@@ -418,7 +419,7 @@ option.sectionTitle {
 }
 
 /* ################## CALENDAR CSS DIVS  ###################### */
-	/* calendar icon */
+    /* calendar icon */
 img.tcalIcon {
     cursor: pointer;
     margin-left: 1px;
