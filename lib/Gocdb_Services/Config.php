@@ -167,7 +167,8 @@ class Config
 
         if (count($unqualified) != 1) {
             throw new \ErrorException(
-                'Only one local_info element without url attribute is allowed in configuration file ' .
+                'Only one local_info element without url attribute is ' .
+                'allowed in configuration file ' .
                 $path
             );
         }
@@ -181,7 +182,8 @@ class Config
             if (count($qualified) != 0) {
                 if (count($qualified) != 1) {
                     throw new \ErrorException(
-                        'Duplicate local_info elements with same url attribute found in configuration file ' .
+                        'Duplicate local_info elements with same url ' .
+                        'attribute found in configuration file ' .
                          $path
                     );
                 }
@@ -222,14 +224,23 @@ class Config
             } else {
                 $elemPath = implode("/", $keys);
                 $elem = $defaultInfo->xpath($elemPath);
+
                 if (!$elem) {
-                    throw new \ErrorException("Did not find elements $elemPath in input configuration file.");
+                    throw new \ErrorException(
+                        'Did not find elements ' .
+                        $elemPath .
+                        ' in input configuration file.'
+                    );
                 }
+
                 if (count($elem)) {
                     if (count($elem) != 1) {
                         throw new \ErrorException(
-                            'Duplicate input configuration file element specifications (' . count($elem) .
-                            ') for "' . implode('/', $keys) . '"'
+                            'Duplicate input configuration file element specifications (' .
+                            count($elem) .
+                            ') for "' .
+                            implode('/', $keys) .
+                            '"'
                         );
                     }
                     # ???? How else to force a self-reference rather than override the array value ????
@@ -237,8 +248,12 @@ class Config
                 } else {
                     // Do we want to create it here ??
                     throw new \ErrorException(
-                        "Input configuration file override element $elemPath not found in default section: " .
-                        $iterator->key() . ' => ' . $iterator->current()
+                        'Input configuration file override element ' .
+                        $elemPath .
+                        ' not found in default section: ' .
+                        $iterator->key() .
+                        ' => ' .
+                        $iterator->current()
                     );
                 }
             }

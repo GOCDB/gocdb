@@ -1,28 +1,28 @@
 <?php
 
-    /**
-     * File: draw_page_components.php
-     * Author: John Casson
-     * Description: Provides components used to draw a web portal page.
-     *
-     * License information
-     *
-     * Copyright 2009 STFC
-     * Licensed under the Apache License, Version 2.0 (the "License");
-     * you may not use this file except in compliance with the License.
-     * You may obtain a copy of the License at
-     * http://www.apache.org/licenses/LICENSE-2.0
-     * Unless required by applicable law or agreed to in writing, software
-     * distributed under the License is distributed on an "AS IS" BASIS,
-     * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-     * See the License for the specific language governing permissions and
-     * limitations under the License.
-     *
-     * PHPMD does not parse use of $properties with :: scope resolution
-     * @SuppressWarnings(PHPMD.UndefinedVariable)
-     */
+/**
+ * File: draw_page_components.php
+ * Author: John Casson
+ * Description: Provides components used to draw a web portal page.
+ *
+ * License information
+ *
+ * Copyright 2009 STFC
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ *
+ * PHPMD does not parse use of $properties with :: scope resolution
+ * @SuppressWarnings(PHPMD.UndefinedVariable)
+ */
 
-    /* Draws the first part of the page (headers, left hand menu) */
+/* Draws the first part of the page (headers, left hand menu) */
 function Get_Standard_Top_Section_HTML($title = null)
 {
     require_once __DIR__ . "/../../static_php/standard_header.php";
@@ -71,7 +71,7 @@ function Get_Standard_Top_Section_HTML($title = null)
 }
 
 
-    /* Draws the bottom part of a standard page */
+/* Draws the bottom part of a standard page */
 function Get_Standard_Bottom_Section_HTML()
 {
     $html = "";
@@ -87,7 +87,7 @@ function Get_Standard_Bottom_Section_HTML()
 }
 
 
-    /* Returns the HTML for the left hand search box */
+/* Returns the HTML for the left hand search box */
 function Get_Search_Box_HTML()
 {
     $html = "";
@@ -99,7 +99,7 @@ function Get_Search_Box_HTML()
 }
 
 
-    /* Returns the HTML for the search box's input form */
+/* Returns the HTML for the search box's input form */
 function Get_Search_Form_HTML()
 {
     $html = '';
@@ -112,7 +112,7 @@ function Get_Search_Form_HTML()
 }
 
 
-    /* Returns the HTML for the user status box */
+/* Returns the HTML for the user status box */
 function Get_User_Info_Box_HTML()
 {
     require_once __DIR__ . '/draw_user_status.php';
@@ -125,7 +125,7 @@ function Get_User_Info_Box_HTML()
     return $html;
 }
 
-    /* Draws a box showing the EGI and other logos */
+/* Draws a box showing the EGI and other logos */
 function Get_bottom_logos_Box_HTML()
 {
     require_once __DIR__ . '/../../controllers/user/utils.php';
@@ -176,9 +176,9 @@ function Get_bottom_logos_Box_HTML()
 
     return $html;
 }
-       /**
-        * Opens the file specified in $fileName, gets the file contents and returns content
-        */
+/**
+* Opens the file specified in $fileName, gets the file contents and returns content
+*/
 function Get_File_Contents($fileName)
 {
     //return 'hello';
@@ -187,14 +187,16 @@ function Get_File_Contents($fileName)
     fclose($fileHandle);
     return $fileContents;
 }
-
+/**
+ * Returns the HTML for a top-of-page banner
+ *
+ * @param   string  $banner        Text of banner message
+ * @return  string  HTML for banner
+ */
 function Get_Banner($banner)
 {
-
     $html = "<div class = \"page_banner\">";
-
     $html .= $banner;
-
     $html .= "</div>";
 
     return $html;
