@@ -338,7 +338,8 @@ class Config {
      *                             is forced.
      * @returns false for legacy behaviour, true for role-based personal data restriction
      */
-    public function isRestrictPDByRole($forceStrict = false) {
+    public function isRestrictPDByRole($forceStrict = false)
+    {
         if ($forceStrict === true)
             return true;
 
