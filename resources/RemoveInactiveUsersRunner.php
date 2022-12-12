@@ -176,8 +176,14 @@ function sendWarningEmail($user, $elapsedMonths, $deletionThreshold)
 {
     $emailAddress = $user->getEmail();
 
+    $configService = \Factory::getConfigService();
+
+    $emailSentFrom = $configService->getEmailFrom();
+
+    $emailSendTo = $configService->getEmailTo();
+
     // Email content
-    $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
+    $headers = "From: GOCDB <" . $emailSentFrom . ">";
     $subject = "GOCDB: User account deletion notice";
 
     $body = "Dear ". $user->getForename() .",\n\n" .
@@ -202,7 +208,9 @@ function sendWarningEmail($user, $elapsedMonths, $deletionThreshold)
     $body .= "\n";
     $body .= "You can prevent the deletion of this account by visiting the " .
              "GOCDB portal while authenticated with one of the above " .
-             "identifiers.\n";
+             "identifiers.\n\n";
+    $body .= "Please do not reply to this email. If you would like to get in touch " .
+             "with the GOCDB admins please send an email to: " . $emailSendTo . "\n";
 
 
     // Handle all mail related printing/debugging

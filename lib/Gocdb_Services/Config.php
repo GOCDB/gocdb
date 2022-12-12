@@ -542,4 +542,18 @@ class Config
 
         return $bannerText;
     }
+
+    public function getEmailFrom()
+    {
+        $emailFrom = $this->GetLocalInfoXML()->email_from;
+
+        return $emailFrom;
+    }
+
+    public function getEmailTo()
+    {
+        $emailTo = $this->GetlocalInfoXML()->email_to;
+
+        return $emailTo;
+    }
 }

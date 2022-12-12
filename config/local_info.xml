@@ -13,6 +13,10 @@
     <!-- If page_banner is not empty the text is used to create a page banner strip -->
     <page_banner></page_banner>
 
+    <!-- Email addresses to send from and reply to -->
+    <email_from>no-reply@localhost</email_from>
+    <email_to>gocdb-admins@localhost</email_to>
+
     <!-- Specify the URL and description of the Acceptable Use Policy -->
     <aup>AUP location</aup>
     <aup_title>AUP title</aup_title>
