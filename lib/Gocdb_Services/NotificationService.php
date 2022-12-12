@@ -135,7 +135,7 @@ class NotificationService extends AbstractEntityService {
             $roleRequested->getRoleType()->getName(),
             $roleRequested->getOwnedEntity()->getName(),
             $this->getWebPortalURL(),
-            $emailSendTo->configService->getEmailTo()
+            $configService->getEmailTo()
         );
 
         $emailAddress = $approvingUser->getEmail();
