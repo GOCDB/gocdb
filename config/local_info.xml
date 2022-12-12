@@ -14,8 +14,8 @@
     <page_banner></page_banner>
 
     <!-- Email addresses to send from and reply to -->
-    <email_from>no-reply@{goc.egi.eu, gocdb.eosc-portal.eu, gocdb.iris.ac.uk}</email_from>
-    <email_to>gocdb-admins@mailman.egi.eu</email_to>
+    <email_from>no-reply@localhost</email_from>
+    <email_to>gocdb-admins@localhost</email_to>
 
     <!-- Specify the URL and description of the Acceptable Use Policy -->
     <aup>AUP location</aup>
