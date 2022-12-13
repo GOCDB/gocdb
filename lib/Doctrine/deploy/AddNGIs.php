@@ -56,7 +56,7 @@ foreach($ngis as $xmlNgi) {
             $securityEmail = (string) $value;
         }
 
-        if((string) $key == "OBJECT_ID") {
+        if ((string) $key == "OBJECT_ID") {
             $objectID = (string) $value;
         }
 
