@@ -27,14 +27,14 @@
       <DOMAIN_NAME>torchit.ch</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
-  <SITE ID="1184334" PRIMARY_KEY="145G0" NAME="University of Lucerne" COBJECTID="145">
+  <SITE ID="1184334" PRIMARY_KEY="145G0" NAME="University of Lucerne Grid Infrastructure" COBJECTID="145">
     <PRIMARY_KEY>145G0</PRIMARY_KEY>
-    <SHORT_NAME>unilu</SHORT_NAME>
+    <SHORT_NAME>grid-lucerne-uni</SHORT_NAME>
     <OFFICIAL_NAME>University of Lucerne Grid Infrastructure</OFFICIAL_NAME>
     <SITE_DESCRIPTION>ATLAS Tier-2 grid tools for research and development at the University of Lucerne</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=145&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.unilu.grid.ch</HOME_URL>
-    <CONTACT_EMAIL>enquiries@unilu.grid.ch</CONTACT_EMAIL>
+    <HOME_URL>http://www.grid-lucerne-uni.ch</HOME_URL>
+    <CONTACT_EMAIL>enquiries@grid-lucerne-uni.ch</CONTACT_EMAIL>
     <CONTACT_TEL>+41 403 66 1112</CONTACT_TEL>
     <TIER>2</TIER>
     <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
@@ -45,14 +45,14 @@
     <TIMEZONE>Europe/Zurich</TIMEZONE>
     <LATITUDE>47.050618</LATITUDE>
     <LONGITUDE>8.312448</LONGITUDE>
-    <CSIRT_EMAIL>csirtcontatc@unilu.grid.ch</CSIRT_EMAIL>
+    <CSIRT_EMAIL>csirtcontatc@grid-lucerne-uni.ch</CSIRT_EMAIL>
     <IP_RANGE>0.0.0.0/155.000.255.255</IP_RANGE>
     <LOCATION>Luzern, Switzerland</LOCATION>
     <CSIRTTEL>+41 403 59 881</CSIRTTEL>
-    <HELPDESKEMAIL>help@unilu.grid.ch</HELPDESKEMAIL>
+    <HELPDESKEMAIL>help@grid-lucerne-uni.ch</HELPDESKEMAIL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>unilu.grid.ch</DOMAIN_NAME>
+      <DOMAIN_NAME>grid-lucerne-uni.ch</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
   <SITE ID="8644512" PRIMARY_KEY="512G0" NAME="Lake Geneva Hydro-Particle Research Facility" COBJECTID="512">
@@ -89,7 +89,7 @@
     <CONTACT_EMAIL>contact@SMRF.ch</CONTACT_EMAIL>
     <CONTACT_TEL>+41 326 77 212 19</CONTACT_TEL>
     <GIIS_URL>ldap://SMRF.ch:0000/mds-vo-name=SMRF,o=grid</GIIS_URL>
-    <TIER>2</TIER>
+    <TIER>1</TIER>
     <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
     <COUNTRY>Switzerland</COUNTRY>
     <ROC>NGI_CH</ROC>
@@ -158,17 +158,17 @@
       <DOMAIN_NAME>mechnikit.ch</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
-  <SITE ID="55236" PRIMARY_KEY="523G0" NAME="UNIBERN-GRID" COBJECTID="523">
+  <SITE ID="55236" PRIMARY_KEY="523G0" NAME="BERNUNI-GRID" COBJECTID="523">
     <PRIMARY_KEY>523G0</PRIMARY_KEY>
-    <SHORT_NAME>UNIBERN-GRID</SHORT_NAME>
+    <SHORT_NAME>BERNUNI-GRID</SHORT_NAME>
     <OFFICIAL_NAME>University of Bern Grid Computing</OFFICIAL_NAME>
     <SITE_DESCRIPTION>Bern University's grid computing department, used for research and development. It also provides ATLAS Tier-3 resources.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=523&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.unibern-grid.ch</HOME_URL>
-    <CONTACT_EMAIL>grid@unibern-grid.ch</CONTACT_EMAIL>
+    <HOME_URL>http://www.bernuni-grid.ch</HOME_URL>
+    <CONTACT_EMAIL>contact@bernuni-grid.ch</CONTACT_EMAIL>
     <CONTACT_TEL>+41 99 200 16</CONTACT_TEL>
     <TIER>3</TIER>
-    <GIIS_URL>ldap://unibern-grid.ch:0000/ds-vo-name=UNIBERN-GRID,o=grid</GIIS_URL>
+    <GIIS_URL>ldap://bernuni-grid.ch:0000/ds-vo-name=BERNUNI-GRID,o=grid</GIIS_URL>
     <COUNTRY_CODE>Switzerland</COUNTRY_CODE>
     <COUNTRY>Switzerland</COUNTRY>
     <ROC>NGI_CH</ROC>
@@ -177,13 +177,13 @@
     <TIMEZONE>Europe/Zurich</TIMEZONE>
     <LATITUDE>46.953677</LATITUDE>
     <LONGITUDE>7.440551</LONGITUDE>
-    <CSIRT_EMAIL>csirt@unibern-grid.ch</CSIRT_EMAIL>
+    <CSIRT_EMAIL>csirt@bernuni-grid.ch</CSIRT_EMAIL>
     <LOCATION>Bern, Switzerland</LOCATION>
     <CSIRTTEL>+41 45 601 0028</CSIRTTEL>
-    <HELPDESKEMAIL>helpdesk@unibern-grid.ch</HELPDESKEMAIL>
+    <HELPDESKEMAIL>helpdesk@bernuni-grid.ch</HELPDESKEMAIL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>unibern-grid.ch</DOMAIN_NAME>
+      <DOMAIN_NAME>bernuni-grid.ch</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
   <SITE ID="1012" PRIMARY_KEY="200G0" NAME="Basel Infrastructure" COBJECTID="200">
@@ -270,16 +270,16 @@
       <DOMAIN_NAME>izolamrf.si</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
-  <SITE ID="827892" PRIMARY_KEY="956G0" NAME="Univerza v Ljubljani" COBJECTID="956">
+  <SITE ID="827892" PRIMARY_KEY="956G0" NAME="University of Ljubljana Grid Cluster" COBJECTID="956">
     <PRIMARY_KEY>956G0</PRIMARY_KEY>
-    <SHORT_NAME>uni-lj</SHORT_NAME>
-    <OFFICIAL_NAME>Univerza v Ljubljani</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>The primary research facility at the University of Ljubljana, Slovenia.</SITE_DESCRIPTION>
+    <SHORT_NAME>grid-ljubljana-uni</SHORT_NAME>
+    <OFFICIAL_NAME>University of Ljubljana Grid Cluster</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The primary research facility at the University of Ljubljana, Slovenia. It has a small computing cluster that gets used by the grid.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=956&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>https://www.uni-lj.si/</HOME_URL>
-    <CONTACT_EMAIL>rektorat@uni-lj.si</CONTACT_EMAIL>
+    <HOME_URL>https://www.grid-ljubljana-uni.si/</HOME_URL>
+    <CONTACT_EMAIL>contact@grid-ljubljana-uni.si</CONTACT_EMAIL>
     <CONTACT_TEL>+386 1 241 85 00</CONTACT_TEL>
-    <GIIS_URL>ldap://grid.uni-lj.si:0000/ds-vo-name=uni-lj,o=grid</GIIS_URL>
+    <GIIS_URL>ldap://grid-ljubljana-uni.si:0000/ds-vo-name=grid-ljubljana-uni,o=grid</GIIS_URL>
     <COUNTRY_CODE>Slovenia</COUNTRY_CODE>
     <COUNTRY>Slovenia</COUNTRY>
     <ROC>NGI_SI</ROC>
@@ -288,13 +288,13 @@
     <TIMEZONE>Europe/Ljubljana</TIMEZONE>
     <LATITUDE>46.050835</LATITUDE>
     <LONGITUDE>14.503670</LONGITUDE>
-    <CSIRT_EMAIL>csirt@uni-lj.si</CSIRT_EMAIL>
+    <CSIRT_EMAIL>csirt@grid-ljubljana-uni.si</CSIRT_EMAIL>
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
     <LOCATION>University of Ljubljana, Slovenia</LOCATION>
-    <HELPDESKEMAIL>enquiries@uni-lj.si</HELPDESKEMAIL>
+    <HELPDESKEMAIL>enquiries@grid-ljubljana-uni.si</HELPDESKEMAIL>
     <SCOPE>EGI</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>uni-lj.si</DOMAIN_NAME>
+      <DOMAIN_NAME>grid-ljubljana-uni.si</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
   <SITE ID="2030844" PRIMARY_KEY="203G0" NAME="Ptuj Research and Production Centre" COBJECTID="203">
@@ -323,16 +323,16 @@
       <DOMAIN_NAME>ptujrpc.si</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
-  <SITE ID="243789" PRIMARY_KEY="761G0" NAME="Budapest Institute of National Research" COBJECTID="761">
+  <SITE ID="243789" PRIMARY_KEY="761G0" NAME="Budapest National Research Facility - Grid Operations" COBJECTID="761">
     <PRIMARY_KEY>761G0</PRIMARY_KEY>
-    <SHORT_NAME>Budapest Institute</SHORT_NAME>
-    <OFFICIAL_NAME>Budapest Institute of National Research - Grid Operations Team</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>The Grid Operations team within the Budapest Institute of National Research put Hungary at the forefront of global development and research.</SITE_DESCRIPTION>
+    <SHORT_NAME>Budapest NRF - Grid Operations</SHORT_NAME>
+    <OFFICIAL_NAME>Budapest National Research Facility - Grid Operations</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The Grid Operations team within the Budapest National Research Facility put Hungary at the forefront of global development and research.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=761&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.budapestinstitute-gridoperations.hu</HOME_URL>
-    <CONTACT_EMAIL>gridoperations@budapestinstitute.hu</CONTACT_EMAIL>
+    <HOME_URL>http://www.BudapestNRF-gridoperations.hu</HOME_URL>
+    <CONTACT_EMAIL>gridoperations@BudapestNRF.hu</CONTACT_EMAIL>
     <CONTACT_TEL>+36 99 1000 863</CONTACT_TEL>
-    <TIER>2</TIER>
+    <TIER>1</TIER>
     <COUNTRY_CODE>Hungary</COUNTRY_CODE>
     <COUNTRY>Hungary</COUNTRY>
     <ROC>NGI_HU</ROC>
@@ -341,24 +341,25 @@
     <TIMEZONE>Europe/Budapest</TIMEZONE>
     <LATITUDE>47.496346</LATITUDE>
     <LONGITUDE>19.048320</LONGITUDE>
-    <CSIRT_EMAIL>csirt@budapestinstitute-gridoperations.hu</CSIRT_EMAIL>
+    <CSIRT_EMAIL>csirt@BudapestNRF-gridoperations.hu</CSIRT_EMAIL>
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
     <LOCATION>Budapest, Hungary</LOCATION>
-    <HELPDESKEMAIL>support@budapestinstitute-gridoperations.hu</HELPDESKEMAIL>
+    <HELPDESKEMAIL>support@BudapestNRF-gridoperations.hu</HELPDESKEMAIL>
     <SCOPE>Local</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>budapestinstitute-gridoperations.hu</DOMAIN_NAME>
+      <DOMAIN_NAME>BudapestNRF-gridoperations.hu</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
-  <SITE ID="4765436" PRIMARY_KEY="997G0" NAME="Lake Balaton Research Facility" COBJECTID="997">
+  <SITE ID="4765436" PRIMARY_KEY="997G0" NAME="Lakeside Particle Physics Research Facility" COBJECTID="997">
     <PRIMARY_KEY>997G0</PRIMARY_KEY>
-    <SHORT_NAME>Balaton RF</SHORT_NAME>
-    <OFFICIAL_NAME>Lake Balaton Research Facility</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>The research facility on the banks of Lake Balaton is a thriving and influential institution.</SITE_DESCRIPTION>
+    <SHORT_NAME>Lakeside PPRF</SHORT_NAME>
+    <OFFICIAL_NAME>Lakeside Particle Physics Research Facility</OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The Particle Physics Research Facility on the banks of Lake Balaton is a thriving and influential institution. It has a computing cluster used by the grid.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=997&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.lakebalatonresearch.hu</HOME_URL>
-    <CONTACT_EMAIL>reach@lakebalatonresearch.hu</CONTACT_EMAIL>
+    <HOME_URL>http://www.lakesidepprf.hu</HOME_URL>
+    <CONTACT_EMAIL>reach@lakesidepprf.hu</CONTACT_EMAIL>
     <CONTACT_TEL>+36 4004 76 53</CONTACT_TEL>
+    <TIER>2</TIER>
     <COUNTRY_CODE>Hungary</COUNTRY_CODE>
     <COUNTRY>Hungary</COUNTRY>
     <ROC>NGI_HU</ROC>
@@ -369,10 +370,10 @@
     <LONGITUDE>17.892514</LONGITUDE>
     <IP_RANGE>0.0.0.0/255.255.255.255</IP_RANGE>
     <LOCATION>Tihany, Hungary</LOCATION>
-    <HELPDESKEMAIL>help@lakebalatonresearch.hu</HELPDESKEMAIL>
+    <HELPDESKEMAIL>help@lakesidepprf.hu</HELPDESKEMAIL>
     <SCOPE>Local</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>lakebalatonresearch.hu</DOMAIN_NAME>
+      <DOMAIN_NAME>lakesidepprf.hu</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
   <SITE ID="863436" PRIMARY_KEY="974G0" NAME="Sandbox IT" COBJECTID="974">
@@ -449,14 +450,14 @@
       <DOMAIN_NAME>barcs-drava-stf.hu</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
-  <SITE ID="288443" PRIMARY_KEY="284G0" NAME="Danube Institute of National Research" COBJECTID="284">
+  <SITE ID="288443" PRIMARY_KEY="284G0" NAME="Danube National Research Facility - Grid Tools" COBJECTID="284">
     <PRIMARY_KEY>284G0</PRIMARY_KEY>
-    <SHORT_NAME>Danube Institute</SHORT_NAME>
-    <OFFICIAL_NAME>Danube Institute of National Research</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>The Danube Institute of National Research lies in southern Hungary in Baja, and specialises in particle research.</SITE_DESCRIPTION>
+    <SHORT_NAME>Danube NRF - Grid Tools</SHORT_NAME>
+    <OFFICIAL_NAME>Danube National Research Facility - Grid Tools </OFFICIAL_NAME>
+    <SITE_DESCRIPTION>The Danube National Research Facility lies in southern Hungary in Baja, and specialises in particle research. The Grid Tools department controls their computing cluster.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=284&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
-    <HOME_URL>http://www.danubeinstitute.hu</HOME_URL>
-    <CONTACT_EMAIL>contact@danubeinstitute.hu</CONTACT_EMAIL>
+    <HOME_URL>http://www.DanubeNRF-gridtools.hu</HOME_URL>
+    <CONTACT_EMAIL>contact@DanubeNRF-gridtools.hu</CONTACT_EMAIL>
     <CONTACT_TEL>+36 30 40 6004</CONTACT_TEL>
     <TIER>2</TIER>
     <COUNTRY_CODE>Hungary</COUNTRY_CODE>
@@ -468,10 +469,10 @@
     <LATITUDE>46.188430</LATITUDE>
     <LONGITUDE>18.931670</LONGITUDE>
     <LOCATION>Baja, Hungary</LOCATION>
-    <HELPDESKEMAIL>help@danubeinstitute.hu</HELPDESKEMAIL>
+    <HELPDESKEMAIL>help@DanubeNRF-gridtools.hu</HELPDESKEMAIL>
     <SCOPE>Local</SCOPE>
     <DOMAIN>
-      <DOMAIN_NAME>danubeinstitute.hu</DOMAIN_NAME>
+      <DOMAIN_NAME>DanubeNRF-gridtools.hu</DOMAIN_NAME>
     </DOMAIN>
   </SITE>
 

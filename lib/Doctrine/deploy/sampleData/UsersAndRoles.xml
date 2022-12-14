@@ -29,14 +29,14 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Megan.North@unibern-grid.ch</EMAIL>
+        <EMAIL>Megan.North@bernuni-grid.ch</EMAIL>
         <TEL>+49 040 0000 1763</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
         <CERTDN>/C=00/O=00000/OU=000000/CN=Megan North</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>UNIBERN-GRID</HOMESITE>
+        <HOMESITE>BERNUNI-GRID</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>CIC Staff</USER_ROLE>
@@ -93,14 +93,14 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Donna.Butler@unilu.grid.ch</EMAIL>
+        <EMAIL>Donna.Butler@grid-lucerne-uni.ch</EMAIL>
         <TEL>+49 040 0000 1763</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
         <CERTDN>/C=00/O=00000/OU=000000/CN=Donna Butler</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>unilu</HOMESITE>
+        <HOMESITE>grid-lucerne-uni</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
@@ -299,14 +299,14 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Elly.Rose@unilu.grid.ch</EMAIL>
+        <EMAIL>Elly.Rose@grid-lucerne-uni.ch</EMAIL>
         <TEL>+44 505 6900 0169</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
         <CERTDN>/C=00/O=00000/OU=000000/CN=Elly Rose</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>unilu</HOMESITE>
+        <HOMESITE>grid-lucerne-uni</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>Regional Staff</USER_ROLE>
@@ -326,14 +326,14 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Cai.Lamity@uni-lj.si</EMAIL>
+        <EMAIL>Cai.Lamity@grid-ljubljana-uni.si</EMAIL>
         <TEL>+44 360 68680 9094</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
         <CERTDN>/C=00/O=00000/OU=000000/CN=Cai Lamity</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>uni-lj</HOMESITE>
+        <HOMESITE>grid-ljubljana-uni</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>Regional First Line Support</USER_ROLE>
@@ -478,14 +478,14 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Georgia.Heidy@lakebalatonresearch.hu</EMAIL>
+        <EMAIL>Georgia.Heidy@lakesidepprf.hu</EMAIL>
         <TEL>+91 3473 78 828</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
         <CERTDN>/C=00/O=00000/OU=000000/CN=Georgia Heidy</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>Balaton RF</HOMESITE>
+        <HOMESITE>Lakeside PPRF</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>CIC Staff</USER_ROLE>
@@ -505,19 +505,19 @@
     </EGEE_USER>
 
     <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
-        <FORENAME>Boris</FORENAME>
+        <FORENAME>Ramsey</FORENAME>
         <SURNAME>Oakken</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Boris.Oaken@danubeinstitute.hu</EMAIL>
+        <EMAIL>Ramsey.Oakken@DanubeNRF.hu</EMAIL>
         <TEL>+36 474 272 2929</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
         <CERTDN>/C=00/O=00000/OU=000000/CN=Boris Oakken</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>Danube Institute</HOMESITE>
+        <HOMESITE>Danube NRF - Grid Tools</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
@@ -564,14 +564,14 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Jessica.Falsh@budapestinstitute-gridoperations.hu</EMAIL>
+        <EMAIL>Jessica.Falsh@BudapestNRF-gridoperations.hu</EMAIL>
         <TEL>+44 712 90 82 3465</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
         <CERTDN>/C=00/O=00000/OU=000000/CN=Jesscia Falsh</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>Budapest Institute</HOMESITE>
+        <HOMESITE>Budapest NRF - Grid Operations</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
@@ -591,14 +591,14 @@
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Maddie.Falsh@budapestinstitute-gridoperations.hu</EMAIL>
+        <EMAIL>Maddie.Falsh@BudapestNRF-gridoperations.hu</EMAIL>
         <TEL>+44 389 41 36 8996</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
         <CERTDN>/C=00/O=00000/OU=000000/CN=Maddie Falsh</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>Budapest Institute</HOMESITE>
+        <HOMESITE>Budapest NRF - Grid Operations</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>CIC Staff</USER_ROLE>

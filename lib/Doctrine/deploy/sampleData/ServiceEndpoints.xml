@@ -61,7 +61,7 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="43873G0">
         <PRIMARY_KEY>43873G0</PRIMARY_KEY>
-        <HOSTNAME>bdii.lhep.unilu.grid.ch</HOSTNAME>
+        <HOSTNAME>bdii.lhep.grid-lucerne-uni.ch</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=25494&amp;grid_id=0</GOCDB_PORTAL_URL>
         <BETA>N</BETA>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
@@ -70,7 +70,7 @@
         <CORE></CORE>
         <IN_PRODUCTION>Y</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>unilu</SITENAME>
+        <SITENAME>grid-lucerne-uni</SITENAME>
         <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
         <COUNTRY_CODE>CH</COUNTRY_CODE>
         <ROC_NAME>NGI_CH</ROC_NAME>
@@ -220,9 +220,9 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="83671G0">
         <PRIMARY_KEY>83671G0</PRIMARY_KEY>
-        <HOSTNAME>cream04.unibern-grid.ch</HOSTNAME>
+        <HOSTNAME>cream04.bernuni-grid.ch</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=124819&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=UNIBERN-GRID/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=ETH Zuerich/CN=cream04.unibern-grid.ch</HOSTDN>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=BERNUNI-GRID/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=ETH Zuerich/CN=cream04.bernuni-grid.ch</HOSTDN>
         <HOST_OS>Scientific Linux 6.4</HOST_OS>
         <HOST_ARCH>x86_64</HOST_ARCH>
         <BETA>Y</BETA>
@@ -232,7 +232,7 @@
         <CORE></CORE>
         <IN_PRODUCTION>N</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>UNIBERN-GRID</SITENAME>
+        <SITENAME>BERNUNI-GRID</SITENAME>
         <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
         <COUNTRY_CODE>CH</COUNTRY_CODE>
         <ROC_NAME>NGI_CH</ROC_NAME>
@@ -240,9 +240,9 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="66553G0">
         <PRIMARY_KEY>66553G0</PRIMARY_KEY>
-        <HOSTNAME>cream03.unibern-grid.ch</HOSTNAME>
+        <HOSTNAME>cream03.bernuni-grid.ch</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=115094&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=UNIBERN-GRID/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=ETH Zuerich/CN=cream03.unibern-grid.ch</HOSTDN>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=BERNUNI-GRID/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=ETH Zuerich/CN=cream03.bernuni-grid.ch</HOSTDN>
         <DESCRIPTION>gLite CREAM-CE</DESCRIPTION>
         <BETA>N</BETA>
         <SERVICE_TYPE>CREAM-CE</SERVICE_TYPE>
@@ -251,7 +251,7 @@
         <CORE></CORE>
         <IN_PRODUCTION>Y</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>UNIBERN-GRID</SITENAME>
+        <SITENAME>BERNUNI-GRID</SITENAME>
         <COUNTRY_NAME>Switzerland</COUNTRY_NAME>
         <COUNTRY_CODE>CH</COUNTRY_CODE>
         <ROC_NAME>NGI_CH</ROC_NAME>
@@ -378,7 +378,7 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="10007G0">
         <PRIMARY_KEY>10007G0</PRIMARY_KEY>
-        <HOSTNAME>uni-bdii.uni-lj.si</HOSTNAME>
+        <HOSTNAME>uni-bdii.grid-ljubljana-uni.si</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=10007&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>university site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
@@ -387,7 +387,7 @@
         <CORE></CORE>
         <IN_PRODUCTION>N</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>uni-lj</SITENAME>
+        <SITENAME>grid-ljubljana-uni</SITENAME>
         <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
         <COUNTRY_CODE>SI</COUNTRY_CODE>
         <ROC_NAME>NGI_SI</ROC_NAME>
@@ -429,16 +429,16 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="1142G0">
         <PRIMARY_KEY>1142G0</PRIMARY_KEY>
-        <HOSTNAME>bdii.budapestinstitute-gridoperations.hu</HOSTNAME>
+        <HOSTNAME>bdii.BudapestNRF-gridoperations.hu</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=1142&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>Site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
         <HOST_IP>177.23.900.02</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>N</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>Budapest Institute</SITENAME>
+        <SITENAME>Budapest NRF - Grid Operations</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
         <ROC_NAME>NGI_HU</ROC_NAME>
@@ -446,16 +446,16 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="10098G0">
         <PRIMARY_KEY>10098G0</PRIMARY_KEY>
-        <HOSTNAME>arc-ce.budapestinstitute-gridoperations.hu</HOSTNAME>
+        <HOSTNAME>arc-ce.BudapestNRF-gridoperations.hu</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=10098&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>arc-ce for site</DESCRIPTION>
         <SERVICE_TYPE>ARC-CE</SERVICE_TYPE>
         <HOST_IP>184.703.44.55</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>Y</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>Budapest Institute</SITENAME>
+        <SITENAME>Budapest NRF - Grid Operations</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
         <ROC_NAME>NGI_HU</ROC_NAME>
@@ -463,7 +463,7 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="2045G0">
         <PRIMARY_KEY>2045G0</PRIMARY_KEY>
-        <HOSTNAME>local-lfc.budapestinstitute-gridoperations.hu</HOSTNAME>
+        <HOSTNAME>local-lfc.BudapestNRF-gridoperations.hu</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=2045&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>Local LFC</DESCRIPTION>
         <SERVICE_TYPE>Local-LFC</SERVICE_TYPE>
@@ -472,7 +472,7 @@
         <CORE></CORE>
         <IN_PRODUCTION>Y</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>Budapest Institute</SITENAME>
+        <SITENAME>Budapest NRF - Grid Operations</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
         <ROC_NAME>NGI_HU</ROC_NAME>
@@ -480,16 +480,16 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="3133G0">
         <PRIMARY_KEY>3133G0</PRIMARY_KEY>
-        <HOSTNAME>SRM.budapestinstitute-gridoperations.hu</HOSTNAME>
+        <HOSTNAME>SRM.BudapestNRF-gridoperations.hu</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=3133&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>Site SRM</DESCRIPTION>
         <SERVICE_TYPE>SRM</SERVICE_TYPE>
         <HOST_IP>191.60.50.355</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>N</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>Budapest Institute</SITENAME>
+        <SITENAME>Budapest NRF - Grid Operations</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
         <ROC_NAME>NGI_HU</ROC_NAME>
@@ -497,16 +497,16 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="4981G0">
         <PRIMARY_KEY>4981G0</PRIMARY_KEY>
-        <HOSTNAME>lake-bdii.lakebalatonresearch.hu</HOSTNAME>
+        <HOSTNAME>lake-bdii.lakesidepprf.hu</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=4981&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <DESCRIPTION>Lake site BDII</DESCRIPTION>
+        <DESCRIPTION>Lakeside site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
         <HOST_IP>185.34.482.45</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>Y</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>Balaton RF</SITENAME>
+        <SITENAME>Lakeside PPRF</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
         <ROC_NAME>NGI_HU</ROC_NAME>
@@ -514,16 +514,16 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="7651G0">
         <PRIMARY_KEY>7651G0</PRIMARY_KEY>
-        <HOSTNAME>srm.lakebalatonresearch.hu</HOSTNAME>
+        <HOSTNAME>srm.lakesidepprf.hu</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=7651&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>SRM</DESCRIPTION>
         <SERVICE_TYPE>SRM</SERVICE_TYPE>
         <HOST_IP>194.100.20.96</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>Y</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>Balaton RF</SITENAME>
+        <SITENAME>Lakeside PPRF</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
         <ROC_NAME>NGI_HU</ROC_NAME>
@@ -536,7 +536,7 @@
         <DESCRIPTION>Site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
         <HOST_IP>190.04.100.22</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>N</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
@@ -570,7 +570,7 @@
         <DESCRIPTION>Debrecen Tech's Site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
         <HOST_IP>197.800.13.14</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>N</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
@@ -587,7 +587,7 @@
         <DESCRIPTION>Site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
         <HOST_IP>190.10.390.27</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>Y</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
@@ -604,7 +604,7 @@
         <DESCRIPTION>barcs-drava-stf SRM</DESCRIPTION>
         <SERVICE_TYPE>SRM</SERVICE_TYPE>
         <HOST_IP>193.340.05.02</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>Y</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
@@ -616,16 +616,16 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="9293G0">
         <PRIMARY_KEY>9293G0</PRIMARY_KEY>
-        <HOSTNAME>site-bdii.danubeinstitute.hu</HOSTNAME>
+        <HOSTNAME>site-bdii.DanubeNRF-gridtools.hu</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=9293&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>Site BDII</DESCRIPTION>
         <SERVICE_TYPE>Site-BDII</SERVICE_TYPE>
         <HOST_IP>191.19.140.57</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>N</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>Danube Institute</SITENAME>
+        <SITENAME>Danube NRF - Grid Tools</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
         <ROC_NAME>NGI_HU</ROC_NAME>
@@ -633,7 +633,7 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="10619G0">
         <PRIMARY_KEY>10619G0</PRIMARY_KEY>
-        <HOSTNAME>site-lfc.danubeinstitute.hu</HOSTNAME>
+        <HOSTNAME>site-lfc.DanubeNRF-gridtools.hu</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=10619&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>Local site LFC</DESCRIPTION>
         <SERVICE_TYPE>Local-LFC</SERVICE_TYPE>
@@ -642,7 +642,7 @@
         <CORE></CORE>
         <IN_PRODUCTION>N</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>Danube Institute</SITENAME>
+        <SITENAME>Danube NRF - Grid Tools</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
         <ROC_NAME>NGI_HU</ROC_NAME>
@@ -650,16 +650,16 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="8522G0">
         <PRIMARY_KEY>8522G0</PRIMARY_KEY>
-        <HOSTNAME>site-arc-ce.danubeinstitute.hu</HOSTNAME>
+        <HOSTNAME>site-arc-ce.DanubeNRF-gridtools.hu</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=8522&amp;grid_id=0</GOCDB_PORTAL_URL>
         <DESCRIPTION>Site ARC-CE</DESCRIPTION>
         <SERVICE_TYPE>ARC-CE</SERVICE_TYPE>
         <HOST_IP>190.55.180.19</HOST_IP>
-        <SCOPE>EGI</SCOPE>
+        <SCOPE>Local</SCOPE>
         <CORE></CORE>
         <IN_PRODUCTION>Y</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
-        <SITENAME>Danube Institute</SITENAME>
+        <SITENAME>Danube NRF - Grid Tools</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
         <ROC_NAME>NGI_HU</ROC_NAME>
