@@ -18,7 +18,12 @@
 
         <USER_ROLE>
             <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -45,12 +50,12 @@
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
@@ -82,7 +87,12 @@
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -104,6 +114,11 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Security Officer</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -126,7 +141,7 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
@@ -153,9 +168,15 @@
 
         <USER_ROLE>
             <USER_ROLE>Chief Operations Officer</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
             <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
+
     </EGEE_USER>
 
     <EGEE_USER USER_ID="5784" PRIMARY_KEY="4998G0">
@@ -175,7 +196,7 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
@@ -184,8 +205,13 @@
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Regional Staff</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -211,7 +237,7 @@
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
             <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -238,7 +264,7 @@
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Chief Operations Officer</USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -260,7 +286,12 @@
         <HOMESITE>SSC</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>Regional Staff</USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
             <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -287,8 +318,8 @@
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Regional Staff</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -309,13 +340,18 @@
         <HOMESITE>grid-lucerne-uni</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>Regional Staff</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -340,15 +376,20 @@
             <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
     </EGEE_USER>
 
     <EGEE_USER USER_ID="5278903" PRIMARY_KEY="992G0">
-        <FORENAME>Maria</FORENAME>
+        <FORENAME>Mariah</FORENAME>
         <SURNAME>Morgan</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Maria.Morgan@basel-infrastructure.ch</EMAIL>
+        <EMAIL>Mariah.Morgan@basel-infrastructure.ch</EMAIL>
         <TEL>+145 663 3020 8335</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -359,6 +400,11 @@
 
         <USER_ROLE>
             <USER_ROLE>CIC Staff</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -381,11 +427,16 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>COD Administrator</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Security Officer</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -408,11 +459,16 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Regional Staff</USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
             <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -435,16 +491,21 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>EGI CSIRT Officer</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Regional Staff</USER_ROLE>
+            <USER_ROLE>Site Security Officer</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -467,18 +528,23 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
 
     <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
-        <FORENAME>Georgia</FORENAME>
-        <SURNAME>Heidy</SURNAME>
+        <FORENAME>Elizabeth</FORENAME>
+        <SURNAME>Davies</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Georgia.Heidy@lakesidepprf.hu</EMAIL>
+        <EMAIL>Elizabeth.Davies@lakesidepprf.hu</EMAIL>
         <TEL>+91 3473 78 828</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
@@ -498,8 +564,8 @@
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Chief Operations Officer</USER_ROLE>
-            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <USER_ROLE>EGI CSIRT Officer</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
@@ -521,6 +587,11 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -552,7 +623,7 @@
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Regional Staff</USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -575,11 +646,16 @@
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>COD Administrator</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
@@ -607,6 +683,11 @@
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>EGI CSIRT Officer</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>group</ENTITY_TYPE>
         </USER_ROLE>
