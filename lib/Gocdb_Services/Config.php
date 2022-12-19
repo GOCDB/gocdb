@@ -556,4 +556,32 @@ class Config
 
         return $emailTo;
     }
+
+    public function getHelpdeskLink()
+    {
+        $link = $this->GetLocalInfoXML()->helpdesk->link;
+
+        return $link;
+    }
+
+    public function getHelpdeskSupportUnit()
+    {
+        $supportUnit = $this->GetLocalInfoXML()->helpdesk->support_unit;
+
+        return $supportUnit;
+    }
+
+    public function getRequestTracker()
+    {
+        $requestTracker = $this->GetLocalInfoXML()->request_tracker;
+
+        return $requestTracker;
+    }
+
+    public function getCommunityDocumentation()
+    {
+        $communityDocumentation = $this->GetLocalInfoXML()->community_documentation;
+
+        return $communityDocumentation;
+    }
 }
