@@ -21,9 +21,9 @@
     <helpdesk>
         <link></link>
         <support_unit></support_unit>
-    <helpdesk>
+    </helpdesk>
     <request_tracker></request_tracker>
-    <community_documentation></community_documentation>
+    <community_docs></community_docs>
 
     <!-- Specify the URL and description of the Acceptable Use Policy -->
     <aup>AUP location</aup>

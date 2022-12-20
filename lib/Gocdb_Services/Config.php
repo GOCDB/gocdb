@@ -578,10 +578,10 @@ class Config
         return $requestTracker;
     }
 
-    public function getCommunityDocumentation()
+    public function getCommunityDocs()
     {
-        $communityDocumentation = $this->GetLocalInfoXML()->community_documentation;
+        $communityDocs = $this->GetLocalInfoXML()->community_docs;
 
-        return $communityDocumentation;
+        return $communityDocs;
     }
 }
