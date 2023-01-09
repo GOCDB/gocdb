@@ -36,9 +36,10 @@ foreach($sts as $st) {
                 $scope = (string) $value;
                 break;
             default:
-                throw new LogicException("Unknown ServiceGroup key in input XML: ". $key);
+                break;
         }
     }
+
     $instance->setName($name);
     $instance->setDescription($desc);
     $instance->setMonitored($monitored);
