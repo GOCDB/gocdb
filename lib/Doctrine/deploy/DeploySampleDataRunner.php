@@ -45,10 +45,10 @@ echo "Added Users OK\n";
 require __DIR__."/AddSiteRoles.php";
 echo "Added Site level Roles OK\n";
 
-require __DIR__."/AddGroupRoles.php";
+require __DIR__."/AddNGIRoles.php";
 echo "Added NGI level Roles OK\n";
 
-require __DIR__."/AddEgiRoles.php";
+require __DIR__."/AddProjectRoles.php";
 echo "Added EGI level Roles OK\n";
 
 require __DIR__."/AddServiceGroups.php";

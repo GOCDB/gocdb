@@ -3,8 +3,44 @@
 require_once __DIR__."/../bootstrap.php";
 require_once __DIR__."/AddUtils.php";
 
+/**
+ * AddEgiRoles.php: Loads a list of roles from the get_user PI
+ * query output (XML), finds the EGI roles and inserts them into
+ * the doctrine prototype.
+ * XML format is the output from get_roc_list PI query, e.g:
+
+
+ <EGEE_USER USER_ID=" " PRIMARY_KEY="63777G0">
+        <FORENAME>Patricia</FORENAME>
+        <SURNAME>Gomes</SURNAME>
+        <TITLE>Miss</TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=113158&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>pgomes@cbpf.br</EMAIL>
+        <TEL>+55(21)21417419</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=BR/O=ICPEDU/O=UFF BrGrid CA/O=CBPF/OU=LAFEX/CN=Patricia Gomes</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE></HOMESITE>
+        <USER_ROLE>
+            <USER_ROLE>Regional First Line Support</USER_ROLE>
+            <ON_ENTITY>ROC_LA</ON_ENTITY>
+            <ENTITY_TYPE>group</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>CBPF</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+ */
 $usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);
+
+// Find the EGI project object
+$egi = $entityManager->getRepository('Project')->findOneBy(array("name" => "EGI"));
 
 foreach($usersRoles as $user) {
     foreach($user->USER_ROLE as $role) {
@@ -14,7 +50,7 @@ foreach($usersRoles as $user) {
         }
 
         // Skip all non-site roles
-        if((string) $role->ENTITY_TYPE !== "group") {
+        if((string) $role->ENTITY_TYPE !== "project") {
             continue;
         }
 
@@ -33,6 +69,7 @@ foreach($usersRoles as $user) {
             $roleType = $result;
         }
 
+
         // Get user entity
         $dql = "SELECT u FROM User u JOIN u.userIdentifiers up WHERE up.keyValue = :keyValue";
         $users = $entityManager->createQuery($dql)
@@ -49,47 +86,8 @@ foreach($usersRoles as $user) {
             $doctrineUser = $doctrineUser;
         }
 
-        // Check for invalid NGIs and skip
-        // typically these are decomissioned ROCs
-        if($role->ON_ENTITY == 'GridIreland' || $role->ON_ENTITY == 'NGS'
-            || $role->ON_ENTITY == 'LondonT2' || $role->ON_ENTITY == 'Tier1A'
-            || $role->ON_ENTITY == 'Tier1A') {
-            continue;
-        }
-
-        // get ngi entity
-        // skip EGI level roles (these are inserted by AddEgiRoles.php)
-        if((string) $role->ON_ENTITY == "EGI") {
-            continue;
-        }
-        $ngiName = (string) $role->ON_ENTITY;
-        $dql = "SELECT n FROM NGI n WHERE n.name = :ngi";
-        $ngis = $entityManager->createQuery($dql)
-                                     ->setParameter('ngi', $ngiName)
-                                     ->getResult();
-        // /* Error checking: ensure each "ngi" refers to exactly
-         // * one ngi */
-        if(count($ngis) !== 1) {
-            throw new Exception(count($ngis) . " ngis found name: " .
-                $ngiName);
-        }
-        foreach($ngis as $ngi) {
-            $ngi = $ngi;
-        }
-
-        //check that the role is not a duplicate (v4 data contaisn duplicates)
-        $ExistingUserRoles = $doctrineUser->getRoles();
-        $thisIsADuplicateRole=false;
-        foreach($ExistingUserRoles as $role){
-            if($role->getRoleType() == $roleType and $role->getOwnedEntity() == $ngi and $role->getStatus() == 'STATUS_GRANTED'){
-                $thisIsADuplicateRole = true;
-            }
-        }
-
-        if(!$thisIsADuplicateRole){
-            $doctrineRole = new Role($roleType, $doctrineUser, $ngi, 'STATUS_GRANTED');
-            $entityManager->persist($doctrineRole);
-        }
+        $doctrineRole = new Role($roleType, $doctrineUser, $egi, 'STATUS_GRANTED');
+        $entityManager->persist($doctrineRole);
     }
 }
 
