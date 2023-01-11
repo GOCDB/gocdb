@@ -14,7 +14,7 @@ foreach($usersRoles as $user) {
         }
 
         // Skip all non-site roles
-        if((string) $role->ENTITY_TYPE !== "ngi") {
+        if ((string) $role->ENTITY_TYPE !== "ngi") {
             continue;
         }
 

@@ -50,7 +50,7 @@ foreach($usersRoles as $user) {
         }
 
         // Skip all non-site roles
-        if((string) $role->ENTITY_TYPE !== "project") {
+        if ((string) $role->ENTITY_TYPE !== "project") {
             continue;
         }
 
