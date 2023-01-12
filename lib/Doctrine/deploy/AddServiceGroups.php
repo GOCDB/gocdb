@@ -13,6 +13,7 @@ $sts = simplexml_load_file($stFileName);
 // Checking the XML file has parsed correctly
 if ($sts === false) {
     echo "There were errors parsing the XML file.\n";
+    // $error will be an object of the libXMLError class
     foreach (libxml_get_errors() as $error) {
         echo $error->message;
     }
