@@ -44,11 +44,6 @@
         <HOMESITE>BERNUNI-GRID</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>BERNUNI-GRID</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
             <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>project</ENTITY_TYPE>
@@ -67,15 +62,15 @@
 
     <EGEE_USER USER_ID="57512" PRIMARY_KEY="723G0">
         <FORENAME>Biggs</FORENAME>
-        <SURNAME>Dighter</SURNAME>
+        <SURNAME>Antilles</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Biggs.Dighter@lakegenevahprf.ch</EMAIL>
+        <EMAIL>Biggs.Antilles@lakegenevahprf.ch</EMAIL>
         <TEL>+49 040 5676 1788</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Biggs Dighter</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Biggs Antilles</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>LGHPRF</HOMESITE>
@@ -98,16 +93,16 @@
     </EGEE_USER>
 
     <EGEE_USER USER_ID="154512" PRIMARY_KEY="784G0">
-        <FORENAME>Donna</FORENAME>
+        <FORENAME>Rose</FORENAME>
         <SURNAME>Butler</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Donna.Butler@grid-lucerne-uni.ch</EMAIL>
+        <EMAIL>Rose.Butler@grid-lucerne-uni.ch</EMAIL>
         <TEL>+49 040 0000 1763</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Donna Butler</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Rose Butler</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>grid-lucerne-uni</HOMESITE>
@@ -125,16 +120,16 @@
     </EGEE_USER>
 
     <EGEE_USER USER_ID="1523452" PRIMARY_KEY="8144G0">
-        <FORENAME>Matty</FORENAME>
+        <FORENAME>Rory</FORENAME>
         <SURNAME>Travers</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Matty.Travers@SMRF.ch</EMAIL>
+        <EMAIL>Rory.Travers@SMRF.ch</EMAIL>
         <TEL>+49 040 990 4412</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Matty Travers</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Rory Travers</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>SMRF</HOMESITE>
@@ -151,7 +146,7 @@
         </USER_ROLE>
     </EGEE_USER>
 
-    <EGEE_USER USER_ID="468344" PRIMARY_KEY="22434G0">
+    <EGEE_USER USER_ID="468322" PRIMARY_KEY="2222G0">
         <FORENAME>Yuki</FORENAME>
         <SURNAME>Tsunoda</SURNAME>
         <TITLE></TITLE>
@@ -180,16 +175,16 @@
     </EGEE_USER>
 
     <EGEE_USER USER_ID="5784" PRIMARY_KEY="4998G0">
-        <FORENAME>Eddie</FORENAME>
+        <FORENAME>Sam</FORENAME>
         <SURNAME>Stockford</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Eddie.Stockford@mechnikit.ch</EMAIL>
+        <EMAIL>Sam.Stockford@mechnikit.ch</EMAIL>
         <TEL>+49 040 0000 4794</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Eddie Stockford</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Sam Stockford</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>Mechnik IT</HOMESITE>
@@ -201,11 +196,6 @@
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Regional First Line Support</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>ngi</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
-            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
@@ -291,7 +281,7 @@
             <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
+            <USER_ROLE>Site Security Officer</USER_ROLE>
             <ON_ENTITY>SSC</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
@@ -307,7 +297,7 @@
         <TEL>+44 129 8789 7578</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Elliott.Youngson</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Elliott Youngson</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>PtujRPC</HOMESITE>
@@ -322,19 +312,25 @@
             <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>EGI CSIRT Officer</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+
     </EGEE_USER>
 
     <EGEE_USER USER_ID="53113" PRIMARY_KEY="8443G0">
         <FORENAME>Elly</FORENAME>
-        <SURNAME>Rose</SURNAME>
+        <SURNAME>McLaren</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Elly.Rose@grid-lucerne-uni.ch</EMAIL>
+        <EMAIL>Elly.McLaren@grid-lucerne-uni.ch</EMAIL>
         <TEL>+44 505 6900 0169</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Elly Rose</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Elly McLaren</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>grid-lucerne-uni</HOMESITE>
@@ -412,24 +408,19 @@
 
     <EGEE_USER USER_ID="69044" PRIMARY_KEY="7906G0">
         <FORENAME>George</FORENAME>
-        <SURNAME>Calrissian</SURNAME>
+        <SURNAME>Fett</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>George.Calrissian@lakegenevahprf.ch</EMAIL>
+        <EMAIL>George.Fett@lakegenevahprf.ch</EMAIL>
         <TEL>+44 063 0504 6304</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=George Calrissian</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=George Fett</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>LGHPRF</HOMESITE>
 
-        <USER_ROLE>
-            <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
-            <ENTITY_TYPE>project</ENTITY_TYPE>
-        </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>COD Administrator</USER_ROLE>
             <ON_ENTITY>EGI</ON_ENTITY>
@@ -475,16 +466,16 @@
     </EGEE_USER>
 
     <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
-        <FORENAME>Karl</FORENAME>
+        <FORENAME>Max</FORENAME>
         <SURNAME>MacRally</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>Karl.MacRally@barcs-drava-stf.hu</EMAIL>
+        <EMAIL>Max.MacRally@barcs-drava-stf.hu</EMAIL>
         <TEL>+56 484 33 232</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Karl MacRally</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Max MacRally</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>Barcs-Drava STF</HOMESITE>
@@ -543,7 +534,7 @@
         <TEL>+91 3473 78 828</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Georgia Heidy</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Elizabeth Davies</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>Lakeside PPRF</HOMESITE>
@@ -575,7 +566,7 @@
         <TEL>+36 474 272 2929</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Boris Oakken</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Ramsey Oakken</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>Danube NRF - Grid Tools</HOMESITE>
@@ -634,7 +625,7 @@
         <TEL>+44 712 90 82 3465</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Jesscia Falsh</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Jessica Falsh</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
         <HOMESITE>Budapest NRF - Grid Operations</HOMESITE>
