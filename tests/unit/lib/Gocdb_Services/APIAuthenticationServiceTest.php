@@ -170,10 +170,11 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
 
         $ident = '/CN=A Dummy Subject';
         $type = 'X.509';
-      // Start with no APIAuthentication entities to be found
-        $this->assertNull(
-            $authEntServ->getAPIAuthentication($ident),
-            "Non-null value returned when searching for APIAuthentication entity " .
+        // Start with no APIAuthentication entities to be found
+        $this->assertCount(
+          0,
+          $authEntServ->getAPIAuthentication($ident),
+            "Non-zero count returned when searching for APIAuthentication entity " .
             "for id:{$ident} when expected none."
         );
 
@@ -194,9 +195,15 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
 
         $authEntMatched = $authEntServ->getAPIAuthentication($ident);
 
+        $this->assertCount(
+            1,
+            $authEntMatched,
+            "Failed to return single APIAuthentication entity searching for id:{$ident}."
+        );
+
         $this->assertTrue(
-            $authEnt === $authEntMatched,
-            "Failed to return APIAuthentication entity for id:{$ident}."
+            $authEnt === $authEntMatched[0],
+            "Failed to return matching APIAuthentication entity searching for for id:{$ident}."
         );
     }
 }
