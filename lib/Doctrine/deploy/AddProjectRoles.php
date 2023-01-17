@@ -68,7 +68,7 @@ foreach($usersRoles as $user) {
                                      ->getResult();
 
         // Error check: ensure each 'project' refers to exactly one project
-        if(count($projects) !== 1) {
+        if (count($projects) !== 1) {
             throw new Exception(count($projects) . " Projects found with name: " .
                 $projectName);
         }
