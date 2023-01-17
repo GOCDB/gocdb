@@ -13,7 +13,7 @@ foreach($usersRoles as $user) {
             continue;
         }
 
-        // Skip all non-site roles
+        // Skip all non-ngi roles
         if ((string) $role->ENTITY_TYPE !== "ngi") {
             continue;
         }
@@ -58,10 +58,6 @@ foreach($usersRoles as $user) {
         }
 
         // get ngi entity
-        // skip EGI level roles (these are inserted by AddEgiRoles.php)
-        if((string) $role->ON_ENTITY == "EGI") {
-            continue;
-        }
         $ngiName = (string) $role->ON_ENTITY;
         $dql = "SELECT n FROM NGI n WHERE n.name = :ngi";
         $ngis = $entityManager->createQuery($dql)
