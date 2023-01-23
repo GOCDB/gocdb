@@ -172,8 +172,8 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
         $type = 'X.509';
         // Start with no APIAuthentication entities to be found
         $this->assertCount(
-          0,
-          $authEntServ->getAPIAuthentication($ident),
+            0,
+            $authEntServ->getAPIAuthentication($ident),
             "Non-zero count returned when searching for APIAuthentication entity " .
             "for id:{$ident} when expected none."
         );
