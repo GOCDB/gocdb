@@ -267,57 +267,70 @@ class Config
      */
     public function IsPortalReadOnly()
     {
-        $localInfo = $this->GetLocalInfoXML();
-        if (strtolower($localInfo->read_only) == 'true') {
+        $portalReadOnly = (string) $this->GetLocalInfoXML()->read_only;
+        if (strtolower($portalReadOnly) == 'true') {
             return true;
         }
 
         return false;
     }
+
     /**
      * returns the url of the Acceptable Use Policy for display on the landing page
      * @return string
      */
     public function getAUP()
     {
-        return  $this->GetLocalInfoXML()->aup;
+        $aup = (string) $this->GetLocalInfoXML()->aup;
+
+        return $aup;
     }
+
     /**
      * returns the title string describing the Acceptable Use Policy for display on the landing page
      * @return string
      */
     public function getAUPTitle()
     {
-        return  $this->GetLocalInfoXML()->aup_title;
+        $aupTitle = (string) $this->GetLocalInfoXML()->aup_title;
+
+        return $aupTitle;
     }
+
     /**
      * returns the url of the Privacy Notice for display on the landing page
      * @return string
      */
     public function getPrivacyNotice()
     {
-        return  $this->GetLocalInfoXML()->privacy_notice;
+        $privacyNotice = (string) $this->GetLocalInfoXML()->privacy_notice;
+
+        return $privacyNotice;
     }
+
     /**
      * returns the title string describing the Privacy Notice for display on the landing page
      * @return string
      */
     public function getPrivacyNoticeTitle()
     {
-        return  $this->GetLocalInfoXML()->privacy_notice_title;
+        $privacyNoticeTitle = (string) $this->GetLocalInfoXML()->privacy_notice_title;
+
+        return  $privacyNoticeTitle;
     }
+
     /**
      * returns true if the given menu is to be shown according to local_info.xml
      * @return boolean
      */
     public function showMenu($menuName)
     {
-
-        if (empty($this->GetLocalInfoXML()->menus->$menuName)) {
+        $menuItem = (string) $this->GetLocalInfoXML()->menus->$menuName;
+        if (empty($menuItem)) {
             return true;
         }
 
-        switch (strtolower((string) $this->GetLocalInfoXML()->menus->$menuName)) {
+        switch (strtolower($menuItem)) {
             case 'false':
             case 'hide':
             case 'no':
@@ -325,43 +338,61 @@ class Config
         }
         return true;
     }
+
     /**
      * returns the relevant name mapping according to local_info.xml
      * @return string
      */
     public function getNameMapping($entityType, $key)
     {
-        if (empty($this->GetLocalInfoXML()->name_mapping->$entityType)) {
+        $nameMapping = (string) $this->GetLocalInfoXML()->name_mapping->$entityType;
+        if (empty($nameMapping)) {
             return $key;
         }
         switch ($entityType) {
             case 'Service':
-                return $this->GetLocalInfoXML()->name_mapping->$entityType->{str_replace(' ', '', $key)};
+                $service = (string) $this->GetLocalInfoXML()->name_mapping->$entityType->{str_replace(' ', '', $key)};
+                return $service;
         }
     }
+
     /**
      * accessor function for css colour values from local_info.xml
      * @return string
      */
     public function getBackgroundDirection()
     {
-        return $this->GetLocalInfoXML()->css->backgroundDirection;
+        $backgroundDirection = (string) $this->GetLocalInfoXML()->css->backgroundDirection;
+
+        return $backgroundDirection;
     }
+
     public function getBackgroundColour1()
     {
-        return $this->GetLocalInfoXML()->css->backgroundColour1;
+        $backgroundColour1 = (string) $this->GetLocalInfoXML()->css->backgroundColour1;
+
+        return $backgroundColour1;
     }
+
     public function getBackgroundColour2()
     {
-        return $this->GetLocalInfoXML()->css->backgroundColour2;
+        $backgroundColour2 = (string) $this->GetLocalInfoXML()->css->backgroundColour2;
+
+        return $backgroundColour2;
     }
+
     public function getBackgroundColour3()
     {
-        return $this->GetLocalInfoXML()->css->backgroundColour3;
+        $backgroundColour3 = (string) $this->GetLocalInfoXML()->css->backgroundColour3;
+
+        return $backgroundColour3;
     }
+
     public function getHeadingTextColour()
     {
-        return $this->GetLocalInfoXML()->css->headingTextColour;
+        $headingTextColour = $this->GetLocalInfoXML()->css->headingTextColour;
+
+        return $headingTextColour;
     }
 
     /**
@@ -372,9 +403,8 @@ class Config
      */
     public function IsOptionalFeatureSet($featureName)
     {
-        $localInfo = $this->GetLocalInfoXML();
-        $feature = $localInfo->optional_features->$featureName;
-        if ((string) $feature == "true") {
+        $feature = (string) $this->GetLocalInfoXML()->optional_features->$featureName;
+        if ($feature == "true") {
             return true;
         } else {
             return false;
@@ -388,9 +418,8 @@ class Config
      */
     public function GetPortalURL()
     {
-        $localInfo = $this->GetLocalInfoXML();
-        $url = $localInfo->web_portal_url;
-        return strval($url);
+        $portalUrl = (string) $this->GetLocalInfoXML()->web_portal_url;
+        return $portalUrl;
     }
     /**
      * How Personal Data is restricted;
@@ -404,9 +433,8 @@ class Config
         if ($forceStrict === true)
             return true;
 
-        $localInfo = $this->GetLocalInfoXML();
-        $value = $localInfo->restrict_personal_data;
-        if ((string) $value == "true") {
+        $value = (string) $this->GetLocalInfoXML()->restrict_personal_data;
+        if ($value == "true") {
             return true;
         } else {
             return false;
@@ -417,9 +445,9 @@ class Config
      */
     public function getPiUrl()
     {
-        $localInfo = $this->GetLocalInfoXML();
-        $url = $localInfo->pi_url;
-        return strval($url);
+        $piUrl = (string) $this->GetLocalInfoXML()->pi_url;
+
+        return $piUrl;
     }
 
     /**
@@ -428,9 +456,9 @@ class Config
      */
     public function getServerBaseUrl()
     {
-        $localInfo = $this->GetLocalInfoXML();
-        $url = $localInfo->server_base_url;
-        return strval($url);
+        $serverBaseUrl = (string) $this->GetLocalInfoXML()->server_base_url;
+
+        return $serverBaseUrl;
     }
 
     /**
@@ -439,32 +467,32 @@ class Config
      */
     public function getWriteApiDocsUrl()
     {
-        $localInfo = $this->GetLocalInfoXML();
-        $url = $localInfo->write_api_user_docs_url;
-        return strval($url);
+        $writeApiDocsUrl = (string) $this->GetLocalInfoXML()->write_api_user_docs_url;
+
+        return $writeApiDocsUrl;
     }
 
     public function getDefaultScopeName()
     {
-        //$scopeName = $this->GetLocalInfoXML()->local_info->default_scope->name;
-        $scopeName = $this->GetLocalInfoXML()->default_scope->name;
+        //$scopeName = (string) $this->GetLocalInfoXML()->local_info->default_scope->name;
+        $scopeName = (string) $this->GetLocalInfoXML()->default_scope->name;
 
         if (empty($scopeName)) {
             $scopeName = '';
         }
 
-        return strval($scopeName);
+        return $scopeName;
     }
 
     public function getDefaultScopeMatch()
     {
-        $scopeMatch = $this->GetLocalInfoXML()->default_scope_match;
+        $scopeMatch = (string) $this->GetLocalInfoXML()->default_scope_match;
 
         if (empty($scopeMatch)) {
             $scopeMatch = 'all';
         }
 
-        return strval($scopeMatch);
+        return $scopeMatch;
     }
 
     public function getMinimumScopesRequired($entityType)
@@ -475,13 +503,13 @@ class Config
             throw new \LogicException("Function does not support entity type");
         }
 
-        $numScopesRequired = $this->GetLocalInfoXML()->minimum_scopes->$entityType;
+        $numScopesRequired = (int) $this->GetLocalInfoXML()->minimum_scopes->$entityType;
 
         if (empty($numScopesRequired)) {
             $numScopesRequired = 0;
         }
 
-        return intval($numScopesRequired);
+        return $numScopesRequired;
     }
 
     public function getDefaultFilterByScope()
@@ -496,7 +524,7 @@ class Config
 
     public function getShowMapOnStartPage()
     {
-        $showMapString = $this->GetLocalInfoXML()->show_map_on_start_page;
+        $showMapString = (string) $this->GetLocalInfoXML()->show_map_on_start_page;
 
         if (empty($showMapString)) {
             $showMap = false;
@@ -511,13 +539,15 @@ class Config
 
     public function getExtensionsLimit()
     {
-        return $this->GetLocalInfoXML()->extensions->max;
+        $extensionsLimit = (int) $this->GetLocalInfoXML()->extensions->max;
+
+        return $extensionsLimit;
     }
 
 
     public function getSendEmails()
     {
-        $sendEmailString = $this->GetLocalInfoXML()->send_email;
+        $sendEmailString = (string) $this->GetLocalInfoXML()->send_email;
         if (empty($sendEmailString)) {
             $sendEmail = false;
         } elseif (strtolower($sendEmailString) == 'true') {
@@ -538,21 +568,21 @@ class Config
 
     public function getPageBanner()
     {
-        $bannerText = $this->GetLocalInfoXML()->page_banner;
+        $bannerText = (string) $this->GetLocalInfoXML()->page_banner;
 
         return $bannerText;
     }
 
     public function getEmailFrom()
     {
-        $emailFrom = $this->GetLocalInfoXML()->email_from;
+        $emailFrom = (string) $this->GetLocalInfoXML()->email_from;
 
         return $emailFrom;
     }
 
     public function getEmailTo()
     {
-        $emailTo = $this->GetlocalInfoXML()->email_to;
+        $emailTo = (string) $this->GetlocalInfoXML()->email_to;
 
         return $emailTo;
     }
