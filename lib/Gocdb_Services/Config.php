@@ -390,7 +390,7 @@ class Config
 
     public function getHeadingTextColour()
     {
-        $headingTextColour = $this->GetLocalInfoXML()->css->headingTextColour;
+        $headingTextColour = (string) $this->GetLocalInfoXML()->css->headingTextColour;
 
         return $headingTextColour;
     }
