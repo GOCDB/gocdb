@@ -12,10 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+namespace org\gocdb\tests;
+
 require_once __DIR__ . '/ServiceTestUtil.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/APIAuthenticationService.php';
 
 use Doctrine\ORM\EntityManager;
+use org\gocdb\services\APIAuthenticationService;
+use PHPUnit_Extensions_Database_Operation_Factory;
+use PHPUnit_Extensions_Database_TestCase;
+use RuntimeException;
+use ServiceTestUtil;
+use TestUtil;
 
 /**
  * DBUnit test class for the {@see \org\gocdb\services\Site} service.
@@ -27,7 +35,7 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
     private $entityManager;
     private $dbOpsFactory;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
       // Use a local instance to avoid Mess Detector's whinging about avoiding
@@ -160,11 +168,11 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
 
         ServiceTestUtil::persistAndFlush($this->entityManager, $user);
 
-        $authEntServ = new org\gocdb\services\APIAuthenticationService();
+        $authEntServ = new APIAuthenticationService();
         $authEntServ->setEntityManager($this->entityManager);
 
         $this->assertTrue(
-            $authEntServ instanceof org\gocdb\services\APIAuthenticationService,
+            $authEntServ instanceof APIAuthenticationService,
             'Failed to create APIAuthenticationService'
         );
 
