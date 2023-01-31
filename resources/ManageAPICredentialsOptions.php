@@ -129,4 +129,12 @@ class ManageAPICredentialsOptions
     {
         return $this->delete;
     }
+    /**
+     * The delete threshold may not be given in which case the warning threshold should be used.
+     * Note that it is an error is delete is greater than warning.
+     */
+    public function getThreshold()
+    {
+        return $this->isWarnEnabled() ? $this->getWarn() : $this->getDelete();
+    }
 }

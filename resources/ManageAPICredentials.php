@@ -53,11 +53,11 @@ try {
 
     $baseTime = new DateTime("now", new DateTimeZone('UTC'));
 
-    $deletedCreds = [];
-    $warnedCreds = [];
+    $creds = getCreds($entityManager, $baseTime, $options->getThreshold());
 
     if ($options->isDeleteEnabled()) {
-        $deletedCreds = deleteCreds(
+        $creds = deleteCreds(
+            $creds,
             $options->isDryRun(),
             $entityManager,
             $baseTime,
@@ -66,15 +66,14 @@ try {
     }
 
     if ($options->isWarnEnabled()) {
-        $warnedCreds = warnUsers(
+        warnUsers(
+            $creds,
             $options->isDryRun(),
-            $entityManager,
             $baseTime,
             $options->getWarn(),
             $options->getDelete(),
             $fromEmail,
-            $replyToEmail,
-            $deletedCreds
+            $replyToEmail
         );
     }
 } catch (InvalidArgumentException $except) {
@@ -87,31 +86,46 @@ try {
  * and delete them or, if dry-run option is true, generate a summary report
  * of the credentils found.
  *
+ * @param array             $creds              Array of credentials to process.
  * @param bool              $dryRun             If true no action is taken and a report is generated instead
  * @param \Doctrine\Orm\EntityManager $entitymanager A valid Doctrine Entity Manager
  * @param \DateTime         $baseTime           Time from which interval of no-use is measured
  * @param int               $deleteThreshold    The number of months of no-use which will trigger deletion
- * @return array                                Credentials identified for deletion. Note: if dry-run is
- *                                              NOT in operation all these credentials will have been deleted.
+ * @return array                                Credentials which were not deleted.
  */
-function deleteCreds($dryRun, $entityManager, $baseTime, $deleteThreshold)
-{
-    $creds = getCreds($entityManager, $baseTime, $deleteThreshold);
 
-    if ($dryRun) {
-        reportDryRun($creds, "deleting");
-        return $creds;
-    }
+function deleteCreds($creds, $dryRun, $entityManager, $baseTime, $deleteThreshold)
+{
+    $deletedCreds = [];
 
     $serv = new APIAuthenticationService();
     $serv->setEntityManager($entityManager);
 
-    /* @var $api APIAuthentication */
-    foreach ($creds as $api) {
-        $serv->deleteAPIAuthentication($api);
+    /* @var $apiCred APIAuthentication */
+    foreach ($creds as $apiCred) {
+        if (isOverThreshold($apiCred, $baseTime, $deleteThreshold)) {
+            $deletedCreds[] = $apiCred;
+            if (!$dryRun) {
+                $serv->deleteAPIAuthentication($apiCred);
+            }
+        }
+    }
+    if ($dryRun) {
+        reportDryRun($deletedCreds, "deleting");
     }
 
-    return $creds;
+    return array_udiff($creds, $deletedCreds, '\gocdb\scripts\compareCredIds');
+}
+/**
+ * @return boolean true if the credential has not been used within $threshold months, else false
+ */
+function isOverThreshold(APIAuthentication $cred, DateTime $baseTime, $threshold)
+{
+    $lastUsed = $cred->getLastUseTime();
+
+    $lastUseMonths = $baseTime->diff($lastUsed)->m;
+
+    return $lastUseMonths >= $threshold;
 }
 /**
  * Helper function to check if two API credentials have the same id.
@@ -131,57 +145,55 @@ function compareCredIds(APIAuthentication $cred1, APIAuthentication $cred2)
     return $id1 > $id2 ? 1 : -1;
 }
 /**
- * Select API credentials for the sending of warning emails.
+ * Send of warning emails where credentials have not been used for a given number of months
  *
- * Find API credentials which have not been used for a given number of months
+ * Find API credentials from the input array which have not been used for a given number of months
  * and send emails to the owners and site address, taken from the credential object,
  * warning of impending deletion if the period of no-use reaches a given threshold.
  * If dry-run option is true, generate a summary report of the credentials found
  * instead of sending emails.
  *
+ * @param array         $creds              Array of credentials to process.
  * @param bool          $dryRun             If true no action is taken and a report is generated instead
- * @param \Doctrine\Orm\EntityManager $entitymanager A valid Doctrine Entity Manager
  * @param \DateTime     $baseTime           Time from which interval of no-use is measured
  * @param int           $warningThreshold   The number of months of no-use which triggers warning emails
  * @param int           $deleteThreshold    The number of months of no-use which will trigger deletion
  * @param string        $fromEmail          Email address to use as sender's (From:) address
  * @param string        $replyToEmail       Email address for replies (Reply-To:)
- * @param array         $deletedCreds       An array of credentials which have been selected for deletion
- *                                          If dry-run is selected these are assumed to have been deleted
- *                                          and removed from the report.
  * @return array                            Array of credentials identifed for sending warning emails
  */
 function warnUsers(
+    $creds,
     $dryRun,
-    $entityManager,
     $baseTime,
     $warningThreshold,
     $deletionThreshold,
     $fromEmail,
-    $replyToEmail,
-    $deletedCreds
+    $replyToEmail
 ) {
-    $creds = getCreds($entityManager, $baseTime, $warningThreshold);
-
-    if ($dryRun) {
-        // Remove the credentials that would have been deleted if not in dry-run mode
-        $creds = array_udiff($creds, $deletedCreds, '\gocdb\scripts\compareCredIds');
-
-        reportDryRun($creds, "sending warning emails");
-        return $creds;
-    }
+    $warnedCreds = [];
 
     /* @var $api APIAuthentication */
-    foreach ($creds as $api) {
-        $lastUsed = $api->getLastUseTime();
+    foreach ($creds as $apiCred) {
+        // The credentials list is pre-selected based on the given threshold in the query
+        // so this check is probably redundant.
+        if (isOverThreshold($apiCred, $baseTime, $warningThreshold)) {
+            $lastUsed = $apiCred->getLastUseTime();
+            $lastUseMonths = $baseTime->diff($lastUsed)->format('%m');
 
-        $timeDiff = (new DateTime())->diff($lastUsed);
-        $lastUseMonths = $timeDiff->format('%m');
+            if (!$dryRun) {
+                sendWarningEmail($fromEmail, $replyToEmail, $apiCred, intval($lastUseMonths), $deletionThreshold);
+            }
 
-        sendWarningEmail($fromEmail, $replyToEmail, $api, intval($lastUseMonths), $deletionThreshold);
+            $warnedCreds[] = $apiCred;
+        }
     }
 
-    return $creds;
+    if ($dryRun) {
+        reportDryRun($warnedCreds, "sending warning emails");
+    }
+
+    return array_udiff($creds, $warnedCreds, '\gocdb\scripts\compareCredIds');
 }
 /**
  * Find API credentials unused for a number of months.
@@ -199,7 +211,8 @@ function getCreds($entityManager, $baseTime, $threshold)
 
     $qbl->select('cred')
         ->from('APIAuthentication', 'cred')
-        ->where('cred.lastUseTime < :threshold');
+        ->where('cred.lastUseTime < :threshold')
+        ->andWhere($qbl->expr()->isNotNull("cred.user")); // cope with legacy entities
 
     $timeThresh = clone $baseTime;
 
