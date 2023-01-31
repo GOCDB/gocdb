@@ -12,4 +12,17 @@
     <SECURITY_EMAIL>cert@switch.ch</SECURITY_EMAIL>
     <SITE_COUNT>7</SITE_COUNT>
   </NGI>
+  <NGI PRIMARY_KEY="33001H0" NAME="NGI_FIFE">
+    <PRIMARY_KEY>33001H0</PRIMARY_KEY>
+    <NAME>NGI_FIFE</NAME>
+    <OBJECT_ID>20721</OBJECT_ID>
+    <DESCRIPTION/>
+    <EMAIL>ngi-fife-contact@sample.com</EMAIL>
+    <GGUS_SU/>
+    <ROD_EMAIL/>
+    <HELPDESK_EMAIL/>
+    <SECURITY_EMAIL>ngi-fife-sec@sample.com</SECURITY_EMAIL>
+    <SITE_COUNT>7</SITE_COUNT>
+  </NGI>
+
 </results>
