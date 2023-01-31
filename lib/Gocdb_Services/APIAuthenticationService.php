@@ -37,7 +37,7 @@ class APIAuthenticationService extends AbstractEntityService{
      * Returns the APIAuthentication entity associated with the given identifier.
      *
      * @param string $ident Identifier (e.g. X.509 DN as string)
-     * @return \APIAuthentication APIAuthentication associated with this identifier
+     * @return \APIAuthentication[] APIAuthentication associated with this identifier
      */
     public function getAPIAuthentication($ident) {
 
@@ -48,12 +48,13 @@ class APIAuthenticationService extends AbstractEntityService{
         $dql = "SELECT a FROM APIAuthentication a " .
                 "WHERE (a.identifier = :ident)" ;
 
+        /* @var $qry \Doctine\DBAL\query */
         $qry = $this->em->createQuery($dql);
         $qry->setParameter('ident', $ident);
 
-        $apiAuth = $qry->getOneOrNullResult();
+        $apiAuths = $qry->getResult();
 
-        return $apiAuth;
+        return $apiAuths;
     }
 
         /**
@@ -188,17 +189,19 @@ class APIAuthenticationService extends AbstractEntityService{
     /**
      * Set the last use time field to the current UTC time
      *
-     * @param \APIAuthentication $authEntity entity to update
+     * @param \APIAuthentication[] $authEntities entity to update
      * @throws \Exception if the update fails
      */
-    public function updateLastUseTime(\APIAuthentication $authEntity) {
-
+    public function updateLastUseTime(array $authEntities)
+    {
         $this->em->getConnection()->beginTransaction();
 
         try {
-            $authEntity->setLastUseTime();
-
-            $this->em->persist($authEntity);
+            /* @var \APIAuthentication $authEntity */
+            foreach ($authEntities as $authEntity) {
+                $authEntity->setLastUseTime();
+                $this->em->persist($authEntity);
+            }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
@@ -220,14 +223,15 @@ class APIAuthenticationService extends AbstractEntityService{
      */
     public function uniqueAPIAuthEnt(\Site $site, $identifier, $type) {
 
-        $authEnt = $this->getAPIAuthentication($identifier, $type);
+        $authEntities = $this->getAPIAuthentication($identifier, $type);
 
-        if (!is_null($authEnt) &&
-                $authEnt->getParentSite()->getId() == $site->getId()) {
-            throw new \Exception(
-                "An authentication object of type \"$type\" and with identifier " .
-                "\"$identifier\" already exists for " . $site->getName()
-            );
+        foreach ($authEntities as $authEnt) {
+            if ($authEnt->getParentSite()->getId() == $site->getId()) {
+                throw new \Exception(
+                    "An authentication object of type \"$type\" and with identifier " .
+                    "\"$identifier\" already exists for " . $site->getName()
+                );
+            }
         }
     }
     /**
