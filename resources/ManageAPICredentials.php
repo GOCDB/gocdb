@@ -54,8 +54,9 @@ try {
     $baseTime = new DateTime("now", new DateTimeZone('UTC'));
 
     $deletedCreds = [];
+    $warnedCreds = [];
 
-    if (!is_null($options->getDelete())) {
+    if ($options->isDeleteEnabled()) {
         $deletedCreds = deleteCreds(
             $options->isDryRun(),
             $entityManager,
@@ -64,7 +65,7 @@ try {
         );
     }
 
-    if (!is_null($options->getWarn())) {
+    if ($options->isWarnEnabled()) {
         $warnedCreds = warnUsers(
             $options->isDryRun(),
             $entityManager,
@@ -238,16 +239,6 @@ function sendWarningEmail(
     $siteName = $api->getParentSite()->getShortName();
     $siteEmail = $siteName . ' <' . $api->getParentSite()->getEmail() . '>';
 
-    // Some code useful for testing
-    /*
-    print("\n!!!DUMMY SITE EMAIL!!! was $siteEmail\n\n");
-    $siteEmail = 'Name <name@address.com>';
-    */
-    /*
-    print("\n!!!DUMMY USER EMAIL!!! was $userEmail\n\n");
-    $userEmail = 'AnotherName <anothername@address.com>';
-    */
-
     $headersArray = array ("From: $fromEmail",
                            "Cc: $siteEmail");
     if (strlen($replyToEmail) > 0 && $fromEmail !== $replyToEmail) {
@@ -258,7 +249,7 @@ function sendWarningEmail(
     $subject = "GOCDB: Site API credential deletion notice";
 
     $body = "Dear " . $user->getForename() . ",\n\n" .
-        "The API credential associated with the following identifiers registered\n" .
+        "The API credential associated with the following identifier registered\n" .
         "at site $siteName has not been used during\n" .
         "the last $elapsedMonths months and will be deleted if this period of inactivity\n" .
         "reaches $deletionThreshold months.\n\n";

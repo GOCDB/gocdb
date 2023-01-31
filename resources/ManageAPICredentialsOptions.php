@@ -113,6 +113,14 @@ class ManageAPICredentialsOptions
     {
         return $this->dryRun;
     }
+    public function isDeleteEnabled()
+    {
+        return !is_null($this->getDelete());
+    }
+    public function isWarnEnabled()
+    {
+        return !is_null($this->getWarn());
+    }
     public function getWarn()
     {
         return $this->warn;
