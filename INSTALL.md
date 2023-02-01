@@ -26,7 +26,7 @@ This file is best viewed using a browser-plugin for markdown `.md` files.
 
 * [Database server](#database-server)
   * Oracle 11g+ or MariaDB/MySQL
-    * (note: the free Oracle 11g XE Express Editions which comes with a free license is perfectly suitable)
+    * Oracle 18c XE Express Edition available under the Oracle Free Use Terms and Conditions is suitable for development and testing (https://www.oracle.com/downloads/licenses/oracle-free-license.html).
   * MariaDB/MySQL
     * package `mariadb-server`
 
@@ -117,13 +117,23 @@ For GocDB, three URL alias/directory-mappings are needed, one for the portal GUI
 Note that, depending on Apache/httpd version, the "Require all granted" statements in gocdbssl.conf may cause an HTTP Error "500 - Invalid configuration..." and can be commented out.
 
 ### Database Server
-GOCDB uses a DB abstraction layer (Doctrine) and with some configuration should be deployable on different RDBMS platforms that are supported for Doctrine. Instructions are provided here for Oracle (the free Oracle 11g is perfectly suitable) and MySQL/MariaDB.
+GOCDB uses a DB abstraction layer (Doctrine) and with some configuration should be deployable on different RDBMS platforms that are supported for Doctrine. Instructions are provided here for Oracle and MySQL/MariaDB.
 
-#### Oracle 11g
-The free to use XE/11g Oracle DB can be used to host run GOCDB on Win/nix. To use Oracle on nix systems, the OCI8 extension/driver needs to be compiled and installed.
+#### Oracle XE (18c)
+The free to use XE/18c Oracle DB can be used to host the GOCDB database for development and testing. This document adapts the instructions used for the unsupported Oracle 11g database. However, using a single, 'common user' at the root of a multitenant container database is not necessarily the best, or most secure, configuration.
 
-##### Compiling/Installing OCI8
-The OCI8 extension/driver for php needs to be installed, see: http://php.net/oci8
+To download and install the database server, follow the instructions linked from here - https://www.oracle.com/database/technologies/appdev/xe.html.
+
+Notes on Oracle 18c XE installation:
+- "SEVERE: [FATAL] [DBT-06103] The port (5,500) is already in use." is caused by the short host name (alias) not being configured in /etc/hosts. (https://dba.stackexchange.com/questions/268437/fatal-dbt-06103-the-port-5-500-is-already-in-use)
+- PATH Bash environment variable should be updated to include the Oracle executables BEFORE the oraenv script is run -
+  ```
+  export PATH=/opt/oracle/product/18c/dbhomeXE/bin:$PATH
+  ```
+
+#### Compiling/Installing OCI8
+Using Oracle on Linux requires the OCI8 extension/driver for php: http://php.net/oci8.
+
 This can be most easily installed with the free Oracle Instant Client libs which can be installed in a number of ways (http://php.net/manual/en/oci8.installation.php), but the most easy is via PECL as descibed below:
 
 Install the basic, devel and sqlplus instantclient rpms from Oracle (http://www.oracle.com/technetwork/database/features/instant-client/index-097480.html) and install GCC, PHP dev and pear packages:
@@ -277,36 +287,33 @@ deployment of your GOCDB instance:
 * [Deploy Sample Data](#deploy-sample-data) (optional)
 
 ### Create DB User/Account <a id="create-db"></a>
-#### Oracle
+#### Oracle <a id="oracle-user"></a>
 
-If you intend to populate the database from a dump of an existing GOCDB5 instance you do NOT need to create the GOCDB5 user. Simply deploy the data as described at ["Deploy and existing DB"](#deploy-existing-dump) below remembering that you might want to ALTER the password for the GOCDB5 user after the import.
+If you intend to populate the database from a dump of an existing GOCDB5 instance you do NOT need to create the GOCDB5 user. Simply deploy the data as described at ["Deploy and existing DB"](#deploy-existing-dump).
 
-Create a dedicated GOCDB5 user using the following script (substitute GOCDB5 for your username and a secure password). Run this script as the Oracle admin/system user:
+Create a dedicated GOCDB5 user using the following script (substitute C##GOCDB5 for your username and a secure password). The C## (or c##) prefix is required to indicate an Oracle 'common user'. Run this script as the Oracle admin/system user:
 
 ```
 -- Manage GOCDB5 user if already exists (optional) --
-drop user gocdb5 cascade;
-
--- CREATE USER SQL
-CREATE USER GOCDB5 IDENTIFIED BY <PASSWORD>
+DROP USER C##GOCDB5 CASCADE;
+CREATE USER C##GOCDB5 IDENTIFIED BY <PASSWORD>
 DEFAULT TABLESPACE "USERS"
 QUOTA UNLIMITED ON "USERS"
 TEMPORARY TABLESPACE "TEMP";
--- ROLES - GRANT "RESOURCE" TO GOCDB5
--- SYSTEM PRIVILEGES
-GRANT CREATE TRIGGER TO GOCDB5 ;
-GRANT CREATE SEQUENCE TO GOCDB5 ;
-GRANT CREATE TABLE TO GOCDB5 ;
-GRANT CREATE JOB TO GOCDB5 ;
-GRANT CREATE PROCEDURE TO GOCDB5 ;
-GRANT CREATE TYPE TO GOCDB5 ;
-GRANT CREATE SESSION TO GOCDB5 ;
+--
+GRANT CREATE TRIGGER TO C##GOCDB5;
+GRANT CREATE SEQUENCE TO C##GOCDB5;
+GRANT CREATE TABLE TO C##GOCDB5;
+GRANT CREATE JOB TO C##GOCDB5;
+GRANT CREATE PROCEDURE TO C##GOCDB5;
+GRANT CREATE TYPE TO C##GOCDB5;
+GRANT CREATE SESSION TO C##GOCDB5;
 ```
 
 If you are using sqlplus to connect to the database remotely you will need also -
 
 ```
-GRANT CONNECT TO GOCDB5;
+GRANT CONNECT TO C##GOCDB5;
 ```
 
 By default, Oracle 11g will expire a password in 180 days. In previous versions
@@ -457,13 +464,11 @@ This directory object defines the directory where the .dmp file is loaded from.
   ```
 
 * Import your dmp file. Note, the example below assumes the 'gocdb5' user/schema does not exist in the db - the import actually creates this user with all its permissions/roles.
-If you want to use a different schema/username, then specify this in the value of the remap_schema argument on the right of the colon.
-You may need to change different arguments for your install such as modifying the remap_tablespace:
+If you want to use a different schema/username, then specify this in the value of the remap_schema argument on the right of the colon. (The following example remaps to an Oracle 'common user' as described in [creating the Oracle user/account](#oracle-user) above, after importing an Oracle 11 dump to an Oracle 18 service). You may need to change different arguments for your install such as modifying the remap_tablespace:
 
   ```
-  $impdp system/******** schemas=gocdb5 directory=dmpdir dumpfile=goc5dump.dmp  REMAP_SCHEMA=gocdb5:gocdb5 remap_tablespace=GOCDB5:users  table_exists_action=replace logfile=gocdbv5deploy.log
+  $impdp system/******** schemas=gocdb5 directory=dmpdir dumpfile=goc5dump.dmp  REMAP_SCHEMA=gocdb5:c##gocdb5 remap_tablespace=GOCDB5:users  table_exists_action=replace logfile=gocdbv5deploy.log
   ```
-
   Note: If you get the following error, there is a file permissionsissue of some kind.
   Try creating a new directory for the dump-file, possibly within your Oracle directory.
 
@@ -473,6 +478,11 @@ You may need to change different arguments for your install such as modifying th
   ORA-29283: invalid file operation
   ORA-06512: at "SYS.UTL_FILE", line 536
   ORA-29283: invalid file operation
+  ```
+* Change the database password if necessary -
+
+  ```
+  SQL> alter user c##gocdb5 identified by <password>;
   ```
 
 * To generate statistics after importing the dmp file (this improves performance):
