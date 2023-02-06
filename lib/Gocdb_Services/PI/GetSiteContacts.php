@@ -122,8 +122,6 @@ class GetSiteContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderable 
         ->leftJoin('s.roles', 'r')
         ->leftJoin('r.user', 'u')
         ->leftJoin('r.roleType', 'rt')
-        //->orderBy('s.shortName', 'ASC');
-        //->orderBy('s.id', 'ASC') // oldest first
         ;
 
         // Order by ASC (oldest first: 1, 2, 3, 4)
@@ -296,7 +294,11 @@ class GetSiteContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderable 
 
             $xmlSite->addChild ( 'PRIMARY_KEY', $site->getPrimaryKey () );
             $xmlSite->addChild ( 'SHORT_NAME', $site->getShortName () );
-            foreach ( $site->getRoles () as $role ) {
+
+            // Sort roles
+            $orderedRoles = $this->helpers->orderArrById($site->getRoles());
+
+            foreach ($orderedRoles as $role) {
                 if ($role->getStatus () == "STATUS_GRANTED") { // Only show users who are granted the role, not pending
 
                     $rtype = $role->getRoleType ()->getName ();

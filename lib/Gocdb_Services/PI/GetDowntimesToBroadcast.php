@@ -153,7 +153,6 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
             ->join('s.ngi', 'n')
             ->join('s.country', 'c')
             ->andWhere($qb->expr()->gt('d.insertDate', '?'.++$bc))
-            //->orderBy('d.startDate', 'DESC')
           ;
 
         //Bind interval days
@@ -325,7 +324,11 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
 
         foreach($downtimes as $downtime) {
             // duplicate the downtime for each affected service
-            foreach($downtime->getServices() as $se){
+
+            // Sort services
+            $orderedServices = $this->helpers->orderArrById($downtime->getServices());
+
+            foreach ($orderedServices as $se) {
                 $xmlDowntime = $xml->addChild('DOWNTIME');
                 $xmlDowntime->addAttribute("ID", $downtime->getId());
                 // Note, we are preserving the v4 primary keys here.
@@ -342,7 +345,11 @@ class GetDowntimeToBroadcast implements IPIQuery, IPIQueryPageable, IPIQueryRend
                 $xmlDowntime->addChild('GOCDB_PORTAL_URL', $portalUrl);
                 $xmlEndpoints = $xmlDowntime->addChild ( 'AFFECTED_ENDPOINTS' );
                 if($this->renderMultipleEndpoints){
-                    foreach($downtime->getEndpointLocations() as $endpoint){
+
+                    // Sort endpoints
+                    $orderedEndpoints = $this->helpers->orderArrById($downtime->getEndpointLocations());
+
+                    foreach ($orderedEndpoints as $endpoint) {
                         $xmlEndpoint = $xmlEndpoints->addChild ( 'ENDPOINT' );
                         $xmlEndpoint->addChild ( 'ID', $endpoint->getId());
                         $xmlEndpoint->addChild ( 'NAME', $endpoint->getName());

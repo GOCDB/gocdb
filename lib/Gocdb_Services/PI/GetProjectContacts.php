@@ -243,7 +243,10 @@ class GetProjectContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderab
             $xmlProjUser->addAttribute("ID", $project->getId());
             $xmlProjUser->addAttribute('NAME', $project->getName());
 
-            foreach($project->getRoles() as $role){
+            // Sort roles
+            $orderedRoles = $this->helpers->orderArrById($project->getRoles());
+
+            foreach ($orderedRoles as $role) {
                 if($role->getStatus() == \RoleStatus::GRANTED &&
                 $role->getRoleType()->getName() != \RoleTypeName::CIC_STAFF){
 

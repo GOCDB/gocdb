@@ -132,9 +132,6 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
                 ->leftJoin('s.infrastructure', 'i')
                 ->leftJoin('s.subGrid', 'sgrid')
                 ->leftJoin('s.tier', 'ti')
-                //->leftJoin('s.timezone', 'tz') // deprecated, dont use the tz entity
-                //->orderBy('s.shortName', 'ASC');
-                //->orderBy('s.id', 'ASC')  // oldest first
         ;
 
         // Order by ASC (oldest first: 1, 2, 3, 4)
@@ -360,12 +357,20 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
             // scopes
             $xmlScopes = $xmlSite->addChild('SCOPES');
-            foreach($site->getScopes() as $scope){
+
+            // Sort scopes
+            $orderedScopes = $this->helpers->orderArrById($site->getScopes());
+
+            foreach ($orderedScopes as $scope) {
                $xmlScope = $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
             }
 
             $xmlExtensions = $xmlSite->addChild('EXTENSIONS');
-            foreach ($site->getSiteProperties() as $siteProp) {
+
+            // Sort site properties
+            $orderedSiteProps = $this->helpers->orderArrById($site->getSiteProperties());
+
+            foreach ($orderedSiteProps as $siteProp) {
                 //if ($siteProp != "") {
                     $xmlSiteProperty = $xmlExtensions->addChild('EXTENSION');
                     $xmlSiteProperty->addChild('LOCAL_ID', $siteProp->getId());
@@ -491,8 +496,11 @@ class GetSite implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             $helpers->addExtIfNotEmpty($xmlSiteExtParent, 'Domain_Name', $site->getDomain());
 
             $xmlNgiAsoc = $xmlSite->addChild("Associations");
-            $services = $site->getServices();
-            foreach ($services as $service) {
+
+            // Sort services
+            $orderedServices = $this->helpers->orderArrById($site->getServices());
+
+            foreach ($orderedServices as $service) {
                 $xmlNgiAsoc->addChild("ChildDomainID", $service->getID());
             }
         }
