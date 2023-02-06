@@ -9,7 +9,7 @@
             Role Requests and Approvals
         </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-          <a href="https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Understanding_and_manipulating_roles">
+          <a href="https://docs.egi.eu/internal/configuration-database/users-roles/managing-roles/">
               How to Manage Roles in GOCDB
           </a>
          </span>
