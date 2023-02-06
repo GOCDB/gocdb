@@ -199,7 +199,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Services&amp;scope=<?php xecho($name)?>">
+                        <a href="index.php?Page_Type=Services&amp;mscope[]=<?php xecho($name)?>">
                             View Services
                         </a>
                     </td>
