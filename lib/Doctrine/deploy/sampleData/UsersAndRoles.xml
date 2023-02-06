@@ -1,146 +1,672 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <results>
 
-
     <EGEE_USER USER_ID="911" PRIMARY_KEY="6672G0">
-        <FORENAME>Griffin</FORENAME>
-        <SURNAME>Peterson</SURNAME>
+        <FORENAME>George</FORENAME>
+        <SURNAME>Vanhall</SURNAME>
         <TITLE></TITLE>
-        <DESCRIPTION>
-        </DESCRIPTION>
+        <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6653&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
+        <EMAIL>George.Vanhall@torchit.ch</EMAIL>
         <TEL>+49 7247 82 0000</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Griffin Peterson</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=George Vanhall</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>SWITCH</HOMESITE>
+        <HOMESITE>Torch</HOMESITE>
+
         <USER_ROLE>
             <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>Torch</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
-
 
     <EGEE_USER USER_ID="5605035" PRIMARY_KEY="6345G0">
-        <FORENAME>Amy</FORENAME>
-        <SURNAME>Wong</SURNAME>
+        <FORENAME>Megan</FORENAME>
+        <SURNAME>North</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
+        <EMAIL>Megan.North@bernuni-grid.ch</EMAIL>
         <TEL>+49 040 0000 1763</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Amy Wong</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Megan North</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>T3_CH_PSI</HOMESITE>
+        <HOMESITE>BERNUNI-GRID</HOMESITE>
 
-        <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
             <ON_ENTITY>EGI</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <ON_ENTITY>BERNUNI-GRID</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="57512" PRIMARY_KEY="723G0">
+        <FORENAME>Biggs</FORENAME>
+        <SURNAME>Antilles</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Biggs.Antilles@lakegenevahprf.ch</EMAIL>
+        <TEL>+49 040 5676 1788</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Biggs Antilles</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>LGHPRF</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>LGHPRF</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
 
     <EGEE_USER USER_ID="154512" PRIMARY_KEY="784G0">
-        <FORENAME>Neville</FORENAME>
-        <SURNAME>Longbottom</SURNAME>
+        <FORENAME>Rose</FORENAME>
+        <SURNAME>Butler</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
+        <EMAIL>Rose.Butler@grid-lucerne-uni.ch</EMAIL>
         <TEL>+49 040 0000 1763</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Neville Longbottom</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Rose Butler</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>UZH</HOMESITE>
+        <HOMESITE>grid-lucerne-uni</HOMESITE>
 
-        <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>EGI</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
-        </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
             <ON_ENTITY>EGI</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>NGI Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Security Officer</USER_ROLE>
+            <ON_ENTITY>grid-lucerne-uni</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="1523452" PRIMARY_KEY="8144G0">
+        <FORENAME>Rory</FORENAME>
+        <SURNAME>Travers</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Rory.Travers@SMRF.ch</EMAIL>
+        <TEL>+49 040 990 4412</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Rory Travers</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>SMRF</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>SMRF</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="468322" PRIMARY_KEY="2222G0">
+        <FORENAME>Yuki</FORENAME>
+        <SURNAME>Tsunoda</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Yuki.Tsunoda@izolamrf.si</EMAIL>
+        <TEL>+49 432 0030 8324</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Yuki Tsunoda</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Izola MRF</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Chief Operations Officer</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <ON_ENTITY>Izola MRF</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="5784" PRIMARY_KEY="4998G0">
+        <FORENAME>Sam</FORENAME>
+        <SURNAME>Stockford</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Sam.Stockford@mechnikit.ch</EMAIL>
+        <TEL>+49 040 0000 4794</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Sam Stockford</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Mechnik IT</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional First Line Support</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>Mechnik IT</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="4322" PRIMARY_KEY="4523G0">
+        <FORENAME>Gwei</FORENAME>
+        <SURNAME>Jai</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Gwei.Jai@izolamrf.si</EMAIL>
+        <TEL>+44 040 3636 3600</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Gwei Jai</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Izola MRF</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>Izola MRF</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="87933" PRIMARY_KEY="28792G0">
+        <FORENAME>G</FORENAME>
+        <SURNAME>Wiz</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>G.Wiz@brunnengs.ch</EMAIL>
+        <TEL>+44 220 4244 4335</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=G Wiz</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Brunnen GS</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>Brunnen GS</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="43683" PRIMARY_KEY="8221G0">
+        <FORENAME>Dante</FORENAME>
+        <SURNAME>Meloni</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Dante.Meloni@ssc.si</EMAIL>
+        <TEL>+01 040 0331 3231</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Dante Meloni</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>SSC</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Security Officer</USER_ROLE>
+            <ON_ENTITY>SSC</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="24545" PRIMARY_KEY="2455G0">
+        <FORENAME>Elliott</FORENAME>
+        <SURNAME>Youngson</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Elliott.Youngson@ptujrpc.si</EMAIL>
+        <TEL>+44 129 8789 7578</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Elliott Youngson</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>PtujRPC</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <ON_ENTITY>PtujRPC</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>EGI CSIRT Officer</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="53113" PRIMARY_KEY="8443G0">
+        <FORENAME>Elly</FORENAME>
+        <SURNAME>McLaren</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Elly.McLaren@grid-lucerne-uni.ch</EMAIL>
+        <TEL>+44 505 6900 0169</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Elly McLaren</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>grid-lucerne-uni</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>NGI Operations Manager</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>grid-lucerne-uni</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="47633" PRIMARY_KEY="89965G0">
+        <FORENAME>Cai</FORENAME>
+        <SURNAME>Lamity</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Cai.Lamity@grid-ljubljana-uni.si</EMAIL>
+        <TEL>+44 360 68680 9094</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Cai Lamity</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>grid-ljubljana-uni</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Regional First Line Support</USER_ROLE>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Site Operations Manager</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
+            <ON_ENTITY>grid-ljubljana-uni</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
 
-
-    <EGEE_USER USER_ID="154512" PRIMARY_KEY="784G0">
-        <FORENAME>Donna</FORENAME>
-        <SURNAME>Moss</SURNAME>
+    <EGEE_USER USER_ID="5278903" PRIMARY_KEY="992G0">
+        <FORENAME>Mariah</FORENAME>
+        <SURNAME>Morgan</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
-        <TEL>+49 040 0000 1763</TEL>
+        <EMAIL>Mariah.Morgan@basel-infrastructure.ch</EMAIL>
+        <TEL>+145 663 3020 8335</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Donna Moss</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Mariah Morgan</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>UNIBE-LHEP</HOMESITE>
+        <HOMESITE>Basel Infrastructure</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>Basel Infrastructure</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
 
-    <EGEE_USER USER_ID="154512" PRIMARY_KEY="7544G0">
-        <FORENAME>Richard</FORENAME>
-        <SURNAME>Winters</SURNAME>
+    <EGEE_USER USER_ID="69044" PRIMARY_KEY="7906G0">
+        <FORENAME>George</FORENAME>
+        <SURNAME>Fett</SURNAME>
         <TITLE></TITLE>
         <DESCRIPTION></DESCRIPTION>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <EMAIL>sample@sample.com</EMAIL>
-        <TEL>+49 040 0000 1763</TEL>
+        <EMAIL>George.Fett@lakegenevahprf.ch</EMAIL>
+        <TEL>+44 063 0504 6304</TEL>
         <WORKING_HOURS_START></WORKING_HOURS_START>
         <WORKING_HOURS_END></WORKING_HOURS_END>
-        <CERTDN>/C=00/O=00000/OU=000000/CN=Richard Winters</CERTDN>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=George Fett</CERTDN>
         <APPROVED></APPROVED>
         <ACTIVE></ACTIVE>
-        <HOMESITE>UNIGE-DPNC</HOMESITE>
+        <HOMESITE>LGHPRF</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>COD Administrator</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Security Officer</USER_ROLE>
+            <ON_ENTITY>LGHPRF</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>NGI Security Officer</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
+        <FORENAME>Beth</FORENAME>
+        <SURNAME>Westley</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Beth.Westley@ssc.si</EMAIL>
+        <TEL>+91 4453 22 945</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Beth Westley</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>SSC</HOMESITE>
 
         <USER_ROLE>
             <USER_ROLE>COD Staff</USER_ROLE>
-            <ON_ENTITY>NGI_CH</ON_ENTITY>
-            <ENTITY_TYPE>group</ENTITY_TYPE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>NGI Operations Manager</USER_ROLE>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>SSC</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
+
+    <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
+        <FORENAME>Max</FORENAME>
+        <SURNAME>MacRally</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Max.MacRally@barcs-drava-stf.hu</EMAIL>
+        <TEL>+56 484 33 232</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Max MacRally</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Barcs-Drava STF</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>NGI Security Officer</USER_ROLE>
+            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Security Officer</USER_ROLE>
+            <ON_ENTITY>Barcs-Drava STF</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
+        <FORENAME>Arnold</FORENAME>
+        <SURNAME>Robertson</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Arnold.Robertson@sandboxit.hu</EMAIL>
+        <TEL>+91 2618 00 19</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Arnold Robertson</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Sandbox IT</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>Sandbox IT</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
+        <FORENAME>Elizabeth</FORENAME>
+        <SURNAME>Davies</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Elizabeth.Davies@lakesidepprf.hu</EMAIL>
+        <TEL>+91 3473 78 828</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Elizabeth Davies</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Lakeside PPRF</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>Lakeside PPRF</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <ON_ENTITY>Lakeside PPRF</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>NGI Operations Manager</USER_ROLE>
+            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
+        <FORENAME>Ramsey</FORENAME>
+        <SURNAME>Oakken</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Ramsey.Oakken@DanubeNRF.hu</EMAIL>
+        <TEL>+36 474 272 2929</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Ramsey Oakken</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Danube NRF - Grid Tools</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Manager</USER_ROLE>
+            <ON_ENTITY>Danube NRF - Grid Tools</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
+        <FORENAME>Riley</FORENAME>
+        <SURNAME>Watson</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Riley.Watson@debrecentech.hu</EMAIL>
+        <TEL>+01 3833 673 2145</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Riley Watson</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Debrecen Tech</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>Debrecen Tech</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
+        <FORENAME>Jessica</FORENAME>
+        <SURNAME>Falsh</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Jessica.Falsh@BudapestNRF-gridoperations.hu</EMAIL>
+        <TEL>+44 712 90 82 3465</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Jessica Falsh</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Budapest NRF - Grid Operations</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>NGI Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>Budapest NRF - Grid Operations</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
+    <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
+        <FORENAME>Maddie</FORENAME>
+        <SURNAME>Falsh</SURNAME>
+        <TITLE></TITLE>
+        <DESCRIPTION></DESCRIPTION>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=6326&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <EMAIL>Maddie.Falsh@BudapestNRF-gridoperations.hu</EMAIL>
+        <TEL>+44 389 41 36 8996</TEL>
+        <WORKING_HOURS_START></WORKING_HOURS_START>
+        <WORKING_HOURS_END></WORKING_HOURS_END>
+        <CERTDN>/C=00/O=00000/OU=000000/CN=Maddie Falsh</CERTDN>
+        <APPROVED></APPROVED>
+        <ACTIVE></ACTIVE>
+        <HOMESITE>Budapest NRF - Grid Operations</HOMESITE>
+
+        <USER_ROLE>
+            <USER_ROLE>Regional First Line Support</USER_ROLE>
+            <ON_ENTITY>NGI_HU</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
+            <ON_ENTITY>Budapest NRF - Grid Operations</ON_ENTITY>
+            <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+    </EGEE_USER>
+
 </results>

@@ -440,7 +440,11 @@ sites and services. Two sample data sets are available. Choose one of -
     $ cd lib/Doctrine
     $ php deploy/DeploySampleDataRunner.php simpleSampleData
     ```
-1. "Real World" - a small subset derived from real data.
+1. Full - A full set of sample data to use. Consists of a project which contains
+2 NGIs and another NGI not in a project. Each NGI contains multiple sites which
+have services belonging to service groups, and the database is populated with
+unique sample users, which have roles over relevant site, NGI or project entities.
+The sample data has no real-world associations.
 
     ```bash
     $ cd lib/Doctrine

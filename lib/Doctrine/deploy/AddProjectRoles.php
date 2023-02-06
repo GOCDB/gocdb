@@ -3,6 +3,15 @@
 require_once __DIR__."/../bootstrap.php";
 require_once __DIR__."/AddUtils.php";
 
+/**
+ * AddEgiRoles.php: Loads a list of roles from the get_user PI
+ * query output (XML), finds what project entity the role is over,
+ * if the project entity refers to exactly one project the role is
+ * added to that project and inserted into the doctrine prototype.
+ * If the entity is not a project, the project doesn't exist or the
+ * project exists more than once, the role is not added to a project.
+ */
+
 $usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);
 
@@ -13,8 +22,8 @@ foreach($usersRoles as $user) {
             continue;
         }
 
-        // Skip all non-site roles
-        if((string) $role->ENTITY_TYPE !== "group") {
+        // Skip all non-project roles
+        if ((string) $role->ENTITY_TYPE !== "project") {
             continue;
         }
 
@@ -49,47 +58,25 @@ foreach($usersRoles as $user) {
             $doctrineUser = $doctrineUser;
         }
 
-        // Check for invalid NGIs and skip
-        // typically these are decomissioned ROCs
-        if($role->ON_ENTITY == 'GridIreland' || $role->ON_ENTITY == 'NGS'
-            || $role->ON_ENTITY == 'LondonT2' || $role->ON_ENTITY == 'Tier1A'
-            || $role->ON_ENTITY == 'Tier1A') {
-            continue;
-        }
+        // Finding the project entity the role is over
+        $projectName = (string) $role->ON_ENTITY;
 
-        // get ngi entity
-        // skip EGI level roles (these are inserted by AddEgiRoles.php)
-        if((string) $role->ON_ENTITY == "EGI") {
-            continue;
-        }
-        $ngiName = (string) $role->ON_ENTITY;
-        $dql = "SELECT n FROM NGI n WHERE n.name = :ngi";
-        $ngis = $entityManager->createQuery($dql)
-                                     ->setParameter('ngi', $ngiName)
+        // Querying the project entity
+        $dql = "SELECT p FROM Project p WHERE p.name = :project";
+        $projects = $entityManager->createQuery($dql)
+                                     ->setParameter('project', $projectName)
                                      ->getResult();
-        // /* Error checking: ensure each "ngi" refers to exactly
-         // * one ngi */
-        if(count($ngis) !== 1) {
-            throw new Exception(count($ngis) . " ngis found name: " .
-                $ngiName);
-        }
-        foreach($ngis as $ngi) {
-            $ngi = $ngi;
+
+        // Error check: ensure each 'project' refers to exactly one project
+        if (count($projects) !== 1) {
+            throw new Exception(count($projects) . " Projects found with name: " .
+                $projectName);
         }
 
-        //check that the role is not a duplicate (v4 data contaisn duplicates)
-        $ExistingUserRoles = $doctrineUser->getRoles();
-        $thisIsADuplicateRole=false;
-        foreach($ExistingUserRoles as $role){
-            if($role->getRoleType() == $roleType and $role->getOwnedEntity() == $ngi and $role->getStatus() == 'STATUS_GRANTED'){
-                $thisIsADuplicateRole = true;
-            }
-        }
-
-        if(!$thisIsADuplicateRole){
-            $doctrineRole = new Role($roleType, $doctrineUser, $ngi, 'STATUS_GRANTED');
-            $entityManager->persist($doctrineRole);
-        }
+        // Finding the project object and adding the role to it
+        $getProject = $entityManager->getRepository('Project')->findOneBy(array("name" => $projectName));
+        $doctrineRole = new Role($roleType, $doctrineUser, $getProject, 'STATUS_GRANTED');
+        $entityManager->persist($doctrineRole);
     }
 }
 
