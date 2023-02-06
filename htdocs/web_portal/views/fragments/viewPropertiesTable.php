@@ -62,8 +62,7 @@
                         Add Properties
                 </span>
         </a>
-
-        <form action="index.php?Page_Type=<?php echo $propertiesController;?>" method="post" id="Modify_Properties_Form" style="vertical-align:middle; float: right; padding-top: 1.1em; padding-right: 1em; padding-bottom: 0.9em;">
+        <form action="index.php?Page_Type=<?php echo $propertiesController;?>" method="post" id="Modify_Properties_Form" style="vertical-align:middle; width: 25%; float: right; padding-top: 1.1em; padding-right: 1em; padding-bottom: 0.9em;">
             <input class="input_input_text" type="hidden" name ="parentID" value="<?php echo $parent->getId();?>" />
             <input class="input_input_hidden" type="hidden" name="UserConfirmed" value="true" />
 
@@ -73,12 +72,14 @@
                     <option value="" disabled selected>Select action...</option>
                     <option value="delete">Delete</option>
                 </select>
-                                <span class="input-group-btn">
+
+                <span class="input-group-btn">
                     <input class="btn btn-default" type="button" onclick="return confirmPropAction()" value="Submit"/>
                 </span>
 
             </div>
         </form>
+
         <script>
             //This checks that the user has selected at least one property and an action
             //and then asks for conformation, and submits the form.
