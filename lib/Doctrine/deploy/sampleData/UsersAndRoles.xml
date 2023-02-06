@@ -76,11 +76,6 @@
         <HOMESITE>LGHPRF</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>LGHPRF</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
             <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>ngi</ENTITY_TYPE>
@@ -111,6 +106,11 @@
             <USER_ROLE>COD Staff</USER_ROLE>
             <ON_ENTITY>EGI</ON_ENTITY>
             <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>NGI Operations Deputy Manager</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Site Security Officer</USER_ROLE>
@@ -222,9 +222,14 @@
         <HOMESITE>Izola MRF</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>Izola MRF</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_SI</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
@@ -249,9 +254,14 @@
         <HOMESITE>Brunnen GS</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>Brunnen GS</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
@@ -336,14 +346,9 @@
         <HOMESITE>grid-lucerne-uni</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <USER_ROLE>NGI Operations Manager</USER_ROLE>
             <ON_ENTITY>NGI_CH</ON_ENTITY>
             <ENTITY_TYPE>ngi</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>grid-lucerne-uni</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Site Administrator</USER_ROLE>
@@ -395,9 +400,9 @@
         <HOMESITE>Basel Infrastructure</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>Basel Infrastructure</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
+            <USER_ROLE>COD Staff</USER_ROLE>
+            <ON_ENTITY>EGI</ON_ENTITY>
+            <ENTITY_TYPE>project</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Site Administrator</USER_ROLE>
@@ -431,6 +436,11 @@
             <ON_ENTITY>LGHPRF</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>NGI Security Officer</USER_ROLE>
+            <ON_ENTITY>NGI_CH</ON_ENTITY>
+            <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
     </EGEE_USER>
 
     <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
@@ -454,7 +464,7 @@
             <ENTITY_TYPE>project</ENTITY_TYPE>
         </USER_ROLE>
         <USER_ROLE>
-            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
+            <USER_ROLE>NGI Operations Manager</USER_ROLE>
             <ON_ENTITY>NGI_SI</ON_ENTITY>
             <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
@@ -480,11 +490,6 @@
         <ACTIVE></ACTIVE>
         <HOMESITE>Barcs-Drava STF</HOMESITE>
 
-        <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>Barcs-Drava STF</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
-        </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>NGI Security Officer</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
@@ -513,7 +518,7 @@
         <HOMESITE>Sandbox IT</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>Regional First Line Support</USER_ROLE>
+            <USER_ROLE>Regional Staff (ROD)</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>ngi</ENTITY_TYPE>
         </USER_ROLE>
@@ -540,7 +545,7 @@
         <HOMESITE>Lakeside PPRF</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
+            <USER_ROLE>Site Administrator</USER_ROLE>
             <ON_ENTITY>Lakeside PPRF</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
@@ -599,11 +604,6 @@
         <HOMESITE>Debrecen Tech</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>Debrecen Tech</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
             <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
             <ON_ENTITY>Debrecen Tech</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
@@ -631,11 +631,6 @@
         <HOMESITE>Budapest NRF - Grid Operations</HOMESITE>
 
         <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>Budapest NRF - Grid Operations</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
-        </USER_ROLE>
-        <USER_ROLE>
             <USER_ROLE>NGI Operations Deputy Manager</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>ngi</ENTITY_TYPE>
@@ -662,11 +657,6 @@
         <ACTIVE></ACTIVE>
         <HOMESITE>Budapest NRF - Grid Operations</HOMESITE>
 
-        <USER_ROLE>
-            <USER_ROLE>CIC Staff</USER_ROLE>
-            <ON_ENTITY>Budapest NRF - Grid Operations</ON_ENTITY>
-            <ENTITY_TYPE>site</ENTITY_TYPE>
-        </USER_ROLE>
         <USER_ROLE>
             <USER_ROLE>Regional First Line Support</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
