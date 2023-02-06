@@ -431,25 +431,16 @@ $ php deploy/DeployRequiredDataRunner.php requiredData
 
 ### OPTIONAL: Deploy Sample Data<a id="deploy-sample-data"></a>
 
-You can choose to deploy some sample data to seed your DB with sample users,
-sites and services. Two sample data sets are available. Choose one of -
+You can choose to deploy some sample data to seed your database. It consists of
+a project which contains 2 NGIs, and another NGI not in a project. Each NGI contains
+multiple sites which have services belonging to service groups, and the database is
+populated with unique sample users, which have roles over relevant site, NGI and
+project entities. The sample data has no real-world associations.
 
-1. Minimal - just enough to get going with no real-world associations.
-
-    ```bash
-    $ cd lib/Doctrine
-    $ php deploy/DeploySampleDataRunner.php simpleSampleData
-    ```
-1. Full - A full set of sample data to use. Consists of a project which contains
-2 NGIs and another NGI not in a project. Each NGI contains multiple sites which
-have services belonging to service groups, and the database is populated with
-unique sample users, which have roles over relevant site, NGI or project entities.
-The sample data has no real-world associations.
-
-    ```bash
-    $ cd lib/Doctrine
-    $ php deploy/DeploySampleDataRunner.php sampleData
-    ```
+```bash
+$ cd lib/Doctrine
+$ php deploy/DeploySampleDataRunner.php sampleData
+```
 
 ### ORACLE ONLY: Deploy an existing DB .dmp file to populate your DB<a id="deploy-existing-dump"></a>
 
