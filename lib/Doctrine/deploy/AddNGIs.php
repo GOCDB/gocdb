@@ -31,28 +31,28 @@ foreach($ngis as $xmlNgi) {
     $objectID = "";
     $creationDate = new \DateTime("now");
 
-    foreach($xmlNgi as $key => $value) {
-        if((string) $key == "NAME") {
+    foreach ($xmlNgi as $key => $value) {
+        if ((string) $key == "NAME") {
             $name = (string) $value;
         }
 
-        if((string) $key == "EMAIL") {
+        if ((string) $key == "EMAIL") {
             $email = (string) $value;
         }
 
-        if((string) $key == "DESCRIPTION") {
+        if ((string) $key == "DESCRIPTION") {
             $description = (string) $value;
         }
 
-        if((string) $key == "ROD_EMAIL") {
+        if ((string) $key == "ROD_EMAIL") {
             $rodEmail = (string) $value;
         }
 
-        if((string) $key == "HELPDESK_EMAIL") {
+        if ((string) $key == "HELPDESK_EMAIL") {
             $helpdeskEmail = (string) $value;
         }
 
-        if((string) $key == "SECURITY_EMAIL") {
+        if ((string) $key == "SECURITY_EMAIL") {
             $securityEmail = (string) $value;
         }
 
@@ -60,7 +60,7 @@ foreach($ngis as $xmlNgi) {
             $objectID = (string) $value;
         }
 
-        if((string) $key == "CDATEON") {
+        if ((string) $key == "CDATEON") {
             // $cdateonString has the following format: '12-JAN-10 14.12.56.000000'
             $cdateonString = (string) $value;
 
