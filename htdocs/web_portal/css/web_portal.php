@@ -134,12 +134,13 @@ h3.Standard_Padding {
 h1 {
     font-size: 2.5em;
 }
+
 /*
-*   Containing DIV's
-*   Page Container is the whole page
-*   Left Box is the menu
-*   Right Box is the smaller page contents
-*/
+ * Containing DIV's
+ * - Page Container is the whole page
+ * - Left Box is the menu
+ * - Right Box is the smaller page contents
+ */
 .page_container {
     position: relative;
     margin-left: auto;
@@ -194,10 +195,10 @@ div.Left_User_Status_Box {
 div.Left_Logo_Box {
     float: left;
     clear: left;
+    margin-top: 0em;
 }
 
 div.Left_Logo_Row {
-    height: 25px;
     text-align: center;
     margin-bottom: 5px;
 }
@@ -205,7 +206,8 @@ div.Left_Logo_Row {
 a.Sponsor_Link img.Sponsor_Logo {
     display:inline-block;
     vertical-align: bottom;
-    height: 100%;
+    height: 28px;
+    margin: 2px;
 }
 
 a.Sponsor_Link:hover {
