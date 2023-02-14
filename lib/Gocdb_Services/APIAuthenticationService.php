@@ -87,8 +87,8 @@ class APIAuthenticationService extends AbstractEntityService
         //validate the values against the schema
         $this->validate($newValues, $identifier, $type);
 
-        //Check there isn't already a identifier of that type with that identifier for that Site
-        $this->uniqueAPIAuthEnt($site, $identifier, $type);
+        //Check there isn't already a credential with that identifier for that Site
+        $this->uniqueAPIAuthEnt($site, $identifier);
 
         //Add the properties
         $this->em->getConnection()->beginTransaction();
@@ -220,23 +220,25 @@ class APIAuthenticationService extends AbstractEntityService
         }
     }
     /**
-     * Fail if there is already an identifier of given type and identifier
+     * Fail if there is already an API credential with a given identifier
      * for a given Site.
+     *
+     * Note that there is an implicit assumption that an identifier value is
+     * unique across all types (X.509, OIDC token etc.)
      *
      * @param \Site $site field values for an APIAuthentication object
      * @param string $identifier to check
-     * @param string $type to check
      * @throws \Exception if the data can't be validated.
      */
-    public function uniqueAPIAuthEnt(\Site $site, $identifier, $type)
+    public function uniqueAPIAuthEnt(\Site $site, $identifier)
     {
 
-        $authEntities = $this->getAPIAuthentication($identifier, $type);
+        $authEntities = $this->getAPIAuthentication($identifier);
 
         foreach ($authEntities as $authEnt) {
             if ($authEnt->getParentSite()->getId() == $site->getId()) {
                 throw new \Exception(
-                    "An authentication object of type \"$type\" and with identifier " .
+                    "An authentication credential with identifier " .
                     "\"$identifier\" already exists for " . $site->getName()
                 );
             }
