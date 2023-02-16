@@ -26,6 +26,8 @@ require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
 // Require GocContextPath which is used in most of the views scripts
 require_once __DIR__.'/GocContextPath.php';
 
+use org\gocdb\security\authentication\BadCredentialsException;
+
 // Set the timezone
 date_default_timezone_set("UTC");
 
@@ -84,6 +86,18 @@ function rejectIfNotAuthenticated($message = null){
 try {
     Draw_Page($Page_Type);
 
+} catch (BadCredentialsException $error) {
+    /**
+     * `show_view('error.php', ...` is not suitable here.
+     * - setting raw to FALSE triggers another exception because it tries
+     *   to render a pretty error in a GOCDB window, which fails because the
+     *   user isn't authroised.
+     * - setting raw to TRUE also isn't ideal as it displays html tags in the
+     *   otherwise nicely formatted output.
+     * die-ing like this atleast gives the user a somewhart nicely formatted
+     * error.
+     */
+    die($error->getMessage());
 } catch (ErrorException $e) {
     /* ErrorExceptions may be thrown by an invalid configuration so it is
        not safe to try to give a pretty output. Set 'raw' to true. */
