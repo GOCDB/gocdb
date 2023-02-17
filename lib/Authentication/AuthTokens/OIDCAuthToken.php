@@ -7,6 +7,8 @@ abstract class OIDCAuthToken implements IAuthentication
     private $userDetails = null;
     private $authorities = array();
     private $principal;
+    protected $acceptedIssuers;
+    protected $authRealm;
 
     /**
      * {@see IAuthentication::eraseCredentials()}
@@ -94,5 +96,18 @@ abstract class OIDCAuthToken implements IAuthentication
     public static function isStateless()
     {
         return true;
+    }
+
+    /**
+     * Set principal/User details from the session.
+     */
+    protected function setTokenFromSession()
+    {
+        if (in_array($_SERVER['OIDC_CLAIM_iss'], $this->acceptedIssuers, true)) {
+            $this->principal = $_SERVER['REMOTE_USER'];
+            $this->userDetails = array(
+                'AuthenticationRealm' => array($this->authRealm)
+            );
+        }
     }
 }
