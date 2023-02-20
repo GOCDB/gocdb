@@ -2,6 +2,20 @@
 
 namespace org\gocdb\security\authentication;
 
+/**
+ * An abstract class for the logic of integrating with IdPs via OIDC.
+ *
+ * It is expected that concrete subclasses are created for each
+ * new IdP GOCDB integrates with via OIDC, providing specific information
+ * for that IdP.
+ *
+ * Any subclass will require installation/config of mod_auth_openidc
+ * before use.
+ *
+ * Any subclass token is expected to be stateless because it relies on the
+ * mod_auth_openidc session and simply reads the attributes stored in the
+ * session.
+ */
 abstract class OIDCAuthToken implements IAuthentication
 {
     private $userDetails = null;
