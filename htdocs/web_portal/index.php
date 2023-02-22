@@ -721,13 +721,12 @@ function Get_Static_PHP_Page_Contents($PHP_Page_Name) {
     if(!isset($Available_Static_Pages[$PHP_Page_Name])) {
         return "";
     }
-    $PHP = Get_File_Contents($phpDir."/".$PHP_Page_Name);
+    // below returns the executed php file, not just the contents of the file
+    ob_start();
+    include $phpDir."/".$PHP_Page_Name;
+    $PHP = ob_get_contents();
+    ob_end_clean();
     return $PHP;
-    /* ob_start();
-     * include $phpDir."/".$PHP_Page_Name;
-     * $PHP = ob_get_contents();
-     * ob_end_clean();
-     * return $PHP; */
 }
 
 
