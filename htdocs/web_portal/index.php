@@ -210,7 +210,6 @@ function Draw_Page($Page_Type) {
             break;
         case "Static_PHP":
             //rejectIfNotAuthenticated();
-	    //require_once __DIR__.'/components/Draw_Components/draw_page_components.php';
             Draw_Static_PHP();
             break;
         case "Search":
@@ -712,7 +711,7 @@ function Get_Static_Page_Contents($Page_Name) {
 }
 
 
-/* Get the contents of the static PHP page specified in $PHP_Page_Name
+/* Get the executed contents of the static PHP page specified in $PHP_Page_Name
  * if the page name isn't specified then return a blank string */
 function Get_Static_PHP_Page_Contents($PHP_Page_Name) {
     require_once __DIR__.'/components/Draw_Components/draw_page_components.php';
