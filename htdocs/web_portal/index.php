@@ -208,6 +208,11 @@ function Draw_Page($Page_Type) {
             //rejectIfNotAuthenticated();
             Draw_Static_HTML();
             break;
+        case "Static_PHP":
+            //rejectIfNotAuthenticated();
+	    //require_once __DIR__.'/components/Draw_Components/draw_page_components.php';
+            Draw_Static_PHP();
+            break;
         case "Search":
             //rejectIfNotAuthenticated();
             require_once __DIR__.'/controllers/search.php';
@@ -654,12 +659,22 @@ function Draw_Page($Page_Type) {
     }
 }
 
+
 /* Draws a static HTML page */
 function Draw_Static_HTML() {
     $Page_Name = Get_Static_Page_Name();
     $Page_Content = Get_Static_Page_Contents($Page_Name);
     Draw_Standard_Page($Page_Content);
 }
+
+
+/* Draws a static PHP HTML page */
+function Draw_Static_PHP() {
+    $PHP_Page_Name = Get_Static_PHP_Page_Name();
+    $PHP_Page_Content = Get_Static_PHP_Page_Contents($PHP_Page_Name);
+    Draw_Standard_PHP_Page($PHP_Page_Content);
+}
+
 
 /* Finds out if a static page has been requested. If it has, return
  * the page name, otherwise return a blank string. */
@@ -668,6 +683,17 @@ function Get_Static_Page_Name() {
         return "";
     } else {
         return $_REQUEST['Page'].'.html';
+    }
+}
+
+
+/* Finds out if a static php page has been requested. If it has, return
+ * the page name, otherwise return a blank string. */
+function Get_Static_PHP_Page_Name() {
+    if(!isset($_REQUEST['Page'])) {
+        return "";
+    } else {
+        return $_REQUEST['Page'].'.php';
     }
 }
 
@@ -683,6 +709,25 @@ function Get_Static_Page_Contents($Page_Name) {
     }
     $HTML = Get_File_Contents($htmlDir."/".$Page_Name);
     return $HTML;
+}
+
+
+/* Get the contents of the static PHP page specified in $PHP_Page_Name
+ * if the page name isn't specified then return a blank string */
+function Get_Static_PHP_Page_Contents($PHP_Page_Name) {
+    require_once __DIR__.'/components/Draw_Components/draw_page_components.php';
+    $phpDir = __DIR__."/static_php";
+    $Available_Static_Pages = Get_Directory_Contents($phpDir);
+    if(!isset($Available_Static_Pages[$PHP_Page_Name])) {
+        return "";
+    }
+    $PHP = Get_File_Contents($phpDir."/".$PHP_Page_Name);
+    return $PHP;
+    /* ob_start();
+     * include $phpDir."/".$PHP_Page_Name;
+     * $PHP = ob_get_contents();
+     * ob_end_clean();
+     * return $PHP; */
 }
 
 
@@ -708,6 +753,18 @@ function Draw_Standard_Page($Page_Content, $title=null) {
     $HTML .= $Page_Content;
     $HTML .= Get_Standard_Bottom_Section_HTML();
     echo $HTML;
+}
+
+
+/* Draws a standard GOCDB layout with the string $PHP_Page_Content in the
+ * right frame */
+function Draw_Standard_PHP_Page($PHP_Page_Content, $title=null) {
+    require_once __DIR__.'/components/Draw_Components/draw_page_components.php';
+    $PHP = "";
+    $PHP .= Get_Standard_Top_Section_HTML($title);
+    $PHP .= $PHP_Page_Content;
+    $PHP .= Get_Standard_Bottom_Section_HTML();
+    echo $PHP;
 }
 
 
