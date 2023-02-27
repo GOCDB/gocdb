@@ -162,7 +162,7 @@ abstract class OIDCAuthToken implements IAuthentication
     }
 
     /**
-     * Check the token lists non of the banned groups.
+     * Check the token lists none of the banned groups.
      */
     protected function checkBannedGroups()
     {
