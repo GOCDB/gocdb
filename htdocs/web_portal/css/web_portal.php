@@ -775,14 +775,11 @@ img.person{
   padding-right: 1em;
 }
 
-img.pencil {
+img.pencil, img.trash {
     height: 25px;
     float: right;
 }
 
-
-img.trash {
-    height: 25px;
-    float: right;
+img.trash {    
     margin-right: 0.4em;
 }
