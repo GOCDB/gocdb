@@ -12,14 +12,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 require_once __DIR__ . '/../../../doctrine/TestUtil.php';
-//require_once __DIR__ . '/../../../../lib/Doctrine/entities/User.php';
-//require_once __DIR__ . '/../../../../lib/Gocdb_Services/User.php';
-//require_once __DIR__ . '/../../../../lib/Gocdb_Services/Config.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 
 use Doctrine\ORM\EntityManager;
+use org\gocdb\services\Role;
 use org\gocdb\services\RoleActionAuthorisationService;
+use org\gocdb\services\RoleActionMappingService;
+use org\gocdb\services\Site;
 
 //use org\gocdb\services\User;
 //use User;
@@ -29,6 +30,7 @@ use org\gocdb\services\RoleActionAuthorisationService;
  *
  * @author Ian Neilson (after David Meredith)
  */
+
 class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
 {
     private $entityManager;
@@ -37,7 +39,7 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
     private $site;
     private $ngi;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
       // Use a local instance to avoid Mess Detector's whinging about avoiding
@@ -45,8 +47,8 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
         $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
     }
   /**
-  * Overridden.
-  */
+   * Overridden.
+   */
     public static function setUpBeforeClass()
     {
         parent::setUpBeforeClass();
@@ -55,9 +57,9 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-  * Overridden. Returns the test database connection.
-  * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
-  */
+   * Overridden. Returns the test database connection.
+   * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
+   */
     protected function getConnection()
     {
         require_once __DIR__ . '/../../../doctrine/bootstrap_pdo.php';
@@ -65,10 +67,10 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-  * Overridden. Returns the test dataset.
-  * Defines how the initial state of the database should look before each test is executed.
-  * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-  */
+   * Overridden. Returns the test dataset.
+   * Defines how the initial state of the database should look before each test is executed.
+   * @return PHPUnit_Extensions_Database_DataSet_IDataSet
+   */
     protected function getDataSet()
     {
         return $this->createFlatXMLDataSet(__DIR__ . '/../../../doctrine/truncateDataTables.xml');
@@ -77,8 +79,8 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-  * Overridden.
-  */
+   * Overridden.
+   */
     protected function getSetUpOperation()
     {
       // CLEAN_INSERT is default
@@ -93,8 +95,8 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-  * Overridden.
-  */
+   * Overridden.
+   */
     protected function getTearDownOperation()
     {
       // NONE is default
@@ -102,9 +104,9 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-  * Sets up the fixture, e.g create a new entityManager for each test run
-  * This method is called before each test method is executed.
-  */
+   * Sets up the fixture, e.g create a new entityManager for each test run
+   * This method is called before each test method is executed.
+   */
     protected function setUp()
     {
         parent::setUp();
@@ -128,22 +130,13 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
         $this->entityManager->persist($this->site);
         $this->entityManager->persist($this->ngi);
 
-        $this->roleServ = new \org\gocdb\services\Role();
+        $this->roleServ = new Role();
         $this->roleServ->setEntityManager($this->entityManager);
     }
+
   /**
-   * Run after each test function to prevent pile-up of database connections.
+   * @return EntityManager
    */
-    protected function tearDown()
-    {
-        parent::tearDown();
-        if (!is_null($this->entityManager)) {
-            $this->entityManager->getConnection()->close();
-        }
-    }
-  /**
-  * @return EntityManager
-  */
     private function createEntityManager()
     {
         $entityManager = null; // Initialise in local scope to avoid unused variable warnings
@@ -152,9 +145,9 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-  * Called after setUp() and before each test. Used for common assertions
-  * across all tests.
-  */
+   * Called after setUp() and before each test. Used for common assertions
+   * across all tests.
+   */
     protected function assertPreConditions()
     {
         $con = $this->getConnection();
@@ -174,7 +167,7 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
    */
     private function createTestRoles(array $roleNames)
     {
-
+        $roles = array();
         foreach ($roleNames as $type) {
             $roleType = $this->util->createSampleRoleType($type);
             $role = $this->util->createSampleRole($this->user, $roleType, $this->site, \RoleStatus::GRANTED);
@@ -195,12 +188,12 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
       // The only way to add an APIAuthentication credential is by creating
       // a site service ...
 
-        $siteServ = new \org\gocdb\services\Site();
+        $siteServ = new Site();
         $siteServ->setEntityManager($this->entityManager);
 
       // No role mappings are created or tested - we rely in user being an admin
-        $ram = new \org\gocdb\services\RoleActionMappingService();
-        $ras = new \org\gocdb\services\RoleActionAuthorisationService($ram);
+        $ram = new RoleActionMappingService();
+        $ras = new RoleActionAuthorisationService($ram);
 
         $ras->setEntityManager($this->entityManager);
 
@@ -217,23 +210,22 @@ class RoleServiceTest2 extends PHPUnit_Extensions_Database_TestCase
         );
         return;
     }
-
   /**
    * Tests begin here
    */
-    public function testNullCheckOrphanAPIAuth()
+    public function testCheckOrphanAPIAuth()
     {
         print __METHOD__ . "\n";
 
-        $roles = $this->createTestRoles(array("Manager","Administrator"));
+        $roles = $this->createTestRoles(array("Manager", "Administrator"));
 
-        // No APIAuthentication credentials are yet assigned so the
-        // check should pass.
+      // No APIAuthentication credentials are yet assigned so the
+      // check should pass.
         $this->assertCount(0, $this->roleServ->checkOrphanAPIAuth($roles[0]));
 
-          $this->addAPIAuthEntity();
+        $this->addAPIAuthEntity();
 
-        // User has two roles so the check should pass.
+      // User has two roles so the check should pass.
         $this->assertCount(0, $this->roleServ->checkOrphanAPIAuth($roles[0]));
     }
   /**
