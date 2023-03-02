@@ -47,7 +47,7 @@ function search_ses() {
 
     } catch(Exception $ex){
         show_view(  'error.php', $ex->getMessage() . "<br /><br />Please contact the "
-        . "<a href=\"index.php?Page_Type=Static_PHP&amp;Page=Help_And_Contact\">"
+        . "<a href=\"index.php?Page_Type=Help_And_Contact">"
         . "GOCDB support team</a> if you need help with this issue.");
     }
     $params = array('ses' => $ses);
