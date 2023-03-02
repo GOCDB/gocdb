@@ -1,7 +1,4 @@
 <html>
-<?php
-include __DIR__.'/operationalLinks.php';
-?>
     <div class="rightPageContainer">
       <h1>Documentation, Help and Support</h1>
       <br />
@@ -18,7 +15,7 @@ include __DIR__.'/operationalLinks.php';
         <h2>Need information?</h2> 
         <p>
           Please browse your 
-          <a href="<?php echo $communityDocs ?>">
+          <a href="<?php echo $params['communityDocs'] ?>">
           community documentation</a>.
           <br/><br/>
         </p>
@@ -29,7 +26,7 @@ include __DIR__.'/operationalLinks.php';
           <a href="https://github.com/GOCDB/gocdb/issues?q=is%3Aissue+is%3Aopen+label%3Abug" target="_blank">
           known bugs</a> to see if this has not already been reported.<br/> 
           If not, please open a request in your 
-          <a href="<?php echo $helpdeskLink ?>">
+          <a href="<?php echo $params['helpdeskLink'] ?>">
           community support desk</a> 
           or our 
           <a href="https://github.com/GOCDB/gocdb/issues" target="_blank"> 
@@ -44,7 +41,7 @@ include __DIR__.'/operationalLinks.php';
           <a href="https://github.com/GOCDB/gocdb/milestones" target="_blank">GOCDB Development Plans.</a><br/> 
           Any suggestion, new feature or improvement request should 
           be submitted to your 
-          <a href="<?php echo $requestTracker ?>">
+          <a href="<?php echo $params['requestTracker'] ?>">
           community request tracker</a> 
           or our 
           <a href="https://github.com/GOCDB/gocdb/issues" target="_blank"> 
@@ -62,7 +59,7 @@ include __DIR__.'/operationalLinks.php';
           For all other enquiries including general questions, temporary 
           problem reports or support requests please open a 
           request in your 
-          <a href="<?php echo $helpdeskLink ?>">
+          <a href="<?php echo $params['helpdeskLink'] ?>">
           community support desk</a>.
           </p>
       </div>
