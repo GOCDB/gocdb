@@ -552,7 +552,7 @@ class Config
 
     public function getEmailTo()
     {
-        $emailTo = $this->GetlocalInfoXML()->email_to;
+        $emailTo = $this->GetLocalInfoXML()->email_to;
 
         return $emailTo;
     }
