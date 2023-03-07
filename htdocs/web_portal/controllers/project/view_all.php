@@ -22,8 +22,19 @@
 
 function show_all_projects() {
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
-    $projects = \Factory::getProjectService()->getProjects();
+
+    $params = array();
+
+    $configService = \Factory::getConfigService();
+    $projectService = \Factory::getProjectService();
+
+    $projects = $projectService->getProjects();
     $params['Projects'] = $projects;
+
+    // adding the configurable project documentation link to the params array
+    $projectDocLink = $configService->getProjectDocLink();
+    $params['projectDocLink'] = $projectDocLink;
+
     show_view('project/view_all.php', $params, "Projects");
 }
 
