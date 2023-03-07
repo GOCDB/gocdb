@@ -22,6 +22,8 @@
 function showAllServiceGroups(){
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 
+    $configService = \Factory::getConfigService();
+
     $filterParams = array();
 
     // Scope parameters
@@ -90,5 +92,10 @@ function showAllServiceGroups(){
     $params['selectedExtKeyName'] = $extensionPropName; //$sgKeyNames;
     $params['selectedExtKeyValue'] = $extensionPropValue; //$sgKeyValues;
     $params['extKeyName'] = $keynames;
+
+    // adding the configurable service group documentation link to the params array
+    $serviceGroupDocLink = $configService->getServiceGroupDocLink();
+    $params['serviceGroupDocLink'] = $serviceGroupDocLink;
+
     show_view("service_group/view_all.php", $params);
 }
