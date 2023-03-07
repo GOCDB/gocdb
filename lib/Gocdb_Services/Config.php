@@ -556,4 +556,25 @@ class Config
 
         return $emailTo;
     }
+
+    public function getProjectDocLink()
+    {
+        $projectDocLink = $this->GetLocalInfoXML()->project->doc_link;
+
+        return $projectDocLink;
+    }
+
+    public function getNgiDocLink()
+    {
+        $ngiDocLink = $this->GetLocalInfoXML()->ngi->doc_link;
+
+        return $ngiDocLink;
+    }
+
+    public function getServiceGroupDocLink()
+    {
+        $serviceGroupDocLink = $this->GetLocalInfoXML()->service_group->doc_link;
+
+        return $serviceGroupDocLink;
+    }
 }
