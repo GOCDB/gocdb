@@ -22,7 +22,7 @@ use org\gocdb\services\APIAuthenticationService;
 use PHPUnit_Extensions_Database_Operation_Factory;
 use PHPUnit_Extensions_Database_TestCase;
 use RuntimeException;
-use ServiceTestUtil;
+use org\gocdb\tests\ServiceTestUtil;
 use TestUtil;
 
 /**
@@ -34,6 +34,7 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
 {
     private $entityManager;
     private $dbOpsFactory;
+    private $serviceTestUtil;
 
     public function __construct()
     {
@@ -41,6 +42,7 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
       // Use a local instance to avoid Mess Detector's whinging about avoiding
       // static access.
         $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
+        $this->serviceTestUtil = new ServiceTestUtil();
     }
   /**
   * Overridden.
@@ -155,7 +157,7 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
         print __METHOD__ . "\n";
 
         list($user, $site, $siteService, $authEntServ) =
-        ServiceTestUtil::createGocdbEntities($this->entityManager);
+          $this->serviceTestUtil->createGocdbEntities($this->entityManager);
 
         $this->assertTrue(
             $authEntServ instanceof APIAuthenticationService,

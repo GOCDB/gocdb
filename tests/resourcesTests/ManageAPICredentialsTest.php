@@ -18,10 +18,9 @@ use DateInterval;
 use DateTime;
 use DateTimeZone;
 use org\gocdb\scripts\ManageAPICredentialsActions;
+use org\gocdb\tests\ServiceTestUtil;
 use PHPUnit_Extensions_Database_Operation_Factory;
 use PHPUnit_Extensions_Database_TestCase;
-use ServiceTestUtil;
-use TestUtil;
 
 require_once __DIR__ . '/../unit/lib/Gocdb_Services/ServiceTestUtil.php';
 require_once __DIR__ . '/../../resources/ManageAPICredentials/ManageAPICredentialsActions.php';
@@ -30,6 +29,7 @@ class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
 {
     private $entityManager;
     private $dbOpsFactory;
+    private $serviceTestUtil;
 
     public function __construct()
     {
@@ -37,6 +37,7 @@ class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
         // Use a local instance to avoid Mess Detector's whinging about avoiding
         // static access.
         $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
+        $this->serviceTestUtil = new ServiceTestUtil();
     }
     /**
      * Overridden.
@@ -135,7 +136,7 @@ class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
          */
 
         list($user, $site, $siteService) =
-            ServiceTestUtil::createGocdbEntities($this->entityManager);
+            $this->serviceTestUtil->createGocdbEntities($this->entityManager);
 
         $baseTime = new DateTime('now', new DateTimeZone('UTC'));
 
