@@ -1,5 +1,7 @@
 <?php
+
 namespace org\gocdb\services;
+
 /*______________________________________________________
  *======================================================
 * File: Validation.php
@@ -21,10 +23,14 @@ namespace org\gocdb\services;
 *
 /*====================================================== */
 
-class Validate {
+class Validate
+{
     const SCHEMA_XML = '/../../config/gocdb_schema.xml';
 
-    function __construct() {
+    private $schemaXml;
+
+    public function __construct()
+    {
 
         # Load schema file
 
@@ -46,25 +52,27 @@ class Validate {
         //Check the Type of the field value, where this is defined
         $type = $this->getFieldValue($objectName, $fieldName, 'ftype');
         if (count($type) != 0) {
-          if (strtolower($type) == "string") {
-            if (!is_string($fieldValue)) {
-                throw new \Exception($fieldName . " must be a string.");
+            if (strtolower($type) == "string") {
+                if (!is_string($fieldValue)) {
+                    throw new \Exception($fieldName . " must be a string.");
+                }
+            } elseif (strtolower($type) == "boolean") {
+                if (!is_bool($fieldValue)) {
+                    throw new \Exception($fieldName . " must be a boolean.");
+                }
+            } else {
+                throw new \Exception("Internal error: validation of data of type $type " .
+                                     "is not supported by the validation service");
             }
-          } elseif (strtolower($type) == "boolean") {
-            if (!is_bool($fieldValue)) {
-                throw new \Exception($fieldName . " must be a boolean.");
-            }
-          } else {
-            throw new \Exception("Internal error: validation of data of type $type is not supported by the validation service");
-          }
         }
 
         $regEx = $this->getFieldValue($objectName, $fieldName, 'regex');
         // If there are no checks to perform then $fieldValue must be valid
-        if(count($regEx) == 0)
+        if (count($regEx) == 0) {
             return true;
+        }
 
-        if(!preg_match($regEx, $fieldValue)) {
+        if (!preg_match($regEx, $fieldValue)) {
             return false;
         }
 
@@ -75,11 +83,12 @@ class Validate {
      * Checks the length of inputs against the length specified in the schema.
      * @throws \Exception
      */
-    private function checkFieldLength($objectName, $fieldName, $fieldValue){
+    private function checkFieldLength($objectName, $fieldName, $fieldValue)
+    {
         $length = $this->getFieldValue($objectName, $fieldName, 'length');
 
-        if(!count($length) == 0){ //only check length if the schema has a length specified in it
-            if(strlen($fieldValue)>$length or $length == 0){
+        if (!count($length) == 0) { //only check length if the schema has a length specified in it
+            if (strlen($fieldValue) > $length or $length == 0) {
                 throw new \Exception($fieldName . " may not be more than " . $length . " chracters in length");
             }
         }
@@ -101,8 +110,7 @@ class Validate {
      * Throw an exeption if this isn't found. */
     private function findEntity($objectName, $schemaXml)
     {
-        foreach($schemaXml->entity as $entity)
-        {
+        foreach ($schemaXml->entity as $entity) {
             if ((string) $entity->name == $objectName) {
                 return $entity;
             }
@@ -113,9 +121,8 @@ class Validate {
 
     private function findField($fieldName, $entity)
     {
-        foreach($entity->field as $field)
-        {
-            if(strtoupper((string) $field->fname) == strtoupper($fieldName)) {
+        foreach ($entity->field as $field) {
+            if (strtoupper((string) $field->fname) == strtoupper($fieldName)) {
                 return $field;
             }
         }
