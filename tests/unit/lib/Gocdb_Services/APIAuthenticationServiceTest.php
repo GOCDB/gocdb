@@ -22,7 +22,7 @@ use org\gocdb\services\APIAuthenticationService;
 use PHPUnit_Extensions_Database_Operation_Factory;
 use PHPUnit_Extensions_Database_TestCase;
 use RuntimeException;
-use ServiceTestUtil;
+use org\gocdb\tests\ServiceTestUtil;
 use TestUtil;
 
 /**
@@ -34,6 +34,7 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
 {
     private $entityManager;
     private $dbOpsFactory;
+    private $serviceTestUtil;
 
     public function __construct()
     {
@@ -41,6 +42,7 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
       // Use a local instance to avoid Mess Detector's whinging about avoiding
       // static access.
         $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
+        $this->serviceTestUtil = new ServiceTestUtil();
     }
   /**
   * Overridden.
@@ -154,22 +156,8 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
     {
         print __METHOD__ . "\n";
 
-        $siteData = ServiceTestUtil::getSiteData($this->entityManager);
-        $siteService = ServiceTestUtil::getSiteService($this->entityManager);
-        $site = ServiceTestUtil::createAndAddSite($this->entityManager, $siteData);
-
-        $user = TestUtil::createSampleUser('Beta', 'User');
-        $user->setAdmin(true);
-
-        $identifier = TestUtil::createSampleUserIdentifier('X.509', '/Beta.User');
-        ServiceTestUtil::persistAndFlush($this->entityManager, $identifier);
-
-        $user->addUserIdentifierDoJoin($identifier);
-
-        ServiceTestUtil::persistAndFlush($this->entityManager, $user);
-
-        $authEntServ = new APIAuthenticationService();
-        $authEntServ->setEntityManager($this->entityManager);
+        list($user, $site, $siteService, $authEntServ) =
+          $this->serviceTestUtil->createGocdbEntities($this->entityManager);
 
         $this->assertTrue(
             $authEntServ instanceof APIAuthenticationService,
