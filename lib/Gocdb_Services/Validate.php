@@ -1,5 +1,7 @@
 <?php
+
 namespace org\gocdb\services;
+
 /*______________________________________________________
  *======================================================
 * File: Validation.php
@@ -21,43 +23,56 @@ namespace org\gocdb\services;
 *
 /*====================================================== */
 
-class Validate {
+class Validate
+{
     const SCHEMA_XML = '/../../config/gocdb_schema.xml';
 
-    /* Validates $Field_Value using validation settings from the GOCDB
+    private $schemaXml;
+
+    public function __construct()
+    {
+
+        # Load schema file
+
+        $this->schemaXml = simplexml_load_file(__DIR__ . $this::SCHEMA_XML);
+    }
+
+    /* Validates $fieldValue using validation settings from the GOCDB
      *
-    * Checks the particular object (specified by $Object_Name) for a field
-    * ($Field_Name) and gets the validation requirements for this field type.
-    * Returns a boolean value as to whether $Field_Value is valid for the field
-    * type specified in $Field_Name.
+    * Checks the particular object (specified by $objectName) for a field
+    * ($fieldName) and gets the validation requirements for this field type.
+    * Returns a boolean value as to whether $fieldValue is valid for the field
+    * type specified in $fieldName.
     */
-    public function validate($Object_Name, $Field_Name, $Field_Value)
+    public function validate($objectName, $fieldName, $fieldValue)
     {
         //Check the length of the field value, if too long, throws exception
-        $this->checkFieldLength($Object_Name, $Field_Name, $Field_Value);
+        $this->checkFieldLength($objectName, $fieldName, $fieldValue);
 
         //Check the Type of the field value, where this is defined
-        $type = $this->Get_Field_value($Object_Name, $Field_Name, 'ftype');
+        $type = $this->getFieldValue($objectName, $fieldName, 'ftype');
         if (count($type) != 0) {
-          if (strtolower($type) == "string") {
-            if (!is_string($Field_Value)) {
-                throw new \Exception($Field_Name . " must be a string.");
+            if (strtolower($type) == "string") {
+                if (!is_string($fieldValue)) {
+                    throw new \Exception($fieldName . " must be a string.");
+                }
+            } elseif (strtolower($type) == "boolean") {
+                if (!is_bool($fieldValue)) {
+                    throw new \Exception($fieldName . " must be a boolean.");
+                }
+            } else {
+                throw new \Exception("Internal error: validation of data of type $type " .
+                                     "is not supported by the validation service");
             }
-          } elseif (strtolower($type) == "boolean") {
-            if (!is_bool($Field_Value)) {
-                throw new \Exception($Field_Name . " must be a boolean.");
-            }
-          } else {
-            throw new \Exception("Internal error: validation of data of type $type is not supported by the validation service");
-          }
         }
-        
-        $RegEx = $this->Get_Field_value($Object_Name, $Field_Name, 'regex');
-        // If there are no checks to perform then $Field_Value must be valid
-        if(count($RegEx) == 0)
-            return true;
 
-        if(!preg_match($RegEx, $Field_Value)) {
+        $regEx = $this->getFieldValue($objectName, $fieldName, 'regex');
+        // If there are no checks to perform then $fieldValue must be valid
+        if (count($regEx) == 0) {
+            return true;
+        }
+
+        if (!preg_match($regEx, $fieldValue)) {
             return false;
         }
 
@@ -68,11 +83,12 @@ class Validate {
      * Checks the length of inputs against the length specified in the schema.
      * @throws \Exception
      */
-    private function checkFieldLength($objectName, $fieldName, $fieldValue){
-        $length = $this->Get_Field_value($objectName, $fieldName, 'length');
+    private function checkFieldLength($objectName, $fieldName, $fieldValue)
+    {
+        $length = $this->getFieldValue($objectName, $fieldName, 'length');
 
-        if(!count($length) == 0){ //only check length if the schema has a length specified in it
-            if(strlen($fieldValue)>$length or $length == 0){
+        if (!count($length) == 0) { //only check length if the schema has a length specified in it
+            if (strlen($fieldValue) > $length or $length == 0) {
                 throw new \Exception($fieldName . " may not be more than " . $length . " chracters in length");
             }
         }
@@ -83,37 +99,34 @@ class Validate {
      * Format: $Checks[Check_Name] = $Check_Parameter
     * i.e. $Checks[Regular_Expression] = "[Y|N]"
     */
-    private function Get_Field_value($Object_Name, $Field_Name, $valueType)
+    private function getFieldValue($objectName, $fieldName, $valueType)
     {
-        $Schema_XML = simplexml_load_file(__DIR__ . $this::SCHEMA_XML);
-        $Entity = $this->Find_Entity($Object_Name, $Schema_XML);
-        $Field = $this->Find_Field($Field_Name, $Entity);
-        return $Field->$valueType;
+        $entity = $this->findEntity($objectName, $this->schemaXml);
+        $field = $this->findField($fieldName, $entity);
+        return $field->$valueType;
     }
 
-    /* Search for the XML for $Object_Name within Schema XML
+    /* Search for the XML for $objectName within Schema XML
      * Throw an exeption if this isn't found. */
-    private function Find_Entity($Object_Name, $Schema_XML)
+    private function findEntity($objectName, $schemaXml)
     {
-        foreach($Schema_XML->entity as $entity)
-        {
-            if ((string) $entity->name == $Object_Name) {
+        foreach ($schemaXml->entity as $entity) {
+            if ((string) $entity->name == $objectName) {
                 return $entity;
             }
         }
-        throw new \Exception("Object type: $Object_Name not found in schema XML");
+        throw new \Exception("Object type: $objectName not found in schema XML");
     }
 
 
-    private function Find_Field($Field_Name, $Entity)
+    private function findField($fieldName, $entity)
     {
-        foreach($Entity->field as $Field)
-        {
-            if(strtoupper((string) $Field->fname) == strtoupper($Field_Name)) {
-                return $Field;
+        foreach ($entity->field as $field) {
+            if (strtoupper((string) $field->fname) == strtoupper($fieldName)) {
+                return $field;
             }
         }
 
-        throw new \Exception("Field Name: $Field_Name not found in schema XML");
+        throw new \Exception("Field Name: $fieldName not found in schema XML");
     }
 }
