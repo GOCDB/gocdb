@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * RUn GOCDB status checks and report as single-line text output.
+ */
+
 require_once "tests.php";
 
 $errorCount = run_tests($message);
@@ -13,5 +18,3 @@ if ($errorCount != 0) {
 echo("All GOCDB tests are looking good\n");
 
 exit(0);
-
-?>

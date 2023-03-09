@@ -1,4 +1,9 @@
 <?php
+
+/**
+ * Run GOCDB status checks reporting as an HTML page with formatted per-test status table
+ */
+
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
 // Initialise the configuration service.
@@ -7,28 +12,35 @@ require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 \Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
 
 $test_statuses =  array(
-        "GOCDB5 DB connection" 						=> "unknown",
-        "GOCDBPI_v5 availability" 					=> "unknown",
-        "GOCDB5 central portal availability" 		=> "unknown"
+        "GOCDB5 DB connection"                      => "unknown",
+        "GOCDBPI_v5 availability"                   => "unknown",
+        "GOCDB5 central portal availability"        => "unknown"
 );
 
 $test_desc =  array(
-        "GOCDB5 DB connection" 						=> "Connect to GOCDB5 (RAL/master instance) from this machine using EntityManager->getConnection()->connect()",
-        "GOCDBPI_v5 availability" 					=> "Retrieve https://goc.egi.eu/gocdbpi/?method=get_site_list&sitename=RAL-LCG2 using PHP CURL",
-        "GOCDB5 central portal availability" 		=> "N/A",
+        "GOCDB5 DB connection"                      =>
+            "Connect to GOCDB5 (RAL/master instance) from this machine using EntityManager->getConnection()->connect()",
+        "GOCDBPI_v5 availability"                   =>
+            "Retrieve https://goc.egi.eu/gocdbpi/?method=get_site_list&sitename=RAL-LCG2 using PHP CURL",
+        "GOCDB5 central portal availability"        => "N/A",
 );
 
 $test_doc =  array(
-        "GOCDB5 DB connection" 						=> "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/Servers and Services/GOCDB/Cookbook and recipes/database_is_down.txt' target='_blank'>documentation/recipe</a>",
-        "GOCDBPI_v5 availability" 					=> "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/Servers and Services/GOCDB/Cookbook and recipes/failover_cookbook.txt' target='_blank'>documentation/recipe</a>",
-        "GOCDB5 central portal availability" 		=> "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/Servers and Services/GOCDB/Cookbook and recipes/failover_cookbook.txt' target='_blank'>documentation/recipe</a>"
+        "GOCDB5 DB connection"                      =>
+            "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/Servers and Services/GOCDB/Cookbook " .
+            "and recipes/database_is_down.txt' target='_blank'>documentation/recipe</a>",
+        "GOCDBPI_v5 availability"                   =>
+            "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/Servers and Services/GOCDB/Cookbook and " .
+            "recipes/failover_cookbook.txt' target='_blank'>documentation/recipe</a>",
+        "GOCDB5 central portal availability"        =>
+            "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/Servers and Services/GOCDB/Cookbook and " .
+            "recipes/failover_cookbook.txt' target='_blank'>documentation/recipe</a>"
 );
 
-
 $test_messages =  array(
-        "GOCDB5 DB connection" 						=> "no information",
-        "GOCDBPI_v5 availability" 					=> "no information",
-        "GOCDB5 central portal availability" 		=> "no information"
+        "GOCDB5 DB connection"                      => "no information",
+        "GOCDBPI_v5 availability"                   => "no information",
+        "GOCDB5 central portal availability"        => "no information"
 );
 
 $disp = array(
@@ -39,7 +51,8 @@ $disp = array(
 );
 
 // Test the connection to the database using Doctrine
-function test_db_connection(){
+function test_db_connection()
+{
     $retval = [];
     try {
         $entityManager = Factory::getNewEntityManager();
@@ -55,13 +68,14 @@ function test_db_connection(){
     return $retval;
 }
 
-function test_url($url) {
+function test_url($url)
+{
     $retval = [];
-    try{
+    try {
         get_https2($url);
         $retval["status"] = "ok";
         $retval["message"] = "everything is well";
-    } catch (Exception $exception){
+    } catch (Exception $exception) {
         $message = $exception->getMessage();
         $retval["status"] = "error";
         $retval["message"] = "$message";
@@ -69,8 +83,8 @@ function test_url($url) {
     return $retval;
 }
 
-function get_https2($url){
-
+function get_https2($url)
+{
     $curloptions = array (
         // In addition to transfer failures, check inside the HTTP response for an error
         // response code (HTTP > 400)
@@ -97,9 +111,9 @@ function get_https2($url){
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_CAPATH => '/etc/grid-security/certificates/'
     );
-    if( defined('SERVER_SSLCERT') && defined('SERVER_SSLKEY') ){
-      $curloptions[CURLOPT_SSLCERT] = constant("SERVER_SSLCERT");
-      $curloptions[CURLOPT_SSLKEY] = constant("SERVER_SSLKEY");
+    if (defined('SERVER_SSLCERT') && defined('SERVER_SSLKEY')) {
+        $curloptions[CURLOPT_SSLCERT] = constant("SERVER_SSLCERT");
+        $curloptions[CURLOPT_SSLKEY] = constant("SERVER_SSLKEY");
     }
 
     $handle = curl_init();
@@ -114,18 +128,19 @@ function get_https2($url){
             // See man page for curl --fail option
             throw new Exception("http response code: $httpResponse");
         }
-        throw new Exception("curl error:".curl_error($handle));
+        throw new Exception("curl error:" . curl_error($handle));
     }
     curl_close($handle);
 
     if ($return == false) {
-        throw new Exception("no result returned. curl says: ".curl_getinfo($handle));
+        throw new Exception("no result returned. curl says: " . curl_getinfo($handle));
     }
 
     return $return;
 }
 
-function get_testPiMethod () {
+function get_testPiMethod()
+{
     return  "/public/?method=get_site_list";
 }
 /**
@@ -134,9 +149,8 @@ function get_testPiMethod () {
  * @param   string    &$message     Returned error messages or ''
  * @return  int                     Count of failed tests
  */
-function run_tests (&$message) {
-
-
+function run_tests(&$message)
+{
     $errorCount = 0;
     $messages = [];
 
@@ -147,9 +161,8 @@ function run_tests (&$message) {
         $messages[] = "Database connection test failed: " . $res["message"];
     }
 
-    $res= test_url(Factory::getConfigService()->GetPiUrl().
-                    get_testPiMethod()
-                );
+    $res = test_url(Factory::getConfigService()->GetPiUrl() .
+                    get_testPiMethod());
 
     if ($res["status"] != "ok") {
         $errorCount++;
@@ -167,4 +180,3 @@ function run_tests (&$message) {
 
     return $errorCount;
 }
-?>
