@@ -1,4 +1,4 @@
-<?php
+<?php  // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 
 namespace org\gocdb\services;
 
@@ -118,7 +118,6 @@ class PIRequest
 
     private function parseGET()
     {
-
         if (isset($_GET['method'])) {
             $this->method = $_GET['method'];
             unset($_GET['method']);
@@ -367,11 +366,11 @@ class PIRequest
                     break;
                 case "get_site_count_per_country":
                     require_once($directory . 'GetSiteCountPerCountry.php');
-                    $getSiteCountPerCountry = new GetSiteCountPerCountry($em);
-                    $getSiteCountPerCountry->validateParameters($this->params);
-                    $getSiteCountPerCountry->createQuery();
-                    $getSiteCountPerCountry->executeQuery();
-                    $xml = $getSiteCountPerCountry->getRenderingOutput();
+                    $getCountrySiteCount = new GetSiteCountPerCountry($em);
+                    $getCountrySiteCount->validateParameters($this->params);
+                    $getCountrySiteCount->createQuery();
+                    $getCountrySiteCount->executeQuery();
+                    $xml = $getCountrySiteCount->getRenderingOutput();
                     break;
                 //case "get_role_action_mappings":
                 default:
@@ -418,15 +417,6 @@ class PIRequest
 
         if ($user == null) {
             // Incoming credential is not that of a registered user.
-            // Check if it is registered API Authentication credential.
-
-            $authEntServ = \Factory::getAPIAuthenticationService();
-            $authEnts = $authEntServ->getAPIAuthentication($this->identifier);
-
-            if (count($authEnts) > 0) {
-                $authEntServ->updateLastUseTime($authEnts);
-                $authenticated = true;
-            }
 
             if (!\Factory::getConfigService()->isRestrictPDByRole($forceStrictForHosts)) {
                 // Only a 'valid' identifier is needed.
