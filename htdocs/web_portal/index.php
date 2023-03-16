@@ -76,7 +76,7 @@ function rejectIfNotAuthenticated($message = null){
 //rejectIfNotAuthenticated();
 
 // Initialise the configuration service with the host url of the incoming request.
-// Allows the overriding of configuration values. Do not use 'new' to create a new 
+// Allows the overriding of configuration values. Do not use 'new' to create a new
 // instance after this.
 
 \Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
@@ -373,7 +373,7 @@ function Draw_Page($Page_Type) {
         case "Downtime_view_endpoint_tree":
             rejectIfNotAuthenticated();
             require_once __DIR__.'/controllers/downtime/view_endpoint_tree.php';
-            getServiceandEndpointList();
+            getServiceAndEndpointList();
             break;
         case "Edit_Downtime_view_endpoint_tree":
             rejectIfNotAuthenticated();

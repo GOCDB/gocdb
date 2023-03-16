@@ -125,95 +125,234 @@ function submit(\User $user = null) {
 
 /**
  * Draws a form to add a new downtime
+ *
  * @param \User $user current user
  * @return null
  */
-function draw(\User $user = null) {
+function draw(\User $user = null)
+{
     if(is_null($user)) {
-        throw new Exception("Unregistered users can't add a downtime.");
+        throwPermissionException("Unregistered users can't add a downtime.", false);
     }
 
     $nowUtcDateTime = new \DateTime(null, new \DateTimeZone("UTC"));
-    //$twoDaysAgoUtcDateTime = $nowUtcDateTime->sub(\DateInterval::createFromDateString('2 days'));
-    //$twoDaysAgoUtc = $twoDaysAgoUtcDateTime->format('d/m/Y H:i'); //e.g.  02/10/2013 13:20
 
+    /**
+     * URL mapping for `siteid_timezone` params.
+     *
+     * Handles the request to get a specific site's timezone label and offset from now in UTC
+     * Used in ajax requests for display purposes
+     */
+    $siteId = $_GET['siteid_timezone'];
 
-    // URL mapping
-    // Return the specified site's timezone label and the offset from now in UTC
-    // Used in ajax requests for display purposes
-    if(isset($_GET['siteid_timezone']) && is_numeric($_GET['siteid_timezone'])){
-        $site = \Factory::getSiteService()->getSite($_GET['siteid_timezone']);
-        if($site != null){
-            $siteTzId = $site->getTimeZoneId();
-            if( !empty($siteTzId) ){
-                $nowInTargetTz = new \DateTime(null, new \DateTimeZone($siteTzId));
-                $offsetInSecsFromUtc = $nowInTargetTz->getOffset();
-            } else {
-                $siteTzId = 'UTC';
-                $offsetInSecsFromUtc = 0;  // assume 0 (no offset from UTC)
-            }
-            $timezoneId_Offset = array($siteTzId, $offsetInSecsFromUtc);
-            die(json_encode($timezoneId_Offset));
-        }
-        die(json_encode(array('UTC', 0)));
+    if (isset($siteId) && is_numeric($siteId)) {
+      handleSiteTimezoneRequest($siteId);
     }
 
-    // URL Mapping
-    // If the user wants to add a downtime to a specific site, show only that site's SEs
-    else if(isset($_GET['site'])) {
-        $site = \Factory::getSiteService()->getSite($_GET['site']);
-        if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $site, $user)->getGrantAction() == FALSE){
-           throw new \Exception("You don't have permission over $site");
-        }
-        $ses = $site->getServices();
-        $params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'), 'selectAll' => true);
-        show_view("downtime/add_downtime.php", $params);
-        die();
+    /**
+     * URL Mapping for `site` and `se`.
+     *
+     * If the user wants to add downtime to a specific site and SE,
+     * then, the portal will pre-select service endpoints based on the `site` and `se` params.
+     */
+    elseif (isset($_GET['site']) && isset($_GET['se'])) {
+        displaySiteAndSeEndpoints($user, $nowUtcDateTime);
     }
 
-    // URL Mapping
-    // If the user wants to add a downtime to a specific SE, show only that SE
-    else if(isset($_GET['se'])) {
-        $se = \Factory::getServiceService()->getService($_GET['se']);
-        $site = \Factory::getSiteService()->getSite($se->getParentSite()->getId());
-        if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() == FALSE){
-           throw new \Exception("You do not have permission over $se.");
-        }
-
-        //$ses = array($se);
-        $ses = $site->getServices();
-        $params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'), 'selectAll' => true);
-        show_view("downtime/add_downtime.php", $params);
-        die();
+    /**
+     * URL Mapping for `site` ONLY.
+     *
+     * If the user wants to add downtime to a specific site,
+     * then, the portal will pre-select all service endpoints because only `site` params is passed.
+     */
+    elseif (isset($_GET['site'])) {
+        displaySiteEndpoints($user, $nowUtcDateTime);
     }
 
-    // If the user doesn't want to add a downtime to a specific SE or site show all SEs
+    /**
+     * URL Mapping for `se` ONLY.
+     *
+     * If the user wants to add a downtime to a specific SE,
+     * then, portal will pre-select service endpoints belonging to `SE` params.
+     */
+    elseif (isset($_GET['se'])) {
+        displaySeEndpoints($user, $nowUtcDateTime);
+    }
+
+    /**
+     * Generic URL mapping.
+     *
+     * User should be able to see all the service endpoints associated with the site selected.
+     */
     else {
-        $ses = array();
-        if($user->isAdmin()){
-            //If a user is an admin, return all SEs instead
-            $ses = \Factory::getServiceService()->getAllSesJoinParentSites();
-        } else {
-             //$allSites = \Factory::getUserService()->getSitesFromRoles($user);
-
-            // Get all ses where the user has a GRANTED role over one of its
-            // parent OwnedObjects (includes Site and NGI but not currently Project)
-            $sesAll = \Factory::getRoleService()->getReachableServicesFromOwnedObjectRoles($user);
-            // drop the ses where the user does not have edit permissions over
-            foreach($sesAll as $se){
-                if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $se->getParentSite(), $user)->getGrantAction() ){
-                    $ses[] = $se;
-                }
-            }
-        }
-        if(empty($ses)) {
-            throw new Exception("You don't hold a role over a NGI "
-                    . "or site with child services.");
-        }
-        $params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'));
-        show_view("downtime/add_downtime.php", $params);
-        die();
+        displayAllServiceEndpoints($user, $nowUtcDateTime);
     }
 }
 
+/**
+ * Handles the `siteid_timezone` request and retrieves the timezone label and offset.
+ * Returns it as a JSON response.
+ */
+function handleSiteTimezoneRequest($siteId)
+{
+    $site = \Factory::getSiteService()->getSite($siteId);
+
+    if (!empty($site)) {
+        $siteTzId = $site->getTimeZoneId();
+
+        if (!empty($siteTzId)) {
+            $nowInTargetTz = new \DateTime(null, new \DateTimeZone($siteTzId));
+            $offsetInSecsFromUtc = $nowInTargetTz->getOffset();
+        } else {
+            $siteTzId = 'UTC';
+            $offsetInSecsFromUtc = 0; // assume 0 (no offset from UTC)
+        }
+
+        $timezoneId_Offset = array($siteTzId, $offsetInSecsFromUtc);
+        die(json_encode($timezoneId_Offset));
+    }
+    die(json_encode(array('UTC', 0)));
+}
+
+// Fetches service endpoints for a specific `site` and `se` if requested
+function displaySiteAndSeEndpoints($user, $nowUtcDateTime)
+{
+    $se = \Factory::getServiceService()->getService($_GET['se']);
+    $site = \Factory::getSiteService()->getSite($_GET['site']);
+    $ses = $site->getServices();
+
+    if (!hasEditPermission($site, $user)) {
+        throwPermissionException($site, true);
+    }
+
+    $params = [
+        'serviceID' => $se,
+        'ses' => $ses,
+        'nowUtc' => $nowUtcDateTime->format('H:i T'),
+        'selectAll' => true
+    ];
+
+    show_view("downtime/add_downtime.php", $params);
+    die();
+}
+
+// Fetches all service endpoints for a specific `site` if requested
+function displaySiteEndpoints($user, $nowUtcDateTime)
+{
+    $site = \Factory::getSiteService()->getSite($_GET['site']);
+    $ses = $site->getServices();
+
+    if (!hasEditPermission($site, $user)) {
+        throwPermissionException($site, true);
+    }
+
+    $params = [
+        'ses' => $ses,
+        'nowUtc' => $nowUtcDateTime->format('H:i T'),
+        'selectAll' => true
+    ];
+
+    show_view("downtime/add_downtime.php", $params);
+    die();
+}
+
+// Fetches service endpoints for a specific `SE` if requested
+function displaySeEndpoints($user, $nowUtcDateTime)
+{
+    $se = \Factory::getServiceService()->getService($_GET['se']);
+    $parentSite = $se->getParentSite();
+    $site = \Factory::getSiteService()->getSite($parentSite->getId());
+    $ses = $site->getServices();
+
+    if (!hasEditPermission($parentSite, $user)) {
+        throwPermissionException($se, true);
+    }
+
+    $params = [
+        'ses' => $ses,
+        'nowUtc' => $nowUtcDateTime->format('H:i T'),
+        'selectAll' => true
+    ];
+
+    show_view("downtime/add_downtime.php", $params);
+    die();
+}
+
+// Fetches all service endpoints if no specific `SE` or `site` requested
+function displayAllServiceEndpoints($user, $nowUtcDateTime)
+{
+    $ses = getAllServiceEndpoints($user);
+
+    if (empty($ses)) {
+        throwPermissionException("You don't hold a role over an NGI or site with child services.", false);
+    }
+
+    $params = [
+        'ses' => $ses,
+        'nowUtc' => $nowUtcDateTime->format('H:i T')
+    ];
+
+    show_view("downtime/add_downtime.php", $params);
+    die();
+}
+
+/**
+ * Retrieves all service endpoints based on user permissions.
+ *
+ * If the user is an admin, It returns all the service endpoints.
+ * If the user is NOT an admin, it returns the service endpoints based on the permissions.
+ */
+function getAllServiceEndpoints($user)
+{
+    if (false) {
+        return \Factory::getServiceService()->getAllSesJoinParentSites();
+    } else {
+        /**
+         * Get all ses where the user has a GRANTED role over one of its
+         * parent OwnedObjects (includes Site and NGI but not currently Project)
+         */
+        $sesAll = \Factory::getRoleService()->getReachableServicesFromOwnedObjectRoles($user);
+        $ses = filterServiceEndpoints($sesAll, $user);
+
+        return $ses;
+    }
+}
+
+// Filters service endpoints based on user's edit permissions.
+function filterServiceEndpoints($sesAll, $user)
+{
+    $ses = [];
+
+    foreach ($sesAll as $se) {
+        if (hasEditPermission($se->getParentSite(), $user)) {
+            $ses[] = $se;
+        }
+    }
+
+    return $ses;
+}
+
+// Validates if the user has edit permission for the given site.
+function hasEditPermission($site, $user)
+{
+    return \Factory::getRoleActionAuthorisationService()
+        ->authoriseAction(\Action::EDIT_OBJECT, $site, $user)
+        ->getGrantAction();
+}
+
+/**
+ * Handles exceptions for permission-related issues.
+ *
+ * @throws \Exception
+ */
+function throwPermissionException($resource, $isGeneric)
+{
+    if ($isGeneric) {
+        $errorMsg = "You do not have permission over $resource";
+    } else {
+        $errorMsg = "$resource";
+    }
+
+    throw new \Exception($errorMsg);
+}
 ?>

@@ -156,7 +156,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
                     $siteName = $site->getName();
                     $ngiName = $site->getNgi()->getName();
                     $label = xssafe($site."   (".$ngiName.")");
-                    echo "<option value=\"{$site->getId()}\">$label</option>";
+                    echo "<option value=\"{$site->getId()}\" SELECTED>$label</option>";
                 }
                 ?>
             </select> <br /> <br />
@@ -231,7 +231,8 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
            validate();
        });
 
-
+       // This will help us to decide whether to fetch and `select` all services, endpoints or Not.       
+       getSitesServices();
 
     });
 
@@ -493,11 +494,28 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
        return datesValid;
     }
 
-    function getSitesServices(){
+    function getSitesServices()
+    {
         var siteId=$('#Select_Sites').val();
+
         if(siteId != null){ //If the user clicks on the box but not a specific row there will be no input, so catch that here
             $('#chooseEndpoints').empty(); //Remove any previous content from the endpoints select list
-            $('#chooseServices').load('index.php?Page_Type=Downtime_view_endpoint_tree&site_id='+siteId,function( response, status, xhr ) {
+
+            let DVET_Path;
+            const getServiceIDFromQueryParams = new URL(this.location.href).searchParams.get('se');
+
+            if (getServiceIDFromQueryParams) {
+                /**
+                 * NOTE: If you use template literal for string interpolation,
+                 * i.e., `${}`. It has to be in one line.
+                 */
+                DVET_Path = 'index.php?Page_Type=Downtime_view_endpoint_tree' +
+                            `&se=${getServiceIDFromQueryParams}&site_id=${siteId}`;
+            } else {
+                DVET_Path = `index.php?Page_Type=Downtime_view_endpoint_tree&site_id=${siteId}`;
+            }
+
+            $('#chooseServices').load(DVET_Path, function( response, status, xhr ) {
                 if ( status == "success" ) {
                     validate();
                 }
@@ -631,21 +649,3 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
     }*/
 
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
