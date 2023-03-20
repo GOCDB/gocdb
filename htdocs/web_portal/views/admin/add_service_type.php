@@ -16,3 +16,4 @@
         <input type="submit" value="Add Service Type" class="input_button">
     </form>
 </div>
+<?php

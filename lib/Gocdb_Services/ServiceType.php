@@ -116,7 +116,7 @@ class ServiceType extends AbstractEntityService{
      * @param array $newValues array containing the name and description for the
      *                        new service type
      * @param \user $user   User adding the service type, used for permissions check
-     * @return \org\gocdb\services\ServiceType returns created service type
+     * @return \ServiceType returns created service type
      */
     public function addServiceType($values, \user $user = null){
         //Check the portal is not in read only mode, throws exception if it is
@@ -274,5 +274,3 @@ class ServiceType extends AbstractEntityService{
         }
     }
 }
-
-

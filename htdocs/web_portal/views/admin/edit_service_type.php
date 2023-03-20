@@ -9,7 +9,11 @@
 
         <span class="input_name" style="">
             <input type="checkbox" name="AllowMonitoringException" value="checked"
-                <?php if ($params['AllowMonitoringException'] == TRUE) echo " checked ";?>
+                <?php
+                if ($params['AllowMonitoringException'] == true) {
+                    echo " checked ";
+                };
+                ?>
             />
             <label for="AllowMonitoringException">
                 Allow <?php xecho($params['Name']) ?> services to be in production without monitoring?

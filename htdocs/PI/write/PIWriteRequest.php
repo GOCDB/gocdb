@@ -1351,7 +1351,7 @@ class PIWriteRequest {
       #POST not valid for Endpoint booleans as they are set when the entity created and so are already defined
       $this->exceptionWithResponseCode(405,$this->genericExceptionMessages["cantPostABool"]);
 
-    } elseif ($this->serviceService->EndpointPropSet($endpoint, $endpointPropName)) {
+    } elseif ($this->serviceService->endpointPropSet($endpoint, $endpointPropName)) {
       #POST method must fail if the value is already set
       $this->exceptionWithResponseCode(409,$this->genericExceptionMessages["propAlreadySet"]);
 

@@ -1,4 +1,5 @@
 <?php
+
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
 /**
@@ -7,50 +8,51 @@ require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
  * @param string $txtProperties String containing the contents of a .properties
  * @return array $results Associative array of key value pairs
  */
-function parse_properties($txtProperties) {
-
+function parse_properties($txtProperties)
+{
+        $value = '';
         $result = array();
 
         $lines = explode("\n", $txtProperties);
         $key = "";
 
         $isWaitingOtherLine = false;
-        foreach($lines as $i=>$line) {
-            $trimedLine = trim($line);
-            if(empty($trimedLine) || (!$isWaitingOtherLine && strpos($line,"#") === 0)) continue;
-
-            if(!$isWaitingOtherLine) {
-                $key = substr($line,0,strpos($line,'='));
-                $value = substr($line,strpos($line,'=') + 1, strlen($line));
-            }
-            else {
-                $value .= $line;
-            }
-
-            /* Check if ends with single '\' */
-            if(strpos($value,"\\") === strlen($value)-strlen("\\")) {
-                $value = substr($value, 0, strlen($value)-1)."\n";
-                $isWaitingOtherLine = true;
-            }
-            else {
-                $isWaitingOtherLine = false;
-            }
-
-            if ($key == NULL) {
-                $line = $i + 1;
-                throw new \Exception("Property name on line {$line} is null");
-            }
-            if ($value == NULL) {
-                $line = $i + 1;
-                throw new \Exception("Property value on line {$line} is null");
-            }
-
-            //we can't use the prop key as the key due to key duplicates [PREVIOUSLY] being allowed
-            //we are using an indexed array of indexed arrays TODO: use prop key as array key
-            $result[] = array($key, $value);
-
-            unset($lines[$i]);
+    foreach ($lines as $i => $line) {
+        $trimedLine = trim($line);
+        if (empty($trimedLine) || (!$isWaitingOtherLine && strpos($line, "#") === 0)) {
+            continue;
         }
+
+        if (!$isWaitingOtherLine) {
+            $key = substr($line, 0, strpos($line, '='));
+            $value = substr($line, strpos($line, '=') + 1, strlen($line));
+        } else {
+            $value .= $line;
+        }
+
+        /* Check if ends with single '\' */
+        if (strpos($value, "\\") === strlen($value) - strlen("\\")) {
+            $value = substr($value, 0, strlen($value) - 1) . "\n";
+            $isWaitingOtherLine = true;
+        } else {
+            $isWaitingOtherLine = false;
+        }
+
+        if ($key == null) {
+            $line = $i + 1;
+            throw new \Exception("Property name on line {$line} is null");
+        }
+        if ($value == null) {
+            $line = $i + 1;
+            throw new \Exception("Property value on line {$line} is null");
+        }
+
+        //we can't use the prop key as the key due to key duplicates [PREVIOUSLY] being allowed
+        //we are using an indexed array of indexed arrays TODO: use prop key as array key
+        $result[] = array($key, $value);
+
+        unset($lines[$i]);
+    }
 
         return $result;
 }
@@ -68,7 +70,8 @@ function parse_properties($txtProperties) {
  *   <li>'reserved_optional_inheritable' - Lists reserved tags that CAN be inherited
  *      from the $parentScopedEntity (the tag may/may-not be already assigned to the target).</li>
  *   <li>'reserved' - The remaining Reserved tags.</li>
- *   <li>'disableReserved' - Defines a boolean rather than a tag list - true to disable the 'reserved' tags or false to enable.</li>
+ *   <li>'disableReserved' - Defines a boolean rather than a tag list -
+ *                              true to disable the 'reserved' tags or false to enable.</li>
  * </ul>
  * <p>
  * For each scope value, the attributes are ["PK/ID", "tagValue", "boolCheckedOrNot"].
@@ -88,26 +91,30 @@ function parse_properties($txtProperties) {
  * </code>
  * @param \IScopedEntity $targetScopedEntity Optional, use Null if creating a new IScopedEntity
  * @param \IScopedEntity $parentScopedEntity Optional, the parent to inherit tags from
- * @param bool $disableReservedScopes True to disable 'reserved' tags
- * @param bool $inheritParentScopeChecked True to set the checked status of each scope value
+ * @param bool $noReservedScopes True to disable 'reserved' tags
+ * @param bool $inheritScopeChecked True to set the checked status of each scope value
  *   according to whether the parent has the same scope checked (every scope will always be
  *   false if the $parentScopedEntity is null)
  * @return string
  * @throws \LogicException
  */
-function getEntityScopesAsJSON2($targetScopedEntity = null, $parentScopedEntity = null,
-        $disableReservedScopes = true, $inheritParentScopeChecked = false){
+function getEntityScopesAsJSON2(
+    $targetScopedEntity = null,
+    $parentScopedEntity = null,
+    $noReservedScopes = true,
+    $inheritScopeChecked = false
+) {
 
     $targetScopes = array();
-    if($targetScopedEntity != null){
-        if(!($targetScopedEntity instanceof \IScopedEntity)){
+    if ($targetScopedEntity != null) {
+        if (!($targetScopedEntity instanceof \IScopedEntity)) {
             throw new \LogicException('Invalid $scopedEntityChild, does not implement IScopedEntity');
         }
-       $targetScopes =  $targetScopedEntity->getScopes()->toArray();
+        $targetScopes =  $targetScopedEntity->getScopes()->toArray();
     }
     $parentScopes = array();
-    if($parentScopedEntity != null) {
-        if(!($parentScopedEntity instanceof \IScopedEntity)){
+    if ($parentScopedEntity != null) {
+        if (!($parentScopedEntity instanceof \IScopedEntity)) {
             throw new \LogicException('Invalid scopedEntityParent, does not implement IScopedEntity');
         }
         $parentScopes = $parentScopedEntity->getScopes()->toArray();
@@ -116,38 +123,41 @@ function getEntityScopesAsJSON2($targetScopedEntity = null, $parentScopedEntity 
     // $reservedScopeNames = \Factory::getConfigService()->getReservedScopeList();
     $allScopes = \Factory::getScopeService()->getScopes();
     $optionalScopeIds = array();
-    $reservedOptionalScopeIds = array();
-    $reservedOptionalInheritableScopeIds = array();
+    // Reserved optional scope ids
+    $resOptScopeIds = array();
+    // Reserved optional inherited scope ids
+    $resOptHeritScopeIds = array();
     $reservedScopeIds = array();
 
     /* @var $scope \Scope */
-    foreach($allScopes as $scope){
+    foreach ($allScopes as $scope) {
         $targetChecked = false;
         $parentChecked = false;
         // is scope already joined to target
-        if(in_array($scope, $targetScopes)){
+        if (in_array($scope, $targetScopes)) {
             $targetChecked = true;
         }
         // is scope already joined to parent
-        if(in_array($scope, $parentScopes)){
+        if (in_array($scope, $parentScopes)) {
             $parentChecked = true;
         }
         // Determine if this tag should be checked = t/f
         $isChecked = $targetChecked;
-        if($inheritParentScopeChecked){
+        if ($inheritScopeChecked) {
             $isChecked = $parentChecked;
         }
 
         // Is scope tag in the reserved list ?
-        if($scope->getReserved()){
+        if ($scope->getReserved()) {
             // A reserved scope tag:
-            if($parentChecked || $targetChecked){
-                if($parentChecked){
+            if ($parentChecked || $targetChecked) {
+                if ($parentChecked) {
                     // tag CAN be inherited from parent, so put in relevant array
-                    $reservedOptionalInheritableScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);
+                    $resOptHeritScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);
                 } else {
-                    // tag CAN'T be inherited from parent, but it has already been directly assigned, so put in relevant array
-                    $reservedOptionalScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);
+                    // tag CAN'T be inherited from parent, but it has already been directly assigned,
+                    // so put in relevant array
+                    $resOptScopeIds[] = array($scope->getId(), $scope->getName(), $isChecked);
                 }
             } else {
                 // tag is not inheritable and has not been directly assigned, so its reserved/protected
@@ -161,10 +171,10 @@ function getEntityScopesAsJSON2($targetScopedEntity = null, $parentScopedEntity 
     // build the response
     $scopeCategories = array();
     $scopeCategories['optional'] = $optionalScopeIds;
-    $scopeCategories['reserved_optional'] = $reservedOptionalScopeIds;
-    $scopeCategories['reserved_optional_inheritable'] = $reservedOptionalInheritableScopeIds;
+    $scopeCategories['reserved_optional'] = $resOptScopeIds;
+    $scopeCategories['reserved_optional_inheritable'] = $resOptHeritScopeIds;
     $scopeCategories['reserved'] = $reservedScopeIds;
-    $scopeCategories['disableReserved'] = $disableReservedScopes ? true : false;
+    $scopeCategories['disableReserved'] = $noReservedScopes ? true : false;
 
     return json_encode($scopeCategories);
 }
@@ -175,8 +185,9 @@ function getEntityScopesAsJSON2($targetScopedEntity = null, $parentScopedEntity 
  *
  * @throws \Exception
  */
-function checkPortalIsNotReadOnlyOrUserIsAdmin(\User $user = null) {
-    if (portalIsReadOnlyAndUserIsNotAdmin($user)){
+function checkPortalIsNotReadOnlyOrUserIsAdmin(\User $user = null)
+{
+    if (portalIsReadOnlyAndUserIsNotAdmin($user)) {
         throw new \Exception("The portal is currently in read only mode, changes can not be made.");
     }
 }
@@ -190,20 +201,21 @@ function checkPortalIsNotReadOnlyOrUserIsAdmin(\User $user = null) {
  *            current user
  * @return boolean
  */
-function portalIsReadOnlyAndUserIsNotAdmin(\user $user = null) {
+function portalIsReadOnlyAndUserIsNotAdmin(\user $user = null)
+{
     require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
     // this block is required to deal with unregistered users (where $user is null)
     $userIsAdmin = false;
-    if (! is_null($user)){
-        if ($user->isAdmin()){ // sub query required becauser ->isAdmin can't be called on null
+    if (! is_null($user)) {
+        if ($user->isAdmin()) { // sub query required becauser ->isAdmin can't be called on null
             $userIsAdmin = true;
         }
     }
 
-    if (\Factory::getConfigService()->IsPortalReadOnly() and ! $userIsAdmin){
+    if (\Factory::getConfigService()->IsPortalReadOnly() and ! $userIsAdmin) {
         return true;
-    }else{
+    } else {
         return false;
     }
 }
@@ -214,25 +226,36 @@ function portalIsReadOnlyAndUserIsNotAdmin(\user $user = null) {
  * @return null
  *
  */
-function checkUserIsAdmin() {
+function checkUserIsAdmin()
+{
     require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
     $dn = Get_User_Principle();
+    /**
+     * @var \User $user
+     */
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
-    if ($user == null){
+    if ($user == null) {
         throw new Exception("Unregistered users may not carry out this operation");
     }
-    if (! $user->isAdmin()){
+    if (! $user->isAdmin()) {
         throw new Exception("Only GOCDB administrators can perform this action.");
     }
 }
-function CheckCurrentUserCanEditProject(\Project $project) {
+function CheckCurrentUserCanEditProject(\Project $project)
+{
     require_once __DIR__ . '/../../web_portal/components/Get_User_Principle.php';
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
     //$enablingRoles = \Factory::getProjectService()->authorize Action('ACTION_EDIT_OBJECT', $project, $user);
     //if (count($enablingRoles) == 0){
-    if(\Factory::getRoleActionAuthorisationService()->authoriseAction(\Action::EDIT_OBJECT, $project, $user)->getGrantAction() == FALSE){
+    if (
+        \Factory::getRoleActionAuthorisationService()->authoriseAction(
+            \Action::EDIT_OBJECT,
+            $project,
+            $user
+        )->getGrantAction() == false
+    ) {
         throw new Exception("You do not have a role that enables you to edit this project");
     }
 }
@@ -245,52 +268,55 @@ function CheckCurrentUserCanEditProject(\Project $project) {
  * @global array $_REQUEST site data submitted by the end user
  * @return array an array representation of a site
  */
-function getSiteDataFromWeb() {
+function getSiteDataFromWeb()
+{
     // Fields that are used to link other objects to the site
     $fields = array (
             'Country',
             'ProductionStatus'
     );
 
-    foreach($fields as $field){
-        $site_data [$field] = $_REQUEST [$field];
+    $siteData = [];
+    foreach ($fields as $field) {
+        $siteData[$field] = $_REQUEST [$field];
     }
 
-    if(isset($_REQUEST['childServiceScopeAction'])){
-        $site_data['childServiceScopeAction'] = $_REQUEST['childServiceScopeAction'];
+    if (isset($_REQUEST['childServiceScopeAction'])) {
+        $siteData['childServiceScopeAction'] = $_REQUEST['childServiceScopeAction'];
     } else {
-        $site_data['childServiceScopeAction'] = 'noModify';
+        $siteData['childServiceScopeAction'] = 'noModify';
     }
 
     // get non-reserved scopes if any are selected, if not set as empty array
-    if (isset($_REQUEST ['Scope_ids'])){
-        $site_data ['Scope_ids'] = $_REQUEST ['Scope_ids'];
-    }else{
-        $site_data ['Scope_ids'] = array ();
+    if (isset($_REQUEST ['Scope_ids'])) {
+        $siteData ['Scope_ids'] = $_REQUEST ['Scope_ids'];
+    } else {
+        $siteData ['Scope_ids'] = array ();
     }
     // get reserved scopes if any are selected, if not set as empty array
-    if (isset($_REQUEST ['ReservedScope_ids'])){
-        $site_data ['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
-    }else{
-        $site_data ['ReservedScope_ids'] = array ();
+    if (isset($_REQUEST ['ReservedScope_ids'])) {
+        $siteData ['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    } else {
+        $siteData ['ReservedScope_ids'] = array ();
     }
 
     /*
-     * Certification status is only set during the add_site procedure. Editing an existing site's cert status uses a separate form
+     * Certification status is only set during the add_site procedure.
+     * Editing an existing site's cert status uses a separate form
      */
-    if (isset($_REQUEST ['Certification_Status'])){
-        $site_data ['Certification_Status'] = $_REQUEST ['Certification_Status'];
+    if (isset($_REQUEST ['Certification_Status'])) {
+        $siteData ['Certification_Status'] = $_REQUEST ['Certification_Status'];
     }
 
     /*
      * ROC is only set during the add_site procedure. A site's ROC can't be edited in the web portal
      */
-    if (isset($_REQUEST ['NGI'])){
-        $site_data ['NGI'] = $_REQUEST ['NGI'];
+    if (isset($_REQUEST ['NGI'])) {
+        $siteData ['NGI'] = $_REQUEST ['NGI'];
     }
 
     // Fields specific to the site object and not linked to other entities
-    $site_object_fields = array (
+    $siteObjectFields = array (
             'SHORT_NAME',
             'OFFICIAL_NAME',
             'HOME_URL',
@@ -312,23 +338,24 @@ function getSiteDataFromWeb() {
             'TIMEZONE'
     );
 
-    foreach($site_object_fields as $field){
-        $site_data ['Site'] [$field] = trim($_REQUEST [$field]);
+    foreach ($siteObjectFields as $field) {
+        $siteData ['Site'] [$field] = trim($_REQUEST [$field]);
     }
 
     //Notifcations
-    $site_data ['NOTIFY'] = $_REQUEST ['NOTIFY'];
+    $siteData ['NOTIFY'] = $_REQUEST ['NOTIFY'];
 
     /*
-     * If the user is updating a site the optional cobjectid parameter will be set. If it is set we return it as part of the array
+     * If the user is updating a site the optional cobjectid parameter will be set.
+     * If it is set we return it as part of the array
      */
-    if (! empty($_REQUEST ['ID'])){
-        $site_data ['ID'] = $_REQUEST ['ID'];
+    if (! empty($_REQUEST ['ID'])) {
+        $siteData ['ID'] = $_REQUEST ['ID'];
     }
 
     //
 
-    return $site_data;
+    return $siteData;
 }
 
 /**
@@ -338,39 +365,41 @@ function getSiteDataFromWeb() {
  * @global array $_REQUEST site data submitted by the end user
  * @return array An array of service group data
  */
-function getSGroupDataFromWeb() {
+function getSGroupDataFromWeb()
+{
     /*
      * $_REQUEST['monitored'] is set by the "Should this Virtual Site be monitored?" tick box
      */
-    if (isset($_REQUEST ['monitored'])){
+    if (isset($_REQUEST ['monitored'])) {
         $monitored = 'Y';
-    }else{
+    } else {
         $monitored = 'N';
     }
 
-    $sg ['MONITORED'] = $monitored;
+    $sGroup = [];
+    $sGroup['MONITORED'] = $monitored;
 
-    if (isset($_REQUEST ['objectId'])){
-        $sg ['ID'] = $_REQUEST ['objectId'];
+    if (isset($_REQUEST ['objectId'])) {
+        $sGroup['ID'] = $_REQUEST ['objectId'];
     }
 
-    $sg ['SERVICEGROUP'] ['NAME'] = trim($_REQUEST ['name']);
-    $sg ['SERVICEGROUP'] ['DESCRIPTION'] = trim($_REQUEST ['description']);
-    $sg ['SERVICEGROUP'] ['EMAIL'] = trim($_REQUEST ['email']);
+    $sGroup['SERVICEGROUP'] ['NAME'] = trim($_REQUEST ['name']);
+    $sGroup['SERVICEGROUP'] ['DESCRIPTION'] = trim($_REQUEST ['description']);
+    $sGroup['SERVICEGROUP'] ['EMAIL'] = trim($_REQUEST ['email']);
 
     // get scopes if any are selected, if not set as null
-    if (isset($_REQUEST ['Scope_ids'])){
-        $sg ['Scope_ids'] = $_REQUEST ['Scope_ids'];
-    }else{
-        $sg ['Scope_ids'] = array ();
+    if (isset($_REQUEST ['Scope_ids'])) {
+        $sGroup['Scope_ids'] = $_REQUEST ['Scope_ids'];
+    } else {
+        $sGroup['Scope_ids'] = array ();
     }
-    if (isset($_REQUEST ['ReservedScope_ids'])){
-        $sg['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
-    }else{
-        $sg['ReservedScope_ids'] = array ();
+    if (isset($_REQUEST ['ReservedScope_ids'])) {
+        $sGroup['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    } else {
+        $sGroup['ReservedScope_ids'] = array ();
     }
 
-    return $sg;
+    return $sGroup;
 }
 
 /**
@@ -381,7 +410,8 @@ function getSGroupDataFromWeb() {
  * @global array $_REQUEST SE data submitted by the end user
  * @return array an array representation of a service
  */
-function getSeDataFromWeb() {
+function getSeDataFromWeb()
+{
 
     $fields = array (
             'serviceType',
@@ -389,61 +419,64 @@ function getSeDataFromWeb() {
             'NOTIFY',
             'PRODUCTION_LEVEL'
     );
-
-    foreach($fields as $field){
-        $se_data [$field] = $_REQUEST [$field];
+    $seData = [];
+    foreach ($fields as $field) {
+        $seData [$field] = $_REQUEST [$field];
     }
 
     /*
      * If the user is adding a new service the optional HOSTING_SITE parameter will be set.
      * If it is set we return it as part of the array
      */
-    if (! empty($_REQUEST ['hostingSite'])){
-        $se_data ['hostingSite'] = $_REQUEST ['hostingSite'];
+    if (! empty($_REQUEST ['hostingSite'])) {
+        $seData ['hostingSite'] = $_REQUEST ['hostingSite'];
     }
 
-    // $se_data['SE']['ENDPOINT'] = $_REQUEST['HOSTNAME'] . $_REQUEST['serviceType'];
-    $se_data ['SE'] ['HOSTNAME'] = trim($_REQUEST ['HOSTNAME']);
-    $se_data ['SE'] ['HOST_IP'] = trim($_REQUEST ['HOST_IP']);
-    $se_data ['SE'] ['HOST_IP_V6'] = trim($_REQUEST['HOST_IP_V6']);
-    $se_data ['SE'] ['HOST_DN'] = trim($_REQUEST ['HOST_DN']);
-    $se_data ['SE'] ['DESCRIPTION'] = trim($_REQUEST ['DESCRIPTION']);
-    $se_data ['SE'] ['HOST_OS'] = trim($_REQUEST ['HOST_OS']);
-    $se_data ['SE'] ['HOST_ARCH'] = trim($_REQUEST ['HOST_ARCH']);
-    $se_data ['SE'] ['EMAIL'] = trim($_REQUEST ['EMAIL']);
-    $se_data ['SE'] ['URL'] = trim($_REQUEST ['endpointUrl']);
-    $se_data ['BETA'] = $_REQUEST ['HOST_BETA'];
+    // $seData['SE']['ENDPOINT'] = $_REQUEST['HOSTNAME'] . $_REQUEST['serviceType'];
+    $seData ['SE'] ['HOSTNAME'] = trim($_REQUEST ['HOSTNAME']);
+    $seData ['SE'] ['HOST_IP'] = trim($_REQUEST ['HOST_IP']);
+    $seData ['SE'] ['HOST_IP_V6'] = trim($_REQUEST['HOST_IP_V6']);
+    $seData ['SE'] ['HOST_DN'] = trim($_REQUEST ['HOST_DN']);
+    $seData ['SE'] ['DESCRIPTION'] = trim($_REQUEST ['DESCRIPTION']);
+    $seData ['SE'] ['HOST_OS'] = trim($_REQUEST ['HOST_OS']);
+    $seData ['SE'] ['HOST_ARCH'] = trim($_REQUEST ['HOST_ARCH']);
+    $seData ['SE'] ['EMAIL'] = trim($_REQUEST ['EMAIL']);
+    $seData ['SE'] ['URL'] = trim($_REQUEST ['endpointUrl']);
+    $seData ['BETA'] = $_REQUEST ['HOST_BETA'];
 
     /*
-    * If the user is updating a service the optional cobjectid parameter will be set. If it is set we return it as part of the array
+    * If the user is updating a service the optional cobjectid parameter will be set.
+    * If it is set we return it as part of the array
     */
-    if (! empty($_REQUEST ['ID'])){
-        $se_data ['ID'] = $_REQUEST ['ID'];
+    if (! empty($_REQUEST ['ID'])) {
+        $seData ['ID'] = $_REQUEST ['ID'];
     }
 
     // get scopes if any are selected, if not set as null
-    if (isset($_REQUEST ['Scope_ids'])){
-        $se_data ['Scope_ids'] = $_REQUEST ['Scope_ids'];
-    }else{
-        $se_data ['Scope_ids'] = array ();
+    if (isset($_REQUEST ['Scope_ids'])) {
+        $seData ['Scope_ids'] = $_REQUEST ['Scope_ids'];
+    } else {
+        $seData ['Scope_ids'] = array ();
     }
 
-    if (isset($_REQUEST ['ReservedScope_ids'])){
-        $se_data ['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
-    }else{
-        $se_data ['ReservedScope_ids'] = array ();
+    if (isset($_REQUEST ['ReservedScope_ids'])) {
+        $seData ['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
+    } else {
+        $seData ['ReservedScope_ids'] = array ();
     }
 
-    return $se_data;
+    return $seData;
 }
 
 /**
  *
  * @return array
  */
-function getProjectDataFromWeb() {
+function getProjectDataFromWeb()
+{
+    $projectValues = [];
     // new projects won't have an id
-    if (isset($_REQUEST ['ID'])){
+    if (isset($_REQUEST ['ID'])) {
         $projectValues ['ID'] = $_REQUEST ['ID'];
     }
 
@@ -453,12 +486,13 @@ function getProjectDataFromWeb() {
             'Description'
     );
 
-    foreach($fields as $field){
+    foreach ($fields as $field) {
         $projectValues [$field] = trim($_REQUEST [$field]);
     }
     return $projectValues;
 }
-function getNGIDataFromWeb() {
+function getNGIDataFromWeb()
+{
     // Get the NGI post data into an array
     $fields = array (
             'EMAIL',
@@ -467,13 +501,13 @@ function getNGIDataFromWeb() {
             'SECURITY_EMAIL',
             'GGUS_SU'
     );
-
-    foreach($fields as $field){
-        $NGIValues [$field] = trim($_REQUEST [$field]);
+    $ngiValues = [];
+    foreach ($fields as $field) {
+        $ngiValues [$field] = trim($_REQUEST [$field]);
     }
 
-    if (isset($_REQUEST ['NAME'])){
-        $NGIValues ['NAME'] = $_REQUEST ['NAME'];
+    if (isset($_REQUEST ['NAME'])) {
+        $ngiValues ['NAME'] = $_REQUEST ['NAME'];
     }
 
 //    $scopes = array ();
@@ -483,25 +517,25 @@ function getNGIDataFromWeb() {
 
     // get scopes if any are selected, if not set as null
     $optionalScopes = array();
-    if (isset($_REQUEST ['Scope_ids'])){
+    if (isset($_REQUEST ['Scope_ids'])) {
         $optionalScopes['Scope_ids'] = $_REQUEST ['Scope_ids'];
-    }else{
+    } else {
         $optionalScopes['Scope_ids'] = array ();
     }
     $reservedScopes = array();
-    if (isset($_REQUEST ['ReservedScope_ids'])){
+    if (isset($_REQUEST ['ReservedScope_ids'])) {
         $reservedScopes['ReservedScope_ids'] = $_REQUEST ['ReservedScope_ids'];
-    }else{
+    } else {
         $reservedScopes['ReservedScope_ids'] = array ();
     }
 
     $id = null;
-    if (isset($_REQUEST ['ID'])){
+    if (isset($_REQUEST ['ID'])) {
         $id = $_REQUEST ['ID'];
     }
 
     $values = array (
-            'NGI' => $NGIValues,
+            'NGI' => $ngiValues,
             //'SCOPES' => $scopes,
             'Scope_ids' => $optionalScopes['Scope_ids'],
             'ReservedScope_ids' => $reservedScopes['ReservedScope_ids'],
@@ -518,123 +552,134 @@ function getNGIDataFromWeb() {
  * @global array $_REQUEST Downtime data submitted by the end user
  * @return array an array representation of a downtime
  */
-function getDtDataFromWeb() {
-    $dt ['DOWNTIME'] ['SEVERITY'] = $_REQUEST ['SEVERITY'];
-    $dt ['DOWNTIME'] ['DESCRIPTION'] = trim($_REQUEST ['DESCRIPTION']);
-    $dt ['DOWNTIME'] ['START_TIMESTAMP'] = $_REQUEST ['START_TIMESTAMP'];
-    $dt ['DOWNTIME'] ['END_TIMESTAMP'] = $_REQUEST ['END_TIMESTAMP'];
+function getDtDataFromWeb()
+{
+    $downTime = [];
+    $downTime['DOWNTIME'] ['SEVERITY'] = $_REQUEST ['SEVERITY'];
+    $downTime['DOWNTIME'] ['DESCRIPTION'] = trim($_REQUEST ['DESCRIPTION']);
+    $downTime['DOWNTIME'] ['START_TIMESTAMP'] = $_REQUEST ['START_TIMESTAMP'];
+    $downTime['DOWNTIME'] ['END_TIMESTAMP'] = $_REQUEST ['END_TIMESTAMP'];
 
-    $dt ['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] = 'utc'; //default
-    if(isset($_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE'])){
-       $dt ['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] = $_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE']; // 'utc' or 'site'
+    $downTime['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] = 'utc'; //default
+    if (isset($_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE'])) {
+        $downTime['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] = $_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE']; // 'utc' or 'site'
     }
 
-    if (! isset($_REQUEST ['IMPACTED_IDS'])){
+    if (! isset($_REQUEST ['IMPACTED_IDS'])) {
         throw new Exception('Error - No endpoints or services selected, downtime must affect at least one endpoint');
     }
-    $dt ['IMPACTED_IDS'] = $_REQUEST ['IMPACTED_IDS'];
+    $downTime['IMPACTED_IDS'] = $_REQUEST ['IMPACTED_IDS'];
 
 
     //Get the previous downtimes ID if we are doing an edit
-    if(isset($_REQUEST['DOWNTIME_ID'])){
-        $dt['DOWNTIME']['EXISTINGID'] = $_REQUEST['DOWNTIME_ID'];
+    if (isset($_REQUEST['DOWNTIME_ID'])) {
+        $downTime['DOWNTIME']['EXISTINGID'] = $_REQUEST['DOWNTIME_ID'];
     }
 
-    return $dt;
+    return $downTime;
 }
 
 /**
  * Gets the site properties data passed by user *
  */
-function getSpDataFromWeb() {
-    $sp ['SITEPROPERTIES'] ['SITE'] = $_REQUEST ['SITE'];
-    $sp ['SITEPROPERTIES'] ['NAME'] = $_REQUEST ['KEYPAIRNAME'];
-    $sp ['SITEPROPERTIES'] ['VALUE'] = $_REQUEST ['KEYPAIRVALUE'];
-    if (isset($_REQUEST ['PROP'])){
-        $sp ['SITEPROPERTIES'] ['PROP'] = $_REQUEST ['PROP'];
+function getSpDataFromWeb()
+{
+    $siteProp = [];
+    $siteProp['SITEPROPERTIES'] ['SITE'] = $_REQUEST ['SITE'];
+    $siteProp['SITEPROPERTIES'] ['NAME'] = $_REQUEST ['KEYPAIRNAME'];
+    $siteProp['SITEPROPERTIES'] ['VALUE'] = $_REQUEST ['KEYPAIRVALUE'];
+    if (isset($_REQUEST ['PROP'])) {
+        $siteProp['SITEPROPERTIES'] ['PROP'] = $_REQUEST ['PROP'];
     }
 
-        if(isset($sp['SITEPROPERTIES']['NAME'])){
-        $sp['SITEPROPERTIES']['NAME'] = $sp['SITEPROPERTIES']['NAME'];
+    if (isset($siteProp['SITEPROPERTIES']['NAME'])) {
+        $siteProp['SITEPROPERTIES']['NAME'] = $siteProp['SITEPROPERTIES']['NAME'];
     }
-    if(isset($sp['SITEPROPERTIES']['VALUE'])){
-        $sp['SITEPROPERTIES']['VALUE'] = $sp['SITEPROPERTIES']['VALUE'];
+    if (isset($siteProp['SITEPROPERTIES']['VALUE'])) {
+        $siteProp['SITEPROPERTIES']['VALUE'] = $siteProp['SITEPROPERTIES']['VALUE'];
     }
-    return $sp;
+    return $siteProp;
 }
 
 /**
  * Gets the service properties data passed by user *
  */
-function getSerPropDataFromWeb() {
-    $sp ['SERVICEPROPERTIES'] ['SERVICE'] = $_REQUEST ['SERVICE'];
-    $sp ['SERVICEPROPERTIES'] ['NAME'] = $_REQUEST ['KEYPAIRNAME'];
-    $sp ['SERVICEPROPERTIES'] ['VALUE'] = $_REQUEST ['KEYPAIRVALUE'];
-    if (isset($_REQUEST ['PROP'])){
-        $sp ['SERVICEPROPERTIES'] ['PROP'] = trim($_REQUEST ['PROP']);
+function getSerPropDataFromWeb()
+{
+    $serviceProp = [];
+    $serviceProp['SERVICEPROPERTIES'] ['SERVICE'] = $_REQUEST ['SERVICE'];
+    $serviceProp['SERVICEPROPERTIES'] ['NAME'] = $_REQUEST ['KEYPAIRNAME'];
+    $serviceProp['SERVICEPROPERTIES'] ['VALUE'] = $_REQUEST ['KEYPAIRVALUE'];
+    if (isset($_REQUEST ['PROP'])) {
+        $serviceProp['SERVICEPROPERTIES'] ['PROP'] = trim($_REQUEST ['PROP']);
     }
-    if(isset($sp['SERVICEPROPERTIES']['NAME'])){
-        $sp['SERVICEPROPERTIES']['NAME'] = $sp['SERVICEPROPERTIES']['NAME'];
+    if (isset($serviceProp['SERVICEPROPERTIES']['NAME'])) {
+        $serviceProp['SERVICEPROPERTIES']['NAME'] = $serviceProp['SERVICEPROPERTIES']['NAME'];
     }
-    if(isset($sp['SERVICEPROPERTIES']['VALUE'])){
-         $sp['SERVICEPROPERTIES']['VALUE'] = $sp['SERVICEPROPERTIES']['VALUE'];
+    if (isset($serviceProp['SERVICEPROPERTIES']['VALUE'])) {
+         $serviceProp['SERVICEPROPERTIES']['VALUE'] = $serviceProp['SERVICEPROPERTIES']['VALUE'];
     }
-    return $sp;
+    return $serviceProp;
 }
 
 /**
  * Gets the endpoint properties data passed by user
  */
-function getEndpointPropDataFromWeb() {
-    $sp = array();
-    if (isset($_REQUEST ['PROP'])){
-        $sp ['ENDPOINTPROPERTIES'] ['PROP'] = trim($_REQUEST ['PROP']);
+function getEndpointPropDataFromWeb()
+{
+    $endpointProp = array();
+    if (isset($_REQUEST ['PROP'])) {
+        $endpointProp['ENDPOINTPROPERTIES'] ['PROP'] = trim($_REQUEST ['PROP']);
     }
-    if(isset($_REQUEST ['ENDPOINTID'])){
-        $sp['ENDPOINTPROPERTIES']['ENDPOINTID'] = trim($_REQUEST ['ENDPOINTID']);
+    if (isset($_REQUEST ['ENDPOINTID'])) {
+        $endpointProp['ENDPOINTPROPERTIES']['ENDPOINTID'] = trim($_REQUEST ['ENDPOINTID']);
     }
-    if(isset($_REQUEST ['KEYPAIRNAME'])){
-        $sp['ENDPOINTPROPERTIES']['NAME'] = $_REQUEST ['KEYPAIRNAME'];
+    if (isset($_REQUEST ['KEYPAIRNAME'])) {
+        $endpointProp['ENDPOINTPROPERTIES']['NAME'] = $_REQUEST ['KEYPAIRNAME'];
     }
-    if(isset($_REQUEST ['KEYPAIRVALUE'])){
-         $sp['ENDPOINTPROPERTIES']['VALUE'] = $_REQUEST ['KEYPAIRVALUE'];
+    if (isset($_REQUEST ['KEYPAIRVALUE'])) {
+         $endpointProp['ENDPOINTPROPERTIES']['VALUE'] = $_REQUEST ['KEYPAIRVALUE'];
     }
-    return $sp;
+    return $endpointProp;
 }
 
 /**
  * Gets the service group properties data passed by user *
  */
-function getSerGroupPropDataFromWeb() {
-    $sp ['SERVICEGROUPPROPERTIES'] ['SERVICEGROUP'] = $_REQUEST ['SERVICEGROUP'];
-    $sp ['SERVICEGROUPPROPERTIES'] ['NAME'] = $_REQUEST ['KEYPAIRNAME'];
-    $sp ['SERVICEGROUPPROPERTIES'] ['VALUE'] = $_REQUEST ['KEYPAIRVALUE'];
-    if (isset($_REQUEST ['PROP'])){
-        $sp ['SERVICEGROUPPROPERTIES'] ['PROP'] = $_REQUEST ['PROP'];
+function getSerGroupPropDataFromWeb()
+{
+    $serGroupProp = [];
+    $serGroupProp['SERVICEGROUPPROPERTIES'] ['SERVICEGROUP'] = $_REQUEST ['SERVICEGROUP'];
+    $serGroupProp['SERVICEGROUPPROPERTIES'] ['NAME'] = $_REQUEST ['KEYPAIRNAME'];
+    $serGroupProp['SERVICEGROUPPROPERTIES'] ['VALUE'] = $_REQUEST ['KEYPAIRVALUE'];
+    if (isset($_REQUEST ['PROP'])) {
+        $serGroupProp['SERVICEGROUPPROPERTIES'] ['PROP'] = $_REQUEST ['PROP'];
     }
-    return $sp;
+    return $serGroupProp;
 }
 
 /**
  * Gets the service endpoint data passed by user *
  */
-function getEndpointDataFromWeb() {
-    $endpoint ['SERVICEENDPOINT'] ['SERVICE'] = $_REQUEST ['SERVICE'];
-    $endpoint ['SERVICEENDPOINT'] ['NAME'] = trim($_REQUEST ['ENDPOINTNAME']);
-    $endpoint ['SERVICEENDPOINT'] ['URL'] = trim($_REQUEST ['ENDPOINTURL']);
-    $endpoint ['SERVICEENDPOINT'] ['INTERFACENAME'] = trim($_REQUEST ['ENDPOINTINTERFACENAME']);
-    if(isset($_REQUEST ['DESCRIPTION'])){
-        $endpoint ['SERVICEENDPOINT'] ['DESCRIPTION'] = trim($_REQUEST ['DESCRIPTION']);
+function getEndpointDataFromWeb()
+{
+    $endpoint = [];
+    $endpoint['SERVICEENDPOINT'] ['SERVICE'] = $_REQUEST ['SERVICE'];
+    $endpoint['SERVICEENDPOINT'] ['NAME'] = trim($_REQUEST ['ENDPOINTNAME']);
+    $endpoint['SERVICEENDPOINT'] ['URL'] = trim($_REQUEST ['ENDPOINTURL']);
+    $endpoint['SERVICEENDPOINT'] ['INTERFACENAME'] = trim($_REQUEST ['ENDPOINTINTERFACENAME']);
+    if (isset($_REQUEST ['DESCRIPTION'])) {
+        $endpoint['SERVICEENDPOINT'] ['DESCRIPTION'] = trim($_REQUEST ['DESCRIPTION']);
     }
-    if (isset($_REQUEST ['ENDPOINTID'])){
-        $endpoint ['SERVICEENDPOINT'] ['ENDPOINTID'] = trim($_REQUEST ['ENDPOINTID']);
+    if (isset($_REQUEST ['ENDPOINTID'])) {
+        $endpoint['SERVICEENDPOINT'] ['ENDPOINTID'] = trim($_REQUEST ['ENDPOINTID']);
     }
     $endpoint['SERVICEENDPOINT']['EMAIL'] = trim($_REQUEST ['EMAIL']);
     //The value comes from a checkbox, which wiill  not return a value when unchecked
-    if(isset($_REQUEST['IS_MONITORED'])) {
+    if (isset($_REQUEST['IS_MONITORED'])) {
         $endpoint['IS_MONITORED'] = $_REQUEST ['IS_MONITORED'];
     } else {
-        $endpoint['IS_MONITORED'] =false;
+        $endpoint['IS_MONITORED'] = false;
     }
 
     return $endpoint;
@@ -643,7 +688,8 @@ function getEndpointDataFromWeb() {
 /**
  * Date format used by the calendar Javascript in downtime controllers *
  */
-function getDateFormat() {
+function getDateFormat()
+{
     return "d/m/Y H:i";
 }
 
@@ -653,15 +699,17 @@ function getDateFormat() {
  * @global array $_REQUEST array containg the post data
  * @return array
  */
-function getScopeDataFromWeb() {
-    $scopeData ['Name'] = trim($_REQUEST ['Name']);
-    $scopeData ['Description'] = trim($_REQUEST ['Description']);
+function getScopeDataFromWeb()
+{
+    $scopeData = [];
+    $scopeData['Name'] = trim($_REQUEST ['Name']);
+    $scopeData['Description'] = trim($_REQUEST ['Description']);
     // 'Reserved' value is a checkbox ==>> absent if not checked
-    if (array_key_exists('Reserved', $_REQUEST)){
-      $scopeData ['Reserved'] = ($_REQUEST ['Reserved'] == '1');
+    if (array_key_exists('Reserved', $_REQUEST)) {
+        $scopeData['Reserved'] = ($_REQUEST ['Reserved'] == '1');
     }
-    if (array_key_exists('Id', $_REQUEST)){
-        $scopeData ['Id'] = $_REQUEST ['Id'];
+    if (array_key_exists('Id', $_REQUEST)) {
+        $scopeData['Id'] = $_REQUEST ['Id'];
     }
 
     return $scopeData;
@@ -673,16 +721,18 @@ function getScopeDataFromWeb() {
  * @global array $_REQUEST array containg the post data
  * @return array $serviceTypeData an array containg the new site data
  */
-function getSTDataFromWeb() {
-    $serviceTypeData ['Name'] = trim($_REQUEST ['Name']);
-    $serviceTypeData ['Description'] = trim($_REQUEST ['Description']);
-    if(isset($_REQUEST['AllowMonitoringException'])) {
-        $serviceTypeData ['AllowMonitoringException'] = ($_REQUEST ['AllowMonitoringException'] == "checked");
+function getSTDataFromWeb()
+{
+    $serviceTypeData = [];
+    $serviceTypeData['Name'] = trim($_REQUEST ['Name']);
+    $serviceTypeData['Description'] = trim($_REQUEST ['Description']);
+    if (isset($_REQUEST['AllowMonitoringException'])) {
+        $serviceTypeData['AllowMonitoringException'] = ($_REQUEST ['AllowMonitoringException'] == "checked");
     } else {
-        $serviceTypeData ['AllowMonitoringException'] = FALSE;
+        $serviceTypeData['AllowMonitoringException'] = false;
     }
-    if (array_key_exists('ID', $_REQUEST)){
-        $serviceTypeData ['ID'] = $_REQUEST ['ID'];
+    if (array_key_exists('ID', $_REQUEST)) {
+        $serviceTypeData['ID'] = $_REQUEST ['ID'];
     }
 
     return $serviceTypeData;
@@ -694,15 +744,16 @@ function getSTDataFromWeb() {
  * @global array $_REQUEST array containg the post data
  * @return array
  */
-function getAPIAuthenticationFromWeb() {
+function getAPIAuthenticationFromWeb()
+{
+    $authEntityData = [];
     $authEntityData['TYPE'] = $_REQUEST['TYPE'];
     $authEntityData['IDENTIFIER'] = trim($_REQUEST['IDENTIFIER']);
-    $authEntityData['ALLOW_WRITE'] = key_exists('ALLOW_WRITE', $_REQUEST)?
-                                        trim($_REQUEST['ALLOW_WRITE']) == 'checked':
+    $authEntityData['ALLOW_WRITE'] = key_exists('ALLOW_WRITE', $_REQUEST) ?
+                                        trim($_REQUEST['ALLOW_WRITE']) == 'checked' :
                                         false;
 
     return $authEntityData;
-
 }
 /**
  * Return information message text
@@ -710,7 +761,8 @@ function getAPIAuthenticationFromWeb() {
  * @return string short message, a dash, supplementary text
  * e.g. "PROTECTED - Registration required"
  */
-function getInfoMessage($code = null) {
+function getInfoMessage($code = null)
+{
 
     if ($code == null) {
         $code = 'privacy-1';
@@ -728,37 +780,38 @@ function getInfoMessage($code = null) {
     }
 
     if (!array_key_exists($code, $messages)) {
-        throw new LogicException("Information message code $code has not been defined. Please contact GOCDB administrators.");
+        throw new LogicException("Information message code $code has not been defined. " .
+                                 "Please contact GOCDB administrators.");
     }
 
     return $messages[$code];
-
 }
 /**
  * Helper function to set view parameters for deciding to show personal data
  *
  * @return array parameter array
  */
-function getReadPDParams($user) {
-    require_once __DIR__.'/../../../lib/Doctrine/entities/User.php';
+function getReadPDParams($user)
+{
+    require_once __DIR__ . '/../../../lib/Doctrine/entities/User.php';
 
     $userIsAdmin = false;
     $authenticated = false;
 
     /*  */
-    if(!is_null($user)) {
+    if (!is_null($user)) {
         // User will only see personal data if they have a role somewhere
         // ToDo: should this be restricted to role at a site?
 
         if (!$user instanceof \User) {
-            throw new LogicException("Personal data read authorisation expected User object as input. Received ". get_class($user) . "'.");
+            throw new LogicException("Personal data read authorisation expected User object as input. Received " .
+                                     get_class($user) . "'.");
         }
 
-        if($user->isAdmin()) {
+        if ($user->isAdmin()) {
             $userIsAdmin = true;
             $authenticated = true;
-        }
-        elseif (\Factory::getUserService()->isAllowReadPD($user)) {
+        } elseif (\Factory::getUserService()->isAllowReadPD($user)) {
             $authenticated = true;
         }
     }

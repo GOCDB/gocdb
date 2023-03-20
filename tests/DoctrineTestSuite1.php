@@ -64,9 +64,9 @@ class DoctrineTestSuite1
         $suite->addTestSuite('RoleActionAuthorisationServiceTest');
         $suite->addTestSuite('RoleActionMappingServiceTest');
         $suite->addTestSuite('ScopeServiceTest');
-        $suite->addTestSuite('ServiceServiceTest');
-        $suite->addTestSuite('ServiceTypeTest');
-        $suite->addTestSuite('ServiceTypeServiceTest');
+        $suite->addTestSuite('org\gocdb\tests\ServiceServiceTest');
+        $suite->addTestSuite('org\gocdb\tests\ServiceTypeTest');
+        $suite->addTestSuite('org\gocdb\tests\ServiceTypeServiceTest');
         $suite->addTestSuite('UserServiceTest');
         $suite->addTestSuite('org\gocdb\tests\SiteServiceTest');
         $suite->addTestSuite('RoleServiceTest2');

@@ -1,4 +1,5 @@
 <?php
+
 /*______________________________________________________
  *======================================================
  * File: add_service_type.php
@@ -22,18 +23,19 @@
  * limitations under the License.
  /*======================================================*/
 require_once __DIR__ . '/../utils.php';
-require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
+require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 
 /**
  * Controller for an add service type request
  * @global array $_POST only set if the browser has POSTed data
  * @return null
  */
-function add_type() {
+function add_type()
+{
     //The following line will be needed if this controller is ever used for non administrators:
     //checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-    if($_POST) {     // If we receive a POST request it's to add a service type
+    if ($_POST) {     // If we receive a POST request it's to add a service type
         submit();
     } else { // If there is no post data, draw the add service type form
         draw();
@@ -44,7 +46,8 @@ function add_type() {
  * Draws the add service type form
  * @return null
  */
-function draw() {
+function draw()
+{
     //Check the user has permission to see the page, will throw exception
     //if correct permissions are lacking
     checkUserIsAdmin();
@@ -58,7 +61,8 @@ function draw() {
  * services layer's service type functions.
  * @return null
  */
-function submit() {
+function submit()
+{
     require_once __DIR__ . '/../../../../htdocs/web_portal/components/Get_User_Principle.php';
 
     //Get the posted service type data
@@ -66,20 +70,25 @@ function submit() {
 
     //get the user data for the add service type function (so it can check permissions)
     $dn = Get_User_Principle();
+    /**
+     * Fudge for getUserByPrinciple return object namespace error
+     * @var \User $user
+     */
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
     try {
-        //function will through error if user does not have the correct permissions
+        //function will throw error if user does not have the correct permissions
+        /**
+         * @var \ServiceType $serviceType
+         */
         $serviceType = \Factory::getServiceTypeService()->addServiceType($newValues, $user);
         $params = array('Name' => $serviceType->getName(),
-                        'Description'=> $serviceType->getDescription(),
+                        'Description' => $serviceType->getDescription(),
                         'AllowMonitoringException' => $serviceType->getAllowMonitoringException(),
-                        'ID'=> $serviceType->getId());
+                        'ID' => $serviceType->getId());
         show_view("admin/added_service_type.php", $params, "Successfuly added new service type");
     } catch (Exception $e) {
          show_view('error.php', $e->getMessage());
          die();
     }
 }
-
-?>

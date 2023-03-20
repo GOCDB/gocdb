@@ -24,8 +24,8 @@ use Doctrine\Common\Collections\ArrayCollection;
  *
  * @Entity @Table(name="ServiceTypes", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"})
  */
-class ServiceType {
-
+class ServiceType
+{
     /** @Id @Column(type="integer") @GeneratedValue */
     protected $id;
 
@@ -43,17 +43,19 @@ class ServiceType {
      * unmonitored while in production.
      * @Column(type="boolean", options={"default":FALSE})
      */
-    protected $allowMonitoringException;
+    protected $monitoringException;
 
-    public function __construct() {
+    public function __construct()
+    {
         $this->services = new ArrayCollection();
-        $this->allowMonitoringException = FALSE;
+        $this->monitoringException = false;
     }
 
     /**
      * @return int The PK of this entity or null if not persisted
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -61,7 +63,8 @@ class ServiceType {
      * Get the unique name of this service type.
      * @return string
      */
-    public function getName() {
+    public function getName()
+    {
         return $this->name;
     }
 
@@ -69,7 +72,8 @@ class ServiceType {
      * Get the human readable description of this service type.
      * @return string or null
      */
-    public function getDescription() {
+    public function getDescription()
+    {
         return $this->description;
     }
 
@@ -77,7 +81,8 @@ class ServiceType {
      * Set the unique name of this service type. Required.
      * @param string $name
      */
-    public function setName($name) {
+    public function setName($name)
+    {
         $this->name = $name;
     }
 
@@ -85,7 +90,8 @@ class ServiceType {
      * Set the human readable description of this service type.
      * @param string $description
      */
-    public function setDescription($description) {
+    public function setDescription($description)
+    {
         $this->description = $description;
     }
 
@@ -93,7 +99,8 @@ class ServiceType {
      * Get all the {@see Service}s that are linked to this service type.
      * @return ArrayCollection
      */
-    public function getServices() {
+    public function getServices()
+    {
         return $this->services;
     }
 
@@ -103,7 +110,8 @@ class ServiceType {
      * to establish the join on both sides of the relationship.
      * @param \Service $service
      */
-    public function addService($service) {
+    public function addService($service)
+    {
         $this->services[] = $service;
         $service->setServiceType($this);
     }
@@ -113,24 +121,26 @@ class ServiceType {
      * to be unmonitored when in production with a specific Scope.
      * Return value is the existing boolean state
      */
-    public function setAllowMonitoringException($state) {
+    public function setAllowMonitoringException($state)
+    {
         $oldState = $this->getAllowMonitoringException();
-        $this->allowMonitoringException = $state;
+        $this->monitoringException = $state;
         return $oldState;
     }
     /**
      * Check if a monitoring exception is allowed within the given scope.
      */
-    public function getAllowMonitoringException() {
-        return $this->allowMonitoringException;
+    public function getAllowMonitoringException()
+    {
+        return $this->monitoringException;
     }
 
     /**
      * Gets the name of this service type.
      * @return string
      */
-    public function __toString() {
+    public function __toString()
+    {
         return $this->getName();
     }
-
 }

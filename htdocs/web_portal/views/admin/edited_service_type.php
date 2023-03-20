@@ -4,7 +4,7 @@
        <?php xecho($params['Name'])?></a> Service Type properties have been successfully edited to  -
     </p>
 
-    <?php require_once __DIR__.'/../fragments/serviceTypeInfo.php'; ?>
+    <?php require_once __DIR__ . '/../fragments/serviceTypeInfo.php'; ?>
 
     <p>
         <a href="index.php?Page_Type=Admin_Edit_Service_Type&amp;id=<?php echo $params['ID']?>">
@@ -12,5 +12,3 @@
 
     </p>
 </div>
-
-
