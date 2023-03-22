@@ -25,7 +25,7 @@ use PHPUnit_Extensions_Database_TestCase;
 require_once __DIR__ . '/../unit/lib/Gocdb_Services/ServiceTestUtil.php';
 require_once __DIR__ . '/../../resources/ManageAPICredentials/ManageAPICredentialsActions.php';
 
-class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
+class ManageUnusedAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
 {
     private $entityManager;
     private $dbOpsFactory;

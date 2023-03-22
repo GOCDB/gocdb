@@ -12,7 +12,7 @@
  *
  * Sender and reply-to email addresses are taken from the local_info.xml config file.
  *
- * Usage: php ManageAPICredentials.php [ --help | -h ] [ --dry-run ] \\
+ * Usage: php ManageUnusedAPICredentials.php [ --help | -h ] [ --dry-run ] \\
  *                                   [[ --warning_threshold | -w ] LITTLE_MONTHS ] \\
  *                                   [[ --deletion_threshold | -d ] BIG_MONTHS ]
  *
@@ -24,7 +24,7 @@ namespace org\gocdb\scripts;
 
 require_once dirname(__FILE__) . "/../../lib/Gocdb_Services/Factory.php";
 require_once dirname(__FILE__) . "/ManageAPICredentialsActions.php";
-require_once dirname(__FILE__) . "/ManageAPICredentialsOptions.php";
+require_once dirname(__FILE__) . "/ManageUnusedAPICredentialsOptions.php";
 
 use DateTime;
 use DateTimeZone;
@@ -41,7 +41,7 @@ $fromEmail = (string) $configService->getEmailFrom();
 $replyToEmail = (string) $configService->getEmailTo();
 
 try {
-    $options = new ManageAPICredentialsOptions();
+    $options = new ManageUnusedAPICredentialsOptions();
 
     if ($options->isShowHelp()) {
         return;
@@ -70,5 +70,5 @@ try {
         );
     }
 } catch (InvalidArgumentException $except) {
-    ManageAPICredentialsOptions::usage($except->getMessage());
+    ManageUnusedAPICredentialsOptions::usage($except->getMessage());
 }
