@@ -88,19 +88,19 @@ try {
 
 } catch (BadCredentialsException $error) {
     /**
-     * `show_view('error.php', ...` is not suitable here.
-     * - setting raw to FALSE triggers another exception because it tries
-     *   to render a pretty error in a GOCDB window, which fails because the
-     *   user isn't authroised.
-     * - setting raw to TRUE also isn't ideal as it displays html tags in the
-     *   otherwise nicely formatted output.
+     * `show_view('error.php', ..., $rawOutput)` is not suitable here.
+     * - setting rawOutput to FALSE triggers another exception because it
+     *   tries to render a pretty error in a GOCDB window, which fails because
+     *   the user isn't authroised.
+     * - setting rawOutput to TRUE also isn't ideal as it displays html tags
+     *   in the otherwise nicely formatted output.
      * die-ing like this atleast gives the user a somewhart nicely formatted
      * error.
      */
     die($error->getMessage());
 } catch (ErrorException $e) {
     /* ErrorExceptions may be thrown by an invalid configuration so it is
-       not safe to try to give a pretty output. Set 'raw' to true. */
+       not safe to try to give a pretty output. Set 'rawOutput' to true. */
     show_view('error.php', $e->getMessage(), NULL, TRUE);
     die();
 } catch(Exception $e) {
