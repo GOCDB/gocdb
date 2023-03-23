@@ -94,7 +94,7 @@ try {
      *   the user isn't authroised.
      * - setting rawOutput to TRUE also isn't ideal as it displays html tags
      *   in the otherwise nicely formatted output.
-     * die-ing like this atleast gives the user a somewhart nicely formatted
+     * die-ing like this atleast gives the user a somewhat nicely formatted
      * error.
      */
     die($error->getMessage());
