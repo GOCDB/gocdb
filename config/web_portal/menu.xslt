@@ -32,7 +32,7 @@
 
 <xsl:template match="/menus/main_menu/*[not(self::spacer)]">
 <!--
-  It would be better not to have to specify minOccurs repeatedly but this
+  It would be better not to have to specify minOccurs repeatedly
   but it is/seems to be necessary to allow the override sections not to be fully
   specified.
 -->

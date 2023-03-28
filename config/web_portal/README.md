@@ -3,7 +3,7 @@
 This file is the schema file for the definiton of GOCDB's left-hand column menu, used to check that only valid menu names are included in the GOCDB main configuration file config/local_info.xml. The menu.xsd file is built automatically, **do not edit it** - see the next question.
 
 GOCDB uses an XML definition (config/web_portal/menu.xml) to programatically draw the left-hand menu items on the user
-interface. Which menu items are drawn is selected via The \<MENU> element in the GOCDB configuration file (config/local_info.xml). To check that only valid menu item names are given within the \<MENU> element it is necessary to generate an XML schema containing all valid menu names (config/web_portal/menu.xsd).
+interface. Which menu items are drawn is selected via the \<MENU> element in the GOCDB configuration file (config/local_info.xml). To check that only valid menu item names are given within the \<MENU> element it is necessary to generate an XML schema containing all valid menu names (config/web_portal/menu.xsd).
 
 ## What *config/web_portal/menu.xslt* is for.
 

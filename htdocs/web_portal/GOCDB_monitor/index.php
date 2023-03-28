@@ -73,7 +73,7 @@ foreach ($test_statuses as $test => $status) {
     c=Grid+services&amp;h=gocdb-base.esc.rl.ac.uk'>GOCDB server
     ganglia page</a> - Useful to see if there are memory or CPU
     problems</li>
-    <li><a href='check.php'>Status check</a> - a less vebose check of
+    <li><a href='check.php'>Status check</a> - a less verbose check of
     GOCDB service status. Returns the single line 'All GOCDB tests
     are looking good' if all tests run without error and 'GOCDB
     Web Portal is unable to connect to the GOCDB back end database'
