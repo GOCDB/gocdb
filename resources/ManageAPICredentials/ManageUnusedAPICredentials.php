@@ -51,7 +51,7 @@ try {
 
     $actions = new ManageAPICredentialsActions($options->isDryRun(), $entityManager, $baseTime);
 
-    $creds = $actions->getCreds($options->getThreshold());
+    $creds = $actions->getCreds($options->getThreshold(), 'lastUseTime');
 
     if ($options->isDeleteEnabled()) {
         $creds = $actions->deleteCreds(

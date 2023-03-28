@@ -41,20 +41,20 @@ class ManageAPICredentialsActions
      *
      * @param int           $threshold      The number of months of no-use prior to $baseTime to use for selection
      */
-    public function getCreds($threshold)
+    public function getCreds($threshold, $propertyName)
     {
         $qbl = $this->entityManager->createQueryBuilder();
 
         $qbl->select('cred')
             ->from('APIAuthentication', 'cred')
-            ->where('cred.lastUseTime < :threshold')
-            ->andWhere($qbl->expr()->isNotNull("cred.user")); // cope with legacy entities
+            ->where($qbl->expr()->isNotNull("cred.user")) // cope with legacy entities
+            ->andWhere('cred.' . $propertyName . '< :threshold');
 
         $timeThresh = clone $this->baseTime;
 
         if ($threshold > 0) {
             $timeThresh->sub(new DateInterval("P" . $threshold . "M"));
-        }
+        };
 
         $qbl->setParameter('threshold', $timeThresh->format('Y-m-d 00:00:00'));
 
