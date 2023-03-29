@@ -33,6 +33,7 @@ require_once __DIR__ . '/writeAPI/siteMethods.php';
 require_once __DIR__ . '/writeAPI/serviceMethods.php';
 require_once __DIR__ . '/writeAPI/endpointMethods.php';
 require_once __DIR__ . '/resourcesTests/ManageUnusedAPICredentialsTest.php';
+require_once __DIR__ . '/resourcesTests/ManageUnrenewedAPICredentialsTest.php';
 
 use PHPUnit_Framework_TestSuite;
 
@@ -75,6 +76,7 @@ class DoctrineTestSuite1
         $suite->addTestSuite('WriteAPIserviceMethodsTests');
         $suite->addTestSuite('WriteAPIendpointMethodsTests');
         $suite->addTestSuite('org\gocdb\tests\ManageUnusedAPICredentialsTest');
+        $suite->addTestSuite('org\gocdb\tests\ManageUnrenewedAPICredentialsTest');
 
 
         return $suite;
