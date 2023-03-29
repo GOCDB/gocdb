@@ -126,7 +126,7 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
         print __METHOD__ . "\n";
 
         $utils = new ManageAPICredentialsTestUtils($this->entityManager);
-        $baseTime = $utils->createTestAuthEnts(3);
+        $baseTime = $utils->createTestAuthEnts(3, 6);
 
         $entityManager = $this->createEntityManager();
 
