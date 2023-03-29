@@ -166,7 +166,10 @@ abstract class OIDCAuthToken implements IAuthentication
      */
     protected function checkBannedGroups()
     {
-        $groupArray = explode($this->groupSplitChar, $_SERVER[$this->groupHeader]);
+        $groupArray = explode(
+            $this->groupSplitChar,
+            $_SERVER[$this->groupHeader]
+        );
 
         $presentBadGroups = [];
         foreach ($this->bannedGroups as $group) {
