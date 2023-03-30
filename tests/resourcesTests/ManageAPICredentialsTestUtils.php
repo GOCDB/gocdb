@@ -28,7 +28,7 @@ class ManageAPICredentialsTestUtils
      * with last used time and last renewed time a given number of months before the
      * previous, starting the given number of months before the current time.
      *
-     * @param integer $number The numbr of credentials to create
+     * @param integer $number The number of credentials to create
      * @param integer $intervalMonths The interval in months between credentials used to
      *                                set lastUseTime and lastRenewTime
      * @return \DateTime Time used as base: the first credential will have time values
