@@ -10,7 +10,7 @@
     </div>
 
     <!-- Only show add when not in read only mode-->
-    <?php if(!$params['portalIsReadOnly']):?>
+    <?php if (!$params['portalIsReadOnly']) :?>
         <div style="float: right;">
             <center>
                 <a href="index.php?Page_Type=Admin_Add_Service_Type">
@@ -25,18 +25,21 @@
     <?php $numberOfServiceTypes = sizeof($params['ServiceTypes'])?>
     <div class="listContainer">
         <span class="header listHeader">
-            <?php echo $numberOfServiceTypes ?> Service Type<?php if($numberOfServiceTypes) echo "s"?>
+            <?php echo $numberOfServiceTypes ?> Service Type<?php if ($numberOfServiceTypes) {
+                echo "s";
+            }?>
         </span>
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
+                <th class="site_table">Services</th>
                 <th class="site_table">Description</th>
             </tr>
             <?php
             $num = 2;
-            if(sizeof($numberOfServiceTypes > 0)) {
-                foreach($params['ServiceTypes'] as $serviceType) {
-                ?>
+            if ($numberOfServiceTypes > 0) {
+                foreach ($params['ServiceTypes'] as $serviceType) {
+                    ?>
                 <tr class="site_table_row_<?php echo $num ?>">
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
@@ -49,12 +52,20 @@
                     </td>
 
                     <td class="site_table">
+                        <?php xecho(sizeof($serviceType->getServices())); ?>
+                    </td>
+
+                    <td class="site_table">
                         <?php xecho($serviceType->getDescription()); ?>
                     </td>
                 </tr>
-                <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
-                    } // End of the foreach loop iterating over service types
+                    <?php
+                    if ($num == 1) {
+                        $num = 2;
+                    } else {
+                        $num = 1;
+                    }
+                } // End of the foreach loop iterating over service types
             }
             ?>
         </table>

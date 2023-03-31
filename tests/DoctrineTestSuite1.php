@@ -19,9 +19,12 @@ require_once __DIR__ . '/doctrine/SiteMoveTest.php';
 require_once __DIR__ . '/doctrine/ExtensionsTest.php';
 require_once __DIR__ . '/doctrine/Scoped_IPIQuery_Test1.php';
 require_once __DIR__ . '/doctrine/DowntimeServiceEndpointTest1.php';
+require_once __DIR__ . '/doctrine/ServiceTypeTest.php';
 require_once __DIR__ . '/unit/lib/Gocdb_Services/RoleActionAuthorisationServiceTest.php';
 require_once __DIR__ . '/unit/lib/Gocdb_Services/RoleActionMappingServiceTest.php';
 require_once __DIR__ . '/unit/lib/Gocdb_Services/ScopeServiceTest.php';
+require_once __DIR__ . '/unit/lib/Gocdb_Services/ServiceServiceTest.php';
+require_once __DIR__ . '/unit/lib/Gocdb_Services/ServiceTypeServiceTest.php';
 require_once __DIR__ . '/unit/lib/Gocdb_Services/UserServiceTest.php';
 require_once __DIR__ . '/unit/lib/Gocdb_Services/SiteServiceTest.php';
 require_once __DIR__ . '/unit/lib/Gocdb_Services/RoleServiceTest2.php';
@@ -30,8 +33,6 @@ require_once __DIR__ . '/writeAPI/siteMethods.php';
 require_once __DIR__ . '/writeAPI/serviceMethods.php';
 require_once __DIR__ . '/writeAPI/endpointMethods.php';
 require_once __DIR__ . '/resourcesTests/ManageAPICredentialsTest.php';
-
-require_once __DIR__ . '/unit/lib/Gocdb_Services/ServiceServiceTest.php';
 
 use PHPUnit_Framework_TestSuite;
 
@@ -63,6 +64,9 @@ class DoctrineTestSuite1
         $suite->addTestSuite('RoleActionAuthorisationServiceTest');
         $suite->addTestSuite('RoleActionMappingServiceTest');
         $suite->addTestSuite('ScopeServiceTest');
+        $suite->addTestSuite('org\gocdb\tests\ServiceServiceTest');
+        $suite->addTestSuite('org\gocdb\tests\ServiceTypeTest');
+        $suite->addTestSuite('org\gocdb\tests\ServiceTypeServiceTest');
         $suite->addTestSuite('UserServiceTest');
         $suite->addTestSuite('org\gocdb\tests\SiteServiceTest');
         $suite->addTestSuite('RoleServiceTest2');
@@ -72,7 +76,6 @@ class DoctrineTestSuite1
         $suite->addTestSuite('WriteAPIendpointMethodsTests');
         $suite->addTestSuite('org\gocdb\tests\ManageAPICredentialsTest');
 
-        $suite->addTestSuite('ServiceServiceTest');
 
         return $suite;
     }

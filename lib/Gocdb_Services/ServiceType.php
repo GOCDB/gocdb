@@ -116,7 +116,7 @@ class ServiceType extends AbstractEntityService{
      * @param array $newValues array containing the name and description for the
      *                        new service type
      * @param \user $user   User adding the service type, used for permissions check
-     * @return \org\gocdb\services\ServiceType returns created service type
+     * @return \ServiceType returns created service type
      */
     public function addServiceType($values, \user $user = null){
         //Check the portal is not in read only mode, throws exception if it is
@@ -143,6 +143,8 @@ class ServiceType extends AbstractEntityService{
             $serviceType->setName($values['Name']);
             //set description
             $serviceType->setDescription($values['Description']);
+            //set flag for monitoring exception allowed
+            $serviceType->setAllowMonitoringException($values['AllowMonitoringException']);
 
             $this->em->persist($serviceType);
             $this->em->flush();
@@ -186,6 +188,8 @@ class ServiceType extends AbstractEntityService{
             $serviceType->setName($newValues['Name']);
             //set description
             $serviceType->setDescription($newValues['Description']);
+            //flag for monitoring exception allowed
+            $serviceType->setAllowMonitoringException($newValues['AllowMonitoringException']);
 
             $this->em->merge($serviceType);
             $this->em->flush();
@@ -270,5 +274,3 @@ class ServiceType extends AbstractEntityService{
         }
     }
 }
-
-

@@ -1,9 +1,10 @@
 <?php
 $name = xssafe($params['Name']);
 $description = xssafe($params['Description']);
+$allowMonitoringException = xssafe($params['AllowMonitoringExtension']);
 $id = $params['ID'];
 $services = $params['Services'];
-$SEsCount= sizeof($services);
+$SEsCount = sizeof($services);
 $portalIsReadOnly = $params['portalIsReadOnly'];
 ?>
 
@@ -13,12 +14,14 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
     <!--Headings-->
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;">Service Type: <?php echo $name?></h1>
-        <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php echo $description ?></span>
+        <span style="clear: both; float: left; padding-bottom: 0.4em;">
+            <br /><?php require_once __DIR__ . '/../fragments/serviceTypeInfo.php'; ?>
+        </span>
     </div>
 
     <!--Edit/Delete buttons-->
     <!-- Only show when portal is not read only mode -->
-    <?php if(!$portalIsReadOnly):?>
+    <?php if (!$portalIsReadOnly) :?>
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Admin_Edit_Service_Type&amp;id=<?php echo $id ?>">
@@ -29,9 +32,13 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                 </a>
             </div>
             <div style="float: right;">
-                <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
+                <script type="text/javascript"
+                        src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js">
+                </script>
                 <a onclick="return confirmSubmit()"
-                   href="index.php?Page_Type=Admin_Delete_Service_Type<?php if($SEsCount!=0) {echo'_Denied';} ?>&id=<?php echo $id?>">
+                   href="index.php?Page_Type=Admin_Delete_Service_Type<?php if ($SEsCount != 0) {
+                        echo'_Denied';
+                                                                      } ?>&id=<?php echo $id?>">
                     <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" class="trash" />
                     <br />
                     <br />
@@ -45,13 +52,21 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
     <!--  Services -->
     <div class="listContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
-            There <?php if ($SEsCount ==0) {echo 'are no services';}
-                        elseif ($SEsCount==1) {echo 'is one service';}
-                        else {echo 'are ' . $SEsCount . ' services';}?>
-            with <?php echo $name ?> service type<?php if ($SEsCount == 0) {echo '.';} else {echo ':';}?>
+            There <?php if ($SEsCount == 0) {
+                echo 'are no services';
+                  } elseif ($SEsCount == 1) {
+                      echo 'is one service';
+                  } else {
+                      echo 'are ' . $SEsCount . ' services';
+                  }?>
+            with <?php echo $name ?> service type<?php if ($SEsCount == 0) {
+                echo '.';
+                 } else {
+                     echo ':';
+                 }?>
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration" />
-        <?php if ($SEsCount != 0): ?>
+        <?php if ($SEsCount != 0) : ?>
             <table style="clear: both; width: 100%;">
                 <tr class="site_table_row_1">
                     <th class="site_table">Hostname</th>
@@ -63,8 +78,8 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
 
                 <?php $num = 2;
 
-                foreach($services as $se) {
-                ?>
+                foreach ($services as $se) {
+                    ?>
 
                     <tr class="site_table_row_<?php echo $num ?>">
                         <td class="site_table">
@@ -72,7 +87,8 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                                 <img src="<?php echo \GocContextPath::getPath()?>img/server.png" class="decoration" />
                                 <span style="vertical-align: middle;">
                                     <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
-                                        <?php xecho($se->getHostname());?> (<?php xecho($se->getServiceType()->getName());?>)
+                                        <?php xecho($se->getHostname());?>
+                                        (<?php xecho($se->getServiceType()->getName());?>)
                                     </a>
                                 </span>
                             </div>
@@ -80,15 +96,17 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
 
                         <td class="site_table">
                         <?php
-                        switch($se->getProduction()) {
+                        switch ($se->getProduction()) {
                             case true:
                                 ?>
-                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png"
+                                            height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                             case false:
                                 ?>
-                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png"
+                                            height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                         }
@@ -97,15 +115,17 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
 
                         <td class="site_table">
                         <?php
-                        switch($se->getMonitored()) {
+                        switch ($se->getMonitored()) {
                             case true:
                                 ?>
-                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/tick.png"
+                                            height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                             case false:
                                 ?>
-                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png" height="22px" style="vertical-align: middle;" />
+                                <img src="<?php echo \GocContextPath::getPath()?>img/cross.png"
+                                            height="22px" style="vertical-align: middle;" />
                                 <?php
                                 break;
                         }
@@ -116,8 +136,12 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                         <?php xecho($se->getScopeNamesAsString()); ?>
                         </td>
                     </tr>
-                <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
+                    <?php
+                    if ($num == 1) {
+                        $num = 2;
+                    } else {
+                        $num = 1;
+                    }
                 } // End of the foreach loop iterating over SEs
                 ?>
 
