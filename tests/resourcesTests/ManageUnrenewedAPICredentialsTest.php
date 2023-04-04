@@ -125,38 +125,41 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
     {
         print __METHOD__ . "\n";
 
+        // Create 8 credentials, each 2 month apart.
+        // 2 months chosen so the exact definition of a month doesn't matter.
         $utils = new ManageAPICredentialsTestUtils($this->entityManager);
-        $baseTime = $utils->createTestAuthEnts(3, 6);
+        $baseTime = $utils->createTestAuthEnts(8, 2);
 
         $entityManager = $this->createEntityManager();
 
         $actions = new ManageAPICredentialsActions(false, $entityManager, $baseTime);
 
-        // Fetch credentials not renewed in the last 7 months - should be 2
-        $creds = $actions->getCreds(7, 'lastRenewTime');
+        // Fetch credentials not renewed in the last 5 months - should be 6.
+        $creds = $actions->getCreds(5, 'lastRenewTime');
 
         $this->assertCount(
-            2,
+            6,
             $creds,
             'Failed to filter credentials based on last renew time.'
         );
 
-        // remove credentials last renewed more than 13 months ago
-        // there should be one left after this operation
-        $creds = $actions->deleteCreds($creds, 13);
+        // remove credentials last renewed more than 9 months ago
+        // there should be 2 left after this operation (as 2 of
+        // the 6 fetched above have been renewed with 9 months).
+        $creds = $actions->deleteCreds($creds, 9);
 
         $this->assertCount(
-            1,
+            2,
             $creds,
             'Failed to delete credential by renew time.'
         );
 
-        // If we now repeat the original query there should be just one
+        // If we now repeat the original query there should be just 4
         // credential following the delete.
-        $creds = $actions->getCreds(7, 'lastRenewTime');
+        $creds = $actions->getCreds(5, 'lastRenewTime');
 
         $this->assertCount(
-            1,
+            2,
             $creds,
             'Unexpected credential count following deletion.'
         );
