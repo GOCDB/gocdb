@@ -10,7 +10,7 @@ namespace org\gocdb\scripts;
 
 use InvalidArgumentException;
 
-class ManageAPICredentialsOptions
+class ManageUnusedAPICredentialsOptions
 {
     protected $showHelp = false;
     protected $warn;

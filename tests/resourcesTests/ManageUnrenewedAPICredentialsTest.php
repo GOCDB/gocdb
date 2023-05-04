@@ -14,22 +14,19 @@
  */
 namespace org\gocdb\tests;
 
-use DateInterval;
-use DateTime;
-use DateTimeZone;
 use org\gocdb\scripts\ManageAPICredentialsActions;
-use org\gocdb\tests\ServiceTestUtil;
+use org\gocdb\tests\ManageAPICredentialsTestUtils;
 use PHPUnit_Extensions_Database_Operation_Factory;
 use PHPUnit_Extensions_Database_TestCase;
 
+require_once __DIR__ . '/ManageAPICredentialsTestUtils.php';
 require_once __DIR__ . '/../unit/lib/Gocdb_Services/ServiceTestUtil.php';
 require_once __DIR__ . '/../../resources/ManageAPICredentials/ManageAPICredentialsActions.php';
 
-class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
+class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
 {
     private $entityManager;
     private $dbOpsFactory;
-    private $serviceTestUtil;
 
     public function __construct()
     {
@@ -37,7 +34,6 @@ class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
         // Use a local instance to avoid Mess Detector's whinging about avoiding
         // static access.
         $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
-        $this->serviceTestUtil = new ServiceTestUtil();
     }
     /**
      * Overridden.
@@ -46,7 +42,7 @@ class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
     {
         parent::setUpBeforeClass();
         echo "\n\n-------------------------------------------------\n";
-        echo "Executing ManageAPICredentialsTest. . .\n";
+        echo "Executing ManageUnrenewedAPICredentialsTest. . .\n";
     }
     /**
      * Overridden. Returns the test database connection.
@@ -66,22 +62,22 @@ class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
     {
         $dataset = $this->createFlatXMLDataSet(__DIR__ . '/../doctrine/truncateDataTables.xml');
         return $dataset;
-      // Use below to return an empty data set if we don't want to truncate and seed
-      //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
+        // Use below to return an empty data set if we don't want to truncate and seed
+        //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
     }
     /**
      * Overridden.
      */
     protected function getSetUpOperation()
     {
-      // CLEAN_INSERT is default
-      //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
-      //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
-      //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-      //
-      // Issue a DELETE from <table> which is more portable than a
-      // TRUNCATE table <table> (some DBs require high privileges for truncate statements
-      // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
+        // CLEAN_INSERT is default
+        //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
+        //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
+        //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
+        //
+        // Issue a DELETE from <table> which is more portable than a
+        // TRUNCATE table <table> (some DBs require high privileges for truncate statements
+        // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
         return $this->dbOpsFactory->DELETE_ALL();
     }
     /**
@@ -89,7 +85,7 @@ class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
      */
     protected function getTearDownOperation()
     {
-      // NONE is default
+        // NONE is default
         return $this->dbOpsFactory->NONE();
     }
     /**
@@ -100,8 +96,8 @@ class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
     {
         parent::setUp();
         $this->entityManager = $this->createEntityManager();
-      // Pass the Entity Manager into the Factory to allow Gocdb_Services
-      // to use other Gocdb_Services.
+        // Pass the Entity Manager into the Factory to allow Gocdb_Services
+        // to use other Gocdb_Services.
         \Factory::setEntityManager($this->entityManager);
 
         date_default_timezone_set("UTC");
@@ -125,78 +121,45 @@ class ManageAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
         require __DIR__ . '/../doctrine/bootstrap_doctrine.php';
         return $entityManager;
     }
-    private function createTestAuthEnts($number)
-    {
-        /**
-         * Create a number of unique API authentication credentials, evenly spaced each
-         * with last used time 6 months before the previous, starting 6 months behind
-         * the current time.
-         *
-         * @return \DateTime Time used as 'current' time.
-         */
-
-        list($user, $site, $siteService) =
-            $this->serviceTestUtil->createGocdbEntities($this->entityManager);
-
-        $baseTime = new DateTime('now', new DateTimeZone('UTC'));
-
-        $type = 'X.509';
-
-        $useTime = clone $baseTime;
-
-        for ($count = 1; $count <= $number; $count++) {
-            // $useTime will be decremented by 6M for each loop
-            $useTime->sub(new DateInterval('P6M'));
-            $ident = '/CN=A Dummy Subject ' . $count;
-            $authEnt = $siteService->addAPIAuthEntity(
-                $site,
-                $user,
-                array(
-                    'IDENTIFIER' =>  $ident,
-                    'TYPE' => $type,
-                    'ALLOW_WRITE' => false
-                )
-            );
-
-            $authEnt->setLastUseTime($useTime);
-        }
-        return $baseTime;
-    }
-    public function testLastUseTime()
+    public function testLastRenewTime()
     {
         print __METHOD__ . "\n";
 
-        $baseTime = $this->createTestAuthEnts(3);
+        // Create 8 credentials, each 2 month apart.
+        // 2 months chosen so the exact definition of a month doesn't matter.
+        $utils = new ManageAPICredentialsTestUtils($this->entityManager);
+        $baseTime = $utils->createTestAuthEnts(8, 2);
 
         $entityManager = $this->createEntityManager();
 
         $actions = new ManageAPICredentialsActions(false, $entityManager, $baseTime);
 
-        // Fetch credentials not used in the last 7 months - should be 2
-        $creds = $actions->getCreds(7);
+        // Fetch credentials not renewed in the last 5 months - should be 6.
+        $creds = $actions->getCreds(5, 'lastRenewTime');
+
+        $this->assertCount(
+            6,
+            $creds,
+            'Failed to filter credentials based on last renew time.'
+        );
+
+        // remove credentials last renewed more than 9 months ago
+        // there should be 2 left after this operation (as 2 of
+        // the 6 fetched above have been renewed with 9 months).
+        $creds = $actions->deleteCreds($creds, 9);
 
         $this->assertCount(
             2,
             $creds,
-            'Failed to filter credentials by time.'
+            'Failed to delete credential by renew time.'
         );
 
-        // remove credentials last used more than 13 months ago
-        // there should be one left after this operation
-        $creds = $actions->deleteCreds($creds, 13);
-
-        $this->assertCount(
-            1,
-            $creds,
-            'Failed to delete credential by use time.'
-        );
-
-        // If we now repeat the original query there should be just one
+        // If we now repeat the original query there should be just 4
         // credential following the delete.
-        $creds = $actions->getCreds(7);
+        $creds = $actions->getCreds(5, 'lastRenewTime');
 
         $this->assertCount(
-            1,
+            2,
             $creds,
             'Unexpected credential count following deletion.'
         );
