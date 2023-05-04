@@ -62,22 +62,22 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
     {
         $dataset = $this->createFlatXMLDataSet(__DIR__ . '/../doctrine/truncateDataTables.xml');
         return $dataset;
-      // Use below to return an empty data set if we don't want to truncate and seed
-      //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
+        // Use below to return an empty data set if we don't want to truncate and seed
+        //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
     }
     /**
      * Overridden.
      */
     protected function getSetUpOperation()
     {
-      // CLEAN_INSERT is default
-      //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
-      //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
-      //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-      //
-      // Issue a DELETE from <table> which is more portable than a
-      // TRUNCATE table <table> (some DBs require high privileges for truncate statements
-      // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
+        // CLEAN_INSERT is default
+        //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
+        //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
+        //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
+        //
+        // Issue a DELETE from <table> which is more portable than a
+        // TRUNCATE table <table> (some DBs require high privileges for truncate statements
+        // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
         return $this->dbOpsFactory->DELETE_ALL();
     }
     /**
@@ -85,7 +85,7 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
      */
     protected function getTearDownOperation()
     {
-      // NONE is default
+        // NONE is default
         return $this->dbOpsFactory->NONE();
     }
     /**
@@ -96,8 +96,8 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
     {
         parent::setUp();
         $this->entityManager = $this->createEntityManager();
-      // Pass the Entity Manager into the Factory to allow Gocdb_Services
-      // to use other Gocdb_Services.
+        // Pass the Entity Manager into the Factory to allow Gocdb_Services
+        // to use other Gocdb_Services.
         \Factory::setEntityManager($this->entityManager);
 
         date_default_timezone_set("UTC");
