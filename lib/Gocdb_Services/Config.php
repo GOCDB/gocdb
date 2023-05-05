@@ -157,7 +157,6 @@ class Config
         if (!$base) {
             $this->throwXmlErrors('Failed to load configuration file ' . $path);
         }
-
         // Search the input XML for a 'local_info' section that does NOT have a url attribute
         // specified. This is the default spec.
         $unqualified = $base->xpath("//local_info[not(@url)]");
@@ -401,8 +400,9 @@ class Config
      */
     public function isRestrictPDByRole($forceStrict = false)
     {
-        if ($forceStrict === true)
+        if ($forceStrict === true) {
             return true;
+        }
 
         $localInfo = $this->GetLocalInfoXML();
         $value = $localInfo->restrict_personal_data;
@@ -432,7 +432,18 @@ class Config
         $url = $localInfo->server_base_url;
         return strval($url);
     }
+    /**
+     * Convenience function to return the 3 configuration URLs
+     */
+    public function getURLs()
+    {
+        $localInfo = $this->GetLocalInfoXML();
+        $serverBaseUrl = $localInfo->server_base_url;
+        $webPortalUrl = $localInfo->web_portal_url;
+        $piUrl = $localInfo->pi_url;
 
+        return array($serverBaseUrl, $webPortalUrl, $piUrl);
+    }
     /**
      * The write API documentation URL as recorded in local_info.xml.
      * This URL is given to users of the write API in error messages
