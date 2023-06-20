@@ -177,8 +177,3 @@ else if ("diff" == $v) {
 else {
     echo "Error no valid arg given\n";
 }
-
-
-
-
-

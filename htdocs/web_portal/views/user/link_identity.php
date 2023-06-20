@@ -158,4 +158,3 @@
 </style>
 
 <script type="text/javascript" src="<?php echo \GocContextPath::getPath(); ?>javascript/linking.js"></script>
-
