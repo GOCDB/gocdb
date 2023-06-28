@@ -52,7 +52,7 @@ $epTxt = \Factory::getConfigService()->getNameMapping('Service','endpoint');
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Parent Service</span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/service.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Name</td><td class="site_table">
             <a href="index.php?Page_Type=Service&amp;id=<?php echo $se->getId() ?>">
                 <?php xecho($se->getHostname() . " (" . $se->getServiceType()->getName() . ")"); ?>
@@ -71,22 +71,22 @@ $epTxt = \Factory::getConfigService()->getNameMapping('Service','endpoint');
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;"><?php echo(ucfirst($epTxt)) ?></span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/serviceEndpoint.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Name</td><td class="site_table"><?php xecho($endpoint->getName()) ?></td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">Description</td><td class="site_table"><?php xecho($endpoint->getDescription()) ?></td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Url</td><td class="site_table"><?php xecho($endpoint->getUrl()) ?></td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">Interface Name</td><td class="site_table"><?php xecho($endpoint->getInterfaceName()) ?></td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Id</td><td class="site_table"><?php echo $endpoint->getId() ?></td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">Contact E-mail</td><td class="site_table">
                         <?php
                             if ($showPD) {
@@ -97,7 +97,7 @@ $epTxt = \Factory::getConfigService()->getNameMapping('Service','endpoint');
                         ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Monitored</td>
                     <td class="site_table">
                         <?php

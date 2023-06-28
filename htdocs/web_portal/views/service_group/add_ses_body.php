@@ -21,7 +21,7 @@
         </span>
         <br />
         <table class="vSiteResults" id="seTable">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th style="width: 5em;" class="site_table">Add</th>
                 <th style="width: 40%;" class="site_table">Service</th>
                 <th class="site_table">Description</th>
@@ -38,7 +38,7 @@
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
         <table class="vSiteResults" id="selectedSETable">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th class="site_table">Remove</th>
                 <th class="site_table">Service</th>
                 <th class="site_table">Description</th>

@@ -33,16 +33,14 @@ $sg = $params['sg'];
             </span>
             <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="decoration" />
             <table class="vSiteResults" id="selectedSETable">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Remove</th>
                     <th class="site_table">Service</th>
                     <th class="site_table">Description</th>
                     <th class="site_table">Hosting Site</th>
                 </tr>
                 <?php
-                $num = 2;
-
-                foreach($sg->getServices() as $se) {
+                foreach ($sg->getServices() as $index => $se) {
                     if($se->getScopes()->first()->getName() == 'Local') {
                         $style = "style=\"background-color: #A3D7A3;\"";
                     }
@@ -51,7 +49,8 @@ $sg = $params['sg'];
                     }
 
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>"<?php echo $style; ?> id="<?php echo $se->getId(); ?>Row">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                    <?php echo $style; ?> id="<?php echo $se->getId(); ?>Row">
                     <td>
                         <a href="#" onclick="removeSe(<?php echo $se->getId() ?>, <?php echo $sg->getId() ?>, <?php if(is_null($se->getParentSite())) { echo "true"; } else { echo "false"; }?>)">
                            Remove
@@ -82,7 +81,6 @@ $sg = $params['sg'];
                     </td>
                 </tr>
                 <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over SEs
                 ?>
             </table>

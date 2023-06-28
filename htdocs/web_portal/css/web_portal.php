@@ -341,11 +341,11 @@ li {
     background-color: #D3D3D3;
 }
 
-.site_table_row_1 {
+.site_table_row_even {
     background-color: #D0E1F7;
 }
 
-.site_table_row_2 {
+.site_table_row_odd {
     background-color: #F5F5F5;
 }
 

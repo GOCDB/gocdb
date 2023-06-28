@@ -66,7 +66,7 @@
             </span>
             <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
             <table class="vSiteResults" id="selectedSETable">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Role Request</th>
                     <th class="site_table">Target Entity</th>
                     <!-- Do not show delte request when portal is read only -->
@@ -75,11 +75,10 @@
                     <?php endif; ?>
                 </tr>
                 <?php
-                $num = 2;
                 if(sizeof($params['myRequests'] > 0)) {
-                foreach($params['myRequests'] as $request) {
+                    foreach ($params['myRequests'] as $index => $request) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table" style="width: 50%">
                        <?php xecho($request->getRoleType()->getName())/*.' ['.$request->getId().']'*/?>
                     </td>
@@ -133,7 +132,7 @@
             </span>
             <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
             <table class="vSiteResults" id="selectedSETable">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Requestor</th>
                     <th class="site_table">Role Request Type</th>
                     <th class="site_table">Target Entity</th>
@@ -143,11 +142,10 @@
                     <?php endif; ?>
                 </tr>
                 <?php
-                $num = 2;
                 if(sizeof($params['allRequests'] > 0)) {
-                foreach($params['allRequests'] as $request) {
+                    foreach ($params['allRequests'] as $index => $request) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table">
                        <?php
                          $requestingUser = $request->getUser();

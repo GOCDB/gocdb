@@ -30,17 +30,16 @@
             }?>
         </span>
         <table class="vSiteResults" id="selectedSETable">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th class="site_table">Name</th>
                 <th class="site_table">Services</th>
                 <th class="site_table">Description</th>
             </tr>
             <?php
-            $num = 2;
             if ($numberOfServiceTypes > 0) {
-                foreach ($params['ServiceTypes'] as $serviceType) {
+                foreach ($params['ServiceTypes'] as $index => $serviceType) {
                     ?>
-                <tr class="site_table_row_<?php echo $num ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -60,11 +59,6 @@
                     </td>
                 </tr>
                     <?php
-                    if ($num == 1) {
-                        $num = 2;
-                    } else {
-                        $num = 1;
-                    }
                 } // End of the foreach loop iterating over service types
             }
             ?>

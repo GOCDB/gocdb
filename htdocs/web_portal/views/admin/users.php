@@ -78,18 +78,18 @@
         <img src="<?php echo \GocContextPath::getPath()?>img/user.png" class="decoration" />
         <?php if ($numUsers > 0): ?>
             <table class="vSiteResults" id="selectedSETable">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Name</th>
                     <th class="site_table">ID String</th>
                     <th class="site_table">GOCDB<br>Admin.?</th>
                 </tr>
                 <?php
-                $num = 2;
                 if ($numUsers > 0) {
-                foreach ($users as $user) {
+                    foreach ($users as $index => $user) {
                 ?>
                 <?php if ($user->isAdmin()) { $style = " style=\"background-color: #A3D7A3;\""; } else { $style = ""; } ?>
-                <tr class="site_table_row_<?php echo $num ?>" <?php echo $style ?>>
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                        <?php echo $style ?>>
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -142,7 +142,6 @@
 
                 </tr>
                 <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over sites
                 }
                 ?>

@@ -126,7 +126,7 @@
             <?php echo $numberOfScopes ?> Scope<?php if ($numberOfScopes !== 1) echo "s"?>
         </span>
         <table class="vSiteResults" id="selectedSETable">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th class="site_table">Name</th>
                 <th class="site_table">Description</th>
                 <th class="site_table">Reserved?</th>
@@ -135,11 +135,10 @@
                 <?php endif; ?>
             </tr>
             <?php
-            $num = 2;
             if($numberOfScopes > 0) {
-                foreach($params['Scopes'] as $scope) {
+                foreach ($params['Scopes'] as $index => $scope) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -171,7 +170,6 @@
                     <?php endif ?>
                 </tr>
                 <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over scopes
             }
             ?>

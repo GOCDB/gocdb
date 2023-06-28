@@ -52,7 +52,7 @@
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Contacts</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="titleIcon"/>
                 <table style="clear: both; width: 100%; table-layout: fixed;">
-                    <tr class="site_table_row_1">
+                    <tr class="site_table_row_even">
                         <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
                             <?php if($showPD) { ?>
                             <a href="mailto:<?php xecho($params['ngi']->getEmail()) ?>">
@@ -61,7 +61,7 @@
                             <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
-                    <tr class="site_table_row_2">
+                    <tr class="site_table_row_odd">
                         <td class="site_table" style="width: 30%">ROD E-Mail</td><td class="site_table">
                             <?php if($showPD) { ?>
                             <a href="mailto:<?php xecho($params['ngi']->getRodEmail()) ?>">
@@ -70,7 +70,7 @@
                             <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
-                    <tr class="site_table_row_1">
+                    <tr class="site_table_row_even">
                         <td class="site_table" style="width: 30%">Helpdesk E-Mail</td><td class="site_table">
                             <?php if($showPD) { ?>
                             <a href="mailto:<?php xecho($params['ngi']->getHelpdeskEmail()) ;?>">
@@ -79,7 +79,7 @@
                             <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
-                    <tr class="site_table_row_2">
+                    <tr class="site_table_row_odd">
                         <td class="site_table" style="width: 30%">Security E-Mail</td><td class="site_table">
                             <?php if($showPD) { ?>
                             <a href="mailto:<?php echo $params['ngi']->getSecurityEmail() ?>">
@@ -88,7 +88,7 @@
                             <?php } else {echo(getInfoMessage());} ?>
                         </td>
                     </tr>
-                    <tr class="site_table_row_1">
+                    <tr class="site_table_row_even">
                         <td class="site_table" style="width: 30%">GGUS Support Unit</td><td class="site_table">
                             <?php if($showPD) { ?>
                             <?php xecho($params['ngi']->getGgus_Su()) ?>
@@ -104,14 +104,14 @@
             <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['Projects'])) {
-                        $num = 1;
-                        foreach($params['Projects'] as $project) { ?>
-                        <tr class="site_table_row_<?php echo $num ?>">
+                    foreach ($params['Projects'] as $index => $project) { ?>
+                        <tr class="site_table_row_<?php
+                            echo ($index % 2 == 0) ? 'even' : 'odd' ?>">
                             <td class="site_table">
                                 <a href="index.php?Page_Type=Project&amp;id=<?php echo $project->getId()?>"><?php xecho($project->getName())?></a>
                             </td>
                         </tr>
-                        <?php if($num == 1) { $num = 2; } else { $num = 1; } } ?>
+                    <?php } ?>
 
                 <?php } ?>
             </table>
@@ -124,7 +124,7 @@
             </span>
             <table style="clear: both; width: 100%; table-layout: fixed;">
 
-                        <tr class="site_table_row_1">
+                        <tr class="site_table_row_even">
                             <td class="site_table" >
                                 <textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($params['ngi']->getScopeNamesAsString()); ?></textarea>
                             </td>

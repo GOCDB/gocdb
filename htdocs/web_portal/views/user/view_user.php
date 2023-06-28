@@ -72,7 +72,9 @@
             </ul>
         </div>
 
-
+        <?php
+        $isUserAdmin = ($params['user'] && $params['user']->isAdmin());
+        ?>
         <!--  User -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
@@ -80,20 +82,28 @@
             </span>
             <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="decoration" />
             <table style="clear: both; width: 100%; table-layout: fixed;">
-                <tr class="site_table_row_1">
+            <?php if ($isUserAdmin) : ?>
+                <tr class="site_table_row_even">
+                    <td class="site_table">Last Logged In</td>
+                    <td class="site_table">
+                        <?php xecho($params['user']->getLastLoginDate()->format('Y-m-d H:i:s')) ?>
+                    </td>
+                </tr>
+            <?php endif; ?>
+                <tr class="site_table_row_<?php echo ($isUserAdmin) ? 'odd' : 'even' ?>">
                     <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
             <a href="mailto:<?php xecho($params['user']->getEmail()); ?>">
                 <?php xecho($params['user']->getEmail()) ?>
             </a>
             </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_<?php echo ($isUserAdmin) ? 'even' : 'odd' ?>">
                     <td class="site_table">Telephone</td>
                     <td class="site_table">
                         <?php xecho($params['user']->getTelephone()) ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_<?php echo ($isUserAdmin) ? 'odd' : 'even' ?>">
                     <td class="site_table">Default ID String</td>
                     <td class="site_table">
                         <div style="word-wrap: break-word;">
@@ -117,7 +127,7 @@
                     </td>
                 </tr>-->
                 <?php if (sizeof($params['user']->getHomeSite()) != 0) { ?>
-                    <tr class="site_table_row_2">
+                    <tr class="site_table_row_<?php echo ($isUserAdmin) ? 'even' : 'odd' ?>">
                         <td class="site_table">Home Site</td>
                         <td class="site_table">
                             <a href="index.php?Page_Type=Site&amp;id=
@@ -138,7 +148,7 @@
         </span>
 
         <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th class="site_table">ID String</th>
                 <th class="site_table">Authentication type</th>
                 <?php if (!$params['portalIsReadOnly'] && $params['ShowEdit']) :?>
@@ -146,10 +156,9 @@
                 <?php endif; ?>
             </tr>
             <?php
-            $num = 2;
             // Loop through each user identifier
-            foreach ($params['user']->getUserIdentifiers() as $identifier) : ?>
-                <tr class="site_table_row_<?php echo $num ?>">
+            foreach ($params['user']->getUserIdentifiers() as $index => $identifier) : ?>
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table" style="width: 40%">
                         <div style="background-color: inherit;">
                             <?php xecho($identifier->getKeyValue())?>
@@ -194,11 +203,6 @@
                     <?php endif;?>
                 </tr>
                 <?php
-                if ($num == 1) {
-                    $num = 2;
-                } else {
-                    $num = 1;
-                }
             endforeach;?>
         </table>
     </div>
@@ -222,7 +226,7 @@
         <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
 
         <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th class="site_table">Role Type <!--[roleId] --></th>
                 <th class="site_table">Held Over</th>
                 <?php if (!$params['portalIsReadOnly']) :?>
@@ -231,14 +235,14 @@
                 <?php endif; ?>
             </tr>
             <?php
-            $num = 2;
             foreach ($params['role_ProjIds'] as $role_ProjIds) { // foreach role
                 $role = $role_ProjIds[0];
                 $projIds = $role_ProjIds[1];
 
                 if (in_array($projId, $projIds)) { // if projId in array
                     ?>
-                    <tr class="site_table_row_<?php echo $num ?>">
+                    <tr class="site_table_row_<?php
+                     echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table" style="width: 40%">
                         <div style="background-color: inherit;">
                             <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
@@ -305,11 +309,6 @@
                     </td>
                     </tr>
                     <?php
-                    if ($num == 1) {
-                        $num = 2;
-                    } else {
-                        $num = 1;
-                    }
                 } // if projId in array
             } // foreach role
             ?>
@@ -326,7 +325,7 @@
 
 
         <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th class="site_table">Role Type <!--[roleId] --></th>
                 <th class="site_table">Held Over</th>
                 <?php if (!$params['portalIsReadOnly']) :?>
@@ -334,13 +333,13 @@
                 <?php endif; ?>
             </tr>
             <?php
-            $num = 2;
             foreach ($params['role_ProjIds'] as $role_ProjIds) { // foreach role
                 $role = $role_ProjIds[0];
                 $projIds = $role_ProjIds[1];
 
                 if (count($projIds) == 0) { // role with no owning proj ?>
-                    <tr class="site_table_row_<?php echo $num ?>">
+                    <tr class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                         <td class="site_table" style="width: 40%">
                             <div style="background-color: inherit;">
                                 <img src="<?php echo \GocContextPath::getPath()?>img/person.png" height="25px"
@@ -393,11 +392,6 @@
                             </td>
                         </tr>
                         <?php
-                        if ($num == 1) {
-                            $num = 2;
-                        } else {
-                            $num = 1;
-                        };
                 } // end role with no owning proj
             } // end foreach role
             ?>
@@ -411,7 +405,7 @@
             </span>
             <img src="<?php echo \GocContextPath::getPath()?>img/key.png" class="decoration" />
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Type</th>
                     <th class="site_table">Identifier</th>
                     <th class="site_table">Site</th>

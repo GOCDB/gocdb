@@ -51,7 +51,7 @@ $showPD = $params['authenticated'];
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Properties</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="decoration" />
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Monitored</td><td class="site_table">
                     <?php
                         switch($params['sGroup']->getMonitored()) {
@@ -73,7 +73,7 @@ $showPD = $params['authenticated'];
                         $params['sGroup']->getScopes()->first()->getName() == "Local") {
                     $style = " style=\"background-color: #A3D7A3;\""; } else { $style = ""; }
                 ?>
-                <tr class="site_table_row_2" <?php echo $style ?>>
+                <tr class="site_table_row_odd" <?php echo $style ?>>
                     <td class="site_table">
                         <a href="index.php?Page_Type=Scopes" style="word-wrap: normal">Scope Tags</a>
                     </td>
@@ -81,7 +81,7 @@ $showPD = $params['authenticated'];
             <textarea readonly="true" style="width: 100%; height: 60px;"><?php xecho($params['sGroup']->getScopeNamesAsString())?></textarea>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Contact E-Mail</td>
                     <td class="site_table">
                         <?php if($showPD) { ?>
@@ -100,7 +100,7 @@ $showPD = $params['authenticated'];
         <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Services</span>
         <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration" />
         <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th class="site_table">Hostname (service type)</th>
                 <th class="site_table">Description</th>
                 <th class="site_table">Production</th>
@@ -108,8 +108,7 @@ $showPD = $params['authenticated'];
             </tr>
 
             <?php
-            $num = 2;
-        foreach($params['sGroup']->getServices() as $se) {
+            foreach ($params['sGroup']->getServices() as $index => $se) {
 //	            if($se->getScopes()->first()->getName() == "Local") {
 //					$style = " style=\"background-color: #A3D7A3;\"";
 //				} else {
@@ -117,7 +116,7 @@ $showPD = $params['authenticated'];
 //				}
             ?>
 
-            <tr class="site_table_row_<?php echo $num ?>">
+            <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                 <td class="site_table">
                     <div style="background-color: inherit;">
                        <div style="background-color: inherit;">
@@ -151,7 +150,6 @@ $showPD = $params['authenticated'];
                 </td>
             </tr>
             <?php
-        if($num == 1) { $num = 2; } else { $num = 1; }
             } // End of the foreach loop iterating over SEs
             ?>
         </table>
@@ -182,15 +180,14 @@ $showPD = $params['authenticated'];
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Users (Click on name to manage roles)</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/people.png" class="decoration" />
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Name</th>
                     <th class="site_table">Role</th>
                 </tr>
                 <?php
-                    $num = 2;
-                    foreach($params['Roles'] as $role) {
+                foreach ($params['Roles'] as $index => $role) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
@@ -204,8 +201,7 @@ $showPD = $params['authenticated'];
                     </td>
                 </tr>
                 <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
-                    } // End of the foreach loop iterating over user roles
+                } // End of the foreach loop iterating over user roles
                 ?>
             </table>
         <?php
@@ -241,17 +237,16 @@ $showPD = $params['authenticated'];
         <a href="index.php?Page_Type=SGroup_Downtimes&amp;id=<?php echo $params['sGroup']->getId(); ?>" style="vertical-align:middle; float: left; padding-top: 1.3em; padding-left: 1em; font-size: 0.8em;">(View all Downtimes)</a>
         <img src="<?php echo \GocContextPath::getPath()?>img/down_arrow.png" class="decoration" />
         <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th class="site_table">Description</th>
                 <th class="site_table">From</th>
                 <th class="site_table">To</th>
             </tr>
             <?php
-            $num = 2;
-            foreach($params['downtimes'] as $d) {
+            foreach ($params['downtimes'] as $index => $d) {
             ?>
 
-            <tr class="site_table_row_<?php echo $num ?>">
+            <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                 <td class="site_table">
                     <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
                         <?php xecho($d->getDescription()) ?>
@@ -261,7 +256,6 @@ $showPD = $params['authenticated'];
                 <td class="site_table"><?php echo $d->getEndDate()->format($d::DATE_FORMAT) ?></td>
             </tr>
             <?php
-            if($num == 1) { $num = 2; } else { $num = 1; }
             }
             ?>
         </table>

@@ -49,49 +49,49 @@ $showPD = $params['authenticated'];
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">System</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/server.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Host name</td><td class="site_table">
                         <?php if ($showPD) {
                             xecho($se->getHostName());
                         } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">IP Address</td><td class="site_table">
                         <?php if ($showPD) {
                           xecho($se->getIpAddress());
                         } else echo(getInfoMessage());  ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">IP v6 Address</td><td class="site_table">
                         <?php if ($showPD) {
                             xecho($se->getIpV6Address());
                         } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">Operating System</td><td class="site_table">
                         <?php if ($showPD) {
                             xecho($se->getOperatingSystem());
                         } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Architecture</td><td class="site_table">
                         <?php if ($showPD) {
                             xecho($se->getArchitecture());
                         } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">Contact E-Mail</td><td class="site_table">
                     <?php if ($showPD) {
                         xecho($se->getEmail());
                     } else echo(getInfoMessage()); ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Notifications</td>
                     <td class="site_table">
                         <img src="<?php echo(\GocContextPath::getPath());
@@ -111,7 +111,7 @@ $showPD = $params['authenticated'];
             <img src="<?php echo \GocContextPath::getPath()?>img/grid.png" class="titleIcon"/>
             <table style="width: 100%; word-wrap:break-word;
               table-layout: fixed;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table" style="width: 5em;">Host DN</td><td class="site_table">
                         <div style="word-wrap: break-word;">
                                 <?php if ($showPD) {
@@ -120,10 +120,10 @@ $showPD = $params['authenticated'];
                         </div>
                     </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">URL</td><td class="site_table"><?php xecho($se->getUrl()) ?></td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Parent Site</td>
                     <td class="site_table">
                         <a href="index.php?Page_Type=Site&amp;id=<?php echo $se->getParentSite()->getId() ?>">
@@ -132,7 +132,7 @@ $showPD = $params['authenticated'];
                     </td>
                 </tr>
                 <!-- scope: remove this for a non-scoping version of view_service -->
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <?php
                         $count = 0;
                         $numScopes = sizeof($params['Scopes']);
@@ -170,7 +170,7 @@ $showPD = $params['authenticated'];
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Project Data</span>
             <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Production Level</td>
                     <td class="site_table">
                     <?php
@@ -189,7 +189,7 @@ $showPD = $params['authenticated'];
                     ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">Beta</td><td class="site_table">
                     <?php
                     switch($se->getBeta()) {
@@ -212,7 +212,7 @@ $showPD = $params['authenticated'];
                     ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Monitored</td><td class="site_table">
                     <?php
                     switch($se->getMonitored()) {
@@ -239,10 +239,9 @@ $showPD = $params['authenticated'];
             <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="titleIcon"/>
             <table style="clear: both; width: 100%;">
                 <?php
-                    $num = 1;
-                    foreach($params['sGroups'] as $sg) {
+                foreach ($params['sGroups'] as $index => $sg) {
                 ?>
-                <tr class="site_table_row_<?php echo $num; ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'even' : 'odd' ?>">
                     <td class="site_table">
                         <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $sg->getId()?>">
                             <?php xecho($sg->getName()) ?>
@@ -250,7 +249,6 @@ $showPD = $params['authenticated'];
                     </td>
                 </tr>
                 <?php
-                        if($num == 1) { $num = 2; } else { $num = 1; }
                     }
                 ?>
             </table>
@@ -276,7 +274,7 @@ $showPD = $params['authenticated'];
         </span>
         <img src="<?php echo \GocContextPath::getPath()?>img/serviceEndpoint.png" class="titleIcon"/>
         <table style="clear: both; width: 100%;">
-            <tr class="site_table_row_1">
+            <tr class="site_table_row_even">
                 <th class="site_table">Name</th>
                 <th class="site_table">URL</th>
                 <th class="site_table">Interface Name</th>
@@ -286,11 +284,10 @@ $showPD = $params['authenticated'];
                 <?php endif; ?>
             </tr>
             <?php
-            $num = 2;
-            foreach($se->getEndpointLocations() as $endpoint) {
+            foreach ($se->getEndpointLocations() as $index => $endpoint) {
                 ?>
 
-                <tr class="site_table_row_<?php echo $num ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td style="width: 30%;"class="site_table">
                         <a href="index.php?Page_Type=View_Service_Endpoint&amp;id=<?php echo $endpoint->getId() ?>">
                             <?php xecho($endpoint->getName()) ?>
@@ -313,7 +310,6 @@ $showPD = $params['authenticated'];
 
                 </tr>
                 <?php
-                if($num == 1) { $num = 2; } else { $num = 1; }
             }
             ?>
         </table>

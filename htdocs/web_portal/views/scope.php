@@ -73,18 +73,17 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
 
         <?php if ($ngiCount != 0): ?>
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Name</th>
                     <th class="site_table">Description</th>
                 </tr>
 
                 <?php
-                $num = 2;
 
-                foreach($params['NGIs'] as $ngi) {
+                foreach ($params['NGIs'] as $index => $ngi) {
                 ?>
 
-                <tr class="site_table_row_<?php echo $num ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -99,7 +98,6 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
 
                 </tr>
                 <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
                 ?>
             </table>
@@ -114,17 +112,16 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="decoration" />
         <?php if($siteCount > 0): ?>
             <table class="vSiteResults" id="selectedSETable">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Name</th>
                     <th class="site_table">Certification Status</th>
                     <th class="site_table">Production Status</th>
                 </tr>
                 <?php
-                $num = 2;
 
-                foreach($params['Sites'] as $site) {
+                foreach ($params['Sites'] as $index => $site) {
                 ?>
-                <tr class="site_table_row_<?php echo $num ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -143,7 +140,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                         <?php xecho($site->getInfrastructure()->getName()) ?>
                     </td>
                 </tr>
-                <?php if($num == 1) { $num = 2; } else { $num = 1; }}?>
+                <?php } ?>
             </table>
         <?php endif;?>
     </div>
@@ -156,16 +153,16 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="decoration" />
         <?php if($serviceGroupsCount>0): ?>
             <table class="vSiteResults" id="selectedSETable">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Name</th>
                     <th class="site_table">Description</th>
                 </tr>
                 <?php
-                $num = 2;
-                foreach($serviceGroups as $sGroup) {
+                foreach ($serviceGroups as $index => $sGroup) {
                 ?>
                 <?php if($sGroup->getScopes()->first()->getName() == "Local") { $style = " style=\"background-color: #A3D7A3;\""; } else { $style = ""; } ?>
-                <tr class="site_table_row_<?php echo $num ?>" <?php echo $style ?>>
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                    <?php echo $style ?>>
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -182,7 +179,6 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
 
                 </tr>
                 <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
                     } // End of the foreach loop iterating over SEs
                 ?>
             </table>
@@ -197,7 +193,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration" />
         <?php if($serviceCount>0): ?>
             <table class="vSiteResults" id="selectedSETable">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">
                         <a href="index.php?Page_Type=Services&amp;mscope[]=<?php xecho($name)?>">
                             View Services

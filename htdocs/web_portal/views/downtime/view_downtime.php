@@ -51,7 +51,7 @@ $dt = $params['downtime'];
                     </span>
                     <img src="<?php echo \GocContextPath::getPath()?>img/star.png" class="decoration">
                     <table style="clear: both; width: 100%; table-layout: fixed;">
-                        <tr class="site_table_row_1">
+                        <tr class="site_table_row_even">
                             <td class="site_table" style="width: 30%">
                                 <script type="text/javascript">
                                     function submitform()
@@ -78,12 +78,12 @@ $dt = $params['downtime'];
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Information</span>
                 <img src="<?php echo \GocContextPath::getPath()?>img/contact_card.png" class="decoration" />
                 <table style="clear: both; width: 100%;">
-                    <tr class="site_table_row_2">
+                    <tr class="site_table_row_odd">
                         <td class="site_table">Severity</td><td class="site_table">
                         <?php xecho($dt->getSeverity()) ?></td>
                     </tr>
 
-                    <tr class="site_table_row_1">
+                    <tr class="site_table_row_even">
                         <td class="site_table">Classification</td><td class="site_table">
                             <?php xecho($dt->getClassification()) ?>
                         </td>
@@ -96,25 +96,25 @@ $dt = $params['downtime'];
                 <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Timing (UTC)</span>
                 <img src="<?php echo \GocContextPath::getPath()?>img/clock.png" class="decoration" />
                 <table style="clear: both; width: 100%;">
-                    <tr class="site_table_row_1">
+                    <tr class="site_table_row_even">
                         <td class="site_table">Start Date</td><td class="site_table">
                             <?php echo $dt->getStartDate()->format($dt::DATE_FORMAT) ?>
                         </td>
                     </tr>
 
-                    <tr class="site_table_row_2">
+                    <tr class="site_table_row_odd">
                         <td class="site_table">End Date</td><td class="site_table">
                             <?php echo $dt->getEndDate()->format($dt::DATE_FORMAT) ?>
                         </td>
                     </tr>
 
-                    <tr class="site_table_row_1">
+                    <tr class="site_table_row_even">
                         <td class="site_table">Declaration Date</td><td class="site_table">
                             <?php echo $dt->getInsertDate()->format($dt::DATE_FORMAT) ?>
                         </td>
                     </tr>
 
-                    <tr class="site_table_row_2">
+                    <tr class="site_table_row_odd">
                         <td class="site_table">Announcement Date</td><td class="site_table">
                             <?php
                                 echo $dt->getAnnounceDate()->format($dt::DATE_FORMAT);
@@ -133,7 +133,7 @@ $dt = $params['downtime'];
             </span>
             <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration" />
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Service Hostname (service type)</th>
                     <th class="site_table">Description</th>
                     <th class="site_table">Production</th>
@@ -141,8 +141,7 @@ $dt = $params['downtime'];
                 </tr>
 
                 <?php
-                $num = 2;
-                foreach($dt->getServices() as $se) {
+                foreach ($dt->getServices() as $index => $se) {
                     $alreadyRenderedSE = array();
 
                     if(in_array($se->getId(), $alreadyRenderedSE)){
@@ -152,7 +151,7 @@ $dt = $params['downtime'];
                     }
                 ?>
 
-                <tr class="site_table_row_<?php echo $num ?>">
+                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table" style="width: 35%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -184,7 +183,7 @@ $dt = $params['downtime'];
                     </td>
                 </tr>
                 <!--&rdsh; -->
-                <tr class="affectedendpointsrow site_table_row_<?php echo $num ?>">
+                <tr class="affectedendpointsrow site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                     <td class="site_table" colspan="4" style="padding-left:5em">
                         <table class="site_table" style="width: 100%; border: solid #D5D5D5 thin">
                             <tr>
@@ -212,7 +211,6 @@ $dt = $params['downtime'];
                 </tr>
 
                 <?php
-                    if($num == 1) { $num = 2; } else { $num = 1; }
                 } // End of the foreach loop iterating over SEs
                 ?>
             </table>

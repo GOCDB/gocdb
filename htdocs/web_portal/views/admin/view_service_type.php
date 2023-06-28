@@ -68,7 +68,7 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
         <img src="<?php echo \GocContextPath::getPath()?>img/service.png" class="decoration" />
         <?php if ($SEsCount != 0) : ?>
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <th class="site_table">Hostname</th>
                     <th class="site_table">Production</th>
                     <th class="site_table">Monitored</th>
@@ -76,12 +76,12 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                 </tr>
 
 
-                <?php $num = 2;
+                <?php
 
-                foreach ($services as $se) {
+                foreach ($services as $index => $se) {
                     ?>
 
-                    <tr class="site_table_row_<?php echo $num ?>">
+                    <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
                         <td class="site_table">
                             <div style="background-color: inherit;">
                                 <img src="<?php echo \GocContextPath::getPath()?>img/server.png" class="decoration" />
@@ -137,11 +137,6 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                         </td>
                     </tr>
                     <?php
-                    if ($num == 1) {
-                        $num = 2;
-                    } else {
-                        $num = 1;
-                    }
                 } // End of the foreach loop iterating over SEs
                 ?>
 
