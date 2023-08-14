@@ -1,7 +1,10 @@
 <div class="rightPageContainer">
     <h1>Link Identifier or Recover an Account</h1>
     <div>
-    This page allows you to either add a new identifier to an exisiting GOCDB account, or recover a GOCDB account if your identifier has changed. You must have access to the email address associated with that GOCDB account. You must be authenticated with the new identifier.
+    This page allows you to either add a new identifier to an exisiting GOCDB
+    account, or recover a GOCDB account if your identifier has changed. You
+    must have access to the email address associated with that GOCDB account.
+    You must be authenticated with the new identifier.
     </div>
     <br />
     <div class=Form_Holder>
@@ -92,7 +95,10 @@
                         <li class="hidden" id="linkingDetails"> If you successfully validate your <b>linking</b> request:
                             <ul>
                                 <li>
-                                    Your <b>current ID string</b> and <b>authentication type</b> will be added as an alternative identifier to the account being linked to.
+                                    Your <b>current ID string</b> and
+                                    <b>authentication type</b> will be added as
+                                    an alternative identifier to the account
+                                    being linked to.
                                 </li>
                                 </li>
                                 <li <?php echo $params['registered'] ? "" : "hidden"; ?>>
