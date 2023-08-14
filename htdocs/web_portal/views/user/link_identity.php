@@ -1,7 +1,7 @@
 <div class="rightPageContainer">
     <h1>Link Identifier or Recover an Account</h1>
     <div>
-    This page allows you to either add a new identifier to an exisitng GOCDB account, or recover a GOCDB account if your identifier has changed. You must have access to the email address associated with that GOCDB account. You must be logged in with the new identifier.
+    This page allows you to either add a new identifier to an exisiting GOCDB account, or recover a GOCDB account if your identifier has changed. You must have access to the email address associated with that GOCDB account. You must be authenticated with the new identifier.
     </div>
     <br />
     <div class=Form_Holder>
