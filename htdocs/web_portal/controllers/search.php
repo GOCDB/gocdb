@@ -23,7 +23,7 @@
 function search() {
     require_once __DIR__.'/../../../lib/Gocdb_Services/Factory.php';
 
-
+    $params = [];
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
@@ -58,11 +58,16 @@ function search() {
     $serviceResults = $searchServ->getServices($params['searchTerm']);
     $userResults = $searchServ->getUsers($params['searchTerm']);
     $ngiResults = $searchServ->getNgis($params['searchTerm']);
+    $siteIdentifiers = $searchServ->getSiteIdentifiers(
+        $user,
+        $params['searchTerm']
+    );
 
     $params['siteResults'] = $siteResults;
     $params['serviceResults'] = $serviceResults;
     $params['userResults'] = $userResults;
     $params['ngiResults'] = $ngiResults;
+    $params['siteIdentifiers'] = $siteIdentifiers;
 
     show_view('search_results.php', $params, "Searching for \"{$params['searchTerm']}\"");
 }
