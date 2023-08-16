@@ -4,7 +4,7 @@
     <PRIMARY_KEY>251G0</PRIMARY_KEY>
     <SHORT_NAME>Torch</SHORT_NAME>
     <OFFICIAL_NAME>Torchit</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>Torch IT is a Swiss foundation providing IT services around the country from their headquaters in Zurich</SITE_DESCRIPTION>
+    <SITE_DESCRIPTION>Torch IT is a Swiss foundation providing IT services around the country from their headquaters in Zurich.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=481&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
     <HOME_URL>http://www.torchit.ch/</HOME_URL>
     <CONTACT_EMAIL>contact@torchit.ch</CONTACT_EMAIL>
@@ -31,7 +31,7 @@
     <PRIMARY_KEY>145G0</PRIMARY_KEY>
     <SHORT_NAME>grid-lucerne-uni</SHORT_NAME>
     <OFFICIAL_NAME>University of Lucerne Grid Infrastructure</OFFICIAL_NAME>
-    <SITE_DESCRIPTION>ATLAS Tier-2 grid tools for research and development at the University of Lucerne</SITE_DESCRIPTION>
+    <SITE_DESCRIPTION>ATLAS Tier-2 grid tools for research and development at the University of Lucerne.</SITE_DESCRIPTION>
     <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;amp;object_id=145&amp;amp;grid_id=0</GOCDB_PORTAL_URL>
     <HOME_URL>http://www.grid-lucerne-uni.ch</HOME_URL>
     <CONTACT_EMAIL>enquiries@grid-lucerne-uni.ch</CONTACT_EMAIL>
@@ -73,6 +73,7 @@
     <LATITUDE>46.370746</LATITUDE>
     <LONGITUDE>6.231138</LONGITUDE>
     <IP_RANGE>122.0.0.0/255.255.255.255</IP_RANGE>
+    <LOCATION>Nyon, Switzerland</LOCATION>
     <CSIRTTEL>+41 81 91 122 05</CSIRTTEL>
     <EMERGENCYTEL>+41 81 91 112 06</EMERGENCYTEL>
     <SCOPE>EGI</SCOPE>

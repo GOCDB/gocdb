@@ -42,9 +42,10 @@
     </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="75083G0">
         <PRIMARY_KEY>75083G0</PRIMARY_KEY>
-        <HOSTNAME>sgas.smscg.ch</HOSTNAME>
+        <HOSTNAME>sgas.torchit.ch</HOSTNAME>
         <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=119910&amp;grid_id=0</GOCDB_PORTAL_URL>
-        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=Torch/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=SWITCH/CN=sgas.smscg.ch</HOSTDN>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=Torch/DC=hosts/C=CH/ST=Zuerich/L=Zuerich/O=SWITCH/CN=sgas.torchit.ch</HOSTDN>
+        <DESCRIPTION>Torch IT SGAS</DESCRIPTION>
         <HOST_OS>Debian 6.0.6</HOST_OS>
         <BETA>N</BETA>
         <SERVICE_TYPE>SGAS</SERVICE_TYPE>
@@ -376,6 +377,23 @@
         <ROC_NAME>NGI_SI</ROC_NAME>
         <URL></URL>
     </SERVICE_ENDPOINT>
+<SERVICE_ENDPOINT PRIMARY_KEY="4184G0">
+        <PRIMARY_KEY>4184G0</PRIMARY_KEY>
+        <HOSTNAME>lfc.izolamrf.si</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=4184&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <DESCRIPTION>Local LFC for Izola MRF</DESCRIPTION>
+        <SERVICE_TYPE>Local-LFC</SERVICE_TYPE>
+        <HOST_IP>185.666.22.14</HOST_IP>
+        <SCOPE>Local</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>N</IN_PRODUCTION>
+        <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>Izola MRF</SITENAME>
+        <COUNTRY_NAME>Slovenia</COUNTRY_NAME>
+        <COUNTRY_CODE>SI</COUNTRY_CODE>
+        <ROC_NAME>NGI_SI</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
     <SERVICE_ENDPOINT PRIMARY_KEY="10007G0">
         <PRIMARY_KEY>10007G0</PRIMARY_KEY>
         <HOSTNAME>uni-bdii.grid-ljubljana-uni.si</HOSTNAME>
@@ -489,6 +507,26 @@
         <CORE></CORE>
         <IN_PRODUCTION>N</IN_PRODUCTION>
         <NODE_MONITORED>Y</NODE_MONITORED>
+        <SITENAME>Budapest NRF - Grid Operations</SITENAME>
+        <COUNTRY_NAME>Hungary</COUNTRY_NAME>
+        <COUNTRY_CODE>HU</COUNTRY_CODE>
+        <ROC_NAME>NGI_HU</ROC_NAME>
+        <URL></URL>
+    </SERVICE_ENDPOINT>
+    <SERVICE_ENDPOINT PRIMARY_KEY="9067G0">
+        <PRIMARY_KEY>9067G0</PRIMARY_KEY>
+        <HOSTNAME>sgas.BudapestNRF-gridoperations.hu</HOSTNAME>
+        <GOCDB_PORTAL_URL>https://testing.host.com/portal/index.php?Page_Type=View_Object&amp;object_id=9067&amp;grid_id=0</GOCDB_PORTAL_URL>
+        <HOSTDN>/DC=com/DC=quovadisglobal/DC=grid/DC=BudapestNRF/DC=hosts/C=HU/ST=Budapest/L=Budapest/O=SWITCH/CN=sgas.BudapestNRF-gridoperations.hu</HOSTDN>
+        <DESCRIPTION>Budapest NRF SGAS</DESCRIPTION>
+        <HOST_OS>Debian 6.0.6</HOST_OS>
+        <BETA>N</BETA>
+        <SERVICE_TYPE>SGAS</SERVICE_TYPE>
+        <HOST_IP>130.59.204.77</HOST_IP>
+        <SCOPE>Local</SCOPE>
+        <CORE></CORE>
+        <IN_PRODUCTION>N</IN_PRODUCTION>
+        <NODE_MONITORED>N</NODE_MONITORED>
         <SITENAME>Budapest NRF - Grid Operations</SITENAME>
         <COUNTRY_NAME>Hungary</COUNTRY_NAME>
         <COUNTRY_CODE>HU</COUNTRY_CODE>
