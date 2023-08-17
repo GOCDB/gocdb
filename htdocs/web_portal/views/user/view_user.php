@@ -73,7 +73,7 @@
         </div>
 
         <?php
-        $isUserAdmin = ($params['user'] && $params['user']->isAdmin());
+        $isUserAdmin = $params['callingUser']->isAdmin();
         ?>
         <!--  User -->
         <div class="tableContainer" style="width: 55%; float: left;">
@@ -86,7 +86,11 @@
                 <tr class="site_table_row_even">
                     <td class="site_table">Last Logged In</td>
                     <td class="site_table">
-                        <?php xecho($params['user']->getLastLoginDate()->format('Y-m-d H:i:s')) ?>
+                        <?php
+                        if ($params['user']->getLastLoginDate()) {
+                            xecho($params['user']->getLastLoginDate()->format('Y-m-d H:i:s'));
+                        }
+                        ?>
                     </td>
                 </tr>
             <?php endif; ?>
