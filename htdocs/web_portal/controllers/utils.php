@@ -2,6 +2,8 @@
 
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
+use Exception;
+
 /**
  * Parse properties file
  *
@@ -552,7 +554,7 @@ function getNGIDataFromWeb()
  * @global array $_REQUEST Downtime data submitted by the end user
  * @return array an array representation of a downtime
  */
-function getDtDataFromWeb()
+function getDowntimeFormData()
 {
     $downTime = [];
     $downTime['DOWNTIME'] ['SEVERITY'] = $_REQUEST ['SEVERITY'];
@@ -562,16 +564,21 @@ function getDtDataFromWeb()
 
     $downTime['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] = 'utc'; //default
     if (isset($_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE'])) {
-        $downTime['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] = $_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE']; // 'utc' or 'site'
+        // 'utc' or 'site'
+        $downTime['DOWNTIME'] ['DEFINE_TZ_BY_UTC_OR_SITE'] =
+            $_REQUEST ['DEFINE_TZ_BY_UTC_OR_SITE'];
     }
 
     if (! isset($_REQUEST ['IMPACTED_IDS'])) {
-        throw new Exception('Error - No endpoints or services selected, downtime must affect at least one endpoint');
+        throw new Exception(
+            'Error - No endpoints or services selected,
+            downtime must affect at least one endpoint'
+        );
     }
     $downTime['IMPACTED_IDS'] = $_REQUEST ['IMPACTED_IDS'];
 
 
-    //Get the previous downtimes ID if we are doing an edit
+    // Get the existing downtime ID, if we are doing an edit.
     if (isset($_REQUEST['DOWNTIME_ID'])) {
         $downTime['DOWNTIME']['EXISTINGID'] = $_REQUEST['DOWNTIME_ID'];
     }

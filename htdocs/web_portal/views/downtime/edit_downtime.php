@@ -154,10 +154,15 @@ foreach($downtime->getEndpointLocations() as $endpoints){
                     $size = sizeof($sites) + 2;
             }
             ?>
-            <select style="width: 99%; margin-right: 1%"
-                class="form-control" id="Select_Sites" name="select_sites" size="10"
-                onclick="loadSitesServicesAndEndpoints()">
-
+            <select
+                style="width: 99%; margin-right: 1%"
+                class="form-control"
+                id="Select_Sites"
+                name="select_sites[]"
+                size="10"
+                onclick="loadSitesServicesAndEndpoints()"
+                multiple
+            >
                 <?php
                 foreach($sites as $site){
                     $sName = xssafe($site);
@@ -229,6 +234,7 @@ foreach($downtime->getEndpointLocations() as $endpoints){
          * Set the start and finish times (don't echo in the full date,
          * just the time values, time widget didn't like timestamp with date)
          */
+        $('#startTime').data("DateTimePicker").date("<?php echo date_format($startDate,"H:i"); ?>");
         $('#endTime').data("DateTimePicker").date("<?php echo date_format($endDate,"H:i"); ?>");
 
         // By default select the original affected services and endpoints
@@ -376,21 +382,29 @@ foreach($downtime->getEndpointLocations() as $endpoints){
      *
      * @returns {undefined}
      */
-    function loadSitesServicesAndEndpoints(){
+    function loadSitesServicesAndEndpoints()
+    {
         var dtId = <?php echo $downtime->getId();?>;
         var siteId=$('#Select_Sites').val();
 
-        $('#chooseServices').empty(); //Remove any previous content from the endpoints select list
-        // The Page_Type handler for 'Edit_Downtime_view_endpoint_tree' in the front controller loads the
-        // following view: 'views/downtime/downtime_edit_view_nested_endpoints_list.php'
-        // loading the downtime and the site.
-        $('#chooseServices').load('index.php?Page_Type=Edit_Downtime_view_endpoint_tree&dt_id='+dtId+'&site_id='+siteId,
-          function( response, status, xhr ) {
-              if ( status == "success" ) {
+        // Remove any previous content from the endpoints select list.
+        $('#chooseServices').empty(); 
+        /**
+         * The Page_Type handler for `Edit_Downtime_view_endpoint_tree` in the
+         * front controller loads the following view:
+         * `views/downtime/downtime_edit_view_nested_endpoints_list.php`
+         * loading the downtime and the site.
+         */
+        $('#chooseServices').load(
+            'index.php?Page_Type=Edit_Downtime_view_endpoint_tree&dt_id=' + dtId,
+            {site_id: siteId},
+            function(response, status, xhr)
+            {
+                if (status == "success") {
                     validate();
-                  }
-        });
-
+                }
+            }
+        );
     }
 
     //This function will select all of a services endpoints when the user clicks just the service option in the list

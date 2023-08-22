@@ -19,44 +19,73 @@
  * limitations under the License.
  *
  /*====================================================== */
-function getServiceandEndpointList() {
+use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
+
+function getServiceandEndpointList()
+{
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
 
-    $dn = Get_User_Principle();
-    $user = \Factory::getUserService()->getUserByPrinciple($dn);
+    $params = [];
+    $identifier = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($identifier);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
+    $siteIDs = $_REQUEST['site_id'];
 
-    if (!isset($_REQUEST['site_id']) || !is_numeric($_REQUEST['site_id']) ){
-        throw new Exception("An id must be specified");
+    if (empty($siteIDs)) {
+        throw new Exception("Please select at least one site.");
     }
-    $site = \Factory::getSiteService()->getSite($_REQUEST['site_id']);
-    $services = $site->getServices();
+
+    $services = new ArrayCollection();
+
+    foreach ($siteIDs as $value) {
+        $site = \Factory::getSiteService()->getSite($value);
+        $services[$value] = $site->getServices();
+    }
+
     $params['services'] = $services;
+
     show_view("downtime/view_nested_endpoints_list.php", $params, null, true);
 }
 
-//This is a secondary function to handle the rendering of this page when editing the downtime
-function editDowntimePopulateEndpointTree() {
+/**
+ * This is a secondary function to handle the rendering of
+ * `Edit_Downtime_view_endpoint_tree` page when editing the downtime.
+ */
+function editDowntimePopulateEndpointTree()
+{
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
 
-    $dn = Get_User_Principle();
-    $user = \Factory::getUserService()->getUserByPrinciple($dn);
+    $params = [];
+    $identifier = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($identifier);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
+    $siteIDs = $_REQUEST['site_id'];
 
-    if (!isset($_REQUEST['site_id']) || !is_numeric($_REQUEST['site_id']) ){
-        throw new Exception("A site id must be specified");
+    if (empty($_REQUEST['site_id'])) {
+        throw new Exception("Please select at least one site.");
     }
-    if (!isset($_REQUEST['dt_id']) || !is_numeric($_REQUEST['dt_id']) ){
+    if (!isset($_REQUEST['dt_id']) || !is_numeric($_REQUEST['dt_id'])) {
         throw new Exception("A downtime id must be specified");
     }
-    $site = \Factory::getSiteService()->getSite($_REQUEST['site_id']);
-    $services = $site->getServices();
-    $params['services'] = $services;
 
+    $services = new ArrayCollection();
+
+    foreach ($siteIDs as $value) {
+        $site = \Factory::getSiteService()->getSite($value);
+        $services[$value] = $site->getServices();
+    }
+
+    $params['services'] = $services;
     $downtime = \Factory::getDowntimeService()->getDowntime($_REQUEST['dt_id']);
     $params['downtime'] = $downtime;
 
-    show_view("downtime/downtime_edit_view_nested_endpoints_list.php", $params, null, true);
+    show_view(
+        "downtime/downtime_edit_view_nested_endpoints_list.php",
+        $params,
+        null,
+        true
+    );
 }

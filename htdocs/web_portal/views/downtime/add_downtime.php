@@ -67,7 +67,13 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<mark><label id="schedulingStatusLabel"></label></mark>
         </div>
 
-
+        <div class="input-warning" id="invalidSelection">
+            <p style="color: #D31F1F;">
+                WARNING: You are NOT allowed to create downtimes
+                when you have selected multiple sites 
+                using the <q>Site Timezone</q> option.
+            </p>
+        </div>
 
         <label for="startDate">Starts on:</label>
         <mark><label id="startUtcLabel"></label></mark>
@@ -140,22 +146,27 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             <label>Select Affected Site</label>
 
             <?php
-                // calculate the size of the impacted SEs appropriately
-                if(sizeof($sites) > 20) {
-                    $size = 20;
-                } else {
-                    $size = sizeof($sites) + 2;
+            // Calculate the size of the impacted SEs appropriately
+            if (sizeof($sites) > 20) {
+                $size = 20;
+            } else {
+                $size = sizeof($sites) + 2;
             }
             ?>
-            <select style="width: 99%; margin-right: 1%"
-                class="form-control" id="Select_Sites" name="select_sites" size="10"
-                onclick="getSitesServices();onSiteSelected();">
-
+            <select
+                style="width: 99%; margin-right: 1%"
+                class="form-control"
+                id="Select_Sites"
+                name="select_sites[]"
+                size="10"
+                onclick="getSitesServices();onSiteSelected();"
+                multiple
+            >
                 <?php
-                foreach($sites as $site){
+                foreach ($sites as $site) {
                     $siteName = $site->getName();
                     $ngiName = $site->getNgi()->getName();
-                    $label = xssafe($site."   (".$ngiName.")");
+                    $label = xssafe($site . "   (" . $ngiName . ")");
                     echo "<option value=\"{$site->getId()}\">$label</option>";
                 }
                 ?>
@@ -219,9 +230,10 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
            validate();
        });
 
-       $("#timezoneSelectGroup").find(":input").change(function(){
-           updateStartEndTimesInUtc();
-       });
+       $("#timezoneSelectGroup").find(":input").change(() => {
+            updateStartEndTimesInUtc();
+            validate();
+        });
 
        // The bootstrap datetimepickers don't fire the change event
        // but they trigger a dp.change event instead so a separate
@@ -231,68 +243,91 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
            validate();
        });
 
-
-
+       hasSitesWithSingleTimezones();
     });
 
     /**
      * Get the start/end time strings and calculate the UTC equivalents using
      * the {@link TARGETTIMEZONEID} and {@link TARGETTIMEZONEOFFSETFROMUTCSECS}
-     * values, then update the global vars {@link M_START_UTC} and {@link M_END_UTC}.
+     * values. Then, update
+     * the global vars {@link M_START_UTC} and {@link M_END_UTC},
      * and the startTimestamp and endTimestamp form submission parameters.
-     * Finally update the GUI labels.
+     * Finally, update the GUI labels.
      *
      * @returns {null}
      */
-    function updateStartEndTimesInUtc(){
-        // get date/time text strings from GUI
-        var sDate = $('#startDateContent').val();
-        var eDate = $('#endDateContent').val();
-        var sTime = $('#startTimeContent').val();
-        var eTime = $('#endTimeContent').val();
+    function updateStartEndTimesInUtc()
+    {
+        let startDateContent = $('#startDateContent').val();
+        let startTimeContent = $('#startTimeContent').val();
+        let endDateContent = $('#endDateContent').val();
+        let endTimeContent = $('#endTimeContent').val();
 
-        // calculate the start date time in UTC
-        if(sDate && sTime){
-            // First Parse the input string as UTC
-            // (use moment.utc(), otherwise moment parses in current timezone)
-            var start = sDate +" "+sTime;
-            var mStart = moment.utc(start, "DD-MM-YYYY, HH:mm"); // parse in utc
-            //console.log(mStart);
-            // Then update utc time to time in target timezone;
-            // if SiteTimezone RB is selected, subtract offset from time to
-            // get time in specified tz
-            if($('#siteRadioButton').is(':checked')){
-               mStart.subtract(TARGETTIMEZONEOFFSETFROMUTCSECS, 's');
-            }
-            M_START_UTC = mStart;
-            //console.log(M_START_UTC.format("DD-MM-YYYY, HH:mm"));
-            //console.log(M_START_UTC.format());
-            $('#startUtcLabel').text(M_START_UTC.format("DD/MM/YYYY HH:mm")+' UTC');
+        if (startDateContent && startTimeContent) {
+            let startDateInUTC = getDateTimeInUTC(startDateContent, startTimeContent);
+            M_START_UTC = updateTimeInSiteTimezone(startDateInUTC);
+
+            $('#startUtcLabel').text(
+                M_START_UTC.format("DD/MM/YYYY HH:mm") + ' UTC'
+            );
             $('#startTimestamp').val(M_START_UTC.format("DD/MM/YYYY HH:mm"));
 
-            // refresh the SCHEDULED/UNSCHEDULED label
+            // Refresh the SCHEDULED/UNSCHEDULED label
             refreshScheduledStatus();
         }
-        // calculate the end date time in UTC
-        if(eDate && eTime){
-            // First Parse the input string as UTC
-            // (use moment.utc(), otherwise moment parses in current timezone)
-            var end = eDate +" "+eTime;
-            var mEnd = moment.utc(end, "DD-MM-YYYY, HH:mm"); // parse in utc
-            //console.log(mEnd);
-            // Then update utc time to time in target timezone;
-            // if SiteTimezone RB is selected, subtract offset from time to
-            // get time in specified tz
-            if($('#siteRadioButton').is(':checked')){
-                mEnd.subtract(TARGETTIMEZONEOFFSETFROMUTCSECS, 's');
-            }
-            M_END_UTC = mEnd;
-            //console.log(M_END_UTC.format("DD-MM-YYYY, HH:mm"));
-            //console.log(M_END_UTC.format());
-            $('#endUtcLabel').text(M_END_UTC.format("DD/MM/YYYY HH:mm")+' UTC');
+
+        // Calculate the end date time in UTC
+        if (endDateContent && endTimeContent) {
+            let endDateInUTC = getDateTimeInUTC(endDateContent, endTimeContent);
+            M_END_UTC = updateTimeInSiteTimezone(endDateInUTC);
+
+            $('#endUtcLabel').text(
+                M_END_UTC.format("DD/MM/YYYY HH:mm") + ' UTC'
+            );
             $('#endTimestamp').val(M_END_UTC.format("DD/MM/YYYY HH:mm"));
         }
-   }
+    }
+
+    /**
+     * Parses the given start date and time as strings.
+     * And, this will return the start date and time in UTC.
+     */
+    function getDateTimeInUTC(dateString, timeString)
+     {
+        var dateTime = dateString + " " + timeString;
+
+        return moment.utc(dateTime, "DD-MM-YYYY HH:mm");
+    }
+
+    /**
+     * Update UTC time to the time in the target timezone.
+     * If the user has selected a site, subtract the offset from the time
+     * to get the time in the specified timezone.
+     */
+    function updateTimeInSiteTimezone(dateTime)
+    {
+        if ($('#siteRadioButton').is(':checked')) {
+            dateTime.subtract(TARGETTIMEZONEOFFSETFROMUTCSECS, 'seconds');
+        }
+
+        return dateTime;
+    }
+
+    function hasSitesWithSingleTimezones()
+    {
+        let siteId = $('#Select_Sites').val();
+        let selectedSiteTZ = $('#siteRadioButton').is(':checked');
+        let hasSingleTimezone = true;
+
+        if((siteId && siteId.length > 1) && selectedSiteTZ) {
+            hasSingleTimezone = false;
+            $('#invalidSelection').show();
+        } else {
+            $('#invalidSelection').hide();
+        }
+
+        return hasSingleTimezone;
+    }
 
    /*
     * Dynamically update the UTC time label and SCHEDULED/UNSCHEDULED labels.
@@ -359,98 +394,110 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
         }*/
     }
 
-    function validate(){
-        var epValid=false;
-        var severityValid=false;
-        var descriptionValid=false;
-        var datesValid = false;
-
+    function validate()
+    {
         //----------Validate the Severity-------------//
-        var severityStatus = $('#severity').val();
-        if(severityStatus){
-            severityValid=true;
-            $('#severityGroup').removeClass("has-error");
-            $('#severityGroup').addClass("has-success");
-            $('#severityError').addClass("hidden");
-
-        }else{
-            severityValid=false;
-            $('#severityGroup').addClass("has-error");
-            $('#severityError').removeClass("hidden");
-            //$("#severityError").text("Please choose a severity for this downtime.");
-        }
+        const severityValid = validateSeverity();
 
         //----------Validate the Description-------------//
-        //var regEx = /^[A-Za-z0-9\s._(),:;/'\\]{0,4000}$/;    //This line may not appear valid in IDEs but it is
-        var regEx = /^[^`'\";<>]{0,4000}$/;    //This line may not appear valid in IDEs but it is
-        var description = $('#description').val();
-        if(description && regEx.test(description) !== false){
-            descriptionValid=true;
+        const descriptionValid = validateDescription();
+
+        //----------Validate the dates-------------//
+        const datesValid = validateUtcDates();
+
+        //----------Verify whether endpoint is selected or NOT-------------//
+        const epValid = sitesValidation();
+
+        //----------Verify whether the site has mutiple timezones----------//
+        const hasSingleTimezone = hasSitesWithSingleTimezones();
+
+        //----------Set the Button based on validate status-------------//
+        if (
+            epValid &&
+            severityValid &&
+            descriptionValid &&
+            datesValid &&
+            hasSingleTimezone
+        ) {
+            enableAddDowtimeBtn();
+        } else {
+            disableAddDowntimeBtn();
+        }
+   }
+
+   function validateSeverity()
+   {
+    let severityStatus = $('#severity').val();
+
+    if (severityStatus) {
+        $('#severityGroup').removeClass("has-error");
+        $('#severityGroup').addClass("has-success");
+        $('#severityError').addClass("hidden");
+
+        return true;
+    }
+
+    $('#severityGroup').addClass("has-error");
+    $('#severityError').removeClass("hidden");
+
+    return false;
+   }
+
+   function validateDescription()
+   {
+        // This line may not appear valid in IDEs but it is
+        let regEx = /^[^`'\";<>]{0,4000}$/;
+        let description = $('#description').val();
+
+        if (description && regEx.test(description) !== false) {
             $("#descriptionError").addClass("hidden");
             $('#descriptionGroup').addClass("has-success");
 
-        } else {
-            descriptionValid=false;
-            $('#descriptionGroup').removeClass("has-success");
-            $('#descriptionGroup').addClass("has-error");
-            if(regEx.test(description) === false){
-                $("#descriptionError").removeClass("hidden");
-                $("#descriptionError").text("You have used an invalid character in this description");
-            }
+            return true;
         }
 
-        //----------Validate the dates-------------//
-        //console.log('validate dates');
-        datesValid = validateUtcDates(); //validateDates();
+        $('#descriptionGroup').removeClass("has-success");
+        $('#descriptionGroup').addClass("has-error");
 
-        //----------Validate the Endpoints-------------//
-        //Get the selected options from the select services and endpoints list
+        if (regEx.test(description) === false) {
+            $("#descriptionError").removeClass("hidden");
+            $("#descriptionError").text(
+                "You have used an invalid character in this description"
+            );
+        }
 
-        //var selectedEPs = $('#Select_Services').val();
-        //If this string contains an e then and endpoint has been selected
-        //if(selectedEPs != null){
-        //	$(selectedEPs).each(function(index){    //Iterate over each selected option and check for e.
-        //   	if(this.indexOf('e') >= 0){
-        //        	epValid = true;
-        //    		$('#chooseSite').addClass("has-success");
-        //    		$('#chooseServices').addClass("has-success");
-        //    	}else{
-        //        	$('#chooseSite').removeClass("has-success");
-        //    		$('#chooseServices').removeClass("has-success");
-        //    	}
-        //	});
-        //}else{
-        //	epValid=false;
-        //	$('#chooseSite').removeClass("has-success");
-        //	$('#chooseServices').removeClass("has-success");
-        //}
+        return false;
+    }
 
-        var selectedEPs = $('#Select_Services').val();
-        //If this string contains an e then and endpoint has been selected
-        if(selectedEPs){
-            epValid = true;
+    function sitesValidation()
+{
+        let selectedEPs = $('#Select_Services').val();
+
+        if (selectedEPs) {
             $('#chooseSite').addClass("has-success");
             $('#chooseServices').addClass("has-success");
 
-        }else{
-            epValid=false;
-            $('#chooseSite').removeClass("has-success");
-            $('#chooseServices').removeClass("has-success");
+            return true;
         }
 
-        //----------Set the Button based on validate status-------------//
+        $('#chooseSite').removeClass("has-success");
+        $('#chooseServices').removeClass("has-success");
 
-        if(epValid && severityValid && descriptionValid && datesValid){
-            $('#submitDowntime_btn').addClass('btn btn-success');
-            $('#submitDowntime_btn').prop('disabled', false);
-        }else{
-            $('#submitDowntime_btn').removeClass('btn btn-success');
-            $('#submitDowntime_btn').addClass('btn btn-default');
-            $('#submitDowntime_btn').prop('disabled', true);
+        return false;
+    }
 
-        }
+    function enableAddDowtimeBtn()
+    {
+        $('#submitDowntime_btn').addClass('btn btn-success');
+        $('#submitDowntime_btn').prop('disabled', false);
+    }
 
-   }
+    function disableAddDowntimeBtn()
+    {
+        $('#submitDowntime_btn').removeClass('btn btn-success');
+        $('#submitDowntime_btn').addClass('btn btn-default');
+        $('#submitDowntime_btn').prop('disabled', true);
+    }
 
     function validateUtcDates(){
        var datesValid = false;
@@ -493,15 +540,27 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
        return datesValid;
     }
 
-    function getSitesServices(){
+    function getSitesServices()
+    {
         var siteId=$('#Select_Sites').val();
-        if(siteId != null){ //If the user clicks on the box but not a specific row there will be no input, so catch that here
-            $('#chooseEndpoints').empty(); //Remove any previous content from the endpoints select list
-            $('#chooseServices').load('index.php?Page_Type=Downtime_view_endpoint_tree&site_id='+siteId,function( response, status, xhr ) {
-                if ( status == "success" ) {
-                    validate();
+
+        /**
+         * If the user clicks on the box but not a specific row,
+         * there will be no input.
+         */
+        if (siteId != null) {
+            // Remove any previous content from the endpoints select list
+            $('#chooseEndpoints').empty();
+            $('#chooseServices').load(
+                'index.php?Page_Type=Downtime_view_endpoint_tree',
+                {site_id: siteId},
+                function(response, status, xhr)
+                {
+                    if (status == "success") {
+                        validate();
+                    }
                 }
-            });
+            );
         }
     }
 
@@ -510,9 +569,11 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
      * siteTimezoneText text input.
      * @returns {Null}
      */
-    function onSiteSelected(){
+    function onSiteSelected()
+    {
         var siteId=$('#Select_Sites').val();
         updateSiteTimezoneVars(siteId);
+        validate();
     }
 
     /**
@@ -521,29 +582,42 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
      * @param {int} siteId
      * @returns {null}
      */
-    function updateSiteTimezoneVars(siteId){
-        if(siteId){
-           // use ajax to get the selected site's timezone label and offset
-           // and update display+vars
-           //console.log('fetching selected site timezone label');
-           $.get('index.php', {Page_Type: 'Add_Downtime', siteid_timezone: siteId},
-           function(data){
-              var jsonRsp = JSON.parse(data);
-              // update global variables - used when calculating DT rules
-              TARGETTIMEZONEID = jsonRsp[0];
-              TARGETTIMEZONEOFFSETFROMUTCSECS = jsonRsp[1]; //Returns the targetTimezone offset in seconds from UTC
-              //console.log("updateSiteTimezoneVars, siteId: ["+siteId+"] TARGETTIMEZONEID: ["+TARGETTIMEZONEID+"] TARGETTIMEZONEOFFSETFROMUTCSECS: ["+TARGETTIMEZONEOFFSETFROMUTCSECS+"]");
-              $('#siteTimezoneText').val(TARGETTIMEZONEID);
-           });
+    function updateSiteTimezoneVars(siteId)
+    {
+        if (siteId && siteId.length <= 1 ) {
+            $.get(
+                'index.php',
+                {Page_Type: 'Add_Downtime', siteid_timezone: siteId[0]},
+                function(data)
+                {
+                    var jsonRsp = JSON.parse(data);
+                    // Update global variables - used when calculating DT rules
+                    TARGETTIMEZONEID = jsonRsp[0];
+                    // Returns the targetTimezone offset in seconds from UTC
+                    TARGETTIMEZONEOFFSETFROMUTCSECS = jsonRsp[1];
+                    $('#siteTimezoneText').val(TARGETTIMEZONEID);
+
+                    updateStartEndTimesInUtc();
+                }
+            );
+        } else {
+            TARGETTIMEZONEID = "UTC";
+            TARGETTIMEZONEOFFSETFROMUTCSECS = 0;
+            $('#siteTimezoneText').val(TARGETTIMEZONEID);
+
+            updateStartEndTimesInUtc();
         }
     }
 
-    //This function will select all of a services endpoints when the user clicks just the service option in the list
-    function selectServicesEndpoint(){
-        //Loop through all the selected options of the list
+    /**
+     * This function will set the service parent to be selected
+     * when the user clicks the endpoint of a service in the list.
+     */
+     function selectServicesEndpoint()
+    {
+        // Loop through all the selected options of the list
         var id = $('#Select_Services').children(":selected").attr("id");
-        console.log(id);
-        $('#'+id).prop('selected', true);	    //Set the service parent to be selected
+        $('#'+id).prop('selected', true);
     }
 
     //This function uses pure javascript to return the date - 2 days
@@ -631,21 +705,3 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
     }*/
 
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
