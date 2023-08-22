@@ -96,7 +96,7 @@ function getUserAndUserService()
         throw new Exception("No user with that ID");
     }
 
-    $callingUser = isUserAuthorizedToView($user, $userService);
+    $callingUser = isUserAuthorisedToView($user, $userService);
 
     try {
         $userService->editUserAuthorization($user, $callingUser);
@@ -111,16 +111,16 @@ function getUserAndUserService()
 }
 
 /**
- * Validates whether the viewing/calling user is authorized to perform
+ * Validates whether the viewing/calling user is authorised to perform
  * or viewing the user's details.
  *
  * @param mixed $userDetails The user details to be viewed.
  * @param \org\gocdb\services\User $userServ The user service.
  *
- * @return mixed `$callingUser` The viewing/calling user if authorized.
- * @throws Exception If the viewing/calling user is not authorized.
+ * @return mixed `$callingUser` The viewing/calling user if authorised.
+ * @throws Exception If the viewing/calling user is not authorised.
  */
-function isUserAuthorizedToView($userDetails, $userServ)
+function isUserAuthorisedToView($userDetails, $userServ)
 {
     /** @var \User $callingUser */
     $callingUser = $userServ->getUserByPrinciple(Get_User_Principle());
@@ -146,7 +146,7 @@ function isUserAuthorizedToView($userDetails, $userServ)
 }
 
 /**
- * Helper to retrive `Role` information and project IDs for a given user.
+ * Helper to retrieve `Role` information and project IDs for a given user.
  *
  * @param \User $user User's Details.
  * @param \User $callingUser Viewing/Calling user.
@@ -166,7 +166,7 @@ function getRoleProjectIDs($user, $callingUser)
 
         /**
          * Check that revoking this role will not leave an API credential owned
-         * by a the user at a site over which they no longer have a role.
+         * by a user at a site over which they no longer have a role.
          */
         $blockingSites = $roleService->checkOrphanAPIAuth($role);
 
