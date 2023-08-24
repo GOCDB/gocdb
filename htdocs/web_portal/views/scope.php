@@ -83,7 +83,10 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                 foreach ($params['NGIs'] as $index => $ngi) {
                 ?>
 
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                >
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -121,7 +124,10 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
 
                 foreach ($params['Sites'] as $index => $site) {
                 ?>
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                >
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -161,7 +167,9 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                 foreach ($serviceGroups as $index => $sGroup) {
                 ?>
                 <?php if($sGroup->getScopes()->first()->getName() == "Local") { $style = " style=\"background-color: #A3D7A3;\""; } else { $style = ""; } ?>
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
                     <?php echo $style ?>>
                     <td class="site_table">
                         <div style="background-color: inherit;">

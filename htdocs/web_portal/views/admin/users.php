@@ -88,7 +88,10 @@
                     foreach ($users as $index => $user) {
                 ?>
                 <?php if ($user->isAdmin()) { $style = " style=\"background-color: #A3D7A3;\""; } else { $style = ""; } ?>
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even'
+                    ?>"
                         <?php echo $style ?>>
                     <td class="site_table">
                         <div style="background-color: inherit;">

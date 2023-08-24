@@ -104,9 +104,13 @@
             <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['Projects'])) {
-                    foreach ($params['Projects'] as $index => $project) { ?>
-                        <tr class="site_table_row_<?php
-                            echo ($index % 2 == 0) ? 'even' : 'odd' ?>">
+                    foreach (
+                        $params['Projects'] as $index => $project
+                    ) { ?>
+                        <tr
+                            class="site_table_row_<?php
+                                echo ($index % 2 == 0) ? 'even' : 'odd' ?>"
+                        >
                             <td class="site_table">
                                 <a href="index.php?Page_Type=Project&amp;id=<?php echo $project->getId()?>"><?php xecho($project->getName())?></a>
                             </td>

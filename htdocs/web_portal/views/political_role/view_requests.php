@@ -78,7 +78,10 @@
                 if(sizeof($params['myRequests'] > 0)) {
                     foreach ($params['myRequests'] as $index => $request) {
                 ?>
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                >
                     <td class="site_table" style="width: 50%">
                        <?php xecho($request->getRoleType()->getName())/*.' ['.$request->getId().']'*/?>
                     </td>
@@ -145,7 +148,10 @@
                 if(sizeof($params['allRequests'] > 0)) {
                     foreach ($params['allRequests'] as $index => $request) {
                 ?>
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                >
                     <td class="site_table">
                        <?php
                          $requestingUser = $request->getUser();

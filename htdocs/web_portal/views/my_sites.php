@@ -19,8 +19,13 @@
             <img src="<?php echo \GocContextPath::getPath()?>img/site.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['sites_from_roles'])) {
-                    foreach ($params['sites_from_roles'] as $index => $site) { ?>
-                        <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'even' : 'odd' ?>">
+                    foreach (
+                        $params['sites_from_roles'] as $index => $site
+                    ) { ?>
+                        <tr
+                            class="site_table_row_<?php
+                                echo ($index % 2 == 0) ? 'even' : 'odd' ?>"
+                        >
                             <td class="site_table">
                                 <a href="index.php?Page_Type=Site&amp;id=<?php echo $site->getId()?>"><?php xecho($site->getShortName()) ?></a>
                             </td>
@@ -37,9 +42,13 @@
             <img src="<?php echo \GocContextPath::getPath()?>img/ngi.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['ngis_from_roles'])) {
-                    foreach ($params['ngis_from_roles'] as $index => $ngi) { ?>
-                        <tr class="site_table_row_<?php
-                            echo ($index % 2 == 0) ? 'even' : 'odd' ?>">
+                    foreach (
+                        $params['ngis_from_roles'] as $index => $ngi
+                    ) { ?>
+                        <tr
+                            class="site_table_row_<?php
+                                echo ($index % 2 == 0) ? 'even' : 'odd' ?>"
+                        >
                             <td class="site_table">
                                 <a href="index.php?Page_Type=NGI&amp;id=<?php echo $ngi->getId()?>"><?php xecho($ngi->getName())?></a>
                             </td>
@@ -59,9 +68,13 @@
             <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['sgroups_from_roles'])) {
-                    foreach ($params['sgroups_from_roles'] as $index => $sg) { ?>
-                        <tr class="site_table_row_<?php
-                            echo ($index % 2 == 0) ? 'even' : 'odd' ?>">
+                    foreach (
+                        $params['sgroups_from_roles'] as $index => $sg
+                    ) { ?>
+                        <tr
+                            class="site_table_row_<?php
+                                echo ($index % 2 == 0) ? 'even' : 'odd' ?>"
+                        >
                             <td class="site_table">
                                 <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $sg->getId()?>"><?php xecho($sg->getName())?></a>
                             </td>
@@ -78,9 +91,13 @@
             <img src="<?php echo \GocContextPath::getPath()?>img/project.png" class="titleIcon"/>
             <table style="clear: both; width: 100%; table-layout: fixed;">
                 <?php if(!empty($params['projects_from_roles'])) {
-                    foreach ($params['projects_from_roles'] as $index => $project) { ?>
-                        <tr class="site_table_row_<?php
-                            echo ($index % 2 == 0) ? 'even' : 'odd' ?>">
+                    foreach (
+                        $params['projects_from_roles'] as $index => $project
+                    ) { ?>
+                        <tr
+                            class="site_table_row_<?php
+                                echo ($index % 2 == 0) ? 'even' : 'odd' ?>"
+                        >
                             <td class="site_table">
                                 <a href="index.php?Page_Type=Project&amp;id=<?php echo $project->getId()?>"><?php xecho($project->getName())?></a>
                             </td>

@@ -241,7 +241,10 @@ $showPD = $params['authenticated'];
                 <?php
                 foreach ($params['sGroups'] as $index => $sg) {
                 ?>
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'even' : 'odd' ?>">
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'even' : 'odd' ?>"
+                >
                     <td class="site_table">
                         <a href="index.php?Page_Type=Service_Group&amp;id=<?php echo $sg->getId()?>">
                             <?php xecho($sg->getName()) ?>
@@ -287,7 +290,10 @@ $showPD = $params['authenticated'];
             foreach ($se->getEndpointLocations() as $index => $endpoint) {
                 ?>
 
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                >
                     <td style="width: 30%;"class="site_table">
                         <a href="index.php?Page_Type=View_Service_Endpoint&amp;id=<?php echo $endpoint->getId() ?>">
                             <?php xecho($endpoint->getName()) ?>

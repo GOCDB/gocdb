@@ -65,7 +65,8 @@ function view_user()
      */
     $params['projectNamesIds'] = $projectNamesIds;
     $params['role_ProjIds'] = $roleProjectIds;
-    $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();
+    $params['portalIsReadOnly'] = \Factory::getConfigService()
+                                    ->IsPortalReadOnly();
     $params['APIAuthEnts'] = $user->getAPIAuthenticationEntities();
     $title = $user->getFullName();
 
@@ -179,7 +180,10 @@ function getRoleProjectIDs($user, $callingUser)
             $role->setDecoratorObject(
                 array(
                     "revokeButton" => "disabled",
-                    "revokeMessage" => implode(', ', array_keys($blockingSites))
+                    "revokeMessage" => implode(
+                        ', ',
+                        array_keys($blockingSites)
+                    )
                 )
             );
         } else {

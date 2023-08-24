@@ -116,7 +116,10 @@ $showPD = $params['authenticated'];
 //				}
             ?>
 
-            <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+            <tr
+                class="site_table_row_<?php
+                    echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+            >
                 <td class="site_table">
                     <div style="background-color: inherit;">
                        <div style="background-color: inherit;">
@@ -187,7 +190,10 @@ $showPD = $params['authenticated'];
                 <?php
                 foreach ($params['Roles'] as $index => $role) {
                 ?>
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                >
                     <td class="site_table">
                         <div style="background-color: inherit;">
                             <img src="<?php echo \GocContextPath::getPath()?>img/person.png" class="person" />
@@ -246,7 +252,10 @@ $showPD = $params['authenticated'];
             foreach ($params['downtimes'] as $index => $d) {
             ?>
 
-            <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+            <tr
+                class="site_table_row_<?php
+                    echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+            >
                 <td class="site_table">
                     <a style="padding-right: 1em;" href="index.php?Page_Type=Downtime&id=<?php echo $d->getId() ?>">
                         <?php xecho($d->getDescription()) ?>

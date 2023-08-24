@@ -85,7 +85,8 @@ javascript to show and hide these tables.
                     //There is dynamic creation of table ids here which are used to show and hide the extra services info
                     //when clicked. This sub table by default is hidden
                     echo '</tr>';
-                    echo '<tr class="site_table_row_even"><td colspan="8" style="padding-left:2em">';
+                    echo '<tr class="site_table_row_even">';
+                    echo '<td colspan="8" style="padding-left:2em">';
                     echo '<a href="#a'.$count.'" onclick="showHide(\'tablea_'.$count.'\');toggleMessage(\'diva_'.$count.'\');"/><div id="diva_'.$count.'">+Show Affected Services</div></a>';
                     echo '<table name="a'.$count.'" id="tablea_'.$count.'" style="clear: both; width: 100%; display:none;">';
                     echo '<tr class="site_table_row_even">';
@@ -180,7 +181,8 @@ javascript to show and hide these tables.
                     //There is dynamic creation of table ids here which are used to show and hide the extra services info
                     //when clicked. This sub table by default is hidden
                     echo '</tr>';
-                    echo '<tr class="site_table_row_even"><td colspan="8" style="padding-left:2em">';
+                    echo '<tr class="site_table_row_even">';
+                    echo '<td colspan="8" style="padding-left:2em">';
                     echo '<a href="#b'.$count.'" onclick="showHide(\'tablei_'.$count.'\');toggleMessage(\'divi_'.$count.'\');"/><div id="divi_'.$count.'">+Show Affected Services</div></a>';
                     echo '<table name="b'.$count.'" id="tablei_'.$count.'" style="clear: both; width: 100%; display:none;">';
                     echo '<tr class="site_table_row_even">';

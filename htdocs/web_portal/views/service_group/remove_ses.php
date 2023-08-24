@@ -49,7 +49,9 @@ $sg = $params['sg'];
                     }
 
                 ?>
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
                     <?php echo $style; ?> id="<?php echo $se->getId(); ?>Row">
                     <td>
                         <a href="#" onclick="removeSe(<?php echo $se->getId() ?>, <?php echo $sg->getId() ?>, <?php if(is_null($se->getParentSite())) { echo "true"; } else { echo "false"; }?>)">

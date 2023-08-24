@@ -151,7 +151,10 @@ $dt = $params['downtime'];
                     }
                 ?>
 
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                >
                     <td class="site_table" style="width: 35%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
@@ -183,7 +186,10 @@ $dt = $params['downtime'];
                     </td>
                 </tr>
                 <!--&rdsh; -->
-                <tr class="affectedendpointsrow site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                <tr
+                    class="affectedendpointsrow site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                >
                     <td class="site_table" colspan="4" style="padding-left:5em">
                         <table class="site_table" style="width: 100%; border: solid #D5D5D5 thin">
                             <tr>

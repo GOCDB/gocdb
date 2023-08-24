@@ -39,7 +39,10 @@
             if ($numberOfServiceTypes > 0) {
                 foreach ($params['ServiceTypes'] as $index => $serviceType) {
                     ?>
-                <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                <tr
+                    class="site_table_row_<?php
+                        echo ($index % 2 == 0) ? 'odd' : 'even'?>"
+                >
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">

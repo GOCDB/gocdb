@@ -81,7 +81,10 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
                 foreach ($services as $index => $se) {
                     ?>
 
-                    <tr class="site_table_row_<?php echo ($index % 2 == 0) ? 'odd' : 'even' ?>">
+                    <tr
+                        class="site_table_row_<?php
+                            echo ($index % 2 == 0) ? 'odd' : 'even' ?>"
+                    >
                         <td class="site_table">
                             <div style="background-color: inherit;">
                                 <img src="<?php echo \GocContextPath::getPath()?>img/server.png" class="decoration" />
