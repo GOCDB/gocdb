@@ -234,7 +234,6 @@ foreach($downtime->getEndpointLocations() as $endpoints){
          * Set the start and finish times (don't echo in the full date,
          * just the time values, time widget didn't like timestamp with date)
          */
-        $('#startTime').data("DateTimePicker").date("<?php echo date_format($startDate,"H:i"); ?>");
         $('#endTime').data("DateTimePicker").date("<?php echo date_format($endDate,"H:i"); ?>");
 
         // By default select the original affected services and endpoints
@@ -396,7 +395,8 @@ foreach($downtime->getEndpointLocations() as $endpoints){
          * loading the downtime and the site.
          */
         $('#chooseServices').load(
-            'index.php?Page_Type=Edit_Downtime_view_endpoint_tree&dt_id=' + dtId,
+            'index.php?Page_Type=Edit_Downtime_view_endpoint_tree&dt_id=' +
+            dtId,
             {site_id: siteId},
             function(response, status, xhr)
             {

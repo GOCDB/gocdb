@@ -63,12 +63,12 @@ function endpointToServiceMapping($impactedIDs)
  *
  * @param array $servWithEndpoints   Used for displaying affected service
  *                                   with endpoint(s).
- * @param array $siteDetails         Each site ID will have `services` which
- *                                   stores all affected service ID(s) and
- *                                   `endpoints` which stores all affected
+ * @param array $siteDetails         Each site ID will have a `services` that
+ *                                   stores all affected service ID(s) and an
+ *                                   `endpoints` that stores all affected
  *                                   endpoint ID(s).
  * @param bool $hasMultipleTimezones If the user selects multiple sites in
- *                                   web portal along with the option
+ *                                   the web portal along with the option
  *                                   "site timezone" it will be true;
  *                                   otherwise, it will be false.
  * @param mixed $downtimeDetails     Downtime information.
@@ -107,7 +107,7 @@ function addParentServiceForEndpoints(
 
 /**
  * Converts UTC start and end timestamps to the local timezone
- * of a specific site based on its timezone.
+ * of a specific site based on that site's timezone.
  *
  * @param mixed $downtimeDetails Downtime information.
  * @param integer $siteID        Site ID
@@ -150,7 +150,8 @@ function setLocalTimeForSites($downtimeDetails, $siteID)
  * Unset a given variable, helper method to destroy the specified variables.
  *
  * @param mixed $downtimeObj   Object to destroy specified variables.
- * @param string $fromLocation Location from where the function is being called.
+ * @param string $fromLocation Location from where
+ *                             the function is being called.
  */
 function unsetVariables($downtimeObj, $fromLocation)
 {

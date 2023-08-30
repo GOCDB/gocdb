@@ -78,8 +78,8 @@ function draw(\User $user = null) {
 }
 
 /**
- * Retrieves the raw edited downtime's data from a portal request
- * and submit it to the services layer's downtime functions.
+ * Retrieves the raw edited downtime data from a portal request
+ * and submits it to the services layer's downtime functions.
  *
  * @param \User $user current user
  *
@@ -112,7 +112,7 @@ function submit(\User $user = null)
         $downtimeInfo = getDowntimeFormData();
 
         /**
-         * Need to sort the impacted_ids into
+         * Need to sort the `impacted_ids` into
          * impacted services and impacted endpoints.
          */
         list(

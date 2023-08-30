@@ -264,7 +264,10 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
         let endTimeContent = $('#endTimeContent').val();
 
         if (startDateContent && startTimeContent) {
-            let startDateInUTC = getDateTimeInUTC(startDateContent, startTimeContent);
+            let startDateInUTC = getDateTimeInUTC(
+                startDateContent,
+                startTimeContent
+            );
             M_START_UTC = updateTimeInSiteTimezone(startDateInUTC);
 
             $('#startUtcLabel').text(
@@ -278,7 +281,10 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
 
         // Calculate the end date time in UTC
         if (endDateContent && endTimeContent) {
-            let endDateInUTC = getDateTimeInUTC(endDateContent, endTimeContent);
+            let endDateInUTC = getDateTimeInUTC(
+                endDateContent,
+                endTimeContent
+            );
             M_END_UTC = updateTimeInSiteTimezone(endDateInUTC);
 
             $('#endUtcLabel').text(
