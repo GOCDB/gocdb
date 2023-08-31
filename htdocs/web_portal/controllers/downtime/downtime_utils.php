@@ -44,6 +44,12 @@ function endpointToServiceMapping($impactedIDs)
      * sort between endpoints and services using the prepended letter.
      */
     foreach ($impactedIDs as $id) {
+        /**
+         * `$siteNumber` => It's about Site ID
+         * `$parentService` => It's about service ID endpoint belongs too
+         * `idType` => It's about to differentiate
+         *             the endpoint vs service selection.
+         */
         list($siteNumber, $parentService, $idType) = explode(':', $id);
 
         $type = strpos($idType, 's') !== false ? 'services' : 'endpoints';
