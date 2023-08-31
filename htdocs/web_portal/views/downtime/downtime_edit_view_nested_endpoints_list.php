@@ -26,7 +26,8 @@ foreach($dt->getEndpointLocations() as $affectedEndpoints){
         style="width:99%; margin-left:1%"
         onChange="selectServicesEndpoint()" multiple>
 <?php
-    foreach($services as $service){
+foreach ($services as $siteID => $siteServiceList) {
+    foreach ($siteServiceList as $service) {
         $count=0;
 
         // Set the html 'SELECTED' attribute on the <option> only if this service was affected.
@@ -35,7 +36,10 @@ foreach($dt->getEndpointLocations() as $affectedEndpoints){
         }else{
             $selected = '';
         }
-        echo "<option value=\"s" . $service->getId() . "\" id=\"" . $service->getId() . "\" ".$selected.">";
+
+        echo "<option value=\"" . $siteID . ":" . $service->getId()
+            . ":s" . $service->getId() . "\" id=\"" . $service->getId()
+            . "\" " . $selected . ">";
                 xecho('('.$service->getServiceType()->getName().') ');
                 xecho($service->getHostName());
                 echo("</option>");
@@ -52,10 +56,14 @@ foreach($dt->getEndpointLocations() as $affectedEndpoints){
                 $name = xssafe($endpoint->getName());
             }
             //Option styling doesn't work well cross browser so just use 4 spaces to indent the branch
-            echo "<option id=\"".$service->getId()."\" value=\"e" . $endpoint->getId() . "\" ".$selected.">&nbsp&nbsp&nbsp&nbsp-" . $name . "</option>";
+            echo "<option id=\"" . $service->getId() . "\" value=\""
+                . $siteID . ":" .  $service->getId() . ":e"
+                . $endpoint->getId() . "\" " . $selected
+                . ">&nbsp&nbsp&nbsp&nbsp-" . $name . "</option>";
             $count++;
         }
 
     }
+}
 ?>
 </select>

@@ -154,10 +154,15 @@ foreach($downtime->getEndpointLocations() as $endpoints){
                     $size = sizeof($sites) + 2;
             }
             ?>
-            <select style="width: 99%; margin-right: 1%"
-                class="form-control" id="Select_Sites" name="select_sites" size="10"
-                onclick="loadSitesServicesAndEndpoints()">
-
+            <select
+                style="width: 99%; margin-right: 1%"
+                class="form-control"
+                id="Select_Sites"
+                name="select_sites[]"
+                size="10"
+                onclick="loadSitesServicesAndEndpoints()"
+                multiple
+            >
                 <?php
                 foreach($sites as $site){
                     $sName = xssafe($site);
@@ -384,12 +389,17 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         // The Page_Type handler for 'Edit_Downtime_view_endpoint_tree' in the front controller loads the
         // following view: 'views/downtime/downtime_edit_view_nested_endpoints_list.php'
         // loading the downtime and the site.
-        $('#chooseServices').load('index.php?Page_Type=Edit_Downtime_view_endpoint_tree&dt_id='+dtId+'&site_id='+siteId,
-          function( response, status, xhr ) {
-              if ( status == "success" ) {
+        $('#chooseServices').load(
+            'index.php?Page_Type=Edit_Downtime_view_endpoint_tree&dt_id='
+            + dtId,
+            {site_id: siteId},
+            function(response, status, xhr)
+            {
+                if (status == "success") {
                     validate();
-                  }
-        });
+                }
+            }
+        );
 
     }
 

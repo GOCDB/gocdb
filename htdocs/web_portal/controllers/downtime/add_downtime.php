@@ -24,6 +24,7 @@
 require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/../utils.php';
 require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
+require_once __DIR__ . '/downtime_utils.php';
 
 /**
  * Controller for a new_downtime request.
@@ -71,53 +72,52 @@ function submit(\User $user = null) {
     if($confirmed == true){
         //Downtime is confirmed, submit it
         //$downtimeInfo = unserialize($_REQUEST['newValues']);  // didn't cater for UTF-8 chars
+        /**
+         * If confirmed by an user, submit the details of affected services
+         * and endpoints along with other details for each individual site.
+         */
         $downtimeInfo = json_decode($_POST['newValues'], TRUE);
         $serv = \Factory::getDowntimeService();
+        $downtimeInfo = unsetVariables($downtimeInfo, 'add');
+        $params = [];
 
-        $params['dt'] = $serv->addDowntime($downtimeInfo, $user);
+        foreach ($downtimeInfo['SITE_LEVEL_DETAILS'] as $siteID) {
+            $downtimeInfo['Impacted_Services'] = $siteID['services'];
+            $downtimeInfo['Impacted_Endpoints'] = $siteID['endpoints'];
+
+            $params['submittedDowntimes'][$siteID['siteName']] =
+                $serv->addDowntime($downtimeInfo, $user);
+        }
+
         show_view("downtime/added_downtime.php", $params);
     }else{
         //Show user confirmation screen with their input
         $downtimeInfo = getDtDataFromWeb();
 
-        //Need to sort the impacted_ids into impacted services and impacted endpoints
-        $impactedids = $downtimeInfo['IMPACTED_IDS'];
+        list(
+            $siteLevelDetails,
+            $serviceWithEndpoints
+        ) = endpointToServiceMapping($downtimeInfo['IMPACTED_IDS']);
 
-        $services=array();
-        $endpoints=array();
+        // Delete the unsorted IDs from the downtime info
+        unset($downtimeInfo['IMPACTED_IDS']);
 
-        //For each impacted id sort between endpoints and services using the prepended letter
-        foreach($impactedids as $id){
-            if (strpos($id, 's') !== FALSE){
-                //This is a service id
-                $services[] = str_replace('s', '', $id); //trim off the identifying char before storing in array
-            }else{
-                //This is an endpoint id
-                $endpoints[] = str_replace('e', '', $id); //trim off the identifying char before storing in array
-            }
+        if (!count($siteLevelDetails) > 1) {
+            $downtimeInfo['SINGLE_TIMEZONE'] = true;
         }
 
-        unset($downtimeInfo['IMPACTED_IDS']); //Delete the unsorted Ids from the downtime info
+        list(
+            $siteLevelDetails,
+            $serviceWithEndpoints
+        ) = addParentServiceForEndpoints(
+            $serviceWithEndpoints,
+            $siteLevelDetails,
+            false,
+            $downtimeInfo['DOWNTIME']
+        );
 
-        $downtimeInfo['Impacted_Endpoints'] = $endpoints;
-
-
-        $serv = \Factory::getServiceService();
-
-        /** For endpoint put into downtime we want the parent service also. If a user has selected
-         * endpoints but not the parent service here we will add the service to maintain the link beteween
-         * a downtime having both the service and the endpoint.
-         */
-        foreach($downtimeInfo['Impacted_Endpoints'] as $endpointIds){
-           $endpoint = $serv->getEndpoint($endpointIds);
-           $services[] = $endpoint->getService()->getId();
-        }
-
-        //Remove any duplicate service ids and store the array of ids
-        $services = array_unique($services);
-
-        //Assign the impacted services and endpoints to their own arrays for us by the addDowntime method
-        $downtimeInfo['Impacted_Services'] = $services;
+        $downtimeInfo['SITE_LEVEL_DETAILS'] = $siteLevelDetails;
+        $downtimeInfo['SERVICE_WITH_ENDPOINTS'] = $serviceWithEndpoints;
 
         show_view("downtime/confirm_add_downtime.php", $downtimeInfo);
     }
