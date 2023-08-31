@@ -72,7 +72,7 @@ if(isset($params['isEdit'])){
                     $endpoints = $data['endpoints'];
                     $service = \Factory::getServiceService()
                                     ->getService($serviceID);
-            $safeHostName = xssafe($service->getHostname());
+                    $safeHostName = xssafe($service->getHostname());
                     ?>
 
                     <ul>
