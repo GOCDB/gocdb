@@ -106,15 +106,11 @@ function submit(\User $user = null) {
             $downtimeInfo['SINGLE_SITE'] = true;
         }
 
-        list(
-            $siteLevelDetails,
-            $serviceWithEndpoints
-        ) = addParentServiceForEndpoints(
-            $serviceWithEndpoints,
-            $siteLevelDetails,
-            false,
-            $downtimeInfo['DOWNTIME']
-        );
+        list($siteLevelDetails, $serviceWithEndpoints) =
+            addParentServiceForEndpoints(
+                $serviceWithEndpoints,
+                $siteLevelDetails
+            );
 
         $downtimeInfo['SITE_LEVEL_DETAILS'] = $siteLevelDetails;
         $downtimeInfo['SERVICE_WITH_ENDPOINTS'] = $serviceWithEndpoints;

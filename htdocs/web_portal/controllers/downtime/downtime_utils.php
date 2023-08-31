@@ -67,32 +67,18 @@ function endpointToServiceMapping($impactedIDs)
  *                                   stores all affected service ID(s) and an
  *                                   `endpoints` that stores all affected
  *                                   endpoint ID(s).
- * @param bool $hasMultipleTimezones If the user selects multiple sites in
- *                                   the  web portal along with the option
- *                                   "site timezone" it will be true;
- *                                   otherwise, it will be false.
- * @param mixed $downtimeDetails     Downtime information.
  *
  * @return array An array containing `$siteDetails` and `servWithEndpoints`.
  */
 function addParentServiceForEndpoints(
     $servWithEndpoints,
-    $siteDetails,
-    $hasMultipleTimezones,
-    $downtimeDetails
+    $siteDetails
 ) {
     foreach ($servWithEndpoints as $siteID => $siteData) {
         $siteDetails[$siteID]['services'] = [];
 
         $newSite = \Factory::getSiteService()->getSite($siteID);
         $siteDetails[$siteID]['siteName'] = $newSite->getShortName();
-
-        if ($hasMultipleTimezones) {
-            list(
-                $siteDetails[$siteID]['START_TIMESTAMP'],
-                $siteDetails[$siteID]['END_TIMESTAMP']
-            ) = setLocalTimeForSites($downtimeDetails, $siteID);
-        }
 
         foreach (array_keys($siteData) as $serviceID) {
             $servWithEndpoints[$siteID][$serviceID]['services'] = [];
@@ -103,47 +89,6 @@ function addParentServiceForEndpoints(
     }
 
     return [$siteDetails, $servWithEndpoints];
-}
-
-/**
- * Converts UTC start and end timestamps to the local timezone
- * of a specific site based on that site's timezone.
- *
- * @param mixed $downtimeDetails Downtime information.
- * @param integer $siteID        Site ID
- */
-function setLocalTimeForSites($downtimeDetails, $siteID)
-{
-    $site = \Factory::getSiteService()->getSite($siteID);
-
-    $siteTimezone = $site->getTimeZoneId();
-
-    $startTimeAsString = $downtimeDetails['START_TIMESTAMP'];
-    $utcEndTime = $downtimeDetails['END_TIMESTAMP'];
-
-    $utcStartDateTime = DateTime::createFromFormat(
-        'd/m/Y H:i',
-        $startTimeAsString,
-        new DateTimeZone('UTC')
-    );
-    $utcEndDateTime = DateTime::createFromFormat(
-        'd/m/Y H:i',
-        $utcEndTime,
-        new DateTimeZone('UTC')
-    );
-
-    $targetSiteTimezone = new DateTimeZone($siteTimezone);
-    $utcOffset = $targetSiteTimezone->getOffset($utcStartDateTime);
-
-    // Calculate the equivalent time in the target timezone.
-    // Ref: https://www.php.net/manual/en/datetime.modify.php
-    $siteStartDateTime = $utcStartDateTime->modify("-$utcOffset seconds");
-    $siteEndDateTime = $utcEndDateTime->modify("-$utcOffset seconds");
-
-    return [
-        $siteStartDateTime->format('d/m/Y H:i'),
-        $siteEndDateTime->format('d/m/Y H:i')
-    ];
 }
 
 /**
