@@ -69,9 +69,8 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
 
         <div class="input-warning" id="invalidSelection">
             <p style="color: #D31F1F;">
-                WARNING: You are NOT allowed to create downtimes
-                when you have selected multiple sites
-                using the <q>Site Timezone</q> option.
+                When selecting multiple sites, you must use the
+                <q>Enter Times In: UTC<q> option.
             </p>
         </div>
 
