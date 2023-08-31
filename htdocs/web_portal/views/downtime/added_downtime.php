@@ -16,10 +16,10 @@
     echo '<ul>';
     foreach ($params['submittedDowntimes'] as $siteName => $downtimeDetails) {
         echo '<li>';
-        echo $siteName . ':';
+        echo $siteName . ': ';
         echo '<a href="index.php?Page_Type=Downtime&id=';
         echo $downtimeDetails->getId();
-        echo '"> Downtime ' . $downtimeDetails->getId() . '</a>';
+        echo '">Downtime ' . $downtimeDetails->getId() . '</a>';
         echo '</li>';
     }
     echo '</ul>';
