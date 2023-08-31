@@ -109,10 +109,8 @@ function submit(\User $user = null) {
         $downtimeInfo = getDtDataFromWeb();
 
         //Need to sort the impacted_ids into impacted services and impacted endpoints
-        list(
-            $siteLevelDetails,
-            $serviceWithEndpoints
-        ) = endpointToServiceMapping($downtimeInfo['IMPACTED_IDS']);
+        list($siteLevelDetails, $serviceWithEndpoints) =
+            endpointToServiceMapping($downtimeInfo['IMPACTED_IDS']);
 
         // Delete the unsorted IDs from the downtime info
         unset($downtimeInfo['IMPACTED_IDS']);

@@ -94,10 +94,8 @@ function submit(\User $user = null) {
         //Show user confirmation screen with their input
         $downtimeInfo = getDtDataFromWeb();
 
-        list(
-            $siteLevelDetails,
-            $serviceWithEndpoints
-        ) = endpointToServiceMapping($downtimeInfo['IMPACTED_IDS']);
+        list($siteLevelDetails, $serviceWithEndpoints) =
+            endpointToServiceMapping($downtimeInfo['IMPACTED_IDS']);
 
         // Delete the unsorted IDs from the downtime info
         unset($downtimeInfo['IMPACTED_IDS']);
