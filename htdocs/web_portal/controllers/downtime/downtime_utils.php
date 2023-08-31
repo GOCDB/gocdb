@@ -157,12 +157,12 @@ function unsetVariables($downtimeObj, $fromLocation)
 {
     if ($fromLocation == "add") {
         unset($downtimeObj['SERVICE_WITH_ENDPOINTS']);
-        unset($downtimeObj['SINGLE_TIMEZONE']);
+        unset($downtimeObj['SINGLE_SITE']);
     } else {
         unset($downtimeObj['DOWNTIME']['EXISTINGID']);
         unset($downtimeObj['isEdit']);
         unset($downtimeObj['SERVICE_WITH_ENDPOINTS']);
-        unset($downtimeObj['SINGLE_TIMEZONE']);
+        unset($downtimeObj['SINGLE_SITE']);
     }
 
     return $downtimeObj;

@@ -21,7 +21,7 @@ if(isset($params['isEdit'])){
     echo 'Please review your ';
 
     if (!($edit)) {
-        if ($params['SINGLE_TIMEZONE']) {
+        if ($params['SINGLE_SITE']) {
             echo 'chosen site and the downtime ';
         } else {
             echo 'chosen sites and their downtimes ';

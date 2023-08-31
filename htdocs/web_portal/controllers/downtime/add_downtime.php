@@ -103,7 +103,7 @@ function submit(\User $user = null) {
         unset($downtimeInfo['IMPACTED_IDS']);
 
         if (!count($siteLevelDetails) > 1) {
-            $downtimeInfo['SINGLE_TIMEZONE'] = true;
+            $downtimeInfo['SINGLE_SITE'] = true;
         }
 
         list(
