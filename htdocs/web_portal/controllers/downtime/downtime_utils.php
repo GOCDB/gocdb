@@ -3,13 +3,12 @@
 /*_____________________________________________________________________________
  *=============================================================================
  * File: downtime_utils.php
- * Author: GOCDB DEV TEAM, STFC.
  * Description: Helper functions which can be re-used while adding
  *              or editing a downtime.
  *
  * License information
  *
- * Copyright 2013 STFC
+ * Copyright 2023 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
