@@ -294,7 +294,7 @@ function Draw_Page($Page_Type) {
             break;
         case "Downtime":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/downtime/view_downtime.php';
+            require_once __DIR__ . '/controllers/downtime/view_downtime.php';
             view();
             break;
         case "My_Sites":
@@ -355,13 +355,13 @@ function Draw_Page($Page_Type) {
             break;
         case "Add_Downtime":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/downtime/add_downtime.php';
+            require_once __DIR__ . '/controllers/downtime/add_downtime.php';
             //require_once __DIR__.'/controllers/downtime/add_downtime_old.php';
             add();
             break;
         case "Edit_Downtime":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/downtime/edit_downtime.php';
+            require_once __DIR__ . '/controllers/downtime/edit_downtime.php';
             //require_once __DIR__.'/controllers/downtime/edit_downtime_old.php';
             edit();
             break;
@@ -372,12 +372,12 @@ function Draw_Page($Page_Type) {
             break;
         case "Downtime_view_endpoint_tree":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/downtime/view_endpoint_tree.php';
+            require_once __DIR__ . '/controllers/downtime/view_endpoint_tree.php';
             getServiceandEndpointList();
             break;
         case "Edit_Downtime_view_endpoint_tree":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/downtime/view_endpoint_tree.php';
+            require_once __DIR__ . '/controllers/downtime/view_endpoint_tree.php';
             editDowntimePopulateEndpointTree();
             break;
         case "Downtime_View_Services":
@@ -392,7 +392,7 @@ function Draw_Page($Page_Type) {
             break;
         case "Delete_Downtime":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/downtime/delete_downtime.php';
+            require_once __DIR__ . '/controllers/downtime/delete_downtime.php';
             delete();
             break;
         case "Downtimes_Overview":

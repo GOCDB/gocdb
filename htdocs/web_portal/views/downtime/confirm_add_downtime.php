@@ -1,8 +1,6 @@
 <?php
 $configService = \Factory::getConfigService();
-
-$services = $params['Impacted_Services'];
-$endpoints = $params['Impacted_Endpoints'];
+$serviceWithEndpoints = $params['SERVICE_WITH_ENDPOINTS'];
 
 //To reuse this page for 'add' and 'edit' we use this boolean to change a couple of bits in the page
 if(isset($params['isEdit'])){
@@ -18,65 +16,93 @@ if(isset($params['isEdit'])){
         echo "Edit";
     }?>
      Downtime</h1><br />
-    Please review your downtime before submitting.<br />
+    <?php
+    echo '<p>';
+    echo 'Please review your ';
+
+    if (!($edit)) {
+        if ($params['SINGLE_TIMEZONE']) {
+            echo 'chosen site and the downtime ';
+        } else {
+            echo 'chosen sites and their downtimes ';
+        }
+    } else {
+        echo 'downtime ';
+    }
+
+    echo 'before submitting.';
+    echo '</p>';
+    ?>
+
     <ul>
     <li><b>Severity: </b><?php xecho($params['DOWNTIME']['SEVERITY'])?></li>
     <li><b>Description: </b><?php xecho($params['DOWNTIME']['DESCRIPTION'])?></li>
     <?php /*<li><b>Times defined in: </b><?php xecho($params['DOWNTIME']['DEFINE_TZ_BY_UTC_OR_SITE'])?> timezone</li> */ ?>
-    <li><b>Starting (UTC): </b>
     <?php
-        //$startStamp = $params['DOWNTIME']['START_TIMESTAMP'];
-        //$timestamp = new DateTime("@$startStamp"); //Little PHP magic to create date object directly from timestamp
-        //echo date_format($timestamp, 'l jS \of F Y \a\t\: h:i A');
-        xecho($params['DOWNTIME']['START_TIMESTAMP']);
+    echo '<li>';
+    echo '<b>Starting (UTC): </b>';
+    xecho($params['DOWNTIME']['START_TIMESTAMP']);
+    echo '</li>';
+    echo '<li>';
+    echo '<b>Ending (UTC): </b>';
+    xecho($params['DOWNTIME']['END_TIMESTAMP']);
+    echo '</li>';
     ?>
-    </li>
-    <li><b>Ending (UTC): </b>
-    <?php
-        //$endStamp = $params['DOWNTIME']['END_TIMESTAMP'];
-        //$timestamp = new DateTime("@$endStamp"); //Little PHP magic to create date object directly from timestamp
-        //echo date_format($timestamp, 'l jS \of F Y \a\t\: h:i A');
-        xecho($params['DOWNTIME']['END_TIMESTAMP']);
-    ?></li>
-    <?php
-    if(count($services > 1)){
-        echo "<li><b>Affecting Services:</b>";
-    }else{
-        echo "<li><b>Affecting Service:</b>";
-    }
-    ?>
-        <ul>
+
+    <?php foreach ($serviceWithEndpoints as $siteID => $siteDetails) : ?>
         <?php
-        foreach($services as $id){
-            $service = \Factory::getServiceService()->getService($id);
-            $safeHostName = xssafe($service->getHostname());
-            echo "<li>" . $safeHostName . "</li>";
-            }
+         $siteName = $params['SITE_LEVEL_DETAILS'][$siteID]['siteName'];
+
+         echo '<li><strong>Site Name: </strong>';
+         echo $siteName;
+         echo '</li>';
         ?>
-        </ul>
-    </li>
-    <?php
-    if(count($endpoints > 1)){
-        echo "<li><b>Affecting Endpoints:</b>";
-    }else{
-        echo "<li><b>Affecting Endpoint:</b>";
-    }
-    ?>
+
         <ul>
-        <?php
-        foreach($endpoints as $id){
-            $endpoint = \Factory::getServiceService()->getEndpoint($id);
-            if($endpoint->getName() != ''){
-                $name = xssafe($endpoint->getName());
-            }else{
-                $name = xssafe("myEndpoint");
-            }
-            echo "<li>" . $name . "</li>";
-            }
-        ?>
+            <li>
+                <b>Affecting Service and Endpoint(s):</b>
+
+                <?php foreach ($siteDetails as $serviceID => $data) : ?>
+                    <?php
+                    $endpoints = $data['endpoints'];
+                    $service = \Factory::getServiceService()
+                                    ->getService($serviceID);
+                    $safeHostName = xssafe($service->getHostname());
+                    ?>
+
+                    <ul>
+                        <li>
+                            <?php
+                            xecho(
+                                '(' .
+                                $service->getServiceType()->getName() .
+                                ') '
+                            );
+                            echo $safeHostName;
+                            ?>
+                            <ul>
+                                <?php foreach ($endpoints as $ID) : ?>
+                                    <?php
+                                    $endpoint = \Factory::getServiceService()
+                                                    ->getEndpoint($ID);
+
+                                    if ($endpoint->getName() != '') {
+                                        $name = xssafe($endpoint->getName());
+                                    } else {
+                                        $name = xssafe("myEndpoint");
+                                    }
+                                    ?>
+                                    <li><?= $name ?></li>
+                                <?php endforeach; ?>
+                            </ul>
+                        </li>
+                    </ul>
+                <?php endforeach; ?>
+            </li>
         </ul>
-    </li>
+    <?php endforeach; ?>
     </ul>
+
     <!-- Echo out a page type of edit or add downtime depending on type.  -->
     <?php if(!$edit):?>
     <form name="Add_Downtime" action="index.php?Page_Type=Add_Downtime"
@@ -99,4 +125,3 @@ if(isset($params['isEdit'])){
         <?php endif;?>
     </form>
 </div>
-

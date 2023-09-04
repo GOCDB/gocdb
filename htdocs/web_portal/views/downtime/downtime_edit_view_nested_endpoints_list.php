@@ -3,16 +3,18 @@ $services = $params['services'];
 $dt = $params['downtime'];
 $configService = \Factory::getConfigService();
 
-//Get the affected services and store the ids in an array.
-$affectedServiceIds = array();
-foreach($dt->getServices() as $affectedService){
-    $affectedServiceIds[] = $affectedService->getId();
+// Get the affected services and store the IDs in an array.
+$affectedServiceIDs = array();
+
+foreach ($dt->getServices() as $affectedService) {
+    $affectedServiceIDs[] = $affectedService->getId();
 }
 
-//Get the affected endpoints and store the ids in an array
-$affectedEndpointIds = array();
-foreach($dt->getEndpointLocations() as $affectedEndpoints){
-    $affectedEndpointIds[] = $affectedEndpoints->getId();
+// Get the affected endpoints and store the IDs in an array.
+$affectedEndpointIDs = array();
+
+foreach ($dt->getEndpointLocations() as $affectedEndpoints) {
+    $affectedEndpointIDs[] = $affectedEndpoints->getId();
 }
 
 ?>
@@ -26,36 +28,48 @@ foreach($dt->getEndpointLocations() as $affectedEndpoints){
         style="width:99%; margin-left:1%"
         onChange="selectServicesEndpoint()" multiple>
 <?php
-    foreach($services as $service){
-        $count=0;
+foreach ($services as $siteID => $siteServiceList) {
+    foreach ($siteServiceList as $service) {
+        $count = 0;
 
-        // Set the html 'SELECTED' attribute on the <option> only if this service was affected.
-        if(in_array($service->getId(), $affectedServiceIds)){
+        /**
+         * Set the HTML 'SELECTED' attribute on the <option>
+         * only if this service was affected.
+         */
+        if (in_array($service->getId(), $affectedServiceIDs)) {
             $selected = 'SELECTED';
-        }else{
+        } else {
             $selected = '';
         }
-        echo "<option value=\"s" . $service->getId() . "\" id=\"" . $service->getId() . "\" ".$selected.">";
-                xecho('('.$service->getServiceType()->getName().') ');
-                xecho($service->getHostName());
-                echo("</option>");
 
-        foreach($service->getEndpointLocations() as $endpoint){
-                    if(in_array($endpoint->getId(), $affectedEndpointIds)){
-                        $selected = 'SELECTED';
-                    }else{
-                        $selected = '';
-                    }
-            if($endpoint->getName() == ''){
+        echo "<option value=\"" . $siteID . ":" . $service->getId()
+            . ":s" . $service->getId() . "\" id=\"" . $service->getId()
+            . "\" " . $selected . ">";
+        xecho('(' . $service->getServiceType()->getName() . ') ');
+        xecho($service->getHostName());
+        echo("</option>");
+
+        foreach ($service->getEndpointLocations() as $endpoint) {
+            if (in_array($endpoint->getId(), $affectedEndpointIDs)) {
+                $selected = 'SELECTED';
+            } else {
+                $selected = '';
+            }
+            if ($endpoint->getName() == '') {
                 $name = xssafe('myEndpoint');
-            }else{
+            } else {
                 $name = xssafe($endpoint->getName());
             }
-            //Option styling doesn't work well cross browser so just use 4 spaces to indent the branch
-            echo "<option id=\"".$service->getId()."\" value=\"e" . $endpoint->getId() . "\" ".$selected.">&nbsp&nbsp&nbsp&nbsp-" . $name . "</option>";
+
+            /* Option styling doesn't work well cross browser,
+               so just use 4 spaces to indent the branch.*/
+            echo "<option id=\"" . $service->getId() . "\" value=\""
+                . $siteID . ":" .  $service->getId() . ":e"
+                . $endpoint->getId() . "\" " . $selected
+                . ">&nbsp&nbsp&nbsp&nbsp-" . $name . "</option>";
             $count++;
         }
-
     }
+}
 ?>
 </select>
