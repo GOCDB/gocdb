@@ -67,7 +67,12 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<mark><label id="schedulingStatusLabel"></label></mark>
         </div>
 
-
+        <div class="input-warning" id="invalidSelection">
+            <p style="color: #D31F1F;">
+                When selecting multiple sites, you must use the
+                <q>Enter Times In: UTC<q> option.
+            </p>
+        </div>
 
         <label for="startDate">Starts on:</label>
         <mark><label id="startUtcLabel"></label></mark>
@@ -147,10 +152,15 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
                     $size = sizeof($sites) + 2;
             }
             ?>
-            <select style="width: 99%; margin-right: 1%"
-                class="form-control" id="Select_Sites" name="select_sites" size="10"
-                onclick="getSitesServices();onSiteSelected();">
-
+            <select
+                style="width: 99%; margin-right: 1%"
+                class="form-control"
+                id="Select_Sites"
+                name="select_sites[]"
+                size="10"
+                onclick="getSitesServices();onSiteSelected();"
+                multiple
+            >
                 <?php
                 foreach($sites as $site){
                     $siteName = $site->getName();
@@ -221,6 +231,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
 
        $("#timezoneSelectGroup").find(":input").change(function(){
            updateStartEndTimesInUtc();
+            validate();
        });
 
        // The bootstrap datetimepickers don't fire the change event
@@ -231,7 +242,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
            validate();
        });
 
-
+       hasSitesWithSingleTimezones();
 
     });
 
@@ -293,6 +304,22 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             $('#endTimestamp').val(M_END_UTC.format("DD/MM/YYYY HH:mm"));
         }
    }
+
+    function hasSitesWithSingleTimezones()
+    {
+        let siteId = $('#Select_Sites').val();
+        let selectedSiteTZ = $('#siteRadioButton').is(':checked');
+        let hasSingleTimezone = true;
+
+        if((siteId && siteId.length > 1) && selectedSiteTZ) {
+            hasSingleTimezone = false;
+            $('#invalidSelection').show();
+        } else {
+            $('#invalidSelection').hide();
+        }
+
+        return hasSingleTimezone;
+    }
 
    /*
     * Dynamically update the UTC time label and SCHEDULED/UNSCHEDULED labels.
@@ -438,9 +465,17 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             $('#chooseServices').removeClass("has-success");
         }
 
-        //----------Set the Button based on validate status-------------//
+        //----------Verify whether the site has mutiple timezones----------//
+        const hasSingleTimezone = hasSitesWithSingleTimezones();
 
-        if(epValid && severityValid && descriptionValid && datesValid){
+        //----------Set the Button based on validate status-------------//
+        if (
+            epValid &&
+            severityValid &&
+            descriptionValid &&
+            datesValid &&
+            hasSingleTimezone
+        ) {
             $('#submitDowntime_btn').addClass('btn btn-success');
             $('#submitDowntime_btn').prop('disabled', false);
         }else{
@@ -497,11 +532,16 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
         var siteId=$('#Select_Sites').val();
         if(siteId != null){ //If the user clicks on the box but not a specific row there will be no input, so catch that here
             $('#chooseEndpoints').empty(); //Remove any previous content from the endpoints select list
-            $('#chooseServices').load('index.php?Page_Type=Downtime_view_endpoint_tree&site_id='+siteId,function( response, status, xhr ) {
-                if ( status == "success" ) {
-                    validate();
+            $('#chooseServices').load(
+                'index.php?Page_Type=Downtime_view_endpoint_tree',
+                {site_id: siteId},
+                function(response, status, xhr)
+                {
+                    if (status == "success") {
+                        validate();
+                    }
                 }
-            });
+            );
         }
     }
 
@@ -513,6 +553,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
     function onSiteSelected(){
         var siteId=$('#Select_Sites').val();
         updateSiteTimezoneVars(siteId);
+        validate();
     }
 
     /**
@@ -522,19 +563,31 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
      * @returns {null}
      */
     function updateSiteTimezoneVars(siteId){
-        if(siteId){
+        if (siteId && siteId.length <= 1 ) {
            // use ajax to get the selected site's timezone label and offset
            // and update display+vars
            //console.log('fetching selected site timezone label');
-           $.get('index.php', {Page_Type: 'Add_Downtime', siteid_timezone: siteId},
-           function(data){
-              var jsonRsp = JSON.parse(data);
-              // update global variables - used when calculating DT rules
-              TARGETTIMEZONEID = jsonRsp[0];
-              TARGETTIMEZONEOFFSETFROMUTCSECS = jsonRsp[1]; //Returns the targetTimezone offset in seconds from UTC
-              //console.log("updateSiteTimezoneVars, siteId: ["+siteId+"] TARGETTIMEZONEID: ["+TARGETTIMEZONEID+"] TARGETTIMEZONEOFFSETFROMUTCSECS: ["+TARGETTIMEZONEOFFSETFROMUTCSECS+"]");
-              $('#siteTimezoneText').val(TARGETTIMEZONEID);
-           });
+           $.get(
+                'index.php',
+                {Page_Type: 'Add_Downtime', siteid_timezone: siteId[0]},
+                function(data)
+                {
+                    var jsonRsp = JSON.parse(data);
+                    // Update global variables - used when calculating DT rules
+                    TARGETTIMEZONEID = jsonRsp[0];
+                    // Returns the targetTimezone offset in seconds from UTC
+                    TARGETTIMEZONEOFFSETFROMUTCSECS = jsonRsp[1];
+                    $('#siteTimezoneText').val(TARGETTIMEZONEID);
+
+                    updateStartEndTimesInUtc();
+                }
+            );
+        } else {
+            TARGETTIMEZONEID = "UTC";
+            TARGETTIMEZONEOFFSETFROMUTCSECS = 0;
+            $('#siteTimezoneText').val(TARGETTIMEZONEID);
+
+            updateStartEndTimesInUtc();
         }
     }
 

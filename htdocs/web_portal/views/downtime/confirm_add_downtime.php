@@ -1,8 +1,6 @@
 <?php
 $configService = \Factory::getConfigService();
-
-$services = $params['Impacted_Services'];
-$endpoints = $params['Impacted_Endpoints'];
+$serviceWithEndpoints = $params['SERVICE_WITH_ENDPOINTS'];
 
 //To reuse this page for 'add' and 'edit' we use this boolean to change a couple of bits in the page
 if(isset($params['isEdit'])){
@@ -18,7 +16,24 @@ if(isset($params['isEdit'])){
         echo "Edit";
     }?>
      Downtime</h1><br />
-    Please review your downtime before submitting.<br />
+    <?php
+    echo '<p>';
+    echo 'Please review your ';
+
+    if (!($edit)) {
+        if ($params['SINGLE_SITE']) {
+            echo 'chosen site and the downtime ';
+        } else {
+            echo 'chosen sites and their downtimes ';
+        }
+    } else {
+        echo 'downtime ';
+    }
+
+    echo 'before submitting.';
+    echo '</p>';
+    ?>
+
     <ul>
     <li><b>Severity: </b><?php xecho($params['DOWNTIME']['SEVERITY'])?></li>
     <li><b>Description: </b><?php xecho($params['DOWNTIME']['DESCRIPTION'])?></li>
@@ -38,30 +53,38 @@ if(isset($params['isEdit'])){
         //echo date_format($timestamp, 'l jS \of F Y \a\t\: h:i A');
         xecho($params['DOWNTIME']['END_TIMESTAMP']);
     ?></li>
-    <?php
-    if(count($services > 1)){
-        echo "<li><b>Affecting Services:</b>";
-    }else{
-        echo "<li><b>Affecting Service:</b>";
-    }
-    ?>
-        <ul>
+
+    <?php foreach ($serviceWithEndpoints as $siteID => $siteDetails) : ?>
         <?php
-        foreach($services as $id){
-            $service = \Factory::getServiceService()->getService($id);
-            $safeHostName = xssafe($service->getHostname());
-            echo "<li>" . $safeHostName . "</li>";
-            }
+         $siteName = $params['SITE_LEVEL_DETAILS'][$siteID]['siteName'];
+
+         echo '<li><strong>Site Name: </strong>';
+         echo $siteName;
+         echo '</li>';
         ?>
-        </ul>
-    </li>
-    <?php
-    if(count($endpoints > 1)){
-        echo "<li><b>Affecting Endpoints:</b>";
-    }else{
-        echo "<li><b>Affecting Endpoint:</b>";
-    }
-    ?>
+
+        <ul>
+            <li>
+                <b>Affecting Service and Endpoint(s):</b>
+
+                <?php foreach ($siteDetails as $serviceID => $data) : ?>
+                    <?php
+                    $endpoints = $data['endpoints'];
+                    $service = \Factory::getServiceService()
+                                    ->getService($serviceID);
+                    $safeHostName = xssafe($service->getHostname());
+                    ?>
+
+                    <ul>
+                        <li>
+                            <?php
+                            xecho(
+                                '(' .
+                                $service->getServiceType()->getName() .
+                                ') '
+                            );
+                            echo $safeHostName;
+                            ?>
         <ul>
         <?php
         foreach($endpoints as $id){
@@ -75,7 +98,12 @@ if(isset($params['isEdit'])){
             }
         ?>
         </ul>
-    </li>
+                        </li>
+                    </ul>
+                <?php endforeach; ?>
+            </li>
+        </ul>
+    <?php endforeach; ?>
     </ul>
     <!-- Echo out a page type of edit or add downtime depending on type.  -->
     <?php if(!$edit):?>
