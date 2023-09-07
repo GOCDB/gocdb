@@ -468,5 +468,3 @@ class Project  extends AbstractEntityService{
         }
     }
 }
-
-

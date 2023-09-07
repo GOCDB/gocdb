@@ -93,4 +93,3 @@ function remove_scope(){
     }
 
 }
-
