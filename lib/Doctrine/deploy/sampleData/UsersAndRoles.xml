@@ -144,6 +144,11 @@
             <ON_ENTITY>SMRF</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Service Group Administrator</USER_ROLE>
+            <ON_ENTITY>SERVICE_GROUP_7</ON_ENTITY>
+            <ENTITY_TYPE>serviceGroup</ENTITY_TYPE>
+        </USER_ROLE>
     </EGEE_USER>
 
     <EGEE_USER USER_ID="468322" PRIMARY_KEY="2222G0">
@@ -204,6 +209,11 @@
             <ON_ENTITY>Mechnik IT</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Service Group Administrator</USER_ROLE>
+            <ON_ENTITY>SERVICE_GROUP_4</ON_ENTITY>
+            <ENTITY_TYPE>serviceGroup</ENTITY_TYPE>
+        </USER_ROLE>
     </EGEE_USER>
 
     <EGEE_USER USER_ID="4322" PRIMARY_KEY="4523G0">
@@ -235,6 +245,11 @@
             <USER_ROLE>Site Operations Deputy Manager</USER_ROLE>
             <ON_ENTITY>Izola MRF</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Service Group Administrator</USER_ROLE>
+            <ON_ENTITY>SERVICE_GROUP_1</ON_ENTITY>
+            <ENTITY_TYPE>serviceGroup</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
 
@@ -355,6 +370,11 @@
             <ON_ENTITY>grid-lucerne-uni</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Service Group Administrator</USER_ROLE>
+            <ON_ENTITY>SERVICE_GROUP_3</ON_ENTITY>
+            <ENTITY_TYPE>serviceGroup</ENTITY_TYPE>
+        </USER_ROLE>
     </EGEE_USER>
 
     <EGEE_USER USER_ID="47633" PRIMARY_KEY="89965G0">
@@ -473,6 +493,11 @@
             <ON_ENTITY>SSC</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
         </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Service Group Administrator</USER_ROLE>
+            <ON_ENTITY>SERVICE_GROUP_6</ON_ENTITY>
+            <ENTITY_TYPE>serviceGroup</ENTITY_TYPE>
+        </USER_ROLE>
     </EGEE_USER>
 
     <EGEE_USER USER_ID="54783" PRIMARY_KEY="7835G0">
@@ -558,6 +583,11 @@
             <USER_ROLE>NGI Operations Manager</USER_ROLE>
             <ON_ENTITY>NGI_HU</ON_ENTITY>
             <ENTITY_TYPE>ngi</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Service Group Administrator</USER_ROLE>
+            <ON_ENTITY>SERVICE_GROUP_5</ON_ENTITY>
+            <ENTITY_TYPE>serviceGroup</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
 
@@ -666,6 +696,11 @@
             <USER_ROLE>Site Administrator</USER_ROLE>
             <ON_ENTITY>Budapest NRF - Grid Operations</ON_ENTITY>
             <ENTITY_TYPE>site</ENTITY_TYPE>
+        </USER_ROLE>
+        <USER_ROLE>
+            <USER_ROLE>Service Group Administrator</USER_ROLE>
+            <ON_ENTITY>SERVICE_GROUP_2</ON_ENTITY>
+            <ENTITY_TYPE>serviceGroup</ENTITY_TYPE>
         </USER_ROLE>
     </EGEE_USER>
 
