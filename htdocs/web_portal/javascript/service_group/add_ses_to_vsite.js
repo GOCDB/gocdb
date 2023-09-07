@@ -41,7 +41,7 @@ var resultsTable = {
 			addRow(colour, ses[i], table, plusCell(ses[i]));
 			// Swap the row colour
 			if (colour == "") {
-				colour = "1";
+				colour = "even";
 			} else {
 				colour = "";
 			}
@@ -163,7 +163,7 @@ function add(seId) {
 	var firstCell = crossCell(se);
 	addRow(selectedColour, se, table, firstCell, se.id);
 	if (selectedColour == "") {
-		selectedColour = "1";
+		selectedColour = "even";
 	} else {
 		selectedColour = "";
 	}

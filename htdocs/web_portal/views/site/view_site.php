@@ -59,7 +59,7 @@ $showPD = $params['authenticated']; // display Personal Data
             </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/contact_card.png" class="decoration" />
         <table style="clear: both; width: 100%; table-layout: fixed;">
-        <tr class="site_table_row_1">
+        <tr class="site_table_row_even">
             <td class="site_table" style="width: 30%">E-Mail</td><td class="site_table">
             <?php if ($showPD) { ?>
                 <a href="mailto:<?php xecho($site->getEmail()) ?>">
@@ -70,7 +70,7 @@ $showPD = $params['authenticated']; // display Personal Data
             } ?>
             </td>
         </tr>
-        <tr class="site_table_row_2">
+        <tr class="site_table_row_odd">
             <td class="site_table">Telephone</td><td class="site_table"><?php
             if ($showPD) {
                 xecho($site->getTelephone());
@@ -79,7 +79,7 @@ $showPD = $params['authenticated']; // display Personal Data
             }
             ?></td>
         </tr>
-        <tr class="site_table_row_1">
+        <tr class="site_table_row_even">
             <td class="site_table">Emergency Tel</td><td class="site_table"><?php
             if ($showPD) {
                 xecho($site->getEmergencyTel());
@@ -88,7 +88,7 @@ $showPD = $params['authenticated']; // display Personal Data
             }
             ?></td>
         </tr>
-        <tr class="site_table_row_2">
+        <tr class="site_table_row_odd">
             <td class="site_table">CSIRT Tel</td><td class="site_table"><?php
             if ($showPD) {
                 xecho($site->getCsirtTel());
@@ -97,7 +97,7 @@ $showPD = $params['authenticated']; // display Personal Data
             }
             ?></td>
         </tr>
-        <tr class="site_table_row_1">
+        <tr class="site_table_row_even">
             <td class="site_table">CSIRT E-Mail</td>
             <td class="site_table">
             <?php if ($showPD) { ?>
@@ -109,7 +109,7 @@ $showPD = $params['authenticated']; // display Personal Data
             } ?>
             </td>
         </tr>
-        <tr class="site_table_row_2">
+        <tr class="site_table_row_odd">
             <td class="site_table">Emergency E-Mail</td>
             <td class="site_table">
             <?php if ($showPD) { ?>
@@ -121,7 +121,7 @@ $showPD = $params['authenticated']; // display Personal Data
             } ?>
             </td>
         </tr>
-        <tr class="site_table_row_1">
+        <tr class="site_table_row_even">
             <td class="site_table">Helpdesk E-Mail</td>
             <td class="site_table">
             <?php if ($showPD) { ?>
@@ -133,7 +133,7 @@ $showPD = $params['authenticated']; // display Personal Data
             } ?>
             </td>
         </tr>
-        <tr class="site_table_row_2">
+        <tr class="site_table_row_odd">
             <td class="site_table">Notifications</td>
             <td class="site_table">
                 <img src="<?php echo(\GocContextPath::getPath());
@@ -154,20 +154,20 @@ $showPD = $params['authenticated']; // display Personal Data
             </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/project.png" class="decoration" />
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">NGI/ROC</td><td class="site_table">
             <a href="index.php?Page_Type=NGI&amp;id=<?php echo($site->getNgi()->getId()) ?>">
                 <?php xecho($site->getNgi()->getName()) ?>
             </a>
             </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">Infrastructure</td>
                     <td class="site_table">
                         <?php xecho($site->getInfrastructure()->getName()) ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Certification Status</td>
                     <td class="site_table">
             <?php if ($showPD) { ?>
@@ -183,7 +183,7 @@ $showPD = $params['authenticated']; // display Personal Data
                     </td>
                 </tr>
 
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <?php
                     $count = 0;
                     $numScopes = sizeof($params['Scopes']);
@@ -223,7 +223,7 @@ $showPD = $params['authenticated']; // display Personal Data
             </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/network.png" class="decoration" />
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Home URL</td>
             <td class="site_table">
             <?php if ($showPD) { ?>
@@ -235,7 +235,7 @@ $showPD = $params['authenticated']; // display Personal Data
             } ?>
             </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">GIIS URL</td>
                     <td class="site_table">
             <?php
@@ -247,7 +247,7 @@ $showPD = $params['authenticated']; // display Personal Data
             ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">IP Range</td>
                     <td class="site_table">
             <?php
@@ -259,7 +259,7 @@ $showPD = $params['authenticated']; // display Personal Data
             ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table" style="width:20%">IP v6 Range</td>
                     <td class="site_table">
             <?php
@@ -271,7 +271,7 @@ $showPD = $params['authenticated']; // display Personal Data
             ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Domain</td>
                     <td class="site_table">
                         <?php
@@ -293,7 +293,7 @@ $showPD = $params['authenticated']; // display Personal Data
             </span>
             <img src="<?php echo \GocContextPath::getPath() ?>img/pin.png" class="decoration" />
             <table style="clear: both; width: 100%;">
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Country</td><td class="site_table">
             <?php
             if ($showPD) {
@@ -304,7 +304,7 @@ $showPD = $params['authenticated']; // display Personal Data
             ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">Latitude</td><td class="site_table">
             <?php
             if ($showPD) {
@@ -315,7 +315,7 @@ $showPD = $params['authenticated']; // display Personal Data
             ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Longitude</td><td class="site_table">
             <?php
             if ($showPD) {
@@ -326,7 +326,7 @@ $showPD = $params['authenticated']; // display Personal Data
             ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_2">
+                <tr class="site_table_row_odd">
                     <td class="site_table">Time Zone</td><td class="site_table">
             <?php
             if ($showPD) {
@@ -337,7 +337,7 @@ $showPD = $params['authenticated']; // display Personal Data
             ?>
                     </td>
                 </tr>
-                <tr class="site_table_row_1">
+                <tr class="site_table_row_even">
                     <td class="site_table">Location</td><td class="site_table">
             <?php
             if ($showPD) {
