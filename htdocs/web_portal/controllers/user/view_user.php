@@ -156,6 +156,7 @@ function view_user()
         $params['ShowEdit'] = false;
     }
 
+    $params['callingUser'] = $callingUser;
     $params['idString'] = $userService->getDefaultIdString($user);
     $params['projectNamesIds'] = $projectNamesIds;
     $params['role_ProjIds'] = $roleProjectIds;

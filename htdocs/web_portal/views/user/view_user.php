@@ -72,7 +72,9 @@
             </ul>
         </div>
 
-
+        <?php
+        $isCallingUserAdmin = $params['callingUser']->isAdmin();
+        ?>
         <!--  User -->
         <div class="tableContainer" style="width: 55%; float: left;">
             <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">
@@ -127,6 +129,21 @@
                         </td>
                     </tr>
                 <?php } ?>
+                <?php if ($isCallingUserAdmin) : ?>
+                <tr class="site_table_row_1">
+                    <td class="site_table">Last Logged In</td>
+                    <td class="site_table">
+                        <?php
+                        if ($params['user']->getLastLoginDate()) {
+                            xecho(
+                                $params['user']->getLastLoginDate()
+                                    ->format('Y-m-d H:i:s')
+                            );
+                        }
+                        ?>
+                    </td>
+                </tr>
+                <?php endif; ?>
             </table>
         </div>
     </div>
