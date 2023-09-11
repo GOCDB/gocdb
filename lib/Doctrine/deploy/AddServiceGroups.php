@@ -27,7 +27,7 @@ foreach($sts as $st) {
     $desc = "";
     $monitored = false;
     $email = "";
-    $scope = "Local";
+    $scope = "";
 
     foreach ($st as $key => $value) {
         if ((string) $key == "NAME") {
@@ -47,19 +47,26 @@ foreach($sts as $st) {
         if ((string) $key == "CONTACT_EMAIL") {
             $email = (string) $value;
         }
-
-        if ((string) $key == "SCOPE") {
-            $scope = (string) $value;
-        }
     }
 
     $instance->setName($name);
     $instance->setDescription($desc);
     $instance->setMonitored($monitored);
     $instance->setEmail($email);
-    $instance->addScope(getScope($entityManager, $scope));
+
+    // Add the owned scope(s) to the service group
+    $sc = $st->SCOPES;
+    // Iterate through each owned scope
+    foreach ($sc->SCOPE as $sco) {
+        // Retrieve the scope
+        $scope = (string) $sco;
+
+        // Add the scope to the service group
+        $instance->addScope(getScope($entityManager, $scope));
+    }
 
     // Add the owned services to the service group
+    // Iterate through each owned service
     foreach ($st->SERVICE_ENDPOINT as $se) {
         // Retrieve the service's hostname
         $seName = (string) $se->HOSTNAME;
