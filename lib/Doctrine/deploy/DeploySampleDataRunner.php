@@ -54,5 +54,5 @@ echo "Added NGI level Roles OK\n";
 require __DIR__."/AddProjectRoles.php";
 echo "Added EGI level Roles OK\n";
 
-require __DIR__."/AddServiceGroupRoles.php";
+require __DIR__ . "/AddServiceGroupRoles.php";
 echo "Added Service Group level Roles OK\n";

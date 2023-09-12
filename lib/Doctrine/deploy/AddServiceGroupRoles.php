@@ -1,15 +1,16 @@
 <?php
 
-require_once __DIR__."/../bootstrap.php";
-require_once __DIR__."/AddUtils.php";
+require_once __DIR__ . "/../bootstrap.php";
+require_once __DIR__ . "/AddUtils.php";
 
-$usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
+$usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] .
+    "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);
 
-foreach($usersRoles as $user) {
-    foreach($user->USER_ROLE as $role) {
+foreach ($usersRoles as $user) {
+    foreach ($user->USER_ROLE as $role) {
         // Check for blank role, skip if it's blank
-        if((string) $role->USER_ROLE == "") {
+        if ((string) $role->USER_ROLE == "") {
             continue;
         }
 
@@ -29,18 +30,19 @@ foreach($usersRoles as $user) {
          * Error checking: ensure each role type refers to exactly
          * one role type
          */
-        if(count($roleTypes) !== 1) {
-            throw new Exception(count($roleTypes) . " role types found with name: " .
-                $userRole);
+        if (count($roleTypes) !== 1) {
+            throw new Exception(count($roleTypes) . " role types " .
+                "found with name: " . $userRole);
         }
 
-        foreach($roleTypes as $result) {
+        foreach ($roleTypes as $result) {
             $roleType = $result;
         }
 
         // Get user entity
         $userDN = (string) $user->CERTDN;
-        $dql = "SELECT u FROM User u JOIN u.userIdentifiers up WHERE up.keyValue = :keyValue";
+        $dql = "SELECT u FROM User u JOIN u.userIdentifiers up " .
+            "WHERE up.keyValue = :keyValue";
         $users = $entityManager->createQuery($dql)
                                ->setParameter('keyValue', trim($userDN))
                                ->getResult();
@@ -49,12 +51,12 @@ foreach($usersRoles as $user) {
          * Error checking: ensure each "user" refers to exactly
          * one user
          */
-        if(count($users) !== 1) {
+        if (count($users) !== 1) {
             throw new Exception(count($users) . " users found with DN: " .
                 $userDN);
         }
 
-        foreach($users as $doctrineUser) {
+        foreach ($users as $doctrineUser) {
             $doctrineUser = $doctrineUser;
         }
 
@@ -69,16 +71,21 @@ foreach($usersRoles as $user) {
          * Error checking: ensure each "service group" refers to exactly
          * one service group
          */
-        if(count($serviceGroups) !== 1) {
-            throw new Exception(count($serviceGroups) . " Service Groups found name: " .
-                $sgName);
+        if (count($serviceGroups) !== 1) {
+            throw new Exception(count($serviceGroups) . " Service Groups " .
+                "found name: " . $sgName);
         }
 
-        foreach($serviceGroups as $serviceGroup) {
+        foreach ($serviceGroups as $serviceGroup) {
             $serviceGroup = $serviceGroup;
         }
 
-        $doctrineRole = new Role($roleType, $doctrineUser, $serviceGroup, 'STATUS_GRANTED');
+        $doctrineRole = new Role(
+            $roleType,
+            $doctrineUser,
+            $serviceGroup,
+            'STATUS_GRANTED'
+        );
         $entityManager->persist($doctrineRole);
     }
 }
