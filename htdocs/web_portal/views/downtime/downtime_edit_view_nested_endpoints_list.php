@@ -1,5 +1,5 @@
 <?php
-$services = $params['services'];
+$siteIdWithServices = $params['siteIdWithServices'];
 $dt = $params['downtime'];
 $configService = \Factory::getConfigService();
 
@@ -26,8 +26,8 @@ foreach($dt->getEndpointLocations() as $affectedEndpoints){
         style="width:99%; margin-left:1%"
         onChange="selectServicesEndpoint()" multiple>
 <?php
-foreach ($services as $siteID => $siteServiceList) {
-    foreach ($siteServiceList as $service) {
+foreach ($siteIdWithServices as $siteID => $services) {
+    foreach ($services as $service) {
         $count=0;
 
         // Set the html 'SELECTED' attribute on the <option> only if this service was affected.

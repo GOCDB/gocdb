@@ -14,6 +14,7 @@
     }
 
     echo '<ul>';
+
     foreach ($params['submittedDowntimes'] as $siteName => $downtimeDetails) {
         echo '<li>';
         echo $siteName . ': ';
@@ -22,6 +23,7 @@
         echo '">Downtime ' . $downtimeDetails->getId() . '</a>';
         echo '</li>';
     }
+
     echo '</ul>';
     ?>
 </div>

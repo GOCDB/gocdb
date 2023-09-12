@@ -392,9 +392,8 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         $('#chooseServices').load(
             'index.php?Page_Type=Edit_Downtime_view_endpoint_tree&dt_id='
             + dtId,
-            {site_id: siteId},
-            function(response, status, xhr)
-            {
+            { site_id: siteId },
+            function(response, status, xhr) {
                 if (status == "success") {
                     validate();
                 }

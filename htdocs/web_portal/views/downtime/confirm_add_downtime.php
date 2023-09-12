@@ -21,7 +21,7 @@ if(isset($params['isEdit'])){
     echo 'Please review your ';
 
     if (!($edit)) {
-        if ($params['SINGLE_SITE']) {
+        if ($params['SELECTED_SINGLE_SITE']) {
             echo 'chosen site and the downtime ';
         } else {
             echo 'chosen sites and their downtimes ';
@@ -54,24 +54,25 @@ if(isset($params['isEdit'])){
         xecho($params['DOWNTIME']['END_TIMESTAMP']);
     ?></li>
 
-    <?php foreach ($serviceWithEndpoints as $siteID => $siteDetails) : ?>
+    <?php foreach ($serviceWithEndpoints as $siteID => $serviceIDs) : ?>
         <?php
-         $siteName = $params['SITE_LEVEL_DETAILS'][$siteID]['siteName'];
+        $siteDetails = \Factory::getSiteService()->getSite($siteID);
+        $siteName = $siteDetails->getShortName();
 
-         echo '<li><strong>Site Name: </strong>';
-         echo $siteName;
-         echo '</li>';
+        echo '<li><strong>Site Name: </strong>';
+        echo $siteName;
+        echo '</li>';
         ?>
 
         <ul>
             <li>
                 <b>Affecting Service and Endpoint(s):</b>
 
-                <?php foreach ($siteDetails as $serviceID => $data) : ?>
+                <?php foreach ($serviceIDs as $serviceID => $endpointsInfo) : ?>
                     <?php
-                    $endpoints = $data['endpoints'];
+                    $endpointIDs = $endpointsInfo['endpointIDs'];
                     $service = \Factory::getServiceService()
-                                    ->getService($serviceID);
+                        ->getService($serviceID);
                     $safeHostName = xssafe($service->getHostname());
                     ?>
 
@@ -85,19 +86,22 @@ if(isset($params['isEdit'])){
                             );
                             echo $safeHostName;
                             ?>
-        <ul>
-        <?php
-        foreach($endpoints as $id){
-            $endpoint = \Factory::getServiceService()->getEndpoint($id);
-            if($endpoint->getName() != ''){
-                $name = xssafe($endpoint->getName());
-            }else{
-                $name = xssafe("myEndpoint");
-            }
-            echo "<li>" . $name . "</li>";
-            }
-        ?>
-        </ul>
+                            <ul>
+                                <?php
+                                foreach ($endpointIDs as $endpointID) {
+                                    $endpoint = \Factory::getServiceService()
+                                        ->getEndpoint($endpointID);
+
+                                    if ($endpoint->getName() != '') {
+                                        $name = xssafe($endpoint->getName());
+                                    } else {
+                                        $name = xssafe("myEndpoint");
+                                    }
+
+                                    echo "<li>" . $name . "</li>";
+                                }
+                                ?>
+                            </ul>
                         </li>
                     </ul>
                 <?php endforeach; ?>

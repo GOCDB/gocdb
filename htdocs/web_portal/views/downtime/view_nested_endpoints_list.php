@@ -1,5 +1,5 @@
 <?php
-$services = $params['services'];
+$siteIdWithServices = $params['siteIdWithServices'];
 $configService = \Factory::getConfigService();
 
 ?>
@@ -7,8 +7,8 @@ $configService = \Factory::getConfigService();
 <label> Select Affected Services+Endpoints (Ctrl+click to select)</label>
 <select name="IMPACTED_IDS[]" id="Select_Services" size="10" class="form-control" onclick="" style="width:99%; margin-left:1%" onChange="selectServicesEndpoint()" multiple>
 <?php
-foreach ($services as $siteID => $siteServiceList) {
-    foreach ($siteServiceList as $service) {
+foreach ($siteIdWithServices as $siteID => $services) {
+    foreach ($services as $service) {
         $count=0;
 
         echo "<option value=\"" . $siteID . ":" . $service->getId() . ":s"

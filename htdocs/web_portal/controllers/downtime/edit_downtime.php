@@ -94,12 +94,25 @@ function submit(\User $user = null) {
         $dt = $serv->getDowntime($downtimeInfo['DOWNTIME']['EXISTINGID']);
         $downtimeInfo = unsetVariables($downtimeInfo, 'edit');
 
-        foreach ($downtimeInfo['SITE_LEVEL_DETAILS'] as $siteIDs) {
-            $downtimeInfo['Impacted_Services'] = $siteIDs['services'];
-            $downtimeInfo['Impacted_Endpoints'] = $siteIDs['endpoints'];
+        foreach (
+            $downtimeInfo['SERVICE_WITH_ENDPOINTS'] as $serviceIDs
+        ) {
+            $serviceIDList = [];
+            $endpointIDList = [];
+
+            foreach ($serviceIDs as $serviceID => $endpointsInfo) {
+                $serviceIDList[] = $serviceID;
+                $endpointIDList = array_merge(
+                    $endpointIDList,
+                    $endpointsInfo['endpointIDs']
+                );
+            }
+
+            $downtimeInfo['Impacted_Services'] = $serviceIDList;
+            $downtimeInfo['Impacted_Endpoints'] = $endpointIDList;
         }
 
-        unset($downtimeInfo['SITE_LEVEL_DETAILS']);
+        unset($downtimeInfo['SERVICE_WITH_ENDPOINTS']);
 
         $params['dt'] = $serv->editDowntime($dt, $downtimeInfo, $user);
 
@@ -109,24 +122,17 @@ function submit(\User $user = null) {
         $downtimeInfo = getDtDataFromWeb();
 
         //Need to sort the impacted_ids into impacted services and impacted endpoints
-        list($siteLevelDetails, $serviceWithEndpoints) =
-            endpointToServiceMapping($downtimeInfo['IMPACTED_IDS']);
+        $downtimeInfo['SERVICE_WITH_ENDPOINTS'] = endpointToServiceMapping(
+            $downtimeInfo['IMPACTED_IDS']
+        );
 
         // Delete the unsorted IDs from the downtime info
         unset($downtimeInfo['IMPACTED_IDS']);
 
-        if (!count($siteLevelDetails) > 1) {
-            $downtimeInfo['SINGLE_SITE'] = true;
+        if (count($downtimeInfo['SERVICE_WITH_ENDPOINTS']) === 1) {
+            $downtimeInfo['SELECTED_SINGLE_SITE'] = true;
         }
 
-        list($siteLevelDetails, $serviceWithEndpoints) =
-            addParentServiceForEndpoints(
-                $serviceWithEndpoints,
-                $siteLevelDetails
-            );
-
-        $downtimeInfo['SITE_LEVEL_DETAILS'] = $siteLevelDetails;
-        $downtimeInfo['SERVICE_WITH_ENDPOINTS'] = $serviceWithEndpoints;
         //Pass the edit variable so the confirm_add view works as the confirm edit view.
         $downtimeInfo['isEdit'] = true;
         show_view("downtime/confirm_add_downtime.php", $downtimeInfo);

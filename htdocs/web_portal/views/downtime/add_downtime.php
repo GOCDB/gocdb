@@ -69,8 +69,8 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
 
         <div class="input-warning" id="invalidSelection">
             <p style="color: #D31F1F;">
-                When selecting multiple sites, you must use the
-                <q>Enter Times In: UTC<q> option.
+                WARNING: When selecting multiple sites, you must use the
+                <q>Enter Times In: UTC</q> option.
             </p>
         </div>
 
@@ -242,7 +242,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
            validate();
        });
 
-       hasSitesWithSingleTimezones();
+       selectedValidTimezoneUsecase();
 
     });
 
@@ -305,20 +305,21 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
         }
    }
 
-    function hasSitesWithSingleTimezones()
+    function selectedValidTimezoneUsecase()
     {
-        let siteId = $('#Select_Sites').val();
-        let selectedSiteTZ = $('#siteRadioButton').is(':checked');
-        let hasSingleTimezone = true;
+        let siteID = $('#Select_Sites').val();
+        let selectedSiteTz = $('#siteRadioButton').is(':checked');
+        let validSelection = true;
 
-        if((siteId && siteId.length > 1) && selectedSiteTZ) {
-            hasSingleTimezone = false;
+        if ((siteID && siteID.length > 1) && selectedSiteTz) {
+            validSelection = false;
+
             $('#invalidSelection').show();
         } else {
             $('#invalidSelection').hide();
         }
 
-        return hasSingleTimezone;
+        return validSelection;
     }
 
    /*
@@ -466,15 +467,15 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
         }
 
         //----------Verify whether the site has mutiple timezones----------//
-        const hasSingleTimezone = hasSitesWithSingleTimezones();
+        const timezoneValid = selectedValidTimezoneUsecase();
 
         //----------Set the Button based on validate status-------------//
         if (
-            epValid &&
-            severityValid &&
-            descriptionValid &&
-            datesValid &&
-            hasSingleTimezone
+            epValid
+            && severityValid
+            && descriptionValid
+            && datesValid
+            && timezoneValid
         ) {
             $('#submitDowntime_btn').addClass('btn btn-success');
             $('#submitDowntime_btn').prop('disabled', false);
@@ -534,9 +535,8 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
             $('#chooseEndpoints').empty(); //Remove any previous content from the endpoints select list
             $('#chooseServices').load(
                 'index.php?Page_Type=Downtime_view_endpoint_tree',
-                {site_id: siteId},
-                function(response, status, xhr)
-                {
+                { site_id: siteId },
+                function(response, status, xhr) {
                     if (status == "success") {
                         validate();
                     }
@@ -569,14 +569,14 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
            //console.log('fetching selected site timezone label');
            $.get(
                 'index.php',
-                {Page_Type: 'Add_Downtime', siteid_timezone: siteId[0]},
-                function(data)
-                {
-                    var jsonRsp = JSON.parse(data);
+                { Page_Type: 'Add_Downtime', siteid_timezone: siteId[0] },
+                function(data) {
+                    let jsonRsp = JSON.parse(data);
                     // Update global variables - used when calculating DT rules
                     TARGETTIMEZONEID = jsonRsp[0];
                     // Returns the targetTimezone offset in seconds from UTC
                     TARGETTIMEZONEOFFSETFROMUTCSECS = jsonRsp[1];
+
                     $('#siteTimezoneText').val(TARGETTIMEZONEID);
 
                     updateStartEndTimesInUtc();
@@ -585,6 +585,7 @@ rather than the Site entities themselves, and specify tz, offset in the DTO/JSON
         } else {
             TARGETTIMEZONEID = "UTC";
             TARGETTIMEZONEOFFSETFROMUTCSECS = 0;
+
             $('#siteTimezoneText').val(TARGETTIMEZONEID);
 
             updateStartEndTimesInUtc();

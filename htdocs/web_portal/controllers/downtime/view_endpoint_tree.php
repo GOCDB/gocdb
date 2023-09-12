@@ -36,14 +36,17 @@ function getServiceandEndpointList() {
         throw new Exception("Please select at least one site.");
     }
 
-    $services = new ArrayCollection();
+    $siteIdWithServices = new ArrayCollection();
 
-    foreach ($siteIDs as $value) {
-        $site = \Factory::getSiteService()->getSite($value);
-        $services[$value] = $site->getServices();
+    foreach ($siteIDs as $siteID) {
+        // Using '+' to ensure we have integer value after type coercion.
+        $siteID = +$siteID;
+        $site = \Factory::getSiteService()->getSite($siteID);
+        $siteIdWithServices[$siteID] = $site->getServices();
     }
 
-    $params['services'] = $services;
+    $params['siteIdWithServices'] = $siteIdWithServices;
+
     show_view("downtime/view_nested_endpoints_list.php", $params, null, true);
 }
 
@@ -65,14 +68,16 @@ function editDowntimePopulateEndpointTree() {
         throw new Exception("A downtime id must be specified");
     }
 
-    $services = new ArrayCollection();
+    $siteIdWithServices = new ArrayCollection();
 
-    foreach ($siteIDs as $value) {
-        $site = \Factory::getSiteService()->getSite($value);
-        $services[$value] = $site->getServices();
+    foreach ($siteIDs as $siteID) {
+        // Using '+' to ensure we have integer value after type coercion.
+        $siteID = +$siteID;
+        $site = \Factory::getSiteService()->getSite($siteID);
+        $siteIdWithServices[$siteID] = $site->getServices();
     }
 
-    $params['services'] = $services;
+    $params['siteIdWithServices'] = $siteIdWithServices;
 
     $downtime = \Factory::getDowntimeService()->getDowntime($_REQUEST['dt_id']);
     $params['downtime'] = $downtime;

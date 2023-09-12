@@ -22,78 +22,42 @@
  /*====================================================== */
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 
-use DateTime;
-use DateTimeZone;
-
 /**
  * Sorts the impacted IDs into impacted services and impacted endpoints.
  *
  * @param array $impactedIDs An array of `impactedIDs` which user has selected.
  *
- * @return array An array containing
- *               `$siteLevelDetails` and `serviceWithEndpoints`.
+ * @return array `serviceWithEndpoints` An array with
+ *                'SiteID->serviceID->EndpointID(s)' details.
  */
 function endpointToServiceMapping($impactedIDs)
 {
-    $siteLevelDetails = [];
     $serviceWithEndpoints = [];
 
     /**
-     * For each impacted ID,
-     * sort between endpoints and services using the prepended letter.
+     * For each impacted ID, sort between endpoints and services
+     * using the prepended letter.
      */
-    foreach ($impactedIDs as $id) {
+    foreach ($impactedIDs as $impactedID) {
+        $indexPosition = 0;
+
+        list($siteID, $serviceID, $idType) = explode(':', $impactedID);
         /**
-         * `$siteNumber` => It's about Site ID
-         * `$parentService` => It's about service ID endpoint belongs too
-         * `idType` => It's about to differentiate
-         *             the endpoint vs service selection.
+         * `idType` => It will have either `s` followed by service ID or
+         *             `e` followed by endpoint ID.
          */
-        list($siteNumber, $parentService, $idType) = explode(':', $id);
+        $trimmedID = str_replace(['s', 'e'], '', $idType);
 
-        $type = strpos($idType, 's') !== false ? 'services' : 'endpoints';
-        $id = str_replace(['s', 'e'], '', $idType);
-
-        $siteLevelDetails[$siteNumber][$type][] = $id;
-        $serviceWithEndpoints[$siteNumber][$parentService][$type][] = $id;
-    }
-
-    return [$siteLevelDetails, $serviceWithEndpoints];
-}
-
-/**
- * If a user has selected endpoints but not the parent service here
- * we will add the service to maintain the link between a downtime
- * having both the service and the endpoint.
- *
- * @param array $servWithEndpoints   Used for displaying affected service
- *                                   with endpoint(s).
- * @param array $siteDetails         Each site ID will have a `services` that
- *                                   stores all affected service ID(s) and an
- *                                   `endpoints` that stores all affected
- *                                   endpoint ID(s).
- *
- * @return array An array containing `$siteDetails` and `servWithEndpoints`.
- */
-function addParentServiceForEndpoints(
-    $servWithEndpoints,
-    $siteDetails
-) {
-    foreach ($servWithEndpoints as $siteID => $siteData) {
-        $siteDetails[$siteID]['services'] = [];
-
-        $newSite = \Factory::getSiteService()->getSite($siteID);
-        $siteDetails[$siteID]['siteName'] = $newSite->getShortName();
-
-        foreach (array_keys($siteData) as $serviceID) {
-            $servWithEndpoints[$siteID][$serviceID]['services'] = [];
-            $servWithEndpoints[$siteID][$serviceID]['services'][] = $serviceID;
-            // Ensuring that service IDs are unique for the selected sites.
-            $siteDetails[$siteID]['services'][] = $serviceID;
+        if (strpos($idType, 's') === $indexPosition) {
+            continue;
         }
+
+        // Using '+' to ensure we have an integer value after type coercion.
+        $serviceWithEndpoints[$siteID][$serviceID]['endpointIDs'][] =
+            +$trimmedID;
     }
 
-    return [$siteDetails, $servWithEndpoints];
+    return $serviceWithEndpoints;
 }
 
 /**
@@ -105,15 +69,12 @@ function addParentServiceForEndpoints(
  */
 function unsetVariables($downtimeObj, $fromLocation)
 {
-    if ($fromLocation == "add") {
-        unset($downtimeObj['SERVICE_WITH_ENDPOINTS']);
-        unset($downtimeObj['SINGLE_SITE']);
-    } else {
+    if ($fromLocation == "edit") {
         unset($downtimeObj['DOWNTIME']['EXISTINGID']);
         unset($downtimeObj['isEdit']);
-        unset($downtimeObj['SERVICE_WITH_ENDPOINTS']);
-        unset($downtimeObj['SINGLE_SITE']);
     }
+
+    unset($downtimeObj['SELECTED_SINGLE_SITE']);
 
     return $downtimeObj;
 }

@@ -76,16 +76,32 @@ function submit(\User $user = null) {
          * If confirmed by an user, submit the details of affected services
          * and endpoints along with other details for each individual site.
          */
+        $params = [];
         $downtimeInfo = json_decode($_POST['newValues'], TRUE);
         $serv = \Factory::getDowntimeService();
         $downtimeInfo = unsetVariables($downtimeInfo, 'add');
-        $params = [];
 
-        foreach ($downtimeInfo['SITE_LEVEL_DETAILS'] as $siteID) {
-            $downtimeInfo['Impacted_Services'] = $siteID['services'];
-            $downtimeInfo['Impacted_Endpoints'] = $siteID['endpoints'];
+        foreach (
+            $downtimeInfo['SERVICE_WITH_ENDPOINTS'] as $siteID => $serviceIDs
+        ) {
+            $serviceIDList = [];
+            $endpointIDList = [];
 
-            $params['submittedDowntimes'][$siteID['siteName']] =
+            foreach ($serviceIDs as $serviceID => $endpointsInfo) {
+                $serviceIDList[] = $serviceID;
+                $endpointIDList = array_merge(
+                    $endpointIDList,
+                    $endpointsInfo['endpointIDs']
+                );
+            }
+
+            $downtimeInfo['Impacted_Services'] = $serviceIDList;
+            $downtimeInfo['Impacted_Endpoints'] = $endpointIDList;
+
+            $siteDetails = \Factory::getSiteService()->getSite($siteID);
+            $siteName = $siteDetails->getShortName();
+
+            $params['submittedDowntimes'][$siteName] =
                 $serv->addDowntime($downtimeInfo, $user);
         }
 
@@ -94,24 +110,19 @@ function submit(\User $user = null) {
         //Show user confirmation screen with their input
         $downtimeInfo = getDtDataFromWeb();
 
-        list($siteLevelDetails, $serviceWithEndpoints) =
-            endpointToServiceMapping($downtimeInfo['IMPACTED_IDS']);
+        $downtimeInfo['SERVICE_WITH_ENDPOINTS'] = endpointToServiceMapping(
+            $downtimeInfo['IMPACTED_IDS']
+        );
 
-        // Delete the unsorted IDs from the downtime info
+       /**
+        * Delete the `IMPACTED_IDS` from the `downtimeInfo` as we
+        * extracted the details we need in `endpointToServiceMapping`.
+        */
         unset($downtimeInfo['IMPACTED_IDS']);
 
-        if (!count($siteLevelDetails) > 1) {
-            $downtimeInfo['SINGLE_SITE'] = true;
+        if (count($downtimeInfo['SERVICE_WITH_ENDPOINTS']) === 1) {
+            $downtimeInfo['SELECTED_SINGLE_SITE'] = true;
         }
-
-        list($siteLevelDetails, $serviceWithEndpoints) =
-            addParentServiceForEndpoints(
-                $serviceWithEndpoints,
-                $siteLevelDetails
-            );
-
-        $downtimeInfo['SITE_LEVEL_DETAILS'] = $siteLevelDetails;
-        $downtimeInfo['SERVICE_WITH_ENDPOINTS'] = $serviceWithEndpoints;
 
         show_view("downtime/confirm_add_downtime.php", $downtimeInfo);
     }
