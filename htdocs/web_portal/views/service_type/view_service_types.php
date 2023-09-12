@@ -5,22 +5,9 @@
                 Service Types
         </h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-            Click on the name of a service type to edit or delete it.
+            All Service Types in GOCDB.
         </span>
     </div>
-
-    <!-- Only show add when not in read only mode-->
-    <?php if (!$params['portalIsReadOnly']) :?>
-        <div style="float: right;">
-            <center>
-                <a href="index.php?Page_Type=Admin_Add_Service_Type">
-                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="25px" />
-                <br />
-                <span>Add Service <br> Type </span>
-                </a>
-            </center>
-        </div>
-    <?php endif; ?>
 
     <?php $numberOfServiceTypes = sizeof($params['ServiceTypes'])?>
     <div class="listContainer">
@@ -37,6 +24,7 @@
             </tr>
             <?php
             $num = 2;
+
             if ($numberOfServiceTypes > 0) {
                 foreach ($params['ServiceTypes'] as $serviceType) {
                     ?>
@@ -44,9 +32,14 @@
                     <td class="site_table" style="width: 30%">
                         <div style="background-color: inherit;">
                             <span style="vertical-align: middle;">
-                                <a href="index.php?Page_Type=Admin_Service_Type&amp;id=<?php echo $serviceType->getId() ?>">
-                                    <?php xecho($serviceType->getName()); ?>
-                                </a>
+                                <?php
+                                echo "<a href=\"index.php"
+                                    . "?Page_Type=Service_Type"
+                                    . "&amp;id=" . $serviceType->getId()
+                                    . "\">"
+                                    . $serviceType->getName()
+                                    . "</a>";
+                                ?>
                             </span>
                         </div>
                     </td>

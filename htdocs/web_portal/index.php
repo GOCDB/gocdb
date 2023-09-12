@@ -450,14 +450,14 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/admin/move_service_end_point.php';
             move_service_end_point();
             break;
-        case "Admin_Service_Types":
+        case "Service_Types":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/admin/view_service_types.php';
+            require_once __DIR__.'/controllers/service_type/view_service_types.php';
             show_all();
             break;
-        case "Admin_Service_Type":
+        case "Service_Type":
             rejectIfNotAuthenticated();
-            require_once __DIR__.'/controllers/admin/view_service_type.php';
+            require_once __DIR__.'/controllers/service_type/view_service_type.php';
             view_service_type();
             break;
         case "Admin_Edit_Service_Type":

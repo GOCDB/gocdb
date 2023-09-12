@@ -5,7 +5,7 @@ $allowMonitoringException = xssafe($params['AllowMonitoringExtension']);
 $id = $params['ID'];
 $services = $params['Services'];
 $SEsCount = sizeof($services);
-$portalIsReadOnly = $params['portalIsReadOnly'];
+$isUserAdmin = $params['isUserAdmin'];
 ?>
 
 
@@ -20,8 +20,9 @@ $portalIsReadOnly = $params['portalIsReadOnly'];
     </div>
 
     <!--Edit/Delete buttons-->
-    <!-- Only show when portal is not read only mode -->
-    <?php if (!$portalIsReadOnly) :?>
+    <!--Enable edit and delete functionality ONLY when
+        the web portal is accessed by an Admin.-->
+    <?php if ($isUserAdmin) :?>
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Admin_Edit_Service_Type&amp;id=<?php echo $id ?>">
