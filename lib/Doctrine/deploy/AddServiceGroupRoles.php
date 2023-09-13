@@ -35,9 +35,9 @@ foreach ($usersRoles as $user) {
                 "found with name: " . $userRole);
         }
 
-        foreach ($roleTypes as $result) {
-            $roleType = $result;
-        }
+        // Set $roleType as the first and only role type in the
+        // roleTypes array
+        $roleType = $roleTypes[0];
 
         // Get user entity
         $userDN = (string) $user->CERTDN;
@@ -56,9 +56,8 @@ foreach ($usersRoles as $user) {
                 $userDN);
         }
 
-        foreach ($users as $doctrineUser) {
-            $doctrineUser = $doctrineUser;
-        }
+        // Set $doctrineUser as the first and only user in the users array
+        $doctrineUser = $users[0];
 
         // get serviceGroup entity
         $sgName = (string) $role->ON_ENTITY;
@@ -76,9 +75,9 @@ foreach ($usersRoles as $user) {
                 "found name: " . $sgName);
         }
 
-        foreach ($serviceGroups as $serviceGroup) {
-            $serviceGroup = $serviceGroup;
-        }
+        // Set $serviceGroup as the first and only service group in the
+        // serviceGroups array
+        $serviceGroup = $serviceGroups[0];
 
         $doctrineRole = new Role(
             $roleType,
