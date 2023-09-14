@@ -13,7 +13,7 @@
  * limitations under the License.
  */
 
-require_once __DIR__."/AddUtils.php";
+require_once __DIR__ . "/AddUtils.php";
 
 if(isset($argv[1])) {
     $GLOBALS['dataDir'] = $argv[1];
@@ -23,17 +23,17 @@ if(isset($argv[1])) {
 
 print_r("Deploying Required Lookup Data\n");
 
-require __DIR__."/AddInfrastructures.php";
+require __DIR__ . "/AddInfrastructures.php";
 echo "Added Infrastructures OK\n";
 
-require __DIR__."/AddCountries.php";
+require __DIR__ . "/AddCountries.php";
 echo "Added Countries OK\n";
 
-require __DIR__."/AddRoleTypes.php";
+require __DIR__ . "/AddRoleTypes.php";
 echo "Added Roles OK\n";
 
-require __DIR__."/AddCertificationStatuses.php";
+require __DIR__ . "/AddCertificationStatuses.php";
 echo "Added Certification Statuses OK\n";
 
-require __DIR__."/AddServiceTypes.php";
+require __DIR__ . "/AddServiceTypes.php";
 echo "Added Service Types OK\n";

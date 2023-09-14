@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__."/../bootstrap.php";
-require_once __DIR__."/AddUtils.php";
+require_once __DIR__ . "/../bootstrap.php";
+require_once __DIR__ . "/AddUtils.php";
 
 /**
  * AddEgiRoles.php: Loads a list of roles from the get_user PI

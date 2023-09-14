@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__."/../bootstrap.php";
-require_once __DIR__."/AddUtils.php";
+require_once __DIR__ . "/../bootstrap.php";
+require_once __DIR__ . "/AddUtils.php";
 
 $usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);

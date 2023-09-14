@@ -1,8 +1,8 @@
 <?php
 
 require_once __DIR__ . "/../bootstrap.php";
-require_once __DIR__."/AddUtils.php";
-require_once __DIR__.'/../entities/AlreadyLinkedException.php';
+require_once __DIR__ . "/AddUtils.php";
+require_once __DIR__ . "/../entities/AlreadyLinkedException.php";
 
 
 // For each of the hostnames below, GOCDB has two SRM services
@@ -138,7 +138,8 @@ foreach ($downtimes as $downtimeXml) {
                     $twoSes = true;
                 } else {
                     // we will have to deal with this case and link the
-                    throw new Exception("More than duplicate 2 SEs found: ".$services[0]->getHostName());
+                    throw new Exception("More than duplicate 2 SEs found: " .
+                        $services[0]->getHostName());
                 }
 
                 $knownDup = false;

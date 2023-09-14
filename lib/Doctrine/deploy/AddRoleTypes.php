@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__."/../bootstrap.php";
-require_once __DIR__."/AddUtils.php";
-require_once __DIR__."/../../Gocdb_Services/RoleConstants.php";
+require_once __DIR__ . "/../bootstrap.php";
+require_once __DIR__ . "/AddUtils.php";
+require_once __DIR__ . "/../../Gocdb_Services/RoleConstants.php";
 /* AddRoleTypes.php: Manually inserts role types into
  * the doctrine prototype.
  */

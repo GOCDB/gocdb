@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__."/../bootstrap.php";
-require_once __DIR__."/AddUtils.php";
+require_once __DIR__ . "/../bootstrap.php";
+require_once __DIR__ . "/AddUtils.php";
 
 /**
  * AddNGIs.php: Loads a list of NGIs from an XML file and inserts them into
