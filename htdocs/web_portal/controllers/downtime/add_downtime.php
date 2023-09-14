@@ -25,6 +25,8 @@ require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__.'/../utils.php';
 require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 
+use Exception;
+
 /**
  * Controller for a new_downtime request.
  *
@@ -158,6 +160,18 @@ function draw(\User $user = null) {
         die(json_encode(array('UTC', 0)));
     }
 
+    /**
+     * URL Mapping for `site` and `se` (Service Endpoint).
+     *
+     * If a user wants to add downtime to a specific
+     * `site` and `se` (Service Endpoint), the portal will
+     * pre-select the service endpoint corresponding to the `se` parameter
+     * and the endpoints of that service.
+     */
+    elseif (isset($_GET['site']) && isset($_GET['se'])) {
+        displaySiteAndSeEndpoints($user);
+    }
+
     // URL Mapping
     // If the user wants to add a downtime to a specific site, show only that site's SEs
     else if(isset($_GET['site'])) {
@@ -210,10 +224,60 @@ function draw(\User $user = null) {
             throw new Exception("You don't hold a role over a NGI "
                     . "or site with child services.");
         }
-        $params = array('ses' => $ses, 'nowUtc' => $nowUtcDateTime->format('H:i T'));
+
+        $params = array(
+            'ses' => $ses,
+            'userCannotPreSelect' => true
+        );
+
         show_view("downtime/add_downtime.php", $params);
         die();
     }
 }
 
-?>
+/**
+ * Helper method to fetch service endpoint detail(s) associated
+ * with `site` provided.
+ * This will help portal to pre-select endpoints corresponding
+ * to the `se` (Service Endpoint) provided.
+ */
+function displaySiteAndSeEndpoints($user)
+{
+    $site = \Factory::getSiteService()->getSite($_GET['site']);
+    $ses = $site->getServices();
+
+    if (!hasEditPermission($site, $user)) {
+        throwPermissionException($site, true);
+    }
+
+    $params = [
+        'ses' => $ses
+    ];
+
+    show_view("downtime/add_downtime.php", $params);
+    die();
+}
+
+// Validates if the user has edit permission for the given site.
+function hasEditPermission($site, $user)
+{
+    return \Factory::getRoleActionAuthorisationService()
+        ->authoriseAction(\Action::EDIT_OBJECT, $site, $user)
+        ->getGrantAction();
+}
+
+/**
+ * Handles exceptions for permission-related issues.
+ *
+ * @throws Exception
+ */
+function throwPermissionException($resource, $isGeneric)
+{
+    if ($isGeneric) {
+        $errorMsg = "You do not have permission over $resource";
+    } else {
+        $errorMsg = "$resource";
+    }
+
+    throw new Exception($errorMsg);
+}
