@@ -15,6 +15,7 @@
         <xs:element name="Sites" type="showType" minOccurs="0"/>
         <xs:element name="ServiceGroups" type="showType" minOccurs="0"/>
         <xs:element name="Services" type="showType" minOccurs="0"/>
+        <xs:element name="ServiceTypes" type="showType" minOccurs="0"/>
         <xs:element name="Scopes" type="showType" minOccurs="0"/>
         <xs:element name="RoleActionMappings" type="showType" minOccurs="0"/>
         <xs:element name="AddSite" type="showType" minOccurs="0"/>
@@ -26,9 +27,9 @@
         <xs:element name="HelpAndContact" type="showType" minOccurs="0"/>
         <xs:element name="AddNGI" type="showType" minOccurs="0"/>
         <xs:element name="AddProject" type="showType" minOccurs="0"/>
+        <xs:element name="AddServiceType" type="showType" minOccurs="0"/>
         <xs:element name="MoveServiceEndPoint" type="showType" minOccurs="0"/>
         <xs:element name="MoveSite" type="showType" minOccurs="0"/>
-        <xs:element name="ServiceTypes" type="showType" minOccurs="0"/>
         <xs:element name="Users" type="showType" minOccurs="0"/>
     </xs:all>
   </xs:complexType>

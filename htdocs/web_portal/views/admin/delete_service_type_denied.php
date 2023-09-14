@@ -3,7 +3,10 @@
 <div class="rightPageContainer">
     <h1 class="Success">Deletion Failed</h1><br />
     The service type '
-    <a href="index.php?Page_Type=Admin_Service_Type&amp;id=<?php echo $serviceType->getId();?>">
+    <?php
+    $serviceTypeRelPath = "index.php?Page_Type=Service_Type";
+    ?>
+    <a href="<?= $serviceTypeRelPath; ?>&amp;id=<?= $serviceType->getId(); ?>">
     <?php xecho($serviceType->getName());?>
     </a>'
     can not be deleted as the following services are still of this type:

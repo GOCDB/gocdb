@@ -24,14 +24,17 @@ require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
 
 function view_service_type()
 {
-     //Check the user has permission to see the page, will throw exception
-    //if correct permissions are lacking
-    checkUserIsAdmin();
+    $params = [];
+
+    $identifier = Get_User_Principle();
+    $user = \Factory::getUserService()->getUserByPrinciple($identifier);
+
+    if ($user != null) {
+        $params['isUserAdmin'] = checkUserForAdminCredentials($user);
+    }
     if (!isset($_REQUEST['id']) || !is_numeric($_REQUEST['id'])) {
         throw new Exception("An id must be specified");
     }
-    $dn = Get_User_Principle();
-    $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
     $serv = \Factory::getServiceTypeService();
     /**
@@ -39,16 +42,11 @@ function view_service_type()
      */
     $serviceType = $serv ->getServiceType($_REQUEST['id']);
 
-    $params = [];
     $params['Name'] = $serviceType->getName();
     $params['Description'] = $serviceType->getDescription();
     $params['ID'] = $serviceType->getId();
     $params['AllowMonitoringException'] = $serviceType->getAllowMonitoringException();
     $params['Services'] = $serv->getServices($params['ID']);
-    /**
-     * @var \User $user
-     */
-    $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
 
-    show_view("admin/view_service_type.php", $params, $params['Name']);
+    show_view("service_type/view_service_type.php", $params, $params['Name']);
 }

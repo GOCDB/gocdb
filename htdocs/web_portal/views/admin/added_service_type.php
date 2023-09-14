@@ -4,7 +4,7 @@
 
     <?php require_once __DIR__ . '/../fragments/serviceTypeInfo.php'; ?>
 
-    <a href="index.php?Page_Type=Admin_Service_Type&amp;id=<?php echo $params['ID'] ?>">
+    <a href="index.php?Page_Type=Service_Type&amp;id=<?= $params['ID']; ?>">
      Click here</a> to view the <?php xecho($params['Name'])?> service type.
 
 

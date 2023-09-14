@@ -817,3 +817,14 @@ function getReadPDParams($user)
     }
     return array($userIsAdmin, $authenticated);
 }
+
+/**
+ * Helper to identify whether the user is an Admin or NOT.
+ * Useful for deciding whether to display elements based on admin status.
+ *
+ * Returns `true` if the user is an Admin, `false` otherwise.
+ */
+function checkUserForAdminCredentials($user)
+{
+    return $user->isAdmin();
+}
