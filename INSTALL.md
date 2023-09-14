@@ -433,9 +433,11 @@ $ php deploy/DeployRequiredDataRunner.php requiredData
 
 You can choose to deploy some sample data to seed your database. It consists of
 a project which contains 2 NGIs, and another NGI not in a project. Each NGI contains
-multiple sites which have services belonging to service groups, and the database is
-populated with unique sample users, which have roles over relevant site, NGI and
-project entities. The sample data has no real-world associations.
+multiple sites, and each site has 1-5 services. Each service belongs to at least one
+service group, of which there are 7. Each service group has 5-8 services. The
+database is populated with unique sample users, which have roles over relevant site,
+NGI, project and service group entities. The sample data has no real-world
+associations.
 
 ```bash
 $ cd lib/Doctrine
