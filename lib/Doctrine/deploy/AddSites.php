@@ -34,6 +34,7 @@ foreach($sites as $xmlSite) {
     $doctrineSite->setEmail((string) $xmlSite->CONTACT_EMAIL);
     $doctrineSite->setTelephone((string) $xmlSite->CONTACT_TEL);
     $doctrineSite->setGiisUrl((string) $xmlSite->GIIS_URL);
+    $doctrineSite->setTimezoneId((string) $xmlSite->TIMEZONE);
     if(strlen((string)$xmlSite->LATITUDE) > 0){
         $doctrineSite->setLatitude((float)$xmlSite->LATITUDE);
     }
@@ -115,8 +116,6 @@ foreach($sites as $xmlSite) {
         $country = $country;
     }
     $doctrineSite->setCountry($country);
-
-    $doctrineSite->setTimezoneId('UTC');
 
 
     // get the Tier (optional value)
