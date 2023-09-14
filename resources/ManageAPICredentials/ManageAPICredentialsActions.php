@@ -75,7 +75,8 @@ class ManageAPICredentialsActions
      * @param int               $deleteThreshold    The number of months of no-use which will trigger deletion
      * @param bool              $isRenewalRequest   Flag indicating the
      *                                              presence or absence of the
-     *                                              `r` command-line argument.
+     *                                              `r` or `renewals`
+     *                                              command-line argument.
      * @return array                                Credentials which were not deleted.
      */
     public function deleteCreds($creds, $deleteThreshold, $isRenewalRequest)
@@ -103,7 +104,7 @@ class ManageAPICredentialsActions
             }
         }
         if ($this->dryRun) {
-            $this->reportDryRun($deletedCreds, "deleting");
+            $this->reportDryRun($deletedCreds, "deleting", $isRenewalRequest);
         }
 
         return array_udiff($creds, $deletedCreds, array($this, 'compareCredIds'));
@@ -123,8 +124,9 @@ class ManageAPICredentialsActions
      * @param int           $deleteThreshold    The number of months of no-use which will trigger deletion
      * @param string        $fromEmail          Email address to use as sender's (From:) address
      * @param string        $replyToEmail       Email address for replies (Reply-To:)
-     * @param bool          $isRenewalRequest   Flag indicating the presence
-     *                                          or absence of the `r`
+     * @param bool          $isRenewalRequest   Flag indicating the
+     *                                          presence or absence of the
+     *                                          `r` or `renewals`
      *                                          command-line argument.
      * @return array        []                  An Array of credentials identifed
      *                                          for sending warning emails.
@@ -154,8 +156,8 @@ class ManageAPICredentialsActions
                 $lastUseOrRenewTime = $isRenewalRequest
                     ? $apiCred->getLastRenewTime()
                     : $apiCred->getLastUseTime();
-                $elapsedMonths = $this->baseTime->diff($lastUseOrRenewTime)
-                    ->format('%m');
+                $diffTime = $this->baseTime->diff($lastUseOrRenewTime);
+                $elapsedMonths =  ($diffTime->y * 12) + $diffTime->m;
 
                 if (!$this->dryRun) {
                     $this->sendWarningEmail(
@@ -173,7 +175,11 @@ class ManageAPICredentialsActions
         }
 
         if ($this->dryRun) {
-            $this->reportDryRun($warnedCreds, "sending warning emails");
+            $this->reportDryRun(
+                $warnedCreds,
+                "sending warning emails",
+                $isRenewalRequest
+            );
         }
 
         return array_udiff($creds, $warnedCreds, array($this, 'compareCredIds'));
@@ -277,9 +283,12 @@ class ManageAPICredentialsActions
  * @param array      $creds          Array of API credential objects to be summarised.
  * @param string     $text           Brief description of the operation which would have been
  *                                   performed without dry-run to be included in the report.
+ * @param bool $isRenewalRequest     Flag indicating the presence or absence
+ *                                   of the `r` or `renewals`
+ *                                   command-line argument.
  * @return void
  */
-    private function reportDryRun(array $creds, $text)
+    private function reportDryRun(array $creds, $text, $isRenewalRequest)
     {
         if (count($creds) == 0) {
             print("Dry run: No matching credentials found for $text.\n");
@@ -289,6 +298,22 @@ class ManageAPICredentialsActions
         print("Dry run: Found " . count($creds) . " credentials for $text.\n");
 
         foreach ($creds as $api) {
+            if ($isRenewalRequest) {
+                print(
+                    "Dry run: Processing credential id "
+                    . $api->getId() . "\n"
+                    . "         Identifier:   " . $api->getIdentifier() . "\n"
+                    . "         User email:   "
+                    . $api->getUser()->getEmail() . "\n"
+                    . "         Site:         "
+                    . $api->getParentSite()->getShortName() . "\n"
+                    . "         Last Renewed: "
+                    . $api->getLastRenewTime()->format("Y-m-d\\TH:i:sO") . "\n"
+                );
+
+                continue;
+            }
+
             print("Dry run: Processing credential id " . $api->getId() . "\n" .
               "         Identifier: " . $api->getIdentifier() . "\n" .
               "         User email: " . $api->getUser()->getEmail() . "\n" .
