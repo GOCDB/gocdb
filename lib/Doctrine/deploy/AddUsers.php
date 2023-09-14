@@ -26,6 +26,7 @@ try {
         if (isset($idStrings[$idString])) {
             continue;
         }
+
         $idStrings[$idString] = true;
 
         $doctrineUser = new \User();
@@ -53,9 +54,11 @@ try {
                 throw new \Exception(count($homeSites) . " sites found with short name: " .
                         $user->HOMESITE . ". user DN is  " . $user->CERTDN);
             }
+
             foreach ($homeSites as $result) {
                 $homeSite = $result;
             }
+
             $doctrineUser->setHomeSiteDoJoin($homeSite);
         }
 
@@ -63,6 +66,7 @@ try {
         $em->flush();
         $serv->addUserIdentifier($doctrineUser, $identifierArr, $doctrineUser);
     }
+
     $em->getConnection()->commit();
 } catch (\Exception $e) {
     $em->getConnection()->rollback();

@@ -41,12 +41,13 @@ function isBad($site) {
             , 'scgNUIGie', 'giITTAie', 'obsARMuk', 'giHECie', 'giRCSIie'
             , 'giDCUie');
 
-    if(sizeof(array_intersect(array($site), $badSites)) == 0) {
+    if (sizeof(array_intersect(array($site), $badSites)) == 0) {
         return false;
     } else {
         return true;
     }
 }
+
 /**
  * Return a scope object given a scope name
  * @param EntityManager $entityManager
@@ -59,9 +60,10 @@ function getScope($entityManager, $scope) {
     $scopes = $entityManager->createQuery($dql)
                                 ->setParameter(1, $scope)
                                 ->getResult();
+
     /* Error checking: ensure each Site's "SCOPE" refers to exactly
     * one SCOPE */
-    if(count($scopes) !== 1) {
+    if (count($scopes) !== 1) {
         throw new Exception(count($scopes) . " SCOPEs found with name: " . $scope);
     }
 

@@ -10,11 +10,11 @@ require_once __DIR__ . "/AddUtils.php";
 $scopesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/Scopes.xml";
 $scopes = simplexml_load_file($scopesFileName);
 
-foreach($scopes as $scope) {
+foreach ($scopes as $scope) {
     $doctrineScope = new Scope();
     $name = "";
     $reserved = false;
-    foreach($scope as $key => $value) {
+    foreach ($scope as $key => $value) {
       switch ($key) {
         case "name":
           $name = (string) $value;
@@ -24,6 +24,7 @@ foreach($scopes as $scope) {
           break;
       }
     }
+
     $doctrineScope->setName($name);
     $doctrineScope->setReserved($reserved);
     $entityManager->persist($doctrineScope);

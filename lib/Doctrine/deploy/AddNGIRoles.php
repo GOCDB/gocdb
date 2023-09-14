@@ -6,10 +6,10 @@ require_once __DIR__ . "/AddUtils.php";
 $usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);
 
-foreach($usersRoles as $user) {
-    foreach($user->USER_ROLE as $role) {
+foreach ($usersRoles as $user) {
+    foreach ($user->USER_ROLE as $role) {
         // Check for blank role, skip if it's blank
-        if((string) $role->USER_ROLE == "") {
+        if ((string) $role->USER_ROLE == "") {
             continue;
         }
 
@@ -25,11 +25,12 @@ foreach($usersRoles as $user) {
                                      ->getResult();
         // /* Error checking: ensure each role type refers to exactly
          // * one role type*/
-        if(count($roleTypes) !== 1) {
+        if (count($roleTypes) !== 1) {
             throw new Exception(count($roleTypes) . " role types found with name: " .
                 $role->USER_ROLE);
         }
-        foreach($roleTypes as $result) {
+
+        foreach ($roleTypes as $result) {
             $roleType = $result;
         }
 
@@ -41,17 +42,18 @@ foreach($usersRoles as $user) {
 
         // /* Error checking: ensure each "user" refers to exactly
          // * one user */
-        if(count($users) !== 1) {
+        if (count($users) !== 1) {
             throw new Exception(count($users) . " users found with DN: " .
                 $user->CERTDN);
         }
-        foreach($users as $doctrineUser) {
+
+        foreach ($users as $doctrineUser) {
             $doctrineUser = $doctrineUser;
         }
 
         // Check for invalid NGIs and skip
         // typically these are decomissioned ROCs
-        if($role->ON_ENTITY == 'GridIreland' || $role->ON_ENTITY == 'NGS'
+        if ($role->ON_ENTITY == 'GridIreland' || $role->ON_ENTITY == 'NGS'
             || $role->ON_ENTITY == 'LondonT2' || $role->ON_ENTITY == 'Tier1A'
             || $role->ON_ENTITY == 'Tier1A') {
             continue;
@@ -65,24 +67,25 @@ foreach($usersRoles as $user) {
                                      ->getResult();
         // /* Error checking: ensure each "ngi" refers to exactly
          // * one ngi */
-        if(count($ngis) !== 1) {
+        if (count($ngis) !== 1) {
             throw new Exception(count($ngis) . " ngis found name: " .
                 $ngiName);
         }
-        foreach($ngis as $ngi) {
+
+        foreach ($ngis as $ngi) {
             $ngi = $ngi;
         }
 
         //check that the role is not a duplicate (v4 data contaisn duplicates)
         $ExistingUserRoles = $doctrineUser->getRoles();
         $thisIsADuplicateRole=false;
-        foreach($ExistingUserRoles as $role){
-            if($role->getRoleType() == $roleType and $role->getOwnedEntity() == $ngi and $role->getStatus() == 'STATUS_GRANTED'){
+        foreach ($ExistingUserRoles as $role){
+            if ($role->getRoleType() == $roleType and $role->getOwnedEntity() == $ngi and $role->getStatus() == 'STATUS_GRANTED'){
                 $thisIsADuplicateRole = true;
             }
         }
 
-        if(!$thisIsADuplicateRole){
+        if (!$thisIsADuplicateRole){
             $doctrineRole = new Role($roleType, $doctrineUser, $ngi, 'STATUS_GRANTED');
             $entityManager->persist($doctrineRole);
         }

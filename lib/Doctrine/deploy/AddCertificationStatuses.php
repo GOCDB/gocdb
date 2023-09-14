@@ -9,14 +9,15 @@ require_once __DIR__ . "/AddUtils.php";
 $certStatsFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/CertificationStatuses.xml";
 $certStats = simplexml_load_file($certStatsFileName);
 
-foreach($certStats as $certStat) {
+foreach ($certStats as $certStat) {
     $doctrineCertStat = new CertificationStatus();
     $name = "";
-    foreach($certStat as $key => $value) {
-        if($key == "name") {
+    foreach ($certStat as $key => $value) {
+        if ($key == "name") {
             $name = (string) $value;
         }
     }
+
     $doctrineCertStat->setName($name);
     $entityManager->persist($doctrineCertStat);
 }

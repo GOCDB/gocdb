@@ -17,6 +17,7 @@ $scopes = $entityManager->createQuery($dql)->getResult();
 if (count($scopes) !== 1) {
     throw new Exception(count($scopes) . " scopes found with short name: EGI");
 }
+
 foreach ($scopes as $egiScope) {
     $egiScope = $egiScope;
 }
@@ -28,6 +29,7 @@ $scopes = $entityManager->createQuery($dql)->getResult();
 if (count($scopes) !== 1) {
     throw new Exception(count($scopes) . " scopes found with short name: Local");
 }
+
 foreach ($scopes as $localScope) {
     $localScope = $localScope;
 }
@@ -46,9 +48,11 @@ foreach ($ses as $xmlSe) {
         throw new Exception(count($parentSites) . " sites found with short name: " .
                 $xmlSe->SITENAME . ". SE hostname is " . $xmlSe->HOSTNAME);
     }
+
     foreach ($parentSites as $result) {
         $parentSite = $result;
     }
+
     $doctrineSe->setParentSiteDoJoin($parentSite);
 
     // get the hosting service type
@@ -122,4 +126,5 @@ foreach ($ses as $xmlSe) {
     $entityManager->persist($doctrineSe);
     $entityManager->persist($doctrineEndpointLocation);
 }
+
 $entityManager->flush();

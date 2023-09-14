@@ -15,7 +15,7 @@
 
 require_once __DIR__ . "/AddUtils.php";
 
-if(isset($argv[1])) {
+if (isset($argv[1])) {
     $GLOBALS['dataDir'] = $argv[1];
 } else {
     die("Please specify your data directory (requiredData) \n");

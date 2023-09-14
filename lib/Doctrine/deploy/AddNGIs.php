@@ -21,7 +21,7 @@ $egiScope = $entityManager->getRepository('Scope')->findOneBy(array("name" => "E
 //Add Local Scope so specified NGI is not part of EGI project
 $localScope = $entityManager->getRepository('Scope')->findOneBy(array("name" => "Local"));
 
-foreach($ngis as $xmlNgi) {
+foreach ($ngis as $xmlNgi) {
     $doctrineNgi = new NGI();
     $name = "";
     $email = "";
@@ -82,7 +82,7 @@ foreach($ngis as $xmlNgi) {
     $doctrineNgi->setSecurityEmail($securityEmail);
 
     // TODO
-    //if($cdateon == null) throw new Exception("CDATEON is null");
+    //if ($cdateon == null) throw new Exception("CDATEON is null");
     //$doctrineNgi->setCreationDate($cdateon);
 
     // if the NGI has id 67518 (NGI_HU) do not add it to EGI Project

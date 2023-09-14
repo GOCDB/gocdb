@@ -47,15 +47,15 @@ foreach ($downtimes as $downtimeXml) {
     // SE will be named in a different $downtimeXml that will duplicate
     // all the downtime specific fields.
 
-    foreach($downtimeXml->attributes() as $key => $value) {
-        if((string) $key == "ID") {
+    foreach ($downtimeXml->attributes() as $key => $value) {
+        if ((string) $key == "ID") {
             $promId = (int) $value;
         }
     }
 
     $downtime = null;
     // See if we've already entered a downtime with this prom ID
-    if(isset($allDowntimes[$promId])) {
+    if (isset($allDowntimes[$promId])) {
         // load $downtime from db by $promId rather than loading from global array
         // This assumes xml ID attribute (without 'G0' appended) is the same as
         // xml PRIMARY_KEY attribute.
@@ -66,7 +66,7 @@ foreach ($downtimes as $downtimeXml) {
         $downtime = $allDowntimes[$promId];
     }
 
-    if(!isset($downtime)) {
+    if (!isset($downtime)) {
         // Create a new downtime, add the SE to it
         $downtime = newDowntime($downtimeXml);
         // Finds one or more SEs by hostname and service type
@@ -77,7 +77,7 @@ foreach ($downtimes as $downtimeXml) {
         // more than one SE (see the comment at the top of this file)
         // However if the downtime isn't yet created we always
         // link to the first SE found.
-        if(!isset($services[0])) {
+        if (!isset($services[0])) {
             throw new Exception("No SE found with "
                     . "hostname " . $downtimeXml->HOSTNAME . " ");
         }
@@ -94,10 +94,11 @@ foreach ($downtimes as $downtimeXml) {
         $services = findSEs((string) $downtimeXml->HOSTNAME
                 , (string) $downtimeXml->SERVICE_TYPE);
 
-        if(!isset($services[0])) {
+        if (!isset($services[0])) {
             throw new Exception("No SE found with "
                     . "hostname " . $downtimeXml->HOSTNAME . " ");
         }
+
         try {
             // TODO? - We should probably iterate each el and try to link each
             // to this DT. Will still need to throw alreadylinked exception when
@@ -107,15 +108,15 @@ foreach ($downtimes as $downtimeXml) {
             // (the duplicate SE count is tested for the expected 2 duplicates
             // below in catch block).
             $els = $services[0]->getEndpointLocations();
-            if(count($els) > 1){
+            if (count($els) > 1){
                 throw new LogicException('Coding error - there should only be one EL per Service');
             }
 
             // Check this endpoint isn't already linked to downtime.
             // The els have already been persisted/flushed against
             // the DB and so already have IDs.
-            foreach($downtime->getEndpointLocations() as $existingEL) {
-                if($existingEL == $els[0]) { // their Ids will be the same
+            foreach ($downtime->getEndpointLocations() as $existingEL) {
+                if ($existingEL == $els[0]) { // their Ids will be the same
                     throw new AlreadyLinkedException("Downtime {$downtime->getId()} is already "
                     . "linked to el {$existingEL->getId()}");
                 }
@@ -126,7 +127,7 @@ foreach ($downtimes as $downtimeXml) {
             //$downtime->addService($services[0]);
 
         } catch (Exception $e) {
-            if($e instanceof AlreadyLinkedException) {
+            if ($e instanceof AlreadyLinkedException) {
                 // Downtime is already linked to this SE
 
                 // Check whether this exception is caused by a known issue
@@ -134,7 +135,7 @@ foreach ($downtimes as $downtimeXml) {
                 // Issue is known if two SEs are found and the hostname is
                 // a known duplicate
                 $twoSes = false;
-                if(count($services) == 2) {
+                if (count($services) == 2) {
                     $twoSes = true;
                 } else {
                     // we will have to deal with this case and link the
@@ -143,8 +144,8 @@ foreach ($downtimes as $downtimeXml) {
                 }
 
                 $knownDup = false;
-                foreach($duplicateSes as $dup) {
-                    if($dup == $services[0]->getHostName()) {
+                foreach ($duplicateSes as $dup) {
+                    if ($dup == $services[0]->getHostName()) {
                         $knownDup = true;
                     }
                 }
@@ -153,17 +154,17 @@ foreach ($downtimes as $downtimeXml) {
                 // where a downtime currently links to one SE that's a known
                 // duplicate and it needs to link to the other (duplicated) SE.
                 // The other SE will always be the second result in $services ([1])
-                if($twoSes && $knownDup) {
+                if ($twoSes && $knownDup) {
                     //$downtime->addService($services[1]);
                     $els = $services[1]->getEndpointLocations();
 
 
         // Check this SE isn't already registered
-        //foreach($downtime->getEndpointLocations() as $existingEL) {
-        //	if($existingEL == $els[0]) {
-        //		throw new AlreadyLinkedException("Downtime {$downtime->getId()} is already "
-        //		. "linked to el {$existingEL->getId()}");
-        //	}
+        //foreach ($downtime->getEndpointLocations() as $existingEL) {
+        //    if ($existingEL == $els[0]) {
+        //        throw new AlreadyLinkedException("Downtime {$downtime->getId()} is already "
+        //        . "linked to el {$existingEL->getId()}");
+        //    }
         //}
 
                     // Bidirectional link the el and dt
@@ -174,7 +175,7 @@ foreach ($downtimes as $downtimeXml) {
     }
 }
 
-foreach($allDowntimes as $downtime) {
+foreach ($allDowntimes as $downtime) {
     $GLOBALS['entityManager']->persist($downtime);
 }
 
@@ -188,7 +189,7 @@ try {
 // SimpleXML element.
 function newDowntime($downtimeXml) {
     $downtime = new Downtime();
-    foreach($downtimeXml->attributes() as $key => $value) {
+    foreach ($downtimeXml->attributes() as $key => $value) {
         switch($key) {
             case "ID":
                 $promId = (int) $value;
@@ -205,7 +206,7 @@ function newDowntime($downtimeXml) {
     // Get the largest v4 downtime PK which is an integer appended by the string 'G0'
     // slice off the 'G0' and get the integer value.
     $v4pk = (int)substr($primaryKey, 0, strlen($primaryKey)-2);
-    if($v4pk > $GLOBALS['largestV4DowntimePK']){
+    if ($v4pk > $GLOBALS['largestV4DowntimePK']){
         $GLOBALS['largestV4DowntimePK'] = $v4pk;
     }
 

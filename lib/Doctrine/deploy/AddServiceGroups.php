@@ -21,7 +21,7 @@ if ($sts === false) {
     exit;
 }
 
-foreach($sts as $st) {
+foreach ($sts as $st) {
     $instance = new ServiceGroup();
     $name = "";
     $desc = "";

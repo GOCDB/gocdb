@@ -11,15 +11,15 @@ require_once __DIR__ . "/AddUtils.php";
 $usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);
 
-foreach($usersRoles as $user) {
-    foreach($user->USER_ROLE as $role) {
+foreach ($usersRoles as $user) {
+    foreach ($user->USER_ROLE as $role) {
         // Check for blank role, skip if it's blank
-        if((string) $role->USER_ROLE == "") {
+        if ((string) $role->USER_ROLE == "") {
             continue;
         }
 
         // Skip all non-site roles
-        if((string) $role->ENTITY_TYPE !== "site") {
+        if ((string) $role->ENTITY_TYPE !== "site") {
             continue;
         }
 
@@ -31,14 +31,16 @@ foreach($usersRoles as $user) {
                                      ->getResult();
         // /* Error checking: ensure each role type refers to exactly
          // * one role type*/
-        if(count($roleTypes) !== 1) {
+        if (count($roleTypes) !== 1) {
             throw new Exception(count($roleTypes) . " role types found with name: " .
                 $role->USER_ROLE);
         }
-        foreach($roleTypes as $result) {
+
+        foreach ($roleTypes as $result) {
             $roleType = $result;
         }
-        if(!($roleType instanceof RoleType)) {
+
+        if (!($roleType instanceof RoleType)) {
             throw new Exception("Not a doctrine role type");
         }
 
@@ -50,22 +52,22 @@ foreach($usersRoles as $user) {
 
         // /* Error checking: ensure each "user" refers to exactly
          // * one user */
-        if(count($users) !== 1) {
+        if (count($users) !== 1) {
             throw new Exception(count($users) . " users found with DN: " .
                 $user->CERTDN);
         }
 
-        foreach($users as $doctrineUser) {
+        foreach ($users as $doctrineUser) {
             $doctrineUser = $doctrineUser;
         }
 
-        if(!($doctrineUser instanceof User)) {
+        if (!($doctrineUser instanceof User)) {
             throw new Exception("Not a doctrine user");
         }
 
         // Check for invalid sites and skip adding this role
         // typically these sites don't have an NGI, country or production status
-        if(isBad((string) $role->ON_ENTITY)) {
+        if (isBad((string) $role->ON_ENTITY)) {
             continue;
         }
 
@@ -76,30 +78,33 @@ foreach($usersRoles as $user) {
                                      ->getResult();
         // /* Error checking: ensure each "site" refers to exactly
          // * one site */
-        if(count($sites) !== 1) {
+        if (count($sites) !== 1) {
             throw new Exception(count($sites) . " sites found with short name: " .
                 $role->ON_ENTITY);
         }
-        foreach($sites as $doctrineSite) {
+
+        foreach ($sites as $doctrineSite) {
             $doctrineSite = $doctrineSite;
         }
-        if(!($doctrineSite instanceof Site)) {
+
+        if (!($doctrineSite instanceof Site)) {
             throw new Exception("Not a doctrine site");
         }
 
         //check that the role is not a duplicate (v4 data contaisn duplicates)
         $ExistingUserRoles = $doctrineUser->getRoles();
         $thisIsADuplicateRole=false;
-        foreach($ExistingUserRoles as $role){
-            if($role->getRoleType() == $roleType and $role->getOwnedEntity() == $doctrineSite and $role->getStatus() == 'STATUS_GRANTED'){
+        foreach ($ExistingUserRoles as $role){
+            if ($role->getRoleType() == $roleType and $role->getOwnedEntity() == $doctrineSite and $role->getStatus() == 'STATUS_GRANTED'){
                 $thisIsADuplicateRole = true;
             }
         }
 
-        if(!$thisIsADuplicateRole){
+        if (!$thisIsADuplicateRole){
             $doctrineRole = new Role($roleType, $doctrineUser, $doctrineSite, 'STATUS_GRANTED');
             $entityManager->persist($doctrineRole);
         }
     }
 }
+
 $entityManager->flush();
