@@ -276,7 +276,7 @@ class APIAuthenticationService extends AbstractEntityService
      * @param \APIAuthentication $authEntity Entity to update.
      * @param \User $user Owning user.
      * @param bool $isRenewalRequest A boolean indicating
-     *                               if it's a renewal request.
+     *                               if it's a renewal request or NOT.
      */
     private function handleRenewalRequest(
         \APIAuthentication $authEntity,
@@ -302,7 +302,7 @@ class APIAuthenticationService extends AbstractEntityService
      * @param array $newValues An array containing data for
      *                         updating the APIAuthentication entity.
      * @param bool $isRenewalRequest A boolean indicating
-     *                               if it's a renewal request.
+     *                               if it's a renewal request or NOT.
      *
      * @throws \Exception Throws an exception if the identifier is empty.
      */
@@ -347,7 +347,7 @@ class APIAuthenticationService extends AbstractEntityService
      * @param \APIAuthentication $authEntity Entity to update.
      * @param \User $user Owning user.
      * @param bool $isRenewalRequest A boolean indicating
-     *                               if it's a renewal request.
+     *                               if it's a renewal request or NOT.
      */
     private function updateLastRenewTime(
         \APIAuthentication $authEntity,
