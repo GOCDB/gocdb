@@ -7,16 +7,17 @@
     $serviceTypeRelPath = "index.php?Page_Type=Service_Type";
     ?>
     <a href="<?= $serviceTypeRelPath; ?>&amp;id=<?= $serviceType->getId(); ?>">
-    <?php xecho($serviceType->getName());?>
+        <?php xecho($serviceType->getName()); ?>
     </a>'
     can not be deleted as the following services are still of this type:
     <?php
-        foreach($params['Services'] as $sep){
-            echo "<br />"
-                . "<a href=\"index.php?Page_Type=Service&amp;id=" . $sep->getId() ."\">"
-                .  xssafe($sep->getHostName())
-                . "</a> ";
-        }
+    foreach ($params['Services'] as $sep) {
+        echo "<br />"
+            . "<a href=\"index.php?Page_Type=Service&amp;id="
+            . $sep->getId() . "\">"
+            .  xssafe($sep->getHostName())
+            . "</a> ";
+    }
     ?>
     <br>
     <br>
