@@ -3,7 +3,8 @@
 require_once __DIR__ . "/../bootstrap.php";
 require_once __DIR__ . "/AddUtils.php";
 
-$usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
+$usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] .
+    "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);
 
 foreach ($usersRoles as $user) {
@@ -21,13 +22,14 @@ foreach ($usersRoles as $user) {
         // get roletype entity
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleType";
         $roleTypes = $entityManager->createQuery($dql)
-                                     ->setParameter(':roleType', (string) $role->USER_ROLE)
-                                     ->getResult();
+                                   ->setParameter(':roleType',
+                                       (string) $role->USER_ROLE)
+                                   ->getResult();
         // /* Error checking: ensure each role type refers to exactly
          // * one role type*/
         if (count($roleTypes) !== 1) {
-            throw new Exception(count($roleTypes) . " role types found with name: " .
-                $role->USER_ROLE);
+            throw new Exception(count($roleTypes) . " role types found " .
+                "with name: " . $role->USER_ROLE);
         }
 
         foreach ($roleTypes as $result) {
@@ -35,10 +37,12 @@ foreach ($usersRoles as $user) {
         }
 
         // Get user entity
-        $dql = "SELECT u FROM User u JOIN u.userIdentifiers up WHERE up.keyValue = :keyValue";
+        $dql = "SELECT u FROM User u JOIN u.userIdentifiers " .
+            "up WHERE up.keyValue = :keyValue";
         $users = $entityManager->createQuery($dql)
-                  ->setParameter('keyValue', trim((string) $user->CERTDN))
-                  ->getResult();
+                               ->setParameter('keyValue',
+                                   trim((string) $user->CERTDN))
+                               ->getResult();
 
         // /* Error checking: ensure each "user" refers to exactly
          // * one user */
@@ -63,8 +67,8 @@ foreach ($usersRoles as $user) {
         $ngiName = (string) $role->ON_ENTITY;
         $dql = "SELECT n FROM NGI n WHERE n.name = :ngi";
         $ngis = $entityManager->createQuery($dql)
-                                     ->setParameter('ngi', $ngiName)
-                                     ->getResult();
+                              ->setParameter('ngi', $ngiName)
+                              ->getResult();
         // /* Error checking: ensure each "ngi" refers to exactly
          // * one ngi */
         if (count($ngis) !== 1) {
@@ -80,13 +84,20 @@ foreach ($usersRoles as $user) {
         $ExistingUserRoles = $doctrineUser->getRoles();
         $thisIsADuplicateRole=false;
         foreach ($ExistingUserRoles as $role){
-            if ($role->getRoleType() == $roleType and $role->getOwnedEntity() == $ngi and $role->getStatus() == 'STATUS_GRANTED'){
+            if ($role->getRoleType() == $roleType
+                and $role->getOwnedEntity() == $ngi
+                and $role->getStatus() == 'STATUS_GRANTED') {
                 $thisIsADuplicateRole = true;
             }
         }
 
         if (!$thisIsADuplicateRole){
-            $doctrineRole = new Role($roleType, $doctrineUser, $ngi, 'STATUS_GRANTED');
+            $doctrineRole = new Role(
+                $roleType,
+                $doctrineUser,
+                $ngi,
+                'STATUS_GRANTED'
+            );
             $entityManager->persist($doctrineRole);
         }
     }

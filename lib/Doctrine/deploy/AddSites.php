@@ -2,15 +2,17 @@
 require_once __DIR__ . "/../bootstrap.php";
 require_once __DIR__ . "/AddUtils.php";
 
-/* AddSites.php: Loads a list of sites from an XML file and inserts them into
- * the doctrine prototype.
+/* AddSites.php: Loads a list of sites from an XML file and
+ * inserts them into the doctrine prototype.
  * XML format is the output from get_site PI query.
  */
 $sitesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/Sites.xml";
 $sites = simplexml_load_file($sitesFileName);
 
-$xmlCertStatusChanges = simplexml_load_file( __DIR__ . "/" . $GLOBALS['dataDir'] . "/CertStatusChanges.xml");
-$xmlCertStatusLinkDates = simplexml_load_file(__DIR__ . "/" . $GLOBALS['dataDir'] . "/CertStatusDate.xml");
+$xmlCertStatusChanges = simplexml_load_file( __DIR__ . "/" .
+    $GLOBALS['dataDir'] . "/CertStatusChanges.xml");
+$xmlCertStatusLinkDates = simplexml_load_file(__DIR__ . "/" .
+    $GLOBALS['dataDir'] . "/CertStatusDate.xml");
 
 $largestV4SitePk = 0;
 foreach ($sites as $xmlSite) {
@@ -54,11 +56,12 @@ foreach ($sites as $xmlSite) {
     // get the parent NGI entity
     $dql = "SELECT n FROM NGI n WHERE n.name = ?1";
     $parentNgis = $entityManager->createQuery($dql)
-                                 ->setParameter(1, (string) $xmlSite->ROC)
-                                 ->getResult();
+                                ->setParameter(1,
+                                    (string) $xmlSite->ROC)
+                                ->getResult();
 
     // /* Error checking: ensure each SE's "parent ngi" refers to exactly
-     // * one ngi */
+    //  * one ngi */
     if (count($parentNgis) !== 1) {
         throw new Exception(count($parentNgis) . " NGIs found with name: " .
             $xmlSite->ROC);
@@ -73,14 +76,15 @@ foreach ($sites as $xmlSite) {
     // get the target infrastructure
     $dql = "SELECT i FROM Infrastructure i WHERE i.name = :name";
     $infs = $entityManager->createQuery($dql)
-                                 ->setParameter('name', (string) $xmlSite->PRODUCTION_INFRASTRUCTURE)
-                                 ->getResult();
+                          ->setParameter('name',
+                              (string) $xmlSite->PRODUCTION_INFRASTRUCTURE)
+                          ->getResult();
 
-    // /* Error checking: ensure each SE's "PRODUCTION_INFRASTRUCTURE" refers to exactly
-     // * one PRODUCTION_INFRASTRUCTURE */
+    // /* Error checking: ensure each SE's "PRODUCTION_INFRASTRUCTURE"
+    //  * refers to exactly one PRODUCTION_INFRASTRUCTURE */
     if (count($infs) !== 1) {
-        throw new Exception(count($infs) . " Infrastructures found with name: " .
-            $xmlSite->PRODUCTION_INFRASTRUCTURE);
+        throw new Exception(count($infs) . " Infrastructures found " .
+            "with name: " . $xmlSite->PRODUCTION_INFRASTRUCTURE);
     }
 
     foreach ($infs as $inf) {
@@ -92,14 +96,15 @@ foreach ($sites as $xmlSite) {
     // get the cert status
     $dql = "SELECT c FROM CertificationStatus c WHERE c.name = ?1";
     $certStatuses = $entityManager->createQuery($dql)
-                                 ->setParameter(1, (string) $xmlSite->CERTIFICATION_STATUS)
-                                 ->getResult();
+                                  ->setParameter(1,
+                                      (string) $xmlSite->CERTIFICATION_STATUS)
+                                  ->getResult();
 
     /* Error checking: ensure each Site's "cert status" refers to exactly
      * one cert status */
     if (count($certStatuses) !== 1) {
-        throw new Exception(count($certStatuses) . " cert statuses found with name: " .
-            $xmlSite->CERTIFICATION_STATUS);
+        throw new Exception(count($certStatuses) . " cert statuses found " .
+            "with name: " . $xmlSite->CERTIFICATION_STATUS);
     }
 
     foreach ($certStatuses as $certStatus) {
@@ -108,19 +113,21 @@ foreach ($sites as $xmlSite) {
 
     $doctrineSite->setCertificationStatus($certStatus);
 
-    $doctrineSite->addScope(getScope($entityManager, (string) $xmlSite->SCOPE));
+    $doctrineSite->addScope(getScope($entityManager,
+        (string) $xmlSite->SCOPE));
 
     // get / set the country
     $dql = "SELECT c FROM Country c WHERE c.name = ?1";
     $countries = $entityManager->createQuery($dql)
-                                 ->setParameter(1, (string) $xmlSite->COUNTRY)
-                                 ->getResult();
+                               ->setParameter(1,
+                                   (string) $xmlSite->COUNTRY)
+                               ->getResult();
 
     /* Error checking: ensure each country refers to exactly
      * one country */
     if (count($countries) !== 1) {
-        throw new Exception(count($countries) . " country found with name: " .
-            $xmlSite->COUNTRY);
+        throw new Exception(count($countries) . " country found " .
+            "with name: " . $xmlSite->COUNTRY);
     }
 
     foreach ($countries as $country) {
@@ -133,8 +140,9 @@ foreach ($sites as $xmlSite) {
     // get the Tier (optional value)
     $dql = "SELECT t FROM Tier t WHERE t.name = ?1";
     $tiers = $entityManager->createQuery($dql)
-                                 ->setParameter(1, (string) $xmlSite->TIER)
-                                 ->getResult();
+                           ->setParameter(1,
+                               (string) $xmlSite->TIER)
+                           ->getResult();
 
     /* Error checking: ensure each tier refers to exactly
      * one TIER */
@@ -149,8 +157,9 @@ foreach ($sites as $xmlSite) {
     // get the SubGrid (optional value)
     $dql = "SELECT s FROM SubGrid s WHERE s.name = ?1";
     $subGrids = $entityManager->createQuery($dql)
-        ->setParameter(1, (string) $xmlSite->SUBGRID)
-        ->getResult();
+                              ->setParameter(1,
+                                  (string) $xmlSite->SUBGRID)
+                              ->getResult();
 
     /* Error checking: ensure each subgrid refers to exactly
      * one subgrid */
@@ -165,7 +174,8 @@ foreach ($sites as $xmlSite) {
 
 
     //set creation date
-    $creationDate = new \DateTime("now", new DateTimeZone('UTC'));
+    $creationDate = new \DateTime("now",
+        new DateTimeZone('UTC'));
 
     $doctrineSite->setCreationDate($creationDate);
 
@@ -178,14 +188,19 @@ foreach ($sites as $xmlSite) {
        // only interested in the current site
        if ($targetSiteName == $doctrineSite->getShortName()){
           // '01-JUL-13 11.09.10.000000 AM' which has the php datetime
-          // format of 'd-M-y H.i.s A' provided we trim off the '.000000' (millisecs)
+          // format of 'd-M-y H.i.s A' provided we
+          // trim off the '.000000' (millisecs)
           // Note, '.000000' is present in all the <cert_date> elements.
           $xmlLinkDateString = (string) $xmlCertStatusLinkDate->cert_date;
-          $xmlLinkDateString = preg_replace('/\.000000/', "", $xmlLinkDateString);
-          $linkDate =  \DateTime::createFromFormat('d-M-y H.i.s A', $xmlLinkDateString, new \DateTimeZone('UTC'));
+          $xmlLinkDateString = preg_replace('/\.000000/', "",
+              $xmlLinkDateString);
+          $linkDate =  \DateTime::createFromFormat('d-M-y H.i.s A',
+              $xmlLinkDateString, new \DateTimeZone('UTC'));
           if (!$linkDate) {
-              throw new Exception("Can't parse date/time  " . $xmlLinkDateString . " for site " .
-                      $doctrineSite->getShortName() . ". Correct format: 27-JUL-11 02.02.03 PM" );
+              throw new Exception("Can't parse date/time  " .
+                  $xmlLinkDateString . " for site " .
+                  $doctrineSite->getShortName() .
+                  ". Correct format: 27-JUL-11 02.02.03 PM" );
           }
 
           $doctrineSite->setCertificationStatusChangeDate($linkDate);
@@ -195,8 +210,9 @@ foreach ($sites as $xmlSite) {
 
 
     // Add the Site's certification status history/log.
-    // If the Site certStatus has never been updated from its initial state,
-    // then no changes will have occurred and the log will be empty for that Site.
+    // If the Site certStatus has never been updated from
+    // its initial state, then no changes will have occurred
+    // and the log will be empty for that Site.
     //
     // Importantly, because the v4 certStatus change log was added AFTER some
     // sites were already added to GOCDB4, the LAST AddedDate does NOT
@@ -208,14 +224,21 @@ foreach ($sites as $xmlSite) {
        // only interested in the current site
        if ($targetSiteName == $doctrineSite->getShortName()){
            $doctrineCertStatusChangeLog = new \CertificationStatusLog();
-           $doctrineCertStatusChangeLog->setAddedBy((string) $xmlCertStatusChange->CHANGED_BY);
-           $doctrineCertStatusChangeLog->setOldStatus((string) $xmlCertStatusChange->OLD_STATUS);
-           $doctrineCertStatusChangeLog->setNewStatus((string) $xmlCertStatusChange->NEW_STATUS);
-           $doctrineCertStatusChangeLog->setReason((string) $xmlCertStatusChange->COMMENT);
-           $insertDate = new DateTime("@" . (string) $xmlCertStatusChange->UNIX_TIME);
+           $doctrineCertStatusChangeLog->setAddedBy((string)
+               $xmlCertStatusChange->CHANGED_BY);
+           $doctrineCertStatusChangeLog->setOldStatus((string)
+               $xmlCertStatusChange->OLD_STATUS);
+           $doctrineCertStatusChangeLog->setNewStatus((string)
+               $xmlCertStatusChange->NEW_STATUS);
+           $doctrineCertStatusChangeLog->setReason((string)
+               $xmlCertStatusChange->COMMENT);
+           $insertDate = new DateTime("@" .
+               (string) $xmlCertStatusChange->UNIX_TIME);
            $doctrineCertStatusChangeLog->setAddedDate($insertDate);
            $entityManager->persist($doctrineCertStatusChangeLog);
-           $doctrineSite->addCertificationStatusLog($doctrineCertStatusChangeLog);
+           $doctrineSite->addCertificationStatusLog(
+               $doctrineCertStatusChangeLog
+           );
        }
     }
 

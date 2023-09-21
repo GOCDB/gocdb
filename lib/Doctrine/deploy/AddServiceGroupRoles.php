@@ -61,9 +61,11 @@ foreach ($usersRoles as $user) {
 
         // get serviceGroup entity
         $sgName = (string) $role->ON_ENTITY;
-        $dql = "SELECT sg FROM ServiceGroup sg WHERE sg.name = :service_group";
+        $dql = "SELECT sg FROM ServiceGroup sg WHERE " .
+            "sg.name = :service_group";
         $serviceGroups = $entityManager->createQuery($dql)
-                                       ->setParameter('service_group', $sgName)
+                                       ->setParameter('service_group',
+                                           $sgName)
                                        ->getResult();
 
         /*

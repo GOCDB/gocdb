@@ -2,11 +2,12 @@
 
 require_once __DIR__ . "/../bootstrap.php";
 require_once __DIR__ . "/AddUtils.php";
-/* AddNGIs.php: Loads a list of cert statuses from an XML file and inserts them into
- * the doctrine prototype.
+/* AddNGIs.php: Loads a list of cert statuses from an XML file and
+ * inserts them into the doctrine prototype.
  * XML format is the xml input format of the cert status seed data
  */
-$certStatsFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/CertificationStatuses.xml";
+$certStatsFileName = __DIR__ . "/" . $GLOBALS['dataDir'] .
+    "/CertificationStatuses.xml";
 $certStats = simplexml_load_file($certStatsFileName);
 
 foreach ($certStats as $certStat) {

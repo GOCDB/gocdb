@@ -7,7 +7,8 @@ require __DIR__ . "/../../Gocdb_Services/Factory.php";
 $em = \Factory::getEntityManager();
 $serv = \Factory::getUserService();
 
-$usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/UsersAndRoles.xml";
+$usersRolesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] .
+    "/UsersAndRoles.xml";
 $usersRoles = simplexml_load_file($usersRolesFileName);
 // Used to check for duplicates
 $idStrings = array();
@@ -36,8 +37,10 @@ try {
         $doctrineUser->setTitle((string) $user->TITLE);
         $doctrineUser->setEmail((string) $user->EMAIL);
         $doctrineUser->setTelephone((string) $user->TEL);
-        $doctrineUser->setWorkingHoursStart((string) $user->WORKING_HOURS_START);
-        $doctrineUser->setWorkingHoursEnd((string) $user->WORKING_HOURS_END);
+        $doctrineUser->setWorkingHoursStart((string)
+            $user->WORKING_HOURS_START);
+        $doctrineUser->setWorkingHoursEnd((string)
+            $user->WORKING_HOURS_END);
         $doctrineUser->setAdmin(false);
 
         // Roughly half of users don't have a home site set
@@ -45,14 +48,15 @@ try {
             // Get the home site entity
             $dql = "SELECT s from Site s WHERE s.shortName = ?1";
             $homeSites = $em->createQuery($dql)
-                    ->setParameter(1, (string) $user->HOMESITE)
-                    ->getResult();
+                            ->setParameter(1, (string) $user->HOMESITE)
+                            ->getResult();
 
             /* Error checking: ensure each "home site" refers to exactly
             * one home site */
             if (count($homeSites) !== 1) {
-                throw new \Exception(count($homeSites) . " sites found with short name: " .
-                        $user->HOMESITE . ". user DN is  " . $user->CERTDN);
+                throw new \Exception(count($homeSites) . " sites found " .
+                    "with short name: " . $user->HOMESITE .
+                    ". user DN is  " . $user->CERTDN);
             }
 
             foreach ($homeSites as $result) {
@@ -64,7 +68,11 @@ try {
 
         $em->persist($doctrineUser);
         $em->flush();
-        $serv->addUserIdentifier($doctrineUser, $identifierArr, $doctrineUser);
+        $serv->addUserIdentifier(
+            $doctrineUser,
+            $identifierArr,
+            $doctrineUser
+        );
     }
 
     $em->getConnection()->commit();

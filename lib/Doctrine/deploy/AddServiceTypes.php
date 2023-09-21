@@ -3,8 +3,8 @@
 require_once __DIR__ . "/../bootstrap.php";
 require_once __DIR__ . "/AddUtils.php";
 
-/* Loads a list of service types from an XML file and inserts them into
- * the doctrine prototype.
+/* Loads a list of service types from an XML file and
+ * inserts them into the doctrine prototype.
  * XML format is the PROM GOCDB PI output for get_service_type
  */
 $stFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/ServiceTypes.xml";
