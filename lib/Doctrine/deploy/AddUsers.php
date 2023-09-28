@@ -43,7 +43,8 @@ try {
             $user->WORKING_HOURS_END);
         $doctrineUser->setAdmin(false);
 
-        // Roughly half of users don't have a home site set
+        // Check if users don't have a homesite set, or
+        // if the homesite is 'bad'.
         if ($user->HOMESITE !== "" && !isBad($user->HOMESITE)) {
             // Get the home site entity
             $dql = "SELECT s from Site s WHERE s.shortName = ?1";
@@ -55,7 +56,7 @@ try {
                             ->getResult();
 
             /* Error checking: ensure each "home site" refers to exactly
-            * one home site */
+             * one home site */
             if (count($homeSites) !== 1) {
                 throw new \Exception(count($homeSites) . " sites found " .
                     "with short name: " . $user->HOMESITE .

@@ -16,11 +16,12 @@ $ngis = simplexml_load_file($ngisFileName);
 $egiProject = $entityManager->getRepository('Project')
                             ->findOneBy(array("name" => "EGI"));
 
-//Find the EGI scope tag
+// Find the EGI scope tag
 $egiScope = $entityManager->getRepository('Scope')
                           ->findOneBy(array("name" => "EGI"));
 
-//Add Local Scope so specified NGI is not part of EGI project
+// Add Local Scope so that the specified NGI is
+// not part of the EGI project
 $localScope = $entityManager->getRepository('Scope')
                             ->findOneBy(array("name" => "Local"));
 
@@ -68,7 +69,7 @@ foreach ($ngis as $xmlNgi) {
             // '12-JAN-10 14.12.56.000000'
             $cdateonString = (string) $value;
 
-            //convert to date time
+            // Convert to date time
             $creationDate = DateTime::createFromFormat(
                 'd-M-y G.i.s.u',
                 $cdateonString,
@@ -94,12 +95,12 @@ foreach ($ngis as $xmlNgi) {
     //if ($cdateon == null) throw new Exception("CDATEON is null");
     //$doctrineNgi->setCreationDate($cdateon);
 
-    // if the NGI has id 67518 (NGI_HU) do not add it to EGI Project
+    // If the NGI has id 67518 (NGI_HU) do not add it to EGI Project
     if ($objectID == "67518") {
         $doctrineNgi->addScope($localScope);
         $entityManager->persist($doctrineNgi);
     } else {
-        // add NGI to EGI project and give it EGI scope
+        // Add NGI to EGI project and give it EGI scope
         $egiProject->addNgi($doctrineNgi);
         $doctrineNgi->addScope($egiScope);
         $entityManager->persist($doctrineNgi);
@@ -107,6 +108,6 @@ foreach ($ngis as $xmlNgi) {
 
 }
 
-// don't need to merge egiProject
-//$entityManager->merge($egiProject);
+// Don't need to merge egiProject
+// $entityManager->merge($egiProject);
 $entityManager->flush();

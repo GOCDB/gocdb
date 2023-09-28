@@ -4,7 +4,7 @@ require_once __DIR__ . "/../bootstrap.php";
 require_once __DIR__ . "/AddUtils.php";
 
 /**
- * AddEgiRoles.php: Loads a list of roles from the get_user PI
+ * AddProjectRoles.php: Loads a list of roles from the get_user PI
  * query output (XML), finds what project entity the role is over,
  * if the project entity refers to exactly one project the role is
  * added to that project and inserted into the doctrine prototype.
@@ -28,7 +28,7 @@ foreach ($usersRoles as $user) {
             continue;
         }
 
-        // get roletype entity
+        // Get roletype entity
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleType";
         $roleTypes = $entityManager->createQuery($dql)
                                    ->setParameter(
@@ -36,8 +36,9 @@ foreach ($usersRoles as $user) {
                                        (string) $role->USER_ROLE
                                    )
                                    ->getResult();
+
         // /* Error checking: ensure each role type refers to exactly
-         // * one role type*/
+         // * one role type */
         if (count($roleTypes) !== 1) {
             throw new Exception(count($roleTypes) . " role types found " .
                 "with name: " . $role->USER_ROLE);

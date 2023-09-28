@@ -3,7 +3,7 @@
 require_once __DIR__ . "/../bootstrap.php";
 require_once __DIR__ . "/AddUtils.php";
 
-/* AddNGIs.php: Loads a list of scopes from an XML file and
+/* AddScopes.php: Loads a list of scopes from an XML file and
  * inserts them into the doctrine prototype.
  * XML format is the xml input format for scope data
  */

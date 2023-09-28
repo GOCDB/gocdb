@@ -20,7 +20,7 @@ foreach ($sites as $xmlSite) {
     // Check whether this site has a larger v4 primary key
     // than any other recorded so far
     $v4pkGO = trim((string) $xmlSite->PRIMARY_KEY);
-    // isolate just the number part (slice the 'GO' off the end)
+    // Isolate just the number part (slice the 'GO' off the end)
     $v4pk = (int) substr($v4pkGO, 0, strlen($v4pkGO)-2);
     if ($v4pk > $largestV4SitePk) {
         $largestV4SitePk = $v4pk;
@@ -53,7 +53,7 @@ foreach ($sites as $xmlSite) {
     $doctrineSite->setAlarmEmail((string) $xmlSite->ALARM_EMAIL);
     $doctrineSite->setHelpdeskEmail((string) $xmlSite->HELPDESKEMAIL);
 
-    // get the parent NGI entity
+    // Get the parent NGI entity
     $dql = "SELECT n FROM NGI n WHERE n.name = ?1";
     $parentNgis = $entityManager->createQuery($dql)
                                 ->setParameter(
@@ -75,7 +75,7 @@ foreach ($sites as $xmlSite) {
 
     $doctrineSite->setNgiDoJoin($parentNgi);
 
-    // get the target infrastructure
+    // Get the target infrastructure
     $dql = "SELECT i FROM Infrastructure i WHERE i.name = :name";
     $infs = $entityManager->createQuery($dql)
                           ->setParameter(
@@ -97,7 +97,7 @@ foreach ($sites as $xmlSite) {
 
     $doctrineSite->setInfrastructure($inf);
 
-    // get the cert status
+    // Get the cert status
     $dql = "SELECT c FROM CertificationStatus c WHERE c.name = ?1";
     $certStatuses = $entityManager->createQuery($dql)
                                   ->setParameter(
@@ -126,7 +126,7 @@ foreach ($sites as $xmlSite) {
         )
     );
 
-    // get / set the country
+    // Get / set the country
     $dql = "SELECT c FROM Country c WHERE c.name = ?1";
     $countries = $entityManager->createQuery($dql)
                                ->setParameter(
@@ -149,7 +149,7 @@ foreach ($sites as $xmlSite) {
     $doctrineSite->setCountry($country);
 
 
-    // get the Tier (optional value)
+    // Get the Tier (optional value)
     $dql = "SELECT t FROM Tier t WHERE t.name = ?1";
     $tiers = $entityManager->createQuery($dql)
                            ->setParameter(
@@ -168,7 +168,7 @@ foreach ($sites as $xmlSite) {
         $doctrineSite->setTier($tier);
     }
 
-    // get the SubGrid (optional value)
+    // Get the SubGrid (optional value)
     $dql = "SELECT s FROM SubGrid s WHERE s.name = ?1";
     $subGrids = $entityManager->createQuery($dql)
                               ->setParameter(
@@ -189,7 +189,7 @@ foreach ($sites as $xmlSite) {
 
 
 
-    //set creation date
+    // Set creation date
     $creationDate = new \DateTime(
         "now",
         new DateTimeZone('UTC')
@@ -203,7 +203,7 @@ foreach ($sites as $xmlSite) {
     // store this date as an attribute on the Site.
     foreach ($xmlCertStatusLinkDates as $xmlCertStatusLinkDate) {
         $targetSiteName = (string) $xmlCertStatusLinkDate->name;
-        // only interested in the current site
+        // Only interested in the current site
         if ($targetSiteName == $doctrineSite->getShortName()) {
             // '01-JUL-13 11.09.10.000000 AM' which has the php datetime
             // format of 'd-M-y H.i.s A' provided we
@@ -245,7 +245,7 @@ foreach ($sites as $xmlSite) {
     // a link/linkType object using the dateOn property.
     foreach ($xmlCertStatusChanges as $xmlCertStatusChange) {
         $targetSiteName = (string) $xmlCertStatusChange->SITE;
-        // only interested in the current site
+        // Only interested in the current site
         if ($targetSiteName == $doctrineSite->getShortName()) {
             $doctrineCertStatusChangeLog = new \CertificationStatusLog();
             $doctrineCertStatusChangeLog->setAddedBy((string)

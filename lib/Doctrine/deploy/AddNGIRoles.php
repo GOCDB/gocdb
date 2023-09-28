@@ -19,7 +19,7 @@ foreach ($usersRoles as $user) {
             continue;
         }
 
-        // get roletype entity
+        // Get roletype entity
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleType";
         $roleTypes = $entityManager->createQuery($dql)
                                    ->setParameter(
@@ -27,8 +27,9 @@ foreach ($usersRoles as $user) {
                                        (string) $role->USER_ROLE
                                    )
                                    ->getResult();
+
         // /* Error checking: ensure each role type refers to exactly
-         // * one role type*/
+         // * one role type */
         if (count($roleTypes) !== 1) {
             throw new Exception(count($roleTypes) . " role types found " .
                 "with name: " . $role->USER_ROLE);
@@ -59,8 +60,8 @@ foreach ($usersRoles as $user) {
             $doctrineUser = $doctrineUser;
         }
 
-        // Check for invalid NGIs and skip
-        // typically these are decomissioned ROCs
+        // Check for invalid NGIs and skip.
+        // Typically these are decomissioned ROCs.
         if (
             $role->ON_ENTITY == 'GridIreland'
             || $role->ON_ENTITY == 'NGS'
@@ -71,7 +72,7 @@ foreach ($usersRoles as $user) {
             continue;
         }
 
-        // get ngi entity
+        // Get ngi entity
         $ngiName = (string) $role->ON_ENTITY;
         $dql = "SELECT n FROM NGI n WHERE n.name = :ngi";
         $ngis = $entityManager->createQuery($dql)
@@ -80,6 +81,7 @@ foreach ($usersRoles as $user) {
                                   $ngiName
                               )
                               ->getResult();
+
         // /* Error checking: ensure each "ngi" refers to exactly
          // * one ngi */
         if (count($ngis) !== 1) {
@@ -91,7 +93,8 @@ foreach ($usersRoles as $user) {
             $ngi = $ngi;
         }
 
-        //check that the role is not a duplicate (v4 data contaisn duplicates)
+        // Check that the role is not a duplicate
+        // (v4 data contains duplicates)
         $ExistingUserRoles = $doctrineUser->getRoles();
         $thisIsADuplicateRole=false;
         foreach ($ExistingUserRoles as $role) {

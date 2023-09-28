@@ -4,7 +4,7 @@ require_once __DIR__ . "/../bootstrap.php";
 require_once __DIR__ . "/AddUtils.php";
 
 /**
- * AddNGIs.php: Loads a list of Site roles from an XML file and
+ * AddSiteRoles.php: Loads a list of Site roles from an XML file and
  * inserts them into the doctrine prototype.
  * XML format is the output from get_user_doctrine PI query.
  */
@@ -24,8 +24,7 @@ foreach ($usersRoles as $user) {
             continue;
         }
 
-        // Find the role type
-        // get the roletype entity
+        // Find the role type and get the roletype entity
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = ?1";
         $roleTypes = $entityManager->createQuery($dql)
                                    ->setParameter(
@@ -33,6 +32,7 @@ foreach ($usersRoles as $user) {
                                        (string) $role->USER_ROLE
                                    )
                                    ->getResult();
+
         // /* Error checking: ensure each role type refers to exactly
         //  * one role type */
         if (count($roleTypes) !== 1) {
@@ -73,14 +73,14 @@ foreach ($usersRoles as $user) {
             throw new Exception("Not a doctrine user");
         }
 
-        // Check for invalid sites and skip adding this role
-        // typically these sites don't have an NGI,
-        // country or production status
+        // Check for invalid sites and skip adding this role.
+        // Typically these sites don't have an NGI,
+        // country or production status.
         if (isBad((string) $role->ON_ENTITY)) {
             continue;
         }
 
-        // get the site entity
+        // Get the site entity
         $dql = "SELECT s FROM Site s WHERE s.shortName = ?1";
         $sites = $entityManager->createQuery($dql)
                                ->setParameter(
@@ -88,6 +88,7 @@ foreach ($usersRoles as $user) {
                                    (string) $role->ON_ENTITY
                                )
                                ->getResult();
+
         // /* Error checking: ensure each "site" refers to exactly
          // * one site */
         if (count($sites) !== 1) {
@@ -103,7 +104,8 @@ foreach ($usersRoles as $user) {
             throw new Exception("Not a doctrine site");
         }
 
-        //check that the role is not a duplicate (v4 data contaisn duplicates)
+        // Check that the role is not a duplicate
+        // (v4 data contains duplicates)
         $ExistingUserRoles = $doctrineUser->getRoles();
         $thisIsADuplicateRole=false;
         foreach ($ExistingUserRoles as $role) {

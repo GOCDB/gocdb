@@ -19,7 +19,7 @@ foreach ($usersRoles as $user) {
             continue;
         }
 
-        // get roletype entity
+        // Get roletype entity
         $userRole = (string) $role->USER_ROLE;
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleType";
         $roleTypes = $entityManager->createQuery($dql)
@@ -65,7 +65,7 @@ foreach ($usersRoles as $user) {
         // Set $doctrineUser as the first and only user in the users array
         $doctrineUser = $users[0];
 
-        // get serviceGroup entity
+        // Get serviceGroup entity
         $sgName = (string) $role->ON_ENTITY;
         $dql = "SELECT sg FROM ServiceGroup sg WHERE " .
             "sg.name = :service_group";

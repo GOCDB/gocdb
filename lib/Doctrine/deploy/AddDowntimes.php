@@ -30,10 +30,9 @@ $duplicateSes = array ("se.reef.man.poznan.pl",  "lcg05.sinp.msu.ru",
 // Hack: the above SEs appear twice with the same service type. (nightmare)
 // However in most cases both SEs share the same downtimes...
 
-// AddDowntimes.php: Loads a list of downtimes  from an
+// AddDowntimes.php: Loads a list of downtimes from an
 // XML file and inserts them into the doctrine prototype.
-// XML format is the output from get_service_endpoints PI query.
-//
+// XML format is the output from get_downtime PI query.
 
 
 $allDowntimes = array();
@@ -57,14 +56,17 @@ foreach ($downtimes as $downtimeXml) {
     $downtime = null;
     // See if we've already entered a downtime with this prom ID
     if (isset($allDowntimes[$promId])) {
-        // load $downtime from db by $promId rather than loading from global
+        // Load $downtime from db by $promId rather than loading from global
         // array. This assumes xml ID attribute (without 'G0' appended) is
         // the same as xml PRIMARY_KEY attribute.
         //
         // $downtime = $entityManager->createQuery("select d FROM Downtime " .
         //     "d WHERE d.primaryKey = ?1")
-        //   ->setParameter(1, (string) $promId.'G0')
-        //   ->getResult();
+        //                           ->setParameter(
+        //                               1,
+        //                               (string) $promId.'G0'
+        //                           )
+        //                           ->getResult();
         $downtime = $allDowntimes[$promId];
     }
 
@@ -78,7 +80,7 @@ foreach ($downtimes as $downtimeXml) {
         );
 
         // There are some edge cases where findSEs returns
-        // more than one SE (see the comment at the top of this file)
+        // more than one SE (see the comment at the top of this file).
         // However if the downtime isn't yet created we always
         // link to the first SE found.
         if (!isset($services[0])) {
@@ -141,7 +143,7 @@ foreach ($downtimes as $downtimeXml) {
                 // Check whether this exception is caused by a known issue
                 // with duplicate SEs (see comment at the top of the file).
                 // Issue is known if two SEs are found and the hostname is
-                // a known duplicate
+                // a known duplicate.
                 $twoSes = false;
                 if (count($services) == 2) {
                     $twoSes = true;

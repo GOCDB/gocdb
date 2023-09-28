@@ -44,7 +44,7 @@ function isBad($site) {
             'UIS-BUCARAMANGA', 'UTP-PANAMA', 'ITWM-PPS' , 'HU-BERLIN',
             'SCAI-PPS', 'FZK-SC', 'FZK-Test', 'FZK-Test',
             'GRIDOPS-GRIDVIEW', 'GSI-LCG2-PPS',
-            // next lot is from NGI_IE which was deleted.
+            // Next lot is from NGI_IE which was deleted.
             'csTCDie', 'mpUCDie', 'giNUIMie', 'cpDIASie', 'csQUBuk',
             'csUCCie', 'scgNUIGie', 'giITTAie', 'obsARMuk', 'giHECie',
             'giRCSIie', 'giDCUie');
@@ -63,14 +63,14 @@ function isBad($site) {
  * @return \Scope
  */
 function getScope($entityManager, $scope) {
-    // get the scope
+    // Get the scope
     $dql = "SELECT s FROM Scope s WHERE s.name = ?1";
     $scopes = $entityManager->createQuery($dql)
                             ->setParameter(1, $scope)
                             ->getResult();
 
     /* Error checking: ensure each Site's "SCOPE" refers to exactly
-    * one SCOPE */
+     * one SCOPE */
     if (count($scopes) !== 1) {
         throw new Exception(count($scopes) . " SCOPEs found " .
             "with name: " . $scope);

@@ -41,7 +41,7 @@ foreach ($scopes as $localScope) {
 
 foreach ($ses as $xmlSe) {
     $doctrineSe = new Service();
-    // get the hosting site entity
+    // Get the hosting site entity
     $dql = "SELECT s from Site s WHERE s.shortName = ?1";
     $parentSites = $entityManager->createQuery($dql)
                                  ->setParameter(
@@ -64,7 +64,7 @@ foreach ($ses as $xmlSe) {
 
     $doctrineSe->setParentSiteDoJoin($parentSite);
 
-    // get the hosting service type
+    // Get the hosting service type
     $dql = "SELECT s from ServiceType s WHERE s.name = ?1";
     $sts = $entityManager->createQuery($dql)
                          ->setParameter(
@@ -117,7 +117,7 @@ foreach ($ses as $xmlSe) {
             " for SE " . $xmlSe->HOSTNAME);
     }
 
-    //set creation date
+    // Set creation date
     $creationDate = new \DateTime("now", new DateTimeZone('UTC'));
 
 
