@@ -44,11 +44,14 @@ try {
         $doctrineUser->setAdmin(false);
 
         // Roughly half of users don't have a home site set
-        if ($user->HOMESITE !== "" &&  !isBad($user->HOMESITE)) {
+        if ($user->HOMESITE !== "" && !isBad($user->HOMESITE)) {
             // Get the home site entity
             $dql = "SELECT s from Site s WHERE s.shortName = ?1";
             $homeSites = $em->createQuery($dql)
-                            ->setParameter(1, (string) $user->HOMESITE)
+                            ->setParameter(
+                                1,
+                                (string) $user->HOMESITE
+                            )
                             ->getResult();
 
             /* Error checking: ensure each "home site" refers to exactly

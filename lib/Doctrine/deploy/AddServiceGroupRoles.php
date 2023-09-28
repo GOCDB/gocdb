@@ -23,7 +23,10 @@ foreach ($usersRoles as $user) {
         $userRole = (string) $role->USER_ROLE;
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleType";
         $roleTypes = $entityManager->createQuery($dql)
-                                   ->setParameter(':roleType', $userRole)
+                                   ->setParameter(
+                                       ':roleType',
+                                       $userRole
+                                   )
                                    ->getResult();
 
         /*
@@ -44,7 +47,10 @@ foreach ($usersRoles as $user) {
         $dql = "SELECT u FROM User u JOIN u.userIdentifiers up " .
             "WHERE up.keyValue = :keyValue";
         $users = $entityManager->createQuery($dql)
-                               ->setParameter('keyValue', trim($userDN))
+                               ->setParameter(
+                                   'keyValue',
+                                   trim($userDN)
+                               )
                                ->getResult();
 
         /*
@@ -64,8 +70,10 @@ foreach ($usersRoles as $user) {
         $dql = "SELECT sg FROM ServiceGroup sg WHERE " .
             "sg.name = :service_group";
         $serviceGroups = $entityManager->createQuery($dql)
-                                       ->setParameter('service_group',
-                                           $sgName)
+                                       ->setParameter(
+                                           'service_group',
+                                           $sgName
+                                       )
                                        ->getResult();
 
         /*

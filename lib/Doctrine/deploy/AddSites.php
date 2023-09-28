@@ -9,7 +9,7 @@ require_once __DIR__ . "/AddUtils.php";
 $sitesFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/Sites.xml";
 $sites = simplexml_load_file($sitesFileName);
 
-$xmlCertStatusChanges = simplexml_load_file( __DIR__ . "/" .
+$xmlCertStatusChanges = simplexml_load_file(__DIR__ . "/" .
     $GLOBALS['dataDir'] . "/CertStatusChanges.xml");
 $xmlCertStatusLinkDates = simplexml_load_file(__DIR__ . "/" .
     $GLOBALS['dataDir'] . "/CertStatusDate.xml");
@@ -21,8 +21,8 @@ foreach ($sites as $xmlSite) {
     // than any other recorded so far
     $v4pkGO = trim((string) $xmlSite->PRIMARY_KEY);
     // isolate just the number part (slice the 'GO' off the end)
-    $v4pk = (int)substr($v4pkGO, 0, strlen($v4pkGO)-2);
-    if ($v4pk > $largestV4SitePk){
+    $v4pk = (int) substr($v4pkGO, 0, strlen($v4pkGO)-2);
+    if ($v4pk > $largestV4SitePk) {
         $largestV4SitePk = $v4pk;
     }
 
@@ -37,11 +37,11 @@ foreach ($sites as $xmlSite) {
     $doctrineSite->setTelephone((string) $xmlSite->CONTACT_TEL);
     $doctrineSite->setGiisUrl((string) $xmlSite->GIIS_URL);
     $doctrineSite->setTimezoneId((string) $xmlSite->TIMEZONE);
-    if (strlen((string)$xmlSite->LATITUDE) > 0){
-        $doctrineSite->setLatitude((float)$xmlSite->LATITUDE);
+    if (strlen((string) $xmlSite->LATITUDE) > 0) {
+        $doctrineSite->setLatitude((float) $xmlSite->LATITUDE);
     }
-    if (strlen((string)$xmlSite->LONGITUDE) > 0){
-        $doctrineSite->setLongitude((float)$xmlSite->LONGITUDE);
+    if (strlen((string) $xmlSite->LONGITUDE) > 0) {
+        $doctrineSite->setLongitude((float) $xmlSite->LONGITUDE);
     }
     $doctrineSite->setCsirtEmail((string) $xmlSite->CSIRT_EMAIL);
     $doctrineSite->setIpRange((string) $xmlSite->IP_RANGE);
@@ -56,8 +56,10 @@ foreach ($sites as $xmlSite) {
     // get the parent NGI entity
     $dql = "SELECT n FROM NGI n WHERE n.name = ?1";
     $parentNgis = $entityManager->createQuery($dql)
-                                ->setParameter(1,
-                                    (string) $xmlSite->ROC)
+                                ->setParameter(
+                                    1,
+                                    (string) $xmlSite->ROC
+                                )
                                 ->getResult();
 
     // /* Error checking: ensure each SE's "parent ngi" refers to exactly
@@ -76,8 +78,10 @@ foreach ($sites as $xmlSite) {
     // get the target infrastructure
     $dql = "SELECT i FROM Infrastructure i WHERE i.name = :name";
     $infs = $entityManager->createQuery($dql)
-                          ->setParameter('name',
-                              (string) $xmlSite->PRODUCTION_INFRASTRUCTURE)
+                          ->setParameter(
+                              'name',
+                              (string) $xmlSite->PRODUCTION_INFRASTRUCTURE
+                          )
                           ->getResult();
 
     // /* Error checking: ensure each SE's "PRODUCTION_INFRASTRUCTURE"
@@ -96,8 +100,10 @@ foreach ($sites as $xmlSite) {
     // get the cert status
     $dql = "SELECT c FROM CertificationStatus c WHERE c.name = ?1";
     $certStatuses = $entityManager->createQuery($dql)
-                                  ->setParameter(1,
-                                      (string) $xmlSite->CERTIFICATION_STATUS)
+                                  ->setParameter(
+                                      1,
+                                      (string) $xmlSite->CERTIFICATION_STATUS
+                                  )
                                   ->getResult();
 
     /* Error checking: ensure each Site's "cert status" refers to exactly
@@ -113,14 +119,20 @@ foreach ($sites as $xmlSite) {
 
     $doctrineSite->setCertificationStatus($certStatus);
 
-    $doctrineSite->addScope(getScope($entityManager,
-        (string) $xmlSite->SCOPE));
+    $doctrineSite->addScope(
+        getScope(
+            $entityManager,
+            (string) $xmlSite->SCOPE
+        )
+    );
 
     // get / set the country
     $dql = "SELECT c FROM Country c WHERE c.name = ?1";
     $countries = $entityManager->createQuery($dql)
-                               ->setParameter(1,
-                                   (string) $xmlSite->COUNTRY)
+                               ->setParameter(
+                                   1,
+                                   (string) $xmlSite->COUNTRY
+                               )
                                ->getResult();
 
     /* Error checking: ensure each country refers to exactly
@@ -140,8 +152,10 @@ foreach ($sites as $xmlSite) {
     // get the Tier (optional value)
     $dql = "SELECT t FROM Tier t WHERE t.name = ?1";
     $tiers = $entityManager->createQuery($dql)
-                           ->setParameter(1,
-                               (string) $xmlSite->TIER)
+                           ->setParameter(
+                               1,
+                               (string) $xmlSite->TIER
+                           )
                            ->getResult();
 
     /* Error checking: ensure each tier refers to exactly
@@ -157,8 +171,10 @@ foreach ($sites as $xmlSite) {
     // get the SubGrid (optional value)
     $dql = "SELECT s FROM SubGrid s WHERE s.name = ?1";
     $subGrids = $entityManager->createQuery($dql)
-                              ->setParameter(1,
-                                  (string) $xmlSite->SUBGRID)
+                              ->setParameter(
+                                  1,
+                                  (string) $xmlSite->SUBGRID
+                              )
                               ->getResult();
 
     /* Error checking: ensure each subgrid refers to exactly
@@ -174,8 +190,10 @@ foreach ($sites as $xmlSite) {
 
 
     //set creation date
-    $creationDate = new \DateTime("now",
-        new DateTimeZone('UTC'));
+    $creationDate = new \DateTime(
+        "now",
+        new DateTimeZone('UTC')
+    );
 
     $doctrineSite->setCreationDate($creationDate);
 
@@ -183,29 +201,35 @@ foreach ($sites as $xmlSite) {
     // The date of the CURRENT certStatus in v4 is recorded as
     // a link/linkType object using the dateOn property. For simplicity, we
     // store this date as an attribute on the Site.
-    foreach ($xmlCertStatusLinkDates as $xmlCertStatusLinkDate){
-       $targetSiteName = (string) $xmlCertStatusLinkDate->name;
-       // only interested in the current site
-       if ($targetSiteName == $doctrineSite->getShortName()){
-          // '01-JUL-13 11.09.10.000000 AM' which has the php datetime
-          // format of 'd-M-y H.i.s A' provided we
-          // trim off the '.000000' (millisecs)
-          // Note, '.000000' is present in all the <cert_date> elements.
-          $xmlLinkDateString = (string) $xmlCertStatusLinkDate->cert_date;
-          $xmlLinkDateString = preg_replace('/\.000000/', "",
-              $xmlLinkDateString);
-          $linkDate =  \DateTime::createFromFormat('d-M-y H.i.s A',
-              $xmlLinkDateString, new \DateTimeZone('UTC'));
-          if (!$linkDate) {
-              throw new Exception("Can't parse date/time  " .
-                  $xmlLinkDateString . " for site " .
-                  $doctrineSite->getShortName() .
-                  ". Correct format: 27-JUL-11 02.02.03 PM" );
-          }
+    foreach ($xmlCertStatusLinkDates as $xmlCertStatusLinkDate) {
+        $targetSiteName = (string) $xmlCertStatusLinkDate->name;
+        // only interested in the current site
+        if ($targetSiteName == $doctrineSite->getShortName()) {
+            // '01-JUL-13 11.09.10.000000 AM' which has the php datetime
+            // format of 'd-M-y H.i.s A' provided we
+            // trim off the '.000000' (millisecs)
+            // Note, '.000000' is present in all the <cert_date> elements.
+            $xmlLinkDateString = (string) $xmlCertStatusLinkDate->cert_date;
+            $xmlLinkDateString = preg_replace(
+                '/\.000000/',
+                "",
+                $xmlLinkDateString
+            );
+            $linkDate =  \DateTime::createFromFormat(
+                'd-M-y H.i.s A',
+                $xmlLinkDateString,
+                new \DateTimeZone('UTC')
+            );
+            if (!$linkDate) {
+                throw new Exception("Can't parse date/time  " .
+                    $xmlLinkDateString . " for site " .
+                    $doctrineSite->getShortName() .
+                    ". Correct format: 27-JUL-11 02.02.03 PM");
+            }
 
           $doctrineSite->setCertificationStatusChangeDate($linkDate);
 
-       }
+        }
     }
 
 
@@ -219,27 +243,27 @@ foreach ($sites as $xmlSite) {
     // necessarily correspond with the date of the CURRENT certification status.
     // Rather, the date of the CURRENT certStatus in v4 is recorded as
     // a link/linkType object using the dateOn property.
-    foreach ($xmlCertStatusChanges as $xmlCertStatusChange){
-       $targetSiteName = (string) $xmlCertStatusChange->SITE;
-       // only interested in the current site
-       if ($targetSiteName == $doctrineSite->getShortName()){
-           $doctrineCertStatusChangeLog = new \CertificationStatusLog();
-           $doctrineCertStatusChangeLog->setAddedBy((string)
-               $xmlCertStatusChange->CHANGED_BY);
-           $doctrineCertStatusChangeLog->setOldStatus((string)
-               $xmlCertStatusChange->OLD_STATUS);
-           $doctrineCertStatusChangeLog->setNewStatus((string)
-               $xmlCertStatusChange->NEW_STATUS);
-           $doctrineCertStatusChangeLog->setReason((string)
-               $xmlCertStatusChange->COMMENT);
-           $insertDate = new DateTime("@" .
-               (string) $xmlCertStatusChange->UNIX_TIME);
-           $doctrineCertStatusChangeLog->setAddedDate($insertDate);
-           $entityManager->persist($doctrineCertStatusChangeLog);
-           $doctrineSite->addCertificationStatusLog(
-               $doctrineCertStatusChangeLog
-           );
-       }
+    foreach ($xmlCertStatusChanges as $xmlCertStatusChange) {
+        $targetSiteName = (string) $xmlCertStatusChange->SITE;
+        // only interested in the current site
+        if ($targetSiteName == $doctrineSite->getShortName()) {
+            $doctrineCertStatusChangeLog = new \CertificationStatusLog();
+            $doctrineCertStatusChangeLog->setAddedBy((string)
+                $xmlCertStatusChange->CHANGED_BY);
+            $doctrineCertStatusChangeLog->setOldStatus((string)
+                $xmlCertStatusChange->OLD_STATUS);
+            $doctrineCertStatusChangeLog->setNewStatus((string)
+                $xmlCertStatusChange->NEW_STATUS);
+            $doctrineCertStatusChangeLog->setReason((string)
+                $xmlCertStatusChange->COMMENT);
+            $insertDate = new DateTime("@" .
+                (string) $xmlCertStatusChange->UNIX_TIME);
+            $doctrineCertStatusChangeLog->setAddedDate($insertDate);
+            $entityManager->persist($doctrineCertStatusChangeLog);
+            $doctrineSite->addCertificationStatusLog(
+                $doctrineCertStatusChangeLog
+            );
+        }
     }
 
     $entityManager->persist($doctrineSite);

@@ -31,9 +31,11 @@ foreach ($usersRoles as $user) {
         // get roletype entity
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleType";
         $roleTypes = $entityManager->createQuery($dql)
-                                     ->setParameter(':roleType',
-                                         (string) $role->USER_ROLE)
-                                     ->getResult();
+                                   ->setParameter(
+                                       ':roleType',
+                                       (string) $role->USER_ROLE
+                                   )
+                                   ->getResult();
         // /* Error checking: ensure each role type refers to exactly
          // * one role type*/
         if (count($roleTypes) !== 1) {
@@ -49,8 +51,10 @@ foreach ($usersRoles as $user) {
         $dql = "SELECT u FROM User u JOIN u.userIdentifiers up " .
             "WHERE up.keyValue = :keyValue";
         $users = $entityManager->createQuery($dql)
-                               ->setParameter('keyValue',
-                                   trim((string) $user->CERTDN))
+                               ->setParameter(
+                                   'keyValue',
+                                   trim((string) $user->CERTDN)
+                               )
                                ->getResult();
 
         // /* Error checking: ensure each "user" refers to exactly
@@ -70,7 +74,10 @@ foreach ($usersRoles as $user) {
         // Querying the project entity
         $dql = "SELECT p FROM Project p WHERE p.name = :project";
         $projects = $entityManager->createQuery($dql)
-                                  ->setParameter('project', $projectName)
+                                  ->setParameter(
+                                      'project',
+                                      $projectName
+                                  )
                                   ->getResult();
 
         // Error check: ensure each 'project' refers to exactly one project
@@ -81,7 +88,9 @@ foreach ($usersRoles as $user) {
 
         // Finding the project object and adding the role to it
         $getProject = $entityManager->getRepository('Project')
-                                    ->findOneBy(array("name" => $projectName));
+                                    ->findOneBy(
+                                        array("name" => $projectName)
+                                    );
         $doctrineRole = new Role(
             $roleType,
             $doctrineUser,

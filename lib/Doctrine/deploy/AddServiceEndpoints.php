@@ -7,7 +7,8 @@ require_once __DIR__ . "/AddUtils.php";
  * XML file and inserts them into the doctrine prototype.
  * XML format is the output from get_service_endpoints PI query.
  */
-$seFileName = __DIR__ . "/" . $GLOBALS['dataDir'] . "/ServiceEndpoints.xml";
+$seFileName = __DIR__ . "/" . $GLOBALS['dataDir'] .
+    "/ServiceEndpoints.xml";
 $ses = simplexml_load_file($seFileName);
 
 // Get EGI scope entity to join to later
@@ -43,8 +44,10 @@ foreach ($ses as $xmlSe) {
     // get the hosting site entity
     $dql = "SELECT s from Site s WHERE s.shortName = ?1";
     $parentSites = $entityManager->createQuery($dql)
-                                 ->setParameter(1,
-                                     (string) $xmlSe->SITENAME)
+                                 ->setParameter(
+                                     1,
+                                     (string) $xmlSe->SITENAME
+                                 )
                                  ->getResult();
 
     /* Error checking: ensure each SE's "parent site" refers to exactly
@@ -64,8 +67,10 @@ foreach ($ses as $xmlSe) {
     // get the hosting service type
     $dql = "SELECT s from ServiceType s WHERE s.name = ?1";
     $sts = $entityManager->createQuery($dql)
-                         ->setParameter(1,
-                             (string) $xmlSe->SERVICE_TYPE)
+                         ->setParameter(
+                             1,
+                             (string) $xmlSe->SERVICE_TYPE
+                         )
                          ->getResult();
 
     /* Error checking: ensure each SE's "SERVICE_TYPE" refers to exactly
@@ -105,7 +110,7 @@ foreach ($ses as $xmlSe) {
     // Set the scope
     if ((string) $xmlSe->SCOPE == "EGI") {
         $doctrineSe->addScope($egiScope);
-    } else if ((String) $xmlSe->SCOPE == 'Local') {
+    } elseif ((string) $xmlSe->SCOPE == 'Local') {
         $doctrineSe->addScope($localScope);
     } else {
         throw new Exception("Unknown scope " . $xmlSe->SCOPE .

@@ -22,8 +22,10 @@ foreach ($usersRoles as $user) {
         // get roletype entity
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = :roleType";
         $roleTypes = $entityManager->createQuery($dql)
-                                   ->setParameter(':roleType',
-                                       (string) $role->USER_ROLE)
+                                   ->setParameter(
+                                       ':roleType',
+                                       (string) $role->USER_ROLE
+                                   )
                                    ->getResult();
         // /* Error checking: ensure each role type refers to exactly
          // * one role type*/
@@ -40,8 +42,10 @@ foreach ($usersRoles as $user) {
         $dql = "SELECT u FROM User u JOIN u.userIdentifiers " .
             "up WHERE up.keyValue = :keyValue";
         $users = $entityManager->createQuery($dql)
-                               ->setParameter('keyValue',
-                                   trim((string) $user->CERTDN))
+                               ->setParameter(
+                                   'keyValue',
+                                   trim((string) $user->CERTDN)
+                               )
                                ->getResult();
 
         // /* Error checking: ensure each "user" refers to exactly
@@ -57,9 +61,13 @@ foreach ($usersRoles as $user) {
 
         // Check for invalid NGIs and skip
         // typically these are decomissioned ROCs
-        if ($role->ON_ENTITY == 'GridIreland' || $role->ON_ENTITY == 'NGS'
-            || $role->ON_ENTITY == 'LondonT2' || $role->ON_ENTITY == 'Tier1A'
-            || $role->ON_ENTITY == 'Tier1A') {
+        if (
+            $role->ON_ENTITY == 'GridIreland'
+            || $role->ON_ENTITY == 'NGS'
+            || $role->ON_ENTITY == 'LondonT2'
+            || $role->ON_ENTITY == 'Tier1A'
+            || $role->ON_ENTITY == 'Tier1A'
+        ) {
             continue;
         }
 
@@ -67,7 +75,10 @@ foreach ($usersRoles as $user) {
         $ngiName = (string) $role->ON_ENTITY;
         $dql = "SELECT n FROM NGI n WHERE n.name = :ngi";
         $ngis = $entityManager->createQuery($dql)
-                              ->setParameter('ngi', $ngiName)
+                              ->setParameter(
+                                  'ngi',
+                                  $ngiName
+                              )
                               ->getResult();
         // /* Error checking: ensure each "ngi" refers to exactly
          // * one ngi */
@@ -83,15 +94,17 @@ foreach ($usersRoles as $user) {
         //check that the role is not a duplicate (v4 data contaisn duplicates)
         $ExistingUserRoles = $doctrineUser->getRoles();
         $thisIsADuplicateRole=false;
-        foreach ($ExistingUserRoles as $role){
-            if ($role->getRoleType() == $roleType
+        foreach ($ExistingUserRoles as $role) {
+            if (
+                $role->getRoleType() == $roleType
                 and $role->getOwnedEntity() == $ngi
-                and $role->getStatus() == 'STATUS_GRANTED') {
+                and $role->getStatus() == 'STATUS_GRANTED'
+            ) {
                 $thisIsADuplicateRole = true;
             }
         }
 
-        if (!$thisIsADuplicateRole){
+        if (!$thisIsADuplicateRole) {
             $doctrineRole = new Role(
                 $roleType,
                 $doctrineUser,

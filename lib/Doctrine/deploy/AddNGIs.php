@@ -70,12 +70,14 @@ foreach ($ngis as $xmlNgi) {
 
             //convert to date time
             $creationDate = DateTime::createFromFormat(
-                'd-M-y G.i.s.u', $cdateonString,
-                new DateTimeZone('UTC'));
+                'd-M-y G.i.s.u',
+                $cdateonString,
+                new DateTimeZone('UTC')
+            );
 
             if ($creationDate == false) {
-            throw new LogicException("Datetime in unexpected " .
-                "format. datetime: '" . $cdateonString . "'");
+                throw new LogicException("Datetime in unexpected " .
+                    "format. datetime: '" . $cdateonString . "'");
             }
         }
 

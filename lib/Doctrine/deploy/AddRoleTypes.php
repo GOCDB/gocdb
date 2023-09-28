@@ -42,7 +42,7 @@ $roleTypeArray = RoleTypeName::getAsArray();
 foreach ($roleTypeArray as $key => $value) {
     $rt = new RoleType($value);
     //echo $value;
-    if ($value != RoleTypeName::GOCDB_ADMIN){
+    if ($value != RoleTypeName::GOCDB_ADMIN) {
         $entityManager->persist($rt);
     }
 }

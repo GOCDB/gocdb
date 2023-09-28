@@ -21,7 +21,7 @@ foreach ($scopes as $scope) {
           $name = (string) $value;
           break;
         case "reserved":
-          $reserved = ( $value == 1 );
+          $reserved = ($value == 1);
           break;
       }
     }

@@ -19,9 +19,9 @@ function findSEs($hostName, $serviceType) {
 /* Is the passed site invalid?
  * Uses a list of known bad sites */
 function isBad($site) {
-    /* Roles over these sites are in the production data but can't be inserted
-     * into v5 because they don't have an NGI or a domain. v5 doesn't import
-     * sites without an NGI or domain
+    /* Roles over these sites are in the production data but can't be
+     * inserted into v5 because they don't have an NGI or a domain.
+     * v5 doesn't import sites without an NGI or domain
      *
      * Sites ignored becuase of no parent NGI:
      * Australia-UNIMELB-LCG2, GUP-JKU,UNIBAS, FZK-PPS, MA-01-CNRST,

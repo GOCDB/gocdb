@@ -28,8 +28,10 @@ foreach ($usersRoles as $user) {
         // get the roletype entity
         $dql = "SELECT rt FROM RoleType rt WHERE rt.name = ?1";
         $roleTypes = $entityManager->createQuery($dql)
-                                   ->setParameter(1,
-                                       (string) $role->USER_ROLE)
+                                   ->setParameter(
+                                       1,
+                                       (string) $role->USER_ROLE
+                                   )
                                    ->getResult();
         // /* Error checking: ensure each role type refers to exactly
         //  * one role type */
@@ -50,8 +52,10 @@ foreach ($usersRoles as $user) {
         $dql = "SELECT u FROM User u JOIN u.userIdentifiers up " .
             "WHERE up.keyValue = :keyValue";
         $users = $entityManager->createQuery($dql)
-                               ->setParameter('keyValue',
-                                   trim((string) $user->CERTDN))
+                               ->setParameter(
+                                   'keyValue',
+                                   trim((string) $user->CERTDN)
+                               )
                                ->getResult();
 
         // /* Error checking: ensure each "user" refers to exactly
@@ -79,8 +83,10 @@ foreach ($usersRoles as $user) {
         // get the site entity
         $dql = "SELECT s FROM Site s WHERE s.shortName = ?1";
         $sites = $entityManager->createQuery($dql)
-                               ->setParameter(1,
-                                   (string) $role->ON_ENTITY)
+                               ->setParameter(
+                                   1,
+                                   (string) $role->ON_ENTITY
+                               )
                                ->getResult();
         // /* Error checking: ensure each "site" refers to exactly
          // * one site */
@@ -100,15 +106,17 @@ foreach ($usersRoles as $user) {
         //check that the role is not a duplicate (v4 data contaisn duplicates)
         $ExistingUserRoles = $doctrineUser->getRoles();
         $thisIsADuplicateRole=false;
-        foreach ($ExistingUserRoles as $role){
-            if ($role->getRoleType() == $roleType
+        foreach ($ExistingUserRoles as $role) {
+            if (
+                $role->getRoleType() == $roleType
                 and $role->getOwnedEntity() == $doctrineSite
-                and $role->getStatus() == 'STATUS_GRANTED'){
+                and $role->getStatus() == 'STATUS_GRANTED'
+            ) {
                 $thisIsADuplicateRole = true;
             }
         }
 
-        if (!$thisIsADuplicateRole){
+        if (!$thisIsADuplicateRole) {
             $doctrineRole = new Role(
                 $roleType,
                 $doctrineUser,

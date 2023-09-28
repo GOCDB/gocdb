@@ -72,8 +72,10 @@ foreach ($downtimes as $downtimeXml) {
         // Create a new downtime, add the SE to it
         $downtime = newDowntime($downtimeXml);
         // Finds one or more SEs by hostname and service type
-        $services = findSEs((string) $downtimeXml->HOSTNAME,
-            (string) $downtimeXml->SERVICE_TYPE);
+        $services = findSEs(
+            (string) $downtimeXml->HOSTNAME,
+            (string) $downtimeXml->SERVICE_TYPE
+        );
 
         // There are some edge cases where findSEs returns
         // more than one SE (see the comment at the top of this file)
@@ -93,8 +95,10 @@ foreach ($downtimes as $downtimeXml) {
         $GLOBALS['allDowntimes'][$promId] = $downtime;
     } else {
         // Find the SE and link it to the downtime
-        $services = findSEs((string) $downtimeXml->HOSTNAME,
-            (string) $downtimeXml->SERVICE_TYPE);
+        $services = findSEs(
+            (string) $downtimeXml->HOSTNAME,
+            (string) $downtimeXml->SERVICE_TYPE
+        );
 
         if (!isset($services[0])) {
             throw new Exception("No SE found with hostname " .
@@ -110,7 +114,7 @@ foreach ($downtimes as $downtimeXml) {
             // duplicate SEs (the duplicate SE count is tested for the expected
             // 2 duplicates below in catch block).
             $els = $services[0]->getEndpointLocations();
-            if (count($els) > 1){
+            if (count($els) > 1) {
                 throw new LogicException('Coding error - there should only ' .
                     'be one EL per Service');
             }
@@ -212,7 +216,7 @@ function newDowntime($downtimeXml) {
     // Get the largest v4 downtime PK which is an integer appended by
     // the string 'G0' slice off the 'G0' and get the integer value.
     $v4pk = (int)substr($primaryKey, 0, strlen($primaryKey)-2);
-    if ($v4pk > $GLOBALS['largestV4DowntimePK']){
+    if ($v4pk > $GLOBALS['largestV4DowntimePK']) {
         $GLOBALS['largestV4DowntimePK'] = $v4pk;
     }
 
