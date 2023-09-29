@@ -181,7 +181,61 @@
         </div>
     <?php } // end of "if userResults is > 0"?>
 
-    <?php if(sizeof($params['siteResults']) == 0 && sizeof($params['serviceResults']) == 0 && sizeof($params['userResults']) == 0 && sizeof($params['ngiResults'] == 0))  { ?>
+    <!-- Site Idetifiers -->
+    <?php if (sizeof($params['siteIdentifiers']) > 0) { ?>
+        <div class="listContainer" style="width: 97%;">
+            <div style="padding: 0.5em;">
+                <img style="vertical-align: middle; clear: both; height: 35px; width: 35px;"
+                     src="<?php echo \GocContextPath::getPath()?>img/key.png" />
+                <h3 style="vertical-align: middle; clear: both; display: inline;
+                            margin-left: 0.3em; font-size: 1.3em; padding-bottom: 0em;">
+                    API credentials
+                </h3>
+            </div>
+
+            <?php if ($params['authenticated']) { ?>
+            <table id="usersTable" class="table table-striped table-condensed tablesorter">
+                <thead>
+                    <tr>
+                        <th>Site Name</th>
+                        <th>Identifier</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    <?php
+                    foreach ($params['siteIdentifiers'] as $site) {
+                        ?>
+                        <tr>
+                            <td style="width: 25%">
+                                <a href="index.php?Page_Type=Site&amp;id=<?php
+                                    echo $site->getParentSite()->getId() ?>">
+                                    <?php xecho($site->getParentSite()->getShortName()) ?>
+                                </a>
+                            </td>
+                            <td>
+                                <?php xecho($site->getIdentifier()); ?>
+                            </td>
+                        </tr>
+                        <?php
+                    } // End of the foreach loop iterating over userResults
+                    ?>
+                </tbody>
+            </table>
+            <?php } else {
+                 echo 'PROTECTED';
+            }
+            ?>
+        </div>
+    <?php } // end of "if siteIdentifiers is > 0"?>
+
+    <?php if (
+        sizeof($params['siteResults']) == 0 &&
+        sizeof($params['serviceResults']) == 0 &&
+        sizeof($params['userResults']) == 0 &&
+        sizeof($params['ngiResults']) == 0 &&
+        sizeof($params['siteIdentifiers']) == 0
+) { ?>
         <div class="listContainer" style="padding: 0.5em; width: 97%;">
             <span style="float: left;">No results found</span>
         </div>

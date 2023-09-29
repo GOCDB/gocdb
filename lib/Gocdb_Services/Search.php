@@ -101,4 +101,21 @@ class Search {
         return $ngis;
     }
 
+    /**
+     * When the user is admin, it retrieves the matching identifiers.
+     */
+    public function getSiteIdentifiers($user, $searchTerm)
+    {
+        if ($user->isAdmin()) {
+            $dql = "SELECT ui FROM APIAuthentication ui "
+                . " WHERE UPPER(ui.identifier) "
+                . " LIKE UPPER(concat(concat('%', :searchTerm), '%'))";
+            $siteIdentifiers = $this->em
+                ->createQuery($dql)
+                ->setParameter(":searchTerm", $searchTerm)
+                ->getResult();
+
+            return $siteIdentifiers;
+        }
+    }
 }

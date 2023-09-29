@@ -115,7 +115,6 @@ class GetCertStatusDate implements IPIQuery, IPIQueryPageable, IPIQueryRenderabl
             ->leftJoin('s.scopes', 'sc')
             ->join('s.infrastructure', 'i')
             ->andWhere($qb->expr()->like('i.name', '?'.++$bc))
-            //->orderBy('s.id', 'ASC')
         ;
 
         $binds[] = array($bc, 'Production');

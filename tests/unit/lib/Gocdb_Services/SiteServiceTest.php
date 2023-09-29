@@ -12,6 +12,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
+namespace org\gocdb\tests;
+
 require_once __DIR__ . '/../../../doctrine/TestUtil.php';
 require_once __DIR__ . '/ServiceTestUtil.php';
 require_once __DIR__ . '/../../../../lib/Doctrine/entities/User.php';
@@ -21,25 +24,32 @@ require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/Scope.php';
 
 use Doctrine\ORM\EntityManager;
+use org\gocdb\tests\ServiceTestUtil;
+use PHPUnit_Extensions_Database_Operation_Factory;
+use PHPUnit_Extensions_Database_TestCase;
+use RuntimeException;
+use TestUtil;
 
 /**
  * DBUnit test class for the {@see \org\gocdb\services\Site} service.
  *
  * @author Ian Neilson (after David Meredith)
  */
-class siteServiceTest extends PHPUnit_Extensions_Database_TestCase
+class SiteServiceTest extends PHPUnit_Extensions_Database_TestCase
 {
     private $entityManager;
     private $dbOpsFactory;
   /** @var TestUtil $testUtil */
     private $testUtil;
+    private $serviceTestUtil;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
       // Use a local instance to avoid Mess Detector's whinging about avoiding
       // static access.
         $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
+        $this->serviceTestUtil = new ServiceTestUtil();
     }
   /**
   * Overridden.
@@ -167,16 +177,16 @@ class siteServiceTest extends PHPUnit_Extensions_Database_TestCase
     {
         print __METHOD__ . "\n";
 
-        $siteData = ServiceTestUtil::getSiteData($this->entityManager);
-        $siteService = ServiceTestUtil::getSiteService($this->entityManager);
+        $siteData = $this->serviceTestUtil->getSiteData($this->entityManager);
+        $siteService = $this->serviceTestUtil->getSiteService($this->entityManager);
 
       // The most basic check
         $this->assertTrue(
-            $siteService instanceof org\gocdb\services\Site,
+            $siteService instanceof \org\gocdb\services\Site,
             'Site Service failed to create and return a Site service'
         );
 
-        ServiceTestUtil::createAndAddSite($this->entityManager, $siteData);
+        $this->serviceTestUtil->createAndAddSite($this->entityManager, $siteData);
 
       // Check
       // N.B. Although getSitesFilterByParams says all the filters are optional,
@@ -198,9 +208,9 @@ class siteServiceTest extends PHPUnit_Extensions_Database_TestCase
         $user->setAdmin(true);
         $this->persistAndFlush($user);
 
-        $siteData = ServiceTestUtil::getSiteData($this->entityManager);
-        $siteService = ServiceTestUtil::getSiteService($this->entityManager);
-        ServiceTestUtil::createAndAddSite($this->entityManager, $siteData);
+        $siteData = $this->serviceTestUtil->getSiteData($this->entityManager);
+        $siteService = $this->serviceTestUtil->getSiteService($this->entityManager);
+        $this->serviceTestUtil->createAndAddSite($this->entityManager, $siteData);
 
         $sites = $siteService->getSitesFilterByParams(array('scope' => 'Scope1'));
         $site = $sites[0];

@@ -1,4 +1,4 @@
-<?php
+<?php  // phpcs:disable PSR1.Files.SideEffects.FoundWithSymbols
 
 namespace org\gocdb\services;
 
@@ -53,7 +53,8 @@ date_default_timezone_set("UTC");
  * @param string $encoding
  * @return string
  */
-function xssafe($data, $encoding = 'UTF-8') {
+function xssafe($data, $encoding = 'UTF-8')
+{
     //return htmlspecialchars($data,ENT_QUOTES | ENT_HTML401,$encoding);
     return htmlspecialchars($data);
 }
@@ -63,7 +64,8 @@ function xssafe($data, $encoding = 'UTF-8') {
  * @see see https://www.owasp.org/index.php/PHP_Security_Cheat_Sheet
  * @param string $data to encode
  */
-function xecho($data) {
+function xecho($data)
+{
     echo xssafe($data);
 }
 
@@ -76,8 +78,8 @@ function xecho($data) {
 $piReq = new PIRequest();
 $piReq->process();
 
-class PIRequest {
-
+class PIRequest
+{
     private $method = null;
     private $output = null;
     private $params = array();
@@ -91,15 +93,17 @@ class PIRequest {
     // not specified, then the query will be paged by default (true is
     // the preference for large/production datasets).
     private $defaultPageSize = 100;
-    private $defaultPaging = FALSE; // specify true to enforce paging
+    private $defaultPaging = false; // specify true to enforce paging
 
-    public function __construct(){
+    public function __construct()
+    {
         // returns the base portal URL as defined in conf file
         $this->baseUrl = \Factory::getConfigService()->GetPortalURL();
         $this->baseApiUrl = \Factory::getConfigService()->getServerBaseUrl();
     }
 
-    function process() {
+    public function process()
+    {
         header('Content-Type: application/xml');
         //Type is GET request for XML info
         $this->parseGET();
@@ -112,8 +116,8 @@ class PIRequest {
 
     /* Copy the values from the URL into local variables */
 
-    function parseGET() {
-
+    private function parseGET()
+    {
         if (isset($_GET['method'])) {
             $this->method = $_GET['method'];
             unset($_GET['method']);
@@ -125,17 +129,19 @@ class PIRequest {
         }
 
         $testDN = Get_User_Principle_PI();
-        if (empty($testDN) == FALSE) {
+        if (empty($testDN) == false) {
             $this->identifier = $testDN;
         }
 
-        if (count($_GET) > 0)
+        if (count($_GET) > 0) {
             $this->params = $_GET;
+        }
     }
 
     /* executes a query using the appropriate service layer function */
 
-    function getXml() {
+    private function getXml()
+    {
         try {
             $directory = __DIR__ . '/../../lib/Gocdb_Services/PI/';
             $em = \Factory::getEntityManager();
@@ -279,7 +285,12 @@ class PIRequest {
                 case "get_user":
                     require_once($directory . 'GetUser.php');
                     $this->authByIdentifier();
-                    $getUser = new GetUser($em, \Factory::getRoleActionAuthorisationService(), $this->baseUrl, $this->baseApiUrl);
+                    $getUser = new GetUser(
+                        $em,
+                        \Factory::getRoleActionAuthorisationService(),
+                        $this->baseUrl,
+                        $this->baseApiUrl
+                    );
                     $getUser->setDefaultPaging($this->defaultPaging);
                     $getUser->setPageSize($this->defaultPageSize);
                     $getUser->validateParameters($this->params);
@@ -309,7 +320,7 @@ class PIRequest {
                     $getNGI->executeQuery();
                     $xml = $getNGI->getRenderingOutput();
                     break;
-                case "get_service_group" :
+                case "get_service_group":
                     require_once($directory . 'GetServiceGroup.php');
                     $this->authByIdentifier();
                     $getServiceGroup = new GetServiceGroup($em, $this->baseUrl, $this->baseApiUrl);
@@ -320,7 +331,7 @@ class PIRequest {
                     $getServiceGroup->executeQuery();
                     $xml = $getServiceGroup->getRenderingOutput();
                     break;
-                case "get_service_group_role" :
+                case "get_service_group_role":
                     require_once($directory . 'GetServiceGroupRole.php');
                     $this->authByIdentifier();
                     $getServiceGroupRole = new GetServiceGroupRole($em, $this->baseUrl, $this->baseApiUrl);
@@ -331,7 +342,7 @@ class PIRequest {
                     $getServiceGroupRole->executeQuery();
                     $xml = $getServiceGroupRole->getRenderingOutput();
                     break;
-                case "get_cert_status_date" :
+                case "get_cert_status_date":
                     require_once($directory . 'GetCertStatusDate.php');
                     $this->authByAnyIdentifier();
                     $getCertStatusDate = new GetCertStatusDate($em, $this->baseApiUrl);
@@ -355,11 +366,11 @@ class PIRequest {
                     break;
                 case "get_site_count_per_country":
                     require_once($directory . 'GetSiteCountPerCountry.php');
-                    $GetSiteCountPerCountry = new GetSiteCountPerCountry($em);
-                    $GetSiteCountPerCountry->validateParameters($this->params);
-                    $GetSiteCountPerCountry->createQuery();
-                    $GetSiteCountPerCountry->executeQuery();
-                    $xml = $GetSiteCountPerCountry->getRenderingOutput();
+                    $getCountrySiteCount = new GetSiteCountPerCountry($em);
+                    $getCountrySiteCount->validateParameters($this->params);
+                    $getCountrySiteCount->createQuery();
+                    $getCountrySiteCount->executeQuery();
+                    $xml = $getCountrySiteCount->getRenderingOutput();
                     break;
                 //case "get_role_action_mappings":
                 default:
@@ -379,9 +390,10 @@ class PIRequest {
      *                                     for hosts.
      */
 
-    function authByIdentifier($forceStrictForHosts = false) {
-        require_once __DIR__.'/../web_portal/controllers/utils.php';
-        require_once __DIR__.'/../../lib/Doctrine/entities/APIAuthentication.php';
+    private function authByIdentifier($forceStrictForHosts = false)
+    {
+        require_once __DIR__ . '/../web_portal/controllers/utils.php';
+        require_once __DIR__ . '/../../lib/Doctrine/entities/APIAuthentication.php';
 
         if (empty($this->identifier)) {
             throw new \Exception("No valid identifier found. Try accessing the " .
@@ -391,19 +403,20 @@ class PIRequest {
         $admin = false;
         $authenticated = false;
 
+        // Check if incoming identifier is a registered API Authentication credential.
+
+        $authEntServ = \Factory::getAPIAuthenticationService();
+        $authEnt = $authEntServ->getAPIAuthentication($this->identifier);
+
+        if (!is_null($authEnt)) {
+            $authEntServ->updateLastUseTime($authEnt);
+            $authenticated = true;
+        }
+
         $user = \Factory::getUserService()->getUserByPrinciple($this->identifier);
 
         if ($user == null) {
             // Incoming credential is not that of a registered user.
-            // Check if it is registered API Authentication credential.
-
-            $authEntServ = \Factory::getAPIAuthenticationService();
-            $authEnt = $authEntServ->getAPIAuthentication($this->identifier);
-
-            if (!is_null($authEnt)) {
-                $authEntServ->updateLastUseTime($authEnt);
-                $authenticated = true;
-            }
 
             if (!\Factory::getConfigService()->isRestrictPDByRole($forceStrictForHosts)) {
                 // Only a 'valid' identifier is needed.
@@ -418,11 +431,11 @@ class PIRequest {
             list($admin, $authenticated) = getReadPDParams($user);
         }
         if (!($admin || $authenticated)) {
-            throw new \Exception("Authorisation required to read personal data (". getInfoMessage(). "). ");
+            throw new \Exception("Authorisation required to read personal data (" . getInfoMessage() . "). ");
         }
     }
 
-    function authByAnyIdentifier()
+    private function authByAnyIdentifier()
     {
         if (empty($this->identifier)) {
             throw new \Exception(
@@ -432,5 +445,3 @@ class PIRequest {
         }
     }
 }
-
-?>

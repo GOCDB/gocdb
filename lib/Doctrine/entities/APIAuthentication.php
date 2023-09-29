@@ -1,4 +1,5 @@
 <?php
+
 /*
  * Copyright (C) 2016 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,17 +14,27 @@
  */
 
 /**
-  * The APIAuthenticationEntity defines a credential that can be used to makce
-  * changes throught he API for a specific {@see Site}. Each site can have
+  * The APIAuthenticationEntity defines a credential that can be used to make
+  * changes through the API for a specific {@see Site}. Each site can have
   * 0-many APIAuthentication entities associated with it. Each entity has an ID,
   * type, identifier (e.g. DN for X.509) and parent site.
   *
   * @author George Ryall (github.com/GRyall)
   *
-  * @Entity @Table(name="APIAuthenticationEntities", options={"collate"="utf8mb4_bin", "charset"="utf8mb4"}, uniqueConstraints={@UniqueConstraint(name="siteIdentifier", columns={"parentSite_id", "type", "identifier"})})
+  * @Entity
+  * @Table(
+  *     name="APIAuthenticationEntities",
+  *     options={"collate"="utf8mb4_bin", "charset"="utf8mb4"},
+  *     uniqueConstraints={
+  *         @UniqueConstraint(
+  *             name="siteIdentifier",
+  *             columns={"parentSite_id", "type", "identifier"}
+  *         )
+  *     }
+  * )
   */
-   class APIAuthentication
-  {
+class APIAuthentication
+{
     /** @Id @Column(type="integer") @GeneratedValue  */
     protected $id;
 
@@ -55,12 +66,12 @@
      */
     protected $user = null;
 
-     /**
-      * For new instances this is the time of creation. Existing entities
-      * pre-GOCDB5.8 do not have this field and are initialised with the
-      * time the schema is updated.
-      * @Column(type="datetime", nullable=false, options={"default" : "CURRENT_TIMESTAMP"})
-      */
+  /**
+   * For new instances this is the time of creation. Existing entities
+   * pre-GOCDB5.8 do not have this field and are initialised with the
+   * time the schema is updated.
+   * @Column(type="datetime", nullable=false, options={"default" : "CURRENT_TIMESTAMP"})
+   */
     protected $lastRenewTime = null;
 
     /**
@@ -78,14 +89,16 @@
     protected $allowAPIWrite = false;
 
     /**  */
-    public function __construct() {
+    public function __construct()
+    {
         $this->setLastRenewTime();
     }
     /**
      * Get PK of Authentication entity
      * @return int
      */
-    public function getId() {
+    public function getId()
+    {
         return $this->id;
     }
 
@@ -93,7 +106,8 @@
      * Get the authentication enties parent site
      * @return \Site
      */
-    public function getParentSite() {
+    public function getParentSite()
+    {
         return $this->parentSite;
     }
 
@@ -101,7 +115,8 @@
      * Get they autentication type of this entity
      * @return string
      */
-    public function getType() {
+    public function getType()
+    {
         return $this->type;
     }
 
@@ -109,35 +124,40 @@
      * Get the unique identifier for this autnentication entity.
      * @return string
      */
-    public function getIdentifier() {
+    public function getIdentifier()
+    {
         return $this->identifier;
     }
 
     /**
      * @return \User
      */
-    public function getUser() {
+    public function getUser()
+    {
         return $this->user;
     }
 
     /**
      * @return bool $allowAPIWrite
      */
-    public function getAllowAPIWrite () {
+    public function getAllowAPIWrite()
+    {
         return $this->allowAPIWrite;
     }
 
     /**
      * @return \DateTime
      */
-    public function getLastUseTime () {
+    public function getLastUseTime()
+    {
         return $this->lastUseTime;
     }
 
     /**
      * @return \DateTime $time
      */
-    protected function getLastRenewTime() {
+    public function getLastRenewTime()
+    {
         return $this->lastRenewTime;
     }
 
@@ -145,7 +165,8 @@
      * Set the type of this authentication entity
      * @param string $name
      */
-    public function setType($type) {
+    public function setType($type)
+    {
         $this->type = $type;
     }
 
@@ -153,14 +174,16 @@
      * Set the unique identifier of this authentication entity.
      * @param string $identifier
      */
-    public function setIdentifier($identifier) {
+    public function setIdentifier($identifier)
+    {
         $this->identifier = $identifier;
     }
 
     /**
      * @param \DateTime $time if null, current UTC time is set
      */
-    public function setLastUseTime (\DateTime $time = null) {
+    public function setLastUseTime(\DateTime $time = null)
+    {
 
         $useTime = $time;
 
@@ -174,7 +197,8 @@
     /**
      * @param \DateTime $time if null, current UTC time is set
      */
-    public function setLastRenewTime(\DateTime $time = null) {
+    public function setLastRenewTime(\DateTime $time = null)
+    {
 
         $renewTime = $time;
 
@@ -189,9 +213,10 @@
      *
      * @param bool $allowAPIWrite
      */
-    public function setAllowAPIWrite ($allowWrite) {
+    public function setAllowAPIWrite($allowWrite)
+    {
         if (!is_bool($allowWrite)) {
-            throw new LogicException("Expected bool, received".gettype($allowWrite));
+            throw new LogicException("Expected bool, received" . gettype($allowWrite));
         }
         $this->allowAPIWrite = $allowWrite;
     }
@@ -207,13 +232,15 @@
      *
      * @param \Site $site
      */
-    public function _setParentSite(\Site $site){
+    public function _setParentSite(\Site $site)
+    {
         $this->parentSite = $site;
     }
     /**
     * @param \User $user
     */
-    public function _setUser(\User $user) {
+    public function _setUser(\User $user)
+    {
         $this->user = $user;
     }
-  }
+}

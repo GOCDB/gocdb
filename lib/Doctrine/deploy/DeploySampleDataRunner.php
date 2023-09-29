@@ -39,17 +39,20 @@ echo "Added Sites and JOINED to NGIs OK\n";
 require __DIR__."/AddServiceEndpoints.php";
 echo "Added Services, EndpointLocations and JOINED associations OK\n";
 
+require __DIR__."/AddServiceGroups.php";
+echo "Added Service Groups OK\n";
+
 require __DIR__."/AddUsers.php";
 echo "Added Users OK\n";
 
 require __DIR__."/AddSiteRoles.php";
 echo "Added Site level Roles OK\n";
 
-require __DIR__."/AddGroupRoles.php";
+require __DIR__."/AddNGIRoles.php";
 echo "Added NGI level Roles OK\n";
 
-require __DIR__."/AddEgiRoles.php";
+require __DIR__."/AddProjectRoles.php";
 echo "Added EGI level Roles OK\n";
 
-require __DIR__."/AddServiceGroups.php";
-echo "Added Service Groups OK\n";
+require __DIR__ . "/AddServiceGroupRoles.php";
+echo "Added Service Group level Roles OK\n";

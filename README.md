@@ -5,13 +5,16 @@
 Grid Operations Configuration Management Database. A Repository, Portal and REST style API for managing Grid and Cloud topology objects including; projects, administrative domains, sites, services, service-endpoints, service-groups, downtimes, users, roles and business rules.
 
 <span>
-  <img alt="STFC logo" src="htdocs/images/UKRI_STF_Council-Logo_Horiz-RGB_crop.png" height=57/>
-  <img alt="EU flag" src="htdocs/images/eu_flag_yellow_low_150.png" height=57 />
-  <img alt="EGI logo" src="htdocs/images/egi_logo.jpg" height=57 />
-  <img alt="EOSC-hub logo" src="htdocs/images/eosc-hub-v-web_150.png" height=57 />
+  <img alt="STFC logo" src="htdocs/images/logos/ukri_stfc.png" height=64/>
+  <img alt="EU flag" src="htdocs/images/flags/eu.png" height=57 />
+  <img alt="EGI logo" src="htdocs/images/logos/egi.png" height=57 />
+  <img alt="EOSC Future logo" src="htdocs/images/logos/eosc_future.png" height=57 />
+  <img alt="IRIS logo" src="htdocs/images/logos/iris_ac_uk.png" height=57 />
 </span>
 
-GOCDB is provided by [STFC](https://stfc.ukri.org/) for [EGI](https://www.egi.eu/federation/), co-funded by [EGI.eu](https://www.egi.eu/) and [EOSC-hub](https://www.eosc-hub.eu/). Licensed under the [Apache 2 License](http://www.apache.org/licenses/LICENSE-2.0).
+GOCDB is provided by [STFC](https://stfc.ukri.org/), part of [UK Research and Innovation](https://www.ukri.org/), and is co-funded by [EGI](https://egi.eu) via [EGI-ACE](https://www.egi.eu/project/egi-ace/), [EOSC-Future](https://eoscfuture.eu/) and the [IRIS](https://www.iris.ac.uk/) community.
+
+Licensed under the [Apache 2 License](https://www.apache.org/licenses/LICENSE-2.0).
 
 ## Documentation
 

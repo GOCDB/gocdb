@@ -6,5 +6,3 @@
         <?php xecho($params['Name'])?>
     </a> has been successfully updated.
 </div>
-
-

@@ -2,6 +2,9 @@ version: "2"
 plugins:
   phpcodesniffer:
     enabled: true
+    # Need the beta channel to enforce PSR12,
+    # see https://docs.codeclimate.com/docs/phpcodesniffer#standard.
+    channel: "beta"
     config:
       standard: "phpcs.xml"
   phpmd:

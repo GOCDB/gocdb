@@ -119,7 +119,6 @@ class GetServiceGroupRole implements IPIQuery, IPIQueryPageable, IPIQueryRendera
         ->leftJoin('sg.roles', 'r')
         ->leftJoin('r.user', 'u')
         ->leftJoin('r.roleType', 'rt')
-        //->orderBy('sg.id', 'ASC')
         ;
 
         // Order by ASC (oldest first: 1, 2, 3, 4)
@@ -289,7 +288,11 @@ class GetServiceGroupRole implements IPIQuery, IPIQueryPageable, IPIQueryRendera
             $url = $this->baseUrl.'/index.php?Page_Type=Service_Group&id=' . $sg->getId ();
             $url = htmlspecialchars ( $url );
             $xmlSg->addChild ( 'GOCDB_PORTAL_URL', $url );
-            foreach ( $sg->getRoles () as $role ) {
+
+            // Sort roles
+            $orderedRoles = $this->helpers->orderArrById($sg->getRoles());
+
+            foreach ($orderedRoles as $role) {
                 $user = $role->getUser ();
                 $xmlUser = $xmlSg->addChild ( 'USER' );
                 $xmlUser->addChild ( 'FORENAME', $user->getForename () );

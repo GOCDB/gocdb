@@ -43,7 +43,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Admin_Edit_Scope&amp;id=<?php echo $id ?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" class="pencil" />
                     <br />
                     <br />
                     <span>Edit</span>
@@ -53,7 +53,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                    href="index.php?Page_Type=Admin_Remove_Scope&id=<?php echo $id?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" class="trash" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -199,7 +199,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Services&amp;scope=<?php xecho($name)?>">
+                        <a href="index.php?Page_Type=Services&amp;mscope[]=<?php xecho($name)?>">
                             View Services
                         </a>
                     </td>

@@ -25,4 +25,3 @@ $log1->pushHandler(new StreamHandler(__DIR__.'/../gocdb.log', Logger::DEBUG));
 
 // You can now use your logger
 $log1->addDebug('log1 is now ready');
-

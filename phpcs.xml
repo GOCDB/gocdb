@@ -13,4 +13,10 @@
     -->
     <rule ref="PSR12"/>
 
+    <rule ref="Generic.Files.LineLength">
+        <properties>
+            <property name="lineLimit" value="80"/>
+        </properties>
+     </rule>
+
 </ruleset>

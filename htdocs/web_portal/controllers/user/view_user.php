@@ -1,4 +1,5 @@
 <?php
+
 /*______________________________________________________
  *======================================================
  * File: view_user.php
@@ -19,21 +20,22 @@
  * limitations under the License.
  *
  /*====================================================== */
-function view_user() {
-    require_once __DIR__.'/utils.php';
-    require_once __DIR__.'/../../../../lib/Gocdb_Services/User.php';
-    require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
-    require_once __DIR__.'/../../components/Get_User_Principle.php';
+function view_user()
+{
+    require_once __DIR__ . '/utils.php';
+    require_once __DIR__ . '/../../../../lib/Gocdb_Services/User.php';
+    require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
+    require_once __DIR__ . '/../../components/Get_User_Principle.php';
 
-    if (!isset($_GET['id']) || !is_numeric($_GET['id']) ){
+    if (!isset($_GET['id']) || !is_numeric($_GET['id'])) {
         throw new Exception("An id must be specified");
     }
 
     $userService = \Factory::getUserService();
     $user = $userService->getUser($_GET['id']);
 
-    if($user === null){
-       throw new Exception("No user with that ID");
+    if ($user === null) {
+        throw new Exception("No user with that ID");
     }
 
     $params = array();
@@ -55,18 +57,21 @@ function view_user() {
 
     // Restrict users to see only their own data unless authorised.
     // User objects are not 'owned' so we check their authz at connected sites.
-    if (is_null($callingUser) ||
-        (!$callingUser->isAdmin() &&
-         $user !== $callingUser &&
-        !$userService->isAllowReadPD($callingUser)))
-        {
+    if (
+        is_null($callingUser)
+        || (
+            !$callingUser->isAdmin()
+            && $user !== $callingUser
+            && !$userService->isAllowReadPD($callingUser)
+            )
+    ) {
             throw new Exception('You are not authorised to read other users\' personal data.');
-        }
+    }
 
     $params['user'] = $user;
 
     // 2D array, each element stores role and a child array holding project Ids
-    $role_ProjIds = array();
+    $roleProjectIds = array();
 
     // get the targetUser's roles
     $roleService = \Factory::getRoleService();
@@ -79,67 +84,67 @@ function view_user() {
     /** @var \Role $r */
 
     foreach ($roles as $r) {
-
         $decoratorString = '';
-        $disableButton = '';
 
         /** @var \OwnedEntity $roleOwnedEntity */
         $roleOwnedEntity = $r->getOwnedEntity();
 
-        try {
-            // only meaningful for Site entities, but there is an
-            // internal check in the function.
-            $roleService->checkOrphanAPIAuth($r);
-        } catch (Exception $e) {
-            $disableButton = 'disabled';
-        }
+        // check that revoking this role will not leave an API credential owned by
+        // a the user at a site over which they no longer have a role.
+        $blockingSites = $roleService->checkOrphanAPIAuth($r);
 
-        $authorisingRoles = \Factory::getRoleActionAuthorisationService()
-            ->authoriseAction(\Action::REVOKE_ROLE, $roleOwnedEntity, $callingUser)
-            ->getGrantingRoles();
-
-        if ($user != $callingUser) {
-            // determine if callingUser can REVOKE this role instance
-            if ($callingUser->isAdmin()) {
-                $decoratorString .= 'GOCDB_ADMIN';
-                if (count($authorisingRoles) >= 1) {
-                    $decoratorString .= ': ' ;
-                }
-            }
-            if (count($authorisingRoles) >= 1) {
-                /** @var \Role $authRole */
-                $roleNames = array();
-                foreach ($authorisingRoles as $authRole) {
-                    $roleNames[] = $authRole->getRoleType()->getName();
-                }
-                $decoratorString .= '[' . implode(', ', $roleNames) . '] ';
-            }
+        // Assign the decorator revokeMessage key value to be either the list of roles permitting
+        // the role revocation or the list of sites with potentially orphaned API credentials
+        // blocking the revocation
+        if (count($blockingSites) > 0) {
+            $r->setDecoratorObject(array("revokeButton" => "disabled",
+                                         "revokeMessage" => implode(', ', array_keys($blockingSites))));
         } else {
-            // current user is viewing their own roles, so they can revoke their own roles
-            $decoratorString = '[Self revoke own role]';
-        }
+            $authorisingRoles = \Factory::getRoleActionAuthorisationService()
+                ->authoriseAction(\Action::REVOKE_ROLE, $roleOwnedEntity, $callingUser)
+                ->getGrantingRoles();
 
-        if (strlen($decoratorString) > 0 || $disableButton == 'disabled') {
-            $r->setDecoratorObject(array("revokeButton" => $disableButton, "revokeMessage" => $decoratorString));
+            if ($user != $callingUser) {
+                // determine if callingUser can REVOKE this role instance
+                if ($callingUser->isAdmin()) {
+                    $decoratorString .= 'GOCDB_ADMIN';
+                    if (count($authorisingRoles) >= 1) {
+                        $decoratorString .= ': ' ;
+                    }
+                }
+                if (count($authorisingRoles) >= 1) {
+                    /** @var \Role $authRole */
+                    $roleNames = array();
+                    foreach ($authorisingRoles as $authRole) {
+                        $roleNames[] = $authRole->getRoleType()->getName();
+                    }
+                    $decoratorString .= '[' . implode(', ', $roleNames) . '] ';
+                }
+            } else {
+                // current user is viewing their own roles, so they can revoke their own roles
+                $decoratorString = '[Self revoke own role]';
+            }
+
+            $r->setDecoratorObject(array("revokeButton" => "", "revokeMessage" => $decoratorString));
         }
 
         // Get the names of the parent project(s) for this role so we can
         // group by project in the view
-        $parentProjectsForRole = \Factory::getRoleActionAuthorisationService()
+        $roleParentProjects = \Factory::getRoleActionAuthorisationService()
             ->getReachableProjectsFromOwnedEntity($r->getOwnedEntity());
         $projIds = array();
-        foreach ($parentProjectsForRole as $_proj) {
-            $projIds[] = $_proj->getId();
+        foreach ($roleParentProjects as $proj) {
+            $projIds[] = $proj->getId();
         }
 
         // store role and parent projIds in a 2D array for viewing
-        $role_ProjIds[] = array($r, $projIds);
+        $roleProjectIds[] = array($r, $projIds);
     }// end iterating roles
 
     // Get a list of the projects and their Ids for grouping roles by proj in view
     $projectNamesIds = array();
     $projects = \Factory::getProjectService()->getProjects();
-    foreach($projects as $proj){
+    foreach ($projects as $proj) {
         $projectNamesIds[$proj->getId()] = $proj->getName();
     }
 
@@ -151,9 +156,10 @@ function view_user() {
         $params['ShowEdit'] = false;
     }
 
+    $params['callingUser'] = $callingUser;
     $params['idString'] = $userService->getDefaultIdString($user);
     $params['projectNamesIds'] = $projectNamesIds;
-    $params['role_ProjIds'] = $role_ProjIds;
+    $params['role_ProjIds'] = $roleProjectIds;
     $params['portalIsReadOnly'] = \Factory::getConfigService()->IsPortalReadOnly();
     $params['APIAuthEnts'] = $user->getAPIAuthenticationEntities();
     $title = $user->getFullName();

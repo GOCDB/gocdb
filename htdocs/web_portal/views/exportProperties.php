@@ -6,4 +6,3 @@ foreach($extensionProperties as $prop) {
     echo(PHP_EOL);
 }
 ?>
-

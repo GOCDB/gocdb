@@ -12,4 +12,3 @@
     this smaller image should not exceed width:28px, height:25px.
 
 </div>
-

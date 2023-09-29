@@ -19,6 +19,9 @@ require_once __DIR__ . '/AbstractEntityService.php';
 require_once __DIR__ . '/RoleActionAuthorisationService.php';
 require_once __DIR__ . '/Config.php';
 
+use org\gocdb\services\Config;
+use org\gocdb\services\Validate;
+
 /**
  * GOCDB Stateless service facade (business routines) for Service objects.
  * The public API methods are atomic and transactional.
@@ -30,13 +33,17 @@ require_once __DIR__ . '/Config.php';
  * @author George Ryall
  * @author James McCarthy
  */
-class ServiceService extends AbstractEntityService {
-    private $roleActionAuthorisationService;
+class ServiceService extends AbstractEntityService
+{
+    // roleActionAuthorisationService
+    private $roleAAS;
     private $configService;
     private $scopeService;
-    function __construct(/* $roleActionAuthorisationService */) {
-        parent::__construct ();
-        // $this->roleActionAuthorisationService = $roleActionAuthorisationService;
+
+    public function __construct(/* $roleAAS */)
+    {
+        parent::__construct();
+        // $this->roleAAS = $roleActionAuthorisationService;
         $this->configService = \Factory::getConfigService();
     }
 
@@ -44,10 +51,11 @@ class ServiceService extends AbstractEntityService {
      * Set class dependency (REQUIRED).
      *
      * @todo Mandatory objects should be injected via constructor.
-     * @param \org\gocdb\services\RoleActionAuthorisationService $roleActionAuthService
+     * @param \org\gocdb\services\RoleActionAuthorisationService $newService
      */
-    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $roleActionAuthService) {
-        $this->roleActionAuthorisationService = $roleActionAuthService;
+    public function setRoleActionAuthorisationService(RoleActionAuthorisationService $newService)
+    {
+        $this->roleAAS = $newService;
     }
 
     /**
@@ -56,7 +64,8 @@ class ServiceService extends AbstractEntityService {
      * @todo Mandatory objects should be injected via constructor.
      * @param \org\gocdb\services\Scope $scopeService
      */
-    public function setScopeService(Scope $scopeService) {
+    public function setScopeService(Scope $scopeService)
+    {
         $this->scopeService = $scopeService;
     }
 
@@ -66,19 +75,21 @@ class ServiceService extends AbstractEntityService {
      * @param int $id the service ID
      * @return \Service a service object
      */
-    public function getService($id) {
+    public function getService($id)
+    {
         $dql = "SELECT s FROM Service s
                 WHERE s.id = :id";
 
-        $service = $this->em->createQuery ( $dql )->setParameter ( 'id', $id )->getSingleResult ();
+        $service = $this->em->createQuery($dql)->setParameter('id', $id)->getSingleResult();
 
         return $service;
     }
-    public function getEndpoint($id) {
+    public function getEndpoint($id)
+    {
         $dql = "SELECT el FROM EndpointLocation el
                 WHERE el.id = :id";
 
-        $endpoint = $this->em->createQuery ( $dql )->setParameter ( 'id', $id )->getSingleResult ();
+        $endpoint = $this->em->createQuery($dql)->setParameter('id', $id)->getSingleResult();
 
         return $endpoint;
     }
@@ -103,11 +114,41 @@ class ServiceService extends AbstractEntityService {
      *        false to return a hydrated Doctine object graph
      * @return type array graph or object graph of {@link \Service} entities
      */
-    public function getSes($term = null, $serviceType = null, $production = null, $monitored = null, $scope = null, $ngi = null, $certStatus = null, $showClosed = null, $servKeyNames = null, $servKeyValues = null, $startRecord = null, $endRecord = null, $returnArray = false) {
+    public function getSes(
+        $term = null,
+        $serviceType = null,
+        $production = null,
+        $monitored = null,
+        $scope = null,
+        $ngi = null,
+        $certStatus = null,
+        $showClosed = null,
+        $servKeyNames = null,
+        $servKeyValues = null,
+        $startRecord = null,
+        $endRecord = null,
+        $returnArray = false
+    ) {
 
         // this method needs to be dropped in favor of getServicesFilterByParams,
         // but it is still needed when adding services to serviceGroups.
-        return $this->getServicesHelper ( $term, $serviceType, $production, $monitored, $scope, $ngi, $certStatus, $showClosed, $servKeyNames, $servKeyValues, $startRecord, $endRecord, $returnArray, false );
+
+        return $this->getServicesHelper(
+            $term,
+            $serviceType,
+            $production,
+            $monitored,
+            $scope,
+            $ngi,
+            $certStatus,
+            $showClosed,
+            $servKeyNames,
+            $servKeyValues,
+            $startRecord,
+            $endRecord,
+            $returnArray,
+            false
+        );
     }
 
     /**
@@ -115,65 +156,131 @@ class ServiceService extends AbstractEntityService {
      * search parameters.
      * {@link getSes}
      */
-    public function getSesCount($term = null, $serviceType = null, $production = null, $monitored = null, $scope = null, $ngi = null, $certStatus = null, $showClosed = null, $servKeyNames = null, $servKeyValues = null, $startRecord = null, $endRecord = null, $returnArray = false) {
-        return $this->getServicesHelper ( $term, $serviceType, $production, $monitored, $scope, $ngi, $certStatus, $showClosed, $servKeyNames, $servKeyValues, $startRecord, $endRecord, $returnArray, true );
+
+
+    public function getSesCount(
+        $term = null,
+        $serviceType = null,
+        $production = null,
+        $monitored = null,
+        $scope = null,
+        $ngi = null,
+        $certStatus = null,
+        $showClosed = null,
+        $servKeyNames = null,
+        $servKeyValues = null,
+        $startRecord = null,
+        $endRecord = null,
+        $returnArray = false
+    ) {
+
+        return $this->getServicesHelper(
+            $term,
+            $serviceType,
+            $production,
+            $monitored,
+            $scope,
+            $ngi,
+            $certStatus,
+            $showClosed,
+            $servKeyNames,
+            $servKeyValues,
+            $startRecord,
+            $endRecord,
+            $returnArray,
+            true
+        );
     }
 
-    private function getServicesHelper($term = null, $serviceType = null, $production = null, $monitored = null, $scope = null, $ngi = null, $certStatus = null, $showClosed = null, $servKeyNames = null, $servKeyValues = null, $startRecord = null, $endRecord = null, $returnArray = false, $count = false) {
+    private function getServicesHelper(
+        $term = null,
+        $serviceType = null,
+        $production = null,
+        $monitored = null,
+        $scope = null,
+        $ngi = null,
+        $certStatus = null,
+        $showClosed = null,
+        $servKeyNames = null,
+        $servKeyValues = null,
+        $startRecord = null,
+        $endRecord = null,
+        $returnArray = false,
+        $count = false
+    ) {
         // this method can be dropped when getSes and getSesCount have been dropped.
         if ($production == "TRUE") {
             $production = "1";
-        } else if ($production == "FALSE") {
+        } elseif ($production == "FALSE") {
             $production = "0";
         }
 
         if ($monitored == "TRUE") {
             $monitored = "1";
-        } else if ($monitored == "FALSE") {
+        } elseif ($monitored == "FALSE") {
             $monitored = "0";
         }
 
-        $qb = $this->em->createQueryBuilder ();
+        $qbr = $this->em->createQueryBuilder();
 
         if ($count) {
-            $qb->select ( 'count(DISTINCT se)' );
+            $qbr->select('count(DISTINCT se)');
         } else {
-            $qb->select ( 'DISTINCT se', 'si', 'st', 'cs', 'n' );
+            $qbr->select('DISTINCT se', 'si', 'st', 'cs', 'n');
         }
 
-        $qb->from ( 'Service', 'se' )->leftjoin ( 'se.serviceType', 'st' )->leftjoin ( 'se.scopes', 's' )->leftjoin ( 'se.parentSite', 'si' )->leftjoin ( 'si.certificationStatus', 'cs' )->leftjoin ( 'si.ngi', 'n' )->orderBy ( 'se.hostName' );
+        $qbr->from('Service', 'se')
+            ->leftjoin('se.serviceType', 'st')
+            ->leftjoin('se.scopes', 's')
+            ->leftjoin('se.parentSite', 'si')
+            ->leftjoin('si.certificationStatus', 'cs')
+            ->leftjoin('si.ngi', 'n')
+            ->orderBy('se.hostName');
 
         // For use with search function, convert all terms to upper and do a like query
+
         if ($term != null && $term != '%%') {
-            $qb->andWhere ( $qb->expr ()->orX ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.hostName' ), ':term' ), $qb->expr ()->like ( $qb->expr ()->upper ( 'se.description' ), ':term' ) ) )->setParameter ( ':term', strtoupper ( $term ) );
+            $qbr->andWhere($qbr->expr()->orX(
+                $qbr->expr()->like($qbr->expr()->upper('se.hostName'), ':term'),
+                $qbr->expr()->like($qbr->expr()->upper('se.description'), ':term')
+            ))->setParameter(':term', strtoupper($term));
         }
 
         if ($serviceType != null && $serviceType != '%%') {
-            $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'st.name' ), ':serviceType' ) )->setParameter ( ':serviceType', strtoupper ( $serviceType ) );
+            $qbr->andWhere($qbr->expr()->like(
+                $qbr->expr()->upper('st.name'),
+                ':serviceType'
+            ))->setParameter(':serviceType', strtoupper($serviceType));
         }
 
         if ($production != null && $production != '%%') {
-            $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.production' ), ':production' ) )->setParameter ( ':production', $production );
+            $qbr->andWhere($qbr->expr()->like($qbr->expr()->upper('se.production'), ':production'))
+                ->setParameter(':production', $production);
         }
 
         if ($monitored != null && $monitored != '%%') {
-            $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.monitored' ), ':monitored' ) )->setParameter ( ':monitored', $monitored );
+            $qbr->andWhere($qbr->expr()->like($qbr->expr()->upper('se.monitored'), ':monitored'))
+                ->setParameter(':monitored', $monitored);
         }
 
         if ($scope != null && $scope != '%%') {
-            $qb->andWhere ( $qb->expr ()->like ( 's.name', ':scope' ) )->setParameter ( ':scope', $scope );
+            $qbr->andWhere($qbr->expr()->like('s.name', ':scope'))
+                ->setParameter(':scope', $scope);
         }
 
         if ($certStatus != null && $certStatus != '%%') {
-            $qb->andWhere ( $qb->expr ()->like ( 'cs.name', ':certStatus' ) )->setParameter ( ':certStatus', $certStatus );
+            $qbr->andWhere($qbr->expr()->like('cs.name', ':certStatus'))
+                ->setParameter(':certStatus', $certStatus);
         }
 
         if ($showClosed != 1) {
-            $qb->andWhere ( $qb->expr ()->not ( $qb->expr ()->like ( 'cs.name', ':closed' ) ) )->setParameter ( ':closed', 'Closed' );
+            $qbr->andWhere($qbr->expr()->not($qbr->expr()->like('cs.name', ':closed')))
+                ->setParameter(':closed', 'Closed');
         }
 
         if ($ngi != null && $ngi != '%%') {
-            $qb->andWhere ( $qb->expr ()->like ( 'n.name', ':ngi' ) )->setParameter ( ':ngi', $ngi );
+            $qbr->andWhere($qbr->expr()->like('n.name', ':ngi'))
+                ->setParameter(':ngi', $ngi);
         }
 
         if ($servKeyNames != null && $servKeyNames != '%%') {
@@ -181,46 +288,53 @@ class ServiceService extends AbstractEntityService {
                 $servKeyValues = '%%';
             }
 
-            $sQ = $this->em->createQueryBuilder ();
-            $sQ->select ( 'se1' . '.id' )->from ( 'Service', 'se1' )->join ( 'se1.serviceProperties', 'sp' )->andWhere ( $sQ->expr ()->andX ( $sQ->expr ()->eq ( 'sp.keyName', ':keyname' ), $sQ->expr ()->like ( 'sp.keyValue', ':keyvalue' ) ) );
+            $sqbr = $this->em->createQueryBuilder();
+            $sqbr->select('se1' . '.id')
+                ->from('Service', 'se1')
+                ->join('se1.serviceProperties', 'sp')
+                ->andWhere($sqbr->expr()
+                ->andX(
+                    $sqbr->expr()->eq('sp.keyName', ':keyname'),
+                    $sqbr->expr()->like('sp.keyValue', ':keyvalue')
+                ));
 
-            $qb->andWhere ( $qb->expr ()->in ( 'se', $sQ->getDQL () ) );
-            $qb->setParameter ( ':keyname', $servKeyNames )->setParameter ( ':keyvalue', $servKeyValues );
+            $qbr->andWhere($qbr->expr()->in('se', $sqbr->getDQL()));
+            $qbr->setParameter(':keyname', $servKeyNames)->setParameter(':keyvalue', $servKeyValues);
         }
 
-        $query = $qb->getQuery ();
+        $query = $qbr->getQuery();
 
         if ($count) {
-            $count = $query->getSingleScalarResult ();
+            $count = $query->getSingleScalarResult();
             return $count;
         } else {
-
-            if (! empty ( $startRecord )) {
-                $query->setFirstResult ( $startRecord );
+            if (! empty($startRecord)) {
+                $query->setFirstResult($startRecord);
             }
 
-            if (! empty ( $endRecord )) {
-                $query->setMaxResults ( $endRecord );
+            if (! empty($endRecord)) {
+                $query->setMaxResults($endRecord);
             }
 
             if ($returnArray) {
-                $results = $query->getResult ( \Doctrine\ORM\Query::HYDRATE_ARRAY );
+                $results = $query->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
                 return $results;
             } else {
-                $results = $query->getResult ();
+                $results = $query->getResult();
                 return $results;
             }
             // print_r($results);
         }
     }
 
-    public function getAllSesJoinParentSites() {
+    public function getAllSesJoinParentSites()
+    {
         $dql = "SELECT se, st, si
             FROM Service se
             JOIN se.serviceType st
             JOIN se.parentSite si";
-        $query = $this->em->createQuery ( $dql );
-        return $query->getResult ();
+        $query = $this->em->createQuery($dql);
+        return $query->getResult();
     }
 
     /**
@@ -253,7 +367,8 @@ class ServiceService extends AbstractEntityService {
      * @return mixed Array of {@link \Service} entities or int representing
      *         the service count
      */
-    public function getServicesFilterByParams($filterParams) {
+    public function getServicesFilterByParams($filterParams)
+    {
         $searchTerm = null;
         $serviceType = null;
         $production = null;
@@ -269,151 +384,177 @@ class ServiceService extends AbstractEntityService {
         $returnArray = false;
         $count = false;
 
-        if (isset ( $filterParams ['searchTerm'] )) {
+        if (isset($filterParams ['searchTerm'])) {
             $searchTerm = $filterParams ['searchTerm'];
         }
-        if (isset ( $filterParams ['serviceType'] )) {
+        if (isset($filterParams ['serviceType'])) {
             $serviceType = $filterParams ['serviceType'];
         }
-        if (isset ( $filterParams ['production'] )) {
-            if (strtoupper ( $filterParams ['production'] ) == "TRUE") {
+        if (isset($filterParams ['production'])) {
+            if (strtoupper($filterParams ['production']) == "TRUE") {
                 $production = "1";
-            } else if (strtoupper ( $filterParams ['production'] ) == "FALSE") {
+            } elseif (strtoupper($filterParams ['production']) == "FALSE") {
                 $production = "0";
             }
         }
-        if (isset ( $filterParams ['monitored'] )) {
-            if (strtoupper ( $filterParams ['monitored'] ) == "TRUE") {
+        if (isset($filterParams ['monitored'])) {
+            if (strtoupper($filterParams ['monitored']) == "TRUE") {
                 $monitored = "1";
-            } else if (strtoupper ( $filterParams ['monitored'] ) == "FALSE") {
+            } elseif (strtoupper($filterParams ['monitored']) == "FALSE") {
                 $monitored = "0";
             }
         }
-        if (isset ( $filterParams ['scope'] )) {
+        if (isset($filterParams ['scope'])) {
             $scope = $filterParams ['scope'];
             $scopeMatch = 'all';
         }
-        if (isset ( $filterParams ['scopeMatch'] )) {
+        if (isset($filterParams ['scopeMatch'])) {
             $scopeMatch = $filterParams ['scopeMatch'];
         }
-        if (isset ( $filterParams ['ngi'] )) {
+        if (isset($filterParams ['ngi'])) {
             $ngi = $filterParams ['ngi'];
         }
-        if (isset ( $filterParams ['certStatus'] )) {
+        if (isset($filterParams ['certStatus'])) {
             $certStatus = $filterParams ['certStatus'];
         }
-        if (isset ( $filterParams ['showClosed'] ) && $filterParams ['showClosed'] == TRUE) {
+        if (isset($filterParams ['showClosed']) && $filterParams ['showClosed'] == true) {
             $showClosed = $filterParams ['showClosed'];
         }
-        if (isset ( $filterParams ['servKeyNames'] )) {
+        if (isset($filterParams ['servKeyNames'])) {
             $servKeyNames = $filterParams ['servKeyNames'];
         }
-        if (isset ( $filterParams ['servKeyValue'] )) {
+        if (isset($filterParams ['servKeyValue'])) {
             $servKeyValue = $filterParams ['servKeyValue'];
         }
-        if (isset ( $filterParams ['startRecord'] )) {
+        if (isset($filterParams ['startRecord'])) {
             $startRecord = $filterParams ['startRecord'];
         }
-        if (isset ( $filterParams ['maxResults'] )) {
+        if (isset($filterParams ['maxResults'])) {
             $maxResults = $filterParams ['maxResults'];
         }
-        if (isset ( $filterParams ['returnArray'] )) {
+        if (isset($filterParams ['returnArray'])) {
             $returnArray = $filterParams ['returnArray'];
         }
-        if (isset ( $filterParams ['count'] ) && $filterParams ['count'] != null) {
+        if (isset($filterParams ['count']) && $filterParams ['count'] != null) {
             $count = $filterParams ['count'];
         }
 
         // bind count - used to create positional bind params.
-        $bc = - 1;
-        $qb = $this->em->createQueryBuilder ();
+        $bCount = - 1;
+        $qbr = $this->em->createQueryBuilder();
 
         if ($count) {
-            $qb->select ( 'count(DISTINCT se)' );
+            $qbr->select('count(DISTINCT se)');
         } else {
-            $qb->select ( 'DISTINCT se', 'si', 'st', 'cs', 'n' );
+            $qbr->select('DISTINCT se', 'si', 'st', 'cs', 'n');
         }
 
-        $qb->from ( 'Service', 'se' )->leftjoin ( 'se.serviceType', 'st' )->leftjoin ( 'se.scopes', 's' )->leftjoin ( 'se.parentSite', 'si' )->leftjoin ( 'si.certificationStatus', 'cs' )->leftjoin ( 'si.ngi', 'n' )->orderBy ( 'se.hostName' );
+        $qbr->from('Service', 'se')
+            ->leftjoin('se.serviceType', 'st')
+            ->leftjoin('se.scopes', 's')
+            ->leftjoin('se.parentSite', 'si')
+            ->leftjoin('si.certificationStatus', 'cs')
+            ->leftjoin('si.ngi', 'n')
+            ->orderBy('se.hostName');
 
         // For use with search function, convert all terms to upper and do a like query
+
         if ($searchTerm != null) {
-            $qb->andWhere ( $qb->expr ()->orX ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.hostName' ), '?' . ++ $bc ), $qb->expr ()->like ( $qb->expr ()->upper ( 'se.description' ), '?' . $bc ) ) )->setParameter ( $bc, strtoupper ( $searchTerm ) );
+            $qbr->andWhere($qbr->expr()
+                ->orX(
+                    $qbr->expr()->like(
+                        $qbr->expr()->upper('se.hostName'),
+                        '?' . ++$bCount
+                    ),
+                    $qbr->expr()->like($qbr->expr()->upper('se.description'), '?' . $bCount)
+                ))->setParameter($bCount, strtoupper($searchTerm));
         }
 
         if ($serviceType != null) {
-            $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'st.name' ), '?' . ++ $bc ) )->setParameter ( $bc, strtoupper ( $serviceType ) );
+            $qbr->andWhere($qbr->expr()->like($qbr->expr()->upper('st.name'), '?' . ++$bCount))
+                ->setParameter($bCount, strtoupper($serviceType));
         }
 
         if ($production != null) {
-            $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.production' ), '?' . ++ $bc ) )->setParameter ( $bc, $production );
+            $qbr->andWhere($qbr->expr()->like($qbr->expr()->upper('se.production'), '?' . ++$bCount))
+                ->setParameter($bCount, $production);
         }
 
         if ($monitored != null) {
-            $qb->andWhere ( $qb->expr ()->like ( $qb->expr ()->upper ( 'se.monitored' ), '?' . ++ $bc ) )->setParameter ( $bc, $monitored );
+            $qbr->andWhere($qbr->expr()->like($qbr->expr()->upper('se.monitored'), '?' . ++$bCount))
+                ->setParameter($bCount, $monitored);
         }
 
         // Create WHERE clauses for multiple scopes using positional bind params
         if ($scope != null) {
             require_once __DIR__ . '/PI/QueryBuilders/ScopeQueryBuilder.php';
-            $scopeQueryBuilder = new ScopeQueryBuilder ( $scope, $scopeMatch, $qb, $this->em, $bc, 'Service', 'se' );
+            $scopeQueryBuilder = new ScopeQueryBuilder($scope, $scopeMatch, $qbr, $this->em, $bCount, 'Service', 'se');
             // Get the result of the scope builder
-            /* @var $qb \Doctrine\ORM\QueryBuilder */
-            $qb = $scopeQueryBuilder->getQB ();
-            $bc = $scopeQueryBuilder->getBindCount ();
+            /* @var $qbr \Doctrine\ORM\QueryBuilder */
+            $qbr = $scopeQueryBuilder->getQB();
+            $bCount = $scopeQueryBuilder->getBindCount();
             // Get the binds and store them in the local bind array only if any binds are fetched from scopeQueryBuilder
-            $binds = ( array ) $scopeQueryBuilder->getBinds ();
-            foreach ( $binds as $bind ) {
+            $binds = (array) $scopeQueryBuilder->getBinds();
+            foreach ($binds as $bind) {
                 $binds [] = $bind;
             }
-            foreach ( $binds as $bindIdValue ) {
-                $qb->setParameter ( $bindIdValue [0], $bindIdValue [1] ); // , \Doctrine\DBAL\Types\Type::STRING );
+            foreach ($binds as $bindIdValue) {
+                $qbr->setParameter($bindIdValue [0], $bindIdValue [1]); // , \Doctrine\DBAL\Types\Type::STRING );
             }
         }
 
         if ($certStatus != null) {
-            $qb->andWhere ( $qb->expr ()->like ( 'cs.name', '?' . ++ $bc ) )->setParameter ( $bc, $certStatus );
+            $qbr->andWhere($qbr->expr()->like('cs.name', '?' . ++$bCount))->setParameter($bCount, $certStatus);
         }
 
         if ($showClosed) {
             // don't add the extra where clause
         } else {
             // add a where clause to drop Closed certStatus, i.e. 'WHERE cs.name IS NOT LIKE Closed'
-            $qb->andWhere ( $qb->expr ()->not ( $qb->expr ()->like ( 'cs.name', '?' . ++ $bc ) ) )->setParameter ( $bc, 'Closed' );
+            $qbr->andWhere($qbr->expr()->not($qbr->expr()->like('cs.name', '?' . ++$bCount)))
+                ->setParameter($bCount, 'Closed');
         }
 
         if ($ngi != null) {
-            $qb->andWhere ( $qb->expr ()->like ( 'n.name', '?' . ++ $bc ) )->setParameter ( $bc, $ngi );
+            $qbr->andWhere($qbr->expr()->like('n.name', '?' . ++$bCount))
+                ->setParameter($bCount, $ngi);
         }
 
         if ($servKeyNames != null) {
             if ($servKeyValue == null || $servKeyValue == '') {
                 $servKeyValue = '%%';
             }
-            $sQ = $this->em->createQueryBuilder ();
-            $sQ->select ( 'se_p1' . '.id' )->from ( 'Service', 'se_p1' )->join ( 'se_p1.serviceProperties', 'sp' )->andWhere ( $sQ->expr ()->andX ( $sQ->expr ()->eq ( 'sp.keyName', '?' . ++ $bc ), $sQ->expr ()->like ( 'sp.keyValue', '?' . ++ $bc ) ) );
 
-            $qb->andWhere ( $qb->expr ()->in ( 'se', $sQ->getDQL () ) );
-            $qb->setParameter ( $bc - 1, $servKeyNames )->setParameter ( $bc, $servKeyValue );
+            $sqbr = $this->em->createQueryBuilder();
+            $sqbr->select('se_p1' . '.id')
+                ->from('Service', 'se_p1')
+                ->join('se_p1.serviceProperties', 'sp')
+                ->andWhere($sqbr->expr()->andX(
+                    $sqbr->expr()->eq('sp.keyName', '?' . ++$bCount),
+                    $sqbr->expr()->like('sp.keyValue', '?' . ++$bCount)
+                ));
+
+            $qbr->andWhere($qbr->expr()->in('se', $sqbr->getDQL()));
+            $qbr->setParameter($bCount - 1, $servKeyNames)->setParameter($bCount, $servKeyValue);
         }
 
-        $query = $qb->getQuery ();
+        $query = $qbr->getQuery();
 
         if ($count) {
-            $count = $query->getSingleScalarResult ();
+            $count = $query->getSingleScalarResult();
             return $count;
         } else {
-            if (! empty ( $startRecord )) {
-                $query->setFirstResult ( $startRecord );
+            if (! empty($startRecord)) {
+                $query->setFirstResult($startRecord);
             }
-            if (! empty ( $maxResults )) {
-                $query->setMaxResults ( $maxResults );
+            if (! empty($maxResults)) {
+                $query->setMaxResults($maxResults);
             }
             if ($returnArray) {
-                $results = $query->getResult ( \Doctrine\ORM\Query::HYDRATE_ARRAY );
+                $results = $query->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
                 return $results;
             } else {
-                $results = $query->getResult ();
+                $results = $query->getResult();
                 return $results;
             }
             // print_r($results);
@@ -426,13 +567,13 @@ class ServiceService extends AbstractEntityService {
      * @param integer $id Service ID
      * @param integer $dayLimit
      */
-    public function getDowntimes($id, $dayLimit) {
+    public function getDowntimes($id, $dayLimit)
+    {
         if ($dayLimit != null) {
-            $di = \DateInterval::createFromDateString ( $dayLimit . 'days' );
-            $dayLimit = new \DateTime ();
-            $dayLimit->sub ( $di );
+            $dateInterval = \DateInterval::createFromDateString($dayLimit . 'days');
+            $dayLimit = new \DateTime();
+            $dayLimit->sub($dateInterval);
         }
-
         // Simplified and updated query for MEPs model by JM&DM - 18/06/2014
         $dql = "SELECT d
                 FROM Downtime d
@@ -441,7 +582,10 @@ class ServiceService extends AbstractEntityService {
                 AND ( :dayLimit IS NULL OR d.startDate > :dayLimit)
                 ORDER BY d.startDate DESC";
 
-        $downtimes = $this->em->createQuery ( $dql )->setParameter ( 'id', $id )->setParameter ( 'dayLimit', $dayLimit )->getResult ();
+        $downtimes = $this->em->createQuery($dql)
+                                    ->setParameter('id', $id)
+                                    ->setParameter('dayLimit', $dayLimit)
+                                    ->getResult();
 
         // $downtimes = $this->getService($id)->getDowntimes();
         return $downtimes;
@@ -452,10 +596,11 @@ class ServiceService extends AbstractEntityService {
      *
      * @return array $types An array of all ServiceType entities
      */
-    public function getServiceTypes() {
+    public function getServiceTypes()
+    {
         $dql = "SELECT st FROM ServiceType st
                 ORDER BY st.name";
-        $types = $this->em->createQuery ( $dql )->getResult ();
+        $types = $this->em->createQuery($dql)->getResult();
         return $types;
     }
 
@@ -470,19 +615,27 @@ class ServiceService extends AbstractEntityService {
      * is invalid. The \Exception's message will contain a human readable error
      * message.
      */
-    public function validateProductionMonitoredCombination($serviceTypeName, $production, $monitored) {
+    public function validateProductionMonitoredCombination($serviceType, $production, $monitored)
+    {
         // Service types that are exceptions to the
         // 'production => monitored' rule.
         $ruleExceptions = array('VOMS', 'emi.ARGUS', 'org.squid-cache.Squid');
 
+        $serviceTypeName = $serviceType->getName();
         // Check that the service type is not an exception to the
         // 'production => monitored'.
-        if (!in_array ($serviceTypeName, $ruleExceptions)) {
-            if ($production && !$monitored) {
+        if ($production && !$monitored) {
+            // Legacy hard-coded rules (as of Jan-20) should be removed
+            if (
+                !in_array($serviceTypeName, $ruleExceptions) and
+                !$serviceType->getAllowMonitoringException()
+            ) {
                 throw new \Exception(
-                    "For the '".$serviceTypeName."' service type, if the ".
-                    "Production flag is set to True, the Monitored flag must ".
-                    "also be True.");
+                    "For the '" . $serviceTypeName . "' service type, if a " .
+                    "service is in Production it must be Monitored. " .
+                    "Contact GOCDB administrators if required to discuss " .
+                    "changing this requirement."
+                );
             }
         }
     }
@@ -491,7 +644,7 @@ class ServiceService extends AbstractEntityService {
      * Updates a Service.
      * Returns the updated SE
      *
-     * Accepts an array $se_data as a parameter. $se_data's format is as follows:
+     * Accepts an array $newValues as a parameter. $newValues's format is as follows:
      * <pre>
      * Array
      * (
@@ -517,72 +670,88 @@ class ServiceService extends AbstractEntityService {
      * )
      * </pre>
      *
-     * @param array $se_data Array of updated service data, specified above.
-     *        return Service The updated service entity
+     * @param array $newValues Array of updated service data, specified above.
+     * @return \Service The updated service entity
      */
-    public function editService(\Service $se, $newValues, \User $user = null) {
+    public function editService(\Service $service, $newValues, \User $user = null)
+    {
         require_once __DIR__ . '/../../htdocs/web_portal/components/Get_User_Principle.php';
 
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+
 
         // Authorise the change
-        if ($this->roleActionAuthorisationService->authoriseAction ( \Action::EDIT_OBJECT, $se->getParentSite (), $user )->getGrantAction () == FALSE) {
-            throw new \Exception ( "You do not have permission over this service." );
+        if (
+            $this->roleAAS->authoriseAction(
+                \Action::EDIT_OBJECT,
+                $service->getParentSite(),
+                $user
+            )->getGrantAction() == false
+        ) {
+            throw new \Exception("You do not have permission over this service.");
         }
 
-        $st = $this->getServiceType ( $newValues ['serviceType'] );
 
-        $this->validate ( $newValues ['SE'], 'service' );
-        $this->uniqueCheck ( $newValues ['SE'] ['HOSTNAME'], $st, $se->getParentSite () );
-        // validate production/monitored combination
-        $this->validateProductionMonitoredCombination(
-          $this->getServiceType($newValues['serviceType']),
-          $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']),
-          $this->ptlTexToBool($newValues['IS_MONITORED'])
-        );
+        $servType = $this->getServiceType($newValues ['serviceType']);
+
+        $this->validate($newValues ['SE'], 'service');
+        $this->uniqueCheck($newValues ['SE'] ['HOSTNAME'], $servType, $service->getParentSite());
 
         // EDIT SCOPE TAGS:
         // collate selected scopeIds (reserved and non-reserved)
         $scopeIdsToApply = array ();
-        foreach ( $newValues ['Scope_ids'] as $sid ) {
+        foreach ($newValues ['Scope_ids'] as $sid) {
             $scopeIdsToApply [] = $sid;
         }
-        foreach ( $newValues ['ReservedScope_ids'] as $sid ) {
+        foreach ($newValues ['ReservedScope_ids'] as $sid) {
             $scopeIdsToApply [] = $sid;
         }
-        $selectedScopesToApply = $this->scopeService->getScopes ( $scopeIdsToApply );
+        $scopesToApply = $this->scopeService->getScopes($scopeIdsToApply);
 
         // If not admin, Check user edits to the service's Reserved scopes:
         // Required to prevent users manually crafting a POST request in an attempt
         // to select reserved scopes, this is unlikely but it is a possible hack.
-        if (! $user->isAdmin ()) {
-            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams ( array (
+        if (! $user->isAdmin()) {
+            $resScopesToApply = $this->scopeService->getScopesFilterByParams(array (
                     'excludeNonReserved' => true
-            ), $selectedScopesToApply );
-
-            $existingReservedScopes = $this->scopeService->getScopesFilterByParams ( array (
+            ), $scopesToApply);
+            // Existing reserved scopes
+            $resScopes = $this->scopeService->getScopesFilterByParams(array (
                     'excludeNonReserved' => true
-            ), $se->getScopes ()->toArray () );
+            ), $service->getScopes()->toArray());
 
-            $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams ( array (
+            $resScopesParent = $this->scopeService->getScopesFilterByParams(array (
                     'excludeNonReserved' => true
-            ), $se->getParentSite ()->getScopes ()->toArray () );
+            ), $service->getParentSite()->getScopes()->toArray());
 
-            foreach ( $selectedReservedScopes as $sc ) {
+            foreach ($resScopesToApply as $sc) {
                 // Reserved scopes must already be assigned to se or parent
-                if (! in_array ( $sc, $existingReservedScopes ) && ! in_array ( $sc, $existingReservedScopesParent )) {
-                    throw new \Exception ( "A reserved Scope Tag was selected that " . "is not assigned to the Service or to the Parent Site" );
+
+                if (! in_array($sc, $resScopes) && ! in_array($sc, $resScopesParent)) {
+                    throw new \Exception("A reserved Scope Tag was selected that " .
+                                         "is not assigned to the Service or to the Parent Site");
                 }
             }
         }
 
         // check there are the required number of optional scopes specified
-        $this->checkNumberOfScopes ( $this->scopeService->getScopesFilterByParams ( array (
-                'excludeReserved' => true
-        ), $selectedScopesToApply ) );
 
-        $updatedServiceValues =array();
+        $this->checkNumberOfScopes(
+            $this->scopeService->getScopesFilterByParams(
+                array('excludeReserved' => true),
+                $scopesToApply
+            )
+        );
+
+        // validate production/monitored combination
+        $this->validateProductionMonitoredCombination(
+            $servType,
+            $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']),
+            $this->ptlTexToBool($newValues['IS_MONITORED'])
+        );
+
+        $updatedServiceValues = array();
         $updatedServiceValues['hostname'] = $newValues ['SE'] ['HOSTNAME'];
         $updatedServiceValues['description'] = $newValues ['SE'] ['DESCRIPTION'];
         $updatedServiceValues['url'] = $newValues['SE']['URL'];
@@ -595,31 +764,29 @@ class ServiceService extends AbstractEntityService {
         $updatedServiceValues['monitored'] = $this->ptlTexToBool($newValues['IS_MONITORED']);
         $updatedServiceValues['beta'] = $this->ptlTexToBool($newValues['BETA']);
         $updatedServiceValues['production'] = $this->ptlTexToBool($newValues['PRODUCTION_LEVEL']);
-        $updatedServiceValues['notify'];
 
-        if (!isset($newValues['NOTIFY'])){
+        if (!isset($newValues['NOTIFY'])) {
             $updatedServiceValues['notify'] = false;
-        }
-        else {
+        } else {
             $updatedServiceValues['notify'] = $this->ptlTexToBool($newValues['NOTIFY']);
         }
 
-        $this->editServiceLogic($se, $selectedScopesToApply, $st, $updatedServiceValues);
+        $this->editServiceLogic($service, $scopesToApply, $servType, $updatedServiceValues);
 
-        return $se;
+        return $service;
     }
 
     /**
      * Function called by write API to edit a service. Provides API specific
      * authorisation on top of shared logic with web portal
-     * @param Service $service            service being updated
+     * @param \Service $service           service being updated
      * @param  string $hostname           service hostname
      * @param  string $description        service description
      * @param  string $url                service url
      * @param  string $dn                 service dn
-     * @param  string $ip                 service IP
+     * @param  string $ip4                service IP (ipV4)
      * @param  string $ip6                serviec IP (ipV6)
-     * @param  string $os                 service OS
+     * @param  string $opSys              service OS
      * @param  string $email              service email
      * @param  string $arch               service archetecture
      * @param  string $monitored
@@ -629,42 +796,59 @@ class ServiceService extends AbstractEntityService {
      * @param  string $authIdentifierType
      * @param  string $authIdentifier
      */
-    public function editServiceApi(\Service $service, $hostname, $description, $url, $dn, $ip, $ip6, $os, $email, $arch, $monitored, $beta, $production, $notify, $authIdentifierType, $authIdentifier) {
+
+    public function editServiceApi(
+        \Service $service,
+        $hostname,
+        $description,
+        $url,
+        $dn,
+        $ip4,
+        $ip6,
+        $opSys,
+        $email,
+        $arch,
+        $monitored,
+        $beta,
+        $production,
+        $notify,
+        $authIdentifierType,
+        $authIdentifier
+    ) {
       //Check the portal is not in read only mode, throws exception if it is
-      $this->checkGOCDBIsNotReadOnly();
+        $this->checkGOCDBIsNotReadOnly();
 
-      $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+        $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
 
-      $scopes = clone $service->getScopes();
-      $sType = $service->getServiceType();
-      $updatedServiceValues = array (
-        'hostname'=>$hostname,
-        'description'=>$description,
-        'url'=>$url,
-        'dn'=>$dn,
-        'ip'=>$ip,
-        'ip6'=>$ip6,
-        'os'=>$os,
-        'email'=>$email,
-        'arch'=>$arch,
-        'monitored'=>$monitored,
-        'beta'=>$beta,
-        'production'=>$production,
-        'notify'=>$notify,
-      );
+        $scopes = clone $service->getScopes();
+        $sType = $service->getServiceType();
+        $updatedServiceValues = array (
+        'hostname' => $hostname,
+        'description' => $description,
+        'url' => $url,
+        'dn' => $dn,
+        'ip' => $ip4,
+        'ip6' => $ip6,
+        'os' => $opSys,
+        'email' => $email,
+        'arch' => $arch,
+        'monitored' => $monitored,
+        'beta' => $beta,
+        'production' => $production,
+        'notify' => $notify,
+        );
 
-      $this->validateProductionMonitoredCombination($service->getServiceType()->getName(), $production, $monitored);
+        $this->validateProductionMonitoredCombination($service->getServiceType(), $production, $monitored);
 
-      $this->editServiceLogic($service, $scopes, $sType, $updatedServiceValues);
+        $this->editServiceLogic($service, $scopes, $sType, $updatedServiceValues);
     }
-
 
     /**
      * The logic of editing a service, without the authorisation or validation.
      * Private function as there should always be authorisation anad validation
      * steps within the service before calling this function.
      *
-     * @param  Service $service       service to be updated
+     * @param  \Service $service       service to be updated
      * @param  array  $scopes         scopes of service being updated
      * @param         $sType          service type of service
      * @param array $updatedServiceValues values being updated for $service. Should contain:
@@ -674,7 +858,7 @@ class ServiceService extends AbstractEntityService {
      *                ['dn']          dn of service being updated
      *                ['$ip6']        ip V6 of service being updated
      *                ['ip']          ip of service being updated
-     *                ['$os']         os of service being updated
+     *                ['os']          os of service being updated
      *                ['email']       email of service being updated
      *                ['$arch']       architecture  of service being updated
      *                ['$monitored']  boolean monitored of service being updated
@@ -683,78 +867,80 @@ class ServiceService extends AbstractEntityService {
      *                ['$notify']     boolean notify value of service being updated
      * @throws Exception
      */
-    private function editServiceLogic(\Service $service, $scopes, $sType, $updatedServiceValues){
+    private function editServiceLogic(\Service $service, $scopes, $sType, $updatedServiceValues)
+    {
       // Explicitly demarcate our tx boundary
-      $this->em->getConnection ()->beginTransaction ();
-      try {
-          // Set the service's member variables
-          $service->setHostName($updatedServiceValues['hostname']);
-          $service->setDescription($updatedServiceValues['description']);
-          $service->setUrl($updatedServiceValues['url']);
-          $service->setDn($updatedServiceValues['dn']);
-          $service->setIpAddress($updatedServiceValues['ip']);
-          $service->setIpV6Address($updatedServiceValues['ip6']);
-          $service->setOperatingSystem($updatedServiceValues['os']);
-          $service->setEmail($updatedServiceValues['email']);
-          $service->setArchitecture($updatedServiceValues['arch']);
-          $service->setMonitored($updatedServiceValues['monitored']);
-          $service->setBeta($updatedServiceValues['beta']);
-          $service->setProduction($updatedServiceValues['production']);
-          $service->setNotify($updatedServiceValues['notify']);
+        $this->em->getConnection()->beginTransaction();
+        try {
+            // Set the service's member variables
+            $service->setHostName($updatedServiceValues['hostname']);
+            $service->setDescription($updatedServiceValues['description']);
+            $service->setUrl($updatedServiceValues['url']);
+            $service->setDn($updatedServiceValues['dn']);
+            $service->setIpAddress($updatedServiceValues['ip']);
+            $service->setIpV6Address($updatedServiceValues['ip6']);
+            $service->setOperatingSystem($updatedServiceValues['os']);
+            $service->setEmail($updatedServiceValues['email']);
+            $service->setArchitecture($updatedServiceValues['arch']);
+            $service->setMonitored($updatedServiceValues['monitored']);
+            $service->setBeta($updatedServiceValues['beta']);
+            $service->setProduction($updatedServiceValues['production']);
+            $service->setNotify($updatedServiceValues['notify']);
 
-          $service->setServiceType($sType);
+            $service->setServiceType($sType);
 
-          // Update the scope of the service
-          // firstly remove all existing scope links
-          $oldScopes = $service->getScopes ();
-          foreach($oldScopes as $s ) {
-              $service->removeScope($s);
-          }
+            // Update the scope of the service
+            // firstly remove all existing scope links
+            $oldScopes = $service->getScopes();
+            foreach ($oldScopes as $scope) {
+                $service->removeScope($scope);
+            }
 
-          // find each specified scope and then link it to the specified site
-          foreach($scopes as $scope) {
-              $service->addScope($scope);
-          }
+            // find each specified scope and then link it to the specified site
+            foreach ($scopes as $scope) {
+                $service->addScope($scope);
+            }
 
-          $this->em->merge($service);
-          $this->em->flush ();
-          $this->em->getConnection ()->commit ();
-      } catch ( \Exception $e ) {
-          $this->em->getConnection ()->rollback ();
-          $this->em->close ();
-          throw $e;
-      }
+            $this->em->merge($service);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
     }
 
     /**
      * Validates user inputted service data against the
      * checks in the gocdb_schema.xml.
      *
-     * @param array $se_data containing all the fields for a Service
+     * @param array $seData containing all the fields for a Service
      * @throws \Exception If the SE data can't be
      *         validated. The \Exception message will contain a human
      *         readable description of which field failed validation.
      * @return null
      */
-    private function validate($se_data, $type) {
+    private function validate($seData, $type)
+    {
         require_once __DIR__ . '/Validate.php';
-        $serv = new \org\gocdb\services\Validate ();
-        foreach ( $se_data as $field => $value ) {
-            $valid = $serv->validate ( $type, $field, $value );
+        $serv = new Validate();
+        foreach ($seData as $field => $value) {
+            $valid = $serv->validate($type, $field, $value);
             if (! $valid) {
                 $error = "$field contains an invalid value: $value";
-                throw new \Exception ( $error );
+                throw new \Exception($error);
             }
         }
 
         // Apply additional logic for validation that can't be captured solely using gocdb_schema.xml
-        if (! empty ( $se_data ['HOST_IP_V6'] )) {
+        if (! empty($seData ['HOST_IP_V6'])) {
             require_once __DIR__ . '/validation/IPv6Validator.php';
-            $validator = new \IPv6Validator ();
+            $validator = new \IPv6Validator();
             $errors = array ();
-            $errors = $validator->validate ( $se_data ['HOST_IP_V6'], $errors );
-            if (count ( $errors ) > 0) {
-                throw new \Exception ( $errors [0] ); // show the first message.
+            $errors = $validator->validate($seData ['HOST_IP_V6'], $errors);
+            if (count($errors) > 0) {
+                throw new \Exception($errors [0]); // show the first message.
             }
         }
     }
@@ -788,86 +974,86 @@ class ServiceService extends AbstractEntityService {
      * @param Array $values Balues for the new SE (defined above)
      * @param org\gocdb\services\User $user The user adding the SE
      */
-    public function addService($values, \User $user = null) {
+    public function addService($values, \User $user = null)
+    {
 
         // get the parent site
         $dql = "SELECT s from Site s WHERE s.id = :id";
         /* @var $site \Site */
-        $site = $this->em->createQuery ( $dql )->setParameter ( 'id', $values ['hostingSite'] )->getSingleResult ();
+        $site = $this->em->createQuery($dql)->setParameter('id', $values ['hostingSite'])->getSingleResult();
         // get the service type
-        $st = $this->getServiceType ( $values ['serviceType'] );
+        $servType = $this->getServiceType($values ['serviceType']);
 
-        if ($this->roleActionAuthorisationService->authoriseAction ( \Action::SITE_ADD_SERVICE, $site, $user )->getGrantAction () == FALSE) {
-            throw new \Exception ( "You don't have permission to add a service to this site." );
+        if ($this->roleAAS->authoriseAction(\Action::SITE_ADD_SERVICE, $site, $user)->getGrantAction() == false) {
+            throw new \Exception("You don't have permission to add a service to this site.");
         }
 
-        $this->validate ( $values ['SE'], 'service' );
-        $this->uniqueCheck ( $values ['SE'] ['HOSTNAME'], $st, $site );
-
-        // validate production/monitored combination
-        $this->validateProductionMonitoredCombination(
-          $this->getServiceType($values['serviceType']),
-          $this->ptlTexToBool($values['PRODUCTION_LEVEL']),
-          $this->ptlTexToBool($values['IS_MONITORED'])
-        );
+        $this->validate($values ['SE'], 'service');
+        $this->uniqueCheck($values ['SE'] ['HOSTNAME'], $servType, $site);
 
         // ADD SCOPE TAGS:
         // collate selected reserved and non-reserved scopeIds.
         // Note, Reserved scopes can be inherited from the parent Site.
         $allSelectedScopeIds = array ();
-        foreach ( $values ['Scope_ids'] as $sid ) {
+        foreach ($values ['Scope_ids'] as $sid) {
             $allSelectedScopeIds [] = $sid;
         }
-        foreach ( $values ['ReservedScope_ids'] as $sid ) {
+        foreach ($values ['ReservedScope_ids'] as $sid) {
             $allSelectedScopeIds [] = $sid;
         }
 
-        $selectedScopesToApply = $this->scopeService->getScopes ( $allSelectedScopeIds );
+        $scopesToApply = $this->scopeService->getScopes($allSelectedScopeIds);
 
         // If not admin, check that requested reserved scopes are already implemented by the parent Site.
         // Required to prevent users manually crafting a POST request in an attempt
         // to select reserved scopes, this is unlikely but it is a possible hack.
-        if (! $user->isAdmin ()) {
-            $selectedReservedScopes = $this->scopeService->getScopesFilterByParams ( array (
+        if (! $user->isAdmin()) {
+            $resScopesToApply = $this->scopeService->getScopesFilterByParams(array (
                     'excludeNonReserved' => true
-            ), $selectedScopesToApply );
+            ), $scopesToApply);
 
-            $existingReservedScopesParent = $this->scopeService->getScopesFilterByParams ( array (
+            $resScopesParent = $this->scopeService->getScopesFilterByParams(array (
                     'excludeNonReserved' => true
-            ), $site->getScopes ()->toArray () );
+            ), $site->getScopes()->toArray());
 
-            foreach ( $selectedReservedScopes as $sc ) {
+            foreach ($resScopesToApply as $sc) {
                 // Reserved scopes must already be assigned to parent
-                if (! in_array ( $sc, $existingReservedScopesParent )) {
-                    throw new \Exception ( "A reserved Scope Tag was selected that is not assigned to the Parent Site" );
+                if (! in_array($sc, $resScopesParent)) {
+                    throw new \Exception("A reserved Scope Tag was selected that is not assigned to the Parent Site");
                 }
             }
         }
 
         // check there are the required number of OPTIONAL scopes specified
-        $this->checkNumberOfScopes ( $values ['Scope_ids'] );
+        $this->checkNumberOfScopes($values ['Scope_ids']);
 
-        $this->em->getConnection ()->beginTransaction ();
+        // validate production/monitored combination
+        $this->validateProductionMonitoredCombination(
+            $servType,
+            $this->ptlTexToBool($values['PRODUCTION_LEVEL']),
+            $this->ptlTexToBool($values['IS_MONITORED'])
+        );
+
+        $this->em->getConnection()->beginTransaction();
         try {
-            $se = new \Service ();
-            $se->setParentSiteDoJoin ( $site );
-            $se->setServiceType ( $st );
+            $serv = new \Service();
+            $serv->setParentSiteDoJoin($site);
+            $serv->setServiceType($servType);
 
             // Set production
-            $se->setProduction($this->ptlTexToBool($values['PRODUCTION_LEVEL']));
+            $serv->setProduction($this->ptlTexToBool($values['PRODUCTION_LEVEL']));
 
             // Set Beta
-            $se->setBeta($this->ptlTexToBool($values['BETA']));
+            $serv->setBeta($this->ptlTexToBool($values['BETA']));
 
             // Set monitored
-            $se->setMonitored($this->ptlTexToBool($values['IS_MONITORED']));
+            $serv->setMonitored($this->ptlTexToBool($values['IS_MONITORED']));
 
             //Set notify flag for site
-            if (!isset($values['NOTIFY'])){
-                $se->setNotify(false);
-            }
-            else{
-                $se->setNotify($this->ptlTexToBool($values['NOTIFY']));
+            if (!isset($values['NOTIFY'])) {
+                $serv->setNotify(false);
+            } else {
+                $serv->setNotify($this->ptlTexToBool($values['NOTIFY']));
             }
 
             // Set the scopes
@@ -876,30 +1062,30 @@ class ServiceService extends AbstractEntityService {
             // $scope = $this->em->createQuery($dql)
             // ->setParameter('id', $scopeId)
             // ->getSingleResult();
-            // $se->addScope($scope);
+            // $serv->addScope($scope);
             // }
-            foreach ( $selectedScopesToApply as $scope ) {
-                $se->addScope ( $scope );
+            foreach ($scopesToApply as $scope) {
+                $serv->addScope($scope);
             }
 
-            $se->setDn ( $values ['SE'] ['HOST_DN'] );
-            $se->setIpAddress ( $values ['SE'] ['HOST_IP'] );
-            $se->setOperatingSystem ( $values ['SE'] ['HOST_OS'] );
-            $se->setArchitecture ( $values ['SE'] ['HOST_ARCH'] );
-            $se->setHostName ( $values ['SE'] ['HOSTNAME'] );
-            $se->setDescription ( $values ['SE'] ['DESCRIPTION'] );
-            $se->setEmail ( $values ['SE'] ['EMAIL'] );
-            $se->setUrl ( $values ['SE'] ['URL'] );
+            $serv->setDn($values ['SE'] ['HOST_DN']);
+            $serv->setIpAddress($values ['SE'] ['HOST_IP']);
+            $serv->setOperatingSystem($values ['SE'] ['HOST_OS']);
+            $serv->setArchitecture($values ['SE'] ['HOST_ARCH']);
+            $serv->setHostName($values ['SE'] ['HOSTNAME']);
+            $serv->setDescription($values ['SE'] ['DESCRIPTION']);
+            $serv->setEmail($values ['SE'] ['EMAIL']);
+            $serv->setUrl($values ['SE'] ['URL']);
 
-            $this->em->persist ( $se );
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            $this->em->persist($serv);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
-        return $se;
+        return $serv;
     }
 
     /**
@@ -913,11 +1099,12 @@ class ServiceService extends AbstractEntityService {
      * (as explained by Rajesh Kalmady)
      *
      * @param string $hostName New hostname
-     * @param ServiceType $serviceType New service type
-     * @param Site $site The site to add the SE to
+     * @param \ServiceType $serviceType New service type
+     * @param \Site $site The site to add the SE to
      * @return null
      */
-    private function uniqueCheck($hostName, \ServiceType $serviceType, \Site $site) {
+    private function uniqueCheck($hostName, \ServiceType $serviceType, \Site $site)
+    {
         // Get all existing services with this hostname and service type, not under this site
         $dql = "SELECT se from Service se
                 JOIN se.serviceType st
@@ -925,29 +1112,15 @@ class ServiceService extends AbstractEntityService {
                 WHERE se.hostName = :hostName
                 AND st.id = :stId
                 AND s.id != :siteId";
-        $ses = $this->em->createQuery ( $dql )->setParameter ( 'hostName', $hostName )->setParameter ( 'stId', $serviceType->getId () )->setParameter ( 'siteId', $site->getId () )->getResult ();
 
-        if (sizeof ( $ses ) != 0) {
-            throw new \Exception ( "A $serviceType service named $hostName already exists." );
-        }
-    }
+        $ses = $this->em->createQuery($dql)
+            ->setParameter('hostName', $hostName)
+            ->setParameter('stId', $serviceType->getId())
+            ->setParameter('siteId', $site->getId())
+            ->getResult();
 
-    /**
-     * Check that if if the selected scope for this SE is EGI, the parent site
-     * is also EGI
-     *
-     * @param Site $site The SE's parent site
-     * @param Scope $scope The SE's new scope
-     * @return null
-     */
-    private function scopeCheck(\Site $site, \Scope $scope) {
-        // If the scope isn't EGI then don't raise an error
-        if ($scope->getName () != 'EGI') {
-            return;
-        }
-
-        if ($site->getScopes ()->first ()->getName () != "EGI") {
-            throw new \Exception ( "For this service to be EGI scoped, $site must also be EGI scoped." );
+        if (sizeof($ses) != 0) {
+            throw new \Exception("A $serviceType service named $hostName already exists.");
         }
     }
 
@@ -957,19 +1130,21 @@ class ServiceService extends AbstractEntityService {
      * @param integer $id The service type ID
      * @return \ServiceType
      */
-    private function getServiceType($id) {
+    private function getServiceType($id)
+    {
         $dql = "SELECT st FROM ServiceType st WHERE st.id = :id";
-        $st = $this->em->createQuery ( $dql )->setParameter ( 'id', $id )->getSingleResult ();
-        return $st;
+        $servType = $this->em->createQuery($dql)->setParameter('id', $id)->getSingleResult();
+        return $servType;
     }
 
     /**
      *
      * @return array of all properties for a service
      */
-    public function getProperties($id) {
+    public function getProperties($id)
+    {
         $dql = "SELECT p FROM ServiceProperty p WHERE p.parentSite = :ID";
-        $properties = $this->em->createQuery ( $dql )->setParameter ( 'ID', $id )->getOneOrNullResult ();
+        $properties = $this->em->createQuery($dql)->setParameter('ID', $id)->getOneOrNullResult();
         return $properties;
     }
 
@@ -977,9 +1152,10 @@ class ServiceService extends AbstractEntityService {
      *
      * @return a single service property or null if not found
      */
-    public function getProperty($id) {
+    public function getProperty($id)
+    {
         $dql = "SELECT p FROM ServiceProperty p WHERE p.id = :ID";
-        $property = $this->em->createQuery ( $dql )->setParameter ( 'ID', $id )->getOneOrNullResult ();
+        $property = $this->em->createQuery($dql)->setParameter('ID', $id)->getOneOrNullResult();
         return $property;
     }
 
@@ -987,57 +1163,69 @@ class ServiceService extends AbstractEntityService {
      *
      * @return a single service endpoint property or null if not foud
      */
-    public function getEndpointProperty($id) {
+    public function getEndpointProperty($id)
+    {
         $dql = "SELECT p FROM EndpointProperty p WHERE p.id = :ID";
-        $property = $this->em->createQuery ( $dql )->setParameter ( 'ID', $id )->getOneOrNullResult ();
+        $property = $this->em->createQuery($dql)->setParameter('ID', $id)->getOneOrNullResult();
         return $property;
     }
 
     /**
      * @return \ServiceProperty a single service property
      */
-    public function getServicePropertyByKeyAndParent($key, $parentService) {
+    public function getServicePropertyByKeyAndParent($key, $parentService)
+    {
         $parentServiceID = $parentService->getId();
 
         $dql = "SELECT p FROM ServiceProperty p WHERE p.keyName = :KEY AND p.parentService = :PARENTSERVICEID";
         $property = $this->em
-                    ->createQuery ($dql)
-                    ->setParameter ('KEY', $key)
-                    ->setParameter ('PARENTSERVICEID', $parentServiceID)
-                    ->getOneOrNullResult ();
+                    ->createQuery($dql)
+                    ->setParameter('KEY', $key)
+                    ->setParameter('PARENTSERVICEID', $parentServiceID)
+                    ->getOneOrNullResult();
         return $property;
     }
 
     /**
      * @return \SiteProperty a single site property
      */
-    public function getEndpointPropertyByKeyAndParent($key, $parentEndpoint) {
+    public function getEndpointPropertyByKeyAndParent($key, $parentEndpoint)
+    {
         $parentEndpointID = $parentEndpoint->getId();
 
         $dql = "SELECT p FROM EndpointProperty p WHERE p.keyName = :KEY AND p.parentEndpoint = :PARENTENDPOINTID";
         $property = $this->em
-                    ->createQuery ($dql)
-                    ->setParameter ('KEY', $key)
-                    ->setParameter ('PARENTENDPOINTID', $parentEndpointID)
-                    ->getOneOrNullResult ();
+                    ->createQuery($dql)
+                    ->setParameter('KEY', $key)
+                    ->setParameter('PARENTENDPOINTID', $parentEndpointID)
+                    ->getOneOrNullResult();
         return $property;
     }
 
     /**
-     * This method will check that a user has edit permissions over a service before allowing a user to add, edit or delete
+     * This method will check that a user has edit permissions over a service before
+     * allowing a user to add, edit or delete
      * any service information.
      *
      * @param \User $user
      * @param \Service $service
      * @throws \Exception
      */
-    public function validateAddEditDeleteActions(\User $user, \Service $service) {
+    public function validateAddEditDeleteActions(\User $user, \Service $service)
+    {
         // Check to see whether the user has a role that covers this service
         // if(count($this->authorize Action(\Action::EDIT_OBJECT, $service, $user))==0){
         // throw new \Exception("You don't have permission over ". $service->getHostName());
         // }
-        if ($this->roleActionAuthorisationService->authoriseAction ( \Action::EDIT_OBJECT, $service->getParentSite (), $user )->getGrantAction () == FALSE) {
-            throw new \Exception ( "You don't have permission over service." );
+
+        if (
+            $this->roleAAS->authoriseAction(
+                \Action::EDIT_OBJECT,
+                $service->getParentSite(),
+                $user
+            )->getGrantAction() == false
+        ) {
+            throw new \Exception("You don't have permission over service.");
         }
     }
 
@@ -1050,22 +1238,23 @@ class ServiceService extends AbstractEntityService {
      * @param bool $preventOverwrite
      * @throws \Exception
      */
-    public function addProperties(\Service $service, \User $user, array $propArr, $preventOverwrite = false) {
+    public function addProperties(\Service $service, \User $user, array $propArr, $preventOverwrite = false)
+    {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         //Check that the user has the requisite permissions
-        $this->validateAddEditDeleteActions ($user,$service);
+        $this->validateAddEditDeleteActions($user, $service);
 
         //Make the change
-        $this->em->getConnection ()->beginTransaction ();
+        $this->em->getConnection()->beginTransaction();
         try {
-            $this->addPropertiesLogic($service,$propArr,$preventOverwrite);
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            $this->addPropertiesLogic($service, $propArr, $preventOverwrite);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
@@ -1075,22 +1264,30 @@ class ServiceService extends AbstractEntityService {
      * @param \Service $service
      * @param array $propArr
      * @param bool $preventOverwrite
-     * @param string $authenticationType
-     * @param string $authenticationIdentifier
+     * @param string $authType
+     * @param string $authIdentifier
      * @throws \Exception
      */
-    public function addServicePropertiesAPI(\Service $service, array $propKVArr, $preventOverwrite, $authenticationType, $authenticationIdentifier) {
+
+    public function addServicePropertiesAPI(
+        \Service $service,
+        array $propKVArr,
+        $preventOverwrite,
+        $authType,
+        $authIdentifier
+    ) {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkGOCDBIsNotReadOnly();
 
         // Validate the user has permission to add properties
-        $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authenticationIdentifier, $authenticationType);
+        $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authType);
 
         //Convert the property array into the format used by the webportal logic
-        #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
-        $propArr=array();
+        #TODO: make the web portal use a more sensible format
+        #(e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
+        $propArr = array();
         foreach ($propKVArr as $key => $value) {
-            $propArr[]= array(0=>$key,1=>$value);
+            $propArr[] = array(0 => $key,1 => $value);
         }
 
         //Add the properties
@@ -1114,16 +1311,18 @@ class ServiceService extends AbstractEntityService {
      * @param bool $preventOverwrite
      * @throws \Exception
      */
-    protected function addPropertiesLogic(\Service $service, array $propArr, $preventOverwrite = false) {
-        $existingProperties = $service->getServiceProperties ();
+    protected function addPropertiesLogic(\Service $service, array $propArr, $preventOverwrite = false)
+    {
+        $existingProperties = $service->getServiceProperties();
 
         //We will use this variable to track the keys as we go along, this will be used check they are all unique later
-        $keys=array();
+        $keys = array();
 
-        //We will use this variable to track teh final number of properties and ensure we do not exceede the specified limit
+        // We will use this variable to track teh final number of properties and
+        // ensure we do not exceede the specified limit
         $propertyCount = sizeof($existingProperties);
 
-        foreach ( $propArr as $i => $prop ) {
+        foreach ($propArr as $prop) {
             /*Trim off trailing and leading whitspace - as we currently don't want this.
             *The input array is awkwardly formatted as keys didn't use to have to be unique.
             */
@@ -1136,9 +1335,9 @@ class ServiceService extends AbstractEntityService {
             *we will want to edit the existing property later, rather than create it.
             */
             $property = null;
-            foreach ( $existingProperties as $existProp ) {
-                if ($existProp->getKeyName () == $key) {
-                    $property=$existProp;
+            foreach ($existingProperties as $existProp) {
+                if ($existProp->getKeyName() == $key) {
+                    $property = $existProp;
                 }
             }
 
@@ -1148,39 +1347,48 @@ class ServiceService extends AbstractEntityService {
             */
             if (is_null($property)) {
                 // validate key value
+                $validateArray = [];
                 $validateArray ['NAME'] = $key;
                 $validateArray ['VALUE'] = $value;
-                $this->validate ( $validateArray, 'serviceproperty' );
+                $this->validate($validateArray, 'serviceproperty');
 
-                $serviceProperty = new \ServiceProperty ();
-                $serviceProperty->setKeyName ( $key );
-                $serviceProperty->setKeyValue ( $value );
-                $service->addServicePropertyDoJoin ( $serviceProperty );
-                $this->em->persist ( $serviceProperty );
+                $serviceProperty = new \ServiceProperty();
+                $serviceProperty->setKeyName($key);
+                $serviceProperty->setKeyValue($value);
+                $service->addServicePropertyDoJoin($serviceProperty);
+                $this->em->persist($serviceProperty);
 
                 //increment the property counter to enable check against property limit
                 $propertyCount++;
             } elseif (!$preventOverwrite) {
-                $this->editServicePropertyLogic($service, $property, array('SERVICEPROPERTIES'=>array('NAME'=>$key,'VALUE'=>$value)));
+                $this->editServicePropertyLogic(
+                    $service,
+                    $property,
+                    array('SERVICEPROPERTIES' => array('NAME' => $key,'VALUE' => $value))
+                );
             } else {
-                throw new \Exception("A property with name \"$key\" already exists for this object, no properties were added.");
+                throw new \Exception(
+                    "A property with name \"$key\" already exists for this object, no properties were added."
+                );
             }
 
-            //Add the key to the keys array, to enable unique check
-            $keys[]=$key;
+            // Add the key to the keys array, to enable unique check
+            $keys[] = $key;
         }
 
 
-        //Keys should be unique, create an exception if they are not
-        if(count(array_unique($keys))!=count($keys)) {
+        // Keys should be unique, create an exception if they are not
+        if (count(array_unique($keys)) != count($keys)) {
             throw new \Exception(
-                "Property names should be unique. The requested new properties include multiple properties with the same name."
+                "Property names should be unique. The requested new properties " .
+                "include multiple properties with the same name."
             );
         }
 
-        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        // Check to see if adding the new properties will exceed the max limit
+        // defined in local_info.xml, and throw an exception if so
         $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
-        if ($propertyCount > $extensionLimit){
+        if ($propertyCount > $extensionLimit) {
             throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
         }
     }
@@ -1194,22 +1402,29 @@ class ServiceService extends AbstractEntityService {
      * @param bool $preventOverwrite
      * @throws \Exception
      */
-    public function addEndpointProperties(\EndpointLocation $endpoint, \User $user, array $propArr, $preventOverwrite = false) {
+
+    public function addEndpointProperties(
+        \EndpointLocation $endpoint,
+        \User $user,
+        array $propArr,
+        $preventOverwrite = false
+    ) {
+
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ($user);
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         //Check the user has the requisite permissions
-        $this->validateAddEditDeleteActions ($user, $endpoint->getService());
+        $this->validateAddEditDeleteActions($user, $endpoint->getService());
 
         //Make the change
-        $this->em->getConnection ()->beginTransaction ();
+        $this->em->getConnection()->beginTransaction();
         try {
-            $this->addEndpointPropertiesLogic($endpoint,$propArr,$preventOverwrite);
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            $this->addEndpointPropertiesLogic($endpoint, $propArr, $preventOverwrite);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
@@ -1219,22 +1434,37 @@ class ServiceService extends AbstractEntityService {
      * @param \EndpointLocation $service
      * @param array $propArr
      * @param bool $preventOverwrite
-     * @param string $authenticationType
-     * @param string $authenticationIdentifier
+     * @param string $authType
+     * @param string $authIdentifier
      * @throws \Exception
      */
-    public function addEndpointPropertiesAPI(\EndpointLocation $endpoint, array $propKVArr, $preventOverwrite, $authenticationType, $authenticationIdentifier) {
+
+    public function addEndpointPropertiesAPI(
+        \EndpointLocation $endpoint,
+        array $propKVArr,
+        $preventOverwrite,
+        $authType,
+        $authIdentifier
+    ) {
+
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkGOCDBIsNotReadOnly();
 
         // Validate the user has permission to add properties
-        $this->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authenticationIdentifier, $authenticationType);
+
+        $this->checkAuthorisedAPIIdentifier(
+            $endpoint->getService()->getParentSite(),
+            $authIdentifier,
+            $authType
+        );
+
 
         //Convert the property array into the format used by the webportal logic
-        #TODO: make the web portal use a more sensible format (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
-        $propArr=array();
+        # TODO: make the web portal use a more sensible format
+        # (e.g. array(key=> value), rather than array([1]=>key,array[2]=>value))
+        $propArr = array();
         foreach ($propKVArr as $key => $value) {
-            $propArr[]= array(0=>$key,1=>$value);
+            $propArr[] = array(0 => $key,1 => $value);
         }
 
         //Add the properties
@@ -1258,16 +1488,24 @@ class ServiceService extends AbstractEntityService {
      * @param bool $preventOverwrite
      * @throws \Exception
      */
-    protected function addEndpointPropertiesLogic(\EndpointLocation $endpoint, array $propArr, $preventOverwrite = false) {
-        $existingProperties = $endpoint->getEndpointProperties ();
 
-        //We will use this variable to track the keys as we go along, this will be used check they are all unique later
-        $keys=array();
+    protected function addEndpointPropertiesLogic(
+        \EndpointLocation $endpoint,
+        array $propArr,
+        $preventOverwrite = false
+    ) {
 
-        //We will use this variable to track teh final number of properties and ensure we do not exceede the specified limit
+        $existingProperties = $endpoint->getEndpointProperties();
+
+        // We will use this variable to track the keys as we go along,
+        // this will be used check they are all unique later
+        $keys = array();
+
+        // We will use this variable to track the final number of properties
+        // and ensure we do not exceede the specified limit
         $propertyCount = sizeof($existingProperties);
 
-        foreach ( $propArr as $i => $prop ) {
+        foreach ($propArr as $prop) {
             /*Trim off trailing and leading whitspace - as we currently don't want this.
             *The input array is awkwardly formatted as keys didn't use to have to be unique.
             */
@@ -1280,8 +1518,8 @@ class ServiceService extends AbstractEntityService {
             *we will want to edit the existing property later, rather than create it.
             */
             $property = null;
-            foreach ( $existingProperties as $existProp ) {
-                if ($existProp->getKeyName () == $key) {
+            foreach ($existingProperties as $existProp) {
+                if ($existProp->getKeyName() == $key) {
                     $property = $existProp;
                 }
             }
@@ -1292,40 +1530,48 @@ class ServiceService extends AbstractEntityService {
             */
             if (is_null($property)) {
                 // validate key value
+                $validateArray = [];
                 $validateArray ['NAME'] = $key;
                 $validateArray ['VALUE'] = $value;
-                $validateArray ['ENDPOINTID'] = $endpoint->getId ();
-                $this->validate ( $validateArray, 'endpointproperty' );
+                $validateArray ['ENDPOINTID'] = $endpoint->getId();
+                $this->validate($validateArray, 'endpointproperty');
 
-                $property = new \EndpointProperty ();
-                $property->setKeyName ( $key );
-                $property->setKeyValue ( $value );
-                $endpoint->addEndpointPropertyDoJoin ( $property );
-                $this->em->persist ( $property );
+                $property = new \EndpointProperty();
+                $property->setKeyName($key);
+                $property->setKeyValue($value);
+                $endpoint->addEndpointPropertyDoJoin($property);
+                $this->em->persist($property);
 
                 //increment the property counter to enable check against property limit
                 $propertyCount++;
             } elseif (!$preventOverwrite) {
-                $this->editEndpointPropertyLogic($endpoint->getService(), $property, array('ENDPOINTPROPERTIES'=>array('NAME'=>$key,'VALUE'=>$value)));
+                $this->editEndpointPropertyLogic(
+                    $endpoint->getService(),
+                    $property,
+                    array('ENDPOINTPROPERTIES' => array('NAME' => $key,'VALUE' => $value))
+                );
             } else {
-                throw new \Exception("A property with name \"$key\" already exists for this object, no properties were added.");
+                throw new \Exception("A property with name \"$key\" already exists for " .
+                                     "this object, no properties were added.");
             }
 
             //Add the key to the keys array, to enable unique check
-            $keys[]=$key;
+            $keys[] = $key;
         }
 
 
-        //Keys should be unique, create an exception if they are not
-        if(count(array_unique($keys))!=count($keys)) {
+        // Keys should be unique, create an exception if they are not
+        if (count(array_unique($keys)) != count($keys)) {
             throw new \Exception(
-                "Property names should be unique. The requested new properties include multiple properties with the same name."
+                "Property names should be unique. " .
+                "The requested new properties include multiple properties with the same name."
             );
         }
 
-        //Check to see if adding the new properties will exceed the max limit defined in local_info.xml, and throw an exception if so
+        // Check to see if adding the new properties will exceed the max limit
+        // defined in local_info.xml, and throw an exception if so
         $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
-        if ($propertyCount > $extensionLimit){
+        if ($propertyCount > $extensionLimit) {
             throw new \Exception("Property(s) could not be added due to the property limit of $extensionLimit");
         }
     }
@@ -1339,22 +1585,23 @@ class ServiceService extends AbstractEntityService {
      * @param \User $user
      * @param array $propArr
      */
-    public function deleteServiceProperties(\Service $service, \User $user, array $propArr) {
+    public function deleteServiceProperties(\Service $service, \User $user, array $propArr)
+    {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         //Ensure the user has the requisite permissions
-        $this->validateAddEditDeleteActions ( $user, $service );
+        $this->validateAddEditDeleteActions($user, $service);
 
         //Make the change
-        $this->em->getConnection ()->beginTransaction ();
+        $this->em->getConnection()->beginTransaction();
         try {
             $this->deleteServicePropertiesLogic($service, $propArr);
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
@@ -1366,7 +1613,8 @@ class ServiceService extends AbstractEntityService {
      * @param \User $user
      * @param array $propArr
      */
-    public function deleteServicePropertiesAPI(\Service $service, array $propArr, $authIdentifierType, $authIdentifier) {
+    public function deleteServicePropertiesAPI(\Service $service, array $propArr, $authIdentifierType, $authIdentifier)
+    {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkGOCDBIsNotReadOnly();
 
@@ -1397,19 +1645,20 @@ class ServiceService extends AbstractEntityService {
      * @param \Service $service
      * @param array $propArr
      */
-    protected function deleteServicePropertiesLogic(\Service $service, array $propArr) {
-        foreach ( $propArr as $prop ) {
+    protected function deleteServicePropertiesLogic(\Service $service, array $propArr)
+    {
+        foreach ($propArr as $prop) {
             // throw new \Exception(var_dump($prop));
             // check property is in service
-            if ($prop->getParentService () != $service) {
-                $id = $prop->getId ();
-                throw new \Exception ( "Property {$id} does not belong to the specified service" );
+            if ($prop->getParentService() != $service) {
+                $id = $prop->getId();
+                throw new \Exception("Property {$id} does not belong to the specified service");
             }
 
             // Service is the owning side so remove elements from service.
-            $service->getServiceProperties ()->removeElement ( $prop );
+            $service->getServiceProperties()->removeElement($prop);
             // Once relationship is removed delete the actual element
-            $this->em->remove ( $prop );
+            $this->em->remove($prop);
         }
     }
 
@@ -1421,22 +1670,23 @@ class ServiceService extends AbstractEntityService {
      * @param \User $user
      * @param array $propArr
      */
-    public function deleteEndpointProperties(\Service $service, \User $user, array $propArr) {
+    public function deleteEndpointProperties(\Service $service, \User $user, array $propArr)
+    {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         //Check the user has the rquisite permissions
-        $this->validateAddEditDeleteActions ($user, $service);
+        $this->validateAddEditDeleteActions($user, $service);
 
         // Carry out the change
-        $this->em->getConnection ()->beginTransaction ();
+        $this->em->getConnection()->beginTransaction();
         try {
             $this->deleteEndpointPropertiesLogic($service, $propArr);
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
@@ -1448,8 +1698,14 @@ class ServiceService extends AbstractEntityService {
      * @param \User $user
      * @param array $propArr
      */
-    public function deleteEndpointPropertiesAPI(\EndpointLocation $endpoint, array $propArr, $authIdentifierType, $authIdentifier) {
-        //Check the portal is not in read only mode, throws exception if it is
+
+    public function deleteEndpointPropertiesAPI(
+        \EndpointLocation $endpoint,
+        array $propArr,
+        $authIdentifierType,
+        $authIdentifier
+    ) {
+        // Check the portal is not in read only mode, throws exception if it is
         $this->checkGOCDBIsNotReadOnly();
 
         $parentService = $endpoint->getService();
@@ -1484,27 +1740,27 @@ class ServiceService extends AbstractEntityService {
      * @param \Service $service
      * @param array $propArr
      */
-    protected function deleteEndpointPropertiesLogic(\Service $service, array $propArr) {
-        foreach ( $propArr as $prop ) {
-
+    protected function deleteEndpointPropertiesLogic(\Service $service, array $propArr)
+    {
+        foreach ($propArr as $prop) {
             // check endpoint property has a parent endpoint
-            $endpoint = $prop->getParentEndpoint ();
+            $endpoint = $prop->getParentEndpoint();
             if ($endpoint == null) {
-                $id = $prop->getId ();
-                throw new \Exception ( "Property {$id} does not have a parent endpoint" );
+                $id = $prop->getId();
+                throw new \Exception("Property {$id} does not have a parent endpoint");
             }
 
             if ($endpoint->getService() != $service) {
-                $id = $prop->getId ();
-                throw new \Exception (
+                $id = $prop->getId();
+                throw new \Exception(
                     "Property {$id} does not belong to an endpoint of the specified service"
                 );
             }
 
             // Endoint is the owning side so remove elements from endpoint.
-            $endpoint->getEndpointProperties ()->removeElement ( $prop );
+            $endpoint->getEndpointProperties()->removeElement($prop);
             // Once relationship is removed delete the actual element
-            $this->em->remove ( $prop );
+            $this->em->remove($prop);
         }
     }
 
@@ -1519,22 +1775,23 @@ class ServiceService extends AbstractEntityService {
      * @param \ServiceProperty $prop
      * @param array $newValues
      */
-    public function editServiceProperty(\Service $service, \User $user, \ServiceProperty $prop, $newValues) {
+    public function editServiceProperty(\Service $service, \User $user, \ServiceProperty $prop, $newValues)
+    {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         // Validate the user has permission to edit properties
-        $this->validateAddEditDeleteActions ( $user, $service );
+        $this->validateAddEditDeleteActions($user, $service);
 
         //Make the change
-        $this->em->getConnection ()->beginTransaction ();
+        $this->em->getConnection()->beginTransaction();
         try {
             $this->editServicePropertyLogic($service, $prop, $newValues);
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $ex ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $ex;
         }
     }
@@ -1549,22 +1806,23 @@ class ServiceService extends AbstractEntityService {
      * @param \ServiceProperty $prop
      * @param array $newValues
      */
-    protected function editServicePropertyLogic(\Service $service, \ServiceProperty $prop, $newValues) {
+    protected function editServicePropertyLogic(\Service $service, \ServiceProperty $prop, $newValues)
+    {
 
-        $this->validate ( $newValues ['SERVICEPROPERTIES'], 'serviceproperty' );
+        $this->validate($newValues ['SERVICEPROPERTIES'], 'serviceproperty');
 
         //We don't currently want trailing or leading whitespace, so we trim it
         $keyname = trim($newValues['SERVICEPROPERTIES']['NAME']);
         $keyvalue = trim($newValues['SERVICEPROPERTIES']['VALUE']);
 
         // Check that the prop is from the service
-        if ($prop->getParentService () != $service) {
-            $id = $prop->getId ();
-            throw new \Exception ( "Property {$id} does not belong to the specified service" );
+        if ($prop->getParentService() != $service) {
+            $id = $prop->getId();
+            throw new \Exception("Property {$id} does not belong to the specified service");
         }
 
         //If the properties key has changed, check there isn't an existing property with that key
-        if ($keyname != $prop->getKeyName()){
+        if ($keyname != $prop->getKeyName()) {
             $existingProperties = $service->getServiceProperties();
             foreach ($existingProperties as $existingProp) {
                 if ($existingProp->getKeyName() == $keyname) {
@@ -1574,10 +1832,10 @@ class ServiceService extends AbstractEntityService {
         }
 
         // Set the service propertys new member variables
-        $prop->setKeyName ( $keyname );
-        $prop->setKeyValue ( $keyvalue );
+        $prop->setKeyName($keyname);
+        $prop->setKeyValue($keyvalue);
 
-        $this->em->merge ( $prop );
+        $this->em->merge($prop);
     }
 
     /**
@@ -1592,22 +1850,23 @@ class ServiceService extends AbstractEntityService {
      * @param array $newValues
      * @throws \Exception
      */
-    public function editEndpointProperty(\Service $service, \User $user, \EndpointProperty $prop, $newValues) {
+    public function editEndpointProperty(\Service $service, \User $user, \EndpointProperty $prop, $newValues)
+    {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ($user);
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
         // Validate the user has permission to edit properties
-        $this->validateAddEditDeleteActions ($user, $service);
+        $this->validateAddEditDeleteActions($user, $service);
 
         //Make the change
-        $this->em->getConnection ()->beginTransaction ();
+        $this->em->getConnection()->beginTransaction();
         try {
             $this->editEndpointPropertyLogic($service, $prop, $newValues);
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $ex ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $ex;
         }
     }
@@ -1623,22 +1882,23 @@ class ServiceService extends AbstractEntityService {
      * @param array $newValues
      * @throws \Exception
      */
-    protected function editEndpointPropertyLogic(\Service $service, \EndpointProperty $prop, $newValues) {
+    protected function editEndpointPropertyLogic(\Service $service, \EndpointProperty $prop, $newValues)
+    {
 
-        $this->validate ( $newValues ['ENDPOINTPROPERTIES'], 'endpointproperty' );
+        $this->validate($newValues ['ENDPOINTPROPERTIES'], 'endpointproperty');
 
         //We don't currently want trailing or leading whitespace, so we trim it
         $keyname = trim($newValues['ENDPOINTPROPERTIES']['NAME']);
         $keyvalue = trim($newValues['ENDPOINTPROPERTIES']['VALUE']);
 
         // Check that the prop is from the endpoint
-        if ($prop->getParentEndpoint ()->getService () != $service) {
-            $id = $prop->getId ();
-            throw new \Exception ( "Property {$id} does not belong to the specified service endpoint" );
+        if ($prop->getParentEndpoint()->getService() != $service) {
+            $id = $prop->getId();
+            throw new \Exception("Property {$id} does not belong to the specified service endpoint");
         }
 
         //If the properties key has changed, check there isn't an existing property with that key
-        if ($keyname != $prop->getKeyName()){
+        if ($keyname != $prop->getKeyName()) {
             $existingProperties = $prop->getParentEndpoint()->getEndpointProperties();
             foreach ($existingProperties as $existingProp) {
                 if ($existingProp->getKeyName() == $keyname) {
@@ -1648,51 +1908,60 @@ class ServiceService extends AbstractEntityService {
         }
 
         // Set the endpoints propertys new member variables
-        $prop->setKeyName ( $keyname );
-        $prop->setKeyValue ( $keyvalue );
+        $prop->setKeyName($keyname);
+        $prop->setKeyValue($keyvalue);
 
-        $this->em->merge ( $prop );
+        $this->em->merge($prop);
     }
 
     /**
      * Deletes a service
      *
-     * @param \Service $s To be deleted
+     * @param \Service $service To be deleted
      * @param \User $user Making the request
      * @param $isTest when unit testing this allows for true to be supplied and this method
      *        will not attempt to archive the service which can easily cause errors for service objects without
      *        a full set of information
      * @throws \Exception If user can't be authorized
      */
-    public function deleteService(\Service $s, \User $user = null, $isTest = false) {
+    public function deleteService(\Service $service, \User $user = null, $isTest = false)
+    {
         require_once __DIR__ . '/../DAOs/ServiceDAO.php';
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        if ($this->roleActionAuthorisationService->authoriseAction ( \Action::EDIT_OBJECT, $s->getParentSite (), $user )->getGrantAction () == FALSE) {
-            throw new \Exception ( "You don't have permission to delete service." );
+
+        if (
+            $this->roleAAS->authoriseAction(
+                \Action::EDIT_OBJECT,
+                $service->getParentSite(),
+                $user
+            )->getGrantAction() == false
+        ) {
+            throw new \Exception("You don't have permission to delete service.");
         }
 
-        $this->em->getConnection ()->beginTransaction ();
+
+        $this->em->getConnection()->beginTransaction();
         try {
-            $serviceDAO = new \ServiceDAO ();
-            $serviceDAO->setEntityManager ( $this->em );
+            $serviceDAO = new \ServiceDAO();
+            $serviceDAO->setEntityManager($this->em);
 
             // Archive site - if this is a test then don't archive
             if ($isTest == false) {
                 // Create entry in audit table
-                $serviceDAO->addServiceToArchive ( $s, $user );
+                $serviceDAO->addServiceToArchive($service, $user);
             }
 
             // Break links with downtimes and remove downtimes only associated
             // with this service, then remove service
-            $serviceDAO->removeService ( $s );
+            $serviceDAO->removeService($service);
 
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
@@ -1702,53 +1971,52 @@ class ServiceService extends AbstractEntityService {
      *
      * If the service is already a child of the site, no move is attempted.
      *
-     * @param \Service $Service Service to move.
-     * @param \Site $Site Target site to move the service to.
+     * @param \Service $service Service to move.
+     * @param \Site $site Target site to move the service to.
      * @param \User $user
      * @throws \Exception
      * @throws \LogicException
      */
-    public function moveService(\Service $Service, \Site $Site, \User $user = null) {
+    public function moveService(\Service $service, \Site $site, \User $user = null)
+    {
         // Throws exception if user is not an administrator
-        $this->checkUserIsAdmin ( $user );
+        $this->checkUserIsAdmin($user);
 
-        $this->em->getConnection ()->beginTransaction (); // suspend auto-commit
+        $this->em->getConnection()->beginTransaction(); // suspend auto-commit
 
         try {
             // If the site or service have no ID - throw logic exception
-            $site_id = $Site->getId ();
-            if (empty ( $site_id )) {
-                throw new \LogicException ( 'Site has no ID' );
+            $siteId = $site->getId();
+            if (empty($siteId)) {
+                throw new \LogicException('Site has no ID');
             }
-            $Service_id = $Service->getId ();
-            if (empty ( $Service_id )) {
-                throw new \LogicException ( 'Service has no ID' );
+            $serviceId = $service->getId();
+            if (empty($serviceId)) {
+                throw new \LogicException('Service has no ID');
             }
 
             // find old site
-            $old_Site = $Service->getParentSite ();
+            $oldSite = $service->getParentSite();
 
             // If the Site has changed, then we move the service.
-            if ($old_Site != $Site) {
-
+            if ($oldSite != $site) {
                 // Remove the service from the old site if it has an old site
-                if (! empty ( $old_Site )) {
-
-                    $old_Site->getServices ()->removeElement ( $Service );
+                if (! empty($oldSite)) {
+                    $oldSite->getServices()->removeElement($service);
                 }
 
                 // Add Service to new Site
-                $Site->addServiceDoJoin ( $Service );
+                $site->addServiceDoJoin($service);
 
                 // persist
-                $this->em->merge ( $Site );
-                $this->em->merge ( $old_Site );
+                $this->em->merge($site);
+                $this->em->merge($oldSite);
             } // close if
-            $this->em->flush ();
-            $this->em->getConnection ()->commit ();
-        } catch ( \Exception $e ) {
-            $this->em->getConnection ()->rollback ();
-            $this->em->close ();
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
@@ -1758,59 +2026,48 @@ class ServiceService extends AbstractEntityService {
      *
      * @returns boolean
     */
-    public function servicePropSet (\Service $service, $servicePropName) {
-      switch (strtolower($servicePropName)) {
-        case 'hostname':{
-          $propValue = $service->getHostName();
-          break;
+    public function servicePropSet(\Service $service, $servicePropName)
+    {
+        switch (strtolower($servicePropName)) {
+            case 'hostname':
+                $propValue = $service->getHostName();
+                break;
+            case 'description':
+                $propValue = $service->getDescription();
+                break;
+            case 'url':
+                $propValue = $service->getUrl();
+                break;
+            case 'host_dn':
+                $propValue = $service->getDn();
+                break;
+            case 'host_ip':
+                $propValue = $service->getIpAddress();
+                break;
+            case 'host_ip_v6':
+                $propValue = $service->getIpV6Address();
+                break;
+            case 'host_os':
+                $propValue = $service->getOperatingSystem();
+                break;
+            case 'email':
+                $propValue = $service->getEmail();
+                break;
+            case 'host_arch':
+                $propValue = $service->getArchitecture();
+                break;
+            case 'monitored':
+            case 'beta':
+            case 'production':
+            case 'notify':
+                #booleans are always set
+                return true;
+            default:
+                throw new \Exception("Internal error: service property name ($servicePropName) not " .
+                "recognised. Please contact a GOCDB administrator and report this error.");
         }
-        case 'description':{
-          $propValue = $service->getDescription();
-          break;
-        }
-        case 'url':{
-          $propValue = $service->getUrl();
-          break;
-        }
-        case 'host_dn':{
-          $propValue = $service->getDn();
-          break;
-        }
-        case 'host_ip':{
-          $propValue = $service->getIpAddress();
-          break;
-        }
-        case 'host_ip_v6':{
-          $propValue = $service->getIpV6Address();
-          break;
-        }
-        case 'host_os':{
-          $propValue = $service->getOperatingSystem();
-          break;
-        }
-        case 'email':{
-          $propValue = $service->getEmail();
-          break;
-        }
-        case 'host_arch':{
-          $propValue = $service->getArchitecture();
-          break;
-        }
-        case 'monitored':
-        case 'beta':
-        case 'production':
-        case 'notify':
-        {
-          #booleans are always set
-          return true;
-        }
-        default:{
-          throw new \Exception("Internal error: service property name ($servicePropName) not ".
-          "recognised. Please contact a GOCDB administrator and report this error.");
-        }
-      }
 
-      return !empty($propValue);
+        return !empty($propValue);
     }
 
     /**
@@ -1821,16 +2078,17 @@ class ServiceService extends AbstractEntityService {
      * @throws Exception
      * @return \Endpoint
      */
-    public function addEndpoint($values, \User $user = null) {
+    public function addEndpoint($values, \User $user = null)
+    {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        $this->validate ( $values ['SERVICEENDPOINT'], 'endpoint' );
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        $this->validate($values ['SERVICEENDPOINT'], 'endpoint');
 
         $serviceID = $values ['SERVICEENDPOINT'] ['SERVICE'];
-        $service = $this->getService ( $serviceID );
+        $service = $this->getService($serviceID);
 
         // check user has permission to edit endpoint's service
-        $this->validateAddEditDeleteActions ( $user, $service );
+        $this->validateAddEditDeleteActions($user, $service);
 
         $name = $values ['SERVICEENDPOINT'] ['NAME'];
         $url = $values ['SERVICEENDPOINT'] ['URL'];
@@ -1841,10 +2099,10 @@ class ServiceService extends AbstractEntityService {
         if ($values ['SERVICEENDPOINT'] ['INTERFACENAME'] != '') {
             $interfaceName = $values ['SERVICEENDPOINT'] ['INTERFACENAME'];
         } else {
-            $interfaceName = ( string ) $service->getServiceType ();
+            $interfaceName = (string) $service->getServiceType();
         }
 
-        if($values['IS_MONITORED']) {
+        if ($values['IS_MONITORED']) {
             $monitored = true;
         } else {
             $monitored = false;
@@ -1867,13 +2125,24 @@ class ServiceService extends AbstractEntityService {
      * @param  string            $authIdentifier     Authentication string from API
      * @param  string            $authIdentifierType Type of Authentication string
      */
-    public function addEndpointApi(\Service $service, $name, $url, $interfaceName, $description, $email, $monitored, $authIdentifier, $authIdentifierType) {
-      //Check the portal is not in read only mode, throws exception if it is
-      $this->checkGOCDBIsNotReadOnly();
 
-      $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+    public function addEndpointApi(
+        \Service $service,
+        $name,
+        $url,
+        $interfaceName,
+        $description,
+        $email,
+        $monitored,
+        $authIdentifier,
+        $authIdentifierType
+    ) {
+      // Check the portal is not in read only mode, throws exception if it is
+        $this->checkGOCDBIsNotReadOnly();
 
-      $this->addEndpointLogic($service, $name, $url, $interfaceName, $description, $email, $monitored);
+        $this->checkAuthorisedAPIIdentifier($service->getParentSite(), $authIdentifier, $authIdentifierType);
+
+        $this->addEndpointLogic($service, $name, $url, $interfaceName, $description, $email, $monitored);
     }
 
     /**
@@ -1889,36 +2158,37 @@ class ServiceService extends AbstractEntityService {
      * @param  boolean           $monitored          whether endpoint is monitored
      * @throws \Exception
      */
-    private function addEndpointLogic (\Service $service, $name, $url, $interfaceName, $description, $email, $monitored){
+    private function addEndpointLogic(\Service $service, $name, $url, $interfaceName, $description, $email, $monitored)
+    {
 
-      if (empty ( $name )) {
-          throw new \Exception ( "An endpoint must have a name." );
-      }
+        if (empty($name)) {
+            throw new \Exception("An endpoint must have a name.");
+        }
       // check endpoint's name is unique under the service
-      if($this->endpointWithNameExists($service, $name)){
-        throw new \Exception ( "Please provide a unique name for this Service Endpoint." );
-      }
+        if ($this->endpointWithNameExists($service, $name)) {
+            throw new \Exception("Please provide a unique name for this Service Endpoint.");
+        }
 
-      $this->em->getConnection ()->beginTransaction ();
-      try {
-          $endpoint = new \EndpointLocation ();
-          $endpoint->setName($name);
-          $endpoint->setUrl($url);
-          $endpoint->setInterfaceName($interfaceName);
-          $endpoint->setDescription($description);
-          $endpoint->setEmail($email);
-          $endpoint->setMonitored($monitored);
-          $service->addEndpointLocationDoJoin($endpoint);
-          $this->em->persist($endpoint);
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $endpoint = new \EndpointLocation();
+            $endpoint->setName($name);
+            $endpoint->setUrl($url);
+            $endpoint->setInterfaceName($interfaceName);
+            $endpoint->setDescription($description);
+            $endpoint->setEmail($email);
+            $endpoint->setMonitored($monitored);
+            $service->addEndpointLocationDoJoin($endpoint);
+            $this->em->persist($endpoint);
 
-          $this->em->flush();
-          $this->em->getConnection()->commit();
-      } catch(\Exception $e) {
-          $this->em->getConnection()->rollback();
-          $this->em->close();
-          throw $e;
-      }
-      return $endpoint;
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+        return $endpoint;
     }
 
     /**
@@ -1931,17 +2201,19 @@ class ServiceService extends AbstractEntityService {
      * @throws \Exception
      * @throws Exception
      */
-    public function editEndpoint(\User $user, \EndpointLocation $endpoint, $newValues) {
+    public function editEndpoint(\User $user, \EndpointLocation $endpoint, $newValues)
+    {
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
-        $this->validate ( $newValues ['SERVICEENDPOINT'], 'endpoint' );
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
+        $this->validate($newValues ['SERVICEENDPOINT'], 'endpoint');
 
-        //We shouldn't rely on the service being given to the function - this allows bugs to be introduced that feed the wrong service
-        //TODO: remove the $service from the endpoint parameters
-        $service = $endpoint->getService ();
+        // We shouldn't rely on the service being given to the function - this
+        // allows bugs to be introduced that feed the wrong service
+        // TODO: remove the $service from the endpoint parameters
+        $service = $endpoint->getService();
 
         // check user has permission to edit endpoint's service
-        $this->validateAddEditDeleteActions ( $user, $service );
+        $this->validateAddEditDeleteActions($user, $service);
 
         $name = $newValues ['SERVICEENDPOINT'] ['NAME'];
         $url = $newValues ['SERVICEENDPOINT'] ['URL'];
@@ -1949,7 +2221,7 @@ class ServiceService extends AbstractEntityService {
         $email = $newValues['SERVICEENDPOINT']['EMAIL'];
         $interfaceName = $newValues ['SERVICEENDPOINT'] ['INTERFACENAME'];
 
-        if($newValues['IS_MONITORED']) {
+        if ($newValues['IS_MONITORED']) {
             $monitored = true;
         } else {
             $monitored = false;
@@ -1971,14 +2243,30 @@ class ServiceService extends AbstractEntityService {
      * @param  string            $authIdentifier     Authentication string from API
      * @param  string            $authIdentifierType Type of Authentication string
      */
-    public function editEndpointApi (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored, $authIdentifier, $authIdentifierType) {
-      //Check the portal is not in read only mode, throws exception if it is
-      $this->checkGOCDBIsNotReadOnly();
 
-      $this->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
+    public function editEndpointApi(
+        \EndpointLocation $endpoint,
+        $name,
+        $url,
+        $interfaceName,
+        $description,
+        $email,
+        $monitored,
+        $authIdentifier,
+        $authIdentifierType
+    ) {
+      // Check the portal is not in read only mode, throws exception if it is
+        $this->checkGOCDBIsNotReadOnly();
 
-      $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
 
+        $this->checkAuthorisedAPIIdentifier(
+            $endpoint->getService()->getParentSite(),
+            $authIdentifier,
+            $authIdentifierType
+        );
+
+
+        $this->editEndpointLogic($endpoint, $name, $url, $interfaceName, $description, $email, $monitored);
     }
 
     /**
@@ -1993,44 +2281,54 @@ class ServiceService extends AbstractEntityService {
      * @param  boolean           $monitored          whether endpoint is monitored
      * @throws \Exception
      */
-    private function editEndpointLogic (\EndpointLocation $endpoint, $name, $url, $interfaceName, $description, $email, $monitored){
-      $service = $endpoint->getService ();
 
-      if (empty ( $name )) {
-          throw new \Exception ( "An endpoint must have a name." );
-      }
+    private function editEndpointLogic(
+        \EndpointLocation $endpoint,
+        $name,
+        $url,
+        $interfaceName,
+        $description,
+        $email,
+        $monitored
+    ) {
+
+        $service = $endpoint->getService();
+
+        if (empty($name)) {
+            throw new \Exception("An endpoint must have a name.");
+        }
 
       //if no interface name is provided, default to service type
-      if ($interfaceName == '') {
-          $interfaceName = ( string ) $service->getServiceType ();
-      }
+        if ($interfaceName == '') {
+            $interfaceName = (string) $service->getServiceType();
+        }
 
       // check endpoint's name is unique under the service
-      foreach ( $service->getEndpointLocations () as $endpointL ) {
-          // exclude itself
-          if ($endpoint != $endpointL && $endpointL->getName () == $name) {
-              throw new \Exception ( "Please provide a unique name for this endpoint." );
-          }
-      }
+        foreach ($service->getEndpointLocations() as $endpointL) {
+            // exclude itself
+            if ($endpoint != $endpointL && $endpointL->getName() == $name) {
+                throw new \Exception("Please provide a unique name for this endpoint.");
+            }
+        }
 
-      $this->em->getConnection ()->beginTransaction ();
+        $this->em->getConnection()->beginTransaction();
 
-      try {
-          // Set the endpoints new member variables
-          $endpoint->setName ( $name );
-          $endpoint->setUrl ( $url );
-          $endpoint->setInterfaceName ( $interfaceName );
-          $endpoint->setDescription ( $description );
-          $endpoint->setEmail($email);
-          $endpoint->setMonitored($monitored);
-          $this->em->merge ( $endpoint );
-          $this->em->flush ();
-          $this->em->getConnection ()->commit ();
-      } catch ( \Exception $ex ) {
-          $this->em->getConnection ()->rollback ();
-          $this->em->close ();
-          throw $ex;
-      }
+        try {
+            // Set the endpoints new member variables
+            $endpoint->setName($name);
+            $endpoint->setUrl($url);
+            $endpoint->setInterfaceName($interfaceName);
+            $endpoint->setDescription($description);
+            $endpoint->setEmail($email);
+            $endpoint->setMonitored($monitored);
+            $this->em->merge($endpoint);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $ex) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $ex;
+        }
     }
 
     /**
@@ -2040,15 +2338,16 @@ class ServiceService extends AbstractEntityService {
      * @param \User $user
      * @throws Exception
      */
-    public function deleteEndpoint(\EndpointLocation $endpoint, \User $user) {
+    public function deleteEndpoint(\EndpointLocation $endpoint, \User $user)
+    {
 
         // Check the portal is not in read only mode, throws exception if it is
-        $this->checkPortalIsNotReadOnlyOrUserIsAdmin ( $user );
+        $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-        $service = $endpoint->getService ();
+        $service = $endpoint->getService();
 
         // check user has permission to edit endpoint's service
-        $this->validateAddEditDeleteActions ( $user, $service );
+        $this->validateAddEditDeleteActions($user, $service);
 
         $this->deleteEndpointLogic($endpoint);
     }
@@ -2056,43 +2355,51 @@ class ServiceService extends AbstractEntityService {
     /**
      * Function called from API to delete an endpoint
      *
-     * @param  EndpointLocation $endpoint endpoint to be deleted
-     * @param  Service          $service  service of endpoint being deleted
+     * @param  \EndpointLocation $endpoint endpoint to be deleted
+     * @param  \Service          $service  service of endpoint being deleted
      * @thows  Exception
      */
-    public function deleteEndpointAPI (\EndpointLocation $endpoint, $authIdentifier, $authIdentifierType) {
-      //Check the portal is not in read only mode, throws exception if it is
-      $this->checkGOCDBIsNotReadOnly();
+    public function deleteEndpointAPI(\EndpointLocation $endpoint, $authIdentifier, $authIdentifierType)
+    {
+      // Check the portal is not in read only mode, throws exception if it is
+        $this->checkGOCDBIsNotReadOnly();
 
-      //Check authorisation
-      $this->checkAuthorisedAPIIdentifier($endpoint->getService()->getParentSite(), $authIdentifier, $authIdentifierType);
+      // Check authorisation
 
-      //Make the change
-      $this->deleteEndpointLogic($endpoint);
+        $this->checkAuthorisedAPIIdentifier(
+            $endpoint->getService()->getParentSite(),
+            $authIdentifier,
+            $authIdentifierType
+        );
+
+
+      // Make the change
+        $this->deleteEndpointLogic($endpoint);
     }
 
     /**
      * Logic to delete an endpoint, abstracted array from authorisation and validation
      *
-     * @param  EndpointLocation $endpoint endpoint to delete
-     * @throws Exception
+     * @param  \EndpointLocation $endpoint endpoint to delete
+     * @throws \Exception
      */
-    private function deleteEndpointLogic (\EndpointLocation $endpoint) {
-      require_once __DIR__ . '/../DAOs/ServiceDAO.php';
+    private function deleteEndpointLogic(\EndpointLocation $endpoint)
+    {
+        require_once __DIR__ . '/../DAOs/ServiceDAO.php';
 
-      $this->em->getConnection ()->beginTransaction ();
-      try {
-          $serviceDAO = new \ServiceDAO ();
-          $serviceDAO->setEntityManager ( $this->em );
-          $serviceDAO->removeEndpoint ( $endpoint );
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $serviceDAO = new \ServiceDAO();
+            $serviceDAO->setEntityManager($this->em);
+            $serviceDAO->removeEndpoint($endpoint);
 
-          $this->em->flush ();
-          $this->em->getConnection ()->commit ();
-      } catch ( \Exception $e ) {
-          $this->em->getConnection ()->rollback ();
-          $this->em->close ();
-          throw $e;
-      }
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
     }
 
     /**
@@ -2100,39 +2407,33 @@ class ServiceService extends AbstractEntityService {
      *
      * @returns boolean
     */
-    public function EndpointPropSet (\EndpointLocation $endpoint, $endpointPropName) {
-      switch (strtolower($endpointPropName)) {
-        case 'name':{
-          $propValue = $endpoint->getName();
-          break;
+    public function endpointPropSet(\EndpointLocation $endpoint, $endpointPropName)
+    {
+        switch (strtolower($endpointPropName)) {
+            case 'name':
+                $propValue = $endpoint->getName();
+                break;
+            case 'url':
+                $propValue = $endpoint->getUrl();
+                break;
+            case 'interfacename':
+                $propValue = $endpoint->getInterfaceName();
+                break;
+            case 'description':
+                $propValue = $endpoint->getDescription();
+                break;
+            case 'email':
+                $propValue = $endpoint->getEmail();
+                break;
+            case 'monitored':
+                #booleans are always set
+                return true;
+            default:
+                throw new \Exception("Internal error: endpoint property name ($endpointPropName) not " .
+                "recognised. Please contact a GOCDB administrator and report this error.");
         }
-        case 'url':{
-          $propValue = $endpoint->getUrl();
-          break;
-        }
-        case 'interfacename':{
-          $propValue = $endpoint->getInterfaceName();
-          break;
-        }
-        case 'description':{
-          $propValue = $endpoint->getDescription();
-          break;
-        }
-        case 'email':{
-          $propValue = $endpoint->getEmail();
-          break;
-        }
-        case 'monitored': {
-          #booleans are always set
-          return true;
-        }
-        default:{
-          throw new \Exception("Internal error: endpoint property name ($endpointPropName) not ".
-          "recognised. Please contact a GOCDB administrator and report this error.");
-        }
-      }
 
-      return !empty($propValue);
+        return !empty($propValue);
     }
 
     /**
@@ -2143,13 +2444,14 @@ class ServiceService extends AbstractEntityService {
      * @param  string  $name    endpoint name being checked
      * @return boolean
      */
-    public function endpointWithNameExists (\Service $service, $name) {
-      foreach ($service->getEndpointLocations() as $endpoint) {
-        if ($name == $endpoint->getName()){
-          return true;
+    public function endpointWithNameExists(\Service $service, $name)
+    {
+        foreach ($service->getEndpointLocations() as $endpoint) {
+            if ($name == $endpoint->getName()) {
+                return true;
+            }
         }
-      }
-      return false;
+        return false;
     }
 
     /**
@@ -2161,24 +2463,25 @@ class ServiceService extends AbstractEntityService {
      * @return \Endpoint           endpoint
      * @throws \Exception
      */
-    public function getEndpointByName (\Service $service, $name) {
-      foreach ($service->getEndpointLocations() as $endpoint) {
-        if ($name == $endpoint->getName()){
-          return $endpoint;
+    public function getEndpointByName(\Service $service, $name)
+    {
+        foreach ($service->getEndpointLocations() as $endpoint) {
+            if ($name == $endpoint->getName()) {
+                return $endpoint;
+            }
         }
-      }
 
-      //If the endpoint wasn't found, throw exceptions
-      throw new \Exception("Endpoint not found");
-
+      // If the endpoint wasn't found, throw exceptions
+        throw new \Exception("Endpoint not found");
     }
 
-    private function checkNumberOfScopes($scopeIds) {
-        require_once __DIR__ . '/Config.php';
-        $configService = new \org\gocdb\services\Config ();
-        $minumNumberOfScopes = $configService->getMinimumScopesRequired ( 'service' );
-        if (sizeof ( $scopeIds ) < $minumNumberOfScopes) {
-            throw new \Exception ( "A service must have at least " . $minumNumberOfScopes . " optional scope(s)  assigned to it." );
+    private function checkNumberOfScopes($scopeIds)
+    {
+        $configService = new Config();
+        $minumNumberOfScopes = $configService->getMinimumScopesRequired('service');
+        if (sizeof($scopeIds) < $minumNumberOfScopes) {
+            throw new \Exception("A service must have at least " . $minumNumberOfScopes .
+                                 " optional scope(s)  assigned to it.");
         }
     }
 
@@ -2191,37 +2494,38 @@ class ServiceService extends AbstractEntityService {
      * @param \Service $service
      * @return associative array
      */
-    public function getScopesWithParentScopeInfo(\Service $service) {
-        $parentSite = $service->getParentSite ();
-        $parentScopes = $parentSite->getScopes ();
-        $childScopes = $service->getScopes ();
+    public function getScopesWithParentScopeInfo(\Service $service)
+    {
+        $parentSite = $service->getParentSite();
+        $parentScopes = $parentSite->getScopes();
+        $childScopes = $service->getScopes();
 
         $parentScopesNames = array ();
-        foreach ( $parentScopes as $parentScope ) {
-            $parentScopesNames [] = $parentScope->getName ();
+        foreach ($parentScopes as $parentScope) {
+            $parentScopesNames[] = $parentScope->getName();
         }
 
         $childScopesNames = array ();
-        foreach ( $childScopes as $childScope ) {
-            $childScopesNames [] = $childScope->getName ();
+        foreach ($childScopes as $childScope) {
+            $childScopesNames[] = $childScope->getName();
         }
 
-        $sharedScopesNames = array_intersect ( $childScopesNames, $parentScopesNames );
+        $sharedScopesNames = array_intersect($childScopesNames, $parentScopesNames);
 
-        $scopeNamesNotShared = array_diff ( $childScopesNames, $parentScopesNames );
-
-        $ScopeNamesAndParentShareInfo = array ();
-        foreach ( $sharedScopesNames as $sharedScopesName ) {
-            $ScopeNamesAndParentShareInfo [$sharedScopesName] = true;
+        $scopeNamesNotShared = array_diff($childScopesNames, $parentScopesNames);
+        // scopeNamesAndParentShareInfo
+        $shareInfo = array();
+        foreach ($sharedScopesNames as $sharedScopesName) {
+            $shareInfo[$sharedScopesName] = true;
         }
-        foreach ( $scopeNamesNotShared as $scopeNameNotShared ) {
-            $ScopeNamesAndParentShareInfo [$scopeNameNotShared] = false;
+        foreach ($scopeNamesNotShared as $scopeNameNotShared) {
+            $shareInfo[$scopeNameNotShared] = false;
         }
 
-        // can be replaced with ksort($ScopeNamesAndParentShareInfo, SORT_NATURAL); in php>=5.5
-        uksort ( $ScopeNamesAndParentShareInfo, 'strcasecmp' );
+        // can be replaced with ksort($shareInfo, SORT_NATURAL); in php>=5.5
+        uksort($shareInfo, 'strcasecmp');
 
-        return $ScopeNamesAndParentShareInfo;
+        return $shareInfo;
     }
 
     /**
@@ -2230,11 +2534,12 @@ class ServiceService extends AbstractEntityService {
      * @param  string $text string, usually "Y" or "N"
      * @return boolean
      */
-    private function ptlTexToBool($text) {
-      if ($text == "Y") {
-          return true;
-      } else {
-          return false;
-      }
+    private function ptlTexToBool($text)
+    {
+        if ($text == "Y") {
+            return true;
+        } else {
+            return false;
+        }
     }
 }

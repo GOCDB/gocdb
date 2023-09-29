@@ -1,5 +1,15 @@
 <?php
-namespace org\gocdb\services;
+
+/**
+ * GOCDB Stateless service facade (business routines) for group objects.
+ * The public API methods are transactional.
+ *
+ * @author Ian Neilson after originals -
+ * @author John Casson
+ * @author David Meredith
+ * @author George Ryall
+ */
+
 /* Copyright (c) 2011 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,24 +22,19 @@ namespace org\gocdb\services;
  * limitations under the License.
  */
 
-/**
- * GOCDB Stateless service facade (business routines) for group objects.
- * The public API methods are transactional.
- *
- * @author Ian Neilson after originals -
- * @author John Casson
- * @author David Meredith
- * @author George Ryall
- */
+namespace org\gocdb\services;
 
 require_once __DIR__ . '/AbstractEntityService.php';
-require_once __DIR__.  '/../Doctrine/entities/APIAuthentication.php';
+require_once __DIR__ . '/Validate.php';
+require_once __DIR__ .  '/../Doctrine/entities/APIAuthentication.php';
 
 use Doctrine\ORM\QueryBuilder;
+use org\gocdb\services\Validate;
 
-class APIAuthenticationService extends AbstractEntityService{
-
-    function __construct() {
+class APIAuthenticationService extends AbstractEntityService
+{
+    public function __construct()
+    {
         parent::__construct();
     }
 
@@ -37,9 +42,10 @@ class APIAuthenticationService extends AbstractEntityService{
      * Returns the APIAuthentication entity associated with the given identifier.
      *
      * @param string $ident Identifier (e.g. X.509 DN as string)
-     * @return \APIAuthentication APIAuthentication associated with this identifier
+     * @return \APIAuthentication[] APIAuthentication associated with this identifier
      */
-    public function getAPIAuthentication($ident) {
+    public function getAPIAuthentication($ident)
+    {
 
         if (!is_string($ident)) {
             throw new \LogicException("Expected string APIAuthentication identifier.");
@@ -48,12 +54,13 @@ class APIAuthenticationService extends AbstractEntityService{
         $dql = "SELECT a FROM APIAuthentication a " .
                 "WHERE (a.identifier = :ident)" ;
 
+        /* @var $qry \Doctine\DBAL\query */
         $qry = $this->em->createQuery($dql);
         $qry->setParameter('ident', $ident);
 
-        $apiAuth = $qry->getOneOrNullResult();
+        $apiAuths = $qry->getResult();
 
-        return $apiAuth;
+        return $apiAuths;
     }
 
         /**
@@ -65,22 +72,23 @@ class APIAuthenticationService extends AbstractEntityService{
      * @throws \Exception on error with commit rolled back
      * @return \APIAuthentication
      */
-    public function addAPIAuthentication(\Site $site, \User $user, $newValues) {
+    public function addAPIAuthentication(\Site $site, \User $user, $newValues)
+    {
 
         $identifier = $newValues['IDENTIFIER'];
         $type = $newValues['TYPE'];
         $allowWrite = $newValues['ALLOW_WRITE'];
 
         //Check that an identifier has been provided
-        if(empty($identifier)){
+        if (empty($identifier)) {
             throw new \Exception("A value must be provided for the identifier");
         }
 
         //validate the values against the schema
         $this->validate($newValues, $identifier, $type);
 
-        //Check there isn't already a identifier of that type with that identifier for that Site
-        $this->uniqueAPIAuthEnt($site, $identifier, $type);
+        //Check there isn't already a credential with that identifier for that Site
+        $this->uniqueAPIAuthEnt($site, $identifier);
 
         //Add the properties
         $this->em->getConnection()->beginTransaction();
@@ -112,7 +120,8 @@ class APIAuthenticationService extends AbstractEntityService{
      * @param \APIAuthentication Entity to delete
      * @throws \Exception on error with commit rolled back
      */
-    public function deleteAPIAuthentication(\APIAuthentication $authEntity) {
+    public function deleteAPIAuthentication(\APIAuthentication $authEntity)
+    {
 
         $this->em->getConnection()->beginTransaction();
 
@@ -147,14 +156,15 @@ class APIAuthenticationService extends AbstractEntityService{
      * @throws \Exception on error with commit rolled back
      * @return \APIAuthentication
      */
-    public function editAPIAuthentication(\APIAuthentication $authEntity, \User $user, $newValues) {
+    public function editAPIAuthentication(\APIAuthentication $authEntity, \User $user, $newValues)
+    {
 
         $identifier = $newValues['IDENTIFIER'];
         $type = $newValues['TYPE'];
         $allowWrite = $newValues['ALLOW_WRITE'];
 
         //Check that an identifier ha been provided
-        if(empty($identifier)){
+        if (empty($identifier)) {
             throw new \Exception("A value must be provided for the identifier");
         }
 
@@ -178,7 +188,6 @@ class APIAuthenticationService extends AbstractEntityService{
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             $this->em->close();
@@ -188,21 +197,22 @@ class APIAuthenticationService extends AbstractEntityService{
     /**
      * Set the last use time field to the current UTC time
      *
-     * @param \APIAuthentication $authEntity entity to update
+     * @param \APIAuthentication[] $authEntities entity to update
      * @throws \Exception if the update fails
      */
-    public function updateLastUseTime(\APIAuthentication $authEntity) {
-
+    public function updateLastUseTime(array $authEntities)
+    {
         $this->em->getConnection()->beginTransaction();
 
         try {
-            $authEntity->setLastUseTime();
-
-            $this->em->persist($authEntity);
+            /* @var \APIAuthentication $authEntity */
+            foreach ($authEntities as $authEntity) {
+                $authEntity->setLastUseTime();
+                $this->em->persist($authEntity);
+            }
 
             $this->em->flush();
             $this->em->getConnection()->commit();
-
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
             $this->em->close();
@@ -210,24 +220,28 @@ class APIAuthenticationService extends AbstractEntityService{
         }
     }
     /**
-     * Fail if there is already an identifier of given type and identifier
+     * Fail if there is already an API credential with a given identifier
      * for a given Site.
+     *
+     * Note that there is an implicit assumption that an identifier value is
+     * unique across all types (X.509, OIDC token etc.)
      *
      * @param \Site $site field values for an APIAuthentication object
      * @param string $identifier to check
-     * @param string $type to check
      * @throws \Exception if the data can't be validated.
      */
-    public function uniqueAPIAuthEnt(\Site $site, $identifier, $type) {
+    public function uniqueAPIAuthEnt(\Site $site, $identifier)
+    {
 
-        $authEnt = $this->getAPIAuthentication($identifier, $type);
+        $authEntities = $this->getAPIAuthentication($identifier);
 
-        if (!is_null($authEnt) &&
-                $authEnt->getParentSite()->getId() == $site->getId()) {
-            throw new \Exception(
-                "An authentication object of type \"$type\" and with identifier " .
-                "\"$identifier\" already exists for " . $site->getName()
-            );
+        foreach ($authEntities as $authEnt) {
+            if ($authEnt->getParentSite()->getId() == $site->getId()) {
+                throw new \Exception(
+                    "An authentication credential with identifier " .
+                    "\"$identifier\" already exists for " . $site->getName()
+                );
+            }
         }
     }
     /**
@@ -240,13 +254,13 @@ class APIAuthenticationService extends AbstractEntityService{
      * @throws \Exception if the data can't be validated.
      * @return null
      */
-    private function validate($data, $identifier, $type) {
+    private function validate($data, $identifier, $type)
+    {
 
-        require_once __DIR__.'/Validate.php';
-        $serv = new \org\gocdb\services\Validate();
-        foreach($data as $field => $value) {
+        $serv = new Validate();
+        foreach ($data as $field => $value) {
             $valid = $serv->validate('APIAUTHENTICATION', $field, $value);
-            if(!$valid) {
+            if (!$valid) {
                 $error = "$field contains an invalid value: $value";
                 throw new \Exception($error);
             }
@@ -258,9 +272,11 @@ class APIAuthenticationService extends AbstractEntityService{
         }
 
         //If the entity is of type OIDC subject, do a more thorough check again
-        if ($type == 'OIDC Subject' && !preg_match("/^([a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12})$/", $identifier)) {
+        if (
+            $type == 'OIDC Subject' &&
+            !preg_match("/^([a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12})$/", $identifier)
+        ) {
             throw new \Exception("Invalid OIDC Subject");
         }
-
     }
 }

@@ -1,34 +1,83 @@
 <?php
+
+/**
+ * Common definition of constants and functions for various tests.
+ */
+
+require_once __DIR__ . "/validate_local_info_xml.php";
+require_once __DIR__ . "/../../../lib/Gocdb_Services/Factory.php";
+require_once __DIR__ . "/../../../lib/Gocdb_Services/Config.php";
+
+define("TEST_1", "GOCDB5 DB connection");
+define("TEST_2", "GOCDBPI_v5 availability");
+define("TEST_3", "GOCDB5 central portal availability");
+define("TEST_4", "GOCDB5 server configuration validity");
+
+define("OK", "ok");
+define("NOK", "error");
+define("UKN", "unknown");
+define("OKMSG", "everything is well");
+define("UKNMSG", "no information");
+
+/**
+ * Run GOCDB status checks reporting as an HTML page with formatted per-test status table
+ */
+
 require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
 // Initialise the configuration service.
 // If non-default location for xml configuration file is needed
 // use Factory::ConfigService->setLocalInfoFileLocation(...)
+
 \Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
 
 $test_statuses =  array(
-        "GOCDB5 DB connection" 						=> "unknown",
-        "GOCDBPI_v5 availability" 					=> "unknown",
-        "GOCDB5 central portal availability" 		=> "unknown"
+    TEST_1  => UKN,
+    TEST_2  => UKN,
+    TEST_3  => UKN,
+    TEST_4  => UKN
 );
 
 $test_desc =  array(
-        "GOCDB5 DB connection" 						=> "Connect to GOCDB5 (RAL/master instance) from this machine using EntityManager->getConnection()->connect()",
-        "GOCDBPI_v5 availability" 					=> "Retrieve https://goc.egi.eu/gocdbpi/?method=get_site_list&sitename=RAL-LCG2 using PHP CURL",
-        "GOCDB5 central portal availability" 		=> "N/A",
+    TEST_1 =>
+        "Connect to GOCDB5 (RAL/master instance) from this " .
+        "machine using EntityManager->getConnection()->connect()",
+    TEST_2 =>
+        "Retrieve https://goc.egi.eu/gocdbpi/?" .
+        "method=get_site_list&sitename=RAL-LCG2 using PHP CURL",
+    TEST_3 =>
+        "N/A",
+    TEST_4 =>
+        "Server XML configuration validation."
 );
 
 $test_doc =  array(
-        "GOCDB5 DB connection" 						=> "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/Servers and Services/GOCDB/Cookbook and recipes/database_is_down.txt' target='_blank'>documentation/recipe</a>",
-        "GOCDBPI_v5 availability" 					=> "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/Servers and Services/GOCDB/Cookbook and recipes/failover_cookbook.txt' target='_blank'>documentation/recipe</a>",
-        "GOCDB5 central portal availability" 		=> "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/Servers and Services/GOCDB/Cookbook and recipes/failover_cookbook.txt' target='_blank'>documentation/recipe</a>"
+    TEST_1 =>
+        "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT " .
+        "Documents/Servers and Services/GOCDB/Cookbook and " .
+        "recipes/database_is_down.txt' target='_blank'>" .
+        "documentation/recipe</a>",
+    TEST_2 =>
+        "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT " .
+        "Documents/Servers and Services/GOCDB/Cookbook and " .
+        "recipes/failover_cookbook.txt' target='_blank'>" .
+        "documentation/recipe</a>",
+    TEST_3 =>
+        "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT " .
+        "Documents/Servers and Services/GOCDB/Cookbook and " .
+        "recipes/failover_cookbook.txt' target='_blank'>" .
+        "documentation/recipe</a>",
+    TEST_4 =>
+        "<p>Contact GOCDB service managers." .
+        "<br>Other tests have dependencies on the server configuration " .
+        "<br>so may show errors if the configuration is invalid.</p>"
 );
 
-
 $test_messages =  array(
-        "GOCDB5 DB connection" 						=> "no information",
-        "GOCDBPI_v5 availability" 					=> "no information",
-        "GOCDB5 central portal availability" 		=> "no information"
+    TEST_1 => UKNMSG,
+    TEST_2 => UKNMSG,
+    TEST_3 => UKNMSG,
+    TEST_4 => UKNMSG
 );
 
 $disp = array(
@@ -38,37 +87,82 @@ $disp = array(
         "ok"        => "<td align='center' bgcolor='#00D000'><font size='1'>OK</font></td>",
 );
 
+// Run the tests but return nothing but a count of passes and failures
+function get_test_counts($config)
+{
+    $res[1] = test_db_connection();
+    $res[4] = test_config($config);
+
+    if ($res[4]["status"] != "error") {
+        // Only define test URLs if the config is valid
+        define_test_urls($config);
+
+        $res[2] = test_url(PI_URL);
+        $res[3] = test_url(SERVER_BASE_URL);
+    }
+
+    $counts = array("ok" => 0,
+                    "warn" => 0,
+                    "error" => 0
+            );
+
+    foreach ($res as $r) {
+        $counts[$r["status"]]++;
+    }
+
+    return $counts;
+}
+
+// Define url constants for testing.
+// Note: Should only be called if test_config is successful
+function define_test_urls(\org\gocdb\services\config $config)
+{
+
+    list($serverBaseURL, $webPortalURL, $piURL) = $config->getURLs();
+
+    define("PI_URL", $piURL . get_testPiMethod());
+    define("PORTAL_URL", $webPortalURL);
+    define("SERVER_BASE_URL", $serverBaseURL);
+
+    //define("SERVER_SSLCERT", "/etc/grid-security/hostcert.pem");
+    //define("SERVER_SSLKEY", "/etc/pki/tls/private/hostkey.pem");
+}
+
 // Test the connection to the database using Doctrine
-function test_db_connection(){
+function test_db_connection()
+{
+    $retval = [];
     try {
         $entityManager = Factory::getNewEntityManager();
         $entityManager->getConnection()->connect();
-        $retval["status"] = "ok";
-        $retval["message"] = "everything is well";
+        $retval["status"] = OK;
+        $retval["message"] = OKMSG;
     } catch (\Exception $e) {
         $message = $e->getMessage();
-        $retval["status"] = "error";
+        $retval["status"] = NOK;
         $retval["message"] = "$message";
     }
 
     return $retval;
 }
 
-function test_url($url) {
-    try{
+function test_url($url)
+{
+    $retval = [];
+    try {
         get_https2($url);
-        $retval["status"] = "ok";
-        $retval["message"] = "everything is well";
-    } catch (Exception $exception){
+        $retval["status"] = OK;
+        $retval["message"] = OKMSG;
+    } catch (Exception $exception) {
         $message = $exception->getMessage();
-        $retval["status"] = "error";
+        $retval["status"] = NOK;
         $retval["message"] = "$message";
     }
     return $retval;
 }
 
-function get_https2($url){
-
+function get_https2($url)
+{
     $curloptions = array (
         // In addition to transfer failures, check inside the HTTP response for an error
         // response code (HTTP > 400)
@@ -95,9 +189,9 @@ function get_https2($url){
         CURLOPT_RETURNTRANSFER => true,
         CURLOPT_CAPATH => '/etc/grid-security/certificates/'
     );
-    if( defined('SERVER_SSLCERT') && defined('SERVER_SSLKEY') ){
-      $curloptions[CURLOPT_SSLCERT] = SERVER_SSLCERT;
-      $curloptions[CURLOPT_SSLKEY] = SERVER_SSLKEY;
+    if (defined('SERVER_SSLCERT') && defined('SERVER_SSLKEY')) {
+        $curloptions[CURLOPT_SSLCERT] = constant("SERVER_SSLCERT");
+        $curloptions[CURLOPT_SSLKEY] = constant("SERVER_SSLKEY");
     }
 
     $handle = curl_init();
@@ -112,19 +206,68 @@ function get_https2($url){
             // See man page for curl --fail option
             throw new Exception("http response code: $httpResponse");
         }
-        throw new Exception("curl error:".curl_error($handle));
+        throw new Exception("curl error:" . curl_error($handle));
     }
     curl_close($handle);
 
     if ($return == false) {
-        throw new Exception("no result returned. curl says: ".curl_getinfo($handle));
+        throw new Exception("no result returned. curl says: " . curl_getinfo($handle));
     }
 
     return $return;
 }
 
-function get_testPiMethod () {
+function get_testPiMethod()
+{
     return  "/public/?method=get_site_list";
 }
+/**
+ * Run the standard 3 GOCDB monitoring tests
+ *
+ * @param   string    &$message     Returned error messages or ''
+ * @return  int                     Count of failed tests
+ */
+function run_tests(&$message)
+{
+    $errorCount = 0;
+    $messages = [];
 
-?>
+    $res = test_db_connection();
+
+    if ($res["status"] != "ok") {
+        $errorCount++;
+        $messages[] = "Database connection test failed: " . $res["message"];
+    }
+
+    $res = test_url(Factory::getConfigService()->GetPiUrl() .
+                    get_testPiMethod());
+
+    if ($res["status"] != "ok") {
+        $errorCount++;
+        $messages[] = "PI interface test failed: " . $res["message"];
+    }
+
+    $res = test_url(Factory::getConfigService()->GetPortalURL());
+
+    if ($res["status"] != "ok") {
+        $errorCount++;
+        $messages[] = "Server base URL test failed: " . $res["message"];
+    }
+
+    $message = join(" | ", $messages);
+
+    return $errorCount;
+}
+function test_config($config)
+{
+    $retval = [];
+    try {
+        validate_local_info_xml($config->getLocalInfoFileLocation());
+        $retval["status"] = OK;
+        $retval["message"] = OKMSG;
+    } catch (Exception $exception) {
+        $retval["status"] = NOK;
+        $retval["message"] = $exception->getMessage();
+    }
+    return $retval;
+}

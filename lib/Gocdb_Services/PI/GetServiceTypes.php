@@ -72,8 +72,8 @@ class GetServiceTypes implements IPIQuery, IPIQueryRenderable {
 
         //Initialize base query
         $qb	->select('st')
-        ->from('ServiceType', 'st'); // no ordering, should specify by oldest first to be consistent for future
-        //->orderBy('st.id', 'ASC'); // oldest first
+        ->from('ServiceType', 'st')
+        ->orderBy('st.id', 'ASC'); // oldest first
 
         /*Pass parameters to the ParameterBuilder and allow it to add relevant where clauses
          * based on set parameters.

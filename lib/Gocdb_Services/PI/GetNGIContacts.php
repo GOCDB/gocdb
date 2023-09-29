@@ -114,7 +114,6 @@ class GetNGIContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         //Initialize base query
         $qb	->select('n')
         ->from('NGI', 'n')
-        //->orderBy('n.id', 'ASC')
         ;
 
         // Order by ASC (oldest first: 1, 2, 3, 4)
@@ -267,7 +266,11 @@ class GetNGIContacts implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             $portalUrl = $this->baseUrl.'/index.php?Page_Type=NGI&id=' . $ngi->getId ();
             $portalUrl = htmlspecialchars ( $portalUrl );
             $helpers->addIfNotEmpty ( $xmlNgi, 'GOCDB_PORTAL_URL', $portalUrl );
-            foreach($ngi->getRoles() as $role) {
+
+            // Sort roles
+            $orderedRoles = $this->helpers->orderArrById($ngi->getRoles());
+
+            foreach ($orderedRoles as $role) {
                 if ($role->getStatus() == "STATUS_GRANTED") {   //Only show users who are granted the role, not pending
                     $rtype = $role->getRoleType()->getName();
                     if($this->roleT == '%%' || $rtype == $this->roleT) {

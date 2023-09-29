@@ -56,10 +56,10 @@ class TestUtil {
         return $serv;
     }
 
-    public static function createSampleServiceType($name){
+    public static function createSampleServiceType($description, $name){
          $stype = new ServiceType();
          $stype->setName($name);
-         $stype->setDescription('sample service type');
+         $stype->setDescription($description);
          return $stype;
      }
 

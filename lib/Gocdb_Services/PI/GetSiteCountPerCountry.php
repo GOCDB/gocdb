@@ -66,8 +66,9 @@ class GetSiteCountPerCountry implements IPIQuery, IPIQueryRenderable{
 
         $qb = $this->em->createQueryBuilder();
 
-        //Main query
-        $qb	->select('COUNT(c.name) as cCount', 'c.name')
+        // Main query
+        // Ordered by case insensitive country names
+        $qb	->select('COUNT(c.name) as cCount', 'c.name', 'LOWER(c.name) as HIDDEN lowerCaseName')
             ->from('Site', 's')
             ->leftJoin('s.scopes', 'sc')
             ->join('s.ngi', 'n')
@@ -75,7 +76,7 @@ class GetSiteCountPerCountry implements IPIQuery, IPIQueryRenderable{
             ->join('s.certificationStatus', 'cs')
             ->join('s.infrastructure', 'i')
             ->groupBy('c.name')
-            ->orderBy('c.name');
+            ->orderBy('lowerCaseName');
 
 
         //If a scope was specified attach the sub query to query by EGI scope
@@ -131,9 +132,10 @@ class GetSiteCountPerCountry implements IPIQuery, IPIQueryRenderable{
 
         $qb = $this->em->createQueryBuilder();
 
-        $qb	->select('c.name')
+        // Ordered by case insensitive country names
+        $qb	->select('c.name', 'LOWER(c.name) as HIDDEN lowerCaseName')
             ->from('Country', 'c')
-            ->orderBy('c.name');
+            ->orderBy('lowerCaseName');
 
         $query[1] = $qb->getQuery();
         $this->query = $query;

@@ -225,7 +225,10 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         $('#startDate').data("DateTimePicker").date("<?php echo date_format($startDate,"d/m/Y"); ?>");
         $('#endDate').data("DateTimePicker").date("<?php echo date_format($endDate,"d/m/Y"); ?>");
 
-        //Set the start and finish times (don't echo in the full date, just the time values, time widget didn’t like timestamp with date)
+        /**
+         * Set the start and finish times (don't echo in the full date,
+         * just the time values, time widget didn't like timestamp with date)
+         */
         $('#startTime').data("DateTimePicker").date("<?php echo date_format($startDate,"H:i"); ?>");
         $('#endTime').data("DateTimePicker").date("<?php echo date_format($endDate,"H:i"); ?>");
 
@@ -654,21 +657,3 @@ foreach($downtime->getEndpointLocations() as $endpoints){
         return datesValid;
     }*/
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

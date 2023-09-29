@@ -12,10 +12,18 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+namespace org\gocdb\tests;
+
 require_once __DIR__ . '/ServiceTestUtil.php';
 require_once __DIR__ . '/../../../../lib/Gocdb_Services/APIAuthenticationService.php';
 
 use Doctrine\ORM\EntityManager;
+use org\gocdb\services\APIAuthenticationService;
+use PHPUnit_Extensions_Database_Operation_Factory;
+use PHPUnit_Extensions_Database_TestCase;
+use RuntimeException;
+use org\gocdb\tests\ServiceTestUtil;
+use TestUtil;
 
 /**
  * DBUnit test class for the {@see \org\gocdb\services\Site} service.
@@ -26,13 +34,15 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
 {
     private $entityManager;
     private $dbOpsFactory;
+    private $serviceTestUtil;
 
-    function __construct()
+    public function __construct()
     {
         parent::__construct();
       // Use a local instance to avoid Mess Detector's whinging about avoiding
       // static access.
         $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
+        $this->serviceTestUtil = new ServiceTestUtil();
     }
   /**
   * Overridden.
@@ -146,34 +156,21 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
     {
         print __METHOD__ . "\n";
 
-        $siteData = ServiceTestUtil::getSiteData($this->entityManager);
-        $siteService = ServiceTestUtil::getSiteService($this->entityManager);
-        $site = ServiceTestUtil::createAndAddSite($this->entityManager, $siteData);
-
-        $user = TestUtil::createSampleUser('Beta', 'User');
-        $user->setAdmin(true);
-
-        $identifier = TestUtil::createSampleUserIdentifier('X.509', '/Beta.User');
-        ServiceTestUtil::persistAndFlush($this->entityManager, $identifier);
-
-        $user->addUserIdentifierDoJoin($identifier);
-
-        ServiceTestUtil::persistAndFlush($this->entityManager, $user);
-
-        $authEntServ = new org\gocdb\services\APIAuthenticationService();
-        $authEntServ->setEntityManager($this->entityManager);
+        list($user, $site, $siteService, $authEntServ) =
+          $this->serviceTestUtil->createGocdbEntities($this->entityManager);
 
         $this->assertTrue(
-            $authEntServ instanceof org\gocdb\services\APIAuthenticationService,
+            $authEntServ instanceof APIAuthenticationService,
             'Failed to create APIAuthenticationService'
         );
 
         $ident = '/CN=A Dummy Subject';
         $type = 'X.509';
-      // Start with no APIAuthentication entities to be found
-        $this->assertNull(
+        // Start with no APIAuthentication entities to be found
+        $this->assertCount(
+            0,
             $authEntServ->getAPIAuthentication($ident),
-            "Non-null value returned when searching for APIAuthentication entity " .
+            "Non-zero count returned when searching for APIAuthentication entity " .
             "for id:{$ident} when expected none."
         );
 
@@ -194,9 +191,15 @@ class APIAuthEnticationServiceTest extends PHPUnit_Extensions_Database_TestCase
 
         $authEntMatched = $authEntServ->getAPIAuthentication($ident);
 
+        $this->assertCount(
+            1,
+            $authEntMatched,
+            "Failed to return single APIAuthentication entity searching for id:{$ident}."
+        );
+
         $this->assertTrue(
-            $authEnt === $authEntMatched,
-            "Failed to return APIAuthentication entity for id:{$ident}."
+            $authEnt === $authEntMatched[0],
+            "Failed to return matching APIAuthentication entity searching for for id:{$ident}."
         );
     }
 }
