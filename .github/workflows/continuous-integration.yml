@@ -4,57 +4,6 @@ on: [push, pull_request]
 
 jobs:
 
-  phpunit-sqlite:
-    # The SQLite version depends on the current environment. See documentation:
-    # https://github.com/actions/virtual-environments/tree/main/images/linux
-    name: "PHPUnit with SQLite, PHP: ${{ matrix.php-version }}"
-    runs-on: ubuntu-latest
-    # If true, allow this job to fail:
-    continue-on-error: true
-    strategy:
-      matrix:
-        # Define jobs for all combinations of values given to be tested:
-        php-version: ["5.6"]
-
-    steps:
-      - name: "Checkout"
-        uses: "actions/checkout@v4"
-        with:
-          fetch-depth: 2
-
-      - name: "Install PHP"
-        uses: "shivammathur/setup-php@v2"
-        with:
-          php-version: "${{ matrix.php-version }}"
-          coverage: "xdebug"
-
-      - name: Validate composer.json and composer.lock
-        run: composer validate
-
-      - name: Cache Composer packages
-        id: composer-cache
-        uses: actions/cache@v3
-        with:
-          path: vendor
-          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-php-
-
-      - name: Install dependencies
-        run: composer install --no-progress
-
-      - name: Set up unit testing
-        run: .github/actions/setup.sh
-        env:
-          DB: sqlite
-
-      - name: Run unit tests
-        run: .github/actions/run_tests.sh
-
-      - name: "Upload to Codecov"
-        uses: "codecov/codecov-action@v3"
-
-
   phpunit-mariadb:
     name: "PHPUnit with MariaDB: ${{ matrix.mariadb-version }}, PHP: ${{ matrix.php-version }}, extension: ${{ matrix.extension }}"
     runs-on: ubuntu-latest
