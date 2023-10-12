@@ -7,19 +7,15 @@ jobs:
   phpunit-mariadb:
     name: "PHPUnit with MariaDB: ${{ matrix.mariadb-version }}, PHP: ${{ matrix.php-version }}, extension: ${{ matrix.extension }}"
     runs-on: ubuntu-latest
-    # If true, allow the job to fail:
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       # If true, stop jobs if a required job fails:
       fail-fast: false
       matrix:
         # Define jobs for all combinations of php, mariadb and extension, up to "include"
         # Tests will be performed for each combination
-        # These can fail if "experimental" is true. Currently all must pass
         php-version: ["5.4", "5.5", "5.6", "7.0", "7.1", "7.4"]
         mariadb-version: ["10.3"]
         extension: ["pdo_mysql"]
-        experimental: [false]
         include:
           - php-version: "5.4"
             composer-json: "composer.json"
