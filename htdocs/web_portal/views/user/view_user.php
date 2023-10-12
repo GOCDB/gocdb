@@ -118,14 +118,23 @@
                         </div>
                     </td>
                 </tr>-->
-                <?php if ($params['user']->getHomeSite() != null) { ?>
+                <?php
+                $homeSite = $params['user']->getHomeSite();
+                if ($homeSite != null) {
+                    ?>
                     <tr class="site_table_row_2">
                         <td class="site_table">Home Site</td>
                         <td class="site_table">
-                            <a href="index.php?Page_Type=Site&amp;id=
-                                <?php echo $params['user']->getHomeSite()->getId()?>">
-                                <?php xecho($params['user']->getHomeSite()->getShortName()) ?>
-                            </a>
+                            <?php
+                            $homeId = $homeSite->getId();
+                            $homeShortName = $homeSite->getShortName();
+                            echo "<a href=\"index.php?Page_Type=Site&amp;id=";
+                            echo "$homeId\">";
+                            // Use xecho as the Site's ShortName is user
+                            // submitted input.
+                            xecho($homeShortName);
+                            echo "</a>";
+                            ?>
                         </td>
                     </tr>
                 <?php } ?>
