@@ -176,7 +176,7 @@ function get_https2($url)
         CURLOPT_FOLLOWLOCATION => false,
         CURLOPT_MAXREDIRS      => 0,
         // VERIFYHOST checks that the CN in the certificate matches what we asked for
-        CURLOPT_SSL_VERIFYHOST => true,
+        CURLOPT_SSL_VERIFYHOST => 2,
         // VERIFYPEER checks that we trust the certificate's issuer (CA)
         // If you are testing with a self-signed host certificate, you will have to
         // copy the host's .pem certificate into CURLOPT_CAPATH or
