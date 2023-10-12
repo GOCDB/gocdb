@@ -16,15 +16,23 @@ jobs:
         # Define jobs for all combinations of php, mariadb and extension, up to "include"
         # Tests will be performed for each combination
         # These can fail if "experimental" is true. Currently all must pass
-        php-version: ["5.4", "5.5", "5.6", "7.0", "7.1"]
+        php-version: ["5.4", "5.5", "5.6", "7.0", "7.1", "7.4"]
         mariadb-version: ["10.3"]
         extension: ["pdo_mysql"]
         experimental: [false]
         include:
+          - php-version: "5.4"
+            composer-json: "composer.json"
+          - php-version: "5.5"
+            composer-json: "composer.json"
+          - php-version: "5.6"
+            composer-json: "composer.json"
+          - php-version: "7.0"
+            composer-json: "composer.json"
+          - php-version: "7.1"
+            composer-json: "composer.json"
           - php-version: "7.4"
-            mariadb-version: "10.3"
-            extension: "pdo_mysql"
-            experimental: true
+            composer-json: "composer-7.4.json"
 
     services:
       mariadb:
@@ -65,6 +73,8 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
+        env:
+          COMPOSER: ${{ matrix.composer-json }}
         run: composer install --no-progress
 
       - name: Set up unit testing
