@@ -24,12 +24,12 @@
         <field>
             <fname>HOME_URL</fname>
             <length>255</length>
-            <regex>/^((http|https)\:\/\/([\w-]+\.)+[\w-]+([\w-.\/?%&amp;=]*))?$/</regex>
+            <regex>/^((http|https)\:\/\/([\w\-]+\.)+[\w\-]+([\w\-\.\/?%&amp;=]*))?$/</regex>
         </field>
         <field>
             <fname>GIIS_URL</fname>
             <length>255</length>
-            <regex>/^(ldap\:\/\/([\w-]+\.)+[\w-]+([\w-.:,\/?%&amp;=]*))?$/</regex>
+            <regex>/^(ldap\:\/\/([\w\-]+\.)+[\w\-]+([\w\-.:,\/?%&amp;=]*))?$/</regex>
         </field>
         <field>
             <fname>IP_RANGE</fname>

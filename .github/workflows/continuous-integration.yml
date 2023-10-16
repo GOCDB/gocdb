@@ -7,38 +7,28 @@ jobs:
   phpunit-mariadb:
     name: "PHPUnit with MariaDB: ${{ matrix.mariadb-version }}, PHP: ${{ matrix.php-version }}, extension: ${{ matrix.extension }}"
     runs-on: ubuntu-latest
-    # If true, allow the job to fail:
-    continue-on-error: ${{ matrix.experimental }}
     strategy:
       # If true, stop jobs if a required job fails:
       fail-fast: false
       matrix:
         # Define jobs for all combinations of php, mariadb and extension, up to "include"
         # Tests will be performed for each combination
-        # These can fail if "experimental" is true. Currently all must pass
-        php-version: ["5.4", "5.5", "5.6", "7.0", "7.1"]
+        php-version: ["5.4", "5.5", "5.6", "7.0", "7.1", "7.4"]
         mariadb-version: ["10.3"]
         extension: ["pdo_mysql"]
-        experimental: [false]
         include:
-          # Define jobs for individual combinations to be tested
-          # These can fail if "experimental" is true. Currently all can fail
-          - php-version: "7.2"
-            mariadb-version: "10.3"
-            extension: "pdo_mysql"
-            experimental: true
-          - php-version: "7.3"
-            mariadb-version: "10.3"
-            extension: "pdo_mysql"
-            experimental: true
+          - php-version: "5.4"
+            composer-json: "composer.json"
+          - php-version: "5.5"
+            composer-json: "composer.json"
+          - php-version: "5.6"
+            composer-json: "composer.json"
+          - php-version: "7.0"
+            composer-json: "composer.json"
+          - php-version: "7.1"
+            composer-json: "composer.json"
           - php-version: "7.4"
-            mariadb-version: "10.3"
-            extension: "pdo_mysql"
-            experimental: true
-          - php-version: "8.0"
-            mariadb-version: "10.3"
-            extension: "pdo_mysql"
-            experimental: true
+            composer-json: "composer-7.4.json"
 
     services:
       mariadb:
@@ -79,6 +69,8 @@ jobs:
             ${{ runner.os }}-php-
 
       - name: Install dependencies
+        env:
+          COMPOSER: ${{ matrix.composer-json }}
         run: composer install --no-progress
 
       - name: Set up unit testing
