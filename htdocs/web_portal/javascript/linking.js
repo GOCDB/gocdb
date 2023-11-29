@@ -84,8 +84,8 @@ function getRegExIdString() {
 
     // End with @iris.iam.ac.uk
     } else if (authType === "IRIS IAM - OIDC") {
-        // var regExIdString = /^([a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12})@iris\-iam\.ac\.uk$/;
-        var regExIdString = /^.+@iris\-iam\.ac\.uk$/;
+        // var regExIdString = /^([a-f0-9]{8}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{4}\-[a-f0-9]{12})@iris\-iam\.stfc\.ac\.uk$/;
+        var regExIdString = /^.+@iris\-iam\.stfc\.ac\.uk\/$/;
 
     // End with @egi.eu
     } else if (authType === "EGI Proxy IdP") {
