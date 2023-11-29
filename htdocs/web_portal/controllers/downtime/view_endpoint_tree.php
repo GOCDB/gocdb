@@ -23,6 +23,7 @@ function getServiceandEndpointList() {
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
 
+    $params = [];
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
     $params['portalIsReadOnly'] = portalIsReadOnlyAndUserIsNotAdmin($user);
@@ -30,6 +31,10 @@ function getServiceandEndpointList() {
     if (!isset($_REQUEST['site_id']) || !is_numeric($_REQUEST['site_id']) ){
         throw new Exception("An id must be specified");
     }
+    if (isset($_REQUEST['se'])) {
+        $params['se'] = $_REQUEST['se'];
+    }
+
     $site = \Factory::getSiteService()->getSite($_REQUEST['site_id']);
     $services = $site->getServices();
     $params['services'] = $services;
