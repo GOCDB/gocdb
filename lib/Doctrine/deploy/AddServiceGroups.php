@@ -1,7 +1,7 @@
 <?php
 
-require_once __DIR__."/../bootstrap.php";
-require_once __DIR__."/AddUtils.php";
+require_once __DIR__ . "/../bootstrap.php";
+require_once __DIR__ . "/AddUtils.php";
 
 /* Loads a list of service types from an XML file and inserts them into
  * the doctrine prototype.
@@ -21,7 +21,7 @@ if ($sts === false) {
     exit;
 }
 
-foreach($sts as $st) {
+foreach ($sts as $st) {
     $instance = new ServiceGroup();
     $name = "";
     $desc = "";

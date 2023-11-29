@@ -14,44 +14,44 @@
  */
 
 
-require_once __DIR__."/AddUtils.php";
+require_once __DIR__ . "/AddUtils.php";
 
-if(isset($argv[1])) {
+if (isset($argv[1])) {
     $GLOBALS['dataDir'] = $argv[1];
 } else {
     die("Please specify your data directory (sampleData) \n");
 }
 
-print_r("Deploying Sample Data from ".$GLOBALS['dataDir']."\n");
+print_r("Deploying Sample Data from " . $GLOBALS['dataDir'] . "\n");
 
-require __DIR__."/AddProjects.php";
+require __DIR__ . "/AddProjects.php";
 echo "Added Projects OK\n";
 
-require __DIR__."/AddScopes.php";
+require __DIR__ . "/AddScopes.php";
 echo "Added Scopes OK\n";
 
-require __DIR__."/AddNGIs.php";
+require __DIR__ . "/AddNGIs.php";
 echo "Added NGIs OK\n";
 
-require __DIR__."/AddSites.php";
+require __DIR__ . "/AddSites.php";
 echo "Added Sites and JOINED to NGIs OK\n";
 
-require __DIR__."/AddServiceEndpoints.php";
+require __DIR__ . "/AddServiceEndpoints.php";
 echo "Added Services, EndpointLocations and JOINED associations OK\n";
 
-require __DIR__."/AddServiceGroups.php";
+require __DIR__ . "/AddServiceGroups.php";
 echo "Added Service Groups OK\n";
 
-require __DIR__."/AddUsers.php";
+require __DIR__ . "/AddUsers.php";
 echo "Added Users OK\n";
 
-require __DIR__."/AddSiteRoles.php";
+require __DIR__ . "/AddSiteRoles.php";
 echo "Added Site level Roles OK\n";
 
-require __DIR__."/AddNGIRoles.php";
+require __DIR__ . "/AddNGIRoles.php";
 echo "Added NGI level Roles OK\n";
 
-require __DIR__."/AddProjectRoles.php";
+require __DIR__ . "/AddProjectRoles.php";
 echo "Added EGI level Roles OK\n";
 
 require __DIR__ . "/AddServiceGroupRoles.php";

@@ -1,7 +1,7 @@
 <?php
-require_once __DIR__."/../bootstrap.php";
-require_once __DIR__."/AddUtils.php";
-require_once __DIR__."/../../Gocdb_Services/RoleConstants.php";
+require_once __DIR__ . "/../bootstrap.php";
+require_once __DIR__ . "/AddUtils.php";
+require_once __DIR__ . "/../../Gocdb_Services/RoleConstants.php";
 /* AddRoleTypes.php: Manually inserts role types into
  * the doctrine prototype.
  */
@@ -30,7 +30,7 @@ require_once __DIR__."/../../Gocdb_Services/RoleConstants.php";
     array("Regional Staff", "")
 );
 
-foreach($roleTypeArray as $roleType) {
+foreach ($roleTypeArray as $roleType) {
     $rt = new RoleType($roleType[0], $roleType[1]);
     //$rt->setName($roleType[0]);
     //$rt->setClassification($roleType[1]);
@@ -42,7 +42,7 @@ $roleTypeArray = RoleTypeName::getAsArray();
 foreach ($roleTypeArray as $key => $value) {
     $rt = new RoleType($value);
     //echo $value;
-    if($value != RoleTypeName::GOCDB_ADMIN){
+    if ($value != RoleTypeName::GOCDB_ADMIN) {
         $entityManager->persist($rt);
     }
 }
