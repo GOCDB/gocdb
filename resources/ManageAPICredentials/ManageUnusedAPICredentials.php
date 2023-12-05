@@ -49,14 +49,22 @@ try {
 
     $baseTime = new DateTime("now", new DateTimeZone('UTC'));
 
-    $actions = new ManageAPICredentialsActions($options->isDryRun(), $entityManager, $baseTime);
+    $actions = new ManageAPICredentialsActions(
+        $options->isDryRun(),
+        $entityManager,
+        $baseTime
+    );
 
-    $creds = $actions->getCreds($options->getThreshold(), 'lastUseTime');
+    $creds = $actions->getCreds(
+        $options->getThreshold(),
+        $options->getPropertyName()
+    );
 
     if ($options->isDeleteEnabled()) {
         $creds = $actions->deleteCreds(
             $creds,
-            $options->getDelete()
+            $options->getDelete(),
+            $options->hasRenewalsOptionProvided()
         );
     }
 
@@ -66,7 +74,8 @@ try {
             $options->getWarn(),
             $options->getDelete(),
             $fromEmail,
-            $replyToEmail
+            $replyToEmail,
+            $options->hasRenewalsOptionProvided()
         );
     }
 } catch (InvalidArgumentException $except) {

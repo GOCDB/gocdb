@@ -73,9 +73,13 @@ class ManageAPICredentialsActions
      * @param \Doctrine\Orm\EntityManager $entitymanager A valid Doctrine Entity Manager
      * @param \DateTime         $baseTime           Time from which interval of no-use is measured
      * @param int               $deleteThreshold    The number of months of no-use which will trigger deletion
+     * @param bool              $isRenewalRequest   Flag indicating the
+     *                                              presence or absence of the
+     *                                              `r` or `renewals`
+     *                                              command-line argument.
      * @return array                                Credentials which were not deleted.
      */
-    public function deleteCreds($creds, $deleteThreshold)
+    public function deleteCreds($creds, $deleteThreshold, $isRenewalRequest)
     {
         $deletedCreds = [];
 
@@ -84,19 +88,28 @@ class ManageAPICredentialsActions
 
         /* @var $apiCred APIAuthentication */
         foreach ($creds as $apiCred) {
-            if ($this->isOverThreshold($apiCred, $this->baseTime, $deleteThreshold)) {
+            if (
+                $this->isOverThreshold(
+                    $apiCred,
+                    $this->baseTime,
+                    $deleteThreshold,
+                    $isRenewalRequest
+                )
+            ) {
                 $deletedCreds[] = $apiCred;
+
                 if (!$this->dryRun) {
                     $serv->deleteAPIAuthentication($apiCred);
                 }
             }
         }
         if ($this->dryRun) {
-            $this->reportDryRun($deletedCreds, "deleting");
+            $this->reportDryRun($deletedCreds, "deleting", $isRenewalRequest);
         }
 
         return array_udiff($creds, $deletedCreds, array($this, 'compareCredIds'));
     }
+
     /**
      * Send of warning emails where credentials have not been used for a given number of months
      *
@@ -111,14 +124,20 @@ class ManageAPICredentialsActions
      * @param int           $deleteThreshold    The number of months of no-use which will trigger deletion
      * @param string        $fromEmail          Email address to use as sender's (From:) address
      * @param string        $replyToEmail       Email address for replies (Reply-To:)
-     * @return array                            Array of credentials identifed for sending warning emails
+     * @param bool          $isRenewalRequest   Flag indicating the
+     *                                          presence or absence of the
+     *                                          `r` or `renewals`
+     *                                          command-line argument.
+     * @return array        []                  An Array of credentials identifed
+     *                                          for sending warning emails.
      */
     public function warnUsers(
         $creds,
         $warningThreshold,
         $deletionThreshold,
         $fromEmail,
-        $replyToEmail
+        $replyToEmail,
+        $isRenewalRequest
     ) {
         $warnedCreds = [];
 
@@ -126,17 +145,28 @@ class ManageAPICredentialsActions
         foreach ($creds as $apiCred) {
             // The credentials list is pre-selected based on the given threshold in the query
             // so this check is probably redundant.
-            if ($this->isOverThreshold($apiCred, $this->baseTime, $warningThreshold)) {
-                $lastUsed = $apiCred->getLastUseTime();
-                $lastUseMonths = $this->baseTime->diff($lastUsed)->format('%m');
+            if (
+                $this->isOverThreshold(
+                    $apiCred,
+                    $this->baseTime,
+                    $warningThreshold,
+                    $isRenewalRequest
+                )
+            ) {
+                $lastUseOrRenewTime = $isRenewalRequest
+                    ? $apiCred->getLastRenewTime()
+                    : $apiCred->getLastUseTime();
+                $diffTime = $this->baseTime->diff($lastUseOrRenewTime);
+                $elapsedMonths =  ($diffTime->y * 12) + $diffTime->m;
 
                 if (!$this->dryRun) {
                     $this->sendWarningEmail(
                         $fromEmail,
                         $replyToEmail,
                         $apiCred,
-                        intval($lastUseMonths),
-                        $deletionThreshold
+                        intval($elapsedMonths),
+                        $deletionThreshold,
+                        $isRenewalRequest
                     );
                 }
 
@@ -145,23 +175,35 @@ class ManageAPICredentialsActions
         }
 
         if ($this->dryRun) {
-            $this->reportDryRun($warnedCreds, "sending warning emails");
+            $this->reportDryRun(
+                $warnedCreds,
+                "sending warning emails",
+                $isRenewalRequest
+            );
         }
 
         return array_udiff($creds, $warnedCreds, array($this, 'compareCredIds'));
     }
+
 /**
  * @return boolean true if the credential has not been used within $threshold months, else false
  */
-    private function isOverThreshold(APIAuthentication $cred, DateTime $baseTime, $threshold)
-    {
-        $lastUsed = $cred->getLastUseTime();
+    private function isOverThreshold(
+        APIAuthentication $cred,
+        DateTime $baseTime,
+        $threshold,
+        $isRenewalRequest
+    ) {
+        $lastUseOrRenewTime = $isRenewalRequest
+            ? $cred->getLastRenewTime()
+            : $cred->getLastUseTime();
 
-        $diffTime = $baseTime->diff($lastUsed);
-        $lastUseMonths = ($diffTime->y * 12) + $diffTime->m;
+        $diffTime = $baseTime->diff($lastUseOrRenewTime);
+        $lastUseOrRenewMonths = ($diffTime->y * 12) + $diffTime->m;
 
-        return $lastUseMonths >= $threshold;
+        return $lastUseOrRenewMonths >= $threshold;
     }
+
 /**
  * Helper function to check if two API credentials have the same id.
  *
@@ -191,6 +233,9 @@ class ManageAPICredentialsActions
  * @param \APIAuthentication $api       Credential to warn about
  * @param int       $elapsedMonths      The number of months of non-use so far.
  * @param int       $deleteionThreshold The number of months of no-use which will trigger deletion if reached.
+ * @param bool      $isRenewalRequest   Flag indicating the presence
+ *                                      or absence of the `r
+ *                                      command-line argument.
  * @return void
  */
     private function sendWarningEmail(
@@ -198,38 +243,37 @@ class ManageAPICredentialsActions
         $replyToEmail,
         \APIAuthentication $api,
         $elapsedMonths,
-        $deletionThreshold
+        $deletionThreshold,
+        $isRenewalRequest
     ) {
-        $user = $api->getUser();
-        $userEmail = $user->getEmail();
-        $siteName = $api->getParentSite()->getShortName();
-        $siteEmail = $siteName . ' <' . $api->getParentSite()->getEmail() . '>';
-
-        $headersArray = array ("From: $fromEmail",
-                           "Cc: $siteEmail");
-        if (strlen($replyToEmail) > 0 && $fromEmail !== $replyToEmail) {
-            $headersArray[] = "Reply-To: $replyToEmail";
-        }
-        $headers = join("\r\n", $headersArray);
-
         $subject = "GOCDB: Site API credential deletion notice";
 
-        $body = "Dear " . $user->getForename() . ",\n\n" .
-        "The API credential associated with the following identifier registered\n" .
-        "at site $siteName has not been used during\n" .
-        "the last $elapsedMonths months and will be deleted if this period of inactivity\n" .
-        "reaches $deletionThreshold months.\n\n";
+        list($headers, $siteName) = $this->getHeaderContent(
+            $api,
+            $fromEmail,
+            $replyToEmail
+        );
 
-        $body .= "Identifier:  " . $api->getIdentifier() . "\n";
-        $body .= "Owner email: " . $userEmail . "\n";
-
-        $body .= "\n";
-        $body .= "Use of the credential will prevent its deletion.\n";
-        $body .= "\nRegards,\nGOCDB Administrators\n";
+        if ($isRenewalRequest) {
+            list($userEmail, $body) = $this->getRenewalsBodyContent(
+                $api,
+                $siteName,
+                $elapsedMonths,
+                $deletionThreshold
+            );
+        } else {
+            list($userEmail, $body) = $this->getInactiveBodyContent(
+                $api,
+                $siteName,
+                $elapsedMonths,
+                $deletionThreshold
+            );
+        }
 
         // Send the email (or not, according to local configuration)
         Factory::getEmailService()->send($userEmail, $subject, $body, $headers);
     }
+
 /**
  * Generate a summary report.
  *
@@ -239,9 +283,12 @@ class ManageAPICredentialsActions
  * @param array      $creds          Array of API credential objects to be summarised.
  * @param string     $text           Brief description of the operation which would have been
  *                                   performed without dry-run to be included in the report.
+ * @param bool $isRenewalRequest     Flag indicating the presence or absence
+ *                                   of the `r` or `renewals`
+ *                                   command-line argument.
  * @return void
  */
-    private function reportDryRun(array $creds, $text)
+    private function reportDryRun(array $creds, $text, $isRenewalRequest)
     {
         if (count($creds) == 0) {
             print("Dry run: No matching credentials found for $text.\n");
@@ -251,6 +298,22 @@ class ManageAPICredentialsActions
         print("Dry run: Found " . count($creds) . " credentials for $text.\n");
 
         foreach ($creds as $api) {
+            if ($isRenewalRequest) {
+                print(
+                    "Dry run: Processing credential id "
+                    . $api->getId() . "\n"
+                    . "         Identifier:   " . $api->getIdentifier() . "\n"
+                    . "         User email:   "
+                    . $api->getUser()->getEmail() . "\n"
+                    . "         Site:         "
+                    . $api->getParentSite()->getShortName() . "\n"
+                    . "         Last Renewed: "
+                    . $api->getLastRenewTime()->format("Y-m-d\\TH:i:sO") . "\n"
+                );
+
+                continue;
+            }
+
             print("Dry run: Processing credential id " . $api->getId() . "\n" .
               "         Identifier: " . $api->getIdentifier() . "\n" .
               "         User email: " . $api->getUser()->getEmail() . "\n" .
@@ -259,5 +322,107 @@ class ManageAPICredentialsActions
                                             ->format("Y-m-d\\TH:i:sO") . "\n"
             );
         }
+    }
+
+    /**
+     * Helper to generate header content.
+     *
+     * @param \APIAuthentication $api          Credential to warn about.
+     * @param string             $fromEmail    Email address to use
+     *                                         as sender's (From:) address.
+     * @param string             $replyToEmail Email address for replies
+     *                                         (Reply-To:)
+     *
+     * @return array An array containing $headers and $siteName.
+     */
+    private function getHeaderContent(
+        \APIAuthentication $api,
+        $fromEmail,
+        $replyToEmail
+    ) {
+        $siteName = $api->getParentSite()->getShortName();
+        $siteEmail = $siteName . ' <'
+            . $api->getParentSite()->getEmail() . '>';
+        $headersArray = array ("From: $fromEmail", "Cc: $siteEmail");
+
+        if (strlen($replyToEmail) > 0 && $fromEmail !== $replyToEmail) {
+            $headersArray[] = "Reply-To: $replyToEmail";
+        }
+
+        $headers = join("\r\n", $headersArray);
+
+        return [$headers, $siteName];
+    }
+
+    /**
+     * Helper to generate body content for `renewals` option request.
+     *
+     * @param \APIAuthentication $api Credential to warn about.
+     * @param string $siteName        Site Name.
+     * @param int $elapsedMonths      The number of months of non-use so far.
+     * @param int $deleteionThreshold The number of months of no-use which
+     *                                will trigger deletion if reached.
+     *
+     * @return array An array containing $userEmail and $body content.
+     */
+    private function getRenewalsBodyContent(
+        \APIAuthentication $api,
+        $siteName,
+        $elapsedMonths,
+        $deletionThreshold
+    ) {
+        $user = $api->getUser();
+        $userEmail = $user->getEmail();
+
+        $body = "Dear " . $user->getForename() . ",\n\n" .
+        "The API credential associated with the following identifier\n" .
+        "registered at site $siteName has not been renewed for\n" .
+        "the last $elapsedMonths months and will be deleted if it " .
+        "reaches $deletionThreshold months.\n\n";
+
+        $body .= "Identifier: " . $api->getIdentifier() . "\n";
+        $body .= "Owner email: " . $userEmail . "\n";
+
+        $body .= "\n";
+        $body .= "Renewal of the credential will prevent its deletion.\n";
+        $body .= "\nRegards,\nGOCDB Administrators\n";
+
+        return [$userEmail, $body];
+    }
+
+    /**
+     * Helper to generate body content for `inactive` option request.
+     *
+     * @param \APIAuthentication $api Credential to warn about.
+     * @param string $siteName        Site Name.
+     * @param int $elapsedMonths      The number of months of non-use so far.
+     * @param int $deleteionThreshold The number of months of no-use which
+     *                                will trigger deletion if reached.
+     *
+     * @return array An array containing $userEmail and $body content.
+     */
+    private function getInactiveBodyContent(
+        \APIAuthentication $api,
+        $siteName,
+        $elapsedMonths,
+        $deletionThreshold
+    ) {
+        $user = $api->getUser();
+        $userEmail = $user->getEmail();
+
+        $body = "Dear " . $user->getForename() . ",\n\n" .
+        "The API credential associated with the following identifier " .
+        "registered\nat site $siteName has not been used during the last " .
+        "$elapsedMonths months\nand will be deleted if this period of " .
+        "inactivity reaches $deletionThreshold months.\n\n";
+
+        $body .= "Identifier: " . $api->getIdentifier() . "\n";
+        $body .= "Owner email: " . $userEmail . "\n";
+
+        $body .= "\n";
+        $body .= "Use of the credential will prevent its deletion.\n";
+        $body .= "\nRegards,\nGOCDB Administrators\n";
+
+        return [$userEmail, $body];
     }
 }
