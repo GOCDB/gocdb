@@ -21,7 +21,8 @@ use PHPUnit_Extensions_Database_TestCase;
 
 require_once __DIR__ . '/ManageAPICredentialsTestUtils.php';
 require_once __DIR__ . '/../unit/lib/Gocdb_Services/ServiceTestUtil.php';
-require_once __DIR__ . '/../../resources/ManageAPICredentials/ManageAPICredentialsActions.php';
+require_once __DIR__
+    . '/../../resources/ManageAPICredentials/ManageAPICredentialsActions.php';
 
 class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
 {
@@ -31,10 +32,13 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
     public function __construct()
     {
         parent::__construct();
-        // Use a local instance to avoid Mess Detector's whinging about avoiding
-        // static access.
+        /**
+         * Use a local instance to avoid Mess Detector's
+         * whinging about avoiding static access.
+         */
         $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
     }
+
     /**
      * Overridden.
      */
@@ -44,27 +48,40 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
         echo "\n\n-------------------------------------------------\n";
         echo "Executing ManageUnrenewedAPICredentialsTest. . .\n";
     }
+
     /**
      * Overridden. Returns the test database connection.
+     *
      * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
      */
     protected function getConnection()
     {
         require_once __DIR__ . '/../doctrine/bootstrap_pdo.php';
+
         return getConnectionToTestDB();
     }
+
     /**
      * Overridden. Returns the test dataset.
-     * Defines how the initial state of the database should look before each test is executed.
+     * Defines how the initial state of the database
+     * should look before each test is executed.
+     *
      * @return PHPUnit_Extensions_Database_DataSet_IDataSet
      */
     protected function getDataSet()
     {
-        $dataset = $this->createFlatXMLDataSet(__DIR__ . '/../doctrine/truncateDataTables.xml');
+        $dataset = $this->createFlatXMLDataSet(
+            __DIR__ . '/../doctrine/truncateDataTables.xml'
+        );
+
         return $dataset;
-        // Use below to return an empty data set if we don't want to truncate and seed
-        //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
+        /**
+         * Use below to return an empty data set
+         * if we don't want to truncate and seed.
+         */
+        // return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
     }
+
     /**
      * Overridden.
      */
@@ -75,11 +92,16 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
         //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
         //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
         //
-        // Issue a DELETE from <table> which is more portable than a
-        // TRUNCATE table <table> (some DBs require high privileges for truncate statements
-        // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
+        /**
+         * Issue a DELETE from <table> which is more portable than a
+         * TRUNCATE table <table> (some DBs require high privileges
+         * for truncate statements and also do not allow truncates across
+         * tables with FK contstraints e.g. Oracle)
+         */
+
         return $this->dbOpsFactory->DELETE_ALL();
     }
+
     /**
      * Overridden.
      */
@@ -88,6 +110,7 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
         // NONE is default
         return $this->dbOpsFactory->NONE();
     }
+
     /**
      * Sets up the fixture, e.g create a new entityManager for each test run
      * This method is called before each test method is executed.
@@ -102,25 +125,32 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
 
         date_default_timezone_set("UTC");
     }
+
     /**
      * Run after each test function to prevent pile-up of database connections.
      */
     protected function tearDown()
     {
         parent::tearDown();
+
         if (!is_null($this->entityManager)) {
             $this->entityManager->getConnection()->close();
         }
     }
+
     /**
      * @return EntityManager
      */
     private function createEntityManager()
     {
-        $entityManager = null; // Initialise in local scope to avoid unused variable warnings
+        // Initialise in local scope to avoid unused variable warnings
+        $entityManager = null;
+
         require __DIR__ . '/../doctrine/bootstrap_doctrine.php';
+
         return $entityManager;
     }
+
     public function testLastRenewTime()
     {
         print __METHOD__ . "\n";
@@ -132,7 +162,11 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
 
         $entityManager = $this->createEntityManager();
 
-        $actions = new ManageAPICredentialsActions(false, $entityManager, $baseTime);
+        $actions = new ManageAPICredentialsActions(
+            false,
+            $entityManager,
+            $baseTime
+        );
 
         // Fetch credentials not renewed in the last 5 months - should be 6.
         $creds = $actions->getCreds(5, 'lastRenewTime');
