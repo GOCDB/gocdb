@@ -1,4 +1,5 @@
 <?php
+
 /*______________________________________________________
  *======================================================
  * File: view_service_types.php
@@ -20,12 +21,15 @@
  *
  /*====================================================== */
 require_once __DIR__ . '/../utils.php';
-require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
+require_once __DIR__
+    . '/../../../web_portal/components/Get_User_Principle.php';
 
-function show_all(){
+function show_all()
+{
+    $params = [];
 
     $serviceTypes = \Factory::getServiceTypeService()->getServiceTypes();
-    $params['ServiceTypes']= $serviceTypes;
+    $params['ServiceTypes'] = $serviceTypes;
 
     show_view('service_type/view_service_types.php', $params, 'Service Types');
 }

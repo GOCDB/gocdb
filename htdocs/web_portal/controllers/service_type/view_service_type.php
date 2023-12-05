@@ -4,7 +4,8 @@
  *======================================================
  * File: view_service_type.php
  * Author: George Ryall, David Meredith
- * Description: Controller for displaying a service type and associated services
+ * Description: Controller for displaying a service type
+ *              and associated services
  *
  * License information
  *
@@ -20,12 +21,14 @@
  * limitations under the License.
  /*======================================================*/
 require_once __DIR__ . '/../utils.php';
-require_once __DIR__ . '/../../../web_portal/components/Get_User_Principle.php';
+require_once __DIR__
+    . '/../../../web_portal/components/Get_User_Principle.php';
+
+use Exception;
 
 function view_service_type()
 {
     $params = [];
-
     $identifier = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($identifier);
 
@@ -45,7 +48,8 @@ function view_service_type()
     $params['Name'] = $serviceType->getName();
     $params['Description'] = $serviceType->getDescription();
     $params['ID'] = $serviceType->getId();
-    $params['AllowMonitoringException'] = $serviceType->getAllowMonitoringException();
+    $params['AllowMonitoringException'] = $serviceType
+        ->getAllowMonitoringException();
     $params['Services'] = $serv->getServices($params['ID']);
 
     show_view("service_type/view_service_type.php", $params, $params['Name']);
