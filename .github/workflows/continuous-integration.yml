@@ -82,4 +82,4 @@ jobs:
         run: .github/actions/run_tests.sh
 
       - name: "Upload to Codecov"
-        uses: "codecov/codecov-action@v3"
+        uses: "codecov/codecov-action@v4"
