@@ -149,8 +149,18 @@
                             </span>
                         </div>
                     </td>
-                    <td class="site_table"><?php xecho($scope->getDescription()); ?></td>
-                    <td class="site_table"><?= in_array($scope, $params['reservedScopes']) ? '&check;': '&cross;';?></td>
+                    <td class="site_table" style="width: 60%">
+                        <div style="background-color: inherit;">
+                            <span style="vertical-align: middle;">
+                              <?php xecho($scope->getDescription()); ?>
+                            </span>
+                        </div>
+                    </td>
+                    <td class="site_table" style="width: 10%">
+                      <?php if($scope->getReserved() == 1):?>
+                        <img src="<?php echo \GocContextPath::getPath()?>img/tick.png" height="22px" style="vertical-align: middle;" />
+                      <?php endif ?>
+                    </td>
                     <?php if(!$params['portalIsReadOnly'] && $params['UserIsAdmin']):?>
                         <td class="site_table"  style="width: 10%">
                             <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>

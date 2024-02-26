@@ -7,34 +7,52 @@ $showPD = $params['authenticated'];
 
 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
 <div class="rightPageContainer">
-    <div style="float: left;">
-        <img src="<?php echo \GocContextPath::getPath()?>img/virtualSite.png" class="pageLogo" />
-    </div>
-    <div style="float: left;">
-        <h1 style="float: left; margin-left: 0em;">
-                Service Group: <?php xecho($params['sGroup']->getName())?>
-        </h1>
-        <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php xecho($params['sGroup']->getDescription())?></span>
-    </div>
+    <div style="display: flex; justify-content: space-between; gap:10%">
+        <div style="display:flex; flex-direction: row;">
+            <div>
+                <img
+                    src="<?php
+                        echo \GocContextPath::getPath();
+                    ?>img/virtualSite.png"
+                    class="pageLogo" />
+            </div>
 
+            <div style="flex-direction: column; word-break: break-word;">
+                <h1 style="margin-left: 0em;">
+                    Service Group: <?php
+                        xecho($params['sGroup']->getName());
+                    ?>
+                </h1>
+                <span style="clear: both; padding-bottom: 0.4em;">
+                    <?php xecho($params['sGroup']->getDescription()); ?>
+                </span>
+            </div>
+        </div>
     <!--  Edit Virtual Site link -->
     <!--  only show this link if we're in read / write mode -->
     <?php if(!$params['portalIsReadOnly']): ?>
         <?php if($params['ShowEdit']):?>
-            <div style="float: right;">
-                <div style="float: right; margin-left: 2em;">
+            <div
+                style="display: flex;
+                    flex-direction: row;
+                    justify-content: flex-end;
+                    align-items: flex-start;
+                    gap: 35%;"
+            >
+                <div>
                     <a href="index.php?Page_Type=Edit_Service_Group&amp;id=<?php echo $params['sGroup']->getId()?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" class="pencil" />
                         <br />
                         <br />
                         <span>Edit</span>
                     </a>
                 </div>
-                <div style="float: right;">
+
+                <div>
                     <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                     <a onclick="return confirmSubmit()"
                         href="index.php?Page_Type=Delete_Service_Group&id=<?php echo $params['sGroup']->getId()?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" class="trash" />
                         <br />
                         <br />
                         <span>Delete</span>
@@ -43,6 +61,7 @@ $showPD = $params['authenticated'];
             </div>
         <?php endif; ?>
     <?php endif; ?>
+    </div>
 
     <!-- Virtual Service Group Properties container div -->
     <div style="float: left; width: 100%; margin-top: 2em;">

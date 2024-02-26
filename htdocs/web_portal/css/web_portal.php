@@ -1,15 +1,16 @@
 <?php
-require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
-header("Content-type: text/css");
-// Load variable values from local configuration //
-\Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+    require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
-$background_direction = \Factory::getConfigService()->getBackgroundDirection();
-$background_colour1 = \Factory::getConfigService()->getBackgroundColour1();
-$background_colour2 = \Factory::getConfigService()->getBackgroundColour2();
-$background_colour3 = \Factory::getConfigService()->getBackgroundColour3();
-$header_text_colour = \Factory::getConfigService()->getHeadingTextColour();
+    header("Content-type: text/css");
 
+    // Load variable values from local configuration //
+    \Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+
+    $background_direction = \Factory::getConfigService()->getBackgroundDirection();
+    $background_colour1 = \Factory::getConfigService()->getBackgroundColour1();
+    $background_colour2 = \Factory::getConfigService()->getBackgroundColour2();
+    $background_colour3 = \Factory::getConfigService()->getBackgroundColour3();
+    $header_text_colour = \Factory::getConfigService()->getHeadingTextColour();
 ?>
 /* table.sorter plugin, http://tablesorter.com/docs/ */
 table.tablesorter {
@@ -55,15 +56,15 @@ body {
     <?php
         // Build the linear gradient input
         $out = '';
-        if ($background_colour3 != '') {
-            $out = ','.$background_colour3;
-        }
-        if ($background_colour2 != '') {
-            $out = ','.$background_colour2 . $out;
-        }
-        if ($background_colour1 != '') {
-            $out = ','.$background_colour1 . $out;
-        }
+    if ($background_colour3 != '') {
+        $out = ',' . $background_colour3;
+    }
+    if ($background_colour2 != '') {
+        $out = ',' . $background_colour2 . $out;
+    }
+    if ($background_colour1 != '') {
+        $out = ',' . $background_colour1 . $out;
+    }
         $out = $background_direction . $out;
 
         echo $out;
@@ -133,12 +134,13 @@ h3.Standard_Padding {
 h1 {
     font-size: 2.5em;
 }
+
 /*
-    *	Containing DIV's
-	*	Page Container is the whole page
-	*	Left Box is the menu
-	*	Right Box is the smaller page contents
-	*/
+ * Containing DIV's
+ * - Page Container is the whole page
+ * - Left Box is the menu
+ * - Right Box is the smaller page contents
+ */
 .page_container {
     position: relative;
     margin-left: auto;
@@ -148,6 +150,14 @@ h1 {
     overflow: hidden;
     z-index: 1;
     background-color: transparent;
+}
+
+.page_banner {
+    background-color: red;
+    color: white;
+    text-align: center;
+    font-size: 2em;
+    font-weight: normal;
 }
 
 /* Credit for this section of CSS goes to Matt Lira of STFC, 2009 */
@@ -185,10 +195,10 @@ div.Left_User_Status_Box {
 div.Left_Logo_Box {
     float: left;
     clear: left;
+    margin-top: 0em;
 }
 
 div.Left_Logo_Row {
-    height: 25px;
     text-align: center;
     margin-bottom: 5px;
 }
@@ -196,7 +206,8 @@ div.Left_Logo_Row {
 a.Sponsor_Link img.Sponsor_Logo {
     display:inline-block;
     vertical-align: bottom;
-    height: 100%;
+    height: 28px;
+    margin: 2px;
 }
 
 a.Sponsor_Link:hover {
@@ -311,14 +322,13 @@ li {
     margin-bottom: 0.3em;
 }
 
-.input_input_text,
-.input_input_date,
-.input_input_check {
-    margin-left: 2em;
+.input_input_checkbox, .input_input_date, .input_input_text {
+    margin-bottom: 1em;
+    margin-left: 2em !important;
 }
 
-.input_input_text,
-.input_input_date {
+
+.input_input_text, .input_input_date {
     width: 90%;
     margin-bottom: 1em;
 }
@@ -411,7 +421,7 @@ option.sectionTitle {
 }
 
 /* ################## CALENDAR CSS DIVS  ###################### */
-	/* calendar icon */
+    /* calendar icon */
 img.tcalIcon {
     cursor: pointer;
     margin-left: 1px;
@@ -763,4 +773,13 @@ img.person{
   height: 25px;
   vertical-align: middle;
   padding-right: 1em;
+}
+
+img.pencil, img.trash {
+    height: 25px;
+    float: right;
+}
+
+img.trash {    
+    margin-right: 0.4em;
 }

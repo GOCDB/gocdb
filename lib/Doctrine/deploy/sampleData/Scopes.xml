@@ -3,8 +3,14 @@
 <results>
     <tag grid_id="0">
         <name key="primary">Local</name>
+        <reserved>0</reserved>
     </tag>
     <tag grid_id="0">
         <name key="primary">EGI</name>
+        <reserved>0</reserved>
+    </tag>
+    <tag grid_id="0">
+        <name key="primary">wlcg</name>
+        <reserved>1</reserved>
     </tag>
 </results>

@@ -47,46 +47,51 @@
                 $hostname = $_SERVER['HTTP_HOST'];
                 $egi_target = urlencode("https://" . $hostname . "/portal/");
                 $egi_redirect = "https://" . $hostname . "/Shibboleth.sso/Login?target=" . $egi_target;
-                if($_SERVER['REQUEST_URI'] === "/"){
-                    $iam_target = "target_link_uri=" . urlencode("https://" . $hostname . "/portal/");
-                }
-                else{
-                    $iam_target=ltrim($_SERVER['REQUEST_URI'], '/?');
-                }
-                $iris_url = urlencode("https://iris-iam.stfc.ac.uk/");
-                $iam_redirect = "https://" . $hostname . "/portal/redirect_uri?iss=" . $iris_url . "&" . $iam_target;
               ?>
                 <a style="width:30%; display:inline-block; font-size:1.5em" href="<?php echo $egi_redirect; ?>" class="button">EGI Check-In</a>
-                <a style="width:30%; display:inline-block; font-size:1.5em"  href="<?php echo $iam_redirect ?>" class="button">IRIS IAM</a>
             </div>
             <p>Browse the <a href="https://wiki.egi.eu/wiki/GOCDB" class="docLink hover">GOCDB documentation index</a> on the EGI wiki.</p>
           </div>
+        </div>
 
-          <div style="height:34px;">
-              <a href="https://stfc.ukri.org" class="Sponsor_Link" target="_blank">
-                <!-- Allow for STFC council symbol extending above the upper bound of the UKRI symbol -->
-                <img  style="height: 112%; margin-top: -12%;" class="Sponsor_Logo"
-                src="/images/UKRI_STF_Council-Logo_Horiz-RGB.png"
-                alt="The logo of the Science and Technology Facilities Council" /></a>
-              <a href="https://europa.eu/european-union/index_en" class="Sponsor_Link" target="_blank">
-                <img class="Sponsor_Logo" src="/images/eu_flag_yellow_low_150.png"
+        <div>
+          <div class="Left_Logo_Row">
+            <a href="https://stfc.ukri.org/" class="Sponsor_Link" target="_blank">
+            <!-- /* Allow for STFC council symbol extending above the upper bound of the UKRI symbol -->
+              <img style="height: 32px; margin: 2px;" class="Sponsor_Logo"
+                src="/images/logos/ukri_stfc_with_text.png"
+                alt="The logo of the Science and Technology Facilities Council" />
+            </a>
+            <a href="https://europa.eu/european-union/index_en" class="Sponsor_Link" target="_blank">
+              <img class="Sponsor_Logo"
+                src="/images/flags/eu.png"
                 alt="The logo of the European Union" />
-              </a>
-              <a href="https://www.egi.eu" class="Sponsor_Link" target="_blank">
-                <img class="Sponsor_Logo" src="/images/egi_logo_no_background_150.png"
+            </a>
+            <a href="https://www.egi.eu" class="Sponsor_Link" target="_blank">
+              <img class="Sponsor_Logo"
+                src="/images/logos/egi.png"
                 alt="The logo of the E G I Foundation" />
-              </a>
-              <a href="https://eosc-hub.eu/" class="Sponsor_Link" target="_blank">
-                <img class="Sponsor_Logo" src="/images/eosc-hub-v-web_150.png"
-                alt="The logo of the EOSC-hub Horizon 20 20 project" />
-              </a>
+            </a>
+            <a href="https://eoscfuture.eu/" class="Sponsor_Link" target="_blank">
+              <img class="Sponsor_Logo"
+                src="/images/logos/eosc_future.png"
+                alt="The logo of the EOSC Future Horizon 20 20 project"
+            </a>
+            <a href="https://www.iris.ac.uk/" class="Sponsor_Link" target="_blank">
+              <img class="Sponsor_Logo"
+                src="/images/logos/iris_ac_uk.png"
+                alt="The logo of the IRIS Community" />
+            </a>
           </div>
           <div class="Copyright_Text">
             <p>The GOCDB service is provided by <a class="docLink" href="https://stfc.ukri.org/">STFC</a>,
               part of <a class="docLink" href="https://www.ukri.org">UK Research and Innovation</a>,
-              for <a class="docLink" href="https://egi.eu">EGI</a>,
-              co-funded by <a class="docLink" href="https://egi.eu">EGI.eu</a> and
-              <a class="docLink hover" href="https://eosc-hub.eu">EOSC-hub</a>.
+              and is co-funded by
+              <a href="https://egi.eu">EGI</a> via <a href="https://www.egi.eu/project/egi-ace/">EGI-ACE</a>,
+              <a href="https://eoscfuture.eu/">EOSC-Future</a> and the
+              <a href="https://www.iris.ac.uk/">IRIS</a> community.
+            </p>
+            <p>
               Licensed under the <a class="docLink" href="https://www.apache.org/licenses/LICENSE-2.0">Apache 2 License</a>.
             </p>
           </div>

@@ -1,5 +1,11 @@
 <?php
+
 namespace org\gocdb\services;
+
+use Exception;
+use org\gocdb\security\authentication\MyConfig1;
+use org\gocdb\services\Validate;
+
 /* Copyright ? 2011 STFC
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -12,6 +18,7 @@ namespace org\gocdb\services;
  * limitations under the License.
  */
 require_once __DIR__ . '/AbstractEntityService.php';
+require_once __DIR__ . '/Validate.php';
 require_once __DIR__ . '/../Doctrine/entities/User.php';
 
 /**
@@ -22,8 +29,8 @@ require_once __DIR__ . '/../Doctrine/entities/User.php';
  * @author David Meredith
  * @author George Ryall
  */
-class User extends AbstractEntityService{
-
+class User extends AbstractEntityService
+{
     /*
      * All the public service methods in a service facade are typically atomic -
      * they demarcate the tx boundary at the start and end of the method
@@ -44,7 +51,8 @@ class User extends AbstractEntityService{
      * @param $id User ID
      * @return \User object
      */
-    public function getUser($id) {
+    public function getUser($id)
+    {
         return $this->em->find("User", $id);
     }
 
@@ -53,7 +61,8 @@ class User extends AbstractEntityService{
      * @param string $userPrinciple the user's principle id string, e.g. DN.
      * @return \User object or null if no user can be found with the specified principle
      */
-    public function getUserByCertificateDn($userPrinciple) {
+    public function getUserByCertificateDn($userPrinciple)
+    {
         if (empty($userPrinciple)) {
             return null;
         }
@@ -69,7 +78,8 @@ class User extends AbstractEntityService{
      * @param string $userPrinciple the user's principle ID string, e.g. DN.
      * @return User object or null if no user can be found with the specified principle
      */
-    public function getUserByPrinciple($userPrinciple) {
+    public function getUserByPrinciple($userPrinciple)
+    {
         if (empty($userPrinciple)) {
             return null;
         }
@@ -88,7 +98,8 @@ class User extends AbstractEntityService{
      * @param string $authType the authorisation type e.g. X.509.
      * @return User object or null if no user can be found with the specified principle
      */
-    public function getUserByPrincipleAndType($userPrinciple, $authType) {
+    public function getUserByPrincipleAndType($userPrinciple, $authType)
+    {
         if (empty($userPrinciple) || empty($authType)) {
             return null;
         }
@@ -107,7 +118,8 @@ class User extends AbstractEntityService{
      * @param \User The user to check for
      * @return Boolean true if allowed, else false;
      */
-    public function isAllowReadPD(\User $user) {
+    public function isAllowReadPD(\User $user)
+    {
 
         if ($user->isAdmin()) {
             return true;
@@ -169,7 +181,8 @@ class User extends AbstractEntityService{
      * Updates the users last login time to the current time in UTC.
      * @param \User $user
      */
-    public function updateLastLoginTime(\User $user){
+    public function updateLastLoginTime(\User $user)
+    {
         $nowUtc = new \DateTime(null, new \DateTimeZone('UTC'));
         $this->em->getConnection()->beginTransaction();
         try {
@@ -192,7 +205,8 @@ class User extends AbstractEntityService{
      * @param string $roleStatus Optional role status string @see \RoleStatus (default is GRANTED)
      * @return array of \Site objects or emtpy array
      */
-    public function getSitesFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED) {
+    public function getSitesFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED)
+    {
         $dql = "SELECT r FROM Role r
                 INNER JOIN r.user u
                 INNER JOIN r.ownedEntity o
@@ -205,11 +219,11 @@ class User extends AbstractEntityService{
                     ->getResult();
         $sites = array();
 
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             // Check whether this site is already in the list
             // (A user can hold more than one role over an entity)
-            foreach($sites as $site) {
-                if($site == $role->getOwnedEntity()) {
+            foreach ($sites as $site) {
+                if ($site == $role->getOwnedEntity()) {
                     continue 2;
                 }
             }
@@ -225,7 +239,8 @@ class User extends AbstractEntityService{
      * @param string $roleStatus Optional role status string @see \RoleStatus (default is GRANTED)
      * @return array of \NGI objects or empty array
      */
-    public function getNgisFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED) {
+    public function getNgisFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED)
+    {
         $dql = "SELECT r FROM Role r
                 INNER JOIN r.user u
                 INNER JOIN r.ownedEntity o
@@ -237,11 +252,11 @@ class User extends AbstractEntityService{
                     ->setParameter(":status", $roleStatus)
                     ->getResult();
         $ngis = array();
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             // Check whether this site is already in the list
             // (A user can hold more than one role over an entity)
-            foreach($ngis as $ngi) {
-                if($ngi == $role->getOwnedEntity()) {
+            foreach ($ngis as $ngi) {
+                if ($ngi == $role->getOwnedEntity()) {
                     continue 2;
                 }
             }
@@ -257,7 +272,8 @@ class User extends AbstractEntityService{
      * @param string $roleStatus Optional role status string @see \RoleStatus (default is GRANTED)
      * @return array of \ServiceGroup objects or empty array
      */
-    public function getSGroupsFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED) {
+    public function getSGroupsFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED)
+    {
         $dql = "SELECT r FROM Role r
                 INNER JOIN r.user u
                 INNER JOIN r.ownedEntity o
@@ -270,11 +286,11 @@ class User extends AbstractEntityService{
                     ->getResult();
         $sGroups = array();
 
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             // Check whether this site is already in the list
             // (A user can hold more than one role over an entity)
-            foreach($sGroups as $sGroup) {
-                if($sGroup == $role->getOwnedEntity()) {
+            foreach ($sGroups as $sGroup) {
+                if ($sGroup == $role->getOwnedEntity()) {
                     continue 2;
                 }
             }
@@ -290,7 +306,8 @@ class User extends AbstractEntityService{
      * @param string $roleStatus Optional role status string @see \RoleStatus (default is GRANTED)
      * @return array of \Project objects or empty array
      */
-    public function getProjectsFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED) {
+    public function getProjectsFromRoles(\User $user, $roleStatus = \RoleStatus::GRANTED)
+    {
         $dql = "SELECT r FROM Role r
                 INNER JOIN r.user u
                 INNER JOIN r.ownedEntity o
@@ -303,11 +320,11 @@ class User extends AbstractEntityService{
                     ->getResult();
         $projects = array();
 
-        foreach($roles as $role) {
+        foreach ($roles as $role) {
             // Check whether this site is already in the list
             // (A user can hold more than one role over an entity)
-            foreach($projects as $project) {
-                if($project == $role->getOwnedEntity()) {
+            foreach ($projects as $project) {
+                if ($project == $role->getOwnedEntity()) {
                     continue 2;
                 }
             }
@@ -337,7 +354,8 @@ class User extends AbstractEntityService{
      * @param User The current user
      * return User The updated user entity
      */
-    public function editUser(\User $user, $newValues, \User $currentUser = null) {
+    public function editUser(\User $user, $newValues, \User $currentUser = null)
+    {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
 
@@ -374,21 +392,22 @@ class User extends AbstractEntityService{
 
     /**
      * Check to see if the current user has permission to edit a user entity
-     * @param org\gocdb\services\User $user The user being edited or deleted
-     * @param User $currentUser The current user
+     * @param \User $user The user being edited or deleted
+     * @param \User $currentUser The current user
      * @throws \Exception If the user isn't authorised
      * @return null
      */
-    public function editUserAuthorization(\User $user, \User $currentUser = null) {
-        if(is_null($currentUser)){
+    public function editUserAuthorization(\User $user, \User $currentUser = null)
+    {
+        if (is_null($currentUser)) {
             throw new \Exception("unregistered users may not edit users");
         }
 
-        if($currentUser->isAdmin()) {
+        if ($currentUser->isAdmin()) {
             return;
         }
         // Allow the current user to edit their own info
-        if($currentUser == $user) {
+        if ($currentUser == $user) {
             return;
         }
         throw new \Exception("You do not have permission to edit this user.");
@@ -403,10 +422,11 @@ class User extends AbstractEntityService{
      *                   validated. The \Exception message will contain a human
      *                   readable description of which field failed validation.
      * @return null */
-    private function validate($userData, $type) {
-        require_once __DIR__ .'/Validate.php';
-        $serv = new \org\gocdb\services\Validate();
-        foreach($userData as $field => $value) {
+    private function validate($userData, $type)
+    {
+        $serv = new Validate();
+
+        foreach ($userData as $field => $value) {
             $valid = $serv->validate($type, $field, $value);
             if (!$valid) {
                 $error = "$field contains an invalid value: $value";
@@ -432,7 +452,8 @@ class User extends AbstractEntityService{
      * @param array $userValues User details, defined above
      * @param array $userIdentifierValues User Identifier details, defined above
      */
-    public function register($userValues, $userIdentifierValues) {
+    public function register($userValues, $userIdentifierValues)
+    {
         // validate the input fields for the user
         $this->validate($userValues, 'user');
 
@@ -465,7 +486,8 @@ class User extends AbstractEntityService{
      * @param \User $user To be deleted
      * @param \User $currentUser Making the request
      * @throws \Exception If user can't be authorized */
-    public function deleteUser(\User $user, \User $currentUser = null) {
+    public function deleteUser(\User $user, \User $currentUser = null)
+    {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
 
@@ -494,13 +516,16 @@ class User extends AbstractEntityService{
     /**
      * Returns all users in GOCDB or those matching optional criteria note
      * forename and surname are handled case insensitivly
-     * @param string $surname surname of users to be returned (matched case insensitivly)
-     * @param string $forename forename of users to be returned (matched case insensitivly)
-     * @param string $idString ID string of user to be returned. If specified only one user will be returned. Matched case sensitivly
-     * @param mixed $isAdmin if null then admin status is ignored, if true only admin users are returned and if false only non admins
+     * @param string $surname   surname of users to be returned (matched case insensitivly)
+     * @param string $forename  forename of users to be returned (matched case insensitivly)
+     * @param string $idString  ID string of user to be returned. If specified only one user will be returned
+     *                          Matched case sensitivly
+     * @param mixed $isAdmin    if null then admin status is ignored, if true only admin users are returned
+     *                          and if false only non admins
      * @return array An array of site objects
      */
-    public function getUsers($surname=null, $forename=null, $idString=null, $isAdmin=null) {
+    public function getUsers($surname = null, $forename = null, $idString = null, $isAdmin = null)
+    {
 
         $dql =
             "SELECT u FROM User u LEFT JOIN u.userIdentifiers up
@@ -526,7 +551,8 @@ class User extends AbstractEntityService{
      * @param $id ID of user identifier
      * @return \UserIdentifier
      */
-    public function getIdentifierById($id) {
+    public function getIdentifierById($id)
+    {
         $dql = "SELECT p FROM UserIdentifier p WHERE p.id = :ID";
         $identifier = $this->em->createQuery($dql)->setParameter('ID', $id)->getOneOrNullResult();
         return $identifier;
@@ -537,7 +563,8 @@ class User extends AbstractEntityService{
      * @param $idString ID string of user identifier
      * @return \UserIdentifier
      */
-    public function getIdentifierByIdString($idString) {
+    public function getIdentifierByIdString($idString)
+    {
         $dql = "SELECT p FROM UserIdentifier p WHERE p.keyValue = :IDSTRING";
         $identifier = $this->em->createQuery($dql)->setParameter('IDSTRING', $idString)->getOneOrNullResult();
         return $identifier;
@@ -551,11 +578,12 @@ class User extends AbstractEntityService{
      * @param bool $reducedRealms if true only return the "main" authentication types
      * @return array of authentication types
      */
-    public function getAuthTypes($reducedRealms=true) {
-
+    public function getAuthTypes($reducedRealms = true)
+    {
         require_once __DIR__ . '/../Authentication/_autoload.php';
+
         // Get list of tokens in order they are currently used
-        $myConfig1 = new \org\gocdb\security\authentication\MyConfig1();
+        $myConfig1 = new MyConfig1();
         $authTokenNames = $myConfig1->getAuthTokenClassList();
 
         // Hardcoded authentication realms in same order as in token definitions
@@ -591,8 +619,8 @@ class User extends AbstractEntityService{
      * @param \User $user User whose ID string we want
      * @return string
      */
-    public function getDefaultIdString($user) {
-
+    public function getDefaultIdString($user)
+    {
         $authTypes = $this->getAuthTypes();
         $idString = null;
 
@@ -620,7 +648,8 @@ class User extends AbstractEntityService{
      * @param $authType authentication type of ID string we want
      * @return string
      */
-    public function getIdStringByAuthType($user, $authType) {
+    public function getIdStringByAuthType($user, $authType)
+    {
 
         $identifiers = $user->getUserIdentifiers();
         $idString = null;
@@ -647,7 +676,8 @@ class User extends AbstractEntityService{
      * @param \User $currentUser user adding the identifier
      * @throws \Exception
      */
-    public function addUserIdentifier(\User $user, array $identifierArr, \User $currentUser) {
+    public function addUserIdentifier(\User $user, array $identifierArr, \User $currentUser)
+    {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
@@ -673,14 +703,15 @@ class User extends AbstractEntityService{
      * @param array $identifierArr identifier name and value
      * @throws \Exception
      */
-    protected function addUserIdentifierLogic(\User $user, array $identifierArr) {
-
+    protected function addUserIdentifierLogic(\User $user, array $identifierArr)
+    {
         // We will use this variable to track the keys as we go along, this will be used check they are all unique later
         $keys = array();
 
         $existingIdentifiers = $user->getUserIdentifiers();
 
-        // We will use this variable to track the final number of identifiers and ensure we do not exceede the specified limit
+        // We will use this variable to track the final number of identifiers and ensure we do not
+        // exceed the specified limit
         $identifierCount = count($existingIdentifiers);
 
         // Trim off any trailing and leading whitespace
@@ -712,7 +743,8 @@ class User extends AbstractEntityService{
             // Increment the identifier counter to enable check against extension limit
             $identifierCount++;
         } else {
-            throw new \Exception("An identifier with name \"$keyName\" already exists for this object, no identifiers were added.");
+            throw new \Exception("An identifier with name \"" . $keyName
+                                    . "\" already exists for this object, no identifiers were added.");
         }
 
         // Add the key to the keys array, to enable unique check
@@ -721,11 +753,13 @@ class User extends AbstractEntityService{
         // Keys should be unique, create an exception if they are not
         if (count(array_unique($keys)) !== count($keys)) {
             throw new \Exception(
-                "Identifier names should be unique. The requested new identifiers include multiple identifiers with the same name."
+                "Identifier names should be unique. The requested new identifiers "
+                . "include multiple identifiers with the same name."
             );
         }
 
-        // Check to see if adding the new identifiers will exceed the max limit defined in local_info.xml, and throw an exception if so
+        // Check to see if adding the new identifiers will exceed the max limit defined in local_info.xml,
+        // and throw an exception if so
         $extensionLimit = \Factory::getConfigService()->getExtensionsLimit();
         if ($identifierCount > $extensionLimit) {
             throw new \Exception("Identifier could not be added due to the extension limit of $extensionLimit");
@@ -741,7 +775,8 @@ class User extends AbstractEntityService{
      * @param \User $currentUser user adding the identifier
      * @throws \Exception
      */
-    public function migrateUserCredentials(\User $user, array $identifierArr, \User $currentUser) {
+    public function migrateUserCredentials(\User $user, array $identifierArr, \User $currentUser)
+    {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
@@ -774,7 +809,8 @@ class User extends AbstractEntityService{
      * @param \User $user user having certificate DN overwritten
      * @throws \Exception
      */
-    private function setDefaultCertDn(\User $user) {
+    private function setDefaultCertDn(\User $user)
+    {
         $user->setCertificateDn(null);
         $this->em->persist($user);
         $this->em->flush();
@@ -786,8 +822,10 @@ class User extends AbstractEntityService{
      * @param string $keyValue
      * @throws \Exception
      */
-    protected function addUserIdentifierValidation($keyName, $keyValue) {
+    protected function addUserIdentifierValidation($keyName, $keyValue)
+    {
         // Validate against schema
+        $validateArray = array();
         $validateArray['NAME'] = $keyName;
         $validateArray['VALUE'] = $keyValue;
         $this->validate($validateArray, 'useridentifier');
@@ -807,7 +845,12 @@ class User extends AbstractEntityService{
      * @param \User $currentUser user editing the identifier
      * @throws \Exception
      */
-    public function editUserIdentifier(\User $user, \UserIdentifier $identifier, array $newIdentifierArr, \User $currentUser) {
+    public function editUserIdentifier(
+        \User $user,
+        \UserIdentifier $identifier,
+        array $newIdentifierArr,
+        \User $currentUser
+    ) {
         // Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($currentUser);
 
@@ -818,11 +861,11 @@ class User extends AbstractEntityService{
         $this->em->getConnection()->beginTransaction();
         try {
             $this->editUserIdentifierLogic($user, $identifier, $newIdentifierArr);
-            $this->em->flush ();
-            $this->em->getConnection ()->commit();
+            $this->em->flush();
+            $this->em->getConnection()->commit();
         } catch (\Exception $e) {
-            $this->em->getConnection ()->rollback();
-            $this->em->close ();
+            $this->em->getConnection()->rollback();
+            $this->em->close();
             throw $e;
         }
     }
@@ -835,8 +878,8 @@ class User extends AbstractEntityService{
      * @param array $newIdentifierArr new key and/or value for the identifier
      * @throws \Exception
      */
-    protected function editUserIdentifierLogic(\User $user, \UserIdentifier $identifier, array $newIdentifierArr) {
-
+    protected function editUserIdentifierLogic(\User $user, \UserIdentifier $identifier, array $newIdentifierArr)
+    {
         // Trim off trailing and leading whitespace
         $keyName = trim($newIdentifierArr[0]);
         $keyValue = trim($newIdentifierArr[1]);
@@ -849,7 +892,6 @@ class User extends AbstractEntityService{
         $identifier->setKeyValue($keyValue);
         $this->em->merge($identifier);
     }
-
     /**
      * Validation when editing a user's identifier
      * @param \User $user
@@ -858,9 +900,10 @@ class User extends AbstractEntityService{
      * @param string $keyValue
      * @throws \Exception
      */
-    protected function editUserIdentifierValidation(\User $user, \UserIdentifier $identifier, $keyName, $keyValue) {
-
+    protected function editUserIdentifierValidation(\User $user, \UserIdentifier $identifier, $keyName, $keyValue)
+    {
         // Validate new values against schema
+        $validateArray = array();
         $validateArray['NAME'] = $keyName;
         $validateArray['VALUE'] = $keyValue;
         $this->validate($validateArray, 'useridentifier');
@@ -900,7 +943,8 @@ class User extends AbstractEntityService{
      * @param string $authType
      * @throws \Exception
      */
-    protected function valdidateAuthType($authType) {
+    protected function valdidateAuthType($authType)
+    {
         if (!in_array($authType, $this->getAuthTypes(false))) {
             throw new \Exception("The authentication type entered is invalid");
         }
@@ -912,7 +956,8 @@ class User extends AbstractEntityService{
      * @param string $idString
      * @throws \Exception
      */
-    protected function valdidateUniqueIdString($idString) {
+    protected function valdidateUniqueIdString($idString)
+    {
         $oldUser = $this->getUserByCertificateDn($idString);
         $newUser = $this->getUserByPrinciple($idString);
         if (!is_null($oldUser) || !is_null($newUser)) {
@@ -927,7 +972,8 @@ class User extends AbstractEntityService{
      * @param \UserIdentifier $identifier identifier being deleted
      * @param \User $currentUser user deleting the identifier
      */
-    public function deleteUserIdentifier(\User $user, \UserIdentifier $identifier, \User $currentUser) {
+    public function deleteUserIdentifier(\User $user, \UserIdentifier $identifier, \User $currentUser)
+    {
         //Check the portal is not in read only mode, throws exception if it is
         $this->checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
@@ -954,7 +1000,8 @@ class User extends AbstractEntityService{
      * @param \User $user user having the identifier deleted
      * @param \UserIdentifier $identifier identifier being deleted
      */
-    protected function deleteUserIdentifierLogic(\User $user, \UserIdentifier $identifier) {
+    protected function deleteUserIdentifierLogic(\User $user, \UserIdentifier $identifier)
+    {
         // Check that the identifier's parent user is the same as the one given
         if ($identifier->getParentUser() !== $user) {
             $id = $identifier->getId();
@@ -991,7 +1038,8 @@ class User extends AbstractEntityService{
 
         //Check user is not changing themselves - prevents lone admin acidentally demoting themselves
         if($user==$currentUser){
-            throw new \Exception("To ensure there is always at least one administrator, you may not demote yourself, please ask another administrator to do it");
+            throw new \Exception("To ensure there is always at least one administrator, "
+                                 . "you may not demote yourself, please ask another administrator to do it");
         }
 
         //Actually make the change

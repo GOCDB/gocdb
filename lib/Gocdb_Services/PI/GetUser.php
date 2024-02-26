@@ -23,6 +23,7 @@ require_once __DIR__ . '/IPIQueryPageable.php';
 require_once __DIR__ . '/IPIQueryRenderable.php';
 
 //use Doctrine\ORM\Tools\Pagination\Paginator;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Return an XML document that encodes the users with optional cursor paging.
@@ -122,7 +123,6 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $qb->select('u', 'r')
                 ->from('User', 'u')
                 ->leftJoin('u.roles', 'r')
-                //->orderBy('u.id', 'ASC') // oldest first
         ;
 
         // Order by ASC (oldest first: 1, 2, 3, 4)
@@ -331,7 +331,11 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             /*
              * Add a USER_ROLE element to the XML for each role this user holds.
              */
-            foreach ($user->getRoles() as $role) {
+
+            // Sort roles
+            $orderedRoles = $this->helpers->orderArrById($user->getRoles());
+
+            foreach ($orderedRoles as $role) {
                 if ($role->getStatus() == "STATUS_GRANTED") {
                     $xmlRole = $xmlUser->addChild('USER_ROLE');
                     $xmlRole->addChild('USER_ROLE', $role->getRoleType()->getName());
@@ -372,7 +376,11 @@ class GetUser implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
                     $xmlProjects = $xmlRole->addChild('RECOGNISED_IN_PROJECTS');
                     $parentProjectsForRole = $this->roleAuthorisationService
                             ->getReachableProjectsFromOwnedEntity($role->getOwnedEntity());
-                    foreach($parentProjectsForRole as $_proj){
+
+                    // Sort project(s) - must be correct type for sorting
+                    $orderedProjects = $this->helpers->orderArrById(new ArrayCollection($parentProjectsForRole));
+
+                    foreach ($orderedProjects as $_proj) {
                        $xmlProj = $xmlProjects->addChild('PROJECT', $_proj->getName());
                        $xmlProj->addAttribute('ID', $_proj->getId());
                     }

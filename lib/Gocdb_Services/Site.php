@@ -1454,9 +1454,8 @@ class Site extends AbstractEntityService{
         * If identifier or type has changed, check the credential is not
         * already registered.
         */
-        if (!($authEntity->getIdentifier() == $identifier &&
-              $authEntity->getType() == $type)) {
-            $authEntServ->uniqueAPIAuthEnt($parentSite, $identifier, $type);
+        if ($authEntity->getIdentifier() !== $identifier) {
+            $authEntServ->uniqueAPIAuthEnt($parentSite, $identifier);
         }
 
         $authEntServ->editAPIAuthentication($authEntity, $user, $newValues);

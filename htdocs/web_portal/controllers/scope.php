@@ -40,6 +40,7 @@ function view_scope() {
     $params['Name'] = $scope->getName();
     $params['Description'] = $scope->getDescription();
     $params['ID'] = $scope->getId();
+    $params['Reserved'] = $scope->getReserved();
     $params['NGIs'] = $serv->getNgisFromScope($scope);
     $params['Sites'] = $serv->getSitesFromScope($scope);
     $params['ServiceGroups'] = $serv->getServiceGroupsFromScope($scope);

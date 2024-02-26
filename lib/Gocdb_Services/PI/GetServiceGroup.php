@@ -128,7 +128,6 @@ class GetServiceGroup implements IPIQuery, IPIQueryPageable, IPIQueryRenderable 
                 ->leftJoin('s.scopes', 'sc')
                 ->leftJoin('s.endpointLocations', 'els')
                 ->leftjoin('els.endpointProperties', 'elp')
-                //->orderBy('sg.id', 'ASC')
                 ;
 
         // Order by ASC (oldest first: 1, 2, 3, 4)
@@ -303,7 +302,10 @@ class GetServiceGroup implements IPIQuery, IPIQueryPageable, IPIQueryRenderable 
             $url = htmlspecialchars($url);
             $xmlSg->addChild('GOCDB_PORTAL_URL', $url);
 
-            foreach ($sg->getServices() as $service) {
+            // Sort services
+            $orderedServices = $this->helpers->orderArrById($sg->getServices());
+
+            foreach ($orderedServices as $service) {
                 // maybe Rename SERVICE_ENDPOINT to SERVICE
                 $xmlService = $xmlSg->addChild('SERVICE_ENDPOINT');
                 $xmlService->addAttribute("PRIMARY_KEY", $service->getId() . "G0");
@@ -321,13 +323,21 @@ class GetServiceGroup implements IPIQuery, IPIQueryPageable, IPIQueryRenderable 
 
                 if ($this->renderMultipleEndpoints) {
                     $xmlEndpoints = $xmlService->addChild('ENDPOINTS');
-                    foreach ($service->getEndpointLocations() as $endpoint) {
+
+                    // Sort endpoints
+                    $orderedEndpoints = $this->helpers->orderArrById($service->getEndpointLocations());
+
+                    foreach ($orderedEndpoints as $endpoint) {
                         $xmlEndpoint = $xmlEndpoints->addChild('ENDPOINT');
                         $xmlEndpoint->addChild('ID', $endpoint->getId());
                         $xmlEndpoint->addChild('NAME', htmlspecialchars($endpoint->getName()));
                         // Endpoint Extensions
                         $xmlEndpointExtensions = $xmlEndpoint->addChild('EXTENSIONS');
-                        foreach ($endpoint->getEndpointProperties() as $prop) {
+
+                        // Sort endpoint properties
+                        $orderedEndpointProps = $this->helpers->orderArrById($endpoint->getEndpointProperties());
+
+                        foreach ($orderedEndpointProps as $prop) {
                             $xmlProperty = $xmlEndpointExtensions->addChild('EXTENSION');
                             $xmlProperty->addChild('LOCAL_ID', $prop->getId());
                             $xmlProperty->addChild('KEY', xssafe($prop->getKeyName()));
@@ -347,13 +357,21 @@ class GetServiceGroup implements IPIQuery, IPIQueryPageable, IPIQueryRenderable 
 
                 // Service scopes
                 $xmlScopes = $xmlService->addChild('SCOPES');
-                foreach ($service->getScopes() as $scope) {
+
+                // Sort scopes
+                $orderedServiceScopes = $this->helpers->orderArrById($service->getScopes());
+
+                foreach ($orderedServiceScopes as $scope) {
                     $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
                 }
 
                 // Service Extensions
                 $xmlServiceExtensions = $xmlService->addChild('EXTENSIONS');
-                foreach ($service->getServiceProperties() as $prop) {
+
+                // Sort service properties
+                $orderedServiceProps = $this->helpers->orderArrById($service->getServiceProperties());
+
+                foreach ($orderedServiceProps as $prop) {
                     $xmlProperty = $xmlServiceExtensions->addChild('EXTENSION');
                     $xmlProperty->addChild('LOCAL_ID', $prop->getId());
                     $xmlProperty->addChild('KEY', xssafe($prop->getKeyName()));
@@ -363,13 +381,21 @@ class GetServiceGroup implements IPIQuery, IPIQueryPageable, IPIQueryRenderable 
 
             // SG scopes
             $xmlScopes = $xmlSg->addChild('SCOPES');
-            foreach ($sg->getScopes() as $scope) {
+
+            // Sort scopes
+            $orderedSgScopes = $this->helpers->orderArrById($sg->getScopes());
+
+            foreach ($orderedSgScopes as $scope) {
                 $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
             }
 
             // SG extensions
             $xmlSGExtensions = $xmlSg->addChild('EXTENSIONS');
-            foreach ($sg->getServiceGroupProperties() as $sgProp) {
+
+            // Sort service group properties
+            $orderedSgProps = $this->helpers->orderArrById($sg->getServiceGroupProperties());
+
+            foreach ($orderedSgProps as $sgProp) {
                 $xmlSgProperty = $xmlSGExtensions->addChild('EXTENSION');
                 $xmlSgProperty->addChild('LOCAL_ID', $sgProp->getId());
                 $xmlSgProperty->addChild('KEY', xssafe($sgProp->getKeyName()));

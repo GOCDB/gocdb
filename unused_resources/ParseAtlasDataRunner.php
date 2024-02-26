@@ -51,4 +51,3 @@ $siteArray = array_unique($siteArray);
 foreach($siteArray as $siteName){
     echo $siteName."\n";
 }
-

@@ -1,0 +1,132 @@
+<?xml version="1.0"?>
+
+<!-- Copied from https://www.ibm.com/developerworks/library/x-validxphp/ -->
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:include schemaLocation="./web_portal/menu.xsd"/>
+
+  <xs:simpleType name="showType">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="hide"/>
+      <xs:enumeration value="show"/>
+      <xs:enumeration value="no"/>
+      <xs:enumeration value="yes"/>
+      <xs:enumeration value="false"/>
+      <xs:enumeration value="true"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:element name="config">
+    <xs:complexType>
+      <xs:sequence>
+        <xs:element name="local_info" minOccurs="1" maxOccurs="unbounded">
+          <xs:complexType>
+            <xs:all>
+
+              <xs:element name="page_banner" type="xs:string" minOccurs="0"/>
+              <xs:element name="read_only" type="xs:boolean" minOccurs="0"/>
+              <xs:element name="filter_downtimes_by_default_scope" type="xs:boolean" minOccurs="0"/>
+              <xs:element name="default_filter_by_scope" type="xs:boolean" minOccurs="0"/>
+              <xs:element name="menus" type="validMenus" minOccurs="0"/>
+
+              <!-- Note that we do not validate the email string values provided here -->
+              <xs:element name="email_from" type="xs:string" minOccurs="0"/>
+              <xs:element name="email_to" type="xs:string" minOccurs="0"/>
+
+              <xs:element name="aup" type="xs:anyURI" minOccurs="0"/>
+              <xs:element name="aup_title" type="xs:string" minOccurs="0"/>
+              <xs:element name="privacy_notice" type="xs:anyURI" minOccurs="0"/>
+              <xs:element name="privacy_notice_title" type="xs:string" minOccurs="0"/>
+
+              <xs:element name="restrict_personal_data" type="xs:boolean" minOccurs="0"/>
+
+              <xs:element name="API_all_auth_realms" type="xs:boolean" minOccurs="0"/>
+
+              <xs:element name="css" minOccurs="0">
+                <xs:complexType>
+                  <xs:all>
+                    <!-- Use string type to allow standard colour names -->
+                    <xs:element name="backgroundColour1" type="xs:string"/>
+                    <xs:element name="backgroundColour2" type="xs:string"/>
+                    <xs:element name="backgroundColour3" type="xs:string"/>
+                    <xs:element name="backgroundDirection" type="xs:string"/>
+                    <xs:element name="headingTextColour" type="xs:string"/>
+
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="name_mapping" minOccurs="0">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="Service">
+                      <xs:complexType>
+                        <xs:all>
+                          <xs:element name="ServiceEndpoint" type="xs:string" minOccurs="0"/>
+                          <xs:element name="endpoint" type="xs:string" minOccurs="0"/>
+                        </xs:all>
+                      </xs:complexType>
+                    </xs:element>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="web_portal_url" type="xs:anyURI" minOccurs="0"/>
+              <xs:element name="pi_url" type="xs:anyURI" minOccurs="0"/>
+              <xs:element name="server_base_url" type="xs:anyURI" minOccurs="0"/>
+              <xs:element name="write_api_user_docs_url" type="xs:anyURI" minOccurs="0"/>
+              <xs:element name="optional_features" minOccurs="0">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="siteless_services" type="xs:boolean"/>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="default_scope" minOccurs="0">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="name" type="xs:string"/>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="show_map_on_start_page" type="xs:boolean" minOccurs="0"/>
+              <xs:element name="default_scope_match" minOccurs="0">
+                <xs:simpleType>
+                  <xs:restriction base="xs:string">
+                    <xs:enumeration value="any"/>
+                    <xs:enumeration value="all"/>
+                  </xs:restriction>
+                </xs:simpleType>
+              </xs:element>
+              <xs:element name="minimum_scopes" minOccurs="0">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="ngi" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="site" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="service" type="xs:integer" minOccurs="0"/>
+                    <xs:element name="service_group" type="xs:integer" minOccurs="0"/>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="reserved_scopes" minOccurs="0">
+                <xs:complexType>
+                  <xs:sequence>
+                    <xs:element name="scope" type="xs:string" minOccurs="1" maxOccurs='unbounded'/>
+                  </xs:sequence>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="extensions" minOccurs="0">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="max" type="xs:integer"/>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+              <xs:element name="send_email" type="xs:boolean" minOccurs="0"/>
+            </xs:all>
+            <xs:attribute name="url" type="xs:anyURI"/>
+          </xs:complexType>
+        </xs:element>
+      </xs:sequence>
+    </xs:complexType>
+  </xs:element>
+
+</xs:schema>

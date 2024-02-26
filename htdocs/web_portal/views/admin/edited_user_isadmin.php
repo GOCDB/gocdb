@@ -13,5 +13,3 @@
         Return to the users page.
     </a>
 </div>
-
-

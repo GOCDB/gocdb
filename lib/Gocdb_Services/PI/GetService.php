@@ -391,13 +391,21 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
             if ($this->renderMultipleEndpoints) {
                 $xmlEndpoints = $xmlSe->addChild('ENDPOINTS');
-                foreach ($se->getEndpointLocations() as $endpoint) {
+
+                // Sort endpoints
+                $orderedEndpoints = $this->helpers->orderArrById($se->getEndpointLocations());
+
+                foreach ($orderedEndpoints as $endpoint) {
                     $xmlEndpoint = $xmlEndpoints->addChild('ENDPOINT');
                     $xmlEndpoint->addChild('ID', $endpoint->getId());
                     $xmlEndpoint->addChild('NAME', xssafe($endpoint->getName()));
                     // Endpoint Extensions
                     $xmlExtensions = $xmlEndpoint->addChild('EXTENSIONS');
-                    foreach ($endpoint->getEndpointProperties() as $prop) {
+
+                    // Sort endpoint properties
+                    $orderedEndpointProps = $this->helpers->orderArrById($endpoint->getEndpointProperties());
+
+                    foreach ($orderedEndpointProps as $prop) {
                         $xmlProperty = $xmlExtensions->addChild('EXTENSION');
                         $xmlProperty->addChild('LOCAL_ID', $prop->getId());
                         $xmlProperty->addChild('KEY', $prop->getKeyName());
@@ -417,13 +425,21 @@ class GetService implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
             // scopes
             $xmlScopes = $xmlSe->addChild('SCOPES');
-            foreach($se->getScopes() as $scope){
+
+            // Sort scopes
+            $orderedScopes = $this->helpers->orderArrById($se->getScopes());
+
+            foreach ($orderedScopes as $scope) {
                $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
             }
 
             // Service Extensions
             $xmlExtensions = $xmlSe->addChild('EXTENSIONS');
-            foreach ($se->getServiceProperties() as $prop) {
+
+            // Sort service properties
+            $orderedProps = $this->helpers->orderArrById($se->getServiceProperties());
+
+            foreach ($orderedProps as $prop) {
                 $xmlProperty = $xmlExtensions->addChild('EXTENSION');
                 $xmlProperty->addChild('LOCAL_ID', $prop->getId());
                 $xmlProperty->addChild('KEY', xssafe($prop->getKeyName()));

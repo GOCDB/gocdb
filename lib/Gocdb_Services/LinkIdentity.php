@@ -243,6 +243,8 @@ class LinkIdentity extends AbstractEntityService {
      */
     private function composeEmail($primaryIdString, $currentIdString, $primaryAuthType, $currentAuthType, $isLinking, $isRegistered, $isPrimary, $link=null) {
 
+        $configService = \Factory::getConfigService();
+
         $subject = "Validation of " . ($isLinking ? "linking" : "recovering") . " your GOCDB account";
 
         $body = "Dear GOCDB User,"
@@ -274,7 +276,8 @@ class LinkIdentity extends AbstractEntityService {
             . "\n\n$link";
         }
 
-        $body .= "\n\nIf you did not create this request, please immediately contact gocdb-admins@mailman.egi.eu";
+        $emailSendTo = $configService->getEmailTo();
+        $body .= "\n\nIf you did not create this request, please immediately contact " . $emailSendTo;
 
         return array('subject'=>$subject, 'body'=>$body);
     }
@@ -293,6 +296,8 @@ class LinkIdentity extends AbstractEntityService {
      */
     private function sendConfirmationEmails($primaryUser, $currentUser, $code, $primaryIdString, $currentIdString, $primaryAuthType, $currentAuthType, $isLinking, $isRegistered) {
 
+        $configService = \Factory::getConfigService();
+
         // Create link to be clicked in email
         $portalUrl = \Factory::getConfigService()->GetPortalURL();
         $link = $portalUrl."/index.php?Page_Type=User_Validate_Identity_Link&c=" . $code;
@@ -304,7 +309,8 @@ class LinkIdentity extends AbstractEntityService {
         $primaryBody = $composedPrimaryEmail['body'];
 
         // If "sendmail_from" is set in php.ini, use second line ($headers = '';):
-        $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
+        $emailSentFrom = $configService->getEmailFrom();
+        $headers = "From: GOCDB <" . $emailSentFrom . ">";
 
         // Mail command returns boolean. False if message not accepted for delivery.
         if (!mail($primaryUser->getEmail(), $primarySubject, $primaryBody, $headers)) {

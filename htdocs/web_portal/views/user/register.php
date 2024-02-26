@@ -57,13 +57,13 @@
 
         <span class="input_name">
             Forename *
-            <span class="input_syntax" >(unaccentuated letters, spaces, dashes and quotes)</span>
+            <span class="input_syntax" >(unaccented letters, spaces, dashes and quotes)</span>
         </span>
         <input class="input_input_text" type="text" name="FORENAME" value="<?php  xecho($params['given_name']) ?>" />
 
         <span class="input_name">
             Surname *
-            <span class="input_syntax" >(unaccentuated letters, spaces, dashes and quotes)</span>
+            <span class="input_syntax" >(unaccented letters, spaces, dashes and quotes)</span>
         </span>
         <input class="input_input_text" type="text" name="SURNAME" value="<?php  xecho($params['family_name']) ?>" />
 

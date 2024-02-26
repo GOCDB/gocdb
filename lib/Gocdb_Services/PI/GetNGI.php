@@ -110,10 +110,9 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
         $qb = $this->em->createQueryBuilder();
 
         //Initialize base query
-        $qb->select('n')
+        $qb->select('n', 'sc')
             ->from('NGI', 'n')
             ->leftJoin('n.scopes', 'sc')
-            //->orderBy('n.id', 'ASC')
             ;
 
         // Order by ASC (oldest first: 1, 2, 3, 4)
@@ -286,8 +285,12 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
             $xmlNgi->addChild("SITE_COUNT", count($ngi->getSites()));
             // scopes
             $xmlScopes = $xmlNgi->addChild('SCOPES');
-            foreach ($ngi->getScopes() as $scope) {
-            $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
+
+            // Sort scopes
+            $orderedScopes = $this->helpers->orderArrById($ngi->getScopes());
+
+            foreach ($orderedScopes as $scope) {
+                $xmlScopes->addChild('SCOPE', xssafe($scope->getName()));
             }
         }
 
@@ -342,9 +345,11 @@ class GetNGI implements IPIQuery, IPIQueryPageable, IPIQueryRenderable {
 
             $xmlNgiAsoc = $xmlNgi->addChild("Associations");
 
-            $sites = $ngi->getSites();
-            foreach ($sites as $site) {
-            $xmlNgiAsoc->addChild("ChildDomainID", $site->getPrimaryKey());
+            // Sort sites
+            $orderedSites = $this->helpers->orderArrById($ngi->getSites());
+
+            foreach ($orderedSites as $site) {
+                $xmlNgiAsoc->addChild("ChildDomainID", $site->getPrimaryKey());
             }
         }
 

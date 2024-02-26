@@ -42,6 +42,12 @@
       <link>index.php?Page_Type=Services</link>
     </Services>
 
+    <ServiceTypes>
+        <show_on_instance>all</show_on_instance>
+        <name>Service Types</name>
+        <link>index.php?Page_Type=Service_Types</link>
+    </ServiceTypes>
+
     <Scopes>
       <show_on_instance>all</show_on_instance>
       <name>Scopes</name>
@@ -136,7 +142,13 @@
       <name>Add Project</name>
       <link>index.php?Page_Type=Admin_Add_Project</link>
    </AddProject>
-        	
+
+    <AddServiceTypes>
+        <show_on_instance>admin</show_on_instance>
+        <name>Add Service Type</name>
+        <link>index.php?Page_Type=Admin_Add_Service_Type</link>
+    </AddServiceTypes>
+
    <MoveServiceEndPoint>
 	  <show_on_instance>admin</show_on_instance>
       <name>Move Service</name>
@@ -148,12 +160,6 @@
       <name>Move Site</name>
       <link>index.php?Page_Type=Admin_Move_Site</link>
     </MoveSite>
-    
-    <ServiceTypes>
-	  <show_on_instance>admin</show_on_instance>
-      <name>Service Types</name>
-      <link>index.php?Page_Type=Admin_Service_Types</link>
-    </ServiceTypes>
     
     <Users>
 	  <show_on_instance>admin</show_on_instance>

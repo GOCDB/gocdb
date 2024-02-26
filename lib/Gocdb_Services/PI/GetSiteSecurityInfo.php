@@ -122,8 +122,6 @@ class GetSiteSecurityInfo implements IPIQuery, IPIQueryPageable, IPIQueryRendera
         ->leftJoin('s.country', 'c')
         ->leftJoin('s.certificationStatus', 'cs')
         ->leftJoin('s.infrastructure', 'i')
-        //->orderBy('s.shortName', 'ASC');
-        //->orderBy('s.id', 'ASC') // oldest first
         ;
 
         // Order by ASC (oldest first: 1, 2, 3, 4)

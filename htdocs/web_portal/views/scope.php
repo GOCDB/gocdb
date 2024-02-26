@@ -4,6 +4,7 @@ $id = $params['ID'];
 $description = $params['Description'];
 $ngis = $params['NGIs'];
 $ngiCount = count($ngis);
+$reserved = $params['Reserved'];
 $sites = $params['Sites'];
 $siteCount = count($sites);
 $serviceGroups = $params['ServiceGroups'];
@@ -19,6 +20,9 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
     <div style="float: left; width: 50em;">
         <h1 style="float: left; margin-left: 0em;">Scope: <?php echo $name?></h1>
         <span style="clear: both; float: left; padding-bottom: 0.4em;"><?php echo $description ?></span>
+        <span style="clear: both; float: left; padding-bottom: 0.4em;">
+            This scope is <?php echo(($reserved) ? 'reserved' : 'not reserved') ?>.
+        </span>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
             <?php if($totalCount>0):?>
                 In total, there are <?php if($totalCount==1){echo "is";}else{echo "are";}?>
@@ -39,7 +43,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
         <div style="float: right;">
             <div style="float: right; margin-left: 2em;">
                 <a href="index.php?Page_Type=Admin_Edit_Scope&amp;id=<?php echo $id ?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" class="pencil" />
                     <br />
                     <br />
                     <span>Edit</span>
@@ -49,7 +53,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
                 <script type="text/javascript" src="<?php echo \GocContextPath::getPath()?>javascript/confirm.js"></script>
                 <a onclick="return confirmSubmit()"
                    href="index.php?Page_Type=Admin_Remove_Scope&id=<?php echo $id?>">
-                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                    <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" class="trash" />
                     <br />
                     <br />
                     <span>Delete</span>
@@ -195,7 +199,7 @@ $totalCount = $siteCount + $ngiCount + $serviceCount +$serviceGroupsCount;
             <table class="vSiteResults" id="selectedSETable">
                 <tr class="site_table_row_1">
                     <td class="site_table">
-                        <a href="index.php?Page_Type=Services&amp;scope=<?php xecho($name)?>">
+                        <a href="index.php?Page_Type=Services&amp;mscope[]=<?php xecho($name)?>">
                             View Services
                         </a>
                     </td>

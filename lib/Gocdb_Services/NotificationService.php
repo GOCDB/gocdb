@@ -113,6 +113,8 @@ class NotificationService extends AbstractEntityService {
             $roleRequested->getOwnedEntity()->getName()
         );
 
+        $configService = \Factory::getConfigService();
+
         $body = sprintf(
             implode("\n", array(
                 'Dear %1$s,',
@@ -123,17 +125,23 @@ class NotificationService extends AbstractEntityService {
                 '    %6$s/index.php?Page_Type=Role_Requests',
                 '',
                 'Note: This role could already have been approved or denied by another GOCDB User',
+                '',
+                'Please do not reply to this email. If you would like to get in touch with the ' .
+                'GOCDB admins please send an email to: %7$s',
             )),
             $approvingUser->getForename(),
             $requestingUser->getForename(),
             $requestingUser->getSurname(),
             $roleRequested->getRoleType()->getName(),
             $roleRequested->getOwnedEntity()->getName(),
-            $this->getWebPortalURL()
+            $this->getWebPortalURL(),
+            $configService->getEmailTo()
         );
 
         $emailAddress = $approvingUser->getEmail();
-        $headers = "From: GOCDB <gocdb-admins@mailman.egi.eu>";
+
+        $emailSentFrom = $configService->getEmailFrom();
+        $headers = "From: GOCDB <" . $emailSentFrom . ">";
 
         \Factory::getEmailService()->send($emailAddress, $subject, $body, $headers);
     }

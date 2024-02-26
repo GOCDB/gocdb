@@ -23,7 +23,7 @@ $showPD = $params['authenticated']; // display Personal Data
             <div style="float: right; margin-left: 2em;">
                 <?php if($params['ShowEdit']){?>
                     <a href="index.php?Page_Type=Edit_Project&amp;id=<?php echo $entityId?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" height="25px" style="float: right;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/pencil.png" class="pencil" />
                         <br />
                         <br />
                         <span>Edit</span>
@@ -35,7 +35,7 @@ $showPD = $params['authenticated']; // display Personal Data
                 <?php if($params['ShowEdit']){?>
                     <a onclick="return confirmSubmit()"
                         href="index.php?Page_Type=Delete_Project&id=<?php echo $entityId?>">
-                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="25px" style="float: right; margin-right: 0.4em;" />
+                        <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" class="trash" />
                         <br />
                         <br />
                         <span>Delete</span>

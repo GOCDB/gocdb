@@ -4,4 +4,3 @@
     <br>
     <a href="index.php?Page_Type=Role_Requests">Back to Manage Role Requests</a>
 </div>
-

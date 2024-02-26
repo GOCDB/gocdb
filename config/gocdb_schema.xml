@@ -2,416 +2,416 @@
 <schema>
 
     <!--
-	This file defines the validation necessary for each entity's fields.
+    This file defines the validation necessary for each entity's fields.
     -->
     <entity>
-	<name>site</name>
-	<field>
-	    <fname>SHORT_NAME</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
-	<field>
-	    <fname>DOMAIN</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\+\._\/\s\(\)']+$/</regex>
-	</field>
-	<field>
-	    <fname>OFFICIAL_NAME</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>
-	</field>
-	<field>
-	    <fname>HOME_URL</fname>
-	    <length>255</length>
-	    <regex>/^((http|https)\:\/\/([\w-]+\.)+[\w-]+([\w-.\/?%&amp;=]*))?$/</regex>
-	</field>
-	<field>
-	    <fname>GIIS_URL</fname>
-	    <length>255</length>
-	    <regex>/^(ldap\:\/\/([\w-]+\.)+[\w-]+([\w-.:,\/?%&amp;=]*))?$/</regex>
-	</field>
-	<field>
-	    <fname>IP_RANGE</fname>
-	    <length>255</length>
-	    <regex>/^((([0-9]{1,3}\.){3}[0-9]{1,3}\/([0-9]{1,3}\.){3}[0-9]{1,3}){0,1}[,;]?)+$/</regex>
-	</field>
-	<field>
-	    <fname>IP_V6_RANGE</fname>
-	    <length>255</length>
-	    <!--<regex>/^([a-fA-F0-9]{0,4}[:]){7}[a-fA-F0-9]{0,4}([\/]([a-fA-F0-9]{0,4}[:]){7}[a-fA-F0-9]{0,4})?$/</regex>-->
-	    <regex>/^[a-fA-F0-9:\/]*$/</regex>
-	</field>
-	<field>
-	    <fname>OPERATINGHOURS_START</fname>
-	    <!-- 24hr format, e.g. 10:30 -->
-	    <regex>/^([0-2][0-9]:[0-5][0-9])$/</regex>
-	</field>
-	<field>
-	    <fname>OPERATINGHOURS_END</fname>
-	    <!-- 24hr format, e.g. 10:30 -->
-	    <regex>/^([0-2][0-9]:[0-5][0-9])$/</regex>
-	</field>
-	<field>
-	    <fname>LOCATION</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>
-	</field>
-	<field>
-	    <fname>LATITUDE</fname>
-	    <regex>/^((\+|\-)?0*(([0-8]?[0-9](\.[0-9]+)?)|90))?$/</regex>
-	    <!-- takes any value from -90 to +90 -->
-	</field>
-	<field>
-	    <fname>LONGITUDE</fname>
-	    <regex>/^((\+|\-)?0*(((([1-9]|1[0-7]))?[0-9](\.[0-9]+)?)|180))?$/</regex>
-	    <!-- takes any value from -180 to +180 -->
-	</field>
-	<field>
-	    <fname>DESCRIPTION</fname>
-	    <length>2000</length>
-	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
-	</field>
-	<field>
-	    <fname>CREATION_DATE</fname>
-	</field>
-	<field>
-	    <fname>EMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)+$/</regex>
-	</field>
-	<field>
-	    <fname>CONTACTTEL</fname>
-	    <length>255</length>
-	    <regex>/^(\+?[0-9\-\.\s\)\(]+,?)+$/</regex>
-	</field>
-	<field>
-	    <fname>EMERGENCYTEL</fname>
-	    <length>255</length>
-	    <regex>/^(\+?[0-9\-\.\s\)\(]+,?)*$/</regex>
-	</field>
-	<field>
-	    <fname>CSIRTEMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
-	</field>
-	<field>
-	    <fname>CSIRTTEL</fname>
-	    <length>255</length>
-	    <regex>/^(\+?[0-9\-\.\s\)\(]+,?)*$/</regex>
-	</field>
-	<field>
-	    <fname>EMERGENCYEMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
-	</field>
-	<field>
-	    <fname>HELPDESKEMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)*$/</regex>
-	</field>
-	<field>
-	    <fname>TIMEZONE</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z_-]+(\/[a-zA-Z_-]+)*)+$/</regex>
-	</field>
+        <name>site</name>
+        <field>
+            <fname>SHORT_NAME</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+        <field>
+            <fname>DOMAIN</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\+\._\/\s\(\)']+$/</regex>
+        </field>
+        <field>
+            <fname>OFFICIAL_NAME</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>
+        </field>
+        <field>
+            <fname>HOME_URL</fname>
+            <length>255</length>
+            <regex>/^((http|https)\:\/\/([\w\-]+\.)+[\w\-]+([\w\-\.\/?%&amp;=]*))?$/</regex>
+        </field>
+        <field>
+            <fname>GIIS_URL</fname>
+            <length>255</length>
+            <regex>/^(ldap\:\/\/([\w\-]+\.)+[\w\-]+([\w\-.:,\/?%&amp;=]*))?$/</regex>
+        </field>
+        <field>
+            <fname>IP_RANGE</fname>
+            <length>255</length>
+            <regex>/^((([0-9]{1,3}\.){3}[0-9]{1,3}\/([0-9]{1,3}\.){3}[0-9]{1,3}){0,1}[,;]?)+$/</regex>
+        </field>
+        <field>
+            <fname>IP_V6_RANGE</fname>
+            <length>255</length>
+            <!--<regex>/^([a-fA-F0-9]{0,4}[:]){7}[a-fA-F0-9]{0,4}([\/]([a-fA-F0-9]{0,4}[:]){7}[a-fA-F0-9]{0,4})?$/</regex>-->
+            <regex>/^[a-fA-F0-9:\/]*$/</regex>
+        </field>
+        <field>
+            <fname>OPERATINGHOURS_START</fname>
+            <!-- 24hr format, e.g. 10:30 -->
+            <regex>/^([0-2][0-9]:[0-5][0-9])$/</regex>
+        </field>
+        <field>
+            <fname>OPERATINGHOURS_END</fname>
+            <!-- 24hr format, e.g. 10:30 -->
+            <regex>/^([0-2][0-9]:[0-5][0-9])$/</regex>
+        </field>
+        <field>
+            <fname>LOCATION</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>
+        </field>
+        <field>
+            <fname>LATITUDE</fname>
+            <regex>/^((\+|\-)?0*(([0-8]?[0-9](\.[0-9]+)?)|90))?$/</regex>
+            <!-- takes any value from -90 to +90 -->
+        </field>
+        <field>
+            <fname>LONGITUDE</fname>
+            <regex>/^((\+|\-)?0*(((([1-9]|1[0-7]))?[0-9](\.[0-9]+)?)|180))?$/</regex>
+            <!-- takes any value from -180 to +180 -->
+        </field>
+        <field>
+            <fname>DESCRIPTION</fname>
+            <length>2000</length>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+        </field>
+        <field>
+            <fname>CREATION_DATE</fname>
+        </field>
+        <field>
+            <fname>EMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)+$/</regex>
+        </field>
+        <field>
+            <fname>CONTACTTEL</fname>
+            <length>255</length>
+            <regex>/^(\+?[0-9\-\.\s\)\(]+,?)+$/</regex>
+        </field>
+        <field>
+            <fname>EMERGENCYTEL</fname>
+            <length>255</length>
+            <regex>/^(\+?[0-9\-\.\s\)\(]+,?)*$/</regex>
+        </field>
+        <field>
+            <fname>CSIRTEMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
+        </field>
+        <field>
+            <fname>CSIRTTEL</fname>
+            <length>255</length>
+            <regex>/^(\+?[0-9\-\.\s\)\(]+,?)*$/</regex>
+        </field>
+        <field>
+            <fname>EMERGENCYEMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
+        </field>
+        <field>
+            <fname>HELPDESKEMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)*$/</regex>
+        </field>
+        <field>
+            <fname>TIMEZONE</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z_-]+(\/[a-zA-Z_-]+)*)+$/</regex>
+        </field>
     </entity>
 
     <!-- ==========================================================  -->
     <entity>
-	<name>service</name>
-	<field>
-	    <fname>HOSTNAME</fname>
-	    <length>255</length>
-	    <regex>/^(([a-zA-Z0-9\-_]+\.)+[a-zA-Z0-9]+)+$/</regex>
-	</field>
-	<field>
-	    <fname>HOST_IP</fname>
-	    <length>255</length>
-	    <regex>/^(([0-9]{1,3}\.){3}[0-9]{1,3})?$/</regex>
-	</field>
-	<field>
-	    <fname>HOST_IP_V6</fname>
-	    <length>255</length>
-	    <!--<regex>/^([a-fA-F0-9]{0,4}[:]){7}[a-fA-F0-9]{0,4}([\/]([a-fA-F0-9]{0,4}[:]){7}[a-fA-F0-9]{0,4})?$/</regex>-->
-	    <regex>/^[a-fA-F0-9:\/]*$/</regex>
-	</field>
-	<field>
-	    <fname>HOST_DN</fname>
-	    <length>255</length>
-	    <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/\)\(]+)*$/</regex>
-	</field>
-	<field>
-	    <fname>HOST_OS</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>
-	</field>
-	<field>
-	    <fname>HOST_ARCH</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>
-	</field>
-	<field>
-	    <fname>DESCRIPTION</fname>
-	    <length>255</length>
-	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
-	</field>
-	<field>
-	    <fname>EMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)+$/</regex>
-	</field>
-  <field>
-      <fname>URL</fname>
-      <length>255</length>
-      <!-- Support for all URI chars (unreserved, gen-delims, sub-delims and percent) RFC 3986 -->
-	    <regex>/^[0-9a-zA-Z:\/\.\&amp;\?\_\$\+\!\*\'\(\)\,\-#\[\]@;=~%]*$/</regex>
-      <ftype>string</ftype>
-  </field>
-  <field>
-      <fname>PRODUCTION</fname>
-      <ftype>boolean</ftype>
-  </field>
-  <field>
-      <fname>BETA</fname>
-      <ftype>boolean</ftype>
-  </field>
-  <field>
-      <fname>MONITORED</fname>
-      <ftype>boolean</ftype>
-  </field>
-  <field>
-      <fname>NOTIFY</fname>
-      <ftype>boolean</ftype>
-  </field>
+        <name>service</name>
+        <field>
+            <fname>HOSTNAME</fname>
+            <length>255</length>
+            <regex>/^(([a-zA-Z0-9\-_]+\.)+[a-zA-Z0-9]+)+$/</regex>
+        </field>
+        <field>
+            <fname>HOST_IP</fname>
+            <length>255</length>
+            <regex>/^(([0-9]{1,3}\.){3}[0-9]{1,3})?$/</regex>
+        </field>
+        <field>
+            <fname>HOST_IP_V6</fname>
+            <length>255</length>
+            <!--<regex>/^([a-fA-F0-9]{0,4}[:]){7}[a-fA-F0-9]{0,4}([\/]([a-fA-F0-9]{0,4}[:]){7}[a-fA-F0-9]{0,4})?$/</regex>-->
+            <regex>/^[a-fA-F0-9:\/]*$/</regex>
+        </field>
+        <field>
+            <fname>HOST_DN</fname>
+            <length>255</length>
+            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/\)\(]+)*$/</regex>
+        </field>
+        <field>
+            <fname>HOST_OS</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>
+        </field>
+        <field>
+            <fname>HOST_ARCH</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'"\s]*$/</regex>
+        </field>
+        <field>
+            <fname>DESCRIPTION</fname>
+            <length>255</length>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+        </field>
+        <field>
+            <fname>EMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)+$/</regex>
+        </field>
+        <field>
+            <fname>URL</fname>
+            <length>255</length>
+            <!-- Support for all URI chars (unreserved, gen-delims, sub-delims and percent) RFC 3986 -->
+            <regex>/^[0-9a-zA-Z:\/\.\&amp;\?\_\$\+\!\*\'\(\)\,\-#\[\]@;=~%]*$/</regex>
+            <ftype>string</ftype>
+        </field>
+        <field>
+            <fname>PRODUCTION</fname>
+            <ftype>boolean</ftype>
+        </field>
+        <field>
+            <fname>BETA</fname>
+            <ftype>boolean</ftype>
+        </field>
+        <field>
+            <fname>MONITORED</fname>
+            <ftype>boolean</ftype>
+        </field>
+        <field>
+            <fname>NOTIFY</fname>
+            <ftype>boolean</ftype>
+        </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
-	<name>downtime</name>
-	<field>
-	    <fname>CLASSIFICATION</fname>
-	    <length>255</length>
-	</field>
-	<field>
-	    <fname>SEVERITY</fname>
-	    <length>255</length>
-	    <regex>/^(OUTAGE|WARNING)$/</regex>
-	</field>
-	<field>
-	    <fname>DESCRIPTION</fname>
-	    <length>4000</length>
-	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'\s]+$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
-	</field>
-	<field>
-	    <fname>DECLARATION_TIMESTAMP</fname>
-	</field>
-	<field>
-	    <fname>START_TIMESTAMP</fname>
-	    <regex>/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}:\d{2})$/</regex>
-	</field>
-	<field>
-	    <fname>END_TIMESTAMP</fname>
-	    <regex>/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}:\d{2})$/</regex>
-	</field>
-	<field>
-	    <fname>ANNOUNCE_TIMESTAMP</fname>
-	</field>
-	<field>
-	    <fname>DEFINE_TZ_BY_UTC_OR_SITE</fname>
-	    <regex>/^(utc)|(site)$/</regex>
-	</field>
-    </entity>
-
-    <!-- ==========================================================  -->
-    <entity>
-	<name>user</name>
-	<field>
-	    <fname>FORENAME</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z\s\-']+$/</regex>
-	    <!--<regex>/^[^`'\";&lt;&gt;]+$/</regex> -->
-	</field>
-	<field>
-	    <fname>SURNAME</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z\s\-']+$/</regex>
-	    <!--<regex>/^[^`'\";&lt;&gt;]+$/</regex> -->
-	</field>
-	<field>
-	    <fname>TITLE</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z\s\-']*$/</regex>
-	</field>
-	<field>
-	    <fname>WORKINGHOURS_START</fname>
-	</field>
-	<field>
-	    <fname>WORKINGHOURS_END</fname>
-	</field>
-	<field>
-	    <fname>EMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*){1}$/</regex>
-	</field>
-	<field>
-	    <fname>TELEPHONE</fname>
-	    <length>255</length>
-	    <regex>/^(\+?[0-9\-\.\s\)\(]+)?$/</regex>
-	</field>
-	<field>
-	    <!-- Need a schema entry to pass validation of inputs through editUser in the User Service.
-	         Should ultimately not be needed once no Users have Home Sites, which is no longer
-	         a supported feature. -->
-	    <fname>UNLINK_HOMESITE</fname>
-	</field>
+        <name>downtime</name>
+        <field>
+            <fname>CLASSIFICATION</fname>
+            <length>255</length>
+        </field>
+        <field>
+            <fname>SEVERITY</fname>
+            <length>255</length>
+            <regex>/^(OUTAGE|WARNING)$/</regex>
+        </field>
+        <field>
+            <fname>DESCRIPTION</fname>
+            <length>4000</length>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;:\/'\s]+$/</regex>-->
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+        </field>
+        <field>
+            <fname>DECLARATION_TIMESTAMP</fname>
+        </field>
+        <field>
+            <fname>START_TIMESTAMP</fname>
+            <regex>/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}:\d{2})$/</regex>
+        </field>
+        <field>
+            <fname>END_TIMESTAMP</fname>
+            <regex>/^(\d{2})\/(\d{2})\/(\d{4}) (\d{2}:\d{2})$/</regex>
+        </field>
+        <field>
+            <fname>ANNOUNCE_TIMESTAMP</fname>
+        </field>
+        <field>
+            <fname>DEFINE_TZ_BY_UTC_OR_SITE</fname>
+            <regex>/^(utc)|(site)$/</regex>
+        </field>
     </entity>
 
     <!-- ==========================================================  -->
     <entity>
-	<name>ngi</name>
-	<field>
-	    <fname>NAME</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
-	<field>
-	    <fname>DESCRIPTION</fname>
-	    <length>255</length>
-	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
-	</field>
-	<field>
-	    <fname>EMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
-	</field>
-	<field>
-	    <fname>ROD_EMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
-	</field>
-	<field>
-	    <fname>HELPDESK_EMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
-	</field>
-	<field>
-	    <fname>SECURITY_EMAIL</fname>
-	    <length>255</length>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
-	</field>
-	<field>
-	    <fname>GGUS_SU</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/\s]*$/</regex>
-	</field>
+        <name>user</name>
+        <field>
+            <fname>FORENAME</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z\s\-']+$/</regex>
+            <!--<regex>/^[^`'\";&lt;&gt;]+$/</regex> -->
+        </field>
+        <field>
+            <fname>SURNAME</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z\s\-']+$/</regex>
+            <!--<regex>/^[^`'\";&lt;&gt;]+$/</regex> -->
+        </field>
+        <field>
+            <fname>TITLE</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z\s\-']*$/</regex>
+        </field>
+        <field>
+            <fname>WORKINGHOURS_START</fname>
+        </field>
+        <field>
+            <fname>WORKINGHOURS_END</fname>
+        </field>
+        <field>
+            <fname>EMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*){1}$/</regex>
+        </field>
+        <field>
+            <fname>TELEPHONE</fname>
+            <length>255</length>
+            <regex>/^(\+?[0-9\-\.\s\)\(]+)?$/</regex>
+        </field>
+        <field>
+            <!-- Need a schema entry to pass validation of inputs through editUser in the User Service.
+             Should ultimately not be needed once no Users have Home Sites, which is no longer
+             a supported feature. -->
+            <fname>UNLINK_HOMESITE</fname>
+        </field>
+    </entity>
+
+    <!-- ==========================================================  -->
+    <entity>
+        <name>ngi</name>
+        <field>
+            <fname>NAME</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+        <field>
+            <fname>DESCRIPTION</fname>
+            <length>255</length>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+        </field>
+        <field>
+            <fname>EMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
+        </field>
+        <field>
+            <fname>ROD_EMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
+        </field>
+        <field>
+            <fname>HELPDESK_EMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
+        </field>
+        <field>
+            <fname>SECURITY_EMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
+        </field>
+        <field>
+            <fname>GGUS_SU</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/\s]*$/</regex>
+        </field>
     </entity>
     <!-- ==========================================================  -->
     <!-- TODO: can this be removed? (ie is it in use for the new method in v5 -->
     <entity>
-	<name>change_cert_req</name>
-	<field>
-	    <fname>OLD_DN</fname>
-	    <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/]+)+$/</regex>
-	    <length>255</length>
-	</field>
-	<field>
-	    <fname>NEW_DN</fname>
-	    <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/]+)+$/</regex>
-	    <length>255</length>
-	</field>
-	<field>
-	    <fname>EMAIL</fname>
-	    <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
-	    <length>255</length>
-	</field>
-	<field>
-	    <fname>CONFIRMATION_CODE</fname>
-	</field>
+        <name>change_cert_req</name>
+        <field>
+            <fname>OLD_DN</fname>
+            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/]+)+$/</regex>
+            <length>255</length>
+        </field>
+        <field>
+            <fname>NEW_DN</fname>
+            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/]+)+$/</regex>
+            <length>255</length>
+        </field>
+        <field>
+            <fname>EMAIL</fname>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*)?$/</regex>
+            <length>255</length>
+        </field>
+        <field>
+            <fname>CONFIRMATION_CODE</fname>
+        </field>
     </entity>
 
     <!-- ==========================================================  -->
     <entity>
-	<name>endpoint</name>
-	<field>
-	    <fname>SERVICE</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
-	<field>
-	    <fname>NAME</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._\s]+$/</regex>
-	</field>
-	<field>
-	    <fname>DESCRIPTION</fname>
-	    <length>255</length>
-	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]*$/</regex>
-	</field>
-	<field>
-	    <fname>URL</fname>
-	    <length>255</length>
-	    <!-- Support for all URI chars (unreserved, gen-delims, sub-delims and percent) RFC 3986 -->
-	    <regex>/^[0-9a-zA-Z:\/\.\&amp;\?\_\$\+\!\*\'\(\)\,\-#\[\]@;=~%]*$/</regex>
-	</field>
-	<field>
-	    <fname>INTERFACENAME</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>
-	</field>
-	<field>
-	    <fname>ENDPOINTID</fname>
-	    <length>255</length>
-	    <regex>/^[0-9]+$/</regex>
-	</field>
-    <field>
-        <fname>EMAIL</fname>
-        <length>255</length>
-        <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)*$/</regex>
-    </field>
-    <field>
-        <fname>MONITORED</fname>
-        <ftype>boolean</ftype>
-    </field>
+        <name>endpoint</name>
+        <field>
+            <fname>SERVICE</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+        <field>
+            <fname>NAME</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._\s]+$/</regex>
+        </field>
+        <field>
+            <fname>DESCRIPTION</fname>
+            <length>255</length>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";&lt;&gt;]*$/</regex>
+        </field>
+        <field>
+            <fname>URL</fname>
+            <length>255</length>
+            <!-- Support for all URI chars (unreserved, gen-delims, sub-delims and percent) RFC 3986 -->
+            <regex>/^[0-9a-zA-Z:\/\.\&amp;\?\_\$\+\!\*\'\(\)\,\-#\[\]@;=~%]*$/</regex>
+        </field>
+        <field>
+            <fname>INTERFACENAME</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>
+        </field>
+        <field>
+            <fname>ENDPOINTID</fname>
+            <length>255</length>
+            <regex>/^[0-9]+$/</regex>
+        </field>
+        <field>
+            <fname>EMAIL</fname>
+            <length>255</length>
+            <regex>/^([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*[,;]?)*$/</regex>
+        </field>
+        <field>
+            <fname>MONITORED</fname>
+            <ftype>boolean</ftype>
+        </field>
     </entity>
 
     <!-- ==========================================================  -->
     <entity>
-	<name>service_group</name>
-	<field>
-	    <fname>NAME</fname>
-	    <length>255</length>
-	    <regex>/^([[:alpha:]]|[[:digit:]]|_)*$/</regex>
-	</field>
-	<field>
-	    <fname>DESCRIPTION</fname>
-	    <length>255</length>
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
-	</field>
-	<field>
-	    <fname>EMAIL</fname>
-	    <length>255</length>
-	    <regex>/^(([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*);)*([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*);?$/</regex>
-	</field>
+        <name>service_group</name>
+        <field>
+            <fname>NAME</fname>
+            <length>255</length>
+            <regex>/^([[:alpha:]]|[[:digit:]]|_)*$/</regex>
+        </field>
+        <field>
+            <fname>DESCRIPTION</fname>
+            <length>255</length>
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+        </field>
+        <field>
+            <fname>EMAIL</fname>
+            <length>255</length>
+            <regex>/^(([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*);)*([a-zA-Z0-9.!#$%&#38;'*+\/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*);?$/</regex>
+        </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
-	<name>project</name>
-	<field>
-	    <fname>NAME</fname>
-	    <length>255</length>
-	    <regex>/^([[:alpha:]]|[[:digit:]]|[_-])*$/</regex>
-	</field>
-	<field>
-	    <fname>DESCRIPTION</fname>
-	    <length>2000</length>
-	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
-	</field>
+        <name>project</name>
+        <field>
+            <fname>NAME</fname>
+            <length>255</length>
+            <regex>/^([[:alpha:]]|[[:digit:]]|[_-])*$/</regex>
+        </field>
+        <field>
+            <fname>DESCRIPTION</fname>
+            <length>2000</length>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+        </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
@@ -427,171 +427,180 @@
 	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
 	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
 	</field>
-    </entity>
-    <!-- ==========================================================  -->
-    <entity>
-	<name>scope</name>
-	<field>
-	    <fname>NAME</fname>
-	    <length>255</length>
-	    <regex>/^([[:alpha:]]|[[:digit:]]|[_-])*$/</regex>
-	</field>
-	<field>
-	    <fname>DESCRIPTION</fname>
-	    <length>255</length>
-	    <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
-	</field>
-    </entity>
-    <!-- ==========================================================  -->
-    <entity>
-	<name>siteproperty</name>
-	<field>
-	    <!-- site ID value -->
-	    <fname>SITE</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
-	<field>
-	    <!-- property key name-->
-	    <fname>NAME</fname>
-	    <length>255</length>
-        <!-- Allows whitespace in the key, but not trailing or leading -->
-        <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
-	</field>
-	<field>
-	    <!-- property key value -->
-	    <fname>VALUE</fname>
-	    <length>255</length>
-	    <!-- negation regex - allow all chars except negated -->
-        <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
-        <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
-	    <!-- positive regex - more strict -->
-	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
-	</field>
-	<field>
-	    <!-- Property ID value for when editing property -->
-	    <fname>PROP</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
-    </entity>
-    <!-- ==========================================================  -->
-    <entity>
-	<name>useridentifier</name>
-	<field>
-	    <!-- Identifier key name-->
-	    <fname>NAME</fname>
-	    <length>255</length>
-        <!-- Allows whitespace in the key, but not trailing or leading -->
-        <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
-	</field>
     <field>
-        <!-- Identifier key value -->
-        <fname>VALUE</fname>
-        <length>255</length>
-        <!-- Allows most characters, including whitespace.
-             However, no trailing or leading whitespace is permitted.
-          -->
-        <regex>/^[^`\"&lt;&gt;\s]+(\s*[^`\"&lt;&gt;\s]+)*$/</regex>
+        <fname>ALLOWMONITORINGEXCEPTION</fname>
+        <ftype>boolean</ftype>
     </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
-	<name>serviceproperty</name>
-	<field>
-	    <fname>SERVICE</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
-	<field>
-	    <fname>NAME</fname>
-	    <length>255</length>
-        <!-- Allows whitespace in the key, but not trailing or leading -->
-        <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
-	</field>
-	<field>
-	    <fname>VALUE</fname>
-	    <length>255</length>
-	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-        <!--Allows most characters, leading and trailing white space, but requires at least one non-whitespace character -->
-        <regex>/^(\s*[^`'\"\s]+\s*)+$/</regex>
-	    <!-- positive regex - more strict -->
-	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
-	</field>
-	<field>
-	    <fname>PROP</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
+        <name>scope</name>
+        <field>
+            <fname>NAME</fname>
+            <length>255</length>
+            <regex>/^([[:alpha:]]|[[:digit:]]|[_-])*$/</regex>
+        </field>
+        <field>
+            <fname>DESCRIPTION</fname>
+            <length>255</length>
+            <!--<regex>/^[a-zA-Z0-9\-\._\(\)\[\],;+:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+        </field>
+        <field>
+            <fname>RESERVED</fname>
+            <length>1</length>
+            <regex>/^[01]$/</regex>
+        </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
-	<name>endpointproperty</name>
-	<field>
-	    <fname>ENDPOINTID</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
-	<field>
-	    <fname>NAME</fname>
-	    <length>255</length>
-        <!-- Allows whitespace in the key, but not trailing or leading -->
-        <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
-	</field>
-	<field>
-	    <fname>VALUE</fname>
-	    <length>255</length>
-	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-        <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
-        <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
-	    <!-- positive regex - more strict -->
-	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
-	</field>
-	<field>
-	    <fname>PROP</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
+        <name>siteproperty</name>
+        <field>
+            <!-- site ID value -->
+            <fname>SITE</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+        <field>
+            <!-- property key name-->
+            <fname>NAME</fname>
+            <length>255</length>
+            <!-- Allows whitespace in the key, but not trailing or leading -->
+            <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
+        </field>
+        <field>
+            <!-- property key value -->
+            <fname>VALUE</fname>
+            <length>255</length>
+            <!-- negation regex - allow all chars except negated -->
+            <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
+            <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
+            <!-- positive regex - more strict -->
+            <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
+        </field>
+        <field>
+            <!-- Property ID value for when editing property -->
+            <fname>PROP</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
-	<name>servicegroupproperty</name>
-	<field>
-	    <fname>SERVICEGROUP</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
-	<field>
-	    <fname>NAME</fname>
-	    <length>255</length>
-        <!-- Allows whitespace in the key, but not trailing or leading -->
-        <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
-	</field>
-	<field>
-	    <fname>VALUE</fname>
-	    <length>255</length>
-	    <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
-        <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
-        <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
-	    <!-- positive regex - more strict -->
-	    <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
-	</field>
-	<field>
-	    <fname>PROP</fname>
-	    <length>255</length>
-	    <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
-	</field>
+        <name>useridentifier</name>
+        <field>
+            <!-- Identifier key name-->
+            <fname>NAME</fname>
+            <length>255</length>
+            <!-- Allows whitespace in the key, but not trailing or leading -->
+            <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
+        </field>
+        <field>
+            <!-- Identifier key value -->
+            <fname>VALUE</fname>
+            <length>255</length>
+            <!-- Allows most characters, including whitespace.
+             However, no trailing or leading whitespace is permitted.
+          -->
+            <regex>/^[^`\"&lt;&gt;\s]+(\s*[^`\"&lt;&gt;\s]+)*$/</regex>
+        </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
-	<name>cert_status_change</name>
-	<field>
-	    <fname>REASON</fname>
-	    <length>300</length>
-	    <!--<regex>/^[a-zA-Z0-9è\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
-	    <regex>/^[^`'\";&lt;&gt;]+$/</regex>
-	</field>
+        <name>serviceproperty</name>
+        <field>
+            <fname>SERVICE</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+        <field>
+            <fname>NAME</fname>
+            <length>255</length>
+            <!-- Allows whitespace in the key, but not trailing or leading -->
+            <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
+        </field>
+        <field>
+            <fname>VALUE</fname>
+            <length>255</length>
+            <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
+            <!--Allows most characters, leading and trailing white space, but requires at least one non-whitespace character -->
+            <regex>/^(\s*[^`'\"\s]+\s*)+$/</regex>
+            <!-- positive regex - more strict -->
+            <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
+        </field>
+        <field>
+            <fname>PROP</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+    </entity>
+    <!-- ==========================================================  -->
+    <entity>
+        <name>endpointproperty</name>
+        <field>
+            <fname>ENDPOINTID</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+        <field>
+            <fname>NAME</fname>
+            <length>255</length>
+            <!-- Allows whitespace in the key, but not trailing or leading -->
+            <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
+        </field>
+        <field>
+            <fname>VALUE</fname>
+            <length>255</length>
+            <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
+            <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
+            <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
+            <!-- positive regex - more strict -->
+            <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
+        </field>
+        <field>
+            <fname>PROP</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+    </entity>
+    <!-- ==========================================================  -->
+    <entity>
+        <name>servicegroupproperty</name>
+        <field>
+            <fname>SERVICEGROUP</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+        <field>
+            <fname>NAME</fname>
+            <length>255</length>
+            <!-- Allows whitespace in the key, but not trailing or leading -->
+            <regex>/^[a-zA-Z0-9@_\-\[\]\+\.]+(\s*[a-zA-Z0-9@_\-\[\]\+\.]+)*$/</regex>
+        </field>
+        <field>
+            <fname>VALUE</fname>
+            <length>255</length>
+            <!-- negation regex - allow all chars except negated - to use when utf8 db sorted-->
+            <!--Allows most characters, including whitespace. However, no trailing or leading whitespace permitted -->
+            <regex>/^[^`'\"&lt;&gt;\s]+(\s*[^`'\"&lt;&gt;\s]+)*$/</regex>
+            <!-- positive regex - more strict -->
+            <!--<regex>/^[a-zA-Z0-9\-\._\[\],:;\/\s@\+\%\$\^\*{}~#!|&amp;]+$/</regex>-->
+        </field>
+        <field>
+            <fname>PROP</fname>
+            <length>255</length>
+            <regex>/^[a-zA-Z0-9\-\._]+$/</regex>
+        </field>
+    </entity>
+    <!-- ==========================================================  -->
+    <entity>
+        <name>cert_status_change</name>
+        <field>
+            <fname>REASON</fname>
+            <length>300</length>
+            <!--<regex>/^[a-zA-Z0-9è\-\._\(\)\[\],;:\/'"\s]*$/</regex>-->
+            <regex>/^[^`'\";&lt;&gt;]+$/</regex>
+        </field>
     </entity>
     <!-- ==========================================================  -->
     <entity>
@@ -606,9 +615,9 @@
             <length>255</length>
             <regex>/^(X\.509|OIDC Subject)$/</regex>
         </field>
-		<field>
-			<fname>ALLOW_WRITE</fname>
-			<ftype>boolean</ftype>
-		</field>
+        <field>
+            <fname>ALLOW_WRITE</fname>
+            <ftype>boolean</ftype>
+        </field>
     </entity>
 </schema>

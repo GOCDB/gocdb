@@ -20,4 +20,3 @@ class SecurityContextSource {
         return self::$context;
     }
 }
-
