@@ -14,7 +14,7 @@ jobs:
         # Define jobs for all combinations of php, mariadb and extension, up to "include"
         # Tests will be performed for each combination
         php-version: ["5.4", "5.5", "5.6", "7.0", "7.1", "7.4"]
-        mariadb-version: ["10.3"]
+        mariadb-version: ["10.3", "10.4", "10.5", "10.6", "10.11", "11", "latest"]
         extension: ["pdo_mysql"]
         include:
           - php-version: "5.4"
@@ -29,6 +29,20 @@ jobs:
             composer-json: "composer.json"
           - php-version: "7.4"
             composer-json: "composer-7.4.json"
+          - mariadb-version: "10.3"
+            mariadb_admin_cmd: "mysqladmin"
+          - mariadb-version: "10.4"
+            mariadb_admin_cmd: "mariadb-admin"
+          - mariadb-version: "10.5"
+            mariadb_admin_cmd: "mariadb-admin"
+          - mariadb-version: "10.6"
+            mariadb_admin_cmd: "mariadb-admin"
+          - mariadb-version: "10.11"
+            mariadb_admin_cmd: "mariadb-admin"
+          - mariadb-version: "11"
+            mariadb_admin_cmd: "mariadb-admin"
+          - mariadb-version: "latest"
+            mariadb_admin_cmd: "mariadb-admin"
 
     services:
       mariadb:
@@ -39,7 +53,7 @@ jobs:
           MYSQL_USER: "user"
           MYSQL_PASSWORD: "password"
 
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+        options: --health-cmd="${{ matrix.mariadb_admin_cmd }} ping" --health-interval=5s --health-timeout=2s --health-retries=3
         ports:
           - "3306:3306"
 
