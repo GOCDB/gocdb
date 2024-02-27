@@ -29,6 +29,8 @@ jobs:
             composer-json: "composer.json"
           - php-version: "7.4"
             composer-json: "composer-7.4.json"
+          - mariadb-version: "10.3"
+            mariadb_admin_cmd: "mysqladmin"
 
     services:
       mariadb:
@@ -39,7 +41,7 @@ jobs:
           MYSQL_USER: "user"
           MYSQL_PASSWORD: "password"
 
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+        options: --health-cmd="${{ matrix.mariadb_admin_cmd }} ping" --health-interval=5s --health-timeout=2s --health-retries=3
         ports:
           - "3306:3306"
 
