@@ -14,7 +14,7 @@ jobs:
         # Define jobs for all combinations of php, mariadb and extension, up to "include"
         # Tests will be performed for each combination
         php-version: ["7.4"]
-        mariadb-version: ["10.3"]
+        mariadb-version: ["10.11", "11.4", "11", "latest"]
         extension: ["pdo_mysql"]
         composer-json: ["composer.json"]
 
@@ -27,7 +27,7 @@ jobs:
           MYSQL_USER: "user"
           MYSQL_PASSWORD: "password"
 
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+        options: --health-cmd="mariadb-admin ping" --health-interval=5s --health-timeout=2s --health-retries=3
         ports:
           - "3306:3306"
 
