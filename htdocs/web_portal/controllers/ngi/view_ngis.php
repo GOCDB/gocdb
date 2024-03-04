@@ -25,6 +25,8 @@ function view_ngis() {
     require_once __DIR__ . '/../utils.php';
     require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 
+    $configService = \Factory::getConfigservice();
+
     $filterParams = array();
 
 //    $scope = '%%';
@@ -68,6 +70,11 @@ function view_ngis() {
     $params['ngis'] = $ngis;
     $params['scopes']=$scopes;
     $params['selectedScopes']=$selectedScopes;
+
+    // adding the configurable ngi documentation link to the params array
+    $ngiDocLink = $configService->getNgiDocLink();
+    $params['ngiDocLink'] = $ngiDocLink;
+
     show_view('ngi/view_ngis.php', $params, "NGIs");
 }
 
