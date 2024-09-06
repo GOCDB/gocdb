@@ -212,19 +212,20 @@ class ShibAuthToken implements IAuthentication {
         $sectionFragmentInfo = "/#using-institutional-account-via-egi-check-in";
         $documentationURL = $resourceLink . $sectionFragmentInfo;
 
-        return '<ul>'
-            . '<li>Login requires the entitlement '
-            . 'urn:mace:egi.eu:res:gocdb#aai.egi.eu, '
-            . 'which was not provided. This entitlement is automatically '
-            . 'granted when using an identity provider compliant with '
+        return "<ul>"
+            . "<li>Login requires the entitlement "
+            . "urn:mace:egi.eu:res:gocdb#aai.egi.eu, "
+            . "which was not provided.</li>"
+            . "<li>This entitlement is automatically granted "
+            . "when using an identity provider compliant with "
             . "<a href=\"{$refedsResAndSchURL}\" target='_blank'>"
             . "REFEDS R&amp;S</a> and "
             . "<a href=\"{$refedsSirtfiURL}\" target='_blank'>"
-            . "REFEDS Sirtfi</a>. "
-            . 'Please see here for more information: '
-            . '<a href="' . $documentationURL . 'target="_blank">'
-            . $documentationURL . '</a>.'
-            . '</li>'
-            . '</ul>';
+            . "REFEDS Sirtfi</a>.</li>"
+            . "<li>Please see here for more information: "
+            . "<a href=\"{$documentationURL}\" target='_blank'>"
+            . $documentationURL . "</a>."
+            . "</li>"
+            . "</ul>";
     }
 }
