@@ -224,8 +224,7 @@ class ShibAuthToken implements IAuthentication {
             . "REFEDS Sirtfi</a>.</li>"
             . "<li>Please see here for more information: "
             . "<a href=\"{$documentationURL}\" target='_blank'>"
-            . $documentationURL . "</a>."
-            . "</li>"
+            . "{$documentationURL}</a>.</li>"
             . "</ul>";
     }
 }
