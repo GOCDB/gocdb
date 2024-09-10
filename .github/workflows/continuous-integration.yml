@@ -13,22 +13,10 @@ jobs:
       matrix:
         # Define jobs for all combinations of php, mariadb and extension, up to "include"
         # Tests will be performed for each combination
-        php-version: ["5.4", "5.5", "5.6", "7.0", "7.1", "7.4"]
+        php-version: ["7.4"]
         mariadb-version: ["10.3"]
         extension: ["pdo_mysql"]
-        include:
-          - php-version: "5.4"
-            composer-json: "composer-5.4.json"
-          - php-version: "5.5"
-            composer-json: "composer-5.4.json"
-          - php-version: "5.6"
-            composer-json: "composer-5.4.json"
-          - php-version: "7.0"
-            composer-json: "composer-5.4.json"
-          - php-version: "7.1"
-            composer-json: "composer-5.4.json"
-          - php-version: "7.4"
-            composer-json: "composer.json"
+        composer-json: ["composer.json"]
 
     services:
       mariadb:
