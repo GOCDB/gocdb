@@ -179,6 +179,37 @@
     -->
     <restrict_personal_data>false</restrict_personal_data>
 
+    <!-- identity_providers
+      Shib/CheckIn Token reads config file
+      for needed AAI entitlements.
+      This is to allow Admins so that they will be empowered
+      to make quicker changes to AAI references.
+    -->
+    <identity_providers>
+      <provider>
+        <idp>aai.egi.eu/auth/realms/egi</idp>
+        <name>EGI Proxy</name>
+        <authentication_realm>
+          EGI Proxy IdP
+        </authentication_realm>
+        <required_groups>
+          <group>urn:mace:egi.eu:res:gocdb#aai.egi.eu</group>
+        </required_groups>
+        <help_url>https://docs.egi.eu/internal/configuration-database/access/#using-institutional-account-via-egi-check-in</help_url>
+      </provider>
+      <provider>
+        <idp>aai-demo.egi.eu/auth/realms/egi</idp>
+        <name>EGI Demo Proxy</name>
+        <authentication_realm>
+          EGI Proxy IdP
+        </authentication_realm>
+        <required_groups>
+          <group>urn:mace:egi.eu:res:gocdb#aai.egi.eu</group>
+        </required_groups>
+        <help_url>https://docs.egi.eu/internal/configuration-database/access/#using-institutional-account-via-egi-check-in</help_url>
+      </provider>
+    </identity_providers>
+
   </local_info>
 
   <!--

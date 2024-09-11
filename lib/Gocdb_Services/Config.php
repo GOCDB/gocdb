@@ -567,4 +567,44 @@ class Config
 
         return $emailTo;
     }
+
+    public function getIdentityProvidersInfo()
+    {
+        $localInfo = $this->GetLocalInfoXML();
+        $configuredProviders = $localInfo->identity_providers->provider;
+        $identityProviders = [];
+
+        if (!empty($configuredProviders)) {
+            foreach ($configuredProviders as $providerDetails) {
+                $identityProviders[] = $this->extractProviderInfo(
+                    $providerDetails
+                );
+            }
+        }
+
+        return $identityProviders;
+    }
+
+    private function extractProviderInfo($providerDetails)
+    {
+        /** required_groups */
+        $requiredGroups = [];
+
+        if (!empty($providerDetails->required_groups)) {
+            foreach ($providerDetails->required_groups->group as $group) {
+                $requiredGroups[] = (string) $group;
+            }
+        }
+
+        // Return extracted provider information as an array
+        return [
+            'idp' => (string) $providerDetails->idp,
+            'name' => (string) $providerDetails->name,
+            'authenticationRealm' => [
+                (string) $providerDetails->authentication_realm
+            ],
+            'requiredGroups' => $requiredGroups,
+            'helpURL' => (string) $providerDetails->help_url
+        ];
+    }
 }
