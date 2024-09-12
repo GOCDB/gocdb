@@ -302,6 +302,11 @@ function Draw_Page($Page_Type) {
             require_once __DIR__.'/controllers/my_sites.php';
             my_sites();
             break;
+        case "Help_And_Contact";
+            //rejectIfNotAuthenticated();
+            require_once __DIR__.'/controllers/help_and_contact.php';
+            help_and_contact();
+            break;
         case "Edit_NGI":
             rejectIfNotAuthenticated();
             require_once __DIR__.'/controllers/ngi/edit_ngi.php';
@@ -654,12 +659,14 @@ function Draw_Page($Page_Type) {
     }
 }
 
+
 /* Draws a static HTML page */
 function Draw_Static_HTML() {
     $Page_Name = Get_Static_Page_Name();
     $Page_Content = Get_Static_Page_Contents($Page_Name);
     Draw_Standard_Page($Page_Content);
 }
+
 
 /* Finds out if a static page has been requested. If it has, return
  * the page name, otherwise return a blank string. */
@@ -709,7 +716,6 @@ function Draw_Standard_Page($Page_Content, $title=null) {
     $HTML .= Get_Standard_Bottom_Section_HTML();
     echo $HTML;
 }
-
 
 
 /* Given the name of a file in the view directory, include it
