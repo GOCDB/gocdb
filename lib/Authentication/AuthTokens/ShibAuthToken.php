@@ -122,7 +122,7 @@ class ShibAuthToken implements IAuthentication {
             }
             if(empty($_SERVER['entitlement'])){
                 //die('Did not recieve the required entitlement attribute from the EGI Proxy IdP, please contact gocdb-admins');
-                $HTML = '<ul><li>Login requires a GOCDB entitlement value <a href="https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb" target="_blank">https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb</a></li><li>Please, logout or restart your browser and attempt to login again using an identity provider that provides a GOCDB entitlement</li></ul>';
+                $HTML = $this->getEntitlementErrorMessage();
                 $HTML .= "<div style='text-align: center;'>";
                 $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
                 $HTML .= "</div>";
@@ -132,7 +132,7 @@ class ShibAuthToken implements IAuthentication {
 
             $entitlementValuesArray = explode(';', $_SERVER['entitlement']);
             if( !in_array('urn:mace:egi.eu:res:gocdb#aai.egi.eu', $entitlementValuesArray) ){
-                 $HTML = '<ul><li>Login requires a GOCDB entitlement <a href="https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb" target="_blank">https://wiki.egi.eu/wiki/URN_Registry:aai.egi.eu:gocdb</a></li><li>Please, logout or restart your browser and attempt to login again using an identity provider that provides a GOCDB entitlement</li></ul>';
+                 $HTML = $this->getEntitlementErrorMessage();
                  $HTML .= "<div style='text-align: center;'>";
                  $HTML .= '<a href="'.htmlspecialchars(\Factory::$properties['LOGOUTURL']).'"><b><font colour="red">Logout</font></b></a>';
                  $HTML .= "</div>";
@@ -204,4 +204,27 @@ class ShibAuthToken implements IAuthentication {
         return true;
     }
 
+    private function getEntitlementErrorMessage()
+    {
+        $refedsResAndSchURL = "https://refeds.org/category/research-and-scholarship";
+        $refedsSirtfiURL = "https://refeds.org/sirtfi";
+        $resourceLink = "https://docs.egi.eu/internal/configuration-database/access";
+        $sectionFragmentInfo = "/#using-institutional-account-via-egi-check-in";
+        $documentationURL = $resourceLink . $sectionFragmentInfo;
+
+        return "<ul>"
+            . "<li>Login requires the entitlement "
+            . "urn:mace:egi.eu:res:gocdb#aai.egi.eu, "
+            . "which was not provided.</li>"
+            . "<li>This entitlement is automatically granted "
+            . "when using an identity provider compliant with "
+            . "<a href=\"{$refedsResAndSchURL}\" target='_blank'>"
+            . "REFEDS R&amp;S</a> and "
+            . "<a href=\"{$refedsSirtfiURL}\" target='_blank'>"
+            . "REFEDS Sirtfi</a>.</li>"
+            . "<li>Please see here for more information: "
+            . "<a href=\"{$documentationURL}\" target='_blank'>"
+            . "{$documentationURL}</a>.</li>"
+            . "</ul>";
+    }
 }
