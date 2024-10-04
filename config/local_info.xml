@@ -15,6 +15,19 @@
     <!-- If page_banner is not empty the text is used to create a page banner strip -->
     <page_banner></page_banner>
 
+    <!-- Documentation links to be configurable -->
+    <project>
+        <doc_link></doc_link>
+    </project>
+
+    <ngi>
+        <doc_link></doc_link>
+    </ngi>
+
+    <service_group>
+        <doc_link></doc_link>
+    </service_group>
+
     <!-- Email addresses to send from and reply to -->
     <email_from>no-reply@localhost</email_from>
     <email_to>gocdb-admins@localhost</email_to>

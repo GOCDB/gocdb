@@ -11,7 +11,7 @@
         </span>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
 <!-- TODO: link            -->
-            <a style="float: left; padding-top: 0.3em;" href="https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Projects">
+            <a style="float: left; padding-top: 0.3em;" href="<?php echo $params['projectDocLink'] ?>">
                 What is a project?
             </a>
         </span>
