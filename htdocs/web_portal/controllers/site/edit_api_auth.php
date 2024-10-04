@@ -1,10 +1,11 @@
 <?php
+
 /*______________________________________________________
  *======================================================
  * File: edit_api_auth.php
  * Author: George Ryall
- * Description: Processes a edit API Authentication entity  request. If the user
- *              hasn't POSTed any data we draw the new site
+ * Description: Processes a edit API Authentication entity  request.
+ *               If the user hasn't POSTed any data we draw the new site
  *              form. If they post data we assume they've posted it from
  *              the form and validate then insert it into the DB.
  *
@@ -21,24 +22,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
 /*======================================================*/
-require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
-require_once __DIR__.'/../utils.php';
-require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
+require_once __DIR__
+    . '/../../../web_portal/components/Get_User_Principle.php';
+require_once __DIR__ . '/../utils.php';
+require_once __DIR__ . '/../../../../lib/Gocdb_Services/Factory.php';
+
+use Exception;
 
 /**
  * Controller to edit authentication entity request
- * @global array $_POST only set if the browser has POSTed data
+ *
+ * @global array $_POST only set if the browser has posted data
+ *
  * @return null
  */
-function edit_entity() {
+function edit_entity()
+{
     $dn = Get_User_Principle();
     $user = \Factory::getUserService()->getUserByPrinciple($dn);
 
-    //Check the portal is not in read only mode, returns exception if it is and user is not an admin
+    /**
+     * Check the portal is not in read only mode,
+     * returns exception if it is and user is not an admin
+     */
     checkPortalIsNotReadOnlyOrUserIsAdmin($user);
 
-    if (!isset($_REQUEST['authentityid']) || !is_numeric($_REQUEST['authentityid']) ){
-        throw new Exception("A authentication entity id must be specified in the url");
+    if (
+        !isset($_REQUEST['authentityid'])
+        || !is_numeric($_REQUEST['authentityid'])
+    ) {
+        throw new Exception(
+            "A authentication entity id must be specified in the url"
+        );
     }
 
     $serv = \Factory::getSiteService();
@@ -47,48 +62,67 @@ function edit_entity() {
 
     // Validate the user has permission to edit properties
     if (!$serv->userCanEditSite($user, $site)) {
-        throw new \Exception("Permission denied: a site role is required to edit authentication entities at " . $site->getShortName());
+        throw new Exception(
+            "Permission denied: a site role is required to edit "
+            . "authentication entities at "
+            . $site->getShortName()
+        );
     }
 
-    if($_POST) {     // If we receive a POST request it's to edit an authentication entity
+    // If we receive a POST request it's to edit an authentication entity
+    if ($_POST) {
         submit($user, $authEnt, $site, $serv);
-    } else { // If there is no post data, draw the edit authentication entity form
+    } else {
+    // If there is no post data, draw the edit authentication entity form
         draw($user, $authEnt, $site);
     }
 }
 
-function draw(\User $user = null, \APIAuthentication $authEnt = null, \Site $site = null) {
-    if(is_null($user)){
-        throw new Exception("Unregistered users can't edit authentication credentials");
+function draw(
+    \User $user = null,
+    \APIAuthentication $authEnt = null,
+    \Site $site = null
+) {
+    if (is_null($user)) {
+        throw new Exception(
+            "Unregistered users can't edit authentication credentials"
+        );
     }
 
     $params = array();
     $params['site'] = $site;
     $params['authEnt'] = $authEnt;
     $params['authTypes'] = array();
-    $params['authTypes'][]='X.509';
-    $params['authTypes'][]='OIDC Subject';
+    $params['authTypes'][] = 'X.509';
+    $params['authTypes'][] = 'OIDC Subject';
     $params['user'] = $user;
 
     show_view("site/edit_api_auth.php", $params);
+
     die();
 }
 
-function submit(\User $user, \APIAuthentication $authEnt, \Site $site, org\gocdb\services\Site $serv) {
+function submit(
+    \User $user,
+    \APIAuthentication $authEnt,
+    \Site $site,
+    org\gocdb\services\Site $serv
+) {
     $newValues = getAPIAuthenticationFromWeb();
 
     try {
         $authEnt = $serv->editAPIAuthEntity($authEnt, $user, $newValues);
-    } catch(Exception $e) {
+    } catch (Exception $e) {
         show_view('error.php', $e->getMessage());
+
         die();
     }
 
     $params = array();
     $params['apiAuthenticationEntity'] = $authEnt;
     $params['site'] = $site;
+
     show_view("site/edited_api_auth.php", $params);
+
     die();
-
-
 }
