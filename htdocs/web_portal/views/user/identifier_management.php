@@ -9,8 +9,13 @@
     <br />
     <div class=Form_Holder>
         <div class=Form_Holder_2>
-            <form name="Link_Identity" action="index.php?Page_Type=Link_Identity"
-                  method="post" class="inputForm" id="linkIdentityForm">
+            <form
+                name="Identifier_Management"
+                action="index.php?Page_Type=Identifier_Management"
+                method="post"
+                class="inputForm"
+                id="identifierManagementForm"
+            >
                 <div>
                     Your current ID string (e.g. certificate DN) is: <label><?php echo $params['idString']; ?></label>
                 </div>

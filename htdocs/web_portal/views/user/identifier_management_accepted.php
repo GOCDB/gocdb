@@ -12,6 +12,10 @@
     registered to your account. Please follow the instructions contained within it to
     complete your <?php echo $params['requestText']; ?>.</p>
 
-    <p>If you did not receive an email, please check the above details are correct, and the
-    <a href="index.php?Page_Type=Link_Identity">guidance on identity linking and account recovery</a>.</p>
+    <p>
+        If you did not receive an email,
+        please check the above details are correct, and the
+        <a href="index.php?Page_Type=Identifier_Management">
+            guidance on identity linking and account recovery</a>.
+    </p>
 </div>
