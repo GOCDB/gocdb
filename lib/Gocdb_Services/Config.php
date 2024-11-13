@@ -567,4 +567,13 @@ class Config
 
         return $emailTo;
     }
+
+    public function isAdminAllowedToUseIGTF()
+    {
+        if (strtolower( $this->GetLocalInfoXML()->igtf->admin_only) === 'true') {
+            return true;
+        }
+
+        return false;
+    }
 }

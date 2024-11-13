@@ -108,13 +108,15 @@ function Get_User_AuthToken(){
     /* @var $firewall \org\gocdb\security\authentication\IFirewallComponent */
     $firewall = $firewallArray['fwC1']; // select which firewall component you need
     $auth = $firewall->getAuthentication();  // invoke token resolution process
+
     if ($auth != null) {
         $principleString = $auth->getPrinciple();
-        // update the static holder so we can quickly return the token
-        // for the current request on repeat callouts to Get_User_AuthToken (is quicker than authenticating again).
-        MyStaticPrincipleHolder::getInstance()->setPrincipleString($principleString);
-        MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth);
-        return $auth;
+
+        $authToken = validateRequest($auth, $principleString, true);
+
+        if ($authToken !== null) {
+            return $authToken;
+        }
     }
 
     // We don't want the portal to be exposed without authentication (even
@@ -160,41 +162,23 @@ function Get_User_Principle(){
     /* @var $firewall \org\gocdb\security\authentication\IFirewallComponent */
     $firewall = $firewallArray['fwC1']; // select which firewall component you need
     $auth = $firewall->getAuthentication();  // invoke token resolution process
-    if ($auth != null) {
+
+    if ($auth !== null) {
         $principleString = $auth->getPrinciple();
-        // update the static holder so we can quickly return the principle
-        // for the current request on repeat callouts to Get_User_Principle (is quicker than authenticating again).
-        MyStaticPrincipleHolder::getInstance()->setPrincipleString($principleString);
-        MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth);
 
-        $serv = \Factory::getUserService();
+        $authUserPrinciple = validateRequest($auth, $principleString, false);
 
-        // Get user by searching user identifiers
-        $user = $serv->getUserByPrinciple($principleString);
-
-        // If cannot find user, search certificate DNs instead
-        if ($user === null) {
-            $user = $serv->getUserByCertificateDn($principleString);
-            $authExists = False;
-        } else {
-            $authExists = True;
+        if ($authUserPrinciple !== null) {
+            return $authUserPrinciple;
         }
-
-        // Is user registered/known in the DB? if true, update their last login time
-        // once for the current request.
-        if ($user !== null) {
-            $serv->updateLastLoginTime($user);
-
-            // If identifier for current auth does not exist, add to user
-            if (!$authExists) {
-                // Get type of auth logged in with e.g. X.509)
-                $authType = $auth->getDetails()['AuthenticationRealm'][0];
-                $identifierArr = array($authType, $principleString);
-                $serv->migrateUserCredentials($user, $identifierArr, $user);
-            }
-        }
-        return $principleString;
     }
+
+    if(session_start() === PHP_SESSION_NONE) {
+        session_start();
+    }
+
+    // `SSL-Retry_login` is required to end the recursive calls to /portal.
+    $_SESSION['SSL-Retry_login'] = true;
 
     // We don't want the portal to be exposed without authentication (even
     // though no actual info is displayed to an unauthenticated user),
@@ -241,6 +225,71 @@ function redirectUserToDiscoveryPage()
     $url = \Factory::getConfigService()->getServerBaseUrl();
     header("Location: " . $url);
     die();
+}
+
+/**
+ * Helper method to return the user principle string or authToken, if allowed.
+ *
+ * The authentication token object.
+ * @param $auth \org\gocdb\security\authentication\IAuthenticationToken
+ *
+ * The user's principle string (X.509 DN or SAML attribute).
+ * @param $principleString string
+ *
+ * If `$needAuthTokenOnly` is set to `true` -> It returns authToken
+ * @param $needAuthTokenOnly bool 
+ *
+ * The user's principle string or
+ * The IAuthenticationToken for the user or
+ * NULL if processing fails.
+ * @return string|\org\gocdb\security\authentication\IAuthenticationToken|null
+ */
+function validateRequest($auth, $principleString, $needAuthTokenOnly)
+{
+    $serv = \Factory::getUserService();
+
+    // Get user by searching user identifiers
+    $user = $serv->getUserByPrinciple($principleString);
+
+    // Get type of auth logged in with (e.g., X.509)
+    $authType = $auth->getDetails()['AuthenticationRealm'][0];
+
+    // Admin's are allowed to use IGTF ?
+    $canAdminAccessUsingIGTF = \Factory::getConfigService()->isAdminAllowedToUseIGTF();
+
+    /**
+     * Check if user exists and is either an admin who is allowed to use IGTF
+     * or user is NOT using X.509 authentication.
+     */
+    if (!is_null($user)) {
+        if (
+            ($canAdminAccessUsingIGTF && $user->isAdmin())
+            || $authType !== 'X.509'
+        ) {
+            /**
+             * Update the static holder with the principle string
+             * and auth token for quick retrieval.
+             */
+            MyStaticPrincipleHolder::getInstance()->setPrincipleString(
+                $principleString
+            );
+            MyStaticAuthTokenHolder::getInstance()->setAuthToken($auth);
+
+            if ($needAuthTokenOnly) {
+                return $auth;
+            }
+
+            /**
+             * If the user is registered/known in the DB,
+             * update their last login time.
+             */
+            $serv->updateLastLoginTime($user);
+
+            return $principleString;
+        }
+    }
+
+    return null;
 }
 
 ?>
