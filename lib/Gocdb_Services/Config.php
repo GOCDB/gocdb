@@ -570,7 +570,7 @@ class Config
 
     public function isAdminAllowedToUseIGTF()
     {
-        if (strtolower( $this->GetLocalInfoXML()->igtf->admin_only) === 'true') {
+        if (strtolower($this->GetLocalInfoXML()->igtf->admin_only) === 'true') {
             return true;
         }
 

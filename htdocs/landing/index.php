@@ -1,30 +1,30 @@
 <?php
-  if(session_start() === PHP_SESSION_NONE) {
+if (session_start() === PHP_SESSION_NONE) {
     session_start();
-  }
+}
 
-  // Check if SSL client verification is successful
-  $sslClientVerify = isset($_SERVER['SSL_CLIENT_VERIFY'])
-    ? $_SERVER['SSL_CLIENT_VERIFY']
-    : 'NONE';
+// Check if SSL client verification is successful
+$sslClientVerify = isset($_SERVER['SSL_CLIENT_VERIFY'])
+  ? $_SERVER['SSL_CLIENT_VERIFY']
+  : 'NONE';
 
-  $pathName = isset($_SERVER['REQUEST_URI'])
-    ? $_SERVER['REQUEST_URI']
-    : '/';
+$pathName = isset($_SERVER['REQUEST_URI'])
+  ? $_SERVER['REQUEST_URI']
+  : '/';
 
-  if (
+if (
     $sslClientVerify === 'SUCCESS'
     && empty($_SESSION['SSL-Retry_login'])
     && $pathName === "/"
-  ) {
+) {
     // Redirect the user to the /portal from the root URL.
     header("Location: /portal");
     die();
-  }
+}
 
-  require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
-  $configServ = \Factory::getConfigService();
-  $configServ->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
+$configServ = \Factory::getConfigService();
+$configServ->setLocalInfoOverride($_SERVER['SERVER_NAME']);
 ?>
 <!doctype html>
 <html lang="en">

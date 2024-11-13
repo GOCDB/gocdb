@@ -173,7 +173,7 @@ function Get_User_Principle(){
         }
     }
 
-    if(session_start() === PHP_SESSION_NONE) {
+    if (session_start() === PHP_SESSION_NONE) {
         session_start();
     }
 
@@ -237,7 +237,7 @@ function redirectUserToDiscoveryPage()
  * @param $principleString string
  *
  * If `$needAuthTokenOnly` is set to `true` -> It returns authToken
- * @param $needAuthTokenOnly bool 
+ * @param $needAuthTokenOnly bool
  *
  * The user's principle string or
  * The IAuthenticationToken for the user or
