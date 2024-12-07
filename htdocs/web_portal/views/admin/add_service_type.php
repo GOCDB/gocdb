@@ -13,7 +13,7 @@
             </label>
         </span>
         <br />
-        <input type="submit" value="Add Service Type" class="input_button">
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Add Service Type">
     </form>
 </div>
 <?php

@@ -49,7 +49,7 @@
         ?>
 
         <br />
-        <input type="submit" value="Add NGI" class="input_button">
+        <input type="submit" value="Add NGI" class="gocdb_btn gocdb_btn_props">
     </form>
 </div>
 

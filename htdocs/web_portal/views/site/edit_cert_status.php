@@ -24,7 +24,7 @@ $allStatuses = $params['statuses'];
             <span class="input_name">Reason for Change (Max 300 Chars)</span>
             <input class="input_input_text" type="text"name="COMMENT" />
             <input class="input_input_hidden" type="hidden" name="SITEID" value="<?php echo $site->getId() ?>" />
-            <input class="input_button" type="submit" value="Execute" />
+            <input class="gocdb_btn gocdb_btn_props" type="submit" value="Execute" />
             </form>
         </div>
     </div>

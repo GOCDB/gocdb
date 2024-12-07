@@ -63,7 +63,7 @@ function Get_Standard_Top_Section_HTML($title = null)
     if (!empty(\Factory::$properties['LOGOUTURL'])) {
         $html .= "<div style='text-align: right;'>";
         $html .= '<a href="' . htmlspecialchars(\Factory::$properties['LOGOUTURL']) .
-                    '"><b><font class="btn btn-danger btn-xs">Logout</font></b></a>';
+                    '"><b><font class="btn btn-danger btn-xs gocdb_btn_danger">Logout</font></b></a>';
         $html .= "</div>";
     }
 
@@ -106,7 +106,8 @@ function Get_Search_Form_HTML()
     $html .= '<form class="Indented" method="post" ' .
         'action="index.php?Page_Type=Search">';
     $html .= '<input type="text" name="SearchString" class="Search"/>';
-    $html .= '<input type="submit" value="Submit" class="Search_Button"/>';
+    $html .= '<input type="submit" value="Submit"';
+    $html .=  'class="Search_Button gocdb_btn gocdb_btn_props"/>';
     $html .= '</form>';
     return $html;
 }

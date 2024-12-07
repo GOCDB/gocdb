@@ -85,7 +85,7 @@ $serviceType = $params['serviceType'];
 
         <input type="hidden" name ="SERVICE" value="<?php echo $service->getId();?>" />
         <br/>
-        <input class="btn btn-default" type="submit" value="Add Service Endpoint" />
+        <input class="btn btn-default  gocdb_btn gocdb_btn_props" type="submit" value="Add Service Endpoint" />
     </form>
 </div>
 

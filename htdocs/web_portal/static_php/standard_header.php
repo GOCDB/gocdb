@@ -26,8 +26,14 @@ function get_standard_header($title = null) {
         <link rel="stylesheet" href="'.GocContextPath::getPath().'javascript/bootstrap/css/bootstrap-select.min.css" />
         <link rel="stylesheet" type="text/css" href="'.GocContextPath::getPath().'css/web_portal.php" />
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Sans">
-    <link rel="stylesheet" type="text/css" href="'.GocContextPath::getPath().'css/multiple-select.css"/>
-    </head>
+        <link rel="stylesheet" type="text/css" href="'.GocContextPath::getPath().'css/multiple-select.css"/>';
+
+    if (file_exists(GocContextPath::getPath() . 'css/branding.css')) {
+        $header .= '<link rel="stylesheet" type="text/css" href="'
+            . GocContextPath::getPath() . 'css/branding.css" />';
+    }
+
+    $header .= '</head>
     <body>';
 
     return $header;

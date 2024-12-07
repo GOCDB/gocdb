@@ -80,6 +80,6 @@
         <input class="input_input_text" type="text" name="TELEPHONE" />
 
         <br />
-        <input class="input_button" type="submit" value="Submit" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Submit" />
     </form>
 </div>

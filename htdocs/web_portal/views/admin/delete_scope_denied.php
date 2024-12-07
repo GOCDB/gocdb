@@ -61,7 +61,7 @@
     <form class="inputForm" method="post" action="index.php?Page_Type=Admin_Remove_Scope" name="RemoveScope">
         <input class="input_input_hidden" type="hidden" name="id" value="<?php echo $scopeId ?>" />
         <input class="input_input_hidden" type="hidden" name="ScopeInUseOveride" value="true" />
-        <input type="submit" value="Remove Scope which is currently in use" class="input_button">
+        <input type="submit" value="Remove Scope which is currently in use" class="gocdb_btn_danger gocdb_btn_props">
     </form>
 
 </div>

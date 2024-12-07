@@ -123,31 +123,6 @@
       <Scopes>show</Scopes>
     </menus>
 
-    <!-- css
-      Provide names or hex colour values for the background as
-      implemented in lib\Gocdb_Services\Config.php (called by
-      docs\web_portal\css\web_portal.php).
-      [Note that these values are used as part of the dynamic css
-      style sheet fetched by the browser after the base html is
-      returned.]
-      Colours can be specified as CSS colour names -
-      https://www.w3schools.com/colors/colors_names.asp
-      or hex values.
-      Gradient direction supplied as
-      https://www.w3schools.com/csSref/func_linear-gradient.asp
-      supporting 2-way and diagonal gradients e.g. "to bottom"
-      and "to bottom left" are supported with up to 3 colours.
-      If a 3 colour specification is not required, specify
-      an empty 3rd element.
-    -->
-    <css>
-      <backgroundDirection>to bottom left</backgroundDirection>
-      <backgroundColour1>#F7F9FE</backgroundColour1>
-      <backgroundColour2>#DEE9FB</backgroundColour2>
-      <backgroundColour3>#D0DFF9</backgroundColour3>
-      <headingTextColour>#00AC00</headingTextColour>
-    </css>
-
     <!-- name_mapping
       Basic rather primitive gocdb entity name mapping.
       Provide word mappings to be used to 'rename' gocdb entities for use in
@@ -203,14 +178,6 @@
     <default_scope>
       <name>BIG_PROJECT</name>
     </default_scope>
-
-    <css>
-      <backgroundDirection>to bottom</backgroundDirection>
-      <backgroundColour1>MidnightBlue</backgroundColour1>
-      <backgroundColour2>#76a3d6</backgroundColour2>
-      <backgroundColour3></backgroundColour3>
-      <headingTextColour>Sienna</headingTextColour>
-    </css>
 
     <menus>
       <Projects>hide</Projects>

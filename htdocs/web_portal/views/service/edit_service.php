@@ -152,7 +152,7 @@ $siteName = $service->getParentSite()->getName();
 
         <input class="input_input_hidden" type="hidden" value="<?php echo $service->getId() ?>" name="ID">
 
-        <input class="input_button" type="submit" value="Edit Service">
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Edit Service">
     </form>
 </div>
 

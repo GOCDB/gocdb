@@ -455,16 +455,12 @@ $showPD = $params['authenticated']; // display Personal Data
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
         <!-- Add new Service Link -->
-        <a href="index.php?Page_Type=Add_Service&amp;siteId=<?php echo($entityId); ?>">
+        <a class="gocdb_btn_secondary" href="index.php?Page_Type=Add_Service&amp;siteId=<?php echo($entityId); ?>">
             <img
                 src="<?php echo \GocContextPath::getPath() ?>img/add.png"
-                height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"
+                class="gocdb_btn_secondary_icon"
             />
-            <span
-                class="header"
-                style="vertical-align:middle; float: left;
-                        padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;"
-            >
+            <span class="gocdb_btn_secondary_text">
                 Add Service
             </span>
         </a>
@@ -571,15 +567,12 @@ $showPD = $params['authenticated']; // display Personal Data
     <!--  only show this link if we're in read / write mode -->
     <?php if (!$portalIsReadOnly && $params['ShowEdit']) : ?>
         <!-- Add new Downtime Link -->
-        <a href="index.php?Page_Type=Add_Downtime&amp;site=<?php echo($entityId); ?>">
+        <a class="gocdb_btn_secondary" href="index.php?Page_Type=Add_Downtime&amp;site=<?php echo($entityId); ?>">
             <img
                 src="<?php echo \GocContextPath::getPath() ?>img/add.png"
-                height="50px"
-                style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-            <span
-                class="header"
-                style="vertical-align:middle; float: left;
-                        padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+                class="gocdb_btn_secondary_icon"
+            />
+            <span class="gocdb_btn_secondary_text">
             Add Downtime
             </span>
         </a>
@@ -701,15 +694,12 @@ $showPD = $params['authenticated']; // display Personal Data
 
             <?php if (!$portalIsReadOnly) : ?>
                 <!-- Add new API credential -->
-                <a href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $entityId?>">
+                <a class="gocdb_btn_secondary" href="index.php?Page_Type=Add_API_Authentication_Entity&amp;parentid=<?php echo $entityId?>">
                     <img
                         src="<?php echo \GocContextPath::getPath() ?>img/add.png"
-                        height="50px"
-                        style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                    <span
-                        class="header"
-                        style="vertical-align:middle; float: left; padding-top: 1.1em;
-                                padding-left: 1em; padding-bottom: 0.9em;">
+                        class="gocdb_btn_secondary_icon"                    
+                    />
+                    <span class="gocdb_btn_secondary_text">
                         Add API credential
                     </span>
                 </a>
