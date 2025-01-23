@@ -110,7 +110,7 @@ class ShibAuthToken implements IAuthentication {
                     die(
                         "Did not receive required attributes from the "
                         . "$name to complete authentication. "
-                        . "Please contact gocdb-admins."
+                        . "Please contact $configService->getEmailTo()."
                     );
                 }
 
@@ -118,7 +118,7 @@ class ShibAuthToken implements IAuthentication {
                     die(
                         "Did not receive the required entitlement "
                         . "attribute from the $name. "
-                        . "Please contact gocdb-admins."
+                        . "Please contact $configService->getEmailTo()."
                     );
                 }
 
