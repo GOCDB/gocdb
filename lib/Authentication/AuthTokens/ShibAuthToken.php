@@ -136,19 +136,29 @@ class ShibAuthToken implements IAuthentication {
                     );
 
                     if ($missingGroups) {
-                        $HTML = "<ul>"
-                            . "<li>Login requires a GOCDB entitlement value "
-                            . "which was not provided for the $name.</li>"
-                            . "<li>Please see here for more information: "
+                        $HTML = "Login requires all of the following "
+                            . "entitlements to be provided by the $name:"
+                            . "<ul><li>"
+                            . implode("</li><li>", $requiredGroups)
+                            . "</li></ul>"
+                            . "You are missing the following entitlements:"
+                            . "<ul><li>"
+                            . implode("</li><li>", $missingGroups)
+                            . "</li></ul>"
+                            . "Please see here for more information: "
                             . "<a href='$helpUrl' target='_blank'>"
-                            . "$helpUrl</a>.</li>"
-                            . "<li>Logout or restart your browser"
+                            . "$helpUrl</a>."
+                            . "<br /><br />"
+                            . "Logout or restart your browser "
                             . "and attempt to login again using an IDP "
-                            . "that provides a GOCDB entitlement.</li>"
-                            . "</ul>";
+                            . "that provides the missing entitlements."
+                            . "<br /><br />";
+
                         $HTML .= "<div style='text-align: center;'>";
                         $HTML .= "<a href=\""
-                            . htmlspecialchars(\Factory::$properties['LOGOUTURL'])
+                            . htmlspecialchars(
+                                \Factory::$properties['LOGOUTURL']
+                            )
                             . "\"><b><font color=\"red\">Logout</font></b></a>";
                         $HTML .= "</div>";
                         echo ($HTML);
