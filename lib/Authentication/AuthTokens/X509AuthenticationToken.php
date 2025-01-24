@@ -85,6 +85,14 @@ class X509AuthenticationToken implements IAuthentication {
             $Raw_Client_Certificate = $_SERVER['SSL_CLIENT_CERT'];
             if (isset($Raw_Client_Certificate)) {
                 $Plain_Client_Cerfificate = openssl_x509_parse($Raw_Client_Certificate);
+
+                // $Plain_Client_Cerfificate will be an array in the presence of
+                // a certificate, otherwise, it will be `false`.
+                if (is_array($Plain_Client_Cerfificate)) {
+                    // Then no valid certificate was provided.
+                    return;
+                }
+
                 $User_DN = $Plain_Client_Cerfificate['name'];
                 if (isset($User_DN)) {
                     // Check that the dn does not contain a backslash - utf8 chars
