@@ -598,13 +598,13 @@ class Config
 
         // Return extracted provider information as an array
         return [
-            'idp' => (string) $providerDetails->idp,
-            'name' => (string) $providerDetails->name,
+            'idp' => trim((string) $providerDetails->idp),
+            'name' => trim((string) $providerDetails->name),
             'authentication_realm' => [
-                (string) $providerDetails->authentication_realm
+                trim((string) $providerDetails->authentication_realm)
             ],
             'required_groups' => $requiredGroups,
-            'help_url' => (string) $providerDetails->help_url
+            'help_url' => trim((string) $providerDetails->help_url)
         ];
     }
 }
