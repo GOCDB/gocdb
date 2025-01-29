@@ -122,15 +122,20 @@ class ShibAuthToken implements IAuthentication {
                     );
                 }
 
-                if (!empty($provider['required_groups'])) {
+                $requiredGroups = $provider['required_groups'];
+                if (!empty($requiredGroups)) {
                     $entitlementValues = explode(';', $_SERVER['entitlement']);
 
-                    if (
-                        !array_intersect(
-                            $entitlementValues,
-                            $provider['required_groups']
-                        )
-                    ) {
+                    // Compare the required groups to the entitlement values
+                    // provided, and store values that are in the required
+                    // groups but that are not present in the entitlement
+                    // values.
+                    $missingGroups = array_diff(
+                        $requiredGroups,
+                        $entitlementValues,
+                    );
+
+                    if ($missingGroups) {
                         $HTML = "<ul>"
                             . "<li>Login requires a GOCDB entitlement value "
                             . "which was not provided for the $name.</li>"
