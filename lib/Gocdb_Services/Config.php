@@ -600,11 +600,11 @@ class Config
         return [
             'idp' => (string) $providerDetails->idp,
             'name' => (string) $providerDetails->name,
-            'authenticationRealm' => [
+            'authentication_realm' => [
                 (string) $providerDetails->authentication_realm
             ],
-            'requiredGroups' => $requiredGroups,
-            'helpURL' => (string) $providerDetails->help_url
+            'required_groups' => $requiredGroups,
+            'help_url' => (string) $providerDetails->help_url
         ];
     }
 }

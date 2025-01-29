@@ -153,7 +153,7 @@ class ShibAuthToken implements IAuthentication {
 
                 $this->principal = $_SERVER['voPersonID'];
                 $this->userDetails = [
-                    'AuthenticationRealm' => $provider['authenticationRealm']
+                    'AuthenticationRealm' => $provider['authentication_realm']
                 ];
 
                 return;
