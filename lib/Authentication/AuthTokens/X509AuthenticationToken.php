@@ -88,7 +88,7 @@ class X509AuthenticationToken implements IAuthentication {
 
                 // $Plain_Client_Cerfificate will be an array in the presence of
                 // a certificate, otherwise, it will be `false`.
-                if (is_array($Plain_Client_Cerfificate)) {
+                if (! is_array($Plain_Client_Cerfificate)) {
                     // Then no valid certificate was provided.
                     return;
                 }
