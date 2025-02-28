@@ -134,7 +134,10 @@ function test_db_connection()
     $retval = [];
     try {
         $entityManager = Factory::getNewEntityManager();
-        $entityManager->getConnection()->connect();
+        // Get the database connection.
+        $connection = $entityManager->getConnection();
+        // Try a simple select statement.
+        $connection->fetchOne('SELECT 1');
         $retval["status"] = OK;
         $retval["message"] = OKMSG;
     } catch (\Exception $e) {
