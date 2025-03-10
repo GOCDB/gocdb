@@ -134,7 +134,13 @@ function test_db_connection()
     $retval = [];
     try {
         $entityManager = Factory::getNewEntityManager();
-        $entityManager->getConnection()->connect();
+        // Get the database connection.
+        $connection = $entityManager->getConnection();
+        // Try a simple select statement - attempt to bypass any caching
+        // by requesting the current timestamp to the nearest millisecond.
+        // This is done by the 3, which represents the number of decimal
+        // to display.
+        $connection->fetchOne('SELECT CURRENT_TIMESTAMP(3)');
         $retval["status"] = OK;
         $retval["message"] = OKMSG;
     } catch (\Exception $e) {
