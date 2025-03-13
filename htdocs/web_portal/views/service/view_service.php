@@ -320,9 +320,9 @@ $showPD = $params['authenticated'];
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
             <!-- Add new Service Endpoint -->
-            <a href="index.php?Page_Type=Add_Service_Endpoint&amp;se=<?php echo $se->getId();?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+            <a class="gocdb_btn_secondary" href="index.php?Page_Type=Add_Service_Endpoint&amp;se=<?php echo $se->getId();?>">
+                <img class="gocdb_btn_secondary_icon" src="<?php echo \GocContextPath::getPath()?>img/add.png"/>
+                <span class="gocdb_btn_secondary_text" >
                         Add <?php echo( ucfirst($epTxt)) ?>
                 </span>
             </a>
@@ -379,7 +379,7 @@ $showPD = $params['authenticated'];
             <!-- Add new Downtime Link -->
             <a href="index.php?Page_Type=Add_Downtime&amp;se=<?php echo $se->getId();?>&amp;site=<?php echo $se->getParentSite()->getId(); ?>">
                 <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+                <span class="header gocdb_btn_secondary" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
                         Add Downtime
                 </span>
             </a>

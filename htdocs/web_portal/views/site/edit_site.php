@@ -222,7 +222,7 @@ $siteScopes = $site->getScopes();
 
         <input class="input_input_hidden" type="hidden" name="ID" value="<?php xecho($site->getId()) ?>" />
 
-        <input class="input_button" type="submit" value="Edit Site" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Edit Site" />
 
     </form>
 </div>

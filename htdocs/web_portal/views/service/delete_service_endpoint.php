@@ -17,7 +17,7 @@ $service = $params['service'];
 
     <form class="inputForm" method="post" action="index.php?Page_Type=Delete_Service_Endpoint&endpointid=<?php echo $endpoint->getId();?>&serviceid=<?php echo $service->getId();?>" name="RemoveServiceEndpoint">
         <input class="input_input_hidden" type="hidden" name="UserConfirmed" value="true" />
-        <input type="submit" value="Remove this endpoint from GOCDB" class="input_button">
+        <input type="submit" value="Remove this endpoint from GOCDB" class="gocdb_btn_danger gocdb_btn_props">
     </form>
 
 </div>

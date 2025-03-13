@@ -144,7 +144,7 @@
         <div class="topMargin leftFloat clearLeft siteFilter">
         <span class="">Include Closed Sites: </span>
         <input type="checkbox" value=""<?php if ($params['showClosed'] == true) echo " checked=checked" ?> name="showClosed" />
-        <input type="submit" value="Filter Services">
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Filter Services">
         </div>
 
         </form>

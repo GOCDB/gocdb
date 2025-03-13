@@ -20,6 +20,6 @@
         </select> : [RoleTypeName]
         <br/><br/>
         <input type="hidden" name="Object_ID" value="<?php echo $params['objectId'] ?>"/>
-        <input type="submit" />
+        <input class="gocdb_btn" type="submit" />
     </form>
 </div>

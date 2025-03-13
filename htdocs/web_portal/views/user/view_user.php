@@ -191,7 +191,7 @@
                             <form action="index.php?Page_Type=Remove_User_Identifier&amp;id=
                                 <?php echo $params['user']->getId(); ?>&amp;identifierId=
                                 <?php echo $identifier->getId(); ?>" method="post">
-                                <div class="btn-like"
+                                <div class="btn-like gocdb_btn_danger"
                                     <?php
                                     if ($params['lastIdentifier']) {
                                         echo "title='Cannot remove all identifiers from a user'";
@@ -203,7 +203,7 @@
                                     }
                                     ?>
                                 >
-                                <input id="revokeButton" type="submit" value="Remove" class="btn btn-sm btn-danger"
+                                <input id="revokeButton" type="submit" value="Remove" class="btn btn-sm btn-danger gocdb_btn_danger"
                                             onclick="return confirmSubmit()"
                                     <?php
                                     if (
@@ -311,7 +311,7 @@
                         echo '<form action="index.php?Page_Type=Revoke_Role" method="post">';
                             echo "<input type='hidden' name='id' value='{$role->getId()}'/>";
                             echo "<input id='revokeButton' type='submit' {$decorator["revokeButton"]} " .
-                                    "value='Revoke' class='btn btn-sm btn-danger' onclick='return confirmSubmit()' " .
+                                    "value='Revoke' class='btn btn-sm btn-danger gocdb_btn_danger' onclick='return confirmSubmit()' " .
                                     "title='Your roles allowing revoke: {$decorator['revokeMessage']}'/>";
                         echo '</form>';
                     };
@@ -412,7 +412,7 @@
                                     <form action="index.php?Page_Type=Revoke_Role" method="post">
                                         <input type="hidden" name="id" value="<?php echo $role->getId()?>" />
                                         <input id="revokeButton" type="submit" value="Revoke"
-                                            class="btn btn-sm btn-danger" onclick="return confirmSubmit()"
+                                            class="btn btn-sm btn-danger gocdb_btn_danger" onclick="return confirmSubmit()"
                                             title="Your roles allowing revoke: <?php xecho($decorator); ?>" >
                                     </form>
                                 <?php endif;?>

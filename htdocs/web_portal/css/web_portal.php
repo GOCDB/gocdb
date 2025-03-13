@@ -5,12 +5,6 @@
 
     // Load variable values from local configuration //
     \Factory::getConfigService()->setLocalInfoOverride($_SERVER['SERVER_NAME']);
-
-    $background_direction = \Factory::getConfigService()->getBackgroundDirection();
-    $background_colour1 = \Factory::getConfigService()->getBackgroundColour1();
-    $background_colour2 = \Factory::getConfigService()->getBackgroundColour2();
-    $background_colour3 = \Factory::getConfigService()->getBackgroundColour3();
-    $header_text_colour = \Factory::getConfigService()->getHeadingTextColour();
 ?>
 /* table.sorter plugin, http://tablesorter.com/docs/ */
 table.tablesorter {
@@ -52,24 +46,7 @@ table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSo
 
 
 body {
-    background: linear-gradient(
-    <?php
-        // Build the linear gradient input
-        $out = '';
-    if ($background_colour3 != '') {
-        $out = ',' . $background_colour3;
-    }
-    if ($background_colour2 != '') {
-        $out = ',' . $background_colour2 . $out;
-    }
-    if ($background_colour1 != '') {
-        $out = ',' . $background_colour1 . $out;
-    }
-        $out = $background_direction . $out;
-
-        echo $out;
-    ?>
-    );
+    background: linear-gradient(to bottom left,#F7F9FE, #DEE9FB, #D0DFF9);
     color: #272A4B;
     font-family: 'PT Sans', sans-serif;
     font-size: 10pt;
@@ -90,16 +67,14 @@ a img {
 }
 
 h1,th,h2,h3,h4 {
-    color: <?=$header_text_colour?>;
+    color: #ac0000;
     text-decoration: none;
     font-weight:normal;
     margin-top: 0em;
     margin-bottom: 0.2em;
-    font-family: 'PT Sans', sans-serif;
 }
 
 a {
-    color: #103C7A;
     text-decoration: none;
     margin-top: 0em;
     margin-bottom: 0em;
@@ -208,6 +183,8 @@ a.Sponsor_Link img.Sponsor_Logo {
     vertical-align: bottom;
     height: 28px;
     margin: 2px;
+    margin-left: 3px;
+    margin-right: 3px;
 }
 
 a.Sponsor_Link:hover {
@@ -252,11 +229,6 @@ h4.menu_title {
 /* Input Form Configuration */
 .inputForm {
     display: inline;
-}
-
-.input_button {
-    margin-top: 0.5em;
-    font-size: 0.7em;
 }
 
 .input_name {
@@ -390,11 +362,10 @@ h3.spacer {
 }
 
 div.Copyright_Text {
-    margin-top: 2em;
-    font-size: 0.8em;
-    margin-left: -2em;
+    text-align: center;
+    margin: 1em auto;
+    width: 80%;
 }
-
 
 .add_edit_form {
     margin-left: 2em;
@@ -535,7 +506,7 @@ select.Downtime_Select {
 }
 
 .header {
-    color: <?=$header_text_colour?>;
+    color: #00AC00;
     padding:0.9em;
 }
 
@@ -780,6 +751,147 @@ img.pencil, img.trash {
     float: right;
 }
 
-img.trash {    
+img.trash {
     margin-right: 0.4em;
+}
+
+.button {
+    background: #48D249; /* backstop for (IE) compatibility mode view setting */
+    background: linear-gradient(#48D249, #B0EBB1);
+    color: white;
+    text-align: center;
+    display: block;
+    font-size: 2.3em;
+    border-radius: 0.4em;
+    padding: 0.4em 1em;
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 4%;
+    margin-bottom: 4%;
+}
+
+div.centrePageContainer {
+    background: white;
+    background-image: url('contentBackground.jpg');
+    background-position: top right;
+    background-repeat: no-repeat;
+    overflow: hidden;
+    margin-bottom: 3em;
+    border: 1px solid grey;
+    padding: 1em;
+    border-radius: 0.4em;
+}
+
+div.policyText {
+    margin-right: 5%;
+    margin-left: 5%;
+    margin-top: 3em;
+    margin-bottom: auto;
+    text-align: justify;
+}
+
+/* The GOCDB cloverleaf */
+
+img.Landing_Logo {
+  display: inline-block;
+  vertical-align:top;
+  margin-right: 1em;
+}
+
+/* wide_page_container is only used in Privacy and AUP policy */
+
+.wide_page_container {
+    width: 70em;
+}
+
+.centre_box {
+    position: relative;
+    padding: 0.5em 1em 0.0em 1em;
+}
+
+a.docLink {
+    color: #00AC00;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+h1.Landing_Welcome {
+  display: inline-block;
+}
+
+.gocdb_btn, 
+.btn-success {
+  background: linear-gradient(#3b58b9, #2c62b4);
+  border-color: linear-gradient(#3b58b9, #2c62b4);
+  color: white;
+  position: relative;
+  transition: all 0.3s ease-in-out;
+}
+
+.gocdb_btn:hover, 
+.btn-success:hover, 
+.btn.clicked {
+  background: linear-gradient(#4c6bcc, #3d74cc);
+  border-color: linear-gradient(#4c6bcc, #3d74cc);
+  color: white;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.gocdb_btn_props {
+  min-width: 6em;
+  padding: 4px;
+  font-size: 12px;
+  border-radius: 5px;
+}
+
+.gocdb_btn_danger {
+  background: #FF000E;
+  border-color: #FF000E;
+  color: white;
+}
+
+.has-success .input-group-addon,
+.has-success .form-control {
+  background: #ffffff;
+  border-color: blue;
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+}
+
+/* Remove active state styles */
+.btn-success:active,
+.btn-success:focus {
+  background-color: inherit !important;
+  border-color: inherit !important;
+  box-shadow: none !important;
+}
+
+
+/* Secondary button style for both links */
+.gocdb_btn_secondary {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.9em 1.2em;
+    color: #ef8200;
+    text-decoration: none;
+    border: 1px solid transparent;
+    transition: background 0.3s ease, border-color 0.3s ease;
+}
+
+.gocdb_btn_secondary_icon {
+    margin-right: 10px;
+    height: 29px;
+}
+
+.gocdb_btn_secondary_text {
+    vertical-align: middle;
+}
+
+/* Hover effect */
+.gocdb_btn_secondary:hover {
+    background: #f0f0f0;
+    border-color: #ef8200;
+    border-radius: 5px;
 }

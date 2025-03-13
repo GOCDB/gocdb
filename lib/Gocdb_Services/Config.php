@@ -338,30 +338,6 @@ class Config
                 return $this->GetLocalInfoXML()->name_mapping->$entityType->{str_replace(' ', '', $key)};
         }
     }
-    /**
-     * accessor function for css colour values from local_info.xml
-     * @return string
-     */
-    public function getBackgroundDirection()
-    {
-        return $this->GetLocalInfoXML()->css->backgroundDirection;
-    }
-    public function getBackgroundColour1()
-    {
-        return $this->GetLocalInfoXML()->css->backgroundColour1;
-    }
-    public function getBackgroundColour2()
-    {
-        return $this->GetLocalInfoXML()->css->backgroundColour2;
-    }
-    public function getBackgroundColour3()
-    {
-        return $this->GetLocalInfoXML()->css->backgroundColour3;
-    }
-    public function getHeadingTextColour()
-    {
-        return $this->GetLocalInfoXML()->css->headingTextColour;
-    }
 
     /**
      * Determine if the requested feature is set in the local_info.xml file.

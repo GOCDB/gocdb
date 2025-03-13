@@ -17,6 +17,6 @@ $site = $params['site'];
         <input class="input_input_text" type="text" name="KEYPAIRVALUE" />
         <input class="input_input_text" type="hidden" name ="SITE" value="<?php echo $site->getId();?>" />
 
-        <input class="input_button" type="submit" value="Add Site Property" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Add Site Property" />
     </form>
 </div>
