@@ -48,7 +48,7 @@ class Factory {
     private static $exService = null;
     private static $notificationService = null;
     private static $emailService = null;
-    private static $linkIdentityService = null;
+    private static $identifierManagementService = null;
     private static $APIAuthenticationService = null;
 
     public static $properties = array();
@@ -349,16 +349,21 @@ class Factory {
     }
 
     /**
-     * Singleton Link Identity service
-     * @return org\gocdb\services\LinkIdentity
+     * Singleton Identifier Management service
+     * @return org\gocdb\services\IdentifierManagement
      */
-    public static function getLinkIdentityService() {
-        if (self::$linkIdentityService == null) {
-            require_once __DIR__ . '/LinkIdentity.php';
-            self::$linkIdentityService = new org\gocdb\services\LinkIdentity();
-            self::$linkIdentityService->setEntityManager(self::getEntityManager());
+    public static function getIdentifierManagementService()
+    {
+        if (self::$identifierManagementService == null) {
+            require_once __DIR__ . '/IdentifierManagement.php';
+
+            self::$identifierManagementService = new org\gocdb\services\IdentifierManagement();
+            self::$identifierManagementService->setEntityManager(
+                self::getEntityManager()
+            );
         }
-        return self::$linkIdentityService;
+
+        return self::$identifierManagementService;
     }
 
      /**

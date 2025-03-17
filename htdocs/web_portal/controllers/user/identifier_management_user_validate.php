@@ -24,7 +24,11 @@ function validate_identity_link() {
     }
 
     try {
-        $request = Factory::getLinkIdentityService()->confirmIdentityLinking($code, $currentIdString);
+        $request = Factory::getIdentifierManagementService()
+                    ->confirmIdentityLinking(
+                        $code,
+                        $currentIdString
+                    );
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
@@ -37,5 +41,5 @@ function validate_identity_link() {
         $params['requestText'] = 'linked';
     }
 
-    show_view('user/linked_identity.php', $params);
+    show_view('user/identifier_management_linked.php', $params);
 }

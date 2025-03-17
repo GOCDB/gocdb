@@ -2,7 +2,7 @@
 namespace org\gocdb\services;
 
 require_once __DIR__ . '/AbstractEntityService.php';
-class LinkIdentity extends AbstractEntityService {
+class IdentifierManagement extends AbstractEntityService {
 
     /**
      * Processes an identity link request
@@ -12,7 +12,13 @@ class LinkIdentity extends AbstractEntityService {
      * @param string $currentAuthType auth type of current ID string
      * @param string $givenEmail email of primary user
      */
-    public function newLinkIdentityRequest($primaryIdString, $currentIdString, $primaryAuthType, $currentAuthType, $givenEmail) {
+    public function newIdentifierManagementRequest(
+        $primaryIdString,
+        $currentIdString,
+        $primaryAuthType,
+        $currentAuthType,
+        $givenEmail
+    ) {
 
         $serv = \Factory::getUserService();
 
@@ -46,8 +52,16 @@ class LinkIdentity extends AbstractEntityService {
         // Generate confirmation code
         $code = $this->generateConfirmationCode($primaryIdString);
 
-        // Create link identity request
-        $linkIdentityReq = new \LinkIdentityRequest($primaryUser, $currentUser, $code, $primaryIdString, $currentIdString, $primaryAuthType, $currentAuthType);
+        // Create identifier management request
+        $identifierManagementReq = new \IdentifierManagementRequest(
+            $primaryUser,
+            $currentUser,
+            $code,
+            $primaryIdString,
+            $currentIdString,
+            $primaryAuthType,
+            $currentAuthType
+        );
 
         // Recovery or identity linking
         if ($currentUser === null) {
@@ -59,7 +73,7 @@ class LinkIdentity extends AbstractEntityService {
         // Apply change
         try {
             $this->em->getConnection()->beginTransaction();
-            $this->em->persist($linkIdentityReq);
+            $this->em->persist($identifierManagementReq);
             $this->em->flush();
 
             // Send confirmation email(s) to primary user, and current user if registered with a different email
@@ -172,13 +186,13 @@ class LinkIdentity extends AbstractEntityService {
     }
 
     /**
-     * Gets a link identity request from the database based on user ID
+     * Gets a identifier management request from the database based on user ID
      * @param integer $userId userid of the request to be linked
      * @return arraycollection
      */
     private function getRequestByUserId($userId) {
         $dql = "SELECT l
-                FROM LinkIdentityRequest l
+                FROM IdentifierManagementRequest l
                 JOIN l.primaryUser pu
                 JOIN l.currentUser cu
                 WHERE pu.id = :id OR cu.id = :id";
@@ -192,14 +206,16 @@ class LinkIdentity extends AbstractEntityService {
     }
 
     /**
-     * Gets a link identity request from the database based on current ID string
+     * Gets a identifier management request from the database
+     * based on current ID string.
+     *
      * ID string may be present as primary or current user
      * @param string $idString ID string of user to be linked in primary account
      * @return arraycollection
      */
     private function getRequestByIdString($idString) {
         $dql = "SELECT l
-                FROM LinkIdentityRequest l
+                FROM IdentifierManagementRequest l
                 WHERE l.primaryIdString = :idString
                 OR l.currentIdString = :idString";
 
@@ -218,7 +234,7 @@ class LinkIdentity extends AbstractEntityService {
      */
     public function getRequestByConfirmationCode($code) {
         $dql = "SELECT l
-                FROM LinkIdentityRequest l
+                FROM IdentifierManagementRequest l
                 WHERE l.confirmCode = :code";
 
         $request = $this->em
