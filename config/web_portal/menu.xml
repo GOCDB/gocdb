@@ -119,11 +119,11 @@
     </spacer>
 
 
-	
+
     <HelpAndContact>
       <show_on_instance>all</show_on_instance>
       <name>Doc, Help &amp; Support</name>
-      <link>index.php?Page_Type=Static_HTML&amp;Page=Help_And_Contact</link>
+      <link>index.php?Page_Type=Help_And_Contact</link>
     </HelpAndContact>
 
    <spacer>
