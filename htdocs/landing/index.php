@@ -1,7 +1,30 @@
 <?php
-  require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
-  $configServ = \Factory::getConfigService();
-  $configServ->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+if (session_start() === PHP_SESSION_NONE) {
+    session_start();
+}
+
+// Check if SSL client verification is successful
+$sslClientVerify = isset($_SERVER['SSL_CLIENT_VERIFY'])
+  ? $_SERVER['SSL_CLIENT_VERIFY']
+  : 'NONE';
+
+$pathName = isset($_SERVER['REQUEST_URI'])
+  ? $_SERVER['REQUEST_URI']
+  : '/';
+
+if (
+    $sslClientVerify === 'SUCCESS'
+    && empty($_SESSION['SSL-Retry_login'])
+    && $pathName === "/"
+) {
+    // Redirect the user to the /portal from the root URL.
+    header("Location: /portal");
+    die();
+}
+
+require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
+$configServ = \Factory::getConfigService();
+$configServ->setLocalInfoOverride($_SERVER['SERVER_NAME']);
 ?>
 <!doctype html>
 <html lang="en">
@@ -39,8 +62,6 @@
             ?>
           </div>
           <div style="width: 80%; margin-left: auto; margin-right: auto;">
-            <a href="/portal/" style="width:68%; font-size:1.7em" class="button">Access GOCDB using your IGTF X.509 Certificate</a>
-            <p>or</p>
             <p>Access GOCDB using one of the following:</p>
             <div>
               <?php

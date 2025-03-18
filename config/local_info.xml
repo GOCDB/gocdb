@@ -179,6 +179,10 @@
     -->
     <restrict_personal_data>false</restrict_personal_data>
 
+    <igtf>
+        <admin_only>true</admin_only>
+    </igtf>
+
   </local_info>
 
   <!--
