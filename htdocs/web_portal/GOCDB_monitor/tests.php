@@ -144,9 +144,9 @@ function test_db_connection()
         $retval["status"] = OK;
         $retval["message"] = OKMSG;
     } catch (\Exception $e) {
-        $message = $e->getMessage();
+        error_log($e->getMessage());
         $retval["status"] = NOK;
-        $retval["message"] = "$message";
+        $retval["message"] = "Database connection test failed";
     }
 
     return $retval;
@@ -242,7 +242,7 @@ function run_tests(&$message)
 
     if ($res["status"] != "ok") {
         $errorCount++;
-        $messages[] = "Database connection test failed: " . $res["message"];
+        $messages[] = $res["message"];
     }
 
     $res = test_url(Factory::getConfigService()->GetPiUrl() .
