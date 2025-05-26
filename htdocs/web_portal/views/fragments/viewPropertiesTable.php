@@ -3,7 +3,7 @@
 <div class="tableContainer" style="width: 99.5%; float: left; margin-top: 3em; margin-right: 10px;">
     <span class="header" style="vertical-align:middle; float: left; padding-top: 0.9em; padding-left: 1em;">Extension Properties</span>
     <a href="index.php?Page_Type=Export_Properties&amp;parent_type=<?php echo get_class($parent)?>&amp;id=<?php echo $parent->getId();?>">
-        <span class="header" style="vertical-align:middle; float: right; padding-top: 0.9em; padding-left: 1em;">
+        <span class="header gocdb_btn" style="vertical-align:middle; float: right; padding-top: 0.9em; padding-left: 1em; margin: 0.3em; border-radius: 5px;">
             Export all properties
         </span>
     </a>
@@ -56,9 +56,9 @@
     <!--  only show this link if we're in read / write mode -->
     <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
         <!-- Add new data Link -->
-        <a href="index.php?Page_Type=<?php echo $addPropertiesPage?>&amp;parentid=<?php echo $parent->getId()?>">
-            <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+        <a class="gocdb_btn_secondary" href="index.php?Page_Type=<?php echo $addPropertiesPage?>&amp;parentid=<?php echo $parent->getId()?>">
+            <img class="gocdb_btn_secondary_icon" src="<?php echo \GocContextPath::getPath()?>img/add.png" />
+                <span class="gocdb_btn_secondary_text">
                         Add Properties
                 </span>
         </a>
@@ -74,7 +74,7 @@
                 </select>
 
                 <span class="input-group-btn">
-                    <input class="btn btn-default" type="button" onclick="return confirmPropAction()" value="Submit"/>
+                    <input class="btn btn-default gocdb_btn" type="button" onclick="return confirmPropAction()" value="Submit"/>
                 </span>
 
             </div>

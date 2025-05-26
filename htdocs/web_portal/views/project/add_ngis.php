@@ -25,7 +25,7 @@
                     </select>
                     <br />
                     <input class="input_input_hidden" type="hidden" name="ID" value="<?php echo $params['ID'] ?>" />
-                    <input class="input_button" type="submit" value="Add selected NGIs">
+                    <input class="gocdb_btn gocdb_btn_props" type="submit" value="Add selected NGIs">
                 </form>
             <?php else: ?>
                 There are either no NGIs in GOCDB or they are all a member of this project already.

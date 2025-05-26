@@ -66,7 +66,7 @@
         </div>
 
         <div class="topMargin leftFloat siteFilter clearLeft">
-            <input type="submit" value="Filter ServiceGroups">
+            <input  class="gocdb_btn gocdb_btn_props" type="submit" value="Filter ServiceGroups">
         </div>
         </form>
     </div>

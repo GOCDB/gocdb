@@ -2,13 +2,22 @@
   require_once __DIR__.'/../../lib/Gocdb_Services/Factory.php';
   $configServ = \Factory::getConfigService();
   $configServ->setLocalInfoOverride($_SERVER['SERVER_NAME']);
+  $origin = 'https://' . $_SERVER['HTTP_HOST'];
+  $brandingFilePAth = __DIR__ . '/../web_portal/css/branding.css';
 ?>
 <!doctype html>
 <html lang="en">
 <head>
   <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
   <title>GOCDB</title>
-  <link rel="stylesheet" type="text/css" href="home.css" />
+  <link rel="stylesheet" type="text/css" href="<?php echo $origin; ?>/portal/css/web_portal.php" />
+  <?php
+
+  if (file_exists($brandingFilePAth)) {
+    echo '<link rel="stylesheet" type="text/css" href="'
+      . $origin . '/portal/css/branding.css" />';
+  }
+  ?>
   <link rel="SHORTCUT ICON" href="Logo-1.4-FavIcon-32x32.regional.ico" />
   <link href="https://fonts.googleapis.com/css?family=PT+Sans" rel="stylesheet">
 </head>
@@ -39,7 +48,7 @@
             ?>
           </div>
           <div style="width: 80%; margin-left: auto; margin-right: auto;">
-            <a href="/portal/" style="width:68%; font-size:1.7em" class="button">Access GOCDB using your IGTF X.509 Certificate</a>
+            <a href="/portal/" style="width:68%; font-size:1.7em" class="button gocdb_btn">Access GOCDB using your IGTF X.509 Certificate</a>
             <p>or</p>
             <p>Access GOCDB using one of the following:</p>
             <div>
@@ -48,7 +57,7 @@
                 $egi_target = urlencode("https://" . $hostname . "/portal/");
                 $egi_redirect = "https://" . $hostname . "/Shibboleth.sso/Login?target=" . $egi_target;
               ?>
-                <a style="width:30%; display:inline-block; font-size:1.5em" href="<?php echo $egi_redirect; ?>" class="button">EGI Check-In</a>
+                <a style="width:30%; display:inline-block; font-size:1.5em" href="<?php echo $egi_redirect; ?>" class="button gocdb_btn">EGI Check-In</a>
             </div>
             <p>Browse the <a href="https://wiki.egi.eu/wiki/GOCDB" class="docLink hover">GOCDB documentation index</a> on the EGI wiki.</p>
           </div>

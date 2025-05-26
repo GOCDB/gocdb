@@ -39,6 +39,6 @@
 
         <input class="input_input_hidden" type="hidden" name="ID" value="<?php echo $params['ID']; ?>" />
         <input class="input_input_hidden" type="hidden" name="identifierId" value="<?php echo $params['identifierId']; ?>" />
-        <input type="submit" value="Update Identifier" class="input_button">
+        <input type="submit" value="Update Identifier" class="gocdb_btn gocdb_btn_props">
     </form>
 </div>

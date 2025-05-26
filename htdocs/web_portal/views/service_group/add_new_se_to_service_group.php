@@ -101,6 +101,6 @@
         </div>
 
         <br />
-        <input class="input_button" type="submit" value="Execute" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Execute" />
     </form>
 </div>

@@ -40,7 +40,7 @@
         <br/>
 
 
-        <input type="submit" class="btn btn-default" value="Add properties" class="input_button">
+        <input type="submit" class="btn btn-default" value="Add properties" class="gocdb_btn gocdb_btn_props">
     </form>
 
     <script>

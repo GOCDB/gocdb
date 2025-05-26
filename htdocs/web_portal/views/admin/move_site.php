@@ -24,6 +24,6 @@
         </select>
 
         <br>
-        <input class="input_button" type="submit" value="Move Site" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Move Site" />
     </form>
 </div>

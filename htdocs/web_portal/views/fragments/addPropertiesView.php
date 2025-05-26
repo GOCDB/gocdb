@@ -14,12 +14,12 @@
 
         <input class="input_input_text " type="hidden" name ="PARENT" value="<?php echo $parentID;?>" />
 
-        <input class="btn btn-default singleProp" type="submit" value="Add Property" style="display: inline;"/>
+        <input class="btn btn-default singleProp gocdb_btn" type="submit" value="Add Property" style="display: inline;"/>
 
 
 
     </form>
-    <input class="btn btn-default expandMulti" value="Add multiple properties" style="float: right;" />
+    <input class="btn btn-default expandMulti gocdb_btn" value="Add multiple properties" style="float: right;" />
 
     <br/>
     <br/>
@@ -31,9 +31,9 @@
         <input class="input_input_text" type="hidden" name="PARENT" value="<?php echo $parentID;?>" />
         <br/>
 
-        <input class="btn btn-default" type=file id=files style="display: inline;" />
-        <input type="button" class="btn btn-default" id="upload" value="Upload"/>
-        <input class="btn btn-default" type="submit" value="Add Properties" style="float: right;"/>
+        <input class="btn btn-default gocdb_btn" type=file id=files style="display: inline;" />
+        <input type="button" class="btn btn-default gocdb_btn" id="upload" value="Upload"/>
+        <input class="btn btn-default gocdb_btn" type="submit" value="Add Properties" style="float: right;"/>
 
     </form>
     </div>

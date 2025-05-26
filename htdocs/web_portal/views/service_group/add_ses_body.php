@@ -10,8 +10,12 @@
             <input  class="input_input_text vSiteSearch" type="text"
                     name="Search" value="Search" onclick="clearText()"
                     id='filter' />
-            <input  class="input_button vSiteSearchButton" type="submit"
-                    value="Search" onclick="startSearch()" />
+            <input
+                class="vSiteSearchButton gocdb_btn gocdb_btn_props"
+                type="submit"
+                value="Search"
+                onclick="startSearch()"
+            />
         </form>
 
 

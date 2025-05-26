@@ -8,6 +8,6 @@
         <input type="text" value="" name="Description" class="input_input_text">
 
         <br />
-        <input type="submit" value="Add Project" class="input_button">
+        <input type="submit" value="Add Project" class="gocdb_btn gocdb_btn_props">
     </form>
 </div>
