@@ -10,7 +10,7 @@
             All Service Groups in GOCDB.
         </span>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-            <a style="float: left; padding-top: 0.3em;" href="https://wiki.egi.eu/wiki/GOCDB/Input_System_User_Documentation#Service_Groups">
+            <a style="float: left; padding-top: 0.3em;" href="<?php echo $params['serviceGroupDocLink'] ?>">
                 What is a service group?
             </a>
         </span>

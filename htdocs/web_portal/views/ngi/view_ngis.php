@@ -13,7 +13,7 @@
             National Grid Initiatives
         </span>
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
-            <a style="float: left; padding-top: 0.3em;" href="http://www.egi.eu/about/glossary/glossary_N.html">What is an NGI?</a>
+            <a style="float: left; padding-top: 0.3em;" href="<?php echo $params['ngiDocLink'] ?>">What is an NGI?</a>
         </span>
     </div>
 
