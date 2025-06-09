@@ -19,6 +19,14 @@
     <email_from>no-reply@localhost</email_from>
     <email_to>gocdb-admins@localhost</email_to>
 
+    <!-- Operational tool references to be configured depending on the instance. -->
+    <helpdesk>
+        <link></link>
+        <support_unit></support_unit>
+    </helpdesk>
+    <request_tracker></request_tracker>
+    <community_docs></community_docs>
+
     <!-- Specify the URL and description of the Acceptable Use Policy -->
     <aup>AUP location</aup>
     <aup_title>AUP title</aup_title>
