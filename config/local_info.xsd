@@ -121,6 +121,13 @@
                 </xs:complexType>
               </xs:element>
               <xs:element name="send_email" type="xs:boolean" minOccurs="0"/>
+              <xs:element name="igtf">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="admin_only" type="xs:boolean" minOccurs="1"/>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
             </xs:all>
             <xs:attribute name="url" type="xs:anyURI"/>
           </xs:complexType>
