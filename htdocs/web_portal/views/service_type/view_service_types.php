@@ -1,9 +1,9 @@
 <div class="rightPageContainer">
-
     <div style="float: left;">
         <h1 style="float: left; margin-left: 0em;">
                 Service Types
         </h1>
+
         <span style="clear: both; float: left; padding-bottom: 0.4em;">
             All Service Types in GOCDB.
         </span>
@@ -12,16 +12,19 @@
     <?php $numberOfServiceTypes = sizeof($params['ServiceTypes'])?>
     <div class="listContainer">
         <span class="header listHeader">
-            <?php echo $numberOfServiceTypes ?> Service Type<?php if ($numberOfServiceTypes) {
+            <?= $numberOfServiceTypes; ?> Service Type<?php
+            if ($numberOfServiceTypes) {
                 echo "s";
             }?>
         </span>
+
         <table class="vSiteResults" id="selectedSETable">
             <tr class="site_table_row_1">
                 <th class="site_table">Name</th>
                 <th class="site_table">Services</th>
                 <th class="site_table">Description</th>
             </tr>
+
             <?php
             $num = 2;
 
