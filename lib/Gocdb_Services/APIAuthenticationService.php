@@ -147,46 +147,36 @@ class APIAuthenticationService extends AbstractEntityService
         }
     }
 
-        /**
+    /**
      * Update the fields of an APIAuthentication entity and commit the resulting entity
      *
      * @param \APIAuthentication Entity to update
      * @param \User Owning user
-     * @param array Array containing new values
+     * @param mixed $newValues Holds the new data for updating the
+     *                         `APIAuthentication` entity.
+     *
      * @throws \Exception on error with commit rolled back
-     * @return \APIAuthentication
      */
     public function editAPIAuthentication(\APIAuthentication $authEntity, \User $user, $newValues)
     {
+        $isRenewalRequest = $newValues['isRenewalRequest'] || false;
 
-        $identifier = $newValues['IDENTIFIER'];
-        $type = $newValues['TYPE'];
-        $allowWrite = $newValues['ALLOW_WRITE'];
-
-        //Check that an identifier ha been provided
-        if (empty($identifier)) {
-            throw new \Exception("A value must be provided for the identifier");
-        }
-
-        //validate the values against the schema
-        $this->validate($newValues, $identifier, $type);
-
-        //Edit the property
-        $this->em->getConnection()->beginTransaction();
         try {
-            // This would probably be the place hook for any future policy acceptance tracking
-            if ($user->getId() != $authEntity->getUser()) {
-                $authEntity->setLastRenewTime();
+            if ($isRenewalRequest) {
+                $this->handleRenewalRequest(
+                    $authEntity,
+                    $user,
+                    $isRenewalRequest
+                );
+            } else {
+                $this->handleEditRequest(
+                    $authEntity,
+                    $user,
+                    $newValues,
+                    $isRenewalRequest
+                );
             }
-            $authEntity->setIdentifier($identifier);
-            $authEntity->setType($type);
-            $authEntity->setAllowAPIWrite($allowWrite);
-            $user->addAPIAuthenticationEntitiesDoJoin($authEntity);
 
-            $this->em->persist($authEntity);
-            $this->em->persist($user);
-
-            $this->em->flush();
             $this->em->getConnection()->commit();
         } catch (\Exception $e) {
             $this->em->getConnection()->rollback();
@@ -278,5 +268,122 @@ class APIAuthenticationService extends AbstractEntityService
         ) {
             throw new \Exception("Invalid OIDC Subject");
         }
+    }
+
+    /**
+     * Helper to handle the renewal request for API authentication code flow.
+     *
+     * @param \APIAuthentication $authEntity Entity to update.
+     * @param \User $user Owning user.
+     * @param bool $isRenewalRequest A boolean indicating
+     *                               if it's a renewal request or NOT.
+     */
+    private function handleRenewalRequest(
+        \APIAuthentication $authEntity,
+        \User $user,
+        $isRenewalRequest
+    ) {
+        $this->em->getConnection()->beginTransaction();
+
+        $this->updateLastRenewTime($authEntity, $user, $isRenewalRequest);
+
+        $user->addAPIAuthenticationEntitiesDoJoin($authEntity);
+
+        $this->em->persist($authEntity);
+        $this->em->persist($user);
+        $this->em->flush();
+    }
+
+    /**
+     * Helper to handles the edit request for API authentication code flow.
+     *
+     * @param \APIAuthentication $authEntity Entity to update.
+     * @param \User $user Owning user.
+     * @param array $newValues An array containing data for
+     *                         updating the APIAuthentication entity.
+     * @param bool $isRenewalRequest A boolean indicating
+     *                               if it's a renewal request or NOT.
+     *
+     * @throws \Exception Throws an exception if the identifier is empty.
+     */
+    private function handleEditRequest(
+        \APIAuthentication $authEntity,
+        \User $user,
+        $newValues,
+        $isRenewalRequest
+    ) {
+        $identifier = $newValues['IDENTIFIER'];
+        $type = $newValues['TYPE'];
+        $allowWrite = $newValues['ALLOW_WRITE'];
+
+        // Check that an identifier has been provided
+        if (empty($identifier)) {
+            throw new \Exception(
+                "A value must be provided for the identifier"
+            );
+        }
+
+        $this->validate($newValues, $identifier, $type);
+        $this->em->getConnection()->beginTransaction();
+
+        $this->updateLastRenewTime($authEntity, $user, $isRenewalRequest);
+        $this->updateAuthenticationEntity(
+            $authEntity,
+            $identifier,
+            $type,
+            $allowWrite
+        );
+        $user->addAPIAuthenticationEntitiesDoJoin($authEntity);
+
+        $this->em->persist($authEntity);
+        $this->em->persist($user);
+        $this->em->flush();
+    }
+
+    /**
+     * Validates whether to update the `LastRenewTime`
+     * of the APIAuthentication entity or NOT.
+     *
+     * @param \APIAuthentication $authEntity Entity to update.
+     * @param \User $user Owning user.
+     * @param bool $isRenewalRequest A boolean indicating
+     *                               if it's a renewal request or NOT.
+     */
+    private function updateLastRenewTime(
+        \APIAuthentication $authEntity,
+        \User $user,
+        $isRenewalRequest
+    ) {
+        /**
+         * This would probably be the place hook for any
+         * future policy acceptance tracking.
+         */
+        if (
+            ($user->getId() != $authEntity->getUser())
+            || $isRenewalRequest
+        ) {
+            $authEntity->setLastRenewTime();
+        }
+    }
+
+    /**
+     * Helper to update the APIAuthentication entity with edited values.
+     *
+     * @param \APIAuthentication $authEntity Entity to update.
+     * @param string $identifier Unique identifier for the
+     *                           API authentication entity.
+     * @param string $type Type for the API authentication entity.
+     * @param bool $allowWrite Helps to identify write functionality
+     *                         of the API is enabled or NOT.
+     */
+    private function updateAuthenticationEntity(
+        \APIAuthentication $authEntity,
+        $identifier,
+        $type,
+        $allowWrite
+    ) {
+        $authEntity->setIdentifier($identifier);
+        $authEntity->setType($type);
+        $authEntity->setAllowAPIWrite($allowWrite);
     }
 }
