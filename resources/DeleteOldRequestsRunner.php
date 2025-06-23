@@ -10,7 +10,7 @@ date_default_timezone_set("UTC");
 echo "Querying identity linking and account recovery requests\n\n";
 
 $em = $entityManager;
-$dql = "SELECT l FROM LinkIdentityRequest l";
+$dql = "SELECT l FROM IdentifierManagementRequest l";
 $requests = $entityManager->createQuery($dql)->getResult();
 
 // Remove requests older than one day

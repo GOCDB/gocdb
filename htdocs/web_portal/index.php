@@ -635,14 +635,15 @@ function Draw_Page($Page_Type) {
             require_once __DIR__ . '/controllers/site/delete_api_auth.php';
             delete_entity();
             break;
-        case "Link_Identity" :
+        case "Identifier_Management" :
             rejectIfNotAuthenticated();
-            require_once __DIR__ . '/controllers/user/link_identity.php';
-            link_identity();
+            require_once __DIR__ . '/controllers/user/identifier_management.php';
+            identifier_management();
             break;
         case "User_Validate_Identity_Link" :
             rejectIfNotAuthenticated();
-            require_once __DIR__ . '/controllers/user/link_identity_user_validate.php';
+            require_once __DIR__ . '/controllers'
+                . '/user/identifier_management_user_validate.php';
             validate_identity_link();
             break;
         default:
