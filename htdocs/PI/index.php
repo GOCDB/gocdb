@@ -408,7 +408,7 @@ class PIRequest
         $authEntServ = \Factory::getAPIAuthenticationService();
         $authEnt = $authEntServ->getAPIAuthentication($this->identifier);
 
-        if (!is_null($authEnt)) {
+        if (!empty($authEnt)) {
             $authEntServ->updateLastUseTime($authEnt);
             $authenticated = true;
         }
