@@ -12,6 +12,6 @@
             ?>
         </select>
 
-        <input class="input_button" type="submit" value="Move Sites from this NGI" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Move Sites from this NGI" />
     </form>
 </div>

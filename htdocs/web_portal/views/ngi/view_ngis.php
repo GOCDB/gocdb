@@ -40,7 +40,7 @@
         </div>
 
         <div class="topMargin leftFloat siteFilter">
-        <input type="submit" value="Filter NGIs">
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Filter NGIs">
         </div>
         </form>
     </div>

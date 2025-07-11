@@ -11,6 +11,6 @@
         <br />
         <input class="input_input_hidden" type="hidden" name="Id" value="<?php echo $params['Id'] ?>" />
         <br />
-        <input type="submit" value="Submit Changes" class="input_button">
+        <input type="submit" value="Submit Changes" class="gocdb_btn gocdb_btn_props">
     </form>
 </div>

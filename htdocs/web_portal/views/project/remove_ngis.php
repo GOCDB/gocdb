@@ -24,7 +24,7 @@
                 </select>
                 <br />
                 <input class="input_input_hidden" type="hidden" name="ID" value="<?php echo $params['ID'] ?>" />
-                <input class="input_button" type="submit" value="Remove selected NGIs">
+                <input class="gocdb_btn_danger gocdb_btn_props" type="submit" value="Remove selected NGIs">
             </form>
             <br/>
             <br/>

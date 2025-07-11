@@ -16,7 +16,7 @@ $site = $params['site'];
 
     <form class="inputForm" method="post" action="index.php?Page_Type=Delete_API_Authentication_Entity&authentityid=<?php echo $authEnt->getId();?>" name="removeAPIAuthenticationEntity">
         <input class="input_input_hidden" type="hidden" name="UserConfirmed" value="true" />
-        <input type="submit" value="Remove this credential from GOCDB" class="input_button">
+        <input type="submit" value="Remove this credential from GOCDB" class="gocdb_btn_danger gocdb_btn_props">
     </form>
 
 </div>

@@ -20,6 +20,6 @@ $prop = $params['prop'];
         <input class="input_input_text" type="hidden" name ="ENDPOINTID" value="<?php echo $endpoint->getId();?>" />
         <input class="input_input_text" type="hidden" name ="PROP" value="<?php echo $prop->getId();?>" />
 
-        <input class="input_button" type="submit" value="Edit Endpoint Property" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Edit Endpoint Property" />
     </form>
 </div>

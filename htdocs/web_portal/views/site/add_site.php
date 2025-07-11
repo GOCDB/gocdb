@@ -177,7 +177,7 @@
 
         <br>
 
-        <input class="input_button" type="submit" value="Add Site" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Add Site" />
     </form>
 </div>
 

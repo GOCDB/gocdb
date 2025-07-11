@@ -19,6 +19,6 @@ $prop = $params['prop'];
         <input class="input_input_text" type="hidden" name ="SERVICE" value="<?php echo $service->getId();?>" />
         <input class="input_input_text" type="hidden" name ="PROP" value="<?php echo $prop->getId();?>" />
 
-        <input class="input_button" type="submit" value="Edit Service Property" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Edit Service Property" />
     </form>
 </div>

@@ -67,6 +67,6 @@
                 <label class="input_label" for="ALLOW_WRITE">Allow API write</label>
             </div>
         </div>
-        <input type="submit" value="Edit credential" class="input_button">
+        <input type="submit" value="Edit credential" class="gocdb_btn gocdb_btn_props">
     </form>
 </div>
