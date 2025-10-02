@@ -121,6 +121,31 @@
                 </xs:complexType>
               </xs:element>
               <xs:element name="send_email" type="xs:boolean" minOccurs="0"/>
+
+              <xs:element name="project" minOccurs="0">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="doc_link" type="xs:string"/>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="ngi" minOccurs="0">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="doc_link" type="xs:string"/>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+
+              <xs:element name="service_group" minOccurs="0">
+                <xs:complexType>
+                  <xs:all>
+                    <xs:element name="doc_link" type="xs:string"/>
+                  </xs:all>
+                </xs:complexType>
+              </xs:element>
+
             </xs:all>
             <xs:attribute name="url" type="xs:anyURI"/>
           </xs:complexType>
