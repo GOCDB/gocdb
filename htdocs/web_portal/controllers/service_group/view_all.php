@@ -93,7 +93,8 @@ function showAllServiceGroups(){
     $params['selectedExtKeyValue'] = $extensionPropValue; //$sgKeyValues;
     $params['extKeyName'] = $keynames;
 
-    // adding the configurable service group documentation link to the params array
+    // adding the configurable service group documentation link
+    // to the params array.
     $serviceGroupDocLink = $configService->getServiceGroupDocLink();
     $params['serviceGroupDocLink'] = $serviceGroupDocLink;
 

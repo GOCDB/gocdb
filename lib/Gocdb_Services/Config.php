@@ -584,7 +584,8 @@ class Config
 
     public function getServiceGroupDocLink()
     {
-        $serviceGroupDocLink = $this->GetLocalInfoXML()->service_group->doc_link;
+        $localInfo = $this->GetLocalInfoXML();
+        $serviceGroupDocLink = $localInfo->service_group->doc_link;
 
         return $serviceGroupDocLink;
     }
