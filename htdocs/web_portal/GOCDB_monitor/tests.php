@@ -139,6 +139,7 @@ function test_url($url)
         $retval["message"] = OKMSG;
     } catch (Exception $exception) {
         $message = $exception->getMessage();
+        error_log($message);
         $retval["status"] = NOK;
         $retval["message"] = "$message";
     }
@@ -250,8 +251,10 @@ function test_config($config)
         $retval["status"] = OK;
         $retval["message"] = OKMSG;
     } catch (Exception $exception) {
+        $message = $exception->getMessage();
+        error_log($message);
         $retval["status"] = NOK;
-        $retval["message"] = $exception->getMessage();
+        $retval["message"] = $message;
     }
     return $retval;
 }
