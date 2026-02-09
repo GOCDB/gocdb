@@ -48,7 +48,6 @@ show ERROR or UNKNOWN if the configuration is invalid.</p>
             <td><b>Test</b></td>
             <td><b>Status</b></td>
             <td><b>Details</b></td>
-            <td><b>Doc/help</b></td>
         </tr>
     </thead>
     <tbody>
@@ -58,7 +57,6 @@ foreach ($test_statuses as $test => $status) {
     echo("<td><span title=\"{$test_desc[$test]}\">$test</span></font></td>");
     echo($disp[$status]);
     echo("<td>{$test_messages[$test]}</font></td>");
-    echo("<td>{$test_doc[$test]}</font></td>");
     echo("</tr>");
 }
 ?>
@@ -66,27 +64,3 @@ foreach ($test_statuses as $test => $status) {
 </table>
 
 <hr>
-
-<h2>Other tests and check pages</h2>
-<ul>
-    <li><a href='http://sumatran.esc.rl.ac.uk/ganglia/?r=day&amp;
-    c=Grid+services&amp;h=gocdb-base.esc.rl.ac.uk'>GOCDB server
-    ganglia page</a> - Useful to see if there are memory or CPU
-    problems</li>
-    <li><a href='check.php'>Status check</a> - a less verbose check of
-    GOCDB service status. Returns the single line 'All GOCDB tests
-    are looking good' if all tests run without error and 'GOCDB
-    Web Portal is unable to connect to the GOCDB back end database'
-    otherwise. Used for automated tests.</li>
-</ul>
-
-<h2>Further documentation</h2>
-<ul>
-    <li><a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT Documents/
-    Servers and Services/GOCDB/Cookbook and recipes/
-    GOCDB_daily_maintenance.txt'>GOCDB_daily_maintenance.txt in
-    SCT docs on SVN</a> - This is where it all starts...</li>
-    <li><a href='https://wiki.egi.eu/wiki/GOCDB_Documentation_Index'>
-    GOCDB public documentation index</a> - The RTFM link to send to
-    anyone who has questions</li>
-</ul>
