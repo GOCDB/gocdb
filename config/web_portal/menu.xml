@@ -1,171 +1,163 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <menus>
-  <main_menu>
-    <spacer>
-      <show_on_instance>all</show_on_instance>
-      <spacer>Browse</spacer>
-    </spacer>
-    
-    <MySites>
-        <show_on_instance>all</show_on_instance>
-        <name>My Resources</name>
-        <link>index.php?Page_Type=My_Sites</link>
-    </MySites>
-    
-    <Projects>
-      <show_on_instance>all</show_on_instance>
-      <name>Projects</name>
-      <link>index.php?Page_Type=Projects</link>
-    </Projects>
+	<main_menu>
+        <spacer>
+            <show_on_instance>all</show_on_instance>
+            <spacer>Browse</spacer>
+        </spacer>
 
-    <NGI> <!-- was 'roc' -->
-      <show_on_instance>all</show_on_instance>
-      <name>NGIs</name>
-      <link>index.php?Page_Type=NGIs</link>
-    </NGI>
-    
-    <Sites>
-      <show_on_instance>all</show_on_instance>
-      <name>Sites</name>
-      <link>index.php?Page_Type=Sites</link>
-    </Sites>
-  
-    <ServiceGroups>
-      <show_on_instance>all</show_on_instance>
-      <name>Service Groups</name>
-      <link>index.php?Page_Type=Service_Groups</link>
-    </ServiceGroups>
-    
-    <Services>
-      <show_on_instance>all</show_on_instance>
-      <name>Services</name>
-      <link>index.php?Page_Type=Services</link>
-    </Services>
+        <MySites>
+            <show_on_instance>all</show_on_instance>
+            <name>My Resources</name>
+            <link>index.php?Page_Type=My_Sites</link>
+        </MySites>
 
-    <ServiceTypes>
-        <show_on_instance>all</show_on_instance>
-        <name>Service Types</name>
-        <link>index.php?Page_Type=Service_Types</link>
-    </ServiceTypes>
+        <Projects>
+            <show_on_instance>all</show_on_instance>
+            <name>Projects</name>
+            <link>index.php?Page_Type=Projects</link>
+        </Projects>
 
-    <Scopes>
-      <show_on_instance>all</show_on_instance>
-      <name>Scopes</name>
-      <link>index.php?Page_Type=Scopes</link>
-    </Scopes>
+        <NGI> <!-- was 'roc' -->
+            <show_on_instance>all</show_on_instance>
+            <name>NGIs</name>
+            <link>index.php?Page_Type=NGIs</link>
+        </NGI>
 
-    <RoleActionMappings>
-      <show_on_instance>all</show_on_instance>
-      <name>Role Action Map</name>
-      <link>index.php?Page_Type=View_Role_Action_Mappings</link>
-    </RoleActionMappings>
+        <Sites>
+            <show_on_instance>all</show_on_instance>
+            <name>Sites</name>
+            <link>index.php?Page_Type=Sites</link>
+        </Sites>
 
-    <spacer>
-      <spacer>Add</spacer>
-	  <show_on_instance>write_enabled</show_on_instance>
-    </spacer>
-    
-    <AddSite>
-      <show_on_instance>write_enabled</show_on_instance>
-      <name>Add Site</name>
-      <link>index.php?Page_Type=Add_Site</link>
-    </AddSite>
-    
-    <AddServiceGroup>
-      <show_on_instance>write_enabled</show_on_instance>
-      <name>Add Service Group</name>
-      <link>index.php?Page_Type=Add_Service_Group</link>
-    </AddServiceGroup>
-	    
-     <AddService>
-      <show_on_instance>write_enabled</show_on_instance>
-      <name>Add Service</name>
-      <link>index.php?Page_Type=Add_Service</link>
-    </AddService>
-    
-    <AddDowntime>
-      <show_on_instance>write_enabled</show_on_instance>
-      <name>Add Downtime</name>
-      <link>index.php?Page_Type=Add_Downtime</link>
-    </AddDowntime>
-    
-    <spacer>
-      <spacer>Downtimes</spacer>
-      <show_on_instance>all</show_on_instance>
-    </spacer>
-	
+        <ServiceGroups>
+            <show_on_instance>all</show_on_instance>
+            <name>Service Groups</name>
+            <link>index.php?Page_Type=Service_Groups</link>
+        </ServiceGroups>
 
-    <!--<current_downtimes>
-	  <show_on_instance>all</show_on_instance>
-      <name>Recent &amp; Planned</name>
-      <link>http://operations-portal.in2p3.fr/index.php/dashboard/do</link>
-	</current_downtimes>-->
+        <Services>
+            <show_on_instance>all</show_on_instance>
+            <name>Services</name>
+            <link>index.php?Page_Type=Services</link>
+        </Services>
 
-	<CurrentDowntimes>
-	  <show_on_instance>all</show_on_instance>
-      <name>Active &amp; Imminent</name>
-	  <link>index.php?Page_Type=Downtimes_Overview</link>
-	</CurrentDowntimes>
+        <ServiceTypes>
+            <show_on_instance>all</show_on_instance>
+            <name>Service Types</name>
+            <link>index.php?Page_Type=Service_Types</link>
+        </ServiceTypes>
 
-      <Calendar>
-          <show_on_instance>all</show_on_instance>
-          <name>Downtime Calendar</name>
-          <link>index.php?Page_Type=Downtimes_Calendar</link>
-      </Calendar>
-	
-   <spacer>
-      <spacer>About GOCDB5</spacer>
-      <show_on_instance>all</show_on_instance>
-    </spacer>
+        <Scopes>
+            <show_on_instance>all</show_on_instance>
+            <name>Scopes</name>
+            <link>index.php?Page_Type=Scopes</link>
+        </Scopes>
 
+        <RoleActionMappings>
+            <show_on_instance>all</show_on_instance>
+            <name>Role Action Map</name>
+            <link>index.php?Page_Type=View_Role_Action_Mappings</link>
+        </RoleActionMappings>
 
-	
-    <HelpAndContact>
-      <show_on_instance>all</show_on_instance>
-      <name>Doc, Help &amp; Support</name>
-      <link>index.php?Page_Type=Static_HTML&amp;Page=Help_And_Contact</link>
-    </HelpAndContact>
+        <spacer>
+            <spacer>Add</spacer>
+            <show_on_instance>write_enabled</show_on_instance>
+        </spacer>
 
-   <spacer>
-      <spacer>GOCDB Admin</spacer>
-      <show_on_instance>admin</show_on_instance>
-    </spacer>
+        <AddSite>
+            <show_on_instance>write_enabled</show_on_instance>
+            <name>Add Site</name>
+            <link>index.php?Page_Type=Add_Site</link>
+        </AddSite>
 
-  <AddNGI>
-	  <show_on_instance>admin</show_on_instance>
-      <name>Add NGI</name>
-      <link>index.php?Page_Type=Admin_Add_NGI</link>
-   </AddNGI>
-   
-   <AddProject>
-	  <show_on_instance>admin</show_on_instance>
-      <name>Add Project</name>
-      <link>index.php?Page_Type=Admin_Add_Project</link>
-   </AddProject>
+        <AddServiceGroup>
+            <show_on_instance>write_enabled</show_on_instance>
+            <name>Add Service Group</name>
+            <link>index.php?Page_Type=Add_Service_Group</link>
+        </AddServiceGroup>
 
-    <AddServiceTypes>
-        <show_on_instance>admin</show_on_instance>
-        <name>Add Service Type</name>
-        <link>index.php?Page_Type=Admin_Add_Service_Type</link>
-    </AddServiceTypes>
+        <AddService>
+            <show_on_instance>write_enabled</show_on_instance>
+            <name>Add Service</name>
+            <link>index.php?Page_Type=Add_Service</link>
+        </AddService>
 
-   <MoveServiceEndPoint>
-	  <show_on_instance>admin</show_on_instance>
-      <name>Move Service</name>
-      <link>index.php?Page_Type=Admin_Move_SEP</link>
-    </MoveServiceEndPoint>
+        <AddDowntime>
+            <show_on_instance>write_enabled</show_on_instance>
+            <name>Add Downtime</name>
+            <link>index.php?Page_Type=Add_Downtime</link>
+        </AddDowntime>
 
-    <MoveSite>
-	  <show_on_instance>admin</show_on_instance>
-      <name>Move Site</name>
-      <link>index.php?Page_Type=Admin_Move_Site</link>
-    </MoveSite>
-    
-    <Users>
-	  <show_on_instance>admin</show_on_instance>
-      <name>Users</name>
-      <link>index.php?Page_Type=Admin_Users</link>        
-    </Users>
+        <spacer>
+            <spacer>Downtimes</spacer>
+            <show_on_instance>all</show_on_instance>
+        </spacer>
 
+        <CurrentDowntimes>
+            <show_on_instance>all</show_on_instance>
+            <name>Active &amp; Imminent</name>
+            <link>index.php?Page_Type=Downtimes_Overview</link>
+        </CurrentDowntimes>
+
+        <Calendar>
+            <show_on_instance>all</show_on_instance>
+            <name>Downtime Calendar</name>
+            <link>index.php?Page_Type=Downtimes_Calendar</link>
+        </Calendar>
+
+        <spacer>
+            <spacer>About GOCDB5</spacer>
+            <show_on_instance>all</show_on_instance>
+        </spacer>
+
+        <HelpAndContact>
+            <show_on_instance>all</show_on_instance>
+            <name>Doc, Help &amp; Support</name>
+            <link>
+                index.php?Page_Type=Static_HTML&amp;Page=Help_And_Contact
+            </link>
+        </HelpAndContact>
+
+        <spacer>
+            <spacer>GOCDB Admin</spacer>
+            <show_on_instance>admin</show_on_instance>
+        </spacer>
+
+        <AddNGI>
+            <show_on_instance>admin</show_on_instance>
+            <name>Add NGI</name>
+            <link>index.php?Page_Type=Admin_Add_NGI</link>
+        </AddNGI>
+
+        <AddProject>
+            <show_on_instance>admin</show_on_instance>
+            <name>Add Project</name>
+            <link>index.php?Page_Type=Admin_Add_Project</link>
+        </AddProject>
+
+        <AddServiceTypes>
+            <show_on_instance>admin</show_on_instance>
+            <name>Add Service Type</name>
+            <link>index.php?Page_Type=Admin_Add_Service_Type</link>
+        </AddServiceTypes>
+
+        <MoveServiceEndPoint>
+            <show_on_instance>admin</show_on_instance>
+            <name>Move Service</name>
+            <link>index.php?Page_Type=Admin_Move_SEP</link>
+        </MoveServiceEndPoint>
+
+        <MoveSite>
+            <show_on_instance>admin</show_on_instance>
+            <name>Move Site</name>
+            <link>index.php?Page_Type=Admin_Move_Site</link>
+        </MoveSite>
+
+        <Users>
+            <show_on_instance>admin</show_on_instance>
+            <name>Users</name>
+            <link>index.php?Page_Type=Admin_Users</link>
+        </Users>
   </main_menu>
 </menus>

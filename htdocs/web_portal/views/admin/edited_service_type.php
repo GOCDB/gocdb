@@ -9,8 +9,13 @@
     <?php require_once __DIR__ . '/../fragments/serviceTypeInfo.php'; ?>
 
     <p>
-        <a href="index.php?Page_Type=Admin_Edit_Service_Type&amp;id=<?php echo $params['ID']?>">
-        Click here</a> to edit the <?php xecho($params['Name'])?> service type again.
-
+        <a
+            href="index.php?Page_Type=Admin_Edit_Service_Type&amp;id=<?php
+                echo $params['ID'];
+            ?>"
+        >
+        Click here</a>to edit the <?php
+            xecho($params['Name']);
+        ?> service type again.
     </p>
 </div>
