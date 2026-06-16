@@ -110,7 +110,7 @@ $serviceTypes = $params['serviceTypes'];
 
         <br>
 
-        <input class="input_button" type="submit" value="Add Service" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Add Service" />
     </form>
 </div>
 

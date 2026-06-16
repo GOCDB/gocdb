@@ -47,7 +47,7 @@ $sites = $params['Sites'];
 
     <form class="inputForm" method="post" action="index.php?Page_Type=Admin_Delete_NGI&id=<?php echo $ngiId;?>" name="RemoveScope">
         <input class="input_input_hidden" type="hidden" name="UserConfirmed" value="true" />
-        <input type="submit" value="Remove this NGI and all its associated sites and services from GOCDB" class="input_button">
+        <input type="submit" value="Remove this NGI and all its associated sites and services from GOCDB" class="gocdb_btn_danger gocdb_btn_props">
     </form>
 
 </div>

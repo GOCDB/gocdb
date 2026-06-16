@@ -43,7 +43,7 @@
                         }
                     }?>
                 </select>
-                <input type="submit">
+                <input class="gocdb_btn" type="submit">
             </form>
 
         <ul>
@@ -109,7 +109,7 @@
                             <form action="index.php?Page_Type=Revoke_Role" method="post">
                                 <!--<a href="index.php?Page_Type=Revoke_Role&amp;id=<?php echo $request->getId()?>" onclick="return confirmSubmit()"> Delete </a>-->
                                 <input type="hidden" name="id" value="<?php echo $request->getId()?>" />
-                                <input type="submit" value="Delete" class="btn btn-sm btn-danger" onclick="return confirmSubmit()">
+                                <input type="submit" value="Delete" class="btn btn-sm btn-danger gocdb_btn_danger" onclick="return confirmSubmit()">
                             </form>
                         </td>
                     <?php endif; ?>
@@ -190,13 +190,13 @@
                         <?php if (!$params['portalIsReadOnly']): ?>
                             <form action="index.php?Page_Type=Accept_Role_Request" method="post" class="form-inline"  style="float:left;">
                                 <input type="hidden" name="id" value="<?php echo $request->getId() ?>"/>
-                                <input type="submit" value="Accept" onclick="return confirmSubmit()" class="btn btn-sm btn-danger"
+                                <input type="submit" value="Accept" onclick="return confirmSubmit()" class="btn btn-sm btn-danger gocdb_btn_danger"
                                         title="Roles allowing Accept: <?php $acceptRoles = $request->getDecoratorObject(); xecho($acceptRoles['grant']); ?>"/>
                                 &nbsp;&nbsp;&nbsp;
                             </form>
                             <form action="index.php?Page_Type=Deny_Role_Request" method="post" class="form-inline"  style="float:left;" >
                                 <input type="hidden" name="id" value="<?php echo $request->getId() ?>"/>
-                                <input type="submit" value="Deny" onclick="return confirmSubmit()" class="btn btn-sm btn-danger"
+                                <input type="submit" value="Deny" onclick="return confirmSubmit()" class="btn btn-sm btn-danger gocdb_btn_danger"
                                        title="Roles allowing Deny: <?php $denyRoles = $request->getDecoratorObject(); xecho($denyRoles['deny']); ?>"/>
                             </form>
                         <?php endif; ?>

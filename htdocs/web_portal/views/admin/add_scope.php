@@ -9,6 +9,6 @@
         <span class="input_name">Reserved - check to create a reserved scope</span>
         <input type="checkbox" value="1" <?php echo (($params['Reserved'] == true) ? 'checked' : ''); ?> name="Reserved" class="input_input_checkbox">
         <br />
-        <input type="submit" value="Add Scope" class="input_button">
+        <input type="submit" value="Add Scope" class="gocdb_btn gocdb_btn_props">
     </form>
 </div>

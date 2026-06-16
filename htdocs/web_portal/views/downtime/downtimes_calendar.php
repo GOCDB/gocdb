@@ -281,7 +281,7 @@
 
             <div class="col-sm-3 pull-right">
 
-                <button id="applyFilters" style="width: 100%;" type="button" class="btn btn-primary">Fetch Downtimes
+                <button id="applyFilters" style="width: 100%;" type="button" class="btn btn-primary gocdb_btn gocdb_btn_props">Fetch Downtimes
                 </button>
             </div>
 
@@ -309,17 +309,17 @@
 
             <div class="col-sm-3">
                 <div class="btn-group" style="width: 100%">
-                    <button id="weekView" type="button" class="viewButton btn btn-secondary-outline" style="width: 50%">Week</button>
-                    <button id="monthView" type="button" class="viewButton btn btn-secondary-outline" style="width: 50%">Month</button>
+                    <button id="weekView" type="button" class="viewButton btn btn-secondary-outline gocdb_btn" style="width: 50%">Week</button>
+                    <button id="monthView" type="button" class="viewButton btn btn-secondary-outline gocdb_btn" style="width: 50%">Month</button>
                 </div>
             </div>
             <div class="col-sm-3">
                 <div class="btn-group" style="width: 100%">
-                    <button id="prevMonth" type="button" class=" btn btn-secondary-outline" style="width: 20%">
+                    <button id="prevMonth" type="button" class="btn btn-secondary-outline gocdb_btn" style="width: 20%">
                         <span class="glyphicon glyphicon-chevron-left"></span>
                     </button>
-                    <button id="currentMonth" type="button" class="btn btn-secondary-outline" style="width: 60%">Current</button>
-                    <button id="nextMonth" type="button" class="btn btn-secondary-outline" style="width: 20%"><span
+                    <button id="currentMonth" type="button" class="btn btn-secondary-outline gocdb_btn" style="width: 60%">Current</button>
+                    <button id="nextMonth" type="button" class="btn btn-secondary-outline gocdb_btn" style="width: 20%"><span
                             class="glyphicon glyphicon-chevron-right"></span>
                     </button>
                 </div>

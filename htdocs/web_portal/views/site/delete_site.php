@@ -34,7 +34,7 @@ $services = $params['Services']
 
     <form class="inputForm" method="post" action="index.php?Page_Type=Delete_Site&id=<?php echo $siteId;?>" name="RemoveScope">
         <input class="input_input_hidden" type="hidden" name="UserConfirmed" value="true" />
-        <input type="submit" value="Remove this site and all its associated services from GOCDB" class="input_button">
+        <input type="submit" value="Remove this site and all its associated services from GOCDB" class="gocdb_btn_danger gocdb_btn_props">
     </form>
 
 </div>

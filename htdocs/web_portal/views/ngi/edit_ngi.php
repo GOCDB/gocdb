@@ -68,7 +68,7 @@
 
         <input class="input_input_hidden" type="hidden" name="ID" value="<?php echo $params['ngi']->getId(); ?>">
         <br />
-        <input class="input_button" type="submit" value="Update NGI">
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Update NGI gocdb_btn gocdb_btn_props">
     </form>
 </div>
 

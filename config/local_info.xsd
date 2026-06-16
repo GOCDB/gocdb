@@ -42,19 +42,6 @@
 
               <xs:element name="API_all_auth_realms" type="xs:boolean" minOccurs="0"/>
 
-              <xs:element name="css" minOccurs="0">
-                <xs:complexType>
-                  <xs:all>
-                    <!-- Use string type to allow standard colour names -->
-                    <xs:element name="backgroundColour1" type="xs:string"/>
-                    <xs:element name="backgroundColour2" type="xs:string"/>
-                    <xs:element name="backgroundColour3" type="xs:string"/>
-                    <xs:element name="backgroundDirection" type="xs:string"/>
-                    <xs:element name="headingTextColour" type="xs:string"/>
-
-                  </xs:all>
-                </xs:complexType>
-              </xs:element>
               <xs:element name="name_mapping" minOccurs="0">
                 <xs:complexType>
                   <xs:all>

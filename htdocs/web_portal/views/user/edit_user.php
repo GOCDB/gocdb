@@ -61,6 +61,6 @@
 
         <input class="input_input_hidden" type="hidden" value="<?php echo $params['user']->getId() ?>" name="OBJECTID">
         <br />
-        <input class="input_button" type="submit" value="Update User" />
+        <input class="gocdb_btn gocdb_btn_props" type="submit" value="Update User" />
     </form>
 </div>

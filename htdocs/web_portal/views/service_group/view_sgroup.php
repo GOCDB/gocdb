@@ -177,20 +177,17 @@ $showPD = $params['authenticated'];
 
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $params['ShowEdit']): ?>
-            <!-- Add new Service Link -->
-            <a href="index.php?Page_Type=Add_Service_Group_SEs&amp;id=<?php echo $params['sGroup']->getId();?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                        Add Services
-                </span>
-            </a>
-            <!-- Remove Service Link -->
-            <a href="index.php?Page_Type=Remove_Service_Group_SEs&amp;id=<?php echo $params['sGroup']->getId();?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
-                        Remove Services
-                </span>
-            </a>
+        <!-- Add Services Button -->
+        <a href="index.php?Page_Type=Add_Service_Group_SEs&amp;id=<?php echo $params['sGroup']->getId();?>" class="gocdb_btn_secondary">
+            <img src="<?php echo \GocContextPath::getPath()?>img/add.png" class="gocdb_btn_secondary_icon" />
+            <span class="gocdb_btn_secondary_text">Add Services</span>
+        </a>
+        
+        <!-- Remove Services Button -->
+        <a href="index.php?Page_Type=Remove_Service_Group_SEs&amp;id=<?php echo $params['sGroup']->getId();?>" class="gocdb_btn_secondary">
+            <img src="<?php echo \GocContextPath::getPath()?>img/trash.png" class="gocdb_btn_secondary_icon" />
+            <span class="gocdb_btn_secondary_text">Remove Services</span>
+        </a>
         <?php endif; ?>
     </div>
 
@@ -235,9 +232,9 @@ $showPD = $params['authenticated'];
         <!--  only show this link if we're in read / write mode -->
         <?php if(!$params['portalIsReadOnly'] && $showPD): ?>
             <!-- Request role Link -->
-            <a href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['sGroup']->getId();?>">
-                <img src="<?php echo \GocContextPath::getPath()?>img/add.png" height="50px" style="float: left; padding-top: 0.9em; padding-left: 1.2em; padding-bottom: 0.9em;"/>
-                <span class="header" style="vertical-align:middle; float: left; padding-top: 1.1em; padding-left: 1em; padding-bottom: 0.9em;">
+            <a class="gocdb_btn_secondary" href="index.php?Page_Type=Request_Role&amp;id=<?php echo $params['sGroup']->getId();?>">
+                <img class="gocdb_btn_secondary_icon" src="<?php echo \GocContextPath::getPath()?>img/add.png" />
+                <span class="gocdb_btn_secondary_text">
                         Request Role
                 </span>
             </a>

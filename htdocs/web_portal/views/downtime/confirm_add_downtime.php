@@ -93,9 +93,9 @@ if(isset($params['isEdit'])){
         <input class="input_input_text" type="hidden" name="newValues" value="<?php xecho(json_encode($params));?>" />
 
         <?php if(!$edit):?>
-        <input id="confirmSubmitBtn" type="submit" value="Add downtime to GocDB" class="input_button"  >
+        <input id="confirmSubmitBtn" type="submit" value="Add downtime to GocDB" class="gocdb_btn gocdb_btn_props"  >
         <?php else:?>
-        <input id="confirmSubmitBtn" type="submit" value="Confirm Edit" class="input_button"  >
+        <input id="confirmSubmitBtn" type="submit" value="Confirm Edit" class="gocdb_btn gocdb_btn_props"  >
         <?php endif;?>
     </form>
 </div>
