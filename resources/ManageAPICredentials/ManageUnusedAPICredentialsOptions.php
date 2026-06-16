@@ -21,8 +21,10 @@ class ManageUnusedAPICredentialsOptions
     {
         $this->getOptions();
     }
+
     /**
-     * @throws \InvInvalidArgumentException If errors found in argument processing
+     * @throws \InvalidArgumentException If errors found in
+     *                                      argument processing
      */
     public function getOptions()
     {
@@ -35,11 +37,16 @@ class ManageUnusedAPICredentialsOptions
             'deletion_threshold:'
         ];
 
-        // Beware that getopt is not clever at spotting invalid/misspelled arguments
+        /**
+         * Beware that getopt is not clever at
+         * spotting invalid/misspelled arguments
+         */
         $given = getopt($shortOptions, $longOptions);
 
         if ($given === false) {
-            throw new InvalidArgumentException('failed to  parse command line arguments');
+            throw new InvalidArgumentException(
+                'failed to  parse command line arguments'
+            );
         }
 
         if ($this->getBoolOption($given, 'help', 'h')) {
@@ -60,20 +67,28 @@ class ManageUnusedAPICredentialsOptions
                 );
             }
         }
+
         return;
     }
+
     private function getValOption($given, $long, $short)
     {
         if (isset($given[$long]) || isset($given[$short])) {
-            $tValGiven = isset($given[$short]) ? $given[$short] : $given[$long];
+            $tValGiven = isset($given[$short])
+                ? $given[$short]
+                : $given[$long];
+
             return $this->positiveInteger($tValGiven, $long);
         }
+
         return;
     }
+
     private function getBoolOption($given, $long, $short)
     {
         return isset($given[$long]) || isset($given[$short]);
     }
+
     private function positiveInteger($val, $txt)
     {
         if ((string)abs((int)$val) != $val) {
@@ -81,16 +96,16 @@ class ManageUnusedAPICredentialsOptions
                 "$txt must be integer and greater than zero . Received: $val"
             );
         }
+
         return (int)$val;
     }
+
     public static function usage($message = '')
     {
         if ($message != '') {
-            print
-            (
-                "Error: $message\n"
-            );
+            print("Error: $message\n");
         }
+
         print
         (
             "Usage: php ManageAPICredentials.php [--help | -h] [--dry-run] \\\ \n" .
@@ -105,32 +120,40 @@ class ManageUnusedAPICredentialsOptions
             "                                        for MONTHS months.\n"
         );
     }
+
     public function isShowHelp()
     {
         return $this->showHelp;
     }
+
     public function isDryRun()
     {
         return $this->dryRun;
     }
+
     public function isDeleteEnabled()
     {
         return !is_null($this->getDelete());
     }
+
     public function isWarnEnabled()
     {
         return !is_null($this->getWarn());
     }
+
     public function getWarn()
     {
         return $this->warn;
     }
+
     public function getDelete()
     {
         return $this->delete;
     }
+
     /**
-     * The delete threshold may not be given in which case the warning threshold should be used.
+     * The delete threshold may not be given in which case
+     * the warning threshold should be used.
      * Note that it is an error is delete is greater than warning.
      */
     public function getThreshold()
