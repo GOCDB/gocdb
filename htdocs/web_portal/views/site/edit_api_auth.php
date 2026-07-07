@@ -113,7 +113,7 @@
         </div>
         <?php } ?>
 
-        <br><p> Are you sure you want to continue? </P>
+        <br><p> Are you sure you want to continue? </p>
 
         <div>
             <?php if ($params['isRenewalRequest']) { ?>
@@ -121,7 +121,7 @@
                     class="input_input_hidden"
                     type="hidden"
                     name="isRenewalRequest"
-                    value=true />
+                    value="true" />
             <?php } ?>
             <input
                 type="submit"

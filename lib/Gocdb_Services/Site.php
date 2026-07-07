@@ -1442,7 +1442,7 @@ class Site extends AbstractEntityService{
         $authEntServ = \Factory::getAPIAuthenticationService();
         $authEntServ->setEntityManager($this->em);
 
-        if (!($newValues['isRenewalRequest'])) {
+        if (empty($newValues['isRenewalRequest'])) {
             $this->validIdentifier(
                 $authEntity,
                 $newValues,
