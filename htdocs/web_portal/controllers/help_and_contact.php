@@ -1,4 +1,5 @@
 <?php
+
 /*______________________________________________________
  *======================================================
  * License information
@@ -20,8 +21,9 @@
  * Declares varibales to be used in /../views/help_and_contact.php
  */
 
-function help_and_contact() {
-    require_once __DIR__.'/../../../lib/Gocdb_Services/Factory.php';
+function help_and_contact()
+{
+    require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
     $params = array();
 
