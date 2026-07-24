@@ -1436,49 +1436,14 @@ class Site extends AbstractEntityService{
         // Check the user can do this. Thows exception if not.
         $this->checkUserAuthz($user, $parentSite);
 
+        $identifier = $newValues['IDENTIFIER'];
+        $type = $newValues['TYPE'];
+
         /**
         @var org\gocdb\services\APIAuthenticationService
         */
         $authEntServ = \Factory::getAPIAuthenticationService();
         $authEntServ->setEntityManager($this->em);
-
-        if (empty($newValues['isRenewalRequest'])) {
-            $this->validIdentifier(
-                $authEntity,
-                $newValues,
-                $parentSite,
-                $authEntServ
-            );
-        }
-
-        $authEntServ->editAPIAuthentication($authEntity, $user, $newValues);
-
-        return $authEntity;
-    }
-
-    /**
-     * Helper to check if the given identifier is valid,
-     * possibly applying type specific checks.
-     *
-     * @param \APIAuthentication $authEntity `APIAuthentication` entity.
-     * @param mixed $newValues Holds the new data for updating
-     *                         the `APIAuthentication` entities.
-     * @param \Site $parentSite Site details to validate whether
-     *                          the given identifier is unique.
-     * @param \APIAuthenticationService $authEntServ Singleton 
-     *                                               `APIAuthenticationService`
-     *                                               service.
-     *
-     * @throws \Exception If the given identifier is invalid or already exists.
-     */
-    private function validIdentifier(
-        \APIAuthentication $authEntity,
-        $newValues,
-        $parentSite,
-        $authEntServ
-    ) {
-        $identifier = $newValues['IDENTIFIER'];
-        $type = $newValues['TYPE'];
 
         //If the entity is of type OIDC subject, do a more thorough check again
         if ($type == 'OIDC Subject' && !preg_match("/^([a-z0-9]{8}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{4}\-[a-z0-9]{12})$/", $identifier)) {
@@ -1492,8 +1457,34 @@ class Site extends AbstractEntityService{
         if ($authEntity->getIdentifier() !== $identifier) {
             $authEntServ->uniqueAPIAuthEnt($parentSite, $identifier);
         }
+
+        $authEntServ->editAPIAuthentication($authEntity, $user, $newValues);
+
+        return $authEntity;
     }
 
+    /**
+     * Renew an API credential without otherwise editing it.
+     *
+     * Updates the credential's last renew time and links the renewing
+     * user to the credential, taking ownership if necessary.
+     *
+     * @param \APIAuthentication $authEntity credential being renewed
+     * @param \User $user user performing the renewal
+     * @return \APIAuthentication the renewed credential
+     */
+    public function renewAPIAuthEntity(\APIAuthentication $authEntity, \User $user) {
+
+        // Check the user can do this. Throws exception if not.
+        $this->checkUserAuthz($user, $authEntity->getParentSite());
+
+        $authEntServ = \Factory::getAPIAuthenticationService();
+        $authEntServ->setEntityManager($this->em);
+
+        $authEntServ->renewAPIAuthentication($authEntity, $user);
+
+        return $authEntity;
+    }
     /**
      * Helper combines admin check and authz check to make sure a user
      * can modify properties of the site.

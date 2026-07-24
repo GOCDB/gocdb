@@ -73,9 +73,7 @@ function draw(\User $user = null, \APIAuthentication $authEnt = null, \Site $sit
     $params['authTypes'][]='OIDC Subject';
     $params['user'] = $user;
 
-    if ($_REQUEST['isRenewalRequest']) {
-        $params['isRenewalRequest'] = true;
-    }
+    $params['isRenewalRequest'] = !empty($_REQUEST['isRenewalRequest']);
 
     show_view("site/edit_api_auth.php", $params);
     die();
@@ -90,16 +88,16 @@ function submit(\User $user, \APIAuthentication $authEnt, \Site $site, org\gocdb
 
     $params = array();
 
-    if ($_REQUEST['isRenewalRequest']) {
-        // Need this variable to call `editAPIAuthEntity` function.
-        $newValues['isRenewalRequest'] = true;
-        $params['isRenewalRequest'] = true;
-    } else {
-        $newValues = getAPIAuthenticationFromWeb();
-    }
+    $isRenewalRequest = !empty($_REQUEST['isRenewalRequest']);
+    $params['isRenewalRequest'] = $isRenewalRequest;
 
     try {
-        $authEnt = $serv->editAPIAuthEntity($authEnt, $user, $newValues);
+        if ($isRenewalRequest) {
+            $authEnt = $serv->renewAPIAuthEntity($authEnt, $user);
+        } else {
+            $newValues = getAPIAuthenticationFromWeb();
+            $authEnt = $serv->editAPIAuthEntity($authEnt, $user, $newValues);
+        }
     } catch(Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
