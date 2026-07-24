@@ -128,8 +128,9 @@ class ManageAPICredentialsActions
      *                                          presence or absence of the
      *                                          `r` or `renewals`
      *                                          command-line argument.
-     * @return array        []                  An Array of credentials identifed
-     *                                          for sending warning emails.
+     * @return array        []                  An Array of credentials
+     *                                          identifed for sending
+     *                                          warning emails.
      */
     public function warnUsers(
         $creds,

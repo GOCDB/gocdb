@@ -207,8 +207,10 @@ class APIAuthenticationService extends AbstractEntityService
      * @param \User $user user performing the renewal
      * @throws \Exception if the update fails
      */
-    public function renewAPIAuthentication(\APIAuthentication $authEntity, \User $user)
-    {
+    public function renewAPIAuthentication(
+        \APIAuthentication $authEntity,
+        \User $user
+    ) {
         $this->em->getConnection()->beginTransaction();
         try {
             $authEntity->setLastRenewTime();
