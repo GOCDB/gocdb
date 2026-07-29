@@ -197,7 +197,8 @@ class APIAuthenticationService extends AbstractEntityService
     }
 
     /**
-     * Renew an API credential without otherwise editing it.
+     * Updates an API authentication record in the database.
+     * Allowing us to do DB write
      *
      * Sets the last renew time to the current UTC time and links the
      * renewing user to the credential, taking ownership if the renewing
@@ -227,6 +228,7 @@ class APIAuthenticationService extends AbstractEntityService
             throw $e;
         }
     }
+
     /**
      * Set the last use time field to the current UTC time
      *

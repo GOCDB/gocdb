@@ -1464,10 +1464,9 @@ class Site extends AbstractEntityService{
     }
 
     /**
-     * Renew an API credential without otherwise editing it.
+     * permission check: to make sure a user can modify properties of the site.
      *
-     * Updates the credential's last renew time and links the renewing
-     * user to the credential, taking ownership if necessary.
+     * Renew an API credential without otherwise editing it.
      *
      * @param \APIAuthentication $authEntity credential being renewed
      * @param \User $user user performing the renewal
