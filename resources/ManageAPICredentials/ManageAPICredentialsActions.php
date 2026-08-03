@@ -48,6 +48,15 @@ class ManageAPICredentialsActions
         $qbl->select('cred')
             ->from('APIAuthentication', 'cred')
             ->where($qbl->expr()->isNotNull("cred.user")) // cope with legacy entities
+            /**
+             * Credentials never used have a NULL lastUseTime.
+             * So, for those rows that becomes NULL < :threshold,
+             * which evaluates to NULL rather than true;
+             * and a WHERE clause only keeps rows where the condition is true,
+             * so the database drops them before the script ever sees them.
+             *
+             * lastRenewTime would never be NULL.
+             */
             ->andWhere('cred.' . $propertyName . '< :threshold');
 
         $timeThresh = clone $this->baseTime;
