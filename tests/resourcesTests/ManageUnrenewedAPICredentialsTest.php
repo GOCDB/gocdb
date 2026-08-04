@@ -146,7 +146,9 @@ class ManageUnrenewedAPICredentialsTest extends PHPUnit_Extensions_Database_Test
         // remove credentials last renewed more than 9 months ago
         // there should be 2 left after this operation (as 2 of
         // the 6 fetched above have been renewed with 9 months).
-        $creds = $actions->deleteCreds($creds, 9);
+        // `true` selects renewals flow; credentials will be deleted based on
+        // their last renew time rather than their last use time.
+        $creds = $actions->deleteCreds($creds, 9, true);
 
         $this->assertCount(
             2,

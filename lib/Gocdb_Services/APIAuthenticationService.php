@@ -147,14 +147,15 @@ class APIAuthenticationService extends AbstractEntityService
         }
     }
 
-        /**
+    /**
      * Update the fields of an APIAuthentication entity and commit the resulting entity
      *
      * @param \APIAuthentication Entity to update
      * @param \User Owning user
-     * @param array Array containing new values
+     * @param mixed $newValues Holds the new data for updating the
+     *                         `APIAuthentication` entity.
+     *
      * @throws \Exception on error with commit rolled back
-     * @return \APIAuthentication
      */
     public function editAPIAuthentication(\APIAuthentication $authEntity, \User $user, $newValues)
     {
@@ -194,6 +195,40 @@ class APIAuthenticationService extends AbstractEntityService
             throw $e;
         }
     }
+
+    /**
+     * Updates an API authentication record in the database.
+     * Allowing us to do DB write
+     *
+     * Sets the last renew time to the current UTC time and links the
+     * renewing user to the credential, taking ownership if the renewing
+     * user is not the current owner.
+     *
+     * @param \APIAuthentication $authEntity credential being renewed
+     * @param \User $user user performing the renewal
+     * @throws \Exception if the update fails
+     */
+    public function renewAPIAuthentication(
+        \APIAuthentication $authEntity,
+        \User $user
+    ) {
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $authEntity->setLastRenewTime();
+            $user->addAPIAuthenticationEntitiesDoJoin($authEntity);
+
+            $this->em->persist($authEntity);
+            $this->em->persist($user);
+
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            $this->em->close();
+            throw $e;
+        }
+    }
+
     /**
      * Set the last use time field to the current UTC time
      *
