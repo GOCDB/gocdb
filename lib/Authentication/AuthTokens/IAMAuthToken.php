@@ -77,16 +77,20 @@ class IAMAuthToken implements IAuthentication {
     
     private function getAttributesInitToken(){
         if(isset($_SERVER['OIDC_access_token'])){
-            $this->principal = $_SERVER["REMOTE_USER"];
-            $this->userDetails = array('AuthenticationRealm' => array('IRIS IAM - OIDC'));
-            //Don't allow access if user only has a local account on IRIS
-            if(strpos($_SERVER['OIDC_CLAIM_groups'], "localAccounts")===false){
-            }else{
-                die('You must login via your organisation on IRIS IAM to gain access to this site.');
-            }
-            //Don't allow access unless user is a member of the IRIS gocdb group
-            if(strpos($_SERVER['OIDC_CLAIM_groups'], "gocdb")===false and in_array('gocdb', $_SERVER['OIDC_CLAIM_groups'])===false){
-                die('You do not belong to the correct group to gain access to this site. Please visit iris-iam.stfc.ac.uk and submit a request to join the GOCDB group. This shall be reviewed by a GOCDB admin.');
+            # Token issuer could be either https://iris-iam.stfc.ac.uk/ or https://iris-iam.stfc.ac.uk
+            # depending on whether OIDC or OAuth is being used.
+            if (($_SERVER['OIDC_CLAIM_iss'] === "https://iris-iam.stfc.ac.uk/") or ($_SERVER['OIDC_CLAIM_iss'] === "https://iris-iam.stfc.ac.uk")) {
+                  $this->principal = $_SERVER["REMOTE_USER"];
+                  $this->userDetails = array('AuthenticationRealm' => array('IRIS IAM - OIDC'));
+                  //Don't allow access if user only has a local account on IRIS
+                  if(strpos($_SERVER['OIDC_CLAIM_groups'], "localAccounts")===false){
+                  }else{
+                      die('You must login via your organisation on IRIS IAM to gain access to this site.');
+                  }
+                  //Don't allow access unless user is a member of the IRIS gocdb group
+                  if(strpos($_SERVER['OIDC_CLAIM_groups'], "gocdb")===false and in_array('gocdb', $_SERVER['OIDC_CLAIM_groups'])===false){
+                      die('You do not belong to the correct group to gain access to this site. Please visit iris-iam.stfc.ac.uk and submit a request to join the GOCDB group. This shall be reviewed by a GOCDB admin.');
+                  }
             }
         }
     }
