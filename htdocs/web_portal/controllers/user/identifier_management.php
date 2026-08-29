@@ -5,11 +5,12 @@ require_once __DIR__.'/../../components/Get_User_Principle.php';
 require_once __DIR__.'/utils.php';
 
 /**
- * Controller for a link identity request.
+ * Controller for a identifier management request.
  * @global array $_POST only set if the browser has POSTed data
  * @return null
  */
-function link_identity() {
+function identifier_management()
+{
     //Check the portal is not in read only mode, returns exception if it is
     checkPortalIsNotReadOnly();
 
@@ -56,12 +57,16 @@ function draw() {
                     $params['otherIdentifiers'][] = $identifier;
                 }
             }
-            show_view('user/link_identity_rejected.php', $params);
+            show_view('user/identifier_management_rejected.php', $params);
             die();
         }
     }
 
-    show_view('user/link_identity.php', $params, 'Link Identity');
+    show_view(
+        'user/identifier_management.php',
+        $params,
+        'Identifier Management'
+    );
 }
 
 function submit() {
@@ -89,7 +94,14 @@ function submit() {
     }
 
     try {
-        \Factory::getLinkIdentityService()->newLinkIdentityRequest($primaryIdString, $currentIdString, $primaryAuthType, $currentAuthType, $givenEmail);
+        \Factory::getIdentifierManagementService()
+            ->newIdentifierManagementRequest(
+                $primaryIdString,
+                $currentIdString,
+                $primaryAuthType,
+                $currentAuthType,
+                $givenEmail
+            );
     } catch(\Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
@@ -106,5 +118,5 @@ function submit() {
         $params['requestText'] = 'identity linking';
     }
 
-    show_view('user/link_identity_accepted.php', $params);
+    show_view('user/identifier_management_accepted.php', $params);
 }

@@ -8,9 +8,9 @@
  * a confirmation code that is sent to the user's existing email
  * address - they need to provide the code to complete the identity linking transaction.
  *
- * @Entity @Table(name="LinkIdentityRequests")
+ * @Entity @Table(name="IdentifierManagementRequests")
  */
-class LinkIdentityRequest {
+class IdentifierManagementRequest {
 
     /** @Id @Column(type="integer") @GeneratedValue */
     protected $id;

@@ -33,7 +33,7 @@
             $HTML .= "Unregistered user<br />";
             $HTML .= "<br/><a href=\"index.php?Page_Type=Register\">".
                 "Register</a><br/>".
-                "<a href=\"index.php?Page_Type=Link_Identity\">".
+                "<a href=\"index.php?Page_Type=Identifier_Management\">".
                 "Link Identity/Recover Account</a>";
 
             $HTML .="</div>";
@@ -41,7 +41,8 @@
         }
         $HTML .= "Registered as: <br />".$user->getForename() . " " . $user->getSurname() . "<br /><br />";
         $HTML .= Get_User_Info_HTML($user);
-        $HTML .= "<br/><a href=\"index.php?Page_Type=Link_Identity\">" . "Link Identity/Recover Account</a><br/>";
+        $HTML .= "<br/><a href=\"index.php?Page_Type=Identifier_Management\">";
+        $HTML .= "Link Identity/Recover Account</a><br/>";
         $HTML .= "</div>";
         return $HTML;
     }
