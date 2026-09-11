@@ -14,14 +14,14 @@ require_once dirname(__FILE__) . '/bootstrap.php';
 *
 * @author James McCarthy
 */
-class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
+class ExtensionsTest extends \PHPUnit\Framework\TestCase
 {
     private $em;
 
   /**
    * Overridden.
    */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         echo "\n\n-------------------------------------------------\n";
@@ -29,8 +29,8 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-   * Overridden. Returns the test database connection.
-   * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
+   * Returns the test database connection.
+   * @return \PDO
    */
     protected function getConnection()
     {
@@ -39,53 +39,19 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-   * Overridden. Returns the test dataset.
-   * Defines how the initial state of the database should look before each test is executed.
-   * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-   */
-    protected function getDataSet()
-    {
-        return $this->createFlatXMLDataSet(dirname(__FILE__) . '/truncateDataTables.xml');
-    }
-
-  /**
-   * Overridden.
-   */
-    protected function getSetUpOperation()
-    {
-      // CLEAN_INSERT is default
-      //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
-      //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
-      //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-      //
-        // Issue a DELETE from <table> which is more portable than a
-      // TRUNCATE table <table> (some DBs require high privileges for truncate statements
-      // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
-        return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
-    }
-
-  /**
-   * Overridden.
-   */
-    protected function getTearDownOperation()
-    {
-      // NONE is default
-        return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-    }
-
-  /**
    * Sets up the fixture, e.g create a new entityManager for each test run
    * This method is called before each test method is executed.
    */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->em = $this->createEntityManager();
+        (new \Doctrine\Common\DataFixtures\Purger\ORMPurger($this->em))->purge();
     }
   /**
    * Run after each test function to prevent pile-up of database connections.
    */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         if (!is_null($this->em)) {
@@ -106,7 +72,7 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
    * Called after setUp() and before each test. Used for common assertions
    * across all tests.
    */
-    protected function assertPreConditions()
+    protected function assertPreConditions(): void
     {
         $con = $this->getConnection();
         $fixture = dirname(__FILE__) . '/truncateDataTables.xml';
@@ -114,8 +80,8 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
 
         foreach ($tables as $tableName) {
             $sql = "SELECT * FROM " . $tableName->getName();
-            $result = $con->createQueryTable('results_table', $sql);
-            if ($result->getRowCount() != 0) {
+            $result = $con->query($sql)->fetchAll();
+            if (count($result) != 0) {
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
             }
         }
@@ -190,21 +156,21 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
       //Get site id to use in sql statements
         $siteId = $site->getId();
 
-        $result = $con->createQueryTable('results', "SELECT * FROM Site_Properties WHERE PARENTSITE_ID = '$siteId'");
+        $result = $con->query("SELECT * FROM Site_Properties WHERE PARENTSITE_ID = '$siteId'")->fetchAll();
       //Assert that only 2 site properties exist in the database for this site
-        $this->assertEquals(2, $result->getRowCount());
+        $this->assertEquals(2, count($result));
 
       //Now delete the site and check that it cascades the delete to remove the sites associated properties
         $siteService->deleteSite($site, $adminUser, false);
         $this->em->flush();
 
       //Check site is gone
-        $result = $con->createQueryTable('results', "SELECT * FROM Sites WHERE ID = '$siteId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM Sites WHERE ID = '$siteId'")->fetchAll();
+        $this->assertEquals(0, count($result));
 
       //Check properties are gone
-        $result = $con->createQueryTable('results', "SELECT * FROM Site_Properties WHERE PARENTSITE_ID = '$siteId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM Site_Properties WHERE PARENTSITE_ID = '$siteId'")->fetchAll();
+        $this->assertEquals(0, count($result));
     }
 
   /**
@@ -284,21 +250,21 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
       //Get service id to use in sql statements
         $servId = $service->getId();
 
-        $result = $con->createQueryTable('results', "SELECT * FROM Service_Properties WHERE PARENTSERVICE_ID = '$servId'");
+        $result = $con->query("SELECT * FROM Service_Properties WHERE PARENTSERVICE_ID = '$servId'")->fetchAll();
       //Assert that only 2 service properties exist in the database for this service
-        $this->assertEquals(2, $result->getRowCount());
+        $this->assertEquals(2, count($result));
 
       //Now delete the service and check that it cascades the delete to remove the services associated properties
         $serviceService->deleteService($service, $adminUser, true);
         $this->em->flush();
 
       //Check service is gone
-        $result = $con->createQueryTable('results', "SELECT * FROM Services WHERE ID = '$servId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM Services WHERE ID = '$servId'")->fetchAll();
+        $this->assertEquals(0, count($result));
 
       //Check properties are gone
-        $result = $con->createQueryTable('results', "SELECT * FROM Service_Properties WHERE PARENTSERVICE_ID = '$servId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM Service_Properties WHERE PARENTSERVICE_ID = '$servId'")->fetchAll();
+        $this->assertEquals(0, count($result));
     }
 
   /**
@@ -387,21 +353,21 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
       //Get servicegroup id to use in sql statements
         $sgId = $sg->getId();
 
-        $result = $con->createQueryTable('results', "SELECT * FROM ServiceGroup_Properties WHERE PARENTSERVICEGROUP_ID = '$sgId'");
+        $result = $con->query("SELECT * FROM ServiceGroup_Properties WHERE PARENTSERVICEGROUP_ID = '$sgId'")->fetchAll();
       //Assert that only 2 service group properties exist in the database for this service
-        $this->assertEquals(2, $result->getRowCount());
+        $this->assertEquals(2, count($result));
 
       //Now delete the service group and check that it cascades the delete to remove the services associated properties
         $sgService->deleteServiceGroup($sg, $adminUser, true);
         $this->em->flush();
 
       //Check service group is gone
-        $result = $con->createQueryTable('results', "SELECT * FROM ServiceGroups WHERE ID = '$sgId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM ServiceGroups WHERE ID = '$sgId'")->fetchAll();
+        $this->assertEquals(0, count($result));
 
       //Check properties are gone
-        $result = $con->createQueryTable('results', "SELECT * FROM ServiceGroup_Properties WHERE PARENTSERVICEGROUP_ID = '$sgId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM ServiceGroup_Properties WHERE PARENTSERVICEGROUP_ID = '$sgId'")->fetchAll();
+        $this->assertEquals(0, count($result));
     }
 
   /**
@@ -482,9 +448,9 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
       //Get service id to use in sql statements
         $endpointId = $endpoint->getId();
 
-        $result = $con->createQueryTable('results', "SELECT * FROM Endpoint_Properties WHERE PARENTENDPOINT_ID = '$endpointId'");
+        $result = $con->query("SELECT * FROM Endpoint_Properties WHERE PARENTENDPOINT_ID = '$endpointId'")->fetchAll();
       //Assert that only 2 service properties exist in the database for this service
-        $this->assertEquals(2, $result->getRowCount());
+        $this->assertEquals(2, count($result));
 
       //Now delete the endpont and check that it cascade deletes
       //the endpoint's associated properties
@@ -492,12 +458,12 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
         $this->em->flush();
 
       //Check endpoint is gone
-        $result = $con->createQueryTable('results', "SELECT * FROM EndpointLocations WHERE ID = '$endpointId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM EndpointLocations WHERE ID = '$endpointId'")->fetchAll();
+        $this->assertEquals(0, count($result));
 
       //Check properties are gone
-        $result = $con->createQueryTable('results', "SELECT * FROM Endpoint_Properties WHERE PARENTENDPOINT_ID = '$endpointId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM Endpoint_Properties WHERE PARENTENDPOINT_ID = '$endpointId'")->fetchAll();
+        $this->assertEquals(0, count($result));
     }
 
   /**
@@ -564,20 +530,20 @@ class ExtensionsTest extends PHPUnit_Extensions_Database_TestCase
       // Get user id to use in sql statements
         $userId = $user->getId();
 
-        $result = $con->createQueryTable('results', "SELECT * FROM User_Identifiers WHERE PARENTUSER_ID = '$userId'");
+        $result = $con->query("SELECT * FROM User_Identifiers WHERE PARENTUSER_ID = '$userId'")->fetchAll();
       // Assert that only 2 user identifiers exist in the database for this user
-        $this->assertEquals(2, $result->getRowCount());
+        $this->assertEquals(2, count($result));
 
       // Now delete the user and check that it cascades the delete to remove the user's associated identifiers
         $userService->deleteUser($user, $adminUser);
         $this->em->flush();
 
       // Check user is gone
-        $result = $con->createQueryTable('results', "SELECT * FROM Users WHERE ID = '$userId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM Users WHERE ID = '$userId'")->fetchAll();
+        $this->assertEquals(0, count($result));
 
       // Check identifiers are gone
-        $result = $con->createQueryTable('results', "SELECT * FROM User_Identifiers WHERE PARENTUSER_ID = '$userId'");
-        $this->assertEquals(0, $result->getRowCount());
+        $result = $con->query("SELECT * FROM User_Identifiers WHERE PARENTUSER_ID = '$userId'")->fetchAll();
+        $this->assertEquals(0, count($result));
     }
 }

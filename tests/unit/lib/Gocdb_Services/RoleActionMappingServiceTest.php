@@ -21,44 +21,44 @@ require_once __DIR__.'/../../../../lib/Gocdb_Services/RoleActionMappingService.p
  *
  * @author David Meredith
  */
-class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
+class RoleActionMappingServiceTest extends \PHPUnit\Framework\TestCase {
   /**
   * Called once, before any of the tests are executed.
   */
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void {
   }
 
   /**
   * Sets up the fixture, for example, opens a network connection.
   * This method is called before each test method is executed.
   */
-  protected function setUp() {
+  protected function setUp(): void {
   }
 
   /**
   * Like setUp(), this is called before each test method to
   * assert any pre-conditions required by tests.
   */
-  protected function assertPreConditions() {
+  protected function assertPreConditions(): void {
   }
 
-  protected function assertPostConditions() {
+  protected function assertPostConditions(): void {
   }
 
   /**
   * Tears down the fixture, for example, closes a network connection.
   * This method is called after a test is executed.
   */
-  protected function tearDown() {
+  protected function tearDown(): void {
   }
 
   /**
   * executed only once, after all the testing methods
   */
-  public static function tearDownAfterClass() {
+  public static function tearDownAfterClass(): void {
   }
 
-  protected function onNotSuccessfulTest(Exception $e) {
+  protected function onNotSuccessfulTest(\Throwable $e): void {
     print __METHOD__ . "\n";
     throw $e;
   }
@@ -90,17 +90,17 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
 
     $expected = array('COD Staff', 'COD Administrator', 'EGI CSIRT Officer', 'Chief Operations Officer');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'PRoJect', 'EGI');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
     $expected = array('COD Staff', 'COD Administrator', 'EGI CSIRT Officer', 'Chief Operations Officer', 'NGI Operations Manager', 'NGI Operations Deputy Manager', 'NGI Security Officer');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_GRANT_ROLE", 'ngi', 'EGI');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
     $expected = array('Service Group Administrator');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'SErviceGroup', 'EGI');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
     $expected = array(
@@ -111,19 +111,19 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
       'Regional First Line Support' => 'Ngi'
     );
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'ngi', 'egi');
-    $this->assertArraySubset($expected, ($enablingRoleTypeNames));
+    $this->assertEquals($expected, ($enablingRoleTypeNames));
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
     // the action don't exist in the XML doc, so expect an empty array
     $expected = array();
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_dont_exist", 'ngi', 'egi');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
     // the Target entityType don't exist in the XML doc, so expect an empty array
     $expected = array();
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'ngix_dont_exist', 'egi');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
 
@@ -136,13 +136,13 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
       'Site Operations Manager' => 'Site',
     );
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_GRANT_ROLE", 'site', 'egi');
-    $this->assertArraySubset($expected, $enablingRoleTypeNames);
+    $this->assertEquals($expected, $enablingRoleTypeNames);
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_REJECT_ROLE", 'site', 'egi');
-    $this->assertArraySubset($expected, $enablingRoleTypeNames);
+    $this->assertEquals($expected, $enablingRoleTypeNames);
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_REVOKE_ROLE", 'site', 'egi');
-    $this->assertArraySubset($expected, $enablingRoleTypeNames);
+    $this->assertEquals($expected, $enablingRoleTypeNames);
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
     $expected = array(
@@ -155,14 +155,14 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
       'Chief Operations Officer' => 'Project'
     );
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_SITE_EDIT_CERT_STATUS", 'site', 'egi');
-    $this->assertArraySubset($expected, $enablingRoleTypeNames);
+    $this->assertEquals($expected, $enablingRoleTypeNames);
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
 
     $expected = array(
       'Service Group Administrator' => 'ServiceGroup',
     );
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("ACTION_EDIT_OBJECT", 'serviceGroup', NULL);
-    $this->assertArraySubset($expected, $enablingRoleTypeNames);
+    $this->assertEquals($expected, $enablingRoleTypeNames);
     $this->assertEquals(count($expected), count($enablingRoleTypeNames));
   }
 
@@ -176,38 +176,38 @@ class RoleActionMappingServiceTest extends PHPUnit_Framework_TestCase {
     // to do action 'AX' on a 'site' requires roles:
     $expected = array('RoleA','RoleB','RoleC','RoleD','RoleE');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("AX", 'site', 'egi2');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
     //print_r($enablingRoleNames);
 
     // to do action 'AX' on a 'service' requires roles:
     $expected = array('RoleA','RoleB','RoleC','RoleD','RoleE');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("AX", 'service', 'egi2');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
 
     // to do action 'AX' on a 'project' requires roles:
     $expected = array('RoleD','RoleE');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("AX", 'project', 'egi2');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
 
     // to do action 'A1' on a 'site' requires roles:
     $expected = array('RoleA','RoleB','RoleC');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("A1", 'site', 'egi2');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
 
     // to do action 'A5' on a 'site' requires roles:
     $expected = array('RoleD','RoleE');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("A5", 'site', 'egi2');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
 
     // to do action 'A1' on a 'service' requires roles:
     $expected = array('RoleA','RoleB','RoleC');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("A1", 'service', 'egi2');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
 
     // to do action 'AY' on a 'project' requires roles:
     $expected = array('RoleF');
     $enablingRoleTypeNames = $roleActionService->getRoleTypeNamesThatEnableActionOnTargetObjectType("AY", 'project', 'egi2');
-    $this->assertArraySubset($expected, array_keys($enablingRoleTypeNames));
+    $this->assertEquals($expected, array_keys($enablingRoleTypeNames));
 
   }
 

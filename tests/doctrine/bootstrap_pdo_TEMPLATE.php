@@ -3,7 +3,7 @@
 /**
  * Provides a connection to the test database. Copy this file and rename it
  * to 'bootstrap_pdo.php' in the same directory.
- * The DBUnit tests then require these methods to get a connection to the
+ * The database tests then require these methods to get a connection to the
  * test db.
  *
  * @author David Meredith
@@ -12,7 +12,7 @@
 /**
  * Returns the database connection to your test databse.
  * Modify as required to return a connection to your test db.
- * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
+ * @return \PDO
  */
 function getConnectionToTestDB() {
 
@@ -22,7 +22,7 @@ function getConnectionToTestDB() {
      ///////////////////////SQLITE CONNECTION DETAILS/////////////////////////////////////////////
      // $sqliteFile = __DIR__ . '/../db.sqlite';
      // $pdo = new PDO("sqlite:" . $sqliteFile);
-     // return new PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection($pdo, 'sqlite');
+     // return $pdo;
      /////////////////////////////////////////////////////////////////////////////////////////////
 
      ///////////////////////ORACLE CONNECTION DETAILS/////////////////////////////////////////////
@@ -40,12 +40,12 @@ function getConnectionToTestDB() {
      // $pdo = new PDO('oci:dbname=//localhost:1521/xe', '<USER>', '<PASSWORD>'); // note 'oci:dbname=//' in the connection string
      //
      // // now return the required object:
-     // return new PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection($pdo, 'USERS');  // $pdo object, schema
+     // return $pdo;
      /////////////////////////////////////////////////////////////////////////////////////////////
 
      ///////////////////////MYSQL CONNECTION DETAILS//////////////////////////////////////////////
      //  $pdo = new PDO('mysql:host=localhost;dbname=doctrine;charset=UTF8', 'doctrine', 'doc');
-     //  return new PHPUnit_Extensions_Database_DB_DefaultDatabaseConnection($pdo);
+     //  return $pdo;
      /////////////////////////////////////////////////////////////////////////////////////////////
 }
 

@@ -46,7 +46,7 @@ class WriteAPIserviceMethodsTests extends extensionPropertyAbstract {
   /**
   * Overridden.
   */
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void {
     parent::setUpBeforeClass();
     echo "\n\n-------------------------------------------------\n";
     echo "Executing WriteAPIserviceMethodsTests. . .\n";
@@ -109,8 +109,8 @@ class WriteAPIserviceMethodsTests extends extensionPropertyAbstract {
     foreach ($serviceValues as $valueType => $value) {
       $valueType = $this->mapToDBFieldName($valueType);
       $sql = "SELECT * FROM Services WHERE id = '$serviceId' AND $valueType = '$value'";
-      $result = $con->createQueryTable('', $sql);
-      $this->assertEquals(1, $result->getRowCount());
+      $result = $con->query($sql)->fetchAll();
+      $this->assertEquals(1, count($result));
     }
   }
 

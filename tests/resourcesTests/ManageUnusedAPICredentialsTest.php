@@ -16,37 +16,26 @@ namespace org\gocdb\tests;
 
 use org\gocdb\scripts\ManageAPICredentialsActions;
 use org\gocdb\tests\ManageAPICredentialsTestUtils;
-use PHPUnit_Extensions_Database_Operation_Factory;
-use PHPUnit_Extensions_Database_TestCase;
 
 require_once __DIR__ . '/ManageAPICredentialsTestUtils.php';
 require_once __DIR__ . '/../unit/lib/Gocdb_Services/ServiceTestUtil.php';
 require_once __DIR__ . '/../../resources/ManageAPICredentials/ManageAPICredentialsActions.php';
 
-class ManageUnusedAPICredentialsTest extends PHPUnit_Extensions_Database_TestCase
+class ManageUnusedAPICredentialsTest extends \PHPUnit\Framework\TestCase
 {
     private $entityManager;
-    private $dbOpsFactory;
-
-    public function __construct()
-    {
-        parent::__construct();
-        // Use a local instance to avoid Mess Detector's whinging about avoiding
-        // static access.
-        $this->dbOpsFactory = new PHPUnit_Extensions_Database_Operation_Factory();
-    }
     /**
      * Overridden.
      */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         echo "\n\n-------------------------------------------------\n";
         echo "Executing ManageUnusedAPICredentialsTest. . .\n";
     }
     /**
-     * Overridden. Returns the test database connection.
-     * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
+     * Returns the test database connection.
+     * @return \PDO
      */
     protected function getConnection()
     {
@@ -54,48 +43,14 @@ class ManageUnusedAPICredentialsTest extends PHPUnit_Extensions_Database_TestCas
         return getConnectionToTestDB();
     }
     /**
-     * Overridden. Returns the test dataset.
-     * Defines how the initial state of the database should look before each test is executed.
-     * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-     */
-    protected function getDataSet()
-    {
-        $dataset = $this->createFlatXMLDataSet(__DIR__ . '/../doctrine/truncateDataTables.xml');
-        return $dataset;
-      // Use below to return an empty data set if we don't want to truncate and seed
-      //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
-    }
-    /**
-     * Overridden.
-     */
-    protected function getSetUpOperation()
-    {
-      // CLEAN_INSERT is default
-      //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
-      //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
-      //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-      //
-      // Issue a DELETE from <table> which is more portable than a
-      // TRUNCATE table <table> (some DBs require high privileges for truncate statements
-      // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
-        return $this->dbOpsFactory->DELETE_ALL();
-    }
-    /**
-     * Overridden.
-     */
-    protected function getTearDownOperation()
-    {
-      // NONE is default
-        return $this->dbOpsFactory->NONE();
-    }
-    /**
      * Sets up the fixture, e.g create a new entityManager for each test run
      * This method is called before each test method is executed.
      */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->entityManager = $this->createEntityManager();
+        (new \Doctrine\Common\DataFixtures\Purger\ORMPurger($this->entityManager))->purge();
       // Pass the Entity Manager into the Factory to allow Gocdb_Services
       // to use other Gocdb_Services.
         \Factory::setEntityManager($this->entityManager);
@@ -105,7 +60,7 @@ class ManageUnusedAPICredentialsTest extends PHPUnit_Extensions_Database_TestCas
     /**
      * Run after each test function to prevent pile-up of database connections.
      */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         if (!is_null($this->entityManager)) {

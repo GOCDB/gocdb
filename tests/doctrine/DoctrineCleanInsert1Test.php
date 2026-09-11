@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityManager;
  * @author David Meredith <david.meredith@stfc.ac.uk>
  * @author Johnn Casson <john.casson@stfc.ac.uk>
  */
-class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
+class DoctrineCleanInsert1Test extends \PHPUnit\Framework\TestCase
 {
     private $em;
     private $egiScope;
@@ -27,7 +27,7 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
   /**
    * Overridden.
    */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
 
@@ -36,8 +36,8 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-   * Overridden. Returns the test database connection.
-   * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
+   * Returns the test database connection.
+   * @return \PDO
    */
     protected function getConnection()
     {
@@ -46,56 +46,20 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-   * Overridden. Returns the test dataset.
-   * Defines how the initial state of the database should look before each test is executed.
-   * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-   */
-    protected function getDataSet()
-    {
-        return $this->createFlatXMLDataSet(dirname(__FILE__) . '/truncateDataTables.xml');
-      // Use below to return an empty data set if we don't want to truncate and seed
-      //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
-    }
-
-  /**
-   * Overridden.
-   */
-    protected function getSetUpOperation()
-    {
-      // CLEAN_INSERT is default
-      //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
-      //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
-      //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-      //
-      // Issue a DELETE from <table> which is more portable than a
-      // TRUNCATE table <table> (some DBs require high privileges for truncate statements
-      // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
-        return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
-    }
-
-  /**
-   * Overridden.
-   */
-    protected function getTearDownOperation()
-    {
-      // NONE is default
-        return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-    }
-
-  /**
    * Sets up the fixture, e.g create a new entityManager for each test run
    * This method is called before each test method is executed.
    */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->em = $this->createEntityManager();
+        (new \Doctrine\Common\DataFixtures\Purger\ORMPurger($this->em))->purge();
     }
 
   /**
    * Run after each test function to prevent pile-up of database connections.
    */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         if (!is_null($this->em)) {
@@ -117,7 +81,7 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
    * Called after setUp() and before each test. Used for common assertions
    * across all tests.
    */
-    protected function assertPreConditions()
+    protected function assertPreConditions(): void
     {
         $con = $this->getConnection();
         $fixture = dirname(__FILE__) . '/truncateDataTables.xml';
@@ -126,9 +90,9 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
         foreach ($tables as $tableName) {
           //print $tableName->getName() . "\n";
             $sql = "SELECT * FROM " . $tableName->getName();
-            $result = $con->createQueryTable('results_table', $sql);
-          //echo 'row count: '.$result->getRowCount() ;
-            if ($result->getRowCount() != 0) {
+            $result = $con->query($sql)->fetchAll();
+          //echo 'row count: '.count($result) ;
+            if (count($result) != 0) {
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
             }
         }
@@ -254,17 +218,14 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
         );
 
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM NGIs");
-        $this->assertTrue($result->getRowCount() == 1);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
-        $this->assertTrue($result->getRowCount() == 1);
+        $result = $testConn->query("SELECT * FROM NGIs")->fetchAll();
+        $this->assertTrue(count($result) == 1);
+        $result = $testConn->query("SELECT * FROM Sites")->fetchAll();
+        $this->assertTrue(count($result) == 1);
 
       // Assert that the FK joins worked as expected.
-        $result = $testConn->createQueryTable(
-            'results_table',
-            "SELECT * FROM NGIs inner join Sites on NGIs.id = Sites.ngi_id"
-        );
-        $this->assertTrue($result->getRowCount() == 1);
+        $result = $testConn->query("SELECT * FROM NGIs inner join Sites on NGIs.id = Sites.ngi_id")->fetchAll();
+        $this->assertTrue(count($result) == 1);
     }
 
     public function testJoinServicesToSite()
@@ -331,11 +292,8 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
         $this->em->flush();
 
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable(
-            'results_table',
-            "SELECT CertificationStatusLogs.id FROM CertificationStatusLogs"
-        );
-        $this->assertTrue($result->getRowCount() == 0);
+        $result = $testConn->query("SELECT CertificationStatusLogs.id FROM CertificationStatusLogs")->fetchAll();
+        $this->assertTrue(count($result) == 0);
 
         // check deletion of cert log don't delete site
     }
@@ -391,15 +349,12 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
         $this->assertTrue(count($site->getScopes()) == $n);
 
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable(
-            'results_table',
-            "SELECT Sites.id FROM Sites
+        $result = $testConn->query("SELECT Sites.id FROM Sites
        inner join Sites_Scopes
        on Sites.id = Sites_Scopes.site_id
        inner join Scopes
-       on Scopes.id = Sites_Scopes.scope_id"
-        );
-        $this->assertTrue($result->getRowCount() == $n);
+       on Scopes.id = Sites_Scopes.scope_id")->fetchAll();
+        $this->assertTrue(count($result) == $n);
     }
 
 
@@ -418,15 +373,12 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
         $this->assertTrue(count($se->getScopes()) == $n);
 
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable(
-            'results_table',
-            "SELECT Services.id FROM Services
+        $result = $testConn->query("SELECT Services.id FROM Services
        inner join Services_Scopes
        on Services.id = Services_Scopes.service_id
        inner join Scopes
-       on Scopes.id = Services_Scopes.scope_id"
-        );
-        $this->assertTrue($result->getRowCount() == $n);
+       on Scopes.id = Services_Scopes.scope_id")->fetchAll();
+        $this->assertTrue(count($result) == $n);
     }
 
   /**
@@ -489,10 +441,10 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
         $this->em->rollback();
 
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
-        $this->assertTrue($result->getRowCount() == 0);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Services");
-        $this->assertTrue($result->getRowCount() == 0);
+        $result = $testConn->query("SELECT * FROM Sites")->fetchAll();
+        $this->assertTrue(count($result) == 0);
+        $result = $testConn->query("SELECT * FROM Services")->fetchAll();
+        $this->assertTrue(count($result) == 0);
     }
 
 
@@ -502,10 +454,10 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
    * first have to delete the services that holds the FK to the site (one site
    * to many services).
    *
-   * @expectedException \Doctrine\DBAL\DBALException
    */
     public function testExpectedFK_ViolationOnSiteDeleteWithoutCascade()
     {
+        $this->expectException(\Doctrine\DBAL\DBALException::class);
         print __METHOD__ . "\n";
         $n = 1;
         $site = TestUtil::createSampleSite('site' . $n/*, 'pk' . $n*/);
@@ -571,18 +523,16 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
         $this->assertNull($ownedEntityAgain);
       // second using separate db connection
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM OwnedEntities");
-        $this->assertTrue($result->getRowCount() == 0);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
-        $this->assertTrue($result->getRowCount() == 0);
+        $result = $testConn->query("SELECT * FROM OwnedEntities")->fetchAll();
+        $this->assertTrue(count($result) == 0);
+        $result = $testConn->query("SELECT * FROM Sites")->fetchAll();
+        $this->assertTrue(count($result) == 0);
     }
 
 
-  /**
-   * @expectedException \Doctrine\ORM\ORMInvalidArgumentException
-   */
     public function testShowMergeIsRequiredBetweenDifferentPersistenceCtxt()
     {
+        $this->expectException(\Doctrine\ORM\ORMInvalidArgumentException::class);
         print __METHOD__ . "\n";
       // User
         $u = TestUtil::createSampleUser("Test", "Testing");
@@ -640,10 +590,10 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
         $this->em->getConnection()->rollback();
 
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
-        $this->assertTrue($result->getRowCount() == 0);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM PrimaryKeys");
-        $this->assertTrue($result->getRowCount() == 0);
+        $result = $testConn->query("SELECT * FROM Sites")->fetchAll();
+        $this->assertTrue(count($result) == 0);
+        $result = $testConn->query("SELECT * FROM PrimaryKeys")->fetchAll();
+        $this->assertTrue(count($result) == 0);
     }
 
   /**
@@ -686,14 +636,14 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
 
       // Assert that there are still three EndpointLocations and one Downtimes in the database
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM EndpointLocations");
-        $this->assertTrue($result->getRowCount() == 0);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Downtimes");
-        $this->assertTrue($result->getRowCount() == 0);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Services");
-        $this->assertTrue($result->getRowCount() == 0);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Downtimes_EndpointLocations");
-        $this->assertTrue($result->getRowCount() == 0);
+        $result = $testConn->query("SELECT * FROM EndpointLocations")->fetchAll();
+        $this->assertTrue(count($result) == 0);
+        $result = $testConn->query("SELECT * FROM Downtimes")->fetchAll();
+        $this->assertTrue(count($result) == 0);
+        $result = $testConn->query("SELECT * FROM Services")->fetchAll();
+        $this->assertTrue(count($result) == 0);
+        $result = $testConn->query("SELECT * FROM Downtimes_EndpointLocations")->fetchAll();
+        $this->assertTrue(count($result) == 0);
     }
 
   /**
@@ -702,10 +652,10 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
    * association to a downtime (this relationship would need to be deleted first
    * to allow the endpoint to be deleted cleanly by the cascade).
    *
-   * @expectedException \Doctrine\DBAL\DBALException
    */
     public function testExpectedFK_ViolationOnServiceToEndpointCascadeDelete_WithDTs()
     {
+        $this->expectException(\Doctrine\DBAL\DBALException::class);
         print __METHOD__ . "\n";
       // create a linked entity graph as beow:
       //
@@ -734,12 +684,12 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
 
       // Assert that there are expected EndpointLocations and one Downtimes in the database
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM EndpointLocations");
-        $this->assertTrue($result->getRowCount() == 1);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Downtimes");
-        $this->assertTrue($result->getRowCount() == 1);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Downtimes_EndpointLocations");
-        $this->assertTrue($result->getRowCount() == 1);
+        $result = $testConn->query("SELECT * FROM EndpointLocations")->fetchAll();
+        $this->assertTrue(count($result) == 1);
+        $result = $testConn->query("SELECT * FROM Downtimes")->fetchAll();
+        $this->assertTrue(count($result) == 1);
+        $result = $testConn->query("SELECT * FROM Downtimes_EndpointLocations")->fetchAll();
+        $this->assertTrue(count($result) == 1);
 
       // Try and delete the service
       // We expect a FK violation wrapped as a DBALException.
@@ -818,12 +768,12 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
 
       // Assert that there are still three EndpointLocations and one Downtimes in the database
         $testConn = $this->getConnection();
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM EndpointLocations");
-        $this->assertTrue($result->getRowCount() == 3);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Downtimes");
-        $this->assertTrue($result->getRowCount() == 1);
-        $result = $testConn->createQueryTable('results_table', "SELECT * FROM Downtimes_EndpointLocations");
-        $this->assertTrue($result->getRowCount() == 1);
+        $result = $testConn->query("SELECT * FROM EndpointLocations")->fetchAll();
+        $this->assertTrue(count($result) == 3);
+        $result = $testConn->query("SELECT * FROM Downtimes")->fetchAll();
+        $this->assertTrue(count($result) == 1);
+        $result = $testConn->query("SELECT * FROM Downtimes_EndpointLocations")->fetchAll();
+        $this->assertTrue(count($result) == 1);
 
       // Assert that our in-mem entity model is now inconsistent with DB
       // when VIEWED FROM THE ENDPOINT SIDE.
@@ -937,18 +887,17 @@ class DoctrineCleanInsert1Test extends PHPUnit_Extensions_Database_TestCase
       // Do not trust what Doctrine tells us and assert the rows have
       // actually been added using test connection
       $testConn = $this->getConnection();
-      $result = $testConn->createQueryTable('results_table', "SELECT * FROM NGIs");
-      $this->assertTrue($result->getRowCount() == $n);
-      $result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
-      $this->assertTrue($result->getRowCount() == $n);
+      $result = $testConn->query("SELECT * FROM NGIs")->fetchAll();
+      $this->assertTrue(count($result) == $n);
+      $result = $testConn->query("SELECT * FROM Sites")->fetchAll();
+      $this->assertTrue(count($result) == $n);
 
       // Assert that the FK joins worked as expected.
-      $result = $testConn->createQueryTable('results_table',
-              "SELECT * FROM NGIs inner join Sites on NGIs.id = Sites.ngi_id");
+      $result = $testConn->query("SELECT * FROM NGIs inner join Sites on NGIs.id = Sites.ngi_id")->fetchAll();
       if($setJoinCorrectly) {
-          $this->assertTrue($result->getRowCount() == $n);
+          $this->assertTrue(count($result) == $n);
       } else {
-          $this->assertTrue($result->getRowCount() == 0);
+          $this->assertTrue(count($result) == 0);
       }
   }*/
 }

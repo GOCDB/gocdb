@@ -14,7 +14,7 @@ require_once dirname(__FILE__) . '/../../lib/Gocdb_Services/ServiceService.php';
 * @author David Meredith
 * @author John Casson
 */
-class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase
+class ServiceMoveTest extends \PHPUnit\Framework\TestCase
 {
     private $em;
     private $egiScope;
@@ -25,7 +25,7 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase
   /**
   * Overridden.
   */
-    public static function setUpBeforeClass()
+    public static function setUpBeforeClass(): void
     {
         parent::setUpBeforeClass();
         echo "\n\n-------------------------------------------------\n";
@@ -33,8 +33,8 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-  * Overridden. Returns the test database connection.
-  * @return PHPUnit_Extensions_Database_DB_IDatabaseConnection
+  * Returns the test database connection.
+  * @return \PDO
   */
     protected function getConnection()
     {
@@ -43,55 +43,19 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase
     }
 
   /**
-  * Overridden. Returns the test dataset.
-  * Defines how the initial state of the database should look before each test is executed.
-  * @return PHPUnit_Extensions_Database_DataSet_IDataSet
-  */
-    protected function getDataSet()
-    {
-        return $this->createFlatXMLDataSet(dirname(__FILE__) . '/truncateDataTables.xml');
-      // Use below to return an empty data set if we don't want to truncate and seed
-      //return new PHPUnit_Extensions_Database_DataSet_DefaultDataSet();
-    }
-
-  /**
-  * Overridden.
-  */
-    protected function getSetUpOperation()
-    {
-      // CLEAN_INSERT is default
-      //return PHPUnit_Extensions_Database_Operation_Factory::CLEAN_INSERT();
-      //return PHPUnit_Extensions_Database_Operation_Factory::UPDATE();
-      //return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-      //
-      // Issue a DELETE from <table> which is more portable than a
-      // TRUNCATE table <table> (some DBs require high privileges for truncate statements
-      // and also do not allow truncates across tables with FK contstraints e.g. Oracle)
-        return PHPUnit_Extensions_Database_Operation_Factory::DELETE_ALL();
-    }
-
-  /**
-  * Overridden.
-  */
-    protected function getTearDownOperation()
-    {
-      // NONE is default
-        return PHPUnit_Extensions_Database_Operation_Factory::NONE();
-    }
-
-  /**
   * Sets up the fixture, e.g create a new entityManager for each test run
   * This method is called before each test method is executed.
   */
-    protected function setUp()
+    protected function setUp(): void
     {
         parent::setUp();
         $this->em = $this->createEntityManager();
+        (new \Doctrine\Common\DataFixtures\Purger\ORMPurger($this->em))->purge();
     }
   /**
    * Run after each test function to prevent pile-up of database connections.
    */
-    protected function tearDown()
+    protected function tearDown(): void
     {
         parent::tearDown();
         if (!is_null($this->em)) {
@@ -112,7 +76,7 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase
   * Called after setUp() and before each test. Used for common assertions
   * across all tests.
   */
-    protected function assertPreConditions()
+    protected function assertPreConditions(): void
     {
         $con = $this->getConnection();
         $fixture = dirname(__FILE__) . '/truncateDataTables.xml';
@@ -120,8 +84,8 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase
 
         foreach ($tables as $tableName) {
             $sql = "SELECT * FROM " . $tableName->getName();
-            $result = $con->createQueryTable('results_table', $sql);
-            if ($result->getRowCount() != 0) {
+            $result = $con->query($sql)->fetchAll();
+            if (count($result) != 0) {
                 throw new RuntimeException("Invalid fixture. Table has rows: " . $tableName->getName());
             }
         }
@@ -173,31 +137,31 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase
       */
         $S1_ID = $S1->getId();
         $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
         $S2_ID = $S2->getId();
         $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
       /*
       * Check each service endpoint is: present, has the right ID & parent Site
       */
         $SE1_id = $SE1->getId();
         $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP1' AND ID = '$SE1_id' AND PARENTSITE_ID = '$S1_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
         $SE2_id = $SE2->getId();
         $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP2' AND ID = '$SE2_id' AND PARENTSITE_ID = '$S2_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
         $SE3_id = $SE3->getId();
         $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP3' AND ID = '$SE3_id' AND PARENTSITE_ID = '$S2_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
       //Move service endpoints
         $serv = new org\gocdb\services\ServiceService();
@@ -232,38 +196,38 @@ class ServiceMoveTest extends PHPUnit_Extensions_Database_TestCase
 
       //Check Sites are still present and their ID is unchanged
         $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site1' AND ID = '$S1_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
         $sql = "SELECT 1 FROM Sites WHERE shortname = 'Site2' AND ID = '$S2_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
       //Check each Site has the correct number of service endpoints
       //Site 1
         $sql = "SELECT 1 FROM Services WHERE parentsite_id = '$S1_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
       //Site 2
         $sql = "SELECT 1 FROM Services WHERE parentsite_id = '$S2_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(2, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(2, count($result));
 
       //check Site IDs are unchanged and they are assigned to the correct NGI
       //Site 1
         $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP1' AND id = '$SE1_id' AND parentsite_id = '$S2_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
       //Site 2
         $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP2' AND id = '$SE2_id' AND parentsite_id = '$S1_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
 
       //Site 3
         $sql = "SELECT 1 FROM Services WHERE hostname = 'SEP3' AND id = '$SE3_id' AND parentsite_id = '$S2_ID'";
-        $result = $con->createQueryTable('', $sql);
-        $this->assertEquals(1, $result->getRowCount());
+        $result = $con->query($sql)->fetchAll();
+        $this->assertEquals(1, count($result));
     }
 }
