@@ -143,25 +143,25 @@ $this->em->flush();
 // Assert fixture data is setup correctly in the DB.
 $testConn = $this->getConnection();
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Users");
-$this->assertTrue($result->getRowCount() == 1);
+$result = $testConn->query("SELECT * FROM Users")->fetchAll();
+$this->assertTrue(count($result) == 1);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Roles");
-$this->assertTrue($result->getRowCount() == 6);
+$result = $testConn->query("SELECT * FROM Roles")->fetchAll();
+$this->assertTrue(count($result) == 6);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM NGIs");
-$this->assertTrue($result->getRowCount() == 1);
+$result = $testConn->query("SELECT * FROM NGIs")->fetchAll();
+$this->assertTrue(count($result) == 1);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
-$this->assertTrue($result->getRowCount() == 2);
+$result = $testConn->query("SELECT * FROM Sites")->fetchAll();
+$this->assertTrue(count($result) == 2);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Services");
-$this->assertTrue($result->getRowCount() == 2);
+$result = $testConn->query("SELECT * FROM Services")->fetchAll();
+$this->assertTrue(count($result) == 2);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Downtimes");
-$this->assertTrue($result->getRowCount() == 8);
+$result = $testConn->query("SELECT * FROM Downtimes")->fetchAll();
+$this->assertTrue(count($result) == 8);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM EndpointLocations");
-$this->assertTrue($result->getRowCount() == 4);
+$result = $testConn->query("SELECT * FROM EndpointLocations")->fetchAll();
+$this->assertTrue(count($result) == 4);
 
 ?>

@@ -37,7 +37,7 @@ class WriteAPIendpointMethodsTests extends extensionPropertyAbstract {
   /**
   * Overridden.
   */
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void {
     parent::setUpBeforeClass();
     echo "\n\n-------------------------------------------------\n";
     echo "Executing WriteAPIendpointMethodsTests. . .\n";
@@ -73,8 +73,8 @@ class WriteAPIendpointMethodsTests extends extensionPropertyAbstract {
 
     foreach ($endpointValues as $valueType => $value) {
       $sql = "SELECT * FROM EndpointLocations WHERE id = '$endpointId' AND $valueType = '$value'";
-      $result = $con->createQueryTable('', $sql);
-      $this->assertEquals(1, $result->getRowCount());
+      $result = $con->query($sql)->fetchAll();
+      $this->assertEquals(1, count($result));
     }
   }
 
@@ -98,13 +98,13 @@ class WriteAPIendpointMethodsTests extends extensionPropertyAbstract {
 
     $con = $this->getConnection();
     $sql = "SELECT * FROM EndpointLocations WHERE service_id = '$serviceId' ";
-    $result = $con->createQueryTable('', $sql);
+    $result = $con->query($sql)->fetchAll();
 
     #Assert that there is one and only one endpoint associated with our service
-    $this->assertEquals(1, $result->getRowCount());
+    $this->assertEquals(1, count($result));
 
     #Check the values against those in the database
-    $resultArray = array_change_key_case($result->getRow(0));
+    $resultArray = array_change_key_case($result[0]);
 
         foreach (array_change_key_case($values) as $field => $value) {
       $this->assertEquals($value, $resultArray[$field]);
@@ -135,11 +135,11 @@ class WriteAPIendpointMethodsTests extends extensionPropertyAbstract {
   public function assertEndpointDeletionStatus($shouldBeDeleted, $endpointId) {
     $con = $this->getConnection();
     $sql = "SELECT * FROM EndpointLocations WHERE id = '$endpointId'";
-    $result = $con->createQueryTable('', $sql);
+    $result = $con->query($sql)->fetchAll();
     if ($shouldBeDeleted) {
-      $this->assertEquals(0, $result->getRowCount());
+      $this->assertEquals(0, count($result));
     } else {
-      $this->assertEquals(1, $result->getRowCount());
+      $this->assertEquals(1, count($result));
     }
   }
 

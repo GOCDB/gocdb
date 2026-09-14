@@ -35,7 +35,11 @@
  * @todo Has not been fully implemented yet.
  * @author David Meredith
  */
-class FirstTest extends PHPUnit_Framework_TestCase {
+class FirstTest extends \PHPUnit\Framework\TestCase {
+
+    // assertSelectCount()/assertSelectEquals()/assertSelectRegExp() used to be
+    // built into PHPUnit. They now live in phpunit/phpunit-dom-assertions.
+    use \PHPUnit\Framework\DOMTestTrait;
 
 
     private $aArray = null;
@@ -49,7 +53,7 @@ class FirstTest extends PHPUnit_Framework_TestCase {
     /**
      * Called once, before any of the tests are executed.
      */
-    public static function setUpBeforeClass() {
+    public static function setUpBeforeClass(): void {
         print __METHOD__ . "\n";
         // define a variable so that example tests below can be conditionally
         // skipped if the ENV var does not have a specific value.
@@ -60,7 +64,7 @@ class FirstTest extends PHPUnit_Framework_TestCase {
      * Sets up the fixture, for example, opens a network connection.
      * This method is called before each test method is executed.
      */
-    protected function setUp() {
+    protected function setUp(): void {
         print __METHOD__ . "\n";
 
         // each time, re-create $this->aArray so that we can execute the
@@ -76,12 +80,12 @@ class FirstTest extends PHPUnit_Framework_TestCase {
      * Like setUp(), this is called before each test method to
      * assert any pre-conditions required by tests.
      */
-    protected function assertPreConditions() {
+    protected function assertPreConditions(): void {
         print __METHOD__ . "\n";
         //$this->assertTrue(ENV === 'DEV');
     }
 
-        protected function assertPostConditions() {
+        protected function assertPostConditions(): void {
         print __METHOD__ . "\n";
     }
 
@@ -89,18 +93,18 @@ class FirstTest extends PHPUnit_Framework_TestCase {
      * Tears down the fixture, for example, closes a network connection.
      * This method is called after a test is executed.
      */
-    protected function tearDown() {
+    protected function tearDown(): void {
         print __METHOD__ . "\n";
     }
 
     /**
      * executed only once, after all the testing methods
      */
-    public static function tearDownAfterClass() {
+    public static function tearDownAfterClass(): void {
         print __METHOD__ . "\n";
     }
 
-    protected function onNotSuccessfulTest(Exception $e) {
+    protected function onNotSuccessfulTest(\Throwable $e): void {
         print __METHOD__ . "\n";
         throw $e;
     }
@@ -207,8 +211,9 @@ class FirstTest extends PHPUnit_Framework_TestCase {
     public function testShowPHPUnitCanHandleTestDependencies( array $aArray ) {
         $this->assertGreaterThan(2, count( $aArray ) );
         $this->assertGreaterThanOrEqual(3, count( $aArray ) );
-        // temporarily comment out in order to support phpunit 3.4.5 (requires 3.5.5)
-        //$this->assertInternalType('array', $aArray );
+        // assertInternalType() was removed in PHPUnit 9, replaced by a set of
+        // per-type assertions.
+        $this->assertIsArray( $aArray );
         $this->assertStringStartsWith('S', $aArray[ 'login' ] );
     }
 
@@ -231,7 +236,7 @@ class FirstTest extends PHPUnit_Framework_TestCase {
         $this->assertStringEndsWith('...', $body );
         $this->assertNotSame($title, $body);
 
-        //From PHPUnit doc: More complex assertions can be formulated using the PHPUnit_Framework_Constraint classes.
+        //From PHPUnit doc: More complex assertions can be formulated using the \PHPUnit\Framework\Constraint\Constraint classes.
         //They can be evaluated using the assertThat() method.
         //The next example shows how the logicalNot() and equalTo() constraints can be used to express the same assertion as assertNotEquals().
         //@see http://www.phpunit.de/manual/current/en/api.html#api.assert.assertThat
@@ -257,13 +262,13 @@ class FirstTest extends PHPUnit_Framework_TestCase {
     }
 
     /**
-     * Annotations are also useful for declaring that a method should throw an
-     * exception, as is the case with TestException. We can get the same result with
-     * <pre>$this->setExpectedException( 'InvalidArgumentException' );</pre>
-     *
-     * @expectedException InvalidArgumentException
+     * expectException() declares that a method should throw an exception, as is
+     * the case with TestException. It must be called before the code that is
+     * expected to throw. (The @expectedException annotation that used to do the
+     * same job was removed in PHPUnit 9.)
      */
     public function testException() {
+        $this->expectException(\InvalidArgumentException::class);
         throw new InvalidArgumentException( 'Invalid Argument Exception' );
     }
 
@@ -291,45 +296,28 @@ class FirstTest extends PHPUnit_Framework_TestCase {
         $this->assertStringMatchesFormat('%c', 'c');
         $this->assertStringMatchesFormat('%f', '154.12');
 
-        // Matcher that asserts that there is a "div", with an "ul" ancestor and a "li"
-        // parent (with class="enum"), and containing a "span" descendant that contains
-        // an element with id="my_test" and the text "Hello World".
-        $matcher = array('id' => 'my_id');
+        // PHP is often used to generate HTML. The phpunit/phpunit-dom-assertions
+        // package offers us a powerful tool to test the generated code:
+        // "assertSelectCount". It takes a CSS selector, the number of matches
+        // expected (an int for an exact count, or just true for "at least one"),
+        // and the markup to match against.
         $html = '<div id="my_id"></div>';
 
-        // PHP is often used to generate HTML. PHPUnit offers us a powerful tool
-        // to test the generated code: "assertTag". It takes at least 2 argument,
-        // an array that describes the expected tags, and an HTML string.
-        $this->assertTag($matcher, $html);
+        $this->assertSelectCount('#my_id', true, $html);
 
-        $matcher = array(
-                'tag'        => 'div',
-                'ancestor'   => array('tag' => 'ul'),
-                'parent'     => array(
-                        'tag'        => 'li',
-                        'attributes' => array('class' => 'enum')
-                ),
-                'descendant' => array(
-                        'tag'   => 'span',
-                        'child' => array(
-                                'id'      => 'my_test',
-                                'content' => 'Hello World'
-                        )
-                )
-        );
-
+        // Selectors asserting that there is a "div", with an "ul" ancestor and a
+        // "li" parent (with class="enum"), containing a "span" descendant that
+        // contains an element with id="my_test" and the text "Hello World".
         $html = '<ul><li class="enum"><div><span><strong id="my_test">Hello World</strong></span></div></li></ul>';
 
-        $this->assertTag($matcher, $html);
+        $this->assertSelectCount('ul li.enum > div', true, $html);
 
-        $matcher = array(
-                'tag' => 'message',
-                'parent' => array(
-                        'tag' => 'root'
-                )
-        );
+        // "assertSelectEquals" additionally matches on the text content of the
+        // selected elements.
+        $this->assertSelectEquals('ul li.enum > div span > #my_test', 'Hello World', true, $html);
 
-        $this->assertTag( $matcher, $this->xXML, '', FALSE );
+        // Both work on XML too, by passing false as the final $isHtml argument.
+        $this->assertSelectCount('root > message', true, $this->xXML, '', false);
     }
 
 

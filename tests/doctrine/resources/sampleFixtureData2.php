@@ -181,19 +181,19 @@ $this->em->flush();
 // Assert fixture data is setup correctly in the DB.
 $testConn = $this->getConnection();
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Scopes");
-$this->assertTrue($result->getRowCount() == $scopeCount);
+$result = $testConn->query("SELECT * FROM Scopes")->fetchAll();
+$this->assertTrue(count($result) == $scopeCount);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM NGIs");
-$this->assertTrue($result->getRowCount() == 5);
+$result = $testConn->query("SELECT * FROM NGIs")->fetchAll();
+$this->assertTrue(count($result) == 5);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
-$this->assertTrue($result->getRowCount() == 5);
+$result = $testConn->query("SELECT * FROM Sites")->fetchAll();
+$this->assertTrue(count($result) == 5);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Services");
-$this->assertTrue($result->getRowCount() == 5);
+$result = $testConn->query("SELECT * FROM Services")->fetchAll();
+$this->assertTrue(count($result) == 5);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM ServiceGroups");
-$this->assertTrue($result->getRowCount() == 5);
+$result = $testConn->query("SELECT * FROM ServiceGroups")->fetchAll();
+$this->assertTrue(count($result) == 5);
 
 ?>

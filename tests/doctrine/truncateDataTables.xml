@@ -1,31 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
-    Document   : truncateDataTablesNoSeed.xml
+    Document   : truncateDataTables.xml
     Author     : David Meredith
     Description:
-        This dbunit seed file is used to clean and seed selected tables in the test db.
-        With the default operation of CLEAN_INSERT, you can specify that you
-        want to TRUNCATE a table and not insert any values by listing that
-        table as an element without any attributes (to ensure an empty table).
+        A list of the test db tables that must be empty before each test runs.
+        Each table is named by an empty element; the elements carry no data.
 
-        Impt: You can specify DELETE_ALL rather than TRUNCATE in your fixture (see getSetUpOperation())
-        to issue a DELETE from <table> which is more portable than a
-        TRUNCATE table <table> (some DBs require high privileges for truncate statements
-        and also do not allow truncates across tables with FK contstraints e.g. Oracle).
+        The tests read this file with simplexml_load_file() in
+        assertPreConditions() and assert that every table listed here has zero
+        rows. It is a check, not a fixture: the tables are actually emptied by
+        Doctrine's ORMPurger in setUp(), which derives the deletion order from
+        the entity mapping metadata.
 
-        Ordering of the table elements below is SIGNIFICANT. You must consider
-        foreign key constraints when deleting data from tables. When
-        DELETE_ALL is used, the order of the tables below is read in REVERSE
-        by phpunit (so the last table specified is truncated/delete_all first).
-
-        Therefore, entities that hold/own the FKs must be deleted FIRST, e.g.
-        Site has many Services, therefore since Services holds
-        the FK (as it is on the 'many' side), this table MUST be cleared before Site !
-
-        The most common reason you would want to ensure an empty table as
-        a part of your fixture is when your test should be inserting data to
-        that table.
+        Ordering of the elements below is therefore no longer significant, as
+        the file is only iterated to issue SELECTs. Add a table here when a
+        test should be inserting data to it and you want a clean starting state
+        to be verified.
 -->
 
 <dataset>
