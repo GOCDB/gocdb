@@ -1,13 +1,10 @@
 <?php
+
 /*______________________________________________________
  *======================================================
- * File: view_all.php
- * Author: George Ryall
- * Description: Controller for showing all projects in GOCDB
- *
  * License information
  *
- * Copyright � 2013 STFC
+ * Copyright 2023 UK Research and Innovation
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
@@ -20,22 +17,33 @@
  *
  /*====================================================== */
 
-function show_all_projects() {
-    require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
+/*
+ * Declares varibales to be used in /../views/help_and_contact.php
+ */
+
+function help_and_contact()
+{
+    require_once __DIR__ . '/../../../lib/Gocdb_Services/Factory.php';
 
     $params = array();
 
     $configService = \Factory::getConfigService();
-    $projectService = \Factory::getProjectService();
 
-    $projects = $projectService->getProjects();
-    $params['Projects'] = $projects;
+    $communityDocs = $configService->getCommunityDocs();
+    if (!empty($communityDocs)) {
+        $params['communityDocs'] = $communityDocs;
+    }
 
-    // adding the configurable project documentation link to the params array
-    $projectDocLink = $configService->getProjectDocLink();
-    $params['projectDocLink'] = $projectDocLink;
+    $helpdeskLink = $configService->getHelpdeskLink();
+    if (!empty($helpdeskLink)) {
+        $params['helpdeskLink'] = $helpdeskLink;
+    }
 
-    show_view('project/view_all.php', $params, "Projects");
+    $requestTracker = $configService->getRequestTracker();
+    if (!empty($requestTracker)) {
+        $params['requestTracker'] = $requestTracker;
+    }
+
+    $title = "Doc, Help and Support";
+    show_view('help_and_contact.php', $params, $title);
 }
-
-?>

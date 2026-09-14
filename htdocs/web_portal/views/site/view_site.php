@@ -607,8 +607,12 @@ $showPD = $params['authenticated']; // display Personal Data
                         <th>Type</th>
                         <th>Identifier</th>
                         <th>User</th>
+                        <th style="text-align:center;white-space: nowrap">
+                            Last Renewed
+                        </th>
                         <th style="text-align:center;white-space: nowrap">Last Used</th>
                         <th style="text-align:center">Write</th>
+                        <th style="text-align:center;">Renew</th>
                         <th style="text-align:center;">Edit</th>
                         <th style="text-align:center">Delete</th>
                     </tr>
@@ -651,6 +655,17 @@ $showPD = $params['authenticated']; // display Personal Data
                         </td>
                         <td style="text-align:center">
                             <?php
+                            $useTime = $APIAuthEnt->getLastRenewTime();
+                            $titleStr = 'Last renewed '
+                                . $useTime->format('d-m-Y H:iTP');
+
+                            echo '<div title="' . $titleStr . '">';
+                            echo $useTime->format('d-m-y');
+                            echo '</div>';
+                            ?>
+                        </td>
+                        <td style="text-align:center">
+                            <?php
                             $useTime = $APIAuthEnt->getLastUseTime();
                             if ($useTime == null) {
                                 $titleStr = 'Created/Renewed ' . $APIAuthEnt->getLastRenewTime()->format('d-m-Y H:iTP');
@@ -671,6 +686,22 @@ $showPD = $params['authenticated']; // display Personal Data
                                     echo 'title="API write disabled"';
                                 } ?>
                             />
+                        </td>
+                        <td style="width: 8%; text-align: center;">
+                            <?php if (!$portalIsReadOnly) : ?>
+                                <?php
+                                $searchName = 'Edit_API_Authentication_Entity';
+                                $actionURLPath = "index.php"
+                                    . "?Page_Type=" . $searchName
+                                    . "&amp;"
+                                    . "authentityid=" . $APIAuthEnt->getId()
+                                    . "&amp;"
+                                    . "isRenewalRequest=true";
+                                ?>
+                                <form action=<?= $actionURLPath; ?> method="post">
+                                    <button type="submit">Renew</button>
+                                </form>
+                            <?php endif;?>
                         </td>
                         <td style="width: 8%;"align = "center">
                             <?php if (!$portalIsReadOnly) :?>

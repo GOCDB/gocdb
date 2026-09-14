@@ -1462,6 +1462,28 @@ class Site extends AbstractEntityService{
 
         return $authEntity;
     }
+
+    /**
+     * permission check: to make sure a user can modify properties of the site.
+     *
+     * Renew an API credential without otherwise editing it.
+     *
+     * @param \APIAuthentication $authEntity credential being renewed
+     * @param \User $user user performing the renewal
+     * @return \APIAuthentication the renewed credential
+     */
+    public function renewAPIAuthEntity(\APIAuthentication $authEntity, \User $user) {
+
+        // Check the user can do this. Throws exception if not.
+        $this->checkUserAuthz($user, $authEntity->getParentSite());
+
+        $authEntServ = \Factory::getAPIAuthenticationService();
+        $authEntServ->setEntityManager($this->em);
+
+        $authEntServ->renewAPIAuthentication($authEntity, $user);
+
+        return $authEntity;
+    }
     /**
      * Helper combines admin check and authz check to make sure a user
      * can modify properties of the site.

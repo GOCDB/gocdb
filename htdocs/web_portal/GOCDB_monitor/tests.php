@@ -51,28 +51,6 @@ $test_desc =  array(
         "Server XML configuration validation."
 );
 
-$test_doc =  array(
-    TEST_1 =>
-        "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT " .
-        "Documents/Servers and Services/GOCDB/Cookbook and " .
-        "recipes/database_is_down.txt' target='_blank'>" .
-        "documentation/recipe</a>",
-    TEST_2 =>
-        "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT " .
-        "Documents/Servers and Services/GOCDB/Cookbook and " .
-        "recipes/failover_cookbook.txt' target='_blank'>" .
-        "documentation/recipe</a>",
-    TEST_3 =>
-        "<a href='https://svn.esc.rl.ac.uk/repos/sct-docs/SCT " .
-        "Documents/Servers and Services/GOCDB/Cookbook and " .
-        "recipes/failover_cookbook.txt' target='_blank'>" .
-        "documentation/recipe</a>",
-    TEST_4 =>
-        "<p>Contact GOCDB service managers." .
-        "<br>Other tests have dependencies on the server configuration " .
-        "<br>so may show errors if the configuration is invalid.</p>"
-);
-
 $test_messages =  array(
     TEST_1 => UKNMSG,
     TEST_2 => UKNMSG,
@@ -161,6 +139,7 @@ function test_url($url)
         $retval["message"] = OKMSG;
     } catch (Exception $exception) {
         $message = $exception->getMessage();
+        error_log($message);
         $retval["status"] = NOK;
         $retval["message"] = "$message";
     }
@@ -272,8 +251,10 @@ function test_config($config)
         $retval["status"] = OK;
         $retval["message"] = OKMSG;
     } catch (Exception $exception) {
+        $message = $exception->getMessage();
+        error_log($message);
         $retval["status"] = NOK;
-        $retval["message"] = $exception->getMessage();
+        $retval["message"] = $message;
     }
     return $retval;
 }

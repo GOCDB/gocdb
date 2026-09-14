@@ -143,7 +143,9 @@ class ManageUnusedAPICredentialsTest extends PHPUnit_Extensions_Database_TestCas
 
         // remove credentials last used more than 13 months ago
         // there should be one left after this operation
-        $creds = $actions->deleteCreds($creds, 13);
+        // `false` selects inactivity flow; credentials will be deleted based on
+        // their last use time rather than their last renew time.
+        $creds = $actions->deleteCreds($creds, 13, false);
 
         $this->assertCount(
             1,

@@ -567,4 +567,54 @@ class Config
 
         return $emailTo;
     }
+
+    public function getProjectDocLink()
+    {
+        $projectDocLink = $this->GetLocalInfoXML()->project->doc_link;
+
+        return $projectDocLink;
+    }
+
+    public function getNgiDocLink()
+    {
+        $ngiDocLink = $this->GetLocalInfoXML()->ngi->doc_link;
+
+        return $ngiDocLink;
+    }
+
+    public function getServiceGroupDocLink()
+    {
+        $localInfo = $this->GetLocalInfoXML();
+        $serviceGroupDocLink = $localInfo->service_group->doc_link;
+
+        return $serviceGroupDocLink;
+    }
+
+    public function getHelpdeskLink()
+    {
+        $link = $this->GetLocalInfoXML()->helpdesk->link;
+
+        return $link;
+    }
+
+    public function getHelpdeskSupportUnit()
+    {
+        $supportUnit = $this->GetLocalInfoXML()->helpdesk->support_unit;
+
+        return $supportUnit;
+    }
+
+    public function getRequestTracker()
+    {
+        $requestTracker = $this->GetLocalInfoXML()->request_tracker;
+
+        return $requestTracker;
+    }
+
+    public function getCommunityDocs()
+    {
+        $communityDocs = $this->GetLocalInfoXML()->community_docs;
+
+        return $communityDocs;
+    }
 }

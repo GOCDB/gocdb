@@ -25,8 +25,11 @@ require_once __DIR__.'/../../../web_portal/components/Get_User_Principle.php';
 require_once __DIR__.'/../utils.php';
 require_once __DIR__.'/../../../../lib/Gocdb_Services/Factory.php';
 
+use Exception;
+
 /**
- * Controller to edit authentication entity request
+ * Controller to either edit authentication entity request or renewal request.
+ *
  * @global array $_POST only set if the browser has POSTed data
  * @return null
  */
@@ -70,21 +73,36 @@ function draw(\User $user = null, \APIAuthentication $authEnt = null, \Site $sit
     $params['authTypes'][]='OIDC Subject';
     $params['user'] = $user;
 
+    $params['isRenewalRequest'] = !empty($_REQUEST['isRenewalRequest']);
+
     show_view("site/edit_api_auth.php", $params);
     die();
 }
 
+/**
+ * If this receives a POST request,
+ * it can be either to edit an API authentication entity or
+ * to update the `$lastRenewTime` in `APIAuthentication`.
+ */
 function submit(\User $user, \APIAuthentication $authEnt, \Site $site, org\gocdb\services\Site $serv) {
-    $newValues = getAPIAuthenticationFromWeb();
+
+    $params = array();
+
+    $isRenewalRequest = !empty($_REQUEST['isRenewalRequest']);
+    $params['isRenewalRequest'] = $isRenewalRequest;
 
     try {
-        $authEnt = $serv->editAPIAuthEntity($authEnt, $user, $newValues);
+        if ($isRenewalRequest) {
+            $authEnt = $serv->renewAPIAuthEntity($authEnt, $user);
+        } else {
+            $newValues = getAPIAuthenticationFromWeb();
+            $authEnt = $serv->editAPIAuthEntity($authEnt, $user, $newValues);
+        }
     } catch(Exception $e) {
         show_view('error.php', $e->getMessage());
         die();
     }
 
-    $params = array();
     $params['apiAuthenticationEntity'] = $authEnt;
     $params['site'] = $site;
     show_view("site/edited_api_auth.php", $params);
