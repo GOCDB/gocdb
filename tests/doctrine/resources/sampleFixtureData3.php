@@ -76,10 +76,10 @@ $this->em->flush();
 $testConn = $this->getConnection();
 
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Sites");
-$this->assertTrue($result->getRowCount() == 5);
+$result = $testConn->query("SELECT * FROM Sites")->fetchAll();
+$this->assertTrue(count($result) == 5);
 
-$result = $testConn->createQueryTable('results_table', "SELECT * FROM Site_Properties");
-$this->assertTrue($result->getRowCount() == 13);
+$result = $testConn->query("SELECT * FROM Site_Properties")->fetchAll();
+$this->assertTrue(count($result) == 13);
 
 ?>
