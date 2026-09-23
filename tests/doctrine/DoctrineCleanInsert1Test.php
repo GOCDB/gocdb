@@ -466,7 +466,7 @@ class DoctrineCleanInsert1Test extends \PHPUnit\Framework\TestCase
    */
     public function testExpectedFK_ViolationOnSiteDeleteWithoutCascade()
     {
-        $this->expectException(\Doctrine\DBAL\DBALException::class);
+        $this->expectException(\Doctrine\DBAL\Exception::class);
         print __METHOD__ . "\n";
         $n = 1;
         $site = TestUtil::createSampleSite('site' . $n/*, 'pk' . $n*/);
@@ -488,7 +488,7 @@ class DoctrineCleanInsert1Test extends \PHPUnit\Framework\TestCase
         $this->assertTrue($refetchedSite->getShortName() == 'site' . $n);
 
       // Now try to delete site.
-      // We expect a FK violation wrapped as a DBALException.
+      // We expect a FK violation wrapped as a Exception.
       // If the fail statement is called below, then it could be an issue with
       // with the DB. For example, Sqlite with Doctrine does not enforce FK constraints !
       // see: http://stackoverflow.com/a/4599894
@@ -497,7 +497,7 @@ class DoctrineCleanInsert1Test extends \PHPUnit\Framework\TestCase
       // services first as we have no cascade-delete option set.
         $this->em->remove($refetchedSite);
         $this->em->flush();
-        $this->fail('Should not get to this point - DBALException expected');
+        $this->fail('Should not get to this point - Exception expected');
     }
 
 
@@ -670,7 +670,7 @@ class DoctrineCleanInsert1Test extends \PHPUnit\Framework\TestCase
    */
     public function testExpectedFK_ViolationOnServiceToEndpointCascadeDelete_WithDTs()
     {
-        $this->expectException(\Doctrine\DBAL\DBALException::class);
+        $this->expectException(\Doctrine\DBAL\Exception::class);
         print __METHOD__ . "\n";
       // create a linked entity graph as beow:
       //
@@ -711,7 +711,7 @@ class DoctrineCleanInsert1Test extends \PHPUnit\Framework\TestCase
         $this->assertTrue(count($result) == 1);
 
       // Try and delete the service
-      // We expect a FK violation wrapped as a DBALException.
+      // We expect a FK violation wrapped as a Exception.
       // If the fail statement is called below, then it could be an issue with
       // with the DB. For example, Sqlite with Doctrine does not enforce FK constraints !
       // see: http://stackoverflow.com/a/4599894
@@ -720,7 +720,7 @@ class DoctrineCleanInsert1Test extends \PHPUnit\Framework\TestCase
       // services first as we have no cascade-delete option set.
         $this->em->remove($se);
         $this->em->flush();
-        $this->fail('Should not get to this point - DBALException expected');
+        $this->fail('Should not get to this point - Exception expected');
     }
 
   /**
