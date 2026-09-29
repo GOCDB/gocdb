@@ -22,7 +22,8 @@ class WriteAPIsiteMethodsTests extends extensionPropertyAbstract {
   /**
   * Overridden.
   */
-  public static function setUpBeforeClass() {
+  public static function setUpBeforeClass(): void
+  {
     parent::setUpBeforeClass();
     echo "\n\n-------------------------------------------------\n";
     echo "Executing WriteAPIsiteMethodsTests. . .\n";
