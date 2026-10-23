@@ -11,7 +11,7 @@ foreach($downtime->getServices() as $service){
     $affectedServices[] = $service;
 }
 
-if(count($affectedSites == 1)){
+if (count($affectedSites) == 1) {
    $siteTimezoneId = $affectedSites[0]->getTimezoneId();
 } else {
    $siteTimezoneId = 'UTC';

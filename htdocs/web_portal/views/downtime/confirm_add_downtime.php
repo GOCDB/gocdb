@@ -39,7 +39,7 @@ if(isset($params['isEdit'])){
         xecho($params['DOWNTIME']['END_TIMESTAMP']);
     ?></li>
     <?php
-    if(count($services > 1)){
+    if (count($services) > 1) {
         echo "<li><b>Affecting Services:</b>";
     }else{
         echo "<li><b>Affecting Service:</b>";
@@ -56,7 +56,7 @@ if(isset($params['isEdit'])){
         </ul>
     </li>
     <?php
-    if(count($endpoints > 1)){
+    if (count($endpoints) > 1) {
         echo "<li><b>Affecting Endpoints:</b>";
     }else{
         echo "<li><b>Affecting Endpoint:</b>";
