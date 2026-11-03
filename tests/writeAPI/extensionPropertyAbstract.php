@@ -680,8 +680,8 @@ abstract class extensionPropertyAbstract extends AbstractWriteAPITestClass{
               WHERE $parentIDName = '$entityId'
               AND keyName = '$propKey'
               AND keyValue = '$propValue'";
-      $result = $con->createQueryTable('', $sql);
-      $this->assertEquals($expectedNo, $result->getRowCount());
+      $result = $con->query($sql)->fetchAll();
+      $this->assertEquals($expectedNo, count($result));
     }
   }
 
@@ -703,8 +703,8 @@ abstract class extensionPropertyAbstract extends AbstractWriteAPITestClass{
     $con = $this->getConnection();
     $sql = "SELECT * FROM $table
             WHERE $parentIDName = '$entityId'";
-    $result = $con->createQueryTable('', $sql);
-    $this->assertEquals(0, $result->getRowCount());
+    $result = $con->query($sql)->fetchAll();
+    $this->assertEquals(0, count($result));
   }
 
 }

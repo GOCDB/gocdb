@@ -1,27 +1,25 @@
-DBUnit Testing
-==============
+Database Testing
+================
 This file is best viewed using a browser-plugin for markdown `.md` files.
 
 GocDB comes with a suite of tests that can be run to validate that Doctrine and
 your chosen database operate as expected. If the test suite fails against your
 chosen DB, then GocDB will not work as expected. It is therefore recommended
-that you run the DBUnit tests to ensure GocDB works as expected against your chosen DB.  
+that you run the tests to ensure GocDB works as expected against your chosen DB.  
 
-Install PhpUnit and DBUnit
----------------------------
-The tests require PHPUnit ***AND*** its DBUnit extensions be installed. These should be provided by composer. PHPUnit will need to be in your path, however `vendor/bin` should have been added during the installation of GOCDB. To manually install phpunit, see [PhpUnit install](https://phpunit.de).
+Install PhpUnit
+---------------
+The tests require PHPUnit, which should be provided by composer. PHPUnit will need to be in your path, however `vendor/bin` should have been added during the installation of GOCDB. To manually install phpunit, see [PhpUnit install](https://phpunit.de).
 
 ```bash
 $phpunit --version
-PHPUnit 4.6.6 by Sebastian Bergmann and contributors.
+PHPUnit 9.6.36 by Sebastian Bergmann and contributors.
 ```
 
-If you see an error like the following, it is likely that you haven't installed the
-DBUnit extensions or the phpunit on the path does not have the DBUnit extensions.
-
-```bash
-Fatal error: Class 'PHPUnit_Extensions_Database_TestCase' not found in ...<a test class file>...
-```
+The tests used to rely on the `phpunit/dbunit` extension, which is abandoned and
+caps PHPUnit at version 7. They now use plain PDO for their SQL assertions, and
+`doctrine/data-fixtures`' `ORMPurger` to empty the tables between tests; both are
+`require-dev` dependencies in `composer.json`.
 
 Install PDO Driver for your test DB
 ------------------------------------
