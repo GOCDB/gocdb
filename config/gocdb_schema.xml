@@ -140,7 +140,7 @@
         <field>
             <fname>HOST_DN</fname>
             <length>255</length>
-            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/\)\(]+)*$/</regex>
+            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,':\/\)\(]+)*$/</regex>
         </field>
         <field>
             <fname>HOST_OS</fname>
@@ -315,12 +315,12 @@
         <name>change_cert_req</name>
         <field>
             <fname>OLD_DN</fname>
-            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/]+)+$/</regex>
+            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,':\/]+)+$/</regex>
             <length>255</length>
         </field>
         <field>
             <fname>NEW_DN</fname>
-            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,'\/]+)+$/</regex>
+            <regex>/^(\/[a-zA-Z]+=[a-zA-Z0-9\-\_\s\.@,':\/]+)+$/</regex>
             <length>255</length>
         </field>
         <field>
