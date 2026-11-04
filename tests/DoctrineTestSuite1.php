@@ -36,6 +36,7 @@ require_once __DIR__ . '/writeAPI/serviceMethods.php';
 require_once __DIR__ . '/writeAPI/endpointMethods.php';
 require_once __DIR__ . '/resourcesTests/ManageUnusedAPICredentialsTest.php';
 require_once __DIR__ . '/resourcesTests/ManageUnrenewedAPICredentialsTest.php';
+require_once __DIR__ . '/unit/lib/Gocdb_Services/HostDNColonTest.php';
 
 /**
  * TestSuite designed to run the main doctrine tests
@@ -77,6 +78,7 @@ class DoctrineTestSuite1
         $suite->addTestSuite('WriteAPIendpointMethodsTests');
         $suite->addTestSuite('org\gocdb\tests\ManageUnusedAPICredentialsTest');
         $suite->addTestSuite('org\gocdb\tests\ManageUnrenewedAPICredentialsTest');
+        $suite->addTestSuite('org\gocdb\tests\HostDNColonTest');
 
 
         return $suite;
