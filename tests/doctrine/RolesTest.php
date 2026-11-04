@@ -183,7 +183,7 @@ class RolesTest extends \PHPUnit\Framework\TestCase
    */
     public function testRoleTypeIntegrityConstraint()
     {
-        $this->expectException(\Doctrine\DBAL\DBALException::class);
+        $this->expectException(\Doctrine\DBAL\Exception::class);
         print __METHOD__ . "\n";
       // Create a roletype
         $rt = TestUtil::createSampleRoleType("NAME");
@@ -216,7 +216,7 @@ class RolesTest extends \PHPUnit\Framework\TestCase
    */
     public function testDuplicateRoleTypes()
     {
-        $this->expectException(\Doctrine\DBAL\DBALException::class);
+        $this->expectException(\Doctrine\DBAL\Exception::class);
         print __METHOD__ . "\n";
       // Should throw an expected exception because the role type Name value
       // must be unique
