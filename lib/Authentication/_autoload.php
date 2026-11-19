@@ -72,4 +72,4 @@ function securityLoader($className){
 }
 
 
-spl_autoload_register(__NAMESPACE__ .'\securityLoader', false);
+spl_autoload_register(__NAMESPACE__ .'\securityLoader');
