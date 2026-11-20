@@ -18,24 +18,20 @@ PHPUnit configuration file for tests.
 -->
 <phpunit
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:noNamespaceSchemaLocation="http://schema.phpunit.de/4.8/phpunit.xsd"
+         xsi:noNamespaceSchemaLocation="https://schema.phpunit.de/9.6/phpunit.xsd"
          backupGlobals="true"
          backupStaticAttributes="false"
-         cacheTokens="false"
          colors="false"
          convertErrorsToExceptions="true"
          convertNoticesToExceptions="true"
          convertWarningsToExceptions="true"
          forceCoversAnnotation="false"
-         mapTestClassNameToCoveredClassName="false"
-         printerClass="PHPUnit_TextUI_ResultPrinter"
          processIsolation="false"
          stopOnError="false"
          stopOnFailure="false"
          stopOnIncomplete="false"
          stopOnSkipped="false"
          stopOnRisky="false"
-         testSuiteLoaderClass="PHPUnit_Runner_StandardTestSuiteLoader"
          timeoutForSmallTests="1"
          timeoutForMediumTests="10"
          timeoutForLargeTests="60"
@@ -44,33 +40,24 @@ PHPUnit configuration file for tests.
          <!--testSuiteLoaderFile="/path/to/StandardTestSuiteLoader.php"-->
          <!--bootstrap="/path/to/bootstrap.php" -->
 
-<filter>
-  <!--<blacklist>
-    <directory suffix=".php">/path/to/files</directory>
-    <file>/path/to/file</file>
-    <exclude>
-      <directory suffix=".php">/path/to/files</directory>
-      <file>/path/to/file</file>
-    </exclude>
-  </blacklist>-->
-
-  <!--
-  Name the core packages to be included in coverage reports.
-  It is not desirable to produce coverage for every package, it is not useful
-  to do so. We have to be selective on which tests to write for which packages.
-  -->
-  <whitelist processUncoveredFilesFromWhitelist="true">
+<!--
+Name the core packages to be included in coverage reports.
+It is not desirable to produce coverage for every package, it is not useful
+to do so. We have to be selective on which tests to write for which packages.
+-->
+<coverage processUncoveredFiles="true">
+  <include>
     <directory suffix=".php">../lib/Doctrine/entities/</directory>
     <directory suffix=".php">../lib/DAOs/</directory>
     <directory suffix=".php">../lib/Gocdb_Services/</directory>
     <!--<file>/path/to/file</file>-->
-    <exclude>
-      <!-- TODO - We need to include PI dir in future -->
-      <directory suffix=".php">../lib/Gocdb_Services/PI/</directory>
-      <!--<file>/path/to/file</file>-->
-    </exclude>
-  </whitelist>
-</filter>
+  </include>
+  <exclude>
+    <!-- TODO - We need to include PI dir in future -->
+    <directory suffix=".php">../lib/Gocdb_Services/PI/</directory>
+    <!--<file>/path/to/file</file>-->
+  </exclude>
+</coverage>
 
 <php>
   <!--
