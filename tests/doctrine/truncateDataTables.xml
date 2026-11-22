@@ -62,7 +62,7 @@
     <Downtimes_EndpointLocations/>
 
     <Users/>
-    <LinkIdentityRequests/>
+    <IdentifierManagementRequests/>
     <RoleTypes/>
     <Roles/>
 

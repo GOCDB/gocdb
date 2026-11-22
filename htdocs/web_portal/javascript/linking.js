@@ -1,6 +1,6 @@
 $(document).ready(function() {
     // Add the jQuery form change event handlers
-    $('#linkIdentityForm').find(":input").change(function() {
+    $('#identifierManagementForm').find(":input").change(function() {
         validate();
     });
 });
